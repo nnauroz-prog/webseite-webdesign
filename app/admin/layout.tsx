@@ -1,5 +1,4 @@
-import Link from "next/link";
-
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { SignOutButton } from "@/components/dashboard/sign-out-button";
 import { requireAdmin } from "@/lib/supabase/auth";
 
@@ -11,25 +10,18 @@ export default async function AdminLayout({
   const { user } = await requireAdmin();
 
   return (
-    <div className="flex min-h-full flex-1 flex-col">
-      <header className="border-border bg-background flex h-14 items-center justify-between border-b px-6">
-        <div className="flex items-center gap-6 text-sm">
-          <Link href="/admin" className="font-semibold tracking-tight">
-            SitePilot · Admin
-          </Link>
-          <Link
-            href="/dashboard"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Mein Dashboard
-          </Link>
-        </div>
-        <div className="flex items-center gap-3 text-sm">
-          <span className="text-muted-foreground">{user.email}</span>
+    <div className="flex flex-1">
+      <AdminSidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="border-border bg-background flex h-14 items-center justify-between border-b px-6">
+          <div className="text-muted-foreground text-sm">
+            Admin-Sitzung ·{" "}
+            <span className="text-foreground font-medium">{user.email}</span>
+          </div>
           <SignOutButton />
-        </div>
-      </header>
-      <main className="bg-muted/20 flex-1">{children}</main>
+        </header>
+        <main className="bg-muted/20 flex-1 overflow-y-auto">{children}</main>
+      </div>
     </div>
   );
 }
