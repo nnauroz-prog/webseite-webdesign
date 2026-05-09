@@ -47,12 +47,13 @@ async function resolveStripeCustomerId(
     metadata: { supabase_user_id: userId },
   });
 
-  await admin
-    .from("subscriptions")
-    .upsert(
-      { user_id: userId, stripe_customer_id: customer.id },
-      { onConflict: "user_id" },
-    );
+  // Cast: same reason as in app/api/stripe/webhook/route.ts — bypass the
+  // strict generic, schema correctness is enforced by Postgres at runtime.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (admin.from("subscriptions") as any).upsert(
+    { user_id: userId, stripe_customer_id: customer.id },
+    { onConflict: "user_id" },
+  );
 
   return customer.id;
 }

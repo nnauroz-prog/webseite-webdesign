@@ -133,7 +133,11 @@ async function upsertSubscription(
     null;
 
   const admin = createAdminClient();
-  const { error } = await admin.from("subscriptions").upsert(
+  // Cast: upsert's strict generic infers Insert as `never` against our
+  // permissive Database schema in some @supabase/supabase-js versions —
+  // bypass the type check, schema validation happens in Postgres.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (admin.from("subscriptions") as any).upsert(
     {
       user_id: userId,
       stripe_customer_id: customerId,
