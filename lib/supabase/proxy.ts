@@ -3,12 +3,22 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import type { Database } from "@/types/database";
 
+const PROTECTED_PREFIXES = ["/dashboard", "/admin"];
+const AUTH_ONLY_PREFIXES = ["/login", "/register"];
+
 /**
  * Refreshes the Supabase auth session on every request and forwards
  * any updated auth cookies to both the request and the outgoing response.
  *
- * Called from the root proxy.ts. Do not run any logic between
- * createServerClient() and getUser() — see Supabase SSR docs.
+ * Also handles UX-level redirects:
+ *  - Unauthenticated users hitting /dashboard or /admin → /login
+ *  - Authenticated users hitting /login or /register → /dashboard
+ *
+ * Important: This is UX only. RLS policies and per-layout server-side
+ * checks (requireUser / requireAdmin) are the actual security boundary.
+ *
+ * Do not run any logic between createServerClient() and getUser() — the
+ * Supabase SSR helper relies on that ordering for cookie rotation.
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -34,8 +44,25 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Touch the session so refresh tokens get rotated.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+
+  if (!user && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  if (user && AUTH_ONLY_PREFIXES.some((p) => pathname === p)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
 
   return response;
 }

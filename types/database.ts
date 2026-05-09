@@ -1,13 +1,13 @@
 /**
- * Supabase generated types.
+ * Supabase generated types — placeholder.
  *
- * This file is a placeholder for Phase 1. In Phase 2 we will replace it with
- * output from:
+ * In Phase 2 we use a permissive shape so `supabase.from("websites")` etc.
+ * compile without errors. Replace this file with real generated types once
+ * the project is connected:
  *
  *   npx supabase gen types typescript --project-id <ref> > types/database.ts
  *
- * Keeping the shape `Database` makes our typed Supabase clients work today
- * (untyped) and stay typed once real types land.
+ * After regeneration, all queries become fully typed automatically.
  */
 export type Json =
   | string
@@ -17,12 +17,28 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+type GenericTable = {
+  Row: Record<string, unknown>;
+  Insert: Record<string, unknown>;
+  Update: Record<string, unknown>;
+  Relationships: [];
+};
+
 export type Database = {
   public: {
-    Tables: Record<string, never>;
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
+    Tables: {
+      [key: string]: GenericTable;
+    };
+    Views: {
+      [key: string]: { Row: Record<string, unknown> };
+    };
+    Functions: {
+      [key: string]: {
+        Args: Record<string, unknown>;
+        Returns: unknown;
+      };
+    };
+    Enums: { [key: string]: string };
+    CompositeTypes: { [key: string]: Record<string, unknown> };
   };
 };
