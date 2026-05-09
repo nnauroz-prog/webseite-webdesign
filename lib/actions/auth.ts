@@ -120,14 +120,15 @@ export async function loginAction(
     });
 
     if (error) {
+      const status = (error as { status?: number }).status;
+      const code = (error as { code?: string }).code;
       console.error("[loginAction] supabase error", {
-        code: error.code,
-        status: error.status,
+        code,
+        status,
         message: error.message,
       });
       // Surface real error to the user when it is not a credentials issue.
-      const isAuthFailure =
-        error.status === 400 || error.code === "invalid_credentials";
+      const isAuthFailure = status === 400 || code === "invalid_credentials";
       return fail(
         isAuthFailure
           ? "E-Mail oder Passwort ist falsch."

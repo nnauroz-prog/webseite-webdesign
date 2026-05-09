@@ -46,7 +46,7 @@ export async function updateSession(request: NextRequest) {
     return response;
   }
 
-  let user: { id: string } | null = null;
+  let isAuthenticated = false;
   try {
     const supabase = createServerClient(url, anonKey, {
       cookies: {
@@ -67,13 +67,12 @@ export async function updateSession(request: NextRequest) {
 
     try {
       const { data } = await supabase.auth.getUser();
-      user = data.user;
+      isAuthenticated = data.user !== null;
     } catch (err) {
       console.error("[proxy] getUser failed", {
         message: err instanceof Error ? err.message : String(err),
         pathname,
       });
-      user = null;
     }
   } catch (err) {
     console.error("[proxy] supabase client init failed", {
@@ -81,17 +80,17 @@ export async function updateSession(request: NextRequest) {
       message: err instanceof Error ? err.message : String(err),
       pathname,
     });
-    // Fall through with user=null — request still served.
+    // Fall through with isAuthenticated=false — request still served.
   }
 
-  if (!user && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
+  if (!isAuthenticated && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     redirectUrl.search = "";
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (user && AUTH_ONLY_PREFIXES.some((p) => pathname === p)) {
+  if (isAuthenticated && AUTH_ONLY_PREFIXES.some((p) => pathname === p)) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/dashboard";
     redirectUrl.search = "";
