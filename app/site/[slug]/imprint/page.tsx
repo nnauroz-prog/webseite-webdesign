@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { SiteLegalPage } from "@/components/site/site-legal-page";
 import { getPublicSite } from "@/lib/site-data";
+import { resolveTemplateKey } from "@/lib/templates";
 
 type RouteParams = { slug: string };
 
@@ -32,5 +33,12 @@ export default async function ImprintPage({
   const text = data.website.imprint_text?.trim();
   if (!text) notFound();
 
-  return <SiteLegalPage website={data.website} title="Impressum" body={text} />;
+  return (
+    <SiteLegalPage
+      website={data.website}
+      title="Impressum"
+      body={text}
+      templateKey={resolveTemplateKey(data.template)}
+    />
+  );
 }

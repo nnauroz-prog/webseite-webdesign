@@ -2,19 +2,25 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import type { TemplateKey } from "@/lib/templates";
 import type { WebsiteRow } from "@/types/website";
 
 export function SiteLegalPage({
   website,
   title,
   body,
+  templateKey,
 }: {
   website: WebsiteRow;
   title: string;
   body: string;
+  templateKey: TemplateKey;
 }) {
   return (
-    <div className="bg-background flex min-h-screen flex-1 flex-col">
+    <div
+      data-template={templateKey}
+      className="bg-background flex min-h-screen flex-1 flex-col"
+    >
       <SiteHeader website={website} />
       <main className="flex-1">
         <article className="mx-auto w-full max-w-3xl px-6 py-16">

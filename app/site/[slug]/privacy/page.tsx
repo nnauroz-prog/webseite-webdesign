@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { SiteLegalPage } from "@/components/site/site-legal-page";
 import { getPublicSite } from "@/lib/site-data";
+import { resolveTemplateKey } from "@/lib/templates";
 
 type RouteParams = { slug: string };
 
@@ -33,6 +34,11 @@ export default async function PrivacyPage({
   if (!text) notFound();
 
   return (
-    <SiteLegalPage website={data.website} title="Datenschutz" body={text} />
+    <SiteLegalPage
+      website={data.website}
+      title="Datenschutz"
+      body={text}
+      templateKey={resolveTemplateKey(data.template)}
+    />
   );
 }

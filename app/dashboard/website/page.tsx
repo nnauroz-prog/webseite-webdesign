@@ -9,12 +9,21 @@ import { MetaForm } from "@/components/dashboard/website/meta-form";
 import { PublishForm } from "@/components/dashboard/website/publish-form";
 import { SeoForm } from "@/components/dashboard/website/seo-form";
 import { SlugForm } from "@/components/dashboard/website/slug-form";
+import { TemplateForm } from "@/components/dashboard/website/template-form";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
+import type { TemplateRow } from "@/types/website";
 
 export const metadata: Metadata = { title: "Website" };
 
 export default async function WebsitePage() {
-  const { website } = await requireCurrentWebsite();
+  const { supabase, website } = await requireCurrentWebsite();
+
+  const { data: templatesRows } = await supabase
+    .from("templates")
+    .select("*")
+    .eq("is_active", true)
+    .order("name");
+  const templates = (templatesRows as TemplateRow[] | null) ?? [];
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6 px-6 py-8">
@@ -28,6 +37,7 @@ export default async function WebsitePage() {
       </div>
 
       <PublishForm website={website} />
+      <TemplateForm website={website} templates={templates} />
       <MetaForm website={website} />
       <LogoForm website={website} />
       <HeroForm website={website} />

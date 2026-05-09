@@ -26,6 +26,7 @@ import {
   publishSchema,
   seoSchema,
   slugUpdateSchema,
+  templateUpdateSchema,
   websiteMetaSchema,
 } from "@/lib/validations/website";
 
@@ -387,6 +388,32 @@ export async function removeLogoAction(): Promise<ActionState> {
   revalidatePath(`/site/${website.slug}`, "layout");
   revalidatePath("/dashboard", "layout");
   return ok("Logo entfernt.");
+}
+
+// ---------------------------------------------------------------------------
+//  updateTemplateAction
+// ---------------------------------------------------------------------------
+export async function updateTemplateAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = templateUpdateSchema.safeParse({
+    template_id: formData.get("template_id"),
+  });
+  if (!parsed.success) {
+    return fail("Ungültiges Template.", flattenZodErrors(parsed.error));
+  }
+
+  const { supabase, website } = await requireCurrentWebsite();
+  const { error } = await supabase
+    .from("websites")
+    .update({ template_id: parsed.data.template_id ?? null })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  revalidatePath("/dashboard/website");
+  return ok("Template aktualisiert.");
 }
 
 // Re-export so onboarding form can detect "no website yet" state.

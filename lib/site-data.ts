@@ -5,6 +5,7 @@ import type {
   GalleryImageRow,
   ServiceRow,
   TeamMemberRow,
+  TemplateRow,
   WebsiteRow,
 } from "@/types/website";
 
@@ -13,6 +14,7 @@ export type PublicSite = {
   services: ServiceRow[];
   team: TeamMemberRow[];
   gallery: GalleryImageRow[];
+  template: TemplateRow | null;
   /** True iff the website is_active is false but the viewer can see it (owner). */
   isPreview: boolean;
 };
@@ -43,7 +45,7 @@ export const getPublicSite = cache(
     // as a flag so the UI can show a "preview" banner.
     const isPreview = !website.is_active;
 
-    const [servicesRes, teamRes, galleryRes] = await Promise.all([
+    const [servicesRes, teamRes, galleryRes, templateRes] = await Promise.all([
       supabase
         .from("services")
         .select("*")
@@ -62,6 +64,13 @@ export const getPublicSite = cache(
         .eq("website_id", website.id)
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: true }),
+      website.template_id
+        ? supabase
+            .from("templates")
+            .select("*")
+            .eq("id", website.template_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
     ]);
 
     return {
@@ -69,6 +78,7 @@ export const getPublicSite = cache(
       services: (servicesRes.data as ServiceRow[] | null) ?? [],
       team: (teamRes.data as TeamMemberRow[] | null) ?? [],
       gallery: (galleryRes.data as GalleryImageRow[] | null) ?? [],
+      template: (templateRes.data as TemplateRow | null) ?? null,
       isPreview,
     };
   },

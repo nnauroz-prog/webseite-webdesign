@@ -77,3 +77,7 @@ export const publishSchema = z.object({
 export const slugUpdateSchema = z.object({
   slug: slugSchema,
 });
+
+export const templateUpdateSchema = z.object({
+  template_id: z.preprocess(emptyToUndef, z.string().uuid().optional()),
+});
