@@ -1,8 +1,11 @@
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import {
+  createClient as createSupabaseClient,
+  type SupabaseClient,
+} from "@supabase/supabase-js";
 
 import type { Database } from "@/types/database";
 
-let cached: ReturnType<typeof createSupabaseClient<Database>> | null = null;
+let cached: SupabaseClient<Database> | null = null;
 
 /**
  * Service-role Supabase client. Server-only.
@@ -13,7 +16,7 @@ let cached: ReturnType<typeof createSupabaseClient<Database>> | null = null;
  * NEVER import this from a Client Component or expose its results to a
  * browser response — it can read/write any row.
  */
-export function createAdminClient() {
+export function createAdminClient(): SupabaseClient<Database> {
   if (cached) return cached;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
