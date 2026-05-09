@@ -60,6 +60,12 @@ export default function HomePage() {
           <span className="text-sm font-semibold tracking-tight">SitePilot</span>
           <nav className="flex items-center gap-2">
             <Link
+              href="/pricing"
+              className="hover:bg-secondary hidden h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition sm:inline-flex"
+            >
+              Preise
+            </Link>
+            <Link
               href="/login"
               className="hover:bg-secondary inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition"
             >

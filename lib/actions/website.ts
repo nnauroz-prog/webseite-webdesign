@@ -268,6 +268,11 @@ export async function updateFormsAction(
 
 // ---------------------------------------------------------------------------
 //  updatePublishAction (activate / deactivate)
+//
+//  Going public requires an access-granting subscription status. Going back
+//  to private is always allowed. If the user's payment fails or they cancel,
+//  the DB trigger on `subscriptions` will deactivate them automatically;
+//  this guard prevents re-publishing without billing in good standing.
 // ---------------------------------------------------------------------------
 export async function updatePublishAction(
   _prev: ActionState | undefined,
@@ -278,7 +283,22 @@ export async function updatePublishAction(
   });
   if (!parsed.success) return fail("Ungültiger Wert.");
 
-  const { supabase, website } = await requireCurrentWebsite();
+  const { supabase, user, website } = await requireCurrentWebsite();
+
+  if (parsed.data.is_active) {
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("status")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const status = (sub as { status: string | null } | null)?.status ?? null;
+    if (!status || !["active", "trialing"].includes(status)) {
+      return fail(
+        "Bitte wähle zuerst ein Paket, um deine Website öffentlich zu schalten.",
+      );
+    }
+  }
+
   const { error } = await supabase
     .from("websites")
     .update({ is_active: parsed.data.is_active })
