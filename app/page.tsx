@@ -85,7 +85,7 @@ const walkthrough = [
   {
     icon: Inbox,
     title: "Anfragen direkt verwalten",
-    body: "Kontaktformular und Bewerbungsformular landen im Dashboard. Status-Workflow von „neu" über „kontaktiert" bis „abgeschlossen".",
+    body: "Kontaktformular und Bewerbungsformular landen im Dashboard. Status-Workflow von neu über kontaktiert bis abgeschlossen.",
     bullets: [
       "Honeypot-Spam-Schutz",
       "Status pro Anfrage setzen",
