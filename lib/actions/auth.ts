@@ -70,15 +70,29 @@ export async function registerAction(
       },
     });
 
-    if (error) return fail(error.message);
+    if (error) {
+      console.error("[registerAction] supabase error", {
+        code: error.code,
+        status: error.status,
+        message: error.message,
+      });
+      return fail(error.message);
+    }
 
     return success(
       "Konto erstellt. Bitte bestätige deine E-Mail über den Link, den wir dir geschickt haben.",
     );
-  } catch {
-    return fail(
-      "Konto-Erstellung gerade nicht möglich. Bitte später erneut versuchen.",
-    );
+  } catch (err) {
+    console.error("[registerAction] thrown", {
+      name: err instanceof Error ? err.name : "unknown",
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    const message =
+      err instanceof Error
+        ? `Fehler bei der Registrierung: ${err.message}`
+        : "Konto-Erstellung gerade nicht möglich. Bitte später erneut versuchen.";
+    return fail(message);
   }
 }
 
@@ -105,9 +119,32 @@ export async function loginAction(
       password: parsed.data.password,
     });
 
-    if (error) return fail("E-Mail oder Passwort ist falsch.");
-  } catch {
-    return fail("Login gerade nicht möglich. Bitte später erneut versuchen.");
+    if (error) {
+      console.error("[loginAction] supabase error", {
+        code: error.code,
+        status: error.status,
+        message: error.message,
+      });
+      // Surface real error to the user when it is not a credentials issue.
+      const isAuthFailure =
+        error.status === 400 || error.code === "invalid_credentials";
+      return fail(
+        isAuthFailure
+          ? "E-Mail oder Passwort ist falsch."
+          : `Login fehlgeschlagen: ${error.message}`,
+      );
+    }
+  } catch (err) {
+    console.error("[loginAction] thrown", {
+      name: err instanceof Error ? err.name : "unknown",
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    const message =
+      err instanceof Error
+        ? `Login fehlgeschlagen: ${err.message}`
+        : "Login gerade nicht möglich. Bitte später erneut versuchen.";
+    return fail(message);
   }
 
   revalidatePath("/", "layout");
