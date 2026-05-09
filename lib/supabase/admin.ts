@@ -1,6 +1,8 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
-let cached: ReturnType<typeof createSupabaseClient> | null = null;
+import type { Database } from "@/types/database";
+
+let cached: ReturnType<typeof createSupabaseClient<Database>> | null = null;
 
 /**
  * Service-role Supabase client. Server-only.
@@ -22,7 +24,7 @@ export function createAdminClient() {
     );
   }
 
-  cached = createSupabaseClient(url, key, {
+  cached = createSupabaseClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
   return cached;

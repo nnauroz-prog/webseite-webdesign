@@ -38,6 +38,7 @@ export type Database = {
       gallery_images: GenericTable;
       leads: GenericTable;
       applications: GenericTable;
+      subscriptions: GenericTable;
     };
     Views: { [key: string]: { Row: any } };
     Functions: { [key: string]: { Args: any; Returns: any } };
