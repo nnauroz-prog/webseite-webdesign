@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/components/auth/login-form";
@@ -11,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Anmelden" };
+export const metadata: Metadata = { title: "Anmelden — SitePilot" };
 
 export default async function LoginPage() {
   const supabase = await createClient();
@@ -21,16 +22,28 @@ export default async function LoginPage() {
   if (user) redirect("/dashboard");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl">Willkommen zurück</CardTitle>
-        <CardDescription>
-          Melde dich an, um dein SitePilot-Dashboard zu öffnen.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <LoginForm />
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Willkommen zurück</CardTitle>
+          <CardDescription>
+            Melde dich an, um deine Website zu pflegen oder Anfragen zu prüfen.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LoginForm />
+        </CardContent>
+      </Card>
+
+      <p className="text-muted-foreground text-center text-sm">
+        Noch kein Konto?{" "}
+        <Link
+          href="/register"
+          className="text-foreground underline-offset-2 hover:underline"
+        >
+          Kostenlos registrieren
+        </Link>
+      </p>
+    </div>
   );
 }
