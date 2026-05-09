@@ -5,9 +5,10 @@ import { cookies } from "next/headers";
  * Supabase client for Server Components, Server Actions and Route Handlers.
  * Uses async cookies() per Next.js 16 requirements.
  *
- * Logs to console.error if the env vars are missing/empty so issues show
- * up in Vercel Runtime Logs instead of crashing pages with the global
- * error boundary.
+ * If the env vars are missing we still return a client (with empty
+ * placeholders) and log to console. The actual network call will fail
+ * later — but the build itself doesn't crash, which is important for
+ * Preview deployments that may not have all env vars wired up.
  */
 export async function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -22,14 +23,11 @@ export async function createClient() {
         url_length: url?.length ?? 0,
       }),
     );
-    throw new Error(
-      "Supabase ist nicht konfiguriert (NEXT_PUBLIC_SUPABASE_URL oder NEXT_PUBLIC_SUPABASE_ANON_KEY fehlt im Server-Env).",
-    );
   }
 
   const cookieStore = await cookies();
 
-  return createServerClient(url, anonKey, {
+  return createServerClient(url ?? "", anonKey ?? "", {
     cookies: {
       getAll() {
         return cookieStore.getAll();
