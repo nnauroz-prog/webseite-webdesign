@@ -1,16 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-import type { Database } from "@/types/database";
-
 /**
  * Supabase client for Server Components, Server Actions and Route Handlers.
  * Uses async cookies() per Next.js 16 requirements.
+ *
+ * Untyped on purpose until `npx supabase gen types` runs and we replace
+ * types/database.ts with the real schema-derived types.
  */
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient<Database>(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {

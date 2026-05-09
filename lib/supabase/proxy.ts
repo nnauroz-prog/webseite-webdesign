@@ -1,8 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import type { Database } from "@/types/database";
-
 const PROTECTED_PREFIXES = ["/dashboard", "/admin"];
 const AUTH_ONLY_PREFIXES = ["/login", "/register"];
 
@@ -23,7 +21,7 @@ const AUTH_ONLY_PREFIXES = ["/login", "/register"];
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient<Database>(
+  const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {

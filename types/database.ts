@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Supabase generated types — placeholder.
  *
- * In Phase 2 we use a permissive shape so `supabase.from("websites")` etc.
+ * In Phase 2/3 we use a permissive shape so `supabase.from("websites")` etc.
  * compile without errors. Replace this file with real generated types once
  * the project is connected:
  *
  *   npx supabase gen types typescript --project-id <ref> > types/database.ts
  *
- * After regeneration, all queries become fully typed automatically.
+ * After regeneration, all queries become fully typed automatically and the
+ * domain types in `types/website.ts` can be removed.
  */
 export type Json =
   | string
@@ -18,27 +20,28 @@ export type Json =
   | Json[];
 
 type GenericTable = {
-  Row: Record<string, unknown>;
-  Insert: Record<string, unknown>;
-  Update: Record<string, unknown>;
+  Row: any;
+  Insert: any;
+  Update: any;
   Relationships: [];
 };
 
 export type Database = {
   public: {
     Tables: {
-      [key: string]: GenericTable;
+      profiles: GenericTable;
+      admin_roles: GenericTable;
+      templates: GenericTable;
+      websites: GenericTable;
+      services: GenericTable;
+      team_members: GenericTable;
+      gallery_images: GenericTable;
+      leads: GenericTable;
+      applications: GenericTable;
     };
-    Views: {
-      [key: string]: { Row: Record<string, unknown> };
-    };
-    Functions: {
-      [key: string]: {
-        Args: Record<string, unknown>;
-        Returns: unknown;
-      };
-    };
+    Views: { [key: string]: { Row: any } };
+    Functions: { [key: string]: { Args: any; Returns: any } };
     Enums: { [key: string]: string };
-    CompositeTypes: { [key: string]: Record<string, unknown> };
+    CompositeTypes: { [key: string]: any };
   };
 };
