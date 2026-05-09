@@ -8,11 +8,13 @@ const AUTH_ONLY_PREFIXES = ["/login", "/register"];
  * Refreshes the Supabase auth session on every request and forwards
  * any updated auth cookies to both the request and the outgoing response.
  *
- * Also handles UX-level redirects:
- *  - Unauthenticated users hitting /dashboard or /admin → /login
- *  - Authenticated users hitting /login or /register → /dashboard
+ * Bulletproof: if env vars are missing or Supabase is unreachable, we
+ * degrade to "anonymous" instead of throwing — that way users still see
+ * a usable page (with a sensible error message) instead of the global
+ * error boundary. Underlying issues are logged to console so they show
+ * up in Vercel Runtime Logs.
  *
- * Important: This is UX only. RLS policies and per-layout server-side
+ * Important: this is UX only. RLS policies and per-layout server-side
  * checks (requireUser / requireAdmin) are the actual security boundary.
  *
  * Do not run any logic between createServerClient() and getUser() — the
@@ -20,11 +22,33 @@ const AUTH_ONLY_PREFIXES = ["/login", "/register"];
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const { pathname } = request.nextUrl;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // No env vars → treat user as anonymous, but never crash the request.
+  if (!url || !anonKey) {
+    console.error(
+      "[proxy] missing supabase env",
+      JSON.stringify({
+        has_url: Boolean(url),
+        has_anon_key: Boolean(anonKey),
+        pathname,
+      }),
+    );
+    if (PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.search = "";
+      return NextResponse.redirect(redirectUrl);
+    }
+    return response;
+  }
+
+  let isAuthenticated = false;
+  try {
+    const supabase = createServerClient(url, anonKey, {
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -39,35 +63,38 @@ export async function updateSession(request: NextRequest) {
           );
         },
       },
-    },
-  );
+    });
 
-  // Auth lookup is best-effort: if Supabase is unreachable or env vars are
-  // misconfigured we treat the user as anonymous instead of 500-ing every
-  // request. Layout-level requireUser() / requireAdmin() guards still apply.
-  let user: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] =
-    null;
-  try {
-    const result = await supabase.auth.getUser();
-    user = result.data.user;
-  } catch {
-    user = null;
+    try {
+      const { data } = await supabase.auth.getUser();
+      isAuthenticated = data.user !== null;
+    } catch (err) {
+      console.error("[proxy] getUser failed", {
+        message: err instanceof Error ? err.message : String(err),
+        pathname,
+      });
+    }
+  } catch (err) {
+    console.error("[proxy] supabase client init failed", {
+      name: err instanceof Error ? err.name : "unknown",
+      message: err instanceof Error ? err.message : String(err),
+      pathname,
+    });
+    // Fall through with isAuthenticated=false — request still served.
   }
 
-  const { pathname } = request.nextUrl;
-
-  if (!user && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.search = "";
-    return NextResponse.redirect(url);
+  if (!isAuthenticated && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/login";
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl);
   }
 
-  if (user && AUTH_ONLY_PREFIXES.some((p) => pathname === p)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    url.search = "";
-    return NextResponse.redirect(url);
+  if (isAuthenticated && AUTH_ONLY_PREFIXES.some((p) => pathname === p)) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/dashboard";
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl);
   }
 
   return response;
