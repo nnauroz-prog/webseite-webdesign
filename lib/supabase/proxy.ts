@@ -42,9 +42,17 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Auth lookup is best-effort: if Supabase is unreachable or env vars are
+  // misconfigured we treat the user as anonymous instead of 500-ing every
+  // request. Layout-level requireUser() / requireAdmin() guards still apply.
+  let user: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] =
+    null;
+  try {
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+  } catch {
+    user = null;
+  }
 
   const { pathname } = request.nextUrl;
 

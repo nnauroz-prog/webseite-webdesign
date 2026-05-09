@@ -59,21 +59,27 @@ export async function registerAction(
     return fail("Bitte prüfe deine Angaben.", flattenZodErrors(parsed.error));
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
-    email: parsed.data.email,
-    password: parsed.data.password,
-    options: {
-      data: { full_name: parsed.data.full_name },
-      emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/dashboard`,
-    },
-  });
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.signUp({
+      email: parsed.data.email,
+      password: parsed.data.password,
+      options: {
+        data: { full_name: parsed.data.full_name },
+        emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/dashboard`,
+      },
+    });
 
-  if (error) return fail(error.message);
+    if (error) return fail(error.message);
 
-  return success(
-    "Konto erstellt. Bitte bestätige deine E-Mail über den Link, den wir dir geschickt haben.",
-  );
+    return success(
+      "Konto erstellt. Bitte bestätige deine E-Mail über den Link, den wir dir geschickt haben.",
+    );
+  } catch {
+    return fail(
+      "Konto-Erstellung gerade nicht möglich. Bitte später erneut versuchen.",
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -92,13 +98,17 @@ export async function loginAction(
     return fail("Bitte prüfe deine Angaben.", flattenZodErrors(parsed.error));
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  });
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: parsed.data.email,
+      password: parsed.data.password,
+    });
 
-  if (error) return fail("E-Mail oder Passwort ist falsch.");
+    if (error) return fail("E-Mail oder Passwort ist falsch.");
+  } catch {
+    return fail("Login gerade nicht möglich. Bitte später erneut versuchen.");
+  }
 
   revalidatePath("/", "layout");
   redirect("/dashboard");
