@@ -1,0 +1,7 @@
+.next
+.next-dev
+node_modules
+public
+package-lock.json
+.env*
+*.md
