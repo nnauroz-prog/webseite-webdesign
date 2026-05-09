@@ -202,30 +202,99 @@ proxy.ts                     # Root proxy (Next 16) → calls lib/supabase/proxy
 - **Service Role Key** wird ausschließlich serverseitig in zukünftigen
   Admin-Scripts verwendet, niemals im Browser-Bundle.
 
-## Aktueller Stand
+## Status
 
-**Phase 1 — Foundation (✅)**
-**Phase 2 — Schema, Auth, RLS (✅)**
-**Phase 3 — Dashboard mit Website-Editor (next up)**
+Alle 8 MVP-Phasen erledigt:
 
-## Roadmap
+1. ✅ Foundation (Next 16, Tailwind v4, shadcn, Supabase Clients)
+2. ✅ Schema, Auth, RLS (9 Tabellen, Storage, Policies, Auth-Flow)
+3. ✅ Kunden-Dashboard mit Website-Editor (Stammdaten, Hero, About, SEO, Logo, Services, Team, Galerie)
+4. ✅ Öffentliches Website-Rendering `/site/[slug]` (+ Imprint, Datenschutz, 404, Owner-Preview)
+5. ✅ 3 Branchen-Templates (Pflegedienst / Arztpraxis / Friseur) mit Theme-Override + Hero-Variante
+6. ✅ Kontakt- & Bewerbungsformulare mit Honeypot, Status-Workflow im Dashboard
+7. ✅ Admin-Bereich mit System-Übersicht, Websites, Templates, Leads/Bewerbungen-Inboxes
+8. ✅ Robots, Sitemap, globale Loading/Error/404, Vercel-Deployment
 
-1. ✅ Foundation
-2. ✅ Schema, Auth, RLS
-3. Kunden-Dashboard (Inhalte editieren)
-4. Öffentliches Website-Rendering `/site/[slug]`
-5. Templates (Pflege, Arzt, Friseur)
-6. Leads & Bewerbungen
-7. Admin-Bereich
-8. Tests, Bugfixing, Vercel-Deployment
+## Production-Deployment auf Vercel
+
+### A) Supabase-Production vorbereiten
+
+1. **Eigenes Production-Projekt anlegen** (`supabase.com → New project`). Region in der EU (DSGVO).
+2. **Schema ausführen**: `supabase/schema.sql` im SQL-Editor einmal komplett laufen lassen (idempotent).
+3. **Auth → URL Configuration**:
+   - **Site URL**: `https://deine-domain.de`
+   - **Redirect URLs**: `https://deine-domain.de/auth/callback`
+4. **Auth → Email Templates**: deutsche Texte hinterlegen, Absender-Adresse prüfen (oder Custom-SMTP einrichten — Free-Tier hat 3-Mails-pro-Stunde-Limit).
+5. **Auth → Rate Limits**: für Production die Sign-Up- und Password-Reset-Limits dem erwarteten Traffic anpassen.
+6. **Storage**: Buckets sind durch `schema.sql` schon angelegt, prüfe nur, dass `logos`, `gallery`, `team-images` als public markiert sind.
+7. **API → Project URL + anon + service_role keys** notieren.
+8. **Ersten Admin per SQL-Editor anlegen**:
+   ```sql
+   insert into public.admin_roles (user_id, granted_by)
+   select id, id from auth.users where email = 'du@deine-domain.de'
+   on conflict (user_id) do nothing;
+   ```
+
+### B) Vercel-Projekt verbinden
+
+1. **vercel.com → Add New Project → GitHub-Repo importieren**.
+2. **Framework Preset**: Next.js (auto-detected). Build Command `next build`, Output `.next` — Defaults sind korrekt.
+3. **Environment Variables** setzen (für `Production`, `Preview`, `Development`):
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://<ref>.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+   SUPABASE_SERVICE_ROLE_KEY=<service_role key>          ← nur Server-side
+   NEXT_PUBLIC_APP_URL=https://deine-domain.de           ← finale Domain
+   ```
+   > **Wichtig**: `NEXT_PUBLIC_APP_URL` setzt den Reset-Mail-Callback und die Sitemap-Basis. Ohne gesetztes Feld fällt der Code auf `VERCEL_PROJECT_PRODUCTION_URL` zurück (Vercel setzt das automatisch in Prod) oder im schlimmsten Fall `localhost:3000`. Daher explizit setzen.
+4. **Custom Domain** in Vercel verbinden → DNS umstellen.
+5. **Deploy**. Erste Builds dauern ~1 Minute.
+6. **In Supabase Auth → URL Configuration nochmal prüfen**: Site URL und Redirect URL müssen exakt der finalen Domain entsprechen, sonst funktionieren Reset-Mails nicht.
+
+### C) Smoke-Test-Checkliste (Production)
+
+Direkt nach Deploy in einem Inkognito-Fenster durchgehen:
+
+- [ ] `https://deine-domain.de/` → SitePilot-Marketing-Page lädt.
+- [ ] `https://deine-domain.de/robots.txt` → enthält Sitemap-Verweis.
+- [ ] `https://deine-domain.de/sitemap.xml` → enthält Marketing-Root + alle aktiven Public-Sites.
+- [ ] `/register` → Konto anlegen, Bestätigungs-Mail kommt von Production-Domain, Link führt korrekt zum Dashboard.
+- [ ] `/login` → Login funktioniert. `/forgot-password` → Reset-Mail kommt, neues Passwort setzen funktioniert.
+- [ ] `/dashboard` → Onboarding zeigt sich, Website anlegen mit Slug, Inhalte pflegen.
+- [ ] Logo, Team-Foto, Galerie-Bild hochladen → unter `https://<ref>.supabase.co/storage/v1/object/public/...` erreichbar.
+- [ ] Website auf öffentlich → Inkognito → `/site/<slug>` zeigt vollständig gerenderte Public-Page.
+- [ ] Public-Site: Industry-Pill in Theme-Farbe, Telefon-Button öffnet `tel:`-Dialog.
+- [ ] Kontaktformular ausfüllen → Erfolgsmeldung, Lead taucht im `/dashboard/leads` auf.
+- [ ] Admin-Account: `/admin` lädt, alle 5 Sektionen erreichbar. Status-Toggle, Slug-Change, Template-Wechsel testen.
+- [ ] Nicht-Admin-Account: `/admin` redirected nach `/dashboard`.
+- [ ] Lighthouse-Run auf einer Public-Site: Performance > 90, SEO > 90, Accessibility > 90.
+
+### D) Optional: Strict-typed DB-Client
+
+Sobald Production läuft, kannst du den Database-Stub durch echte Typen ersetzen — alles wird dann strikt typisiert:
+
+```bash
+npx supabase login
+npx supabase gen types typescript --project-id <project-ref> > types/database.ts
+```
+
+Danach in `lib/supabase/{client,server,proxy}.ts` das Generic re-aktivieren:
+```ts
+import type { Database } from "@/types/database";
+return createServerClient<Database>(...);
+```
+Die in `types/website.ts` definierten Domain-Typen werden dann redundant und können gelöscht werden.
 
 ## Troubleshooting
 
 | Symptom | Wahrscheinliche Ursache | Fix |
 |---|---|---|
-| `supabaseUrl is required` | `.env.local` fehlt oder leer | Schritt 5 prüfen, dev-Server neu starten |
-| Mail kommt nicht an | Supabase Free-Tier rate-limit | bis zu 60 s warten; Rate-Limits siehe Auth → Rate Limits |
-| Reset-Link führt auf `/login?error=...` | Redirect-URL nicht eingetragen | Schritt 4 → Redirect URLs ergänzen |
-| `permission denied for table …` | RLS blockiert anonymen oder fremden Zugriff | korrekt — bedeutet, RLS funktioniert. Falls falsche Policy, schema.sql neu ausführen |
-| Trigger `on_auth_user_created` läuft nicht | Schema noch nicht / nicht vollständig ausgeführt | schema.sql nochmal komplett im SQL-Editor ausführen |
-| Login redirected im Loop | Cookies blockiert / `Site URL` falsch | Browser-Cookies löschen + Site URL = `http://localhost:3000` |
+| `supabaseUrl is required` | ENV nicht gesetzt | Vercel → Settings → Environment Variables prüfen; nach Änderung **Re-Deploy** auslösen |
+| Bestätigungs-Mail kommt nicht | Free-Tier Limit oder falsche Site URL | Custom-SMTP in Supabase einrichten; Site URL = exakt Production-Domain |
+| Reset-Link → `/login?error=...` | Redirect URL fehlt in Supabase | Auth → URL Configuration → `https://deine-domain.de/auth/callback` ergänzen |
+| `/sitemap.xml` ist leer | Keine Site auf öffentlich oder Supabase nicht erreichbar | Im Dashboard mindestens eine Website veröffentlichen |
+| Bilder laden nicht über `next/image` | `remotePatterns` matcht den Hostnamen nicht | `NEXT_PUBLIC_SUPABASE_URL` muss zur Build-Zeit gesetzt sein |
+| `permission denied for table …` | RLS aktiv (gewollt) | Wenn unerwartet: relevante Policy in `schema.sql` prüfen |
+| Trigger `on_auth_user_created` läuft nicht | Schema unvollständig | `schema.sql` komplett nochmal ausführen |
+| Login-Loop | Cookies blockiert / Site URL falsch | Browser-Cookies löschen, Domain-Setup prüfen |
+| `/admin` zeigt sich nicht trotz `admin_roles`-Eintrag | JWT-Cache mit altem Status | Logout + Login → neue Session |
