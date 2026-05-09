@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Briefcase,
+  CreditCard,
   Globe,
   Inbox,
   LayoutDashboard,
@@ -18,6 +19,7 @@ const items = [
   { label: "Templates", href: "/admin/templates", icon: Palette },
   { label: "Anfragen", href: "/admin/leads", icon: Inbox },
   { label: "Bewerbungen", href: "/admin/applications", icon: Briefcase },
+  { label: "Abos", href: "/admin/subscriptions", icon: CreditCard },
 ] as const;
 
 export function AdminSidebar() {

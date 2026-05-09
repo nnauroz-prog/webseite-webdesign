@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Briefcase,
+  CreditCard,
   Home,
   Image as ImageIcon,
   Inbox,
@@ -28,6 +29,7 @@ const items: NavItem[] = [
   { label: "Galerie", href: "/dashboard/gallery", icon: ImageIcon },
   { label: "Anfragen", href: "/dashboard/leads", icon: Inbox },
   { label: "Bewerbungen", href: "/dashboard/applications", icon: Briefcase },
+  { label: "Abrechnung", href: "/dashboard/billing", icon: CreditCard },
 ];
 
 export function DashboardSidebar() {

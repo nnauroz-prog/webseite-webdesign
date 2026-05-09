@@ -723,6 +723,94 @@ create policy "site assets: owner or admin can delete"
   );
 
 -- ============================================================================
+-- 12. subscriptions  (Stripe-backed, one row per user)
+--     Phase 9 — recurring billing. Source of truth for whether a customer
+--     may keep their public website online.
+-- ============================================================================
+create table if not exists public.subscriptions (
+  user_id                uuid        primary key references auth.users(id) on delete cascade,
+  stripe_customer_id     text        unique,
+  stripe_subscription_id text        unique,
+  stripe_price_id        text,
+  plan                   text        check (plan in ('basic', 'pro', 'premium')),
+  status                 text,
+  current_period_end     timestamptz,
+  cancel_at_period_end   boolean     not null default false,
+  created_at             timestamptz not null default now(),
+  updated_at             timestamptz not null default now()
+);
+
+create index if not exists subscriptions_status_idx
+  on public.subscriptions (status);
+create index if not exists subscriptions_customer_idx
+  on public.subscriptions (stripe_customer_id);
+
+drop trigger if exists subscriptions_set_updated_at on public.subscriptions;
+create trigger subscriptions_set_updated_at
+  before update on public.subscriptions
+  for each row execute function public.set_updated_at();
+
+-- has_active_subscription(uid) — true iff the given user has a subscription
+-- row in an access-granting status. Used by both server actions and the
+-- automatic websites.is_active gating below.
+create or replace function public.has_active_subscription(uid uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.subscriptions
+    where user_id = uid
+      and status in ('active', 'trialing')
+  );
+$$;
+
+revoke all on function public.has_active_subscription(uuid) from public;
+grant execute on function public.has_active_subscription(uuid) to authenticated, anon;
+
+-- When a subscription's status leaves the access-granting set, take the
+-- user's websites offline. Going back active does NOT auto-republish — the
+-- customer must explicitly hit the publish toggle again.
+create or replace function public.subscriptions_sync_websites()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if (new.status is distinct from old.status)
+     and old.status in ('active', 'trialing')
+     and (new.status is null or new.status not in ('active', 'trialing'))
+  then
+    update public.websites
+       set is_active = false
+     where user_id = new.user_id
+       and is_active = true;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists subscriptions_sync_websites on public.subscriptions;
+create trigger subscriptions_sync_websites
+  after update of status on public.subscriptions
+  for each row execute function public.subscriptions_sync_websites();
+
+alter table public.subscriptions enable row level security;
+alter table public.subscriptions force row level security;
+
+drop policy if exists "subscriptions: self or admin can read" on public.subscriptions;
+
+-- Read-only for the owner and admins. All writes go through the service-role
+-- client in the Stripe webhook; no INSERT/UPDATE/DELETE policy is exposed.
+create policy "subscriptions: self or admin can read"
+  on public.subscriptions for select
+  to authenticated
+  using (user_id = auth.uid() or public.is_admin());
+
+-- ============================================================================
 --  Done.
 --  Bootstrap your first admin (replace the email):
 --    insert into public.admin_roles (user_id, granted_by)
