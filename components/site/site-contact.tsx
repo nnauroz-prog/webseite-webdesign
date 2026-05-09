@@ -1,5 +1,6 @@
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 
+import { SiteContactForm } from "@/components/site/site-contact-form";
 import type { WebsiteRow } from "@/types/website";
 
 export function SiteContact({ website }: { website: WebsiteRow }) {
@@ -64,12 +65,10 @@ export function SiteContact({ website }: { website: WebsiteRow }) {
               <h3 className="text-base font-semibold tracking-tight">
                 Nachricht senden
               </h3>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Das Kontaktformular wird in Kürze freigeschaltet.
+              <p className="text-muted-foreground mt-1 mb-5 text-sm">
+                Wir antworten in der Regel innerhalb eines Werktages.
               </p>
-              <p className="text-muted-foreground mt-4 text-xs">
-                Bis dahin erreichen Sie uns gern telefonisch oder per E-Mail.
-              </p>
+              <SiteContactForm slug={website.slug} />
             </div>
           )}
         </div>

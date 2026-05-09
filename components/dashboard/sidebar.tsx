@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Briefcase,
   Home,
   Image as ImageIcon,
   Inbox,
@@ -26,6 +27,7 @@ const items: NavItem[] = [
   { label: "Team", href: "/dashboard/team", icon: Users },
   { label: "Galerie", href: "/dashboard/gallery", icon: ImageIcon },
   { label: "Anfragen", href: "/dashboard/leads", icon: Inbox },
+  { label: "Bewerbungen", href: "/dashboard/applications", icon: Briefcase },
 ];
 
 export function DashboardSidebar() {

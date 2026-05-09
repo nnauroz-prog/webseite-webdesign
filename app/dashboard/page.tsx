@@ -57,6 +57,7 @@ export default async function DashboardHomePage() {
     { count: teamCount },
     { count: galleryCount },
     { count: leadCount },
+    { count: applicationCount },
   ] = await Promise.all([
     supabase
       .from("services")
@@ -72,6 +73,10 @@ export default async function DashboardHomePage() {
       .eq("website_id", website.id),
     supabase
       .from("leads")
+      .select("id", { count: "exact", head: true })
+      .eq("website_id", website.id),
+    supabase
+      .from("applications")
       .select("id", { count: "exact", head: true })
       .eq("website_id", website.id),
   ]);
@@ -108,7 +113,7 @@ export default async function DashboardHomePage() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <StatCard
           label="Leistungen"
           value={serviceCount ?? 0}
@@ -124,6 +129,11 @@ export default async function DashboardHomePage() {
           label="Anfragen"
           value={leadCount ?? 0}
           href="/dashboard/leads"
+        />
+        <StatCard
+          label="Bewerbungen"
+          value={applicationCount ?? 0}
+          href="/dashboard/applications"
         />
       </div>
     </div>

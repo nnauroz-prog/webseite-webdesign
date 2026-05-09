@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { SiteAbout } from "@/components/site/site-about";
+import { SiteApplication } from "@/components/site/site-application";
 import { SiteContact } from "@/components/site/site-contact";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteGallery } from "@/components/site/site-gallery";
@@ -96,6 +97,7 @@ export default async function PublicSitePage({
         <SiteTeam team={team} />
         <SiteGallery images={gallery} />
         <SiteContact website={website} />
+        <SiteApplication website={website} />
       </main>
       <SiteFooter website={website} />
     </div>
