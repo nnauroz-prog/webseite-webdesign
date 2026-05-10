@@ -33,7 +33,15 @@ import type {
  * via updateBlockAction. The action validates the JSON payload
  * server-side against the matching Zod schema.
  */
-export function BlockEditor({ block }: { block: PageBlockRow }) {
+export type AvailableImage = { label: string; url: string };
+
+export function BlockEditor({
+  block,
+  availableImages,
+}: {
+  block: PageBlockRow;
+  availableImages?: AvailableImage[];
+}) {
   const [state, formAction] = useActionState(updateBlockAction, initialState);
 
   return (
@@ -72,7 +80,10 @@ export function BlockEditor({ block }: { block: PageBlockRow }) {
         <StepsEditor data={block.data as StepsBlockData} />
       ) : null}
       {block.type === "image_text_split" ? (
-        <ImageTextSplitEditor data={block.data as ImageTextSplitBlockData} />
+        <ImageTextSplitEditor
+          data={block.data as ImageTextSplitBlockData}
+          availableImages={availableImages}
+        />
       ) : null}
       {block.type === "logo_cloud" ? (
         <LogoCloudEditor data={block.data as LogoCloudBlockData} />
@@ -866,7 +877,13 @@ function StepsEditor({ data }: { data: StepsBlockData }) {
 /*  Image-text split editor                                           */
 /* ------------------------------------------------------------------ */
 
-function ImageTextSplitEditor({ data }: { data: ImageTextSplitBlockData }) {
+function ImageTextSplitEditor({
+  data,
+  availableImages,
+}: {
+  data: ImageTextSplitBlockData;
+  availableImages?: AvailableImage[];
+}) {
   const [title, setTitle] = useState(data?.title ?? "");
   const [body, setBody] = useState(data?.body ?? "");
   const [imageUrl, setImageUrl] = useState(data?.image_url ?? "");
@@ -880,6 +897,8 @@ function ImageTextSplitEditor({ data }: { data: ImageTextSplitBlockData }) {
     image_url: imageUrl,
     image_side: imageSide,
   });
+
+  const hasLibrary = (availableImages ?? []).length > 0;
 
   return (
     <>
@@ -905,22 +924,67 @@ function ImageTextSplitEditor({ data }: { data: ImageTextSplitBlockData }) {
           required
         />
       </div>
+
+      {/* Library picker — thumbnails of every image the customer has
+           already uploaded (logo, hero, about, gallery). Click swaps
+           the URL field. Falls back to plain URL entry if the
+           customer hasn't uploaded anything yet. */}
+      {hasLibrary ? (
+        <div className="space-y-2">
+          <Label>Bild aus deiner Bibliothek wählen</Label>
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+            {availableImages!.map((img) => {
+              const active = img.url === imageUrl;
+              return (
+                <button
+                  key={img.url}
+                  type="button"
+                  onClick={() => setImageUrl(img.url)}
+                  className={`group relative aspect-square overflow-hidden rounded-md border transition-all hover:shadow-md ${
+                    active
+                      ? "ring-primary ring-2 border-primary"
+                      : "border-border"
+                  }`}
+                  title={img.label}
+                  aria-label={`Bild auswählen: ${img.label}`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img.url}
+                    alt={img.label}
+                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                  />
+                  {active ? (
+                    <span className="bg-primary text-primary-foreground absolute top-1 right-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold">
+                      ✓
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
       <div className="space-y-2">
-        <Label htmlFor="its-img">Bild-URL</Label>
+        <Label htmlFor="its-img">
+          {hasLibrary ? "Oder eigene Bild-URL" : "Bild-URL"}
+        </Label>
         <Input
           id="its-img"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
           maxLength={2000}
-          placeholder="https://… (z.B. ein Galerie-Bild oder hero_image_url)"
+          placeholder="https://…"
           required
           className="font-mono text-xs"
         />
-        <p className="text-muted-foreground text-xs">
-          Tipp: kopier die URL eines bereits hochgeladenen Galerie-Bildes
-          oder verwende den ✨ KI-Generator unter Hero/Galerie um schnell
-          ein passendes Bild zu erstellen.
-        </p>
+        {!hasLibrary ? (
+          <p className="text-muted-foreground text-xs">
+            Tipp: lade zuerst Logo / Hero-Bild / Galerie-Bilder hoch — dann
+            erscheint hier ein Klick-Picker statt URL-Eingabe.
+          </p>
+        ) : null}
       </div>
       <div className="space-y-2">
         <Label>Bild-Position</Label>

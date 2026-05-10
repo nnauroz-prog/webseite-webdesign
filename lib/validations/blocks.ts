@@ -237,3 +237,14 @@ export const reorderBlockSchema = z.object({
   id: z.string().uuid(),
   direction: z.enum(["up", "down"]),
 });
+
+/**
+ * Drag-and-drop batch reorder. Caller sends a JSON-encoded array of
+ * block IDs (the new order); the action assigns sort_order
+ * sequentially based on array index.
+ */
+export const reorderBlocksBatchSchema = z.object({
+  page_id: z.string().uuid(),
+  /** JSON-encoded array of UUIDs in the new order. */
+  order: z.string().min(2).max(20000),
+});

@@ -14,12 +14,14 @@ import {
 } from "@/components/ui/card";
 import { listAllPagesForOwner, listPageBlocks } from "@/lib/page-data";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
-import type { PageBlockRow } from "@/types/website";
+import type { GalleryImageRow, PageBlockRow } from "@/types/website";
+
+export type AvailableImage = { label: string; url: string };
 
 export const metadata: Metadata = { title: "Seiten" };
 
 export default async function PagesPage() {
-  const { website } = await requireCurrentWebsite();
+  const { supabase, website } = await requireCurrentWebsite();
   const pages = await listAllPagesForOwner(website.id);
 
   // Pre-load each page's blocks once so the client BlockManager
@@ -30,6 +32,30 @@ export default async function PagesPage() {
       blocksByPage[p.id] = await listPageBlocks(p.id);
     }),
   );
+
+  // Build the list of images the customer already uploaded — Logo,
+  // Hero-BG, About-Foto, plus every gallery image. The Image-Text-Split
+  // block editor uses this as a one-click picker so the customer
+  // doesn't have to copy/paste storage URLs.
+  const { data: galleryRows } = await supabase
+    .from("gallery_images")
+    .select("id, image_url, alt_text")
+    .eq("website_id", website.id)
+    .order("created_at", { ascending: false });
+  const gallery = (galleryRows as GalleryImageRow[] | null) ?? [];
+
+  const availableImages: AvailableImage[] = [];
+  if (website.logo_url) availableImages.push({ label: "Logo", url: website.logo_url });
+  if (website.hero_image_url)
+    availableImages.push({ label: "Hero-Hintergrund", url: website.hero_image_url });
+  if (website.about_image_url)
+    availableImages.push({ label: "Über-uns-Bild", url: website.about_image_url });
+  for (const g of gallery) {
+    availableImages.push({
+      label: g.alt_text?.trim() || "Galerie-Bild",
+      url: g.image_url,
+    });
+  }
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-6 py-8">
@@ -95,6 +121,7 @@ export default async function PagesPage() {
                   page={p}
                   blocks={blocksByPage[p.id] ?? []}
                   websiteSlug={website.slug}
+                  availableImages={availableImages}
                 />
               </li>
             ))}

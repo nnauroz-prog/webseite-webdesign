@@ -13,6 +13,7 @@ import {
   addBlockSchema,
   dataSchemaFor,
   deleteBlockSchema,
+  reorderBlocksBatchSchema,
   reorderBlockSchema,
   updateBlockSchema,
   type BlockType,
@@ -333,4 +334,63 @@ export async function reorderBlockAction(
   revalidatePath("/dashboard/pages");
   revalidatePath(`/site/${website.slug}`, "layout");
   return ok("Reihenfolge aktualisiert.");
+}
+
+// ---------------------------------------------------------------------------
+//  reorderBlocksBatchAction — drag-and-drop friendly bulk reorder.
+//
+//  Frontend sends a JSON array of block IDs in the desired order; we
+//  rewrite each block's sort_order to (index + 1) * 10. Spaced
+//  positions leave room for future single-step swaps without
+//  touching every neighbour.
+// ---------------------------------------------------------------------------
+export async function reorderBlocksBatchAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = reorderBlocksBatchSchema.safeParse({
+    page_id: formData.get("page_id"),
+    order: formData.get("order"),
+  });
+  if (!parsed.success) {
+    return fail("Ungültige Sortierung.", flattenZodErrors(parsed.error));
+  }
+
+  let ids: unknown;
+  try {
+    ids = JSON.parse(parsed.data.order);
+  } catch {
+    return fail("Sortier-Daten beschädigt. Bitte Seite neu laden.");
+  }
+  if (
+    !Array.isArray(ids) ||
+    ids.length === 0 ||
+    !ids.every((x) => typeof x === "string")
+  ) {
+    return fail("Ungültige Sortier-Daten.");
+  }
+  const idList = ids as string[];
+  if (idList.length > 200) {
+    return fail("Zu viele Blöcke auf einer Seite.");
+  }
+
+  const { supabase, website } = await requireCurrentWebsite();
+
+  // Update each row sequentially. RLS scopes us to the current
+  // website; an owner can only renumber blocks on pages they own.
+  // We deliberately skip a transaction wrapper to keep this on the
+  // standard supabase-js client — the worst-case partial failure is
+  // an inconsistent ordering that the user can fix with another drag.
+  for (let i = 0; i < idList.length; i++) {
+    const { error } = await supabase
+      .from("page_blocks")
+      .update({ sort_order: (i + 1) * 10 })
+      .eq("id", idList[i])
+      .eq("website_id", website.id);
+    if (error) return fail(error.message);
+  }
+
+  revalidatePath("/dashboard/pages");
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok("Reihenfolge gespeichert.");
 }
