@@ -152,6 +152,15 @@ alter table public.websites
 alter table public.websites
   add column if not exists analytics_ga4_id text;
 
+-- Per-site visual customization beyond logo: hero background + an
+-- about-section photograph. Both are uploaded into the existing
+-- `site-assets` bucket under <user_id>/<website_id>/... so the
+-- existing storage policies cover them.
+alter table public.websites
+  add column if not exists hero_image_url text;
+alter table public.websites
+  add column if not exists about_image_url text;
+
 drop trigger if exists websites_set_updated_at on public.websites;
 create trigger websites_set_updated_at
   before update on public.websites

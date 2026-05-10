@@ -2,63 +2,79 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ----------------------------------------------------------------------
+ * Sitalo brand palette — derived from the logo:
+ *   - cream background (#f5ecd9-ish)
+ *   - dark espresso brown text (#3a2a1c-ish)
+ *   - gold-bronze accent (the doubled "O" mark)
+ *
+ * --primary uses the dark brown so primary buttons read as serious /
+ * editorial, matching the logo's serif-driven luxury feel. The gold
+ * lives in --accent + --warning for highlights, badges and dividers.
+ * ---------------------------------------------------------------------- */
+
 :root {
   --radius: 0.6rem;
 
-  /* Foundation */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.16 0.01 270);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.16 0.01 270);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.16 0.01 270);
+  /* Foundation — warm cream */
+  --background: oklch(0.965 0.018 80);
+  --foreground: oklch(0.22 0.025 50);
+  --card: oklch(0.99 0.012 85);
+  --card-foreground: oklch(0.22 0.025 50);
+  --popover: oklch(0.99 0.012 85);
+  --popover-foreground: oklch(0.22 0.025 50);
 
-  /* Brand — deep indigo/violet, SaaS-pro look (Linear/Stripe family) */
-  --primary: oklch(0.49 0.19 268);
-  --primary-foreground: oklch(0.99 0.01 270);
-  --primary-50: oklch(0.97 0.02 268);
-  --primary-100: oklch(0.94 0.04 268);
+  /* Brand — espresso brown, like the SITALO wordmark */
+  --primary: oklch(0.28 0.04 50);
+  --primary-foreground: oklch(0.97 0.018 80);
+  --primary-50: oklch(0.94 0.02 70);
+  --primary-100: oklch(0.88 0.04 70);
 
-  /* Surfaces */
-  --secondary: oklch(0.97 0.005 270);
-  --secondary-foreground: oklch(0.22 0.02 270);
-  --muted: oklch(0.97 0.005 270);
-  --muted-foreground: oklch(0.5 0.02 270);
-  --accent: oklch(0.94 0.04 268);
-  --accent-foreground: oklch(0.3 0.12 268);
+  /* Surfaces — slightly warmer cream than background */
+  --secondary: oklch(0.93 0.025 80);
+  --secondary-foreground: oklch(0.28 0.04 50);
+  --muted: oklch(0.94 0.02 80);
+  --muted-foreground: oklch(0.48 0.03 60);
 
-  /* Status accents — used in dashboard cards, badges, stats */
-  --info: oklch(0.55 0.15 235);
-  --success: oklch(0.55 0.15 155);
-  --warning: oklch(0.78 0.15 80);
-  --destructive: oklch(0.6 0.22 27);
-  --destructive-foreground: oklch(0.99 0 0);
+  /* Accent = gold-bronze (matches the doubled-O mark in the logo) */
+  --accent: oklch(0.92 0.06 85);
+  --accent-foreground: oklch(0.3 0.06 60);
+  --gold: oklch(0.66 0.13 80);
 
-  --border: oklch(0.92 0.005 270);
-  --input: oklch(0.92 0.005 270);
-  --ring: oklch(0.55 0.15 268);
+  /* Status colors — kept warm to harmonize with cream palette */
+  --info: oklch(0.55 0.13 220);
+  --success: oklch(0.52 0.13 150);
+  --warning: oklch(0.66 0.13 80);
+  --destructive: oklch(0.55 0.2 30);
+  --destructive-foreground: oklch(0.99 0.01 80);
+
+  --border: oklch(0.86 0.025 75);
+  --input: oklch(0.88 0.025 75);
+  --ring: oklch(0.6 0.1 70);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* Inverted but still warm — espresso bg, cream text */
+  --background: oklch(0.18 0.02 50);
+  --foreground: oklch(0.95 0.02 80);
+  --card: oklch(0.23 0.025 50);
+  --card-foreground: oklch(0.95 0.02 80);
+  --popover: oklch(0.23 0.025 50);
+  --popover-foreground: oklch(0.95 0.02 80);
+  --primary: oklch(0.92 0.025 80);
+  --primary-foreground: oklch(0.22 0.04 50);
+  --secondary: oklch(0.28 0.03 50);
+  --secondary-foreground: oklch(0.95 0.02 80);
+  --muted: oklch(0.28 0.03 50);
+  --muted-foreground: oklch(0.7 0.02 75);
+  --accent: oklch(0.32 0.05 70);
+  --accent-foreground: oklch(0.95 0.04 80);
+  --gold: oklch(0.7 0.13 80);
+  --destructive: oklch(0.62 0.2 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.6 0.1 70);
 }
 
 @theme inline {
@@ -76,6 +92,7 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-gold: var(--gold);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
