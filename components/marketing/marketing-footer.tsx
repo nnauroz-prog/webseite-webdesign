@@ -28,7 +28,7 @@ export function MarketingFooter() {
         <FooterCol title="Sitalo">
           <FooterLink href="/anfrage">Website anfragen</FooterLink>
           <FooterLink href="/#faq">FAQ</FooterLink>
-          <FooterLink href="/login">Kundenlogin</FooterLink>
+          <FooterLink href="/#kontakt">Kontakt</FooterLink>
         </FooterCol>
         <FooterCol title="Rechtliches">
           <FooterLink href="/impressum">Impressum</FooterLink>

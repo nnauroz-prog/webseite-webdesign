@@ -60,18 +60,17 @@ const PACKAGES = [
   {
     slug: "premium",
     name: "Premium-System",
-    badge: "Mit Kundenbereich",
+    badge: "Mit verwaltbaren Inhalten",
     setup: "1.499 €",
     monthly: "129 €",
     cta: "Premium anfragen",
     description:
-      "Premium-Design mit Kundenbereich. Sie pflegen Speisekarte, Wochenangebot oder Termine selbst.",
+      "Premium-Design mit verwaltbaren Inhalten direkt auf Ihrer Website. Speisekarte, Wochenangebot, Termine — Sie pflegen, was Sie pflegen wollen.",
     bullets: [
       "Premium-Design",
-      "Individuelle Anpassung",
-      "Kundenbereich (Login)",
-      "Selbst pflegbare Inhalte",
-      "Speisekarte / Wochenangebot",
+      "Individuelle Website-Struktur",
+      "Verwaltbare Inhalte auf Wunsch",
+      "Speisekarte / Wochenangebot / Leistungen",
       "Online-Buchung mit Bestätigung",
       "Bewerbungsformular",
       "Stärkere SEO-Basis",
@@ -96,7 +95,7 @@ const COMPARISON_ROWS: Array<{
   { feature: "Google Maps", values: [true, true, true] },
   { feature: "SEO-Grundlagen", values: ["—", true, "Stark"] },
   { feature: "Bilderaufbereitung", values: [false, true, true] },
-  { feature: "Kundenbereich (Login)", values: [false, false, true] },
+  { feature: "Verwaltbare Inhalte", values: [false, false, true] },
   { feature: "Speisekarte / Wochenangebot", values: [false, false, true] },
   { feature: "Online-Buchung", values: [false, false, true] },
   { feature: "Bewerbungsformular", values: [false, true, true] },
@@ -422,12 +421,6 @@ function FinalCta() {
           >
             Website anfragen
             <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-          <Link
-            href="/login"
-            className="text-background/80 hover:text-background inline-flex h-12 items-center justify-center px-4 text-sm"
-          >
-            Bestehender Kunde? Einloggen
           </Link>
         </div>
       </div>

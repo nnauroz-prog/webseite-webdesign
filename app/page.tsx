@@ -6,17 +6,18 @@ import {
   Clock,
   Image as ImageIcon,
   MessageCircle,
-  Minus,
   Send,
   Sparkles,
   Wrench,
   X,
 } from "lucide-react";
 
+import { HeroMockups } from "@/components/marketing/hero-mockups";
+import { IndustryPicker } from "@/components/marketing/industry-picker";
+import { VerwaltbareInhalteSection } from "@/components/marketing/verwaltbare-inhalte-section";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { TemplatePreview } from "@/components/dashboard/template-preview";
-import { ALL_TEMPLATE_KEYS, getTemplateMeta } from "@/lib/templates";
+import { BaukastenComparison } from "@/components/marketing/baukasten-comparison";
 
 export const metadata: Metadata = {
   title: "Sitalo — Ihre professionelle Website. Fertig in 48 Stunden.",
@@ -53,7 +54,7 @@ const PROBLEMS = [
   "Keine Zeit, sich mit Baukästen zu beschäftigen",
   "Kontakt-Formular geht ins Nichts oder existiert gar nicht",
   "Bei Google nicht zu finden",
-  "Wix angefangen, Projekt liegt seit Monaten halb fertig",
+  "Baukasten angefangen, Projekt liegt seit Monaten halb fertig",
 ];
 
 const SOLUTIONS = [
@@ -74,8 +75,8 @@ const SOLUTIONS = [
   },
   {
     icon: Wrench,
-    title: "Optionaler Kundenbereich",
-    body: "Auf Wunsch ein eigener Login, in dem Sie Inhalte, Speisekarte oder Buchungen selbst pflegen können.",
+    title: "Verwaltbare Inhalte (optional)",
+    body: "Auf Wunsch bauen wir verwaltbare Bereiche direkt in Ihre Website ein — Speisekarte, Öffnungszeiten, Wochenangebote oder Bilder.",
   },
 ];
 
@@ -97,47 +98,6 @@ const STEPS = [
   },
 ];
 
-const COMPARISON: Array<{
-  point: string;
-  wix: string;
-  sitalo: string;
-}> = [
-  {
-    point: "Wer baut die Website?",
-    wix: "Sie selbst",
-    sitalo: "Wir bauen für Sie",
-  },
-  {
-    point: "Texte & Inhalte",
-    wix: "Sie schreiben selbst",
-    sitalo: "Wir helfen bei Aufbau & Darstellung",
-  },
-  {
-    point: "Design & Struktur",
-    wix: "Sie wählen aus Templates",
-    sitalo: "Persönlich an Ihr Unternehmen angepasst",
-  },
-  {
-    point: "Technik (Domain, SEO, Mobil, Formulare)",
-    wix: "Sie richten alles selbst ein",
-    sitalo: "Komplett übernommen",
-  },
-  {
-    point: "Zeitaufwand für Sie",
-    wix: "Mehrere Wochen, oft länger",
-    sitalo: "1–2 Stunden für die Daten",
-  },
-  {
-    point: "Ergebnis hängt ab von",
-    wix: "Ihren Design- und Tech-Skills",
-    sitalo: "Unserer Arbeit",
-  },
-  {
-    point: "Persönlicher Ansprechpartner",
-    wix: "Support-Hotline",
-    sitalo: "Direkter Kontakt zu uns",
-  },
-];
 
 const PACKAGES = [
   {
@@ -184,16 +144,16 @@ const PACKAGES = [
   {
     slug: "premium",
     name: "Premium-System",
-    badge: "Mit Kundenbereich",
+    badge: "Mit verwaltbaren Inhalten",
     setup: "ab 1.499 €",
     monthly: "ab 129 € / Monat",
     cta: "Premium anfragen",
     description:
-      "Premium-Design mit Kundenbereich oder verwaltbaren Inhalten. Speisekarte, Wochenangebot, Buchungen — alles selbst pflegbar.",
+      "Individuelle Website-Struktur mit verwaltbaren Inhalten direkt auf Ihrer Seite. Speisekarte, Wochenangebot, Termine — Sie pflegen, was Sie pflegen wollen.",
     bullets: [
       "Premium-Design",
-      "Individuelle Anpassung",
-      "Kundenbereich oder verwaltbare Inhalte",
+      "Individuelle Website-Struktur",
+      "Verwaltbare Inhalte auf Wunsch",
       "Speisekarte / Wochenangebot / Leistungen",
       "Formularsystem (Kontakt, Bewerbung, Buchung)",
       "Stärkere SEO-Basis",
@@ -203,38 +163,12 @@ const PACKAGES = [
   },
 ];
 
-const REASONS = [
-  {
-    title: "Persönlich statt anonym",
-    body: "Direkter Ansprechpartner. Keine Ticket-Hotline, keine Chatbots.",
-  },
-  {
-    title: "Keine Technik für Sie",
-    body: "Wir kümmern uns um Domain, SEO, Mobil-Optimierung und Veröffentlichung.",
-  },
-  {
-    title: "Schnelle Lieferung",
-    body: "In den meisten Fällen sind Sie 1–2 Werktage nach Datenlieferung online.",
-  },
-  {
-    title: "Lokale Unternehmen im Fokus",
-    body: "Wir kennen die Erwartungen Ihrer Kunden — nicht die von Tech-Startups.",
-  },
-  {
-    title: "Auf Wunsch Kundenbereich",
-    body: "Wenn Sie selbst Inhalte ändern wollen: kein Problem, wir richten das ein.",
-  },
-  {
-    title: "Langfristige Wartung",
-    body: "Updates, Backups, kleine Änderungen — übernehmen wir laufend.",
-  },
-];
 
 const FAQ = [
   {
     question: "Muss ich mich registrieren?",
     answer:
-      "Nein. Für eine Anfrage reicht das Formular auf der Anfrage-Seite. Der Kundenbereich ist nur für bestehende Kunden oder auf Wunsch verfügbar.",
+      "Nein. Für eine Anfrage reicht das Formular oder eine E-Mail. Sie müssen keinen Account erstellen.",
   },
   {
     question: "Wie schnell ist meine Website fertig?",
@@ -249,12 +183,12 @@ const FAQ = [
   {
     question: "Kann ich später Inhalte ändern?",
     answer:
-      "Ja. Entweder übernehmen wir Änderungen für Sie (in der monatlichen Betreuung enthalten) oder Sie erhalten optional einen Kundenbereich, in dem Sie alles selbst pflegen können.",
+      "Ja. Änderungen können wir im Rahmen der Betreuung übernehmen. Auf Wunsch können bestimmte Inhalte auch direkt auf Ihrer Website verwaltbar gemacht werden — z. B. Öffnungszeiten, Speisekarte, Wochenangebot oder Leistungen.",
   },
   {
-    question: "Was ist besser: Wix oder Sitalo?",
+    question: "Was ist besser: Baukasten oder Sitalo?",
     answer:
-      "Wix ist gut, wenn Sie selbst bauen möchten. Sitalo ist besser, wenn Sie eine fertige professionelle Website möchten und keine Zeit für Technik, Design und Einrichtung haben. Wir liefern das fertige Ergebnis statt nur das Werkzeug.",
+      "Website-Baukästen sind gut, wenn Sie selbst bauen möchten. Sitalo ist besser, wenn Sie eine fertige professionelle Website möchten und keine Zeit für Technik, Design, Texte und Einrichtung haben. Wir liefern das fertige Ergebnis — Sie liefern nur die Daten.",
   },
   {
     question: "Gibt es monatliche Kosten?",
@@ -287,43 +221,6 @@ const FAQ = [
  * Industry value props — replaces the chip list with per-trade
  * "what you get" cards. Same trades, just communicated as outcomes.
  */
-const INDUSTRY_VALUE: Array<{
-  name: string;
-  body: string;
-}> = [
-  {
-    name: "Pflegedienste",
-    body: "Leistungen, Kontakt, Bewerbungen und Vertrauen auf einen Blick.",
-  },
-  {
-    name: "Arzt- & Zahnarztpraxen",
-    body: "Seriöser Auftritt, Sprechzeiten, Leistungen und klare Patienteninformation.",
-  },
-  {
-    name: "Friseure & Kosmetikstudios",
-    body: "Bilder, Leistungen, Preise und Termin-Anfragen hochwertig präsentieren.",
-  },
-  {
-    name: "Cafés & Restaurants",
-    body: "Speisekarte, Öffnungszeiten, Wochenangebote und Reservierungs-Anfragen.",
-  },
-  {
-    name: "Handwerker",
-    body: "Projekte, Galerie, Anfahrt und schnelle Kontaktmöglichkeiten.",
-  },
-  {
-    name: "Reinigungsfirmen",
-    body: "Leistungspakete, Angebotsanfrage und 24/7-Erreichbarkeit klar dargestellt.",
-  },
-  {
-    name: "Kanzleien",
-    body: "Rechtsgebiete, Anwält:innen und vertrauliche Erstberatungs-Anfrage.",
-  },
-  {
-    name: "Fitnessstudios",
-    body: "Kursplan, Probetraining und Mitgliedschafts-Anfragen ohne Hürden.",
-  },
-];
 
 export default function HomePage() {
   return (
@@ -332,15 +229,13 @@ export default function HomePage() {
       <main className="flex-1">
         <Hero />
         <TrustBar />
+        <IndustryPicker />
         <Problems />
         <Solutions />
         <Steps />
-        <Comparison />
-        <Industries />
-        <Showcase />
-        <Examples />
+        <BaukastenComparison />
+        <VerwaltbareInhalteSection />
         <Pricing />
-        <Why />
         <Faq />
         <FinalCta />
       </main>
@@ -358,51 +253,61 @@ function Hero() {
       className="border-border/40 relative overflow-hidden border-b scroll-mt-20"
     >
       <div
-        className="from-secondary/40 absolute inset-0 -z-10 bg-gradient-to-b to-transparent"
+        className="from-secondary/50 absolute inset-0 -z-10 bg-gradient-to-b to-transparent"
         aria-hidden="true"
       />
-      <div className="mx-auto w-full max-w-6xl px-6 pt-20 pb-24 sm:pt-28 sm:pb-32">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]">
-            Webdesign-Service · Lokale Unternehmen
-          </p>
-          <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-6xl">
-            Sie schicken uns Ihre Daten.
-            <br />
-            <span className="text-primary">Wir bauen Ihre Website.</span>
-          </h1>
-          <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed sm:text-xl">
-            Logo, Bilder, Texte und Kontaktdaten reichen aus. Wir übernehmen
-            Design, Technik, Mobiloptimierung und Veröffentlichung — meist
-            innerhalb von 48 Stunden.
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/anfrage"
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
-            >
-              Website anfragen
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              href="#leistungen"
-              className="border-border bg-background hover:bg-secondary inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
-            >
-              Leistungen ansehen
-            </Link>
+      <div
+        aria-hidden="true"
+        className="bg-primary/10 absolute -right-32 top-12 -z-10 h-96 w-96 rounded-full blur-3xl"
+      />
+      <div className="mx-auto w-full max-w-6xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+          <div>
+            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]">
+              Webdesign-Service · Lokale Unternehmen
+            </p>
+            <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-6xl">
+              Website erstellen lassen —
+              <br className="hidden sm:inline" />{" "}
+              <span className="text-primary">ohne Baukasten-Stress.</span>
+            </h1>
+            <p className="text-muted-foreground mt-6 max-w-xl text-pretty text-lg leading-relaxed">
+              Sie senden uns Logo, Bilder, Texte und Kontaktdaten. Wir
+              übernehmen Design, Technik, Mobiloptimierung und Veröffentlichung
+              — meist innerhalb von 48 Stunden.
+            </p>
+            <div className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+              <Link
+                href="/anfrage"
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+              >
+                Website anfragen
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <Link
+                href="#branchen"
+                className="border-border bg-background hover:bg-secondary inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
+              >
+                Beispiele ansehen
+              </Link>
+            </div>
+
+            <ul className="text-muted-foreground mt-9 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+              {TRUST_LINE.map((item) => (
+                <li
+                  key={item}
+                  className="inline-flex items-center gap-2 whitespace-nowrap"
+                >
+                  <span className="bg-primary inline-block h-1 w-1 rounded-full" />
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <ul className="text-muted-foreground mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
-            {TRUST_LINE.map((item) => (
-              <li
-                key={item}
-                className="inline-flex items-center gap-2 whitespace-nowrap"
-              >
-                <span className="bg-primary inline-block h-1 w-1 rounded-full" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          <div className="order-first lg:order-last">
+            <HeroMockups />
+          </div>
         </div>
       </div>
     </section>
@@ -558,302 +463,6 @@ function Steps() {
   );
 }
 
-function Comparison() {
-  return (
-    <section
-      id="vergleich"
-      className="border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
-    >
-      <div className="mx-auto w-full max-w-5xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Selbst bauen oder bauen lassen?
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Wix oder Sitalo — was passt besser zu Ihnen?
-          </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Wix ist stark, wenn Sie Ihre Website selbst erstellen möchten. Sitalo
-            ist für Unternehmer, die eine professionelle Website wollen, ohne
-            sich selbst mit Design, Technik und Einrichtung zu beschäftigen.
-          </p>
-        </header>
-
-        <div className="mt-12 overflow-hidden rounded-2xl border shadow-sm">
-          <div className="bg-muted/40 grid grid-cols-3 border-b">
-            <div className="p-5 text-sm font-medium" />
-            <div className="border-l p-5 text-center">
-              <span className="text-muted-foreground text-xs font-medium uppercase tracking-[0.18em]">
-                Wix
-              </span>
-              <p className="mt-1 text-sm font-medium">Werkzeug zum Selbstbauen</p>
-            </div>
-            <div className="bg-foreground text-background border-l p-5 text-center">
-              <span className="text-background/70 text-xs font-medium uppercase tracking-[0.18em]">
-                Sitalo
-              </span>
-              <p className="mt-1 text-sm font-semibold">Fertige Website</p>
-            </div>
-          </div>
-          <div className="divide-y">
-            {COMPARISON.map((row) => (
-              <div
-                key={row.point}
-                className="grid grid-cols-3 text-sm"
-              >
-                <div className="text-foreground/80 p-5 font-medium">
-                  {row.point}
-                </div>
-                <div className="text-muted-foreground border-l p-5 text-center">
-                  <span className="inline-flex items-center gap-2">
-                    <Minus className="text-muted-foreground/60 h-3.5 w-3.5" />
-                    {row.wix}
-                  </span>
-                </div>
-                <div className="border-l p-5 text-center font-medium">
-                  <span className="inline-flex items-center gap-2">
-                    <Check className="text-emerald-600 h-3.5 w-3.5" />
-                    {row.sitalo}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-foreground text-background mx-auto mt-10 max-w-3xl rounded-2xl p-6 text-center shadow-xl sm:p-8">
-          <p className="text-background/70 text-[11px] font-medium uppercase tracking-[0.22em]">
-            Kurz gesagt
-          </p>
-          <p className="mt-2 text-balance text-xl font-semibold leading-snug sm:text-2xl">
-            Wix liefert das Werkzeug.
-            <br className="sm:hidden" /> Sitalo liefert die fertige Website.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Industries() {
-  return (
-    <section
-      id="branchen"
-      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
-    >
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Branchen
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Websites für lokale Unternehmen, die professionell wirken müssen.
-          </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Wir nutzen bewährte Premium-Strukturen für verschiedene Branchen und
-            passen Design, Texte und Inhalte individuell an Ihr Unternehmen an.
-          </p>
-        </header>
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {INDUSTRY_VALUE.map((row) => (
-            <li
-              key={row.name}
-              className="bg-card border-border/60 flex flex-col gap-2 rounded-2xl border p-6 shadow-sm"
-            >
-              <h3 className="text-base font-semibold tracking-tight">
-                {row.name}
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {row.body}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Neutral "fits-your-business" section. No specific customer names,
- * no fake testimonials, no implied references — we don't have public
- * permission to use any current customer projects as showcase yet.
- *
- * Communicates the same value (we build per-industry, content-managed
- * sites) without making claims we can't back up.
- */
-function Showcase() {
-  const examples = [
-    {
-      title: "Café-Website",
-      lead: "Speisekarte, Öffnungszeiten und Wochenangebot",
-      features: [
-        "Verwaltbare Speisekarte im Kundenbereich",
-        "Wochenangebot / Mittagstisch änderbar",
-        "Reservierungs-Anfrage per Formular oder WhatsApp",
-      ],
-      industry: "Café · Gastronomie",
-    },
-    {
-      title: "Pflegedienst-Website",
-      lead: "Leistungen, Vertrauen und Bewerbungen",
-      features: [
-        "Leistungen mit klarer Struktur",
-        "Bewerbungsformular für Pflegekräfte",
-        "Kontakt + Notfallnummer prominent",
-      ],
-      industry: "Pflege · Soziales",
-    },
-    {
-      title: "Praxis-Website",
-      lead: "Patienteninformation und Online-Termin",
-      features: [
-        "Sprechzeiten, Notdienst, Anfahrt",
-        "Online-Termin-Anfrage mit Bestätigungsmail",
-        "Team-Bereich mit Qualifikationen",
-      ],
-      industry: "Arzt · Zahnarzt",
-    },
-    {
-      title: "Friseur-Website",
-      lead: "Bilder, Preise und Termin-Anfragen",
-      features: [
-        "Galerie mit Lightbox",
-        "Leistungen und Preise transparent",
-        "Termin-Anfrage per Formular oder WhatsApp",
-      ],
-      industry: "Friseur · Kosmetik",
-    },
-  ];
-
-  return (
-    <section
-      id="passt-zu-ihnen"
-      className="border-border/40 border-b py-20 sm:py-28"
-    >
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Individuell pro Branche
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Webseiten, die zu Ihrem Unternehmen passen.
-          </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Ob Café, Praxis, Pflegedienst oder Handwerksbetrieb — wir passen
-            Struktur, Design und Inhalte individuell an Ihre Branche an. Auf
-            Wunsch mit Kundenbereich, in dem Sie Inhalte selbst pflegen können.
-          </p>
-        </header>
-
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2">
-          {examples.map((ex) => (
-            <li
-              key={ex.title}
-              className="bg-card border-border/60 group flex flex-col rounded-2xl border p-7 shadow-sm transition-shadow hover:shadow-md sm:p-8"
-            >
-              <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
-                {ex.industry}
-              </p>
-              <h3 className="mt-2 text-xl font-semibold tracking-tight">
-                {ex.title}
-              </h3>
-              <p className="text-foreground/80 mt-1 text-[15px]">{ex.lead}</p>
-              <ul className="mt-5 space-y-2 text-sm">
-                {ex.features.map((f) => (
-                  <li
-                    key={f}
-                    className="text-muted-foreground flex items-start gap-2.5"
-                  >
-                    <Check className="text-emerald-600 mt-0.5 h-4 w-4 shrink-0" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-10 text-center">
-          <Link
-            href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
-          >
-            Passende Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ShowcaseFact({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="border-border/60 rounded-xl border p-4">
-      <dt className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.18em]">
-        {label}
-      </dt>
-      <dd className="mt-1 text-sm font-medium">{value}</dd>
-    </div>
-  );
-}
-
-function Examples() {
-  // We surface the in-house template gallery as visual examples — they
-  // are the actual designs we ship for the listed industries. No fake
-  // customer logos.
-  const featured = ALL_TEMPLATE_KEYS.slice(0, 6).map(getTemplateMeta);
-
-  return (
-    <section
-      id="beispiele"
-      className="border-border/40 border-b py-20 sm:py-28"
-    >
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Beispiele
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            So sehen die Designs aus.
-          </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Auswahl unserer Premium-Vorlagen. Die finale Umsetzung passen wir
-            individuell an Ihr Unternehmen, Ihre Farben und Ihre Inhalte an.
-          </p>
-        </header>
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((meta) => (
-            <li
-              key={meta.key}
-              className="border-border bg-card flex flex-col overflow-hidden rounded-2xl border shadow-sm"
-            >
-              <TemplatePreview
-                templateKey={meta.key}
-                hero={meta.hero}
-                personality={meta.personality}
-              />
-              <div className="border-t p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-base font-semibold tracking-tight">
-                    {meta.label}
-                  </h3>
-                  <span className="text-muted-foreground text-xs uppercase tracking-[0.15em]">
-                    {meta.industry}
-                  </span>
-                </div>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  {meta.vibe}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
 
 function Pricing() {
   return (
@@ -957,38 +566,6 @@ function Pricing() {
           </Link>
           .
         </p>
-      </div>
-    </section>
-  );
-}
-
-function Why() {
-  return (
-    <section className="border-border/40 border-b py-20 sm:py-28">
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Warum Sitalo
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Persönlich. Schnell. Komplett.
-          </h2>
-        </header>
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {REASONS.map((reason) => (
-            <li
-              key={reason.title}
-              className="bg-card border-border/60 rounded-2xl border p-6"
-            >
-              <h3 className="text-base font-semibold tracking-tight">
-                {reason.title}
-              </h3>
-              <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                {reason.body}
-              </p>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );

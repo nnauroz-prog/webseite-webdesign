@@ -19,7 +19,7 @@ export const INQUIRY_NEEDS = [
   "redesign",
   "onepager",
   "mehrseitig",
-  "kundenbereich",
+  "verwaltbare-inhalte",
   "speisekarte",
   "bewerbungsformular",
   "kontaktformular",
@@ -41,12 +41,12 @@ export type InquiryPackage = (typeof INQUIRY_PACKAGES)[number];
 
 /**
  * Optional functional add-ons asked about after the package pick. Some
- * (Kundenbereich, Speisekarte, Bewerbungsformular) overlap with the
- * `INQUIRY_NEEDS` list because customers often want to emphasise an
- * extra at scoping time.
+ * (Verwaltbare Inhalte, Speisekarte, Bewerbungsformular) overlap with
+ * the `INQUIRY_NEEDS` list because customers often want to emphasise
+ * an extra at scoping time.
  */
 export const INQUIRY_SPECIAL_FEATURES = [
-  "kundenbereich",
+  "verwaltbare-inhalte",
   "speisekarte",
   "bewerbungsformular",
   "whatsapp-button",

@@ -24,7 +24,7 @@ const NEED_LABELS: Record<InquiryNeed, string> = {
   redesign: "Redesign",
   onepager: "Onepager",
   mehrseitig: "Mehrseitige Website",
-  kundenbereich: "Kundenbereich",
+  "verwaltbare-inhalte": "Verwaltbare Inhalte",
   speisekarte: "Speisekarte / Wochenangebot",
   bewerbungsformular: "Bewerbungsformular",
   kontaktformular: "Kontaktformular",
@@ -39,7 +39,7 @@ const TIMEFRAME_LABELS: Record<(typeof INQUIRY_TIMEFRAMES)[number], string> = {
 };
 
 const SPECIAL_LABELS: Record<InquirySpecialFeature, string> = {
-  kundenbereich: "Kundenbereich",
+  "verwaltbare-inhalte": "Verwaltbare Inhalte",
   speisekarte: "Speisekarte / Wochenangebot",
   bewerbungsformular: "Bewerbungsformular",
   "whatsapp-button": "WhatsApp-Button",
@@ -80,10 +80,10 @@ const PACKAGES: PackageCard[] = [
     title: "Premium-System",
     priceLine: "ab 1.499 € einmalig + ab 129 € / Monat",
     description:
-      "Für individuelle Websites mit Kundenbereich oder verwaltbaren Inhalten.",
+      "Für individuelle Websites mit verwaltbaren Inhalten direkt auf Ihrer Seite.",
     benefits: [
-      "Kundenbereich",
       "Verwaltbare Inhalte",
+      "Individuelle Struktur",
       "Premium-Design",
     ],
   },

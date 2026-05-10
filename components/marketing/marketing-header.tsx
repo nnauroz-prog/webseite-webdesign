@@ -30,10 +30,9 @@ const DEFAULT_NAV: NavItem[] = [
  *
  * CTA hierarchy reflects the "we build it for you" positioning:
  *   - "Website anfragen" is the primary action — solid button
- *   - "Kundenlogin" is secondary — quiet text link
- * Self-service onboarding ("Kostenlos starten") is intentionally
- * absent here. The customer reaches the dashboard via /login after
- * the agency engagement starts.
+ * No login / register / dashboard links in the public surface —
+ * Sitalo is positioned as a done-for-you agency, not a self-service
+ * SaaS portal. Existing customers reach /login by direct URL.
  *
  * Sticky header with a subtle scroll-triggered shadow + intensified
  * backdrop blur once the user starts scrolling — keeps the bar quiet
@@ -119,13 +118,7 @@ export function MarketingHeader({
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Desktop CTAs */}
-          <Link
-            href="/login"
-            className="text-muted-foreground hover:text-foreground hidden rounded-full px-4 py-2 text-sm font-medium transition-colors lg:inline-flex"
-          >
-            Kundenlogin
-          </Link>
+          {/* Desktop CTA */}
           <Link
             href="/anfrage"
             className="bg-foreground text-background hover:bg-foreground/90 hidden h-10 items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-all hover:shadow md:inline-flex"
@@ -215,21 +208,14 @@ function MobileSheet({
               {item.label}
             </Link>
           ))}
-          <div className="border-border/60 mt-3 grid gap-2 border-t pt-4">
+          <div className="border-border/60 mt-3 border-t pt-4">
             <Link
               href="/anfrage"
               onClick={onClose}
-              className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-12 items-center justify-center gap-2 rounded-full px-5 text-base font-medium shadow-md transition-all"
+              className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-base font-medium shadow-md transition-all"
             >
               Website anfragen
               <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/login"
-              onClick={onClose}
-              className="border-border bg-background hover:bg-secondary inline-flex h-11 items-center justify-center rounded-full border px-5 text-sm font-medium transition-colors"
-            >
-              Kundenlogin
             </Link>
           </div>
         </nav>
