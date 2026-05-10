@@ -41,6 +41,11 @@ export type WebsiteRow = {
   hero_image_url: string | null;
   about_image_url: string | null;
   brand_primary_color: string | null;
+  whatsapp_number: string | null;
+  whatsapp_message: string | null;
+  banner_text: string | null;
+  banner_link: string | null;
+  banner_enabled: boolean;
   custom_domain: string | null;
   custom_domain_verified_at: string | null;
   imprint_text: string | null;

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { LivePreview } from "@/components/dashboard/live-preview";
 import { AboutForm } from "@/components/dashboard/website/about-form";
 import { AboutImageForm } from "@/components/dashboard/website/about-image-form";
+import { BannerForm } from "@/components/dashboard/website/banner-form";
 import { BrandColorForm } from "@/components/dashboard/website/brand-color-form";
 import { CustomDomainForm } from "@/components/dashboard/website/custom-domain-form";
 import { FormsToggleForm } from "@/components/dashboard/website/forms-toggle-form";
@@ -15,6 +16,7 @@ import { PublishForm } from "@/components/dashboard/website/publish-form";
 import { SeoForm } from "@/components/dashboard/website/seo-form";
 import { SlugForm } from "@/components/dashboard/website/slug-form";
 import { TemplateForm } from "@/components/dashboard/website/template-form";
+import { WhatsappForm } from "@/components/dashboard/website/whatsapp-form";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
 import type { TemplateRow } from "@/types/website";
 
@@ -54,6 +56,8 @@ export default async function WebsitePage() {
           <AboutForm website={website} />
           <AboutImageForm website={website} />
           <SeoForm website={website} />
+          <BannerForm website={website} />
+          <WhatsappForm website={website} />
           <LegalForm website={website} />
           <FormsToggleForm website={website} />
           <SlugForm website={website} />

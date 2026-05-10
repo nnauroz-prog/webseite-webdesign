@@ -6,6 +6,7 @@ import { useActionState, useRef, useState, useTransition } from "react";
 import { AiImageButton } from "@/components/dashboard/ai-image-button";
 import { FormStatus } from "@/components/dashboard/form-status";
 import { SectionCard } from "@/components/dashboard/section-card";
+import { StockPhotoButton } from "@/components/dashboard/website/stock-photo-button";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,6 +127,11 @@ export function HeroImageForm({ website }: { website: WebsiteRow }) {
       <AiImageButton
         kind="hero"
         placeholder="Z.B. Helle, einladende Aufnahme einer modernen Arztpraxis bei Tageslicht, weite Perspektive, kein Text, redaktioneller Stil."
+      />
+
+      <StockPhotoButton
+        kind="hero"
+        defaultQuery={website.industry ?? website.business_name}
       />
     </SectionCard>
   );

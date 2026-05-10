@@ -171,6 +171,25 @@ alter table public.websites
     check (brand_primary_color is null or
            brand_primary_color ~* '^#[0-9a-f]{6}$');
 
+-- WhatsApp floating-button + promo banner. Two high-impact additions
+-- that local-business sites lean on but Wix/Jimdo charge plan upgrades
+-- for: a one-tap WhatsApp link on every page, and a sticky top banner
+-- for promos / news / hiring announcements.
+alter table public.websites
+  add column if not exists whatsapp_number text
+    check (whatsapp_number is null or whatsapp_number ~ '^\+?[0-9 ]{6,20}$');
+alter table public.websites
+  add column if not exists whatsapp_message text
+    check (whatsapp_message is null or char_length(whatsapp_message) <= 400);
+alter table public.websites
+  add column if not exists banner_text text
+    check (banner_text is null or char_length(banner_text) <= 200);
+alter table public.websites
+  add column if not exists banner_link text
+    check (banner_link is null or char_length(banner_link) <= 2000);
+alter table public.websites
+  add column if not exists banner_enabled boolean not null default false;
+
 -- Online booking flag. Mirrors contact_form_enabled / application_form_enabled
 -- so the public site only renders the section when the customer flips it on.
 alter table public.websites

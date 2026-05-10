@@ -5,6 +5,7 @@ import { Ga4Script } from "@/components/site/ga4-script";
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { SiteAbout } from "@/components/site/site-about";
 import { SiteApplication } from "@/components/site/site-application";
+import { SiteBanner } from "@/components/site/site-banner";
 import { SiteBooking } from "@/components/site/site-booking";
 import { SiteContact } from "@/components/site/site-contact";
 import { SiteFooter } from "@/components/site/site-footer";
@@ -15,6 +16,7 @@ import { SiteHeroFullbleed } from "@/components/site/site-hero-fullbleed";
 import { SiteHeroSplit } from "@/components/site/site-hero-split";
 import { SiteServices } from "@/components/site/site-services";
 import { SiteTeam } from "@/components/site/site-team";
+import { SiteWhatsappButton } from "@/components/site/site-whatsapp-button";
 import { getPublicSite } from "@/lib/site-data";
 import { buildLocalBusinessJsonLd } from "@/lib/site-jsonld";
 import { getSiteUrl } from "@/lib/site-url";
@@ -135,6 +137,7 @@ export default async function PublicSitePage({
         </>
       )}
       {isPreview && <PreviewBanner />}
+      <SiteBanner website={website} />
       <SiteHeader website={website} />
       <main className="flex-1">
         {meta.hero === "split" ? (
@@ -153,6 +156,7 @@ export default async function PublicSitePage({
         <SiteApplication website={website} />
       </main>
       <SiteFooter website={website} />
+      <SiteWhatsappButton website={website} />
     </div>
   );
 }

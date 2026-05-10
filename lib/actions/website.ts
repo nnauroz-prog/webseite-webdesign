@@ -27,6 +27,7 @@ import {
 import {
   aboutSchema,
   createWebsiteSchema,
+  bannerSchema,
   brandColorSchema,
   customDomainSchema,
   formsToggleSchema,
@@ -38,6 +39,7 @@ import {
   slugUpdateSchema,
   templateUpdateSchema,
   websiteMetaSchema,
+  whatsappSchema,
 } from "@/lib/validations/website";
 
 
@@ -833,6 +835,72 @@ export async function updateBrandColorAction(
 
   revalidatePath(`/site/${website.slug}`, "layout");
   return ok(next ? "Farbe gespeichert." : "Auf Template-Farbe zurückgesetzt.");
+}
+
+// ---------------------------------------------------------------------------
+//  WhatsApp floating button
+// ---------------------------------------------------------------------------
+export async function updateWhatsappAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = whatsappSchema.safeParse({
+    whatsapp_number: formData.get("whatsapp_number"),
+    whatsapp_message: formData.get("whatsapp_message"),
+  });
+  if (!parsed.success) {
+    return fail("Bitte prüfe deine Angaben.", flattenZodErrors(parsed.error));
+  }
+
+  const empty = (s: string | undefined) =>
+    s && s.length > 0 ? s : null;
+
+  const { supabase, website } = await requireCurrentWebsite();
+  const { error } = await supabase
+    .from("websites")
+    .update({
+      whatsapp_number: empty(parsed.data.whatsapp_number),
+      whatsapp_message: empty(parsed.data.whatsapp_message),
+    })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok("WhatsApp gespeichert.");
+}
+
+// ---------------------------------------------------------------------------
+//  Sticky promo banner
+// ---------------------------------------------------------------------------
+export async function updateBannerAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = bannerSchema.safeParse({
+    banner_text: formData.get("banner_text"),
+    banner_link: formData.get("banner_link"),
+    banner_enabled: formData.get("banner_enabled") === "on",
+  });
+  if (!parsed.success) {
+    return fail("Bitte prüfe deine Angaben.", flattenZodErrors(parsed.error));
+  }
+
+  const empty = (s: string | undefined) =>
+    s && s.length > 0 ? s : null;
+
+  const { supabase, website } = await requireCurrentWebsite();
+  const { error } = await supabase
+    .from("websites")
+    .update({
+      banner_text: empty(parsed.data.banner_text),
+      banner_link: empty(parsed.data.banner_link),
+      banner_enabled: parsed.data.banner_enabled,
+    })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok("Banner gespeichert.");
 }
 
 // ---------------------------------------------------------------------------

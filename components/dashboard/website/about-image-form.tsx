@@ -6,6 +6,7 @@ import { useActionState, useRef, useState, useTransition } from "react";
 import { AiImageButton } from "@/components/dashboard/ai-image-button";
 import { FormStatus } from "@/components/dashboard/form-status";
 import { SectionCard } from "@/components/dashboard/section-card";
+import { StockPhotoButton } from "@/components/dashboard/website/stock-photo-button";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,6 +127,11 @@ export function AboutImageForm({ website }: { website: WebsiteRow }) {
       <AiImageButton
         kind="about"
         placeholder="Z.B. Authentisches Team-Foto eines deutschen Friseursalons, vier Personen lächelnd, Tageslicht, hochformat."
+      />
+
+      <StockPhotoButton
+        kind="about"
+        defaultQuery={website.industry ?? website.business_name}
       />
     </SectionCard>
   );
