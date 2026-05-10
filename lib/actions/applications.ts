@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import {
   fail,
   flattenZodErrors,
-  idleState,
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
@@ -16,7 +15,6 @@ import {
   submitApplicationSchema,
 } from "@/lib/validations/applications";
 
-export const initialApplicationState: ActionState = idleState;
 
 // ---------------------------------------------------------------------------
 //  submitApplicationAction (anonymous-callable from /site/[slug])

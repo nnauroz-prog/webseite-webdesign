@@ -1,24 +1,73 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition, type FormEvent } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginAction, type AuthActionState } from "@/lib/actions/auth";
 
-const initialState: AuthActionState = { status: "idle" };
+type FormState = {
+  status: "idle" | "error" | "success";
+  message?: string;
+  fieldErrors?: Record<string, string>;
+};
 
 export function LoginForm() {
-  const [state, formAction, pending] = useActionState(
-    loginAction,
-    initialState,
-  );
+  const router = useRouter();
+  const [state, setState] = useState<FormState>({ status: "idle" });
+  const [pending, startTransition] = useTransition();
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const payload = {
+      email: String(data.get("email") ?? ""),
+      password: String(data.get("password") ?? ""),
+    };
+
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const body = (await res.json()) as {
+          ok: boolean;
+          message?: string;
+          fieldErrors?: Record<string, string>;
+          redirect?: string;
+        };
+        if (!body.ok) {
+          setState({
+            status: "error",
+            message: body.message,
+            fieldErrors: body.fieldErrors,
+          });
+          return;
+        }
+        // Refresh server components first so cookie state is picked up,
+        // then navigate.
+        router.refresh();
+        router.push(body.redirect ?? "/dashboard");
+      } catch (err) {
+        setState({
+          status: "error",
+          message:
+            err instanceof Error
+              ? `Login fehlgeschlagen: ${err.message}`
+              : "Login gerade nicht möglich.",
+        });
+      }
+    });
+  }
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form onSubmit={onSubmit} className="space-y-5">
       {state.status === "error" && state.message && (
         <Alert variant="destructive">
           <AlertDescription>{state.message}</AlertDescription>

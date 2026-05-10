@@ -1,24 +1,63 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useState, useTransition, type FormEvent } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { registerAction, type AuthActionState } from "@/lib/actions/auth";
 
-const initialState: AuthActionState = { status: "idle" };
+type FormState = {
+  status: "idle" | "error" | "success";
+  message?: string;
+  fieldErrors?: Record<string, string>;
+};
 
 export function RegisterForm() {
-  const [state, formAction, pending] = useActionState(
-    registerAction,
-    initialState,
-  );
+  const [state, setState] = useState<FormState>({ status: "idle" });
+  const [pending, startTransition] = useTransition();
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const payload = {
+      full_name: String(data.get("full_name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      password: String(data.get("password") ?? ""),
+    };
+
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const body = (await res.json()) as {
+          ok: boolean;
+          message?: string;
+          fieldErrors?: Record<string, string>;
+        };
+        setState({
+          status: body.ok ? "success" : "error",
+          message: body.message,
+          fieldErrors: body.fieldErrors,
+        });
+      } catch (err) {
+        setState({
+          status: "error",
+          message:
+            err instanceof Error
+              ? `Fehler bei der Registrierung: ${err.message}`
+              : "Konto-Erstellung gerade nicht möglich.",
+        });
+      }
+    });
+  }
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form onSubmit={onSubmit} className="space-y-5">
       {state.status === "error" && state.message && (
         <Alert variant="destructive">
           <AlertDescription>{state.message}</AlertDescription>

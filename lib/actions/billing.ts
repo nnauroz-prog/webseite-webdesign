@@ -9,7 +9,6 @@ import { getStripePriceId, type PlanId } from "@/lib/stripe/plans";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireUser } from "@/lib/supabase/auth";
 
-export const initialState: ActionState = idleState;
 
 const VALID_PLANS: readonly PlanId[] = ["basic", "pro", "premium"];
 

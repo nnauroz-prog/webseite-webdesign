@@ -1,23 +1,69 @@
 "use client";
 
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition, type FormEvent } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updatePasswordAction, type AuthActionState } from "@/lib/actions/auth";
 
-const initialState: AuthActionState = { status: "idle" };
+type FormState = {
+  status: "idle" | "error" | "success";
+  message?: string;
+  fieldErrors?: Record<string, string>;
+};
 
 export function UpdatePasswordForm() {
-  const [state, formAction, pending] = useActionState(
-    updatePasswordAction,
-    initialState,
-  );
+  const router = useRouter();
+  const [state, setState] = useState<FormState>({ status: "idle" });
+  const [pending, startTransition] = useTransition();
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const payload = {
+      password: String(data.get("password") ?? ""),
+      confirm: String(data.get("confirm") ?? ""),
+    };
+
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/auth/update-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const body = (await res.json()) as {
+          ok: boolean;
+          message?: string;
+          fieldErrors?: Record<string, string>;
+          redirect?: string;
+        };
+        if (!body.ok) {
+          setState({
+            status: "error",
+            message: body.message,
+            fieldErrors: body.fieldErrors,
+          });
+          return;
+        }
+        router.refresh();
+        router.push(body.redirect ?? "/dashboard");
+      } catch (err) {
+        setState({
+          status: "error",
+          message:
+            err instanceof Error
+              ? `Aktualisierung fehlgeschlagen: ${err.message}`
+              : "Aktualisierung gerade nicht möglich.",
+        });
+      }
+    });
+  }
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form onSubmit={onSubmit} className="space-y-5">
       {state.status === "error" && state.message && (
         <Alert variant="destructive">
           <AlertDescription>{state.message}</AlertDescription>

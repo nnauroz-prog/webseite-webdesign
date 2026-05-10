@@ -5,7 +5,8 @@ import { useActionState } from "react";
 import { FormStatus } from "@/components/dashboard/form-status";
 import { StatusPill } from "@/components/dashboard/status-pill";
 import { SubmitButton } from "@/components/dashboard/submit-button";
-import { initialLeadState, updateLeadStatusAction } from "@/lib/actions/leads";
+import { updateLeadStatusAction } from "@/lib/actions/leads";
+import { initialLeadState } from "@/lib/actions/states";
 import type { LeadRow as LeadModel, LeadStatus } from "@/types/website";
 
 const LABELS: Record<LeadStatus, string> = {

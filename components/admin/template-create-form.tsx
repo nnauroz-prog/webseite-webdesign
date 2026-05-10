@@ -6,10 +6,8 @@ import { FieldError, FormStatus } from "@/components/dashboard/form-status";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  adminCreateTemplateAction,
-  initialAdminState,
-} from "@/lib/actions/admin";
+import { adminCreateTemplateAction } from "@/lib/actions/admin";
+import { initialAdminState } from "@/lib/actions/states";
 
 export function TemplateCreateForm() {
   const [state, formAction] = useActionState(

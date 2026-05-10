@@ -6,7 +6,8 @@ import { FormStatus } from "@/components/dashboard/form-status";
 import { SectionCard } from "@/components/dashboard/section-card";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Label } from "@/components/ui/label";
-import { initialState, updateTemplateAction } from "@/lib/actions/website";
+import { updateTemplateAction } from "@/lib/actions/website";
+import { initialState } from "@/lib/actions/states";
 import type { TemplateRow, WebsiteRow } from "@/types/website";
 
 export function TemplateForm({

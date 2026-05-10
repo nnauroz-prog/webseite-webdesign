@@ -7,7 +7,8 @@ import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { createTeamMemberAction, initialTeamState } from "@/lib/actions/team";
+import { createTeamMemberAction } from "@/lib/actions/team";
+import { initialTeamState } from "@/lib/actions/states";
 
 export function TeamCreateForm() {
   const [state, formAction] = useActionState(

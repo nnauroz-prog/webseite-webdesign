@@ -8,7 +8,8 @@ import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { initialState, updateSeoAction } from "@/lib/actions/website";
+import { updateSeoAction } from "@/lib/actions/website";
+import { initialState } from "@/lib/actions/states";
 import type { WebsiteRow } from "@/types/website";
 
 export function SeoForm({ website }: { website: WebsiteRow }) {

@@ -6,10 +6,8 @@ import { FieldError, FormStatus } from "@/components/dashboard/form-status";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  initialGalleryState,
-  uploadGalleryImageAction,
-} from "@/lib/actions/gallery";
+import { uploadGalleryImageAction } from "@/lib/actions/gallery";
+import { initialGalleryState } from "@/lib/actions/states";
 
 export function GalleryUploader() {
   const [state, formAction] = useActionState(

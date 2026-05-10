@@ -6,7 +6,8 @@ import { FieldError, FormStatus } from "@/components/dashboard/form-status";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createWebsiteAction, initialState } from "@/lib/actions/website";
+import { createWebsiteAction } from "@/lib/actions/website";
+import { initialState } from "@/lib/actions/states";
 import type { TemplateRow } from "@/types/website";
 
 export function OnboardingForm({ templates }: { templates: TemplateRow[] }) {

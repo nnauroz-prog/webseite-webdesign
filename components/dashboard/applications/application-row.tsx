@@ -5,10 +5,8 @@ import { useActionState } from "react";
 import { FormStatus } from "@/components/dashboard/form-status";
 import { StatusPill } from "@/components/dashboard/status-pill";
 import { SubmitButton } from "@/components/dashboard/submit-button";
-import {
-  initialApplicationState,
-  updateApplicationStatusAction,
-} from "@/lib/actions/applications";
+import { updateApplicationStatusAction } from "@/lib/actions/applications";
+import { initialApplicationState } from "@/lib/actions/states";
 import type {
   ApplicationRow as ApplicationModel,
   ApplicationStatus,

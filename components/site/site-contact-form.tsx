@@ -6,7 +6,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { initialLeadState, submitLeadAction } from "@/lib/actions/leads";
+import { submitLeadAction } from "@/lib/actions/leads";
+import { initialLeadState } from "@/lib/actions/states";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 
 export function SiteContactForm({ slug }: { slug: string }) {

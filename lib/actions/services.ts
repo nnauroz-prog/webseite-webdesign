@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import {
   fail,
   flattenZodErrors,
-  idleState,
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
@@ -16,7 +15,6 @@ import {
   updateServiceSchema,
 } from "@/lib/validations/services";
 
-export const initialServiceState: ActionState = idleState;
 
 export async function createServiceAction(
   _prev: ActionState | undefined,
