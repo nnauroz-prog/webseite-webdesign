@@ -2,6 +2,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Disable discretionary ligatures everywhere — some serif and display
+   fonts (Cormorant Garamond, Playfair Display, Lora) ship with `dlig`
+   ligatures for `ff`, `fi`, `tt` that render as missing-glyph
+   fallbacks ("!" / """) on certain Safari + system-font combos. We
+   keep standard `liga` (essential for fi / fl) but turn off the
+   stylistic ones globally. */
+html {
+  font-feature-settings: "liga" 1, "dlig" 0, "hlig" 0, "calt" 0;
+}
+
 /* ----------------------------------------------------------------------
  * Sitalo brand palette — derived from the logo:
  *   - cream background (#f5ecd9-ish)

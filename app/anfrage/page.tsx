@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -110,15 +109,6 @@ export default async function AnfragePage({
                     hallo@sitalo.de
                   </a>
                 </div>
-                <p className="text-muted-foreground mt-3 text-xs">
-                  Bestehender Kunde?{" "}
-                  <Link
-                    href="/login"
-                    className="hover:text-foreground underline"
-                  >
-                    Zum Kundenlogin
-                  </Link>
-                </p>
               </div>
             </div>
 
