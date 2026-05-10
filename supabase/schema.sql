@@ -96,9 +96,14 @@ create trigger templates_set_updated_at
 
 -- Seed three MVP templates (id is deterministic-ish via name uniqueness).
 insert into public.templates (name, industry) values
-  ('Pflegedienst Klassisch', 'pflegedienst'),
-  ('Arztpraxis Modern',      'arztpraxis'),
-  ('Friseur Premium',        'friseur')
+  ('Pflegedienst Klassisch',  'pflegedienst'),
+  ('Arztpraxis Modern',       'arztpraxis'),
+  ('Friseur Premium',         'friseur'),
+  ('Physiotherapie Aktiv',    'physio'),
+  ('Zahnarztpraxis Sanft',    'zahnarzt'),
+  ('Reinigung Frisch',        'reinigung'),
+  ('Schreinerei Manufaktur',  'schreiner'),
+  ('Kosmetikstudio Eleganz',  'kosmetik')
 on conflict (name) do nothing;
 
 -- ----------------------------------------------------------------------------

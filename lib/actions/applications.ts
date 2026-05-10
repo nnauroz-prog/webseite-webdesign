@@ -8,7 +8,9 @@ import {
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
+import { notifyNewApplication } from "@/lib/email/notifications";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
 import {
   applicationStatusSchema,
@@ -42,7 +44,7 @@ export async function submitApplicationAction(
   const supabase = await createClient();
   const { data: site } = await supabase
     .from("websites")
-    .select("id, slug, is_active, application_form_enabled")
+    .select("id, slug, user_id, business_name, is_active, application_form_enabled")
     .eq("slug", parsed.data.slug)
     .maybeSingle();
 
@@ -50,6 +52,8 @@ export async function submitApplicationAction(
   const w = site as {
     id: string;
     slug: string;
+    user_id: string;
+    business_name: string;
     is_active: boolean;
     application_form_enabled: boolean;
   };
@@ -70,6 +74,35 @@ export async function submitApplicationAction(
     return fail(
       "Wir konnten deine Bewerbung nicht zustellen. Bitte versuche es später erneut.",
     );
+  }
+
+  // Best-effort owner notification — see leads.ts for the same pattern.
+  try {
+    const admin = createAdminClient();
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("email")
+      .eq("id", w.user_id)
+      .maybeSingle();
+    const ownerEmail = (profile as { email: string | null } | null)?.email;
+    if (ownerEmail) {
+      await notifyNewApplication({
+        ownerEmail,
+        businessName: w.business_name,
+        slug: w.slug,
+        application: {
+          name: parsed.data.name,
+          email: parsed.data.email,
+          phone: parsed.data.phone ?? null,
+          desired_position: parsed.data.desired_position ?? null,
+          message: parsed.data.message,
+        },
+      });
+    }
+  } catch (err) {
+    console.error("[submitApplicationAction] notification failed", {
+      message: err instanceof Error ? err.message : String(err),
+    });
   }
 
   revalidatePath("/dashboard", "layout");

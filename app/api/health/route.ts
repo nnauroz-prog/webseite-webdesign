@@ -19,6 +19,11 @@ export async function GET() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const stripeSecret = process.env.STRIPE_SECRET_KEY ?? "";
   const stripeWebhook = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+  const stripeBasic = process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC ?? "";
+  const stripePro = process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO ?? "";
+  const stripePremium = process.env.NEXT_PUBLIC_STRIPE_PRICE_PREMIUM ?? "";
+  const resendKey = process.env.RESEND_API_KEY ?? "";
+  const mailFrom = process.env.MAIL_FROM ?? "";
 
   return NextResponse.json({
     runtime: process.version,
@@ -29,6 +34,11 @@ export async function GET() {
       NEXT_PUBLIC_APP_URL: presence(appUrl, { showPrefix: true }),
       STRIPE_SECRET_KEY: presence(stripeSecret),
       STRIPE_WEBHOOK_SECRET: presence(stripeWebhook),
+      NEXT_PUBLIC_STRIPE_PRICE_BASIC: presence(stripeBasic),
+      NEXT_PUBLIC_STRIPE_PRICE_PRO: presence(stripePro),
+      NEXT_PUBLIC_STRIPE_PRICE_PREMIUM: presence(stripePremium),
+      RESEND_API_KEY: presence(resendKey),
+      MAIL_FROM: presence(mailFrom, { showPrefix: true }),
     },
   });
 }
