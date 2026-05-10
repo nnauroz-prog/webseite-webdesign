@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useTransition } from "react";
+import { useActionState, useRef, useState, useTransition } from "react";
 
 import { FormStatus } from "@/components/dashboard/form-status";
 import { SectionCard } from "@/components/dashboard/section-card";
@@ -14,6 +14,7 @@ import {
   uploadAboutImageAction,
 } from "@/lib/actions/website";
 import { initialState } from "@/lib/actions/states";
+import { processImageForUpload } from "@/lib/image-processing";
 import type { WebsiteRow } from "@/types/website";
 
 export function AboutImageForm({ website }: { website: WebsiteRow }) {
@@ -22,11 +23,38 @@ export function AboutImageForm({ website }: { website: WebsiteRow }) {
     initialState,
   );
   const [removing, startRemove] = useTransition();
+  const [processing, setProcessing] = useState(false);
+  const [clientError, setClientError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const fileInput = formRef.current?.querySelector<HTMLInputElement>(
+      'input[name="about_image"]',
+    );
+    const file = fileInput?.files?.[0];
+    if (!file) return;
+
+    e.preventDefault();
+    setClientError(null);
+    setProcessing(true);
+    try {
+      const result = await processImageForUpload(file, { maxSize: 1800 });
+      if (!result.ok) {
+        setClientError(result.message);
+        return;
+      }
+      const fd = new FormData();
+      fd.append("about_image", result.file);
+      formAction(fd);
+    } finally {
+      setProcessing(false);
+    }
+  }
 
   return (
     <SectionCard
       title="Über-uns-Bild"
-      description="Foto, das neben dem Über-uns-Text auf der Site steht (Räume, Team-Foto, Praxis von außen)."
+      description="Foto neben dem Über-uns-Text. iPhone-Foto oder JPG/PNG — wir verkleinern automatisch."
     >
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
         <div className="bg-muted relative h-40 w-full shrink-0 overflow-hidden rounded-lg border sm:h-44 sm:w-56">
@@ -46,7 +74,16 @@ export function AboutImageForm({ website }: { website: WebsiteRow }) {
           )}
         </div>
 
-        <form action={formAction} className="flex-1 space-y-3">
+        <form
+          ref={formRef}
+          onSubmit={onSubmit}
+          className="flex-1 space-y-3"
+        >
+          {clientError ? (
+            <p className="text-destructive bg-destructive/10 rounded-md px-3 py-2 text-sm">
+              {clientError}
+            </p>
+          ) : null}
           <FormStatus state={state} />
           <div className="space-y-2">
             <Label htmlFor="about_image">Bild hochladen</Label>
@@ -54,16 +91,19 @@ export function AboutImageForm({ website }: { website: WebsiteRow }) {
               id="about_image"
               name="about_image"
               type="file"
-              accept="image/png,image/jpeg,image/webp,image/avif"
+              accept="image/*"
               required
             />
             <p className="text-muted-foreground text-xs">
-              JPG, PNG, WebP oder AVIF. Max. 4 MB. Wird im Über-uns-Bereich
-              neben dem Text angezeigt.
+              Beliebiges Bildformat. Wir resizen auf 1800 px und konvertieren
+              zu JPEG.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <SubmitButton label="Hochladen" pendingLabel="Lade hoch …" />
+            <SubmitButton
+              label={processing ? "Verarbeite Bild …" : "Hochladen"}
+              pendingLabel="Lade hoch …"
+            />
             {website.about_image_url && (
               <Button
                 type="button"

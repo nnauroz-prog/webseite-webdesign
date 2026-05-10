@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useTransition } from "react";
+import { useActionState, useRef, useState, useTransition } from "react";
 
 import { FieldError, FormStatus } from "@/components/dashboard/form-status";
 import { SubmitButton } from "@/components/dashboard/submit-button";
@@ -15,6 +15,7 @@ import {
   uploadTeamImageAction,
 } from "@/lib/actions/team";
 import { initialTeamState } from "@/lib/actions/states";
+import { processImageForUpload } from "@/lib/image-processing";
 import type { TeamMemberRow as TeamModel } from "@/types/website";
 
 export function TeamRow({ member }: { member: TeamModel }) {
@@ -27,6 +28,34 @@ export function TeamRow({ member }: { member: TeamModel }) {
     initialTeamState,
   );
   const [deleting, startDelete] = useTransition();
+  const [processing, setProcessing] = useState(false);
+  const [clientError, setClientError] = useState<string | null>(null);
+  const imageFormRef = useRef<HTMLFormElement>(null);
+
+  async function onImageSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const fileInput = imageFormRef.current?.querySelector<HTMLInputElement>(
+      'input[name="image"]',
+    );
+    const file = fileInput?.files?.[0];
+    if (!file) return;
+
+    e.preventDefault();
+    setClientError(null);
+    setProcessing(true);
+    try {
+      const result = await processImageForUpload(file, { maxSize: 1200 });
+      if (!result.ok) {
+        setClientError(result.message);
+        return;
+      }
+      const fd = new FormData();
+      fd.append("member_id", member.id);
+      fd.append("image", result.file);
+      imageAction(fd);
+    } finally {
+      setProcessing(false);
+    }
+  }
 
   return (
     <div className="space-y-4 rounded-lg border p-4">
@@ -45,8 +74,17 @@ export function TeamRow({ member }: { member: TeamModel }) {
             <span className="text-muted-foreground text-xs">Kein Foto</span>
           )}
         </div>
-        <form action={imageAction} className="flex-1 space-y-2">
+        <form
+          ref={imageFormRef}
+          onSubmit={onImageSubmit}
+          className="flex-1 space-y-2"
+        >
           <input type="hidden" name="member_id" value={member.id} />
+          {clientError ? (
+            <p className="text-destructive bg-destructive/10 rounded-md px-3 py-2 text-sm">
+              {clientError}
+            </p>
+          ) : null}
           <FormStatus state={imageState} />
           <Label htmlFor={`image-${member.id}`}>Foto</Label>
           <div className="flex flex-wrap items-center gap-2">
@@ -54,12 +92,12 @@ export function TeamRow({ member }: { member: TeamModel }) {
               id={`image-${member.id}`}
               name="image"
               type="file"
-              accept="image/png,image/jpeg,image/webp,image/avif"
+              accept="image/*"
               className="flex-1"
               required
             />
             <SubmitButton
-              label="Foto hochladen"
+              label={processing ? "Verarbeite Bild …" : "Foto hochladen"}
               pendingLabel="Lade hoch …"
               variant="outline"
               size="sm"
