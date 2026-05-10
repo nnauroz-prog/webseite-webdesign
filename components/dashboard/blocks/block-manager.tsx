@@ -1,25 +1,26 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   Building2,
   ChevronDown,
   ChevronUp,
+  Clock,
   CreditCard,
   Eye,
   EyeOff,
   FileText,
+  GripVertical,
   HelpCircle,
   Image as ImageIcon,
   ListOrdered,
   MapPin,
-  MessageSquareQuote,
   Megaphone,
+  MessageSquareQuote,
   PlayCircle,
   Plus,
   Sigma,
   Trash2,
-  Clock,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import {
   addBlockAction,
   deleteBlockAction,
   reorderBlockAction,
+  reorderBlocksBatchAction,
 } from "@/lib/actions/blocks";
 import { cn } from "@/lib/utils";
 import type { BlockType, PageBlockRow } from "@/types/website";
@@ -126,15 +128,38 @@ const BLOCK_LIBRARY: Array<{
   },
 ];
 
+export type AvailableImage = { label: string; url: string };
+
 export function BlockManager({
   pageId,
   blocks,
+  availableImages,
 }: {
   pageId: string;
   blocks: PageBlockRow[];
+  availableImages?: AvailableImage[];
 }) {
   const [adding, startAdd] = useTransition();
   const [showLibrary, setShowLibrary] = useState(blocks.length === 0);
+
+  // Mirror server-provided ordering locally so drag-and-drop can apply
+  // optimistically before the server action returns. We re-sync when
+  // the parent prop changes (after a server-revalidate).
+  const [items, setItems] = useState<PageBlockRow[]>(blocks);
+  useEffect(() => {
+    setItems(blocks);
+  }, [blocks]);
+
+  const [, startReorder] = useTransition();
+
+  const persistOrder = (next: PageBlockRow[]) => {
+    const fd = new FormData();
+    fd.append("page_id", pageId);
+    fd.append("order", JSON.stringify(next.map((b) => b.id)));
+    startReorder(() => {
+      void reorderBlocksBatchAction(undefined, fd);
+    });
+  };
 
   const handleAdd = (type: BlockType) => {
     const fd = new FormData();
@@ -146,11 +171,47 @@ export function BlockManager({
     setShowLibrary(false);
   };
 
+  // Drag state
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
+
+  const onDragStart = (id: string) => (e: React.DragEvent<HTMLDivElement>) => {
+    setDragId(id);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", id);
+  };
+  const onDragOver = (id: string) => (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (overId !== id) setOverId(id);
+  };
+  const onDragEnd = () => {
+    setDragId(null);
+    setOverId(null);
+  };
+  const onDrop = (targetId: string) => (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const sourceId = dragId ?? e.dataTransfer.getData("text/plain");
+    setDragId(null);
+    setOverId(null);
+    if (!sourceId || sourceId === targetId) return;
+    setItems((prev) => {
+      const fromIdx = prev.findIndex((b) => b.id === sourceId);
+      const toIdx = prev.findIndex((b) => b.id === targetId);
+      if (fromIdx === -1 || toIdx === -1) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(fromIdx, 1);
+      next.splice(toIdx, 0, moved);
+      persistOrder(next);
+      return next;
+    });
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold tracking-tight">
-          Blöcke ({blocks.length})
+          Blöcke ({items.length})
         </h3>
         <Button
           type="button"
@@ -178,9 +239,7 @@ export function BlockManager({
                 type="button"
                 disabled={adding}
                 onClick={() => handleAdd(b.type)}
-                className={cn(
-                  "border-border bg-card hover:border-foreground/30 flex items-start gap-3 rounded-lg border p-3 text-left transition disabled:opacity-50",
-                )}
+                className="border-border bg-card hover:border-foreground/30 flex items-start gap-3 rounded-lg border p-3 text-left transition disabled:opacity-50"
               >
                 <span
                   className={cn(
@@ -204,18 +263,25 @@ export function BlockManager({
         </div>
       ) : null}
 
-      {blocks.length === 0 && !showLibrary ? (
+      {items.length === 0 && !showLibrary ? (
         <p className="text-muted-foreground bg-secondary/30 rounded-lg border border-dashed px-4 py-6 text-center text-xs">
           Noch keine Blöcke. Klick auf „Block hinzufügen" und wähle einen Typ.
         </p>
       ) : null}
 
-      {blocks.map((block, i) => (
+      {items.map((block, i) => (
         <BlockRow
           key={block.id}
           block={block}
           isFirst={i === 0}
-          isLast={i === blocks.length - 1}
+          isLast={i === items.length - 1}
+          isDragging={dragId === block.id}
+          isDragOver={overId === block.id && dragId !== block.id}
+          onDragStart={onDragStart(block.id)}
+          onDragOver={onDragOver(block.id)}
+          onDragEnd={onDragEnd}
+          onDrop={onDrop(block.id)}
+          availableImages={availableImages}
         />
       ))}
     </div>
@@ -226,10 +292,24 @@ function BlockRow({
   block,
   isFirst,
   isLast,
+  isDragging,
+  isDragOver,
+  onDragStart,
+  onDragOver,
+  onDragEnd,
+  onDrop,
+  availableImages,
 }: {
   block: PageBlockRow;
   isFirst: boolean;
   isLast: boolean;
+  isDragging: boolean;
+  isDragOver: boolean;
+  onDragStart: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragEnd: () => void;
+  onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
+  availableImages?: AvailableImage[];
 }) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -237,6 +317,7 @@ function BlockRow({
   const meta = BLOCK_LIBRARY.find((b) => b.type === block.type);
   const Icon = meta?.icon ?? HelpCircle;
 
+  // Up/down arrows kept as a keyboard-accessible fallback.
   const move = (direction: "up" | "down") => {
     const fd = new FormData();
     fd.append("id", block.id);
@@ -256,8 +337,26 @@ function BlockRow({
   };
 
   return (
-    <div className="bg-card overflow-hidden rounded-lg border">
-      <div className="flex items-center justify-between gap-2 px-3 py-2">
+    <div
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+      onDrop={onDrop}
+      className={cn(
+        "bg-card overflow-hidden rounded-lg border transition-all",
+        isDragging && "scale-[0.98] opacity-40",
+        isDragOver && "ring-primary ring-2 ring-offset-1",
+      )}
+    >
+      <div className="flex items-center justify-between gap-2 px-2 py-2">
+        <span
+          className="text-muted-foreground hover:text-foreground inline-flex h-7 w-5 shrink-0 cursor-grab items-center justify-center active:cursor-grabbing"
+          aria-label="Block ziehen"
+          title="Ziehen zum Sortieren"
+        >
+          <GripVertical className="h-4 w-4" />
+        </span>
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -321,7 +420,7 @@ function BlockRow({
 
       {open ? (
         <div className="border-t p-4">
-          <BlockEditor block={block} />
+          <BlockEditor block={block} availableImages={availableImages} />
         </div>
       ) : null}
     </div>

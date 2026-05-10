@@ -22,14 +22,18 @@ import type {
   PageRow as PageModel,
 } from "@/types/website";
 
+export type AvailableImage = { label: string; url: string };
+
 export function PageRow({
   page,
   blocks,
   websiteSlug,
+  availableImages,
 }: {
   page: PageModel;
   blocks: PageBlockRow[];
   websiteSlug: string;
+  availableImages?: AvailableImage[];
 }) {
   const [open, setOpen] = useState(false);
   const [state, formAction] = useActionState(updatePageAction, initialState);
@@ -186,7 +190,11 @@ export function PageRow({
 
       {open ? (
         <div className="border-t bg-secondary/20 p-4">
-          <BlockManager pageId={page.id} blocks={blocks} />
+          <BlockManager
+            pageId={page.id}
+            blocks={blocks}
+            availableImages={availableImages}
+          />
         </div>
       ) : null}
     </div>
