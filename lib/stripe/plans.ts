@@ -25,7 +25,7 @@ export const PLANS: readonly Plan[] = [
     id: "basic",
     name: "Basic",
     tagline: "Eine professionelle Website. Live in Minuten.",
-    price_eur_per_month: 29,
+    price_eur_per_month: 9,
     features: [
       "1 öffentliche Website",
       "Kontaktformular mit DSGVO-Hinweis",
@@ -38,7 +38,7 @@ export const PLANS: readonly Plan[] = [
     id: "pro",
     name: "Pro",
     tagline: "Alles aus Basic — plus aktive Recruiting-Funktion.",
-    price_eur_per_month: 49,
+    price_eur_per_month: 19,
     features: [
       "Alles aus Basic",
       "Bewerbungsformular für offene Stellen",
@@ -52,7 +52,7 @@ export const PLANS: readonly Plan[] = [
     id: "premium",
     name: "Premium",
     tagline: "Für Praxen mit eigener Domain & vollem Service.",
-    price_eur_per_month: 89,
+    price_eur_per_month: 39,
     features: [
       "Alles aus Pro",
       "Eigene Domain (CNAME-Anbindung)",
