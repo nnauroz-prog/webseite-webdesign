@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
 
 import { OnboardingForm } from "@/components/dashboard/onboarding-form";
+import { SeedDemoButton } from "@/components/dashboard/seed-demo-button";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,15 +34,16 @@ export default async function DashboardHomePage() {
           Willkommen bei SitePilot
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Lege jetzt deine Website an. Du kannst alle Inhalte später jederzeit
-          ändern.
+          Lege jetzt deine Website an. Wir füllen sie automatisch mit
+          Beispiel-Inhalten — du musst nur noch deine Daten anpassen.
         </p>
         <div className="mt-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Neue Website</CardTitle>
               <CardDescription>
-                Wir brauchen nur drei Angaben, um zu starten.
+                Drei Angaben — Firmenname, URL, Branche. Mehr brauchen wir
+                nicht.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -81,6 +84,25 @@ export default async function DashboardHomePage() {
       .eq("website_id", website.id),
   ]);
 
+  // Compute completeness — 8 fields/lists that contribute when filled.
+  const checklist = [
+    { label: "Hero-Überschrift", done: !!website.hero_title?.trim() },
+    { label: "Über-uns-Text", done: !!website.about_text?.trim() },
+    { label: "Logo hochgeladen", done: !!website.logo_url },
+    {
+      label: "Kontaktdaten (Telefon oder E-Mail)",
+      done: !!website.phone?.trim() || !!website.email?.trim(),
+    },
+    { label: "Mindestens 1 Leistung", done: (serviceCount ?? 0) > 0 },
+    { label: "Mindestens 1 Team-Mitglied", done: (teamCount ?? 0) > 0 },
+    { label: "Mindestens 1 Galerie-Bild", done: (galleryCount ?? 0) > 0 },
+    { label: "Veröffentlicht", done: website.is_active },
+  ];
+  const doneCount = checklist.filter((c) => c.done).length;
+  const completeness = Math.round((doneCount / checklist.length) * 100);
+
+  const showSeedBanner = (serviceCount ?? 0) === 0 && (teamCount ?? 0) === 0;
+
   const publicHref = `/site/${website.slug}`;
 
   return (
@@ -112,6 +134,96 @@ export default async function DashboardHomePage() {
           </Button>
         </div>
       </div>
+
+      {showSeedBanner ? (
+        <div className="border-primary/40 bg-primary/5 mt-6 flex flex-wrap items-start justify-between gap-4 rounded-xl border p-5">
+          <div className="flex items-start gap-3">
+            <span className="bg-primary text-primary-foreground inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="text-base font-semibold tracking-tight">
+                Deine Website ist noch leer
+              </h2>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Wir können dir mit einem Klick passende Beispiel-Inhalte
+                einsetzen — Hero, Leistungen, Team, Über-uns. Du kannst
+                anschließend alles anpassen oder löschen.
+              </p>
+            </div>
+          </div>
+          <SeedDemoButton />
+        </div>
+      ) : null}
+
+      {/* Completeness checklist */}
+      <Card className="mt-6">
+        <CardHeader>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <CardTitle className="text-base">
+                Website-Fortschritt
+              </CardTitle>
+              <CardDescription>
+                {doneCount} von {checklist.length} Schritten erledigt
+              </CardDescription>
+            </div>
+            <span className="text-2xl font-semibold tabular-nums">
+              {completeness}%
+            </span>
+          </div>
+          <div className="bg-secondary mt-4 h-2 w-full overflow-hidden rounded-full">
+            <div
+              className="bg-primary h-full rounded-full transition-all"
+              style={{ width: `${completeness}%` }}
+            />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {checklist.map((item) => (
+              <li
+                key={item.label}
+                className="flex items-center gap-2 text-sm"
+              >
+                <span
+                  className={
+                    item.done
+                      ? "inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
+                      : "border-border inline-flex h-4 w-4 items-center justify-center rounded-full border"
+                  }
+                >
+                  {item.done ? (
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M2 6.5L5 9.5L10 3.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : null}
+                </span>
+                <span
+                  className={
+                    item.done
+                      ? "text-muted-foreground line-through"
+                      : "text-foreground"
+                  }
+                >
+                  {item.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <StatCard
