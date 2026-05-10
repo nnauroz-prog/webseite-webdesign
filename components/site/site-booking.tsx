@@ -1,5 +1,6 @@
 import { CalendarCheck } from "lucide-react";
 
+import { PreviewFormNotice } from "@/components/site/preview-form-notice";
 import { SiteBookingForm } from "@/components/site/site-booking-form";
 import type { ServiceRow, WebsiteRow } from "@/types/website";
 
@@ -11,9 +12,11 @@ import type { ServiceRow, WebsiteRow } from "@/types/website";
 export function SiteBooking({
   website,
   services,
+  isPreview,
 }: {
   website: WebsiteRow;
   services: ServiceRow[];
+  isPreview: boolean;
 }) {
   if (!website.booking_form_enabled) return null;
 
@@ -50,7 +53,11 @@ export function SiteBooking({
               </p>
             </div>
           </div>
-          <SiteBookingForm slug={website.slug} services={services} />
+          {isPreview ? (
+            <PreviewFormNotice formLabel="Termin-Anfragen" />
+          ) : (
+            <SiteBookingForm slug={website.slug} services={services} />
+          )}
         </div>
       </div>
     </section>
