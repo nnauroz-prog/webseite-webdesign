@@ -268,8 +268,9 @@ type NewInquiryPayload = {
     has_website: boolean;
     current_website: string | null;
     needs: string[];
+    selected_package: string | null;
+    special_features: string[];
     timeframe: string | null;
-    budget: string | null;
     message: string | null;
   };
 };
@@ -308,8 +309,11 @@ export async function notifyNewInquiry(
   if (i.current_website) rows.push(row("URL", escape(i.current_website)));
   if (i.needs.length > 0)
     rows.push(row("Bedarf", escape(i.needs.join(", "))));
+  if (i.selected_package)
+    rows.push(row("Paket-Interesse", escape(i.selected_package)));
+  if (i.special_features.length > 0)
+    rows.push(row("Sonderwünsche", escape(i.special_features.join(", "))));
   if (i.timeframe) rows.push(row("Zeitraum", escape(i.timeframe)));
-  if (i.budget) rows.push(row("Budget", escape(i.budget)));
 
   const messageBlock = i.message
     ? `<h3 style="margin: 24px 0 8px 0;">Nachricht</h3>

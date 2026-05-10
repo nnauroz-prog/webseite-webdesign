@@ -1249,24 +1249,33 @@ create policy "subscriptions: self or admin can read"
 --     admins may read / update.
 -- ============================================================================
 create table if not exists public.inquiries (
-  id              uuid        primary key default gen_random_uuid(),
-  name            text        not null,
-  company         text,
-  industry        text,
-  phone           text,
-  email           text        not null,
-  has_website     boolean     not null default false,
-  current_website text,
-  needs           text[]      not null default array[]::text[],
-  timeframe       text,
-  budget          text,
-  message         text,
-  status          text        not null default 'new'
-                              check (status in ('new', 'contacted', 'won', 'lost')),
-  source          text        not null default 'web',
-  created_at      timestamptz not null default now(),
-  updated_at      timestamptz not null default now()
+  id               uuid        primary key default gen_random_uuid(),
+  name             text        not null,
+  company          text,
+  industry         text,
+  phone            text,
+  email            text        not null,
+  has_website      boolean     not null default false,
+  current_website  text,
+  needs            text[]      not null default array[]::text[],
+  timeframe        text,
+  message          text,
+  status           text        not null default 'new'
+                               check (status in ('new', 'contacted', 'won', 'lost')),
+  source           text        not null default 'web',
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
 );
+
+-- Migration: replace `budget` (price-range enum) with `selected_package`
+-- (Starter / Business / Premium / unsicher) + `special_features` array.
+-- The user picks a package on the marketing site; budget questions
+-- contradicted the published entry prices.
+alter table public.inquiries
+  add column if not exists selected_package text;
+alter table public.inquiries
+  add column if not exists special_features text[] not null default array[]::text[];
+alter table public.inquiries drop column if exists budget;
 
 create index if not exists inquiries_status_idx
   on public.inquiries (status, created_at desc);

@@ -10,8 +10,9 @@ const optional = (max: number, label = "Text") =>
   );
 
 /**
- * What the customer can request via the /anfrage form. Free-text
- * tags rather than an enum so we can extend without a migration.
+ * Project-type signals — what *kind* of website is needed. Stays
+ * intentionally short. Optional add-ons live in
+ * `INQUIRY_SPECIAL_FEATURES` below.
  */
 export const INQUIRY_NEEDS = [
   "neue-website",
@@ -20,27 +21,49 @@ export const INQUIRY_NEEDS = [
   "mehrseitig",
   "kundenbereich",
   "speisekarte",
-  "kontaktformular",
   "bewerbungsformular",
-  "buchung",
-  "maps-oeffnungszeiten",
-  "seo",
+  "kontaktformular",
 ] as const;
 export type InquiryNeed = (typeof INQUIRY_NEEDS)[number];
+
+/**
+ * Pricing tiers as published on the landing / pricing page. The
+ * `unsicher` sentinel triggers a "we'll recommend the right tier"
+ * helper note in the form.
+ */
+export const INQUIRY_PACKAGES = [
+  "starter",
+  "business",
+  "premium",
+  "unsicher",
+] as const;
+export type InquiryPackage = (typeof INQUIRY_PACKAGES)[number];
+
+/**
+ * Optional functional add-ons asked about after the package pick. Some
+ * (Kundenbereich, Speisekarte, Bewerbungsformular) overlap with the
+ * `INQUIRY_NEEDS` list because customers often want to emphasise an
+ * extra at scoping time.
+ */
+export const INQUIRY_SPECIAL_FEATURES = [
+  "kundenbereich",
+  "speisekarte",
+  "bewerbungsformular",
+  "whatsapp-button",
+  "google-maps",
+  "online-reservierung",
+  "mehrere-unterseiten",
+  "seo-erweiterung",
+  "mehrsprachigkeit",
+  "unsicher",
+] as const;
+export type InquirySpecialFeature = (typeof INQUIRY_SPECIAL_FEATURES)[number];
 
 export const INQUIRY_TIMEFRAMES = [
   "asap",
   "2-wochen",
   "1-monat",
   "spaeter",
-  "offen",
-] as const;
-
-export const INQUIRY_BUDGETS = [
-  "unter-1000",
-  "1000-2000",
-  "2000-5000",
-  "ueber-5000",
   "offen",
 ] as const;
 
@@ -61,11 +84,18 @@ export const submitInquirySchema = z.object({
     .array(z.enum(INQUIRY_NEEDS))
     .max(INQUIRY_NEEDS.length)
     .default([]),
+  selected_package: z.preprocess(
+    emptyToUndef,
+    z.enum(INQUIRY_PACKAGES).optional(),
+  ),
+  special_features: z
+    .array(z.enum(INQUIRY_SPECIAL_FEATURES))
+    .max(INQUIRY_SPECIAL_FEATURES.length)
+    .default([]),
   timeframe: z.preprocess(
     emptyToUndef,
     z.enum(INQUIRY_TIMEFRAMES).optional(),
   ),
-  budget: z.preprocess(emptyToUndef, z.enum(INQUIRY_BUDGETS).optional()),
   message: optional(4000, "Nachricht"),
   consent: z
     .union([z.literal("on"), z.literal("true"), z.literal(true)])
