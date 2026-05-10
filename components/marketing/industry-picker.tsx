@@ -134,25 +134,24 @@ export function IndustryPicker() {
   return (
     <section
       id="branchen"
-      className="border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
+      className="bg-secondary/30 border-border/40 border-b py-16 sm:py-24 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
+          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
             Branchen
           </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
+          <h2 className="mt-3 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
             Welche Website brauchen Sie?
           </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Wählen Sie Ihre Branche — wir zeigen Ihnen, was wir typischerweise
-            für diese Art Unternehmen umsetzen.
+          <p className="text-muted-foreground mx-auto mt-3 max-w-lg text-[15px] sm:text-base">
+            Wählen Sie Ihre Branche.
           </p>
         </header>
 
-        {/* Chips */}
-        <div className="-mx-6 mt-10 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex w-max gap-2 sm:flex-wrap sm:justify-center sm:w-auto">
+        {/* Chips — horizontal scroll on mobile, wrap-center on desktop */}
+        <div className="-mx-6 mt-8 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap sm:justify-center">
             {INDUSTRIES.map((industry) => {
               const active = industry.slug === selected.slug;
               return (
@@ -161,10 +160,10 @@ export function IndustryPicker() {
                   type="button"
                   onClick={() => setSelected(industry)}
                   aria-pressed={active}
-                  className={`inline-flex shrink-0 items-center rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                  className={`inline-flex shrink-0 items-center rounded-full border px-3.5 py-2 text-[13px] font-medium tracking-tight transition-all sm:text-sm ${
                     active
-                      ? "border-foreground bg-foreground text-background shadow-md"
-                      : "border-border bg-card hover:border-foreground/40 hover:bg-secondary"
+                      ? "border-foreground bg-foreground text-background shadow-md ring-2 ring-foreground/15"
+                      : "border-border/70 bg-card text-foreground/75 hover:border-foreground/40 hover:bg-background hover:text-foreground"
                   }`}
                 >
                   {industry.label}
@@ -175,25 +174,25 @@ export function IndustryPicker() {
         </div>
 
         {/* Detail card */}
-        <div className="bg-card border-border/60 mx-auto mt-8 max-w-3xl rounded-3xl border p-8 shadow-md sm:p-10">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div className="bg-card border-border/60 mx-auto mt-6 max-w-3xl rounded-2xl border p-6 shadow-md sm:mt-8 sm:rounded-3xl sm:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-7">
             <div className="flex-1">
               <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
                 {selected.label}
               </p>
-              <h3 className="mt-2 text-2xl font-semibold tracking-tight">
+              <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
                 {selected.headline}
               </h3>
-              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed">
+              <p className="text-muted-foreground mt-2 text-[14px] leading-relaxed sm:text-[15px]">
                 {selected.body}
               </p>
-              <ul className="mt-5 space-y-2 text-sm">
+              <ul className="mt-4 space-y-1.5 text-sm">
                 {selected.bullets.map((bullet) => (
                   <li
                     key={bullet}
                     className="flex items-start gap-2.5"
                   >
-                    <span className="bg-primary inline-block h-1.5 w-1.5 shrink-0 rounded-full mt-2" />
+                    <span className="bg-primary mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full" />
                     <span className="text-foreground/85">{bullet}</span>
                   </li>
                 ))}
