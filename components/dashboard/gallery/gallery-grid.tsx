@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { useTransition } from "react";
+import { Image as ImageIcon } from "lucide-react";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { Button } from "@/components/ui/button";
 import { deleteGalleryImageAction } from "@/lib/actions/gallery";
 import type { GalleryImageRow } from "@/types/website";
@@ -10,9 +12,12 @@ import type { GalleryImageRow } from "@/types/website";
 export function GalleryGrid({ images }: { images: GalleryImageRow[] }) {
   if (images.length === 0) {
     return (
-      <p className="text-muted-foreground rounded-lg border border-dashed p-8 text-center text-sm">
-        Noch keine Bilder. Lade dein erstes Bild oben hoch.
-      </p>
+      <EmptyState
+        icon={ImageIcon}
+        tone="pink"
+        title="Noch keine Bilder hochgeladen"
+        description="Logo gehört in die Stammdaten — hier kommen Eindrücke deiner Räume, deines Teams oder deiner Arbeit hin. JPG, PNG, WebP, AVIF bis 4 MB."
+      />
     );
   }
 

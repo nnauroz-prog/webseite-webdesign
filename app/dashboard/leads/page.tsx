@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Inbox } from "lucide-react";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { LeadRow } from "@/components/dashboard/leads/lead-row";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
 import type { LeadRow as LeadModel } from "@/types/website";
@@ -35,10 +37,16 @@ export default async function LeadsPage() {
       )}
 
       {leads.length === 0 ? (
-        <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center text-sm">
-          Noch keine Anfragen. Sobald jemand das Kontaktformular ausfüllt,
-          erscheint die Nachricht hier.
-        </div>
+        <EmptyState
+          icon={Inbox}
+          tone="amber"
+          title="Noch keine Anfragen"
+          description="Sobald jemand das Kontaktformular auf deiner Website ausfüllt, landet die Nachricht hier — und du bekommst eine Mail mit allen Details."
+          primaryAction={{
+            label: "Vorschau öffnen",
+            href: `/site/${website.slug}#kontakt`,
+          }}
+        />
       ) : (
         <div className="space-y-3">
           {leads.map((l) => (

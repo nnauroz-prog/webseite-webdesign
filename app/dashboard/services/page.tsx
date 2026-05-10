@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Settings } from "lucide-react";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { ServiceCreateForm } from "@/components/dashboard/services/service-create-form";
 import { ServiceRow } from "@/components/dashboard/services/service-row";
 import {
@@ -52,9 +54,12 @@ export default async function ServicesPage() {
           Bestehende Leistungen ({services.length})
         </h2>
         {services.length === 0 ? (
-          <p className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm">
-            Du hast noch keine Leistungen angelegt.
-          </p>
+          <EmptyState
+            icon={Settings}
+            tone="sky"
+            title="Noch keine Leistungen angelegt"
+            description="Was bietest du an? Lege deine ersten 3-5 Leistungen mit kurzer Beschreibung an. Du findest das Formular oben."
+          />
         ) : (
           <div className="space-y-3">
             {services.map((s) => (

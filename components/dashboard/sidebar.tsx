@@ -2,99 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Briefcase,
-  CreditCard,
-  Globe,
-  Image as ImageIcon,
-  Inbox,
-  LayoutDashboard,
-  Settings,
-  Users,
-} from "lucide-react";
 
+import { NAV_ITEMS } from "@/components/dashboard/nav-items";
 import { cn } from "@/lib/utils";
-
-type NavItem = {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  /** Tailwind class for the icon's color tint when not active. */
-  tone: string;
-};
-
-const items: NavItem[] = [
-  {
-    label: "Übersicht",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-    tone: "text-indigo-500",
-  },
-  {
-    label: "Website",
-    href: "/dashboard/website",
-    icon: Globe,
-    tone: "text-violet-500",
-  },
-  {
-    label: "Leistungen",
-    href: "/dashboard/services",
-    icon: Settings,
-    tone: "text-sky-500",
-  },
-  {
-    label: "Team",
-    href: "/dashboard/team",
-    icon: Users,
-    tone: "text-emerald-500",
-  },
-  {
-    label: "Galerie",
-    href: "/dashboard/gallery",
-    icon: ImageIcon,
-    tone: "text-pink-500",
-  },
-  {
-    label: "Anfragen",
-    href: "/dashboard/leads",
-    icon: Inbox,
-    tone: "text-amber-500",
-  },
-  {
-    label: "Bewerbungen",
-    href: "/dashboard/applications",
-    icon: Briefcase,
-    tone: "text-orange-500",
-  },
-  {
-    label: "Abrechnung",
-    href: "/dashboard/billing",
-    icon: CreditCard,
-    tone: "text-rose-500",
-  },
-];
 
 export function DashboardSidebar() {
   const pathname = usePathname() ?? "";
 
   return (
     <aside className="from-background to-secondary/40 hidden w-64 shrink-0 flex-col border-r bg-gradient-to-b md:flex">
-      {/* Brand */}
       <div className="border-border flex h-16 items-center gap-2.5 border-b px-5">
         <span className="from-primary inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br to-violet-600 text-[15px] font-bold text-white shadow-sm">
           S
         </span>
         <div className="flex min-w-0 flex-col leading-tight">
           <span className="text-sm font-semibold tracking-tight">SitePilot</span>
-          <span className="text-muted-foreground text-[11px]">
-            Dashboard
-          </span>
+          <span className="text-muted-foreground text-[11px]">Dashboard</span>
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 space-y-0.5 px-3 py-4 text-sm">
-        {items.map(({ label, href, icon: Icon, tone }) => {
+        {NAV_ITEMS.map(({ label, href, icon: Icon, tone }) => {
           const active =
             pathname === href ||
             (href !== "/dashboard" && pathname.startsWith(href));
@@ -124,7 +52,6 @@ export function DashboardSidebar() {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="border-border border-t px-5 py-4">
         <Link
           href="/"

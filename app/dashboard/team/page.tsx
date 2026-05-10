@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Users } from "lucide-react";
 
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { TeamCreateForm } from "@/components/dashboard/team/team-create-form";
 import { TeamRow } from "@/components/dashboard/team/team-row";
 import {
@@ -52,9 +54,12 @@ export default async function TeamPage() {
           Bestehende Mitglieder ({members.length})
         </h2>
         {members.length === 0 ? (
-          <p className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm">
-            Du hast noch keine Teammitglieder angelegt.
-          </p>
+          <EmptyState
+            icon={Users}
+            tone="emerald"
+            title="Noch keine Team-Mitglieder"
+            description="Stell dein Team vor — Name, Rolle, kurzer Steckbrief. Foto kannst du nach dem Anlegen hochladen."
+          />
         ) : (
           <div className="space-y-3">
             {members.map((m) => (

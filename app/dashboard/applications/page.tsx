@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Briefcase } from "lucide-react";
 
 import { ApplicationRow } from "@/components/dashboard/applications/application-row";
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
 import type { ApplicationRow as ApplicationModel } from "@/types/website";
 
@@ -35,10 +37,24 @@ export default async function ApplicationsPage() {
       )}
 
       {applications.length === 0 ? (
-        <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center text-sm">
-          Noch keine Bewerbungen. Sobald sich jemand bewirbt, erscheint die
-          Nachricht hier.
-        </div>
+        <EmptyState
+          icon={Briefcase}
+          tone="orange"
+          title="Noch keine Bewerbungen"
+          description={
+            website.application_form_enabled
+              ? "Sobald sich jemand über deine Website bewirbt, erscheint die Bewerbung hier."
+              : "Aktiviere das Bewerbungsformular in den Website-Einstellungen, damit Bewerbungen reinkommen können."
+          }
+          primaryAction={
+            !website.application_form_enabled
+              ? {
+                  label: "Bewerbungsformular aktivieren",
+                  href: "/dashboard/website",
+                }
+              : undefined
+          }
+        />
       ) : (
         <div className="space-y-3">
           {applications.map((a) => (
