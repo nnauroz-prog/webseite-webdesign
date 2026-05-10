@@ -11,6 +11,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { SiteGallery } from "@/components/site/site-gallery";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteHero } from "@/components/site/site-hero";
+import { SiteHeroFullbleed } from "@/components/site/site-hero-fullbleed";
 import { SiteHeroSplit } from "@/components/site/site-hero-split";
 import { SiteServices } from "@/components/site/site-services";
 import { SiteTeam } from "@/components/site/site-team";
@@ -115,6 +116,7 @@ export default async function PublicSitePage({
   return (
     <div
       data-template={templateKey}
+      data-personality={meta.personality}
       style={brandStyle}
       className="bg-background flex min-h-screen flex-1 flex-col"
     >
@@ -137,6 +139,8 @@ export default async function PublicSitePage({
       <main className="flex-1">
         {meta.hero === "split" ? (
           <SiteHeroSplit website={website} meta={meta} />
+        ) : meta.hero === "fullbleed" ? (
+          <SiteHeroFullbleed website={website} meta={meta} />
         ) : (
           <SiteHero website={website} meta={meta} />
         )}

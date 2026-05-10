@@ -272,7 +272,11 @@ export default function HomePage() {
               </div>
               {/* Embedded preview — pflegedienst as the showcase */}
               <div className="p-3 sm:p-6">
-                <TemplatePreview templateKey="pflegedienst" hero="centered" />
+                <TemplatePreview
+                  templateKey="pflegedienst"
+                  hero="centered"
+                  personality="soft"
+                />
               </div>
             </div>
           </div>
@@ -296,14 +300,17 @@ export default function HomePage() {
               Designs
             </p>
             <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
-              10 Designs.
+              10 echte Designs.
               <br className="hidden sm:block" />
-              <span className="text-muted-foreground/80">Klick und start.</span>
+              <span className="text-muted-foreground/80">
+                Nicht nur Farb-Varianten.
+              </span>
             </h2>
             <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-pretty">
-              Jedes Design kommt mit Beispiel-Texten, Beispiel-Leistungen,
-              Branchen-Farben und passendem Hero-Layout. Du tauschst nur, was
-              du tauschen willst.
+              Fünf Persönlichkeiten — soft, klinisch, editorial, handwerklich,
+              klassisch — kombiniert mit drei Hero-Layouts und Branchen-Farben.
+              Sonnen für Pflege, Noir für Friseur, Oxford für Anwalt, Werkstatt
+              für Schreinerei. Tausche was du tauschen willst.
             </p>
           </header>
 
@@ -315,13 +322,22 @@ export default function HomePage() {
                   key={key}
                   className="border-border bg-card group overflow-hidden rounded-2xl border p-3 transition-all hover:-translate-y-1 hover:shadow-xl"
                 >
-                  <TemplatePreview templateKey={key} hero={meta.hero} />
+                  <TemplatePreview
+                    templateKey={key}
+                    hero={meta.hero}
+                    personality={meta.personality}
+                  />
                   <div className="mt-3 px-2 pb-2">
-                    <h3 className="text-sm font-semibold tracking-tight">
-                      {meta.label}
-                    </h3>
-                    <p className="text-muted-foreground mt-0.5 line-clamp-1 text-xs">
-                      {meta.defaultHeroSubtitle}
+                    <div className="flex items-baseline justify-between gap-2">
+                      <h3 className="text-base font-semibold tracking-tight">
+                        {meta.label}
+                      </h3>
+                      <span className="text-muted-foreground/70 text-[10px] tracking-[0.18em] uppercase">
+                        {meta.industry}
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground mt-1 line-clamp-2 text-xs text-pretty">
+                      {meta.vibe}
                     </p>
                   </div>
                 </div>

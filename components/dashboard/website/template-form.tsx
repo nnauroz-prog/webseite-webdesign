@@ -66,7 +66,11 @@ export function TemplateForm({
                 : "border-border bg-card hover:border-foreground/30 hover:shadow-sm",
             )}
           >
-            <TemplatePreview templateKey="default" hero="centered" />
+            <TemplatePreview
+              templateKey="default"
+              hero="centered"
+              personality="clinical"
+            />
             <div>
               <div className="text-foreground text-sm font-semibold">
                 Standard
@@ -101,13 +105,22 @@ export function TemplateForm({
                     : "border-border bg-card hover:border-foreground/30 hover:shadow-sm",
                 )}
               >
-                <TemplatePreview templateKey={key} hero={meta.hero} />
+                <TemplatePreview
+                  templateKey={key}
+                  hero={meta.hero}
+                  personality={meta.personality}
+                />
                 <div>
-                  <div className="text-foreground text-sm font-semibold">
-                    {meta.label}
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-foreground text-sm font-semibold">
+                      {meta.label}
+                    </div>
+                    <div className="text-muted-foreground/80 text-[10px] tracking-[0.18em] uppercase">
+                      {meta.industry}
+                    </div>
                   </div>
-                  <div className="text-muted-foreground mt-0.5 line-clamp-2 text-xs text-pretty">
-                    {meta.defaultHeroSubtitle}
+                  <div className="text-muted-foreground mt-1 line-clamp-2 text-xs text-pretty">
+                    {meta.vibe}
                   </div>
                 </div>
                 {active || wasInitiallySelected ? <ActiveBadge /> : null}
