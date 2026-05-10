@@ -131,6 +131,26 @@ export function SiteFooter({ website }: { website: WebsiteRow }) {
           </nav>
         </div>
       </div>
+
+      {/* "Erstellt mit SitePilot" — Shopify-style attribution. Drives traffic
+          back to the marketing site so each customer site is also a sales
+          channel. */}
+      <div className="border-border/40 border-t bg-black/[0.02] py-3 dark:bg-white/[0.02]">
+        <div className="text-muted-foreground mx-auto flex w-full max-w-6xl items-center justify-center gap-1.5 px-6 text-[11px]">
+          <span>Erstellt mit</span>
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener"
+            className="text-foreground hover:text-primary inline-flex items-center gap-1 font-semibold tracking-tight transition-colors"
+          >
+            <span className="from-primary inline-flex h-3.5 w-3.5 items-center justify-center rounded-[3px] bg-gradient-to-br to-violet-600 text-[8px] font-bold text-white">
+              S
+            </span>
+            SitePilot
+          </Link>
+        </div>
+      </div>
     </footer>
   );
 }
