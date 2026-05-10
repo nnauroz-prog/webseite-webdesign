@@ -256,6 +256,94 @@ export async function notifyBookingConfirmation(
   }
 }
 
+type NewInquiryPayload = {
+  /** Internal Sitalo email — every inquiry lands here. */
+  toEmail: string;
+  inquiry: {
+    name: string;
+    email: string;
+    company: string | null;
+    industry: string | null;
+    phone: string | null;
+    has_website: boolean;
+    current_website: string | null;
+    needs: string[];
+    timeframe: string | null;
+    budget: string | null;
+    message: string | null;
+  };
+};
+
+/**
+ * Sends a "new project inquiry" notification to the Sitalo team. Same
+ * fail-soft semantics as notifyNewLead — the inquiry is already in the
+ * DB, the email is just the alert.
+ */
+export async function notifyNewInquiry(
+  payload: NewInquiryPayload,
+): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const i = payload.inquiry;
+  const adminUrl = `${getSiteUrl()}/admin/inquiries`;
+
+  const rows: string[] = [];
+  const row = (label: string, value: string) =>
+    `<tr><td style="padding:4px 12px 4px 0;color:#666;"><strong>${escape(label)}</strong></td><td>${value}</td></tr>`;
+
+  rows.push(row("Name", escape(i.name)));
+  rows.push(
+    row(
+      "E-Mail",
+      `<a href="mailto:${escape(i.email)}">${escape(i.email)}</a>`,
+    ),
+  );
+  if (i.company) rows.push(row("Firma", escape(i.company)));
+  if (i.industry) rows.push(row("Branche", escape(i.industry)));
+  if (i.phone) rows.push(row("Telefon", escape(i.phone)));
+  rows.push(
+    row("Bestehende Website", i.has_website ? "Ja" : "Nein"),
+  );
+  if (i.current_website) rows.push(row("URL", escape(i.current_website)));
+  if (i.needs.length > 0)
+    rows.push(row("Bedarf", escape(i.needs.join(", "))));
+  if (i.timeframe) rows.push(row("Zeitraum", escape(i.timeframe)));
+  if (i.budget) rows.push(row("Budget", escape(i.budget)));
+
+  const messageBlock = i.message
+    ? `<h3 style="margin: 24px 0 8px 0;">Nachricht</h3>
+       <p style="white-space: pre-line; background: #f5f5f5; padding: 16px; border-radius: 8px;">${escape(i.message)}</p>`
+    : "";
+
+  try {
+    await resend.emails.send({
+      from: getMailFrom(),
+      to: payload.toEmail,
+      subject: `Neue Anfrage von ${i.name}${i.company ? ` (${i.company})` : ""}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+          <h2 style="margin: 0 0 8px 0;">Neue Projektanfrage</h2>
+          <p style="color: #666; margin: 0 0 24px 0;">über das Anfrage-Formular auf der Sitalo-Website</p>
+          <table style="width: 100%; border-collapse: collapse;">
+            ${rows.join("\n")}
+          </table>
+          ${messageBlock}
+          <p style="margin-top: 32px;">
+            <a href="${adminUrl}" style="display: inline-block; background: #111; color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none;">Im Admin öffnen</a>
+          </p>
+        </div>
+      `,
+      replyTo: i.email,
+    });
+  } catch (err) {
+    console.error("[notifyNewInquiry] resend failed", {
+      message: err instanceof Error ? err.message : String(err),
+      email: i.email,
+    });
+  }
+}
+
 function escape(value: string): string {
   return value
     .replace(/&/g, "&amp;")
