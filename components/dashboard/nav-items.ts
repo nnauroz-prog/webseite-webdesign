@@ -1,6 +1,7 @@
 import {
   Briefcase,
   CreditCard,
+  FileText,
   Globe,
   Image as ImageIcon,
   Inbox,
@@ -31,6 +32,12 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/dashboard/website",
     icon: Globe,
     tone: "text-violet-500",
+  },
+  {
+    label: "Seiten",
+    href: "/dashboard/pages",
+    icon: FileText,
+    tone: "text-indigo-500",
   },
   {
     label: "Leistungen",
