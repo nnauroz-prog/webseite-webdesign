@@ -1,5 +1,11 @@
 import type { TemplateRow } from "@/types/website";
 
+/**
+ * Template keys are still industry-shaped for backward compatibility
+ * with the DB seed (`templates.industry`) and the demo-content map.
+ * The customer-visible *name* of each template is now editorial
+ * (Sonnen / Klar / Noir / …) — see `label` below.
+ */
 export type TemplateKey =
   | "default"
   | "pflegedienst"
@@ -13,12 +19,40 @@ export type TemplateKey =
   | "anwalt"
   | "restaurant";
 
+/**
+ * The 5 design personalities. Each one drives:
+ *   - Hero composition + image treatment
+ *   - Typography (font-family hint, heading weight, tracking)
+ *   - Card chrome (radius, shadow weight)
+ *   - Section density (vertical spacing between sections)
+ *
+ * The actual visuals are configured in globals.css under
+ * `[data-personality="..."]` selectors. Components read the resulting
+ * CSS variables instead of hard-coding values, so the same component
+ * tree renders meaningfully different per personality.
+ */
+export type Personality =
+  | "soft" // warm, organic, generous whitespace, rounded sans
+  | "clinical" // modern-clean, sharp grid, geometric sans, dense
+  | "editorial" // luxury-magazine, serif headlines, asymmetric image
+  | "crafted" // hand-made warmth, mixed serif/sans, textured
+  | "formal"; // classical professional, structured serif, conservative
+
+/** Hero layout variants. */
+export type HeroVariant = "centered" | "split" | "fullbleed";
+
 export type TemplateMeta = {
   key: TemplateKey;
-  /** Hero variant chosen for this template. */
-  hero: "centered" | "split";
-  /** Localized human-friendly name shown in dashboard hints. */
+  /** Editorial display name shown to customers. */
   label: string;
+  /** Industry kept for back-compat with onboarding wizard + demo map. */
+  industry: string;
+  /** Design personality — drives typography, chrome, density. */
+  personality: Personality;
+  /** Hero composition. */
+  hero: HeroVariant;
+  /** One-line summary of the design's vibe (for picker cards). */
+  vibe: string;
   /** Default hero subtitle when the user hasn't supplied one. */
   defaultHeroSubtitle: string;
   /** Wording for the primary contact CTA. */
@@ -28,88 +62,121 @@ export type TemplateMeta = {
 const META: Record<TemplateKey, TemplateMeta> = {
   default: {
     key: "default",
+    label: "Linear",
+    industry: "default",
+    personality: "clinical",
     hero: "centered",
-    label: "Standard",
+    vibe: "Klar, neutral, ohne Branchen-Anstrich.",
     defaultHeroSubtitle:
       "Willkommen auf unserer Website. Wir freuen uns über Ihre Nachricht.",
     primaryCtaLabel: "Kontakt aufnehmen",
   },
   pflegedienst: {
     key: "pflegedienst",
+    label: "Sonnen",
+    industry: "pflegedienst",
+    personality: "soft",
     hero: "centered",
-    label: "Pflegedienst",
+    vibe: "Warm und nahbar — viel Weißraum, weiche Rundungen, freundliche Sans-Serif.",
     defaultHeroSubtitle:
       "Pflege mit Herz, Erfahrung und Verlässlichkeit — direkt bei Ihnen zu Hause.",
     primaryCtaLabel: "Beratung anfragen",
   },
   arztpraxis: {
     key: "arztpraxis",
+    label: "Klar",
+    industry: "arztpraxis",
+    personality: "clinical",
     hero: "split",
-    label: "Arztpraxis",
+    vibe: "Modern-klinisch — geometrische Sans, klare Trennlinien, dichte Info-Sidebar.",
     defaultHeroSubtitle:
       "Moderne Medizin, persönliche Betreuung. Wir nehmen uns Zeit für Sie.",
     primaryCtaLabel: "Termin vereinbaren",
   },
   friseur: {
     key: "friseur",
-    hero: "centered",
-    label: "Friseur",
+    label: "Noir",
+    industry: "friseur",
+    personality: "editorial",
+    hero: "fullbleed",
+    vibe: "Editorial-luxuriös — formatfüllendes Foto, Serif-Headline, Magazin-Typografie.",
     defaultHeroSubtitle:
       "Stil, Schnitt und Präzision. Ihr Salon für besondere Momente.",
     primaryCtaLabel: "Termin buchen",
   },
   physio: {
     key: "physio",
+    label: "Vital",
+    industry: "physio",
+    personality: "clinical",
     hero: "split",
-    label: "Physiotherapie",
+    vibe: "Energetisch-modern — kräftige Sans, klare Grids, motivational.",
     defaultHeroSubtitle:
       "Bewegung, Therapie, Lebensqualität. Wir bringen Sie wieder in Form.",
     primaryCtaLabel: "Termin vereinbaren",
   },
   zahnarzt: {
     key: "zahnarzt",
+    label: "Lumen",
+    industry: "zahnarzt",
+    personality: "soft",
     hero: "split",
-    label: "Zahnarztpraxis",
+    vibe: "Hell und beruhigend — leichte Sans, viel Luft, soft-getönte Cards.",
     defaultHeroSubtitle:
       "Sanfte Zahnmedizin in entspannter Atmosphäre. Für ein gesundes Lächeln.",
     primaryCtaLabel: "Termin online buchen",
   },
   reinigung: {
     key: "reinigung",
+    label: "Brisa",
+    industry: "reinigung",
+    personality: "soft",
     hero: "centered",
-    label: "Reinigung & Gebäudeservice",
+    vibe: "Frisch und freundlich — runde Cards, helle Akzente, knappe Headlines.",
     defaultHeroSubtitle:
       "Saubere Räume, zuverlässig & gründlich. Privat, Büro, Praxis.",
     primaryCtaLabel: "Angebot anfragen",
   },
   schreiner: {
     key: "schreiner",
+    label: "Werkstatt",
+    industry: "schreiner",
+    personality: "crafted",
     hero: "centered",
-    label: "Schreinerei / Tischlerei",
+    vibe: "Handwerklich-warm — gemischte Type, Erd-Töne, leichte Textur.",
     defaultHeroSubtitle:
       "Maßarbeit aus Holz. Möbel, Türen, Einbauküchen — handwerklich gefertigt.",
     primaryCtaLabel: "Projekt besprechen",
   },
   kosmetik: {
     key: "kosmetik",
-    hero: "centered",
-    label: "Kosmetikstudio",
+    label: "Pearl",
+    industry: "kosmetik",
+    personality: "editorial",
+    hero: "fullbleed",
+    vibe: "Editorial-feminin — feine Serif, Hochformat-Imagery, getragen.",
     defaultHeroSubtitle:
       "Hautpflege, Wellness, Wohlbefinden. Auszeit für Sie und Ihre Haut.",
     primaryCtaLabel: "Termin reservieren",
   },
   anwalt: {
     key: "anwalt",
+    label: "Oxford",
+    industry: "anwalt",
+    personality: "formal",
     hero: "split",
-    label: "Anwaltskanzlei",
+    vibe: "Klassisch-formal — strukturierter Serif, dichte Info-Sidebar, dunkle Akzente.",
     defaultHeroSubtitle:
       "Erfahrene Rechtsberatung in einem persönlichen, vertraulichen Rahmen.",
     primaryCtaLabel: "Erstgespräch vereinbaren",
   },
   restaurant: {
     key: "restaurant",
-    hero: "centered",
-    label: "Restaurant / Café",
+    label: "Tisch",
+    industry: "restaurant",
+    personality: "crafted",
+    hero: "fullbleed",
+    vibe: "Warm-rustikal — formatfüllende Atmosphäre-Bilder, gemischte Type, einladend.",
     defaultHeroSubtitle:
       "Frische Küche, herzlicher Service. Wir freuen uns auf Ihren Besuch.",
     primaryCtaLabel: "Tisch reservieren",
@@ -158,7 +225,7 @@ export function getTemplateMeta(key: TemplateKey): TemplateMeta {
   return META[key];
 }
 
-/** All non-default templates, in display order — used by the admin/onboarding picker. */
+/** All non-default templates, in display order — used by the picker. */
 export const ALL_TEMPLATE_KEYS: TemplateKey[] = [
   "pflegedienst",
   "arztpraxis",

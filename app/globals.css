@@ -119,11 +119,110 @@
 }
 
 /* ------------------------------------------------------------------
- * Public-site template themes.
- * Applied via <div data-template="..."> at the root of /site/[slug].
- * Overrides --primary, --accent and friends so all Tailwind utility
- * classes (bg-primary, text-primary-foreground, …) automatically pick
- * up the template's palette via the @theme inline mapping above.
+ * Public-site template themes + design personalities.
+ *
+ * Two cascading axes are applied at the root of /site/[slug]:
+ *
+ *   <div data-template="..." data-personality="...">
+ *
+ *   - data-template overrides the brand palette (--primary, --accent,
+ *     --secondary, --muted, --ring) via the existing per-industry
+ *     selectors below.
+ *
+ *   - data-personality drives typography + chrome variables so the
+ *     same component tree renders meaningfully different per design.
+ *     Variables exposed to components:
+ *       --site-display-tracking : letter-spacing for headlines
+ *       --site-display-weight   : numeric font-weight for headlines
+ *       --site-display-family   : 'serif' | system-ui sans
+ *       --site-card-radius      : px / rem value for site Card chrome
+ *       --site-card-shadow      : full Tailwind shadow value
+ *       --site-section-py       : vertical section padding
+ *
+ * Components apply these via Tailwind arbitrary values, e.g.
+ *   className="rounded-[var(--site-card-radius)]"
+ * ------------------------------------------------------------------ */
+
+/* Default personality vars — overridden per data-personality below. */
+[data-template] {
+  --site-display-tracking: -0.02em;
+  --site-display-weight: 600;
+  --site-display-family: var(--font-sans), system-ui, sans-serif;
+  --site-card-radius: 1.5rem;
+  --site-card-shadow:
+    0 1px 2px 0 rgb(0 0 0 / 0.04),
+    0 8px 24px -8px rgb(0 0 0 / 0.08);
+  --site-section-py: 7rem;
+}
+
+/* Soft — warm, organic, very rounded, generous breathing room. */
+[data-personality="soft"] {
+  --site-display-tracking: -0.01em;
+  --site-display-weight: 600;
+  --site-card-radius: 1.75rem;
+  --site-card-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.06);
+  --site-section-py: 9rem;
+}
+
+/* Clinical — modern-sharp, condensed grid, less rounding. */
+[data-personality="clinical"] {
+  --site-display-tracking: -0.03em;
+  --site-display-weight: 700;
+  --site-card-radius: 0.75rem;
+  --site-card-shadow:
+    0 1px 0 0 rgb(0 0 0 / 0.04),
+    0 4px 16px -8px rgb(0 0 0 / 0.06);
+  --site-section-py: 6rem;
+}
+
+/* Editorial — luxury magazine, serif headlines, asymmetric weight. */
+[data-personality="editorial"] {
+  --site-display-tracking: -0.03em;
+  --site-display-weight: 500;
+  --site-display-family: ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  --site-card-radius: 0.5rem;
+  --site-card-shadow: 0 24px 48px -12px rgb(0 0 0 / 0.18);
+  --site-section-py: 8rem;
+}
+
+/* Crafted — hand-made warmth, mixed serif/sans, soft texture. */
+[data-personality="crafted"] {
+  --site-display-tracking: -0.015em;
+  --site-display-weight: 600;
+  --site-display-family: ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  --site-card-radius: 1rem;
+  --site-card-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.04),
+    0 6px 16px -6px rgb(0 0 0 / 0.08);
+  --site-section-py: 7.5rem;
+}
+
+/* Formal — classical professional, structured, reserved. */
+[data-personality="formal"] {
+  --site-display-tracking: -0.02em;
+  --site-display-weight: 600;
+  --site-display-family: ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  --site-card-radius: 0.375rem;
+  --site-card-shadow: 0 2px 8px -2px rgb(0 0 0 / 0.08);
+  --site-section-py: 6.5rem;
+}
+
+/* Apply the personality's display-family + tracking to all h1/h2/h3
+   inside a personality scope so customer-uploaded text in the public
+   site picks up the right typography automatically. */
+[data-personality] h1,
+[data-personality] h2,
+[data-personality] h3 {
+  font-family: var(--site-display-family);
+  letter-spacing: var(--site-display-tracking);
+  font-weight: var(--site-display-weight);
+}
+
+/* ------------------------------------------------------------------
+ * Per-template palette overrides (industry-specific brand colors).
  * ------------------------------------------------------------------ */
 
 [data-template="pflegedienst"] {

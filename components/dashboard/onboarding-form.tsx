@@ -270,12 +270,24 @@ function StepBranche({
                   : "border-border bg-card hover:border-foreground/30 hover:shadow-sm",
               )}
             >
-              <TemplatePreview templateKey={key} hero={meta.hero} />
+              <TemplatePreview
+                templateKey={key}
+                hero={meta.hero}
+                personality={meta.personality}
+              />
               <div>
-                <div className="text-foreground text-sm font-semibold">
-                  {meta.label}
+                <div className="flex items-baseline gap-2">
+                  <div className="text-foreground text-base font-semibold tracking-tight">
+                    {meta.label}
+                  </div>
+                  <div className="text-muted-foreground/80 text-[10px] tracking-[0.18em] uppercase">
+                    {meta.industry}
+                  </div>
                 </div>
-                <div className="text-muted-foreground mt-0.5 line-clamp-2 text-xs text-pretty">
+                <div className="text-muted-foreground mt-1 line-clamp-2 text-xs text-pretty">
+                  {meta.vibe}
+                </div>
+                <div className="text-muted-foreground/70 mt-1 line-clamp-1 text-[11px]">
                   {sample.bullet}
                 </div>
               </div>
