@@ -10,8 +10,10 @@ import {
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
+import { getDemoContent } from "@/lib/onboarding/demo-content";
 import { deleteStorageObjectByPublicUrl, uploadImage } from "@/lib/storage";
 import { requireCurrentWebsite, requireUser } from "@/lib/supabase/auth";
+import { resolveTemplateKey } from "@/lib/templates";
 import {
   aboutSchema,
   createWebsiteSchema,
@@ -54,25 +56,156 @@ export async function createWebsiteAction(
     .maybeSingle();
   if (existing) return fail("Du hast bereits eine Website.");
 
-  const { error } = await supabase.from("websites").insert({
-    user_id: user.id,
-    business_name: parsed.data.business_name,
-    slug: parsed.data.slug,
-    industry: parsed.data.industry ?? null,
-    template_id: parsed.data.template_id ?? null,
-  });
+  // Resolve which industry template the user picked so we can seed the
+  // matching demo content (services, team, hero copy, opening hours…).
+  const templateKey = resolveTemplateKey(
+    parsed.data.industry
+      ? {
+          id: "",
+          name: "",
+          industry: parsed.data.industry,
+          preview_image_url: null,
+          is_active: true,
+          created_at: "",
+        }
+      : null,
+  );
+  const demo = getDemoContent(templateKey);
 
-  if (error) {
-    if (isUniqueViolation(error)) {
+  const { data: created, error } = await supabase
+    .from("websites")
+    .insert({
+      user_id: user.id,
+      business_name: parsed.data.business_name,
+      slug: parsed.data.slug,
+      industry: parsed.data.industry ?? null,
+      template_id: parsed.data.template_id ?? null,
+      hero_title: demo.hero_title,
+      hero_subtitle: demo.hero_subtitle,
+      about_text: demo.about_text,
+      opening_hours: { text: demo.opening_hours_text },
+      imprint_text: demo.imprint_placeholder,
+      privacy_text: demo.privacy_placeholder,
+      contact_form_enabled: true,
+    })
+    .select("id")
+    .maybeSingle();
+
+  if (error || !created) {
+    if (error && isUniqueViolation(error)) {
       return fail("Diese URL ist bereits vergeben.", {
         slug: "Bereits vergeben.",
       });
     }
-    return fail(error.message);
+    return fail(error?.message ?? "Website konnte nicht angelegt werden.");
+  }
+
+  const websiteId = (created as { id: string }).id;
+
+  // Seed services + team in best-effort fashion. Errors here don't roll
+  // back the website — the user can re-seed from the dashboard.
+  if (demo.services.length > 0) {
+    await supabase.from("services").insert(
+      demo.services.map((s, i) => ({
+        website_id: websiteId,
+        title: s.title,
+        description: s.description,
+        sort_order: i,
+      })),
+    );
+  }
+  if (demo.team.length > 0) {
+    await supabase.from("team_members").insert(
+      demo.team.map((t, i) => ({
+        website_id: websiteId,
+        name: t.name,
+        role: t.role,
+        bio: t.bio,
+        sort_order: i,
+      })),
+    );
   }
 
   revalidatePath("/dashboard", "layout");
   redirect("/dashboard/website");
+}
+
+// ---------------------------------------------------------------------------
+//  seedDemoContentAction
+//  Owner-callable: re-applies the demo content for the website's industry
+//  to fields that are still empty. Doesn't overwrite custom data the user
+//  already entered.
+// ---------------------------------------------------------------------------
+export async function seedDemoContentAction(): Promise<ActionState> {
+  const { supabase, website } = await requireCurrentWebsite();
+  const templateKey = resolveTemplateKey(
+    website.industry
+      ? {
+          id: "",
+          name: "",
+          industry: website.industry,
+          preview_image_url: null,
+          is_active: true,
+          created_at: "",
+        }
+      : null,
+  );
+  const demo = getDemoContent(templateKey);
+
+  // Only fill empty fields on the website itself.
+  const patch: Record<string, unknown> = {};
+  if (!website.hero_title?.trim()) patch.hero_title = demo.hero_title;
+  if (!website.hero_subtitle?.trim()) patch.hero_subtitle = demo.hero_subtitle;
+  if (!website.about_text?.trim()) patch.about_text = demo.about_text;
+  if (!website.opening_hours?.text?.trim())
+    patch.opening_hours = { text: demo.opening_hours_text };
+  if (!website.imprint_text?.trim())
+    patch.imprint_text = demo.imprint_placeholder;
+  if (!website.privacy_text?.trim())
+    patch.privacy_text = demo.privacy_placeholder;
+
+  if (Object.keys(patch).length > 0) {
+    await supabase.from("websites").update(patch).eq("id", website.id);
+  }
+
+  // Only insert services/team if the lists are currently empty —
+  // we never want to duplicate the user's own entries.
+  const [{ count: serviceCount }, { count: teamCount }] = await Promise.all([
+    supabase
+      .from("services")
+      .select("id", { count: "exact", head: true })
+      .eq("website_id", website.id),
+    supabase
+      .from("team_members")
+      .select("id", { count: "exact", head: true })
+      .eq("website_id", website.id),
+  ]);
+
+  if ((serviceCount ?? 0) === 0 && demo.services.length > 0) {
+    await supabase.from("services").insert(
+      demo.services.map((s, i) => ({
+        website_id: website.id,
+        title: s.title,
+        description: s.description,
+        sort_order: i,
+      })),
+    );
+  }
+  if ((teamCount ?? 0) === 0 && demo.team.length > 0) {
+    await supabase.from("team_members").insert(
+      demo.team.map((t, i) => ({
+        website_id: website.id,
+        name: t.name,
+        role: t.role,
+        bio: t.bio,
+        sort_order: i,
+      })),
+    );
+  }
+
+  revalidatePath("/dashboard", "layout");
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok("Demo-Inhalte eingefügt.");
 }
 
 // ---------------------------------------------------------------------------
