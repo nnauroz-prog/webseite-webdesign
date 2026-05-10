@@ -364,7 +364,11 @@ create table if not exists public.page_blocks (
                              'map',
                              'video',
                              'stats',
-                             'rich_text'
+                             'rich_text',
+                             'pricing_table',
+                             'steps',
+                             'image_text_split',
+                             'logo_cloud'
                            )),
   data         jsonb       not null default '{}'::jsonb,
   sort_order   int         not null default 0,
@@ -385,7 +389,8 @@ create trigger page_blocks_set_updated_at
   for each row execute function public.set_updated_at();
 
 -- Idempotent migration for existing deployments — replace the original
--- type CHECK with the expanded list (map / video / stats / rich_text).
+-- type CHECK with the expanded list (map/video/stats/rich_text +
+-- pricing_table/steps/image_text_split/logo_cloud).
 do $$
 begin
   alter table public.page_blocks
@@ -400,7 +405,11 @@ begin
       'map',
       'video',
       'stats',
-      'rich_text'
+      'rich_text',
+      'pricing_table',
+      'steps',
+      'image_text_split',
+      'logo_cloud'
     ));
 end $$;
 

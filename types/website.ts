@@ -127,7 +127,11 @@ export type BlockType =
   | "map"
   | "video"
   | "stats"
-  | "rich_text";
+  | "rich_text"
+  | "pricing_table"
+  | "steps"
+  | "image_text_split"
+  | "logo_cloud";
 
 export type FaqBlockData = {
   title?: string;
@@ -176,6 +180,40 @@ export type RichTextBlockData = {
   body: string;
 };
 
+export type PricingTableBlockData = {
+  title?: string;
+  items: Array<{
+    name: string;
+    price: string;
+    /** Free-form unit, e.g. "/Monat", "pro Termin", "ab" */
+    unit?: string;
+    description?: string;
+    features?: string[];
+    /** Show "Beliebt"-badge on this column. */
+    highlight?: boolean;
+  }>;
+};
+
+export type StepsBlockData = {
+  title?: string;
+  items: Array<{ title: string; body: string }>;
+};
+
+export type ImageTextSplitBlockData = {
+  title?: string;
+  body: string;
+  /** Public URL — typically uploaded into the gallery bucket. */
+  image_url: string;
+  /** Image side: left or right of the text. Default left. */
+  image_side?: "left" | "right";
+};
+
+export type LogoCloudBlockData = {
+  title?: string;
+  /** Logo / partner names, rendered as styled text "wordmarks" */
+  items: Array<{ name: string; url?: string }>;
+};
+
 export type PageBlockRow = {
   id: string;
   website_id: string;
@@ -190,6 +228,10 @@ export type PageBlockRow = {
     | VideoBlockData
     | StatsBlockData
     | RichTextBlockData
+    | PricingTableBlockData
+    | StepsBlockData
+    | ImageTextSplitBlockData
+    | LogoCloudBlockData
     | Record<string, unknown>;
   sort_order: number;
   is_published: boolean;

@@ -10,6 +10,10 @@ export const blockTypeSchema = z.enum([
   "video",
   "stats",
   "rich_text",
+  "pricing_table",
+  "steps",
+  "image_text_split",
+  "logo_cloud",
 ]);
 export type BlockType = z.infer<typeof blockTypeSchema>;
 
@@ -118,6 +122,66 @@ export const richTextDataSchema = z.object({
   body: trimNonEmpty(8000, "Text"),
 });
 
+export const pricingTableDataSchema = z.object({
+  title: trimOptional(120),
+  items: z
+    .array(
+      z.object({
+        name: trimNonEmpty(80, "Paket-Name"),
+        price: trimNonEmpty(40, "Preis"),
+        unit: trimOptional(40),
+        description: trimOptional(280),
+        features: z
+          .array(z.string().trim().min(1).max(160))
+          .max(10, "Maximal 10 Features pro Paket.")
+          .optional(),
+        highlight: z.coerce.boolean().optional(),
+      }),
+    )
+    .min(1, "Mindestens ein Paket erforderlich.")
+    .max(4, "Maximal 4 Pakete pro Tabelle."),
+});
+
+export const stepsDataSchema = z.object({
+  title: trimOptional(120),
+  items: z
+    .array(
+      z.object({
+        title: trimNonEmpty(120, "Schritt-Titel"),
+        body: trimNonEmpty(600, "Schritt-Beschreibung"),
+      }),
+    )
+    .min(2, "Mindestens 2 Schritte.")
+    .max(8, "Maximal 8 Schritte."),
+});
+
+export const imageTextSplitDataSchema = z.object({
+  title: trimOptional(160),
+  body: trimNonEmpty(2000, "Text"),
+  image_url: z
+    .string()
+    .trim()
+    .min(1, "Bild-URL erforderlich.")
+    .max(2000)
+    .refine((v) => /^https?:\/\//i.test(v), {
+      message: "Bild-URL muss mit http(s):// beginnen.",
+    }),
+  image_side: z.enum(["left", "right"]).optional(),
+});
+
+export const logoCloudDataSchema = z.object({
+  title: trimOptional(120),
+  items: z
+    .array(
+      z.object({
+        name: trimNonEmpty(80, "Name"),
+        url: trimOptional(2000),
+      }),
+    )
+    .min(2, "Mindestens 2 Einträge.")
+    .max(16, "Maximal 16 Einträge."),
+});
+
 /**
  * Validate a block's `data` payload by its declared `type`. The full
  * server actions layer this on top of a discriminated-union check.
@@ -140,6 +204,14 @@ export function dataSchemaFor(type: BlockType) {
       return statsDataSchema;
     case "rich_text":
       return richTextDataSchema;
+    case "pricing_table":
+      return pricingTableDataSchema;
+    case "steps":
+      return stepsDataSchema;
+    case "image_text_split":
+      return imageTextSplitDataSchema;
+    case "logo_cloud":
+      return logoCloudDataSchema;
   }
 }
 

@@ -197,6 +197,65 @@ export async function notifyNewBooking(
   }
 }
 
+/**
+ * Customer-facing confirmation email — fired when the owner flips a
+ * booking from `new` → `confirmed` in the dashboard. Best-effort: if
+ * Resend isn't configured, we silently skip.
+ */
+export type BookingConfirmationPayload = {
+  customerEmail: string;
+  customerName: string;
+  businessName: string;
+  slug: string;
+  preferred_date: string;
+  preferred_time: string | null;
+  service_title: string | null;
+};
+
+export async function notifyBookingConfirmation(
+  payload: BookingConfirmationPayload,
+): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const siteUrl = `${getSiteUrl()}/site/${payload.slug}`;
+  const timeStr = payload.preferred_time
+    ? `${escape(payload.preferred_date)} um ${escape(payload.preferred_time.slice(0, 5))} Uhr`
+    : escape(payload.preferred_date);
+  const serviceRow = payload.service_title
+    ? `<tr><td style="padding: 4px 0;"><strong>Leistung:</strong></td><td>${escape(payload.service_title)}</td></tr>`
+    : "";
+
+  try {
+    await resend.emails.send({
+      from: getMailFrom(),
+      to: payload.customerEmail,
+      subject: `Termin bestätigt — ${payload.businessName}`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+          <h2 style="margin: 0 0 8px 0;">Termin bestätigt</h2>
+          <p style="color: #666; margin: 0 0 24px 0;">Hallo ${escape(payload.customerName)},<br/>dein Termin bei <strong>${escape(payload.businessName)}</strong> wurde bestätigt.</p>
+          <table style="width: 100%; border-collapse: collapse; background: #f5ecd9; padding: 16px; border-radius: 8px;">
+            <tr><td style="padding: 8px;"><strong>Termin:</strong></td><td style="padding: 8px;">${timeStr}</td></tr>
+            ${serviceRow}
+          </table>
+          <p style="margin-top: 32px; color: #666;">
+            Bei Rückfragen oder Änderungen antworte einfach auf diese Mail.
+          </p>
+          <p style="margin-top: 24px;">
+            <a href="${siteUrl}" style="color: #3a2a1c; text-decoration: underline;">Zur Website</a>
+          </p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[notifyBookingConfirmation] resend failed", {
+      message: err instanceof Error ? err.message : String(err),
+      slug: payload.slug,
+    });
+  }
+}
+
 function escape(value: string): string {
   return value
     .replace(/&/g, "&amp;")
