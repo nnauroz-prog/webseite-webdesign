@@ -141,10 +141,12 @@ const COMPARISON: Array<{
 
 const PACKAGES = [
   {
+    slug: "starter",
     name: "Starter-Projekt",
     badge: "Schnell online",
     setup: "ab 499 €",
     monthly: "ab 49 € / Monat",
+    cta: "Starter anfragen",
     description:
       "Eine moderne Seite, alles Wichtige auf einen Blick. Perfekt für Einzelunternehmer und kleine Betriebe.",
     bullets: [
@@ -159,11 +161,13 @@ const PACKAGES = [
     ],
   },
   {
+    slug: "business",
     name: "Business-Auftritt",
     badge: "Beliebteste Wahl",
     highlight: true,
     setup: "ab 899 €",
     monthly: "ab 79 € / Monat",
+    cta: "Business anfragen",
     description:
       "Mehrere Sektionen, Team, Leistungen, Galerie. Für lokale Unternehmen, die professionell auftreten wollen.",
     bullets: [
@@ -178,10 +182,12 @@ const PACKAGES = [
     ],
   },
   {
+    slug: "premium",
     name: "Premium-System",
     badge: "Mit Kundenbereich",
     setup: "ab 1.499 €",
     monthly: "ab 129 € / Monat",
+    cta: "Premium anfragen",
     description:
       "Premium-Design mit Kundenbereich oder verwaltbaren Inhalten. Speisekarte, Wochenangebot, Buchungen — alles selbst pflegbar.",
     bullets: [
@@ -254,6 +260,16 @@ const FAQ = [
     question: "Gibt es monatliche Kosten?",
     answer:
       "Ja, wenn Hosting, Wartung, Änderungen und Support über uns laufen sollen. Die monatlichen Kosten hängen vom Paket ab (49 €, 79 € oder 129 €) und sind jederzeit zum Monatsende kündbar.",
+  },
+  {
+    question: "Warum gibt es Einstiegspreise und keine festen Endpreise?",
+    answer:
+      "Die Pakete geben eine klare Orientierung. Der finale Preis hängt davon ab, welche Inhalte vorhanden sind, welche Funktionen gewünscht werden und wie umfangreich die Website wird. Nach Ihrer Anfrage erhalten Sie eine klare Einschätzung.",
+  },
+  {
+    question: "Was soll ich auswählen, wenn ich unsicher bin?",
+    answer:
+      'Wählen Sie im Anfrageformular einfach „Ich bin unsicher". Wir prüfen Ihr Vorhaben und empfehlen Ihnen das passende Paket — kostenlos und unverbindlich.',
   },
   {
     question: "Sind Impressum und Datenschutz dabei?",
@@ -337,7 +353,10 @@ export default function HomePage() {
 
 function Hero() {
   return (
-    <section className="border-border/40 relative overflow-hidden border-b">
+    <section
+      id="start"
+      className="border-border/40 relative overflow-hidden border-b scroll-mt-20"
+    >
       <div
         className="from-secondary/40 absolute inset-0 -z-10 bg-gradient-to-b to-transparent"
         aria-hidden="true"
@@ -456,7 +475,7 @@ function Solutions() {
   return (
     <section
       id="leistungen"
-      className="border-border/40 border-b py-20 sm:py-28"
+      className="border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
@@ -496,7 +515,7 @@ function Steps() {
   return (
     <section
       id="ablauf"
-      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28"
+      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-5xl px-6">
         <header className="mx-auto max-w-2xl text-center">
@@ -543,7 +562,7 @@ function Comparison() {
   return (
     <section
       id="vergleich"
-      className="border-border/40 border-b py-20 sm:py-28"
+      className="border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-5xl px-6">
         <header className="mx-auto max-w-2xl text-center">
@@ -618,7 +637,10 @@ function Comparison() {
 
 function Industries() {
   return (
-    <section className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28">
+    <section
+      id="branchen"
+      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
+    >
       <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
@@ -836,8 +858,8 @@ function Examples() {
 function Pricing() {
   return (
     <section
-      id="preise"
-      className="bg-secondary/30 border-border/40 border-b py-20 sm:py-28"
+      id="pakete"
+      className="bg-secondary/30 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
@@ -910,14 +932,14 @@ function Pricing() {
               </ul>
               <div className="mt-auto pt-7">
                 <Link
-                  href="/anfrage"
+                  href={`/anfrage?paket=${p.slug}`}
                   className={`inline-flex h-11 w-full items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight transition-colors ${
                     p.highlight
                       ? "bg-background text-foreground hover:bg-background/90"
                       : "bg-foreground text-background hover:bg-foreground/90"
                   }`}
                 >
-                  Anfragen
+                  {p.cta}
                 </Link>
               </div>
             </li>
@@ -976,7 +998,7 @@ function Faq() {
   return (
     <section
       id="faq"
-      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28"
+      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-3xl px-6">
         <header className="text-center">
@@ -1025,7 +1047,10 @@ function Faq() {
 
 function FinalCta() {
   return (
-    <section className="bg-foreground text-background py-20 sm:py-28">
+    <section
+      id="kontakt"
+      className="bg-foreground text-background py-20 sm:py-28 scroll-mt-20"
+    >
       <div className="mx-auto w-full max-w-4xl px-6 text-center">
         <h2 className="text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-5xl">
           Bereit für eine Website,

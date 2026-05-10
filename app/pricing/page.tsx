@@ -14,10 +14,12 @@ export const metadata: Metadata = {
 
 const PACKAGES = [
   {
+    slug: "starter",
     name: "Starter-Projekt",
     badge: "Für kleine Betriebe",
     setup: "499 €",
     monthly: "49 €",
+    cta: "Starter anfragen",
     description:
       "Eine moderne Seite, alles Wichtige auf einen Blick. Perfekt, um schnell professionell auftreten zu können.",
     bullets: [
@@ -33,11 +35,13 @@ const PACKAGES = [
     ],
   },
   {
+    slug: "business",
     name: "Business-Auftritt",
     badge: "Beliebteste Wahl",
     highlight: true,
     setup: "899 €",
     monthly: "79 €",
+    cta: "Business anfragen",
     description:
       "Mehrere professionelle Sektionen. Für Unternehmen, die mehr brauchen als einen Onepager.",
     bullets: [
@@ -54,10 +58,12 @@ const PACKAGES = [
     ],
   },
   {
+    slug: "premium",
     name: "Premium-System",
     badge: "Mit Kundenbereich",
     setup: "1.499 €",
     monthly: "129 €",
+    cta: "Premium anfragen",
     description:
       "Premium-Design mit Kundenbereich. Sie pflegen Speisekarte, Wochenangebot oder Termine selbst.",
     bullets: [
@@ -242,14 +248,14 @@ function Packages() {
               </ul>
               <div className="mt-auto pt-7">
                 <Link
-                  href="/anfrage"
+                  href={`/anfrage?paket=${p.slug}`}
                   className={`inline-flex h-11 w-full items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight transition-colors ${
                     p.highlight
                       ? "bg-background text-foreground hover:bg-background/90"
                       : "bg-foreground text-background hover:bg-foreground/90"
                   }`}
                 >
-                  Paket anfragen
+                  {p.cta}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </div>

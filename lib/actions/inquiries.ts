@@ -45,8 +45,9 @@ export async function submitInquiryAction(
     has_website: formData.get("has_website") === "ja",
     current_website: formData.get("current_website"),
     needs: formData.getAll("needs"),
+    selected_package: formData.get("selected_package"),
+    special_features: formData.getAll("special_features"),
     timeframe: formData.get("timeframe"),
-    budget: formData.get("budget"),
     message: formData.get("message"),
     consent: formData.get("consent"),
   });
@@ -67,8 +68,9 @@ export async function submitInquiryAction(
     has_website: data.has_website,
     current_website: data.current_website ?? null,
     needs: data.needs,
+    selected_package: data.selected_package ?? null,
+    special_features: data.special_features,
     timeframe: data.timeframe ?? null,
-    budget: data.budget ?? null,
     message: data.message ?? null,
   });
 
@@ -94,8 +96,9 @@ export async function submitInquiryAction(
         has_website: data.has_website,
         current_website: data.current_website ?? null,
         needs: data.needs,
+        selected_package: data.selected_package ?? null,
+        special_features: data.special_features,
         timeframe: data.timeframe ?? null,
-        budget: data.budget ?? null,
         message: data.message ?? null,
       },
     });

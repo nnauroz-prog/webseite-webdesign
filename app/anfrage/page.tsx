@@ -4,6 +4,10 @@ import Link from "next/link";
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import {
+  INQUIRY_PACKAGES,
+  type InquiryPackage,
+} from "@/lib/validations/inquiries";
 
 export const metadata: Metadata = {
   title: "Website anfragen — Sitalo",
@@ -18,7 +22,29 @@ const TRUST = [
   "Unverbindlich & kostenlos",
 ];
 
-export default function AnfragePage() {
+/**
+ * Read the `?paket=` query parameter and clamp it to a valid
+ * `InquiryPackage` value. Unknown values are dropped so we never
+ * preselect garbage.
+ */
+function resolveInitialPackage(
+  raw: string | string[] | undefined,
+): InquiryPackage | undefined {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  if (!value) return undefined;
+  return (INQUIRY_PACKAGES as readonly string[]).includes(value)
+    ? (value as InquiryPackage)
+    : undefined;
+}
+
+export default async function AnfragePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ paket?: string }>;
+}) {
+  const params = await searchParams;
+  const initialPackage = resolveInitialPackage(params.paket);
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -97,7 +123,7 @@ export default function AnfragePage() {
             </div>
 
             <div>
-              <InquiryForm />
+              <InquiryForm initialPackage={initialPackage} />
             </div>
           </div>
         </section>
