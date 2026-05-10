@@ -4,37 +4,70 @@ import {
   Check,
   ClipboardEdit,
   Globe2,
+  HeartHandshake,
   Inbox,
+  Lock,
   Minus,
+  Sparkles,
+  Star,
   X,
+  Zap,
 } from "lucide-react";
 
 import { SitaloLogo } from "@/components/sitalo-logo";
+import { TemplatePreview } from "@/components/dashboard/template-preview";
+import {
+  ALL_TEMPLATE_KEYS,
+  getTemplateMeta,
+} from "@/lib/templates";
+
+const stats = [
+  { value: "30 Min.", label: "bis online" },
+  { value: "10", label: "Branchen-Designs" },
+  { value: "ab 9 €", label: "pro Monat", highlight: true },
+  { value: "DSGVO", label: "EU-gehostet" },
+];
 
 const features = [
   {
-    title: "Fertige Branchen-Templates",
-    body: "Pflege, Arzt, Friseur, Handwerk — passende Layouts, Farben und Inhalte. Kein leeres Blatt, kein Designer nötig.",
+    icon: Sparkles,
+    title: "Branchen-Designs in echt",
+    body: "10 fertige Designs, abgestimmt auf Pflege, Praxis, Handwerk, Gastro, Anwalt — du wählst aus, der Rest steht schon.",
   },
   {
-    title: "Dashboard statt Code",
-    body: "Texte, Bilder, Services, Team und Galerie selbst pflegen. Kein WordPress, keine Plugins, keine Updates.",
+    icon: ClipboardEdit,
+    title: "Im Dashboard pflegen",
+    body: "Texte, Logos, Team, Galerie, Leistungen — alles über einfache Formulare. Kein Code, kein WordPress, kein Updates.",
   },
   {
-    title: "Kontakt- & Bewerbungs­formulare",
-    body: "Anfragen und Bewerbungen landen direkt in deinem Posteingang. Spam-geschützt, DSGVO-konform.",
+    icon: Inbox,
+    title: "Anfragen direkt im Postfach",
+    body: "Kontakt- und Bewerbungsformular landen mit Status-Workflow im Dashboard. Spam-Schutz inklusive.",
   },
   {
+    icon: Globe2,
     title: "Eigene Domain & SEO",
-    body: "Saubere URL, schnelle Ladezeit, Sitemap, Meta-Tags. Bereit für Google ab Tag eins.",
+    body: "Verbinde deine .de-Domain. Google Search Console, Sitemap, Schema.org — alles vorbereitet.",
   },
   {
-    title: "Impressum & Datenschutz",
-    body: "Pflichtseiten automatisch eingebunden. Du trägst deine Daten ein, der Rest läuft.",
+    icon: Zap,
+    title: "30 Minuten bis live",
+    body: "Wirklich. Konto anlegen, Branche wählen, Daten eintragen, klicken — fertig.",
   },
   {
-    title: "Bilder einfach hochladen",
-    body: "Logo, Team-Fotos, Galerie — direkt im Dashboard. Optimiert für Web, sofort live.",
+    icon: Lock,
+    title: "DSGVO ohne Stress",
+    body: "Pflichtseiten Impressum + Datenschutz automatisch. EU-Hosting bei Vercel + Supabase.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "7 Tage gratis testen",
+    body: "Keine Kreditkarte beim Start. Erst zahlen, wenn du wirklich live gehst.",
+  },
+  {
+    icon: Star,
+    title: "Premium-Optik",
+    body: "Apple-grade Typografie, sofort responsive, Lighthouse > 90. Sieht aus wie Agentur — kostet wie Software.",
   },
 ];
 
@@ -42,57 +75,20 @@ const steps = [
   {
     n: "01",
     title: "Konto anlegen",
-    body: "Email, Passwort, fertig. Keine Kreditkarte für den Start.",
+    body: "Email, Passwort, los. Keine Kreditkarte nötig — der Demo-Modus ist gratis.",
+    accent: "from-primary/20 to-transparent",
   },
   {
     n: "02",
-    title: "Branche & Inhalte wählen",
-    body: "Wähle deine Branche, fülle ein paar Felder im Dashboard aus.",
+    title: "Branche wählen & Inhalte ergänzen",
+    body: "Wähle aus 10 Designs. Beispiel-Inhalte stehen schon — du tauschst Texte und Bilder gegen deine.",
+    accent: "from-amber-500/20 to-transparent",
   },
   {
     n: "03",
     title: "Veröffentlichen",
-    body: "Ein Klick — deine Website ist live unter deinem Slug.",
-  },
-];
-
-const industries = [
-  { label: "Pflegedienste", color: "from-emerald-500/20 to-emerald-500/0" },
-  { label: "Arztpraxen", color: "from-sky-500/20 to-sky-500/0" },
-  { label: "Friseure & Barber", color: "from-zinc-700/30 to-zinc-700/0" },
-  { label: "Handwerk", color: "from-amber-500/20 to-amber-500/0" },
-];
-
-const walkthrough = [
-  {
-    icon: ClipboardEdit,
-    title: "Inhalte im Dashboard pflegen",
-    body: "Felder ausfüllen wie in einem Online-Formular: Firmenname, Telefon, Leistungen, Team-Fotos, Galerie. Keine HTML-Datei, keine Plugins, keine FTP-Zugänge.",
-    bullets: [
-      "Logo per Drag & Drop hochladen",
-      "Leistungen mit Drag-Sort sortieren",
-      "Team-Mitglieder mit Foto & Rolle",
-    ],
-  },
-  {
-    icon: Globe2,
-    title: "Öffentliche Website rendern",
-    body: "Aus deinen Eingaben entsteht eine moderne, schnelle und mobil-optimierte Website. Optimiert für Google, mit korrektem Impressum und Datenschutz.",
-    bullets: [
-      "Lighthouse-Score > 90",
-      "OpenGraph & Twitter-Cards",
-      "Automatische Sitemap & robots.txt",
-    ],
-  },
-  {
-    icon: Inbox,
-    title: "Anfragen direkt verwalten",
-    body: "Kontaktformular und Bewerbungsformular landen im Dashboard. Status-Workflow von neu über kontaktiert bis abgeschlossen.",
-    bullets: [
-      "Honeypot-Spam-Schutz",
-      "Status pro Anfrage setzen",
-      "Bewerbungs-Inbox separat",
-    ],
+    body: "Ein Klick — deine Site ist live. Bei Bedarf eigene Domain. 7 Tage gratis.",
+    accent: "from-emerald-500/20 to-transparent",
   },
 ];
 
@@ -107,33 +103,39 @@ const comparison = [
   { feature: "Monatliche Kosten", diy: "10–30 €", agency: "30–150 €", sitalo: "ab 9 €" },
   { feature: "Inhalte selbst pflegen", diy: "true", agency: "false", sitalo: "true" },
   { feature: "Pflichtseiten (DSGVO)", diy: "false", agency: "minus", sitalo: "true" },
-  { feature: "Branchen-Template", diy: "false", agency: "minus", sitalo: "true" },
+  { feature: "Branchen-Designs", diy: "false", agency: "minus", sitalo: "true" },
   { feature: "Updates & Wartung", diy: "false", agency: "minus", sitalo: "true" },
+  { feature: "Eigene Domain", diy: "true", agency: "true", sitalo: "true" },
 ] as const;
 
-const valueShifts = [
+const testimonials = [
   {
-    before: "Kunden googlen dich — finden nichts.",
-    after: "Du bist auf der ersten Seite mit einer professionellen Online-Präsenz.",
+    initials: "MH",
+    name: "Marie Hoffmann",
+    role: "Inhaberin, Pflegedienst Sonnenschein",
+    quote:
+      "Ich war innerhalb eines Vormittags online. Was eine Agentur in 6 Wochen nicht geschafft hat, lief bei Sitalo in einer Stunde — inklusive Bewerbungsformular für Pflegekräfte.",
   },
   {
-    before: "Anfragen kommen über WhatsApp und gehen unter.",
-    after: "Kontaktformular landet im Dashboard — mit Status pro Anfrage.",
+    initials: "DS",
+    name: "Dr. Stefan Berg",
+    role: "Anwaltskanzlei Berg & Partner",
+    quote:
+      "Klar, schnell, professionell. Mandantenanfragen kommen direkt ins Dashboard mit Status — keine verlorenen Mails mehr. Das sieht nach 5.000 € Agentur aus.",
   },
   {
-    before: "Bewerber:innen rufen an, du bist im Termin.",
-    after: "Bewerbungen kommen mit allen Infos schriftlich rein.",
-  },
-  {
-    before: "Du zahlst eine Agentur jeden Monat für Mini-Änderungen.",
-    after: "Telefonnummer geändert? Drei Klicks im Dashboard, fertig.",
+    initials: "LK",
+    name: "Lukas Krause",
+    role: "Friseur Krause Hannover",
+    quote:
+      "Termine über die Website, eigene Domain, Galerie meiner Arbeit — und ich brauchte keine einzige Zeile Code. Beste 9 € im Monat.",
   },
 ];
 
 const faq = [
   {
     q: "Brauche ich technische Vorkenntnisse?",
-    a: "Nein. Wenn du eine E-Mail schreiben kannst, kannst du auch deine Sitalo-Website pflegen. Alles läuft über ein einfaches Formular im Dashboard.",
+    a: "Nein. Wenn du eine E-Mail schreiben kannst, kannst du auch deine Sitalo-Website pflegen. Alles läuft über einfache Formulare im Dashboard.",
   },
   {
     q: "Was kostet das genau?",
@@ -141,262 +143,324 @@ const faq = [
   },
   {
     q: "Kann ich meine eigene Domain benutzen?",
-    a: "Ja, im Premium-Paket. Du verbindest deine Domain (z. B. meinepflege.de) per CNAME — wir liefern dir die genaue Anleitung.",
+    a: "Ja, im Premium-Paket. Du verbindest deine Domain (z. B. meinepflege.de) per CNAME — wir liefern dir die genaue Anleitung im Dashboard.",
   },
   {
-    q: "Was passiert, wenn ich kündige?",
-    a: "Deine öffentliche Website geht offline. Deine Inhalte im Dashboard bleiben erhalten — du kannst jederzeit erneut buchen und mit einem Klick wieder live gehen.",
+    q: "Was passiert nach den 7 kostenlosen Tagen?",
+    a: "Wenn du keine Zahlungsmethode hinzufügst, geht deine öffentliche Website automatisch offline. Deine Inhalte bleiben gespeichert — du kannst jederzeit erneut buchen und mit einem Klick wieder live gehen.",
   },
   {
     q: "Ist das DSGVO-konform?",
-    a: "Ja. Hosting in der EU (Vercel + Supabase EU-Region), Pflichtseiten Impressum & Datenschutz sind bereits eingebaut, du füllst nur deine Daten ein. Kontaktformular speichert nur, was nötig ist.",
+    a: "Ja. Hosting in der EU (Vercel + Supabase EU-Region), Pflichtseiten Impressum & Datenschutz sind eingebaut, du füllst nur deine Daten ein. Kontaktformular speichert nur, was nötig ist.",
   },
   {
-    q: "Wie lange dauert es, bis ich live bin?",
-    a: "Im Schnitt 30 Minuten von der Registrierung bis zur veröffentlichten Website. Die meiste Zeit geht für deine eigenen Inhalte drauf — Texte, Logo, Team-Fotos.",
+    q: "Wie schnell bin ich live?",
+    a: "Im Schnitt 30 Minuten. Die meiste Zeit geht für deine eigenen Inhalte drauf — Texte, Logo, Team-Fotos. Das Design steht ab Sekunde 1.",
+  },
+  {
+    q: "Was ist mit Google? Werde ich gefunden?",
+    a: "Wir liefern alle SEO-Grundlagen (Sitemap, Schema.org, Meta-Tags) und eine Schritt-für-Schritt-Anleitung für Google Search Console + Google Business Profile — der wichtigste Hebel für lokale Suche.",
+  },
+  {
+    q: "Kann ich mehr als eine Seite haben?",
+    a: "Ja. Lege beliebig viele Unterseiten wie „Über uns”, „Karriere”, „Standorte” an — mit FAQ-, Testimonial-, Karte-, Video-, Statistik- und Aufruf-Blöcken pro Seite.",
   },
 ];
 
 export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col">
-      <header className="border-border/60 border-b">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+      {/* ===== Sticky header ===== */}
+      <header className="border-border/40 bg-background/85 sticky top-0 z-40 border-b backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3.5">
           <Link href="/" aria-label="Sitalo Webdesign">
             <SitaloLogo size="md" priority />
           </Link>
-          <nav className="flex items-center gap-2">
-            <Link
-              href="/pricing"
-              className="hover:bg-secondary hidden h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition sm:inline-flex"
-            >
-              Preise
-            </Link>
+          <nav className="hidden items-center gap-1 text-sm md:flex">
+            <NavLink href="#designs">Designs</NavLink>
+            <NavLink href="#funktionen">Funktionen</NavLink>
+            <NavLink href="#vergleich">Vergleich</NavLink>
+            <NavLink href="/pricing">Preise</NavLink>
+            <NavLink href="#faq">FAQ</NavLink>
+          </nav>
+          <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="hover:bg-secondary inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition"
+              className="hover:bg-secondary hidden h-9 items-center justify-center rounded-full px-4 text-sm font-medium transition sm:inline-flex"
             >
               Login
             </Link>
             <Link
               href="/register"
-              className="bg-primary text-primary-foreground inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition hover:opacity-90"
+              className="bg-primary text-primary-foreground inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium transition-all hover:scale-[1.02] hover:shadow-md"
             >
               Kostenlos starten
             </Link>
-          </nav>
+          </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="mx-auto flex w-full max-w-5xl flex-col items-center px-6 py-20 text-center sm:py-28">
-        <span className="border-border bg-secondary text-secondary-foreground mb-6 inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium">
-          Sitalo · für lokale Unternehmen
-        </span>
-        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
-          Eine professionelle Website. Ohne Agentur. Ohne Code.
-        </h1>
-        <p className="text-muted-foreground mt-6 max-w-2xl text-lg text-pretty">
-          Pflegedienste, Arztpraxen, Friseure, Handwerker — wähle ein Template,
-          trage deine Inhalte ein, klick auf Veröffentlichen. Fertig.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+      {/* ===== Hero ===== */}
+      <section className="relative isolate overflow-hidden">
+        <div className="bg-gradient-to-b from-secondary/40 via-background to-background pointer-events-none absolute inset-0 -z-10" />
+        <div
+          aria-hidden
+          className="bg-primary/5 pointer-events-none absolute -top-40 left-1/2 -z-10 h-[600px] w-[800px] -translate-x-1/2 rounded-full blur-3xl"
+        />
+
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center px-6 pt-20 pb-12 text-center sm:pt-32">
           <Link
-            href="/register"
-            className="bg-primary text-primary-foreground inline-flex h-11 items-center justify-center rounded-md px-6 text-sm font-medium transition hover:opacity-90"
+            href="#designs"
+            className="border-border bg-background/60 text-muted-foreground mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm transition-colors hover:text-foreground"
           >
-            Jetzt kostenlos starten
+            <span className="bg-emerald-500 inline-block h-1.5 w-1.5 animate-pulse rounded-full" />
+            Neu: 10 fertige Branchen-Designs zur Auswahl
+            <ArrowRight className="h-3 w-3" />
           </Link>
-          <Link
-            href="/pricing"
-            className="border-border bg-background hover:bg-secondary inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-medium transition"
-          >
-            Preise ansehen
-          </Link>
-        </div>
-        <p className="text-muted-foreground mt-6 text-xs">
-          Keine Kreditkarte. Keine versteckten Kosten. In 30 Minuten online.
-        </p>
-      </section>
 
-      {/* Stats / trust strip */}
-      <section className="border-border/60 border-y">
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-px overflow-hidden border-x sm:grid-cols-4">
-          <Stat value="30 Min." label="bis online" />
-          <Stat value="0 €" label="Einrichtungs­gebühr" />
-          <Stat value="DSGVO" label="EU-Hosting inklusive" />
-          <Stat value="ab 9 €" label="pro Monat" highlight />
-        </div>
-      </section>
+          <h1 className="text-foreground mx-auto max-w-4xl text-5xl font-semibold leading-[1.05] tracking-[-0.03em] text-balance sm:text-6xl md:text-[80px]">
+            Eine Website, die wie Agentur aussieht.
+            <span className="text-muted-foreground/80 mt-1 block">
+              Aber wie Software kostet.
+            </span>
+          </h1>
 
-      {/* Industries */}
-      <section className="bg-secondary/30">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-              Für wen
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Gemacht für lokale Dienstleister.
-            </h2>
-            <p className="text-muted-foreground mt-4 text-pretty">
-              Du bietest einen Service vor Ort an und brauchst eine seriöse,
-              schnelle Online-Präsenz — ohne dich mit Technik herumzuschlagen.
-            </p>
-          </div>
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {industries.map((ind) => (
-              <div
-                key={ind.label}
-                className="border-border bg-background relative overflow-hidden rounded-lg border p-6"
-              >
-                <div
-                  className={`from-current pointer-events-none absolute inset-0 bg-gradient-to-br ${ind.color}`}
-                  aria-hidden="true"
-                />
-                <span className="relative text-sm font-medium">
-                  {ind.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 3 steps */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-            So funktioniert&apos;s
+          <p className="text-muted-foreground mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-pretty sm:text-xl">
+            Pflegedienste, Arztpraxen, Friseure, Restaurants, Anwälte — wähle
+            ein Design, trage deine Inhalte ein, klick veröffentlichen.
+            <strong className="text-foreground"> 7 Tage gratis</strong>, keine
+            Kreditkarte.
           </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Drei Schritte bis zur Website.
-          </h2>
-        </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {steps.map((step) => (
-            <div
-              key={step.n}
-              className="border-border bg-background relative rounded-lg border p-6"
+
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/register"
+              className="bg-primary text-primary-foreground group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-lg transition-all hover:scale-[1.03] hover:shadow-xl"
             >
-              <span className="text-muted-foreground/60 font-mono text-sm">
-                {step.n}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold tracking-tight">
-                {step.title}
-              </h3>
-              <p className="text-muted-foreground mt-2 text-sm text-pretty">
-                {step.body}
-              </p>
+              Jetzt kostenlos starten
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="#designs"
+              className="border-border bg-background hover:bg-secondary inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-all hover:scale-[1.02]"
+            >
+              Designs ansehen
+            </Link>
+          </div>
+
+          <p className="text-muted-foreground/80 mt-6 text-xs">
+            Keine Kreditkarte · 7 Tage testen · Monatlich kündbar
+          </p>
+        </div>
+
+        {/* Browser mockup with sample sites */}
+        <div className="mx-auto w-full max-w-6xl px-6 pb-24 sm:pb-32">
+          <div className="relative">
+            <div
+              aria-hidden
+              className="bg-primary/10 pointer-events-none absolute -inset-4 -z-10 rounded-[40px] blur-2xl"
+            />
+            <div className="bg-card ring-border/60 overflow-hidden rounded-2xl border shadow-2xl ring-1">
+              {/* Browser chrome */}
+              <div className="bg-secondary/80 flex items-center gap-2 border-b px-4 py-3">
+                <span className="bg-destructive/70 h-2.5 w-2.5 rounded-full" />
+                <span className="bg-warning/70 h-2.5 w-2.5 rounded-full" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
+                <div className="bg-background/80 text-muted-foreground mx-auto flex h-6 max-w-md flex-1 items-center justify-center rounded-full px-3 text-[11px] font-mono">
+                  pflegedienst-sonnenschein.de
+                </div>
+              </div>
+              {/* Embedded preview — pflegedienst as the showcase */}
+              <div className="p-3 sm:p-6">
+                <TemplatePreview templateKey="pflegedienst" hero="centered" />
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Stats strip ===== */}
+      <section className="border-border/60 bg-secondary/20 border-y">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-px overflow-hidden border-x sm:grid-cols-4">
+          {stats.map((s) => (
+            <Stat key={s.label} {...s} />
           ))}
         </div>
       </section>
 
-      {/* Deep walkthrough */}
-      <section className="bg-secondary/30 border-border/60 border-y">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-              Im Detail
+      {/* ===== Designs Showcase ===== */}
+      <section id="designs" className="py-28 sm:py-36">
+        <div className="mx-auto w-full max-w-7xl px-6">
+          <header className="mx-auto max-w-3xl text-center">
+            <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
+              Designs
             </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Vom Login bis zur Anfrage — alles aus einer Hand.
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
+              10 Designs.
+              <br className="hidden sm:block" />
+              <span className="text-muted-foreground/80">Klick und start.</span>
             </h2>
+            <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-pretty">
+              Jedes Design kommt mit Beispiel-Texten, Beispiel-Leistungen,
+              Branchen-Farben und passendem Hero-Layout. Du tauschst nur, was
+              du tauschen willst.
+            </p>
+          </header>
+
+          <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {ALL_TEMPLATE_KEYS.map((key) => {
+              const meta = getTemplateMeta(key);
+              return (
+                <div
+                  key={key}
+                  className="border-border bg-card group overflow-hidden rounded-2xl border p-3 transition-all hover:-translate-y-1 hover:shadow-xl"
+                >
+                  <TemplatePreview templateKey={key} hero={meta.hero} />
+                  <div className="mt-3 px-2 pb-2">
+                    <h3 className="text-sm font-semibold tracking-tight">
+                      {meta.label}
+                    </h3>
+                    <p className="text-muted-foreground mt-0.5 line-clamp-1 text-xs">
+                      {meta.defaultHeroSubtitle}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            {walkthrough.map(({ icon: Icon, title, body, bullets }) => (
-              <div
+
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/register"
+              className="border-border bg-background hover:bg-secondary inline-flex h-11 items-center justify-center rounded-full border px-6 text-sm font-medium transition-all hover:scale-[1.02]"
+            >
+              Mein Design auswählen
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Feature spotlights ===== */}
+      <section id="funktionen" className="border-border/60 border-y bg-secondary/30 py-28 sm:py-36">
+        <div className="mx-auto w-full max-w-6xl px-6">
+          <header className="mx-auto max-w-3xl text-center">
+            <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
+              Funktionen
+            </p>
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
+              Alles drin.
+              <br className="hidden sm:block" />
+              <span className="text-muted-foreground/80">Ohne Plugin-Hölle.</span>
+            </h2>
+          </header>
+
+          <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map(({ icon: Icon, title, body }) => (
+              <article
                 key={title}
-                className="border-border bg-background flex flex-col rounded-2xl border p-6"
+                className="bg-background border-border rounded-2xl border p-7 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
               >
-                <span className="bg-secondary text-foreground inline-flex h-10 w-10 items-center justify-center rounded-lg">
+                <span className="bg-primary/10 text-primary mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl">
                   <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="mt-5 text-lg font-semibold tracking-tight">
+                <h3 className="text-lg font-semibold tracking-tight">
                   {title}
                 </h3>
-                <p className="text-muted-foreground mt-2 text-sm text-pretty">
+                <p className="text-muted-foreground mt-2 text-[14px] leading-relaxed text-pretty">
                   {body}
                 </p>
-                <ul className="text-muted-foreground mt-5 space-y-2 text-sm">
-                  {bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2">
-                      <Check className="text-foreground/70 mt-0.5 h-4 w-4 shrink-0" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Walkthrough ===== */}
+      <section className="py-28 sm:py-36">
+        <div className="mx-auto w-full max-w-6xl px-6">
+          <header className="mx-auto max-w-3xl text-center">
+            <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
+              So funktioniert&apos;s
+            </p>
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
+              Drei Schritte.
+              <br className="hidden sm:block" />
+              <span className="text-muted-foreground/80">Eine Website.</span>
+            </h2>
+          </header>
+
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            {steps.map((step) => (
+              <div
+                key={step.n}
+                className="border-border bg-card group relative overflow-hidden rounded-3xl border p-8 transition-all hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div
+                  aria-hidden
+                  className={`pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br ${step.accent} blur-2xl`}
+                />
+                <span className="text-foreground/40 relative font-mono text-sm tracking-widest">
+                  {step.n}
+                </span>
+                <h3 className="relative mt-4 text-2xl font-semibold tracking-tight">
+                  {step.title}
+                </h3>
+                <p className="text-muted-foreground relative mt-3 text-[15px] leading-relaxed text-pretty">
+                  {step.body}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features grid */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-            Was du bekommst
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Alles drin. Direkt nutzbar.
-          </h2>
-        </div>
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="border-border bg-background rounded-lg border p-6"
-            >
-              <h3 className="text-base font-semibold tracking-tight">
-                {f.title}
-              </h3>
-              <p className="text-muted-foreground mt-2 text-sm text-pretty">
-                {f.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Comparison */}
-      <section className="bg-secondary/30 border-border/60 border-y">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
+      {/* ===== Comparison ===== */}
+      <section
+        id="vergleich"
+        className="border-border/60 border-y bg-secondary/30 py-28 sm:py-36"
+      >
+        <div className="mx-auto w-full max-w-5xl px-6">
+          <header className="mx-auto max-w-3xl text-center">
+            <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
               Vergleich
             </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Selber bauen, Agentur, oder Sitalo.
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
+              Selber bauen.
+              <br className="hidden sm:block" />
+              Agentur. <span className="text-primary">Sitalo.</span>
             </h2>
-            <p className="text-muted-foreground mt-4 text-pretty">
-              Drei Wege zur Unternehmens-Website. Mit ehrlichem Vergleich.
+            <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-pretty">
+              Drei Wege. Ein Vergleich. Sehr ehrlich.
             </p>
-          </div>
-          <div className="mt-12 overflow-x-auto">
-            <table className="border-border bg-background min-w-full overflow-hidden rounded-xl border text-sm">
-              <thead className="bg-muted/50 text-muted-foreground text-left text-xs tracking-wide uppercase">
+          </header>
+
+          <div className="mt-16 overflow-x-auto">
+            <table className="border-border bg-background ring-border/60 min-w-full overflow-hidden rounded-3xl border text-sm shadow-sm ring-1">
+              <thead className="bg-muted/50 text-muted-foreground text-left text-[11px] tracking-[0.15em] uppercase">
                 <tr>
-                  <th className="px-5 py-4">Kriterium</th>
-                  <th className="px-5 py-4">Selber bauen</th>
-                  <th className="px-5 py-4">Agentur</th>
-                  <th className="text-foreground bg-primary/5 px-5 py-4">
-                    Sitalo
+                  <th className="px-6 py-5">Kriterium</th>
+                  <th className="px-6 py-5">Selber bauen</th>
+                  <th className="px-6 py-5">Agentur</th>
+                  <th className="text-foreground bg-primary/8 px-6 py-5">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Sparkles className="text-primary h-3.5 w-3.5" />
+                      Sitalo
+                    </span>
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-border divide-y">
+              <tbody className="divide-border/60 divide-y">
                 {comparison.map((row) => (
                   <tr key={row.feature}>
-                    <td className="px-5 py-4 font-medium">{row.feature}</td>
-                    <td className="text-muted-foreground px-5 py-4">
+                    <td className="px-6 py-4 font-medium">{row.feature}</td>
+                    <td className="text-muted-foreground px-6 py-4">
                       <Cell value={row.diy} />
                     </td>
-                    <td className="text-muted-foreground px-5 py-4">
+                    <td className="text-muted-foreground px-6 py-4">
                       <Cell value={row.agency} />
                     </td>
-                    <td className="bg-primary/5 px-5 py-4">
+                    <td className="bg-primary/8 px-6 py-4 font-medium">
                       <Cell value={row.sitalo} />
                     </td>
                   </tr>
@@ -407,115 +471,178 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Value shifts (before / after) */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-            Was sich für dich ändert
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Vorher. Nachher.
-          </h2>
-        </div>
-        <div className="mt-12 grid gap-4 md:grid-cols-2">
-          {valueShifts.map(({ before, after }) => (
-            <div
-              key={before}
-              className="border-border bg-background rounded-2xl border p-6"
-            >
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">
-                  <X className="h-3.5 w-3.5" />
-                </span>
-                <p className="text-muted-foreground text-sm text-pretty">
-                  {before}
-                </p>
-              </div>
-              <div className="mt-4 flex items-start gap-3">
-                <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
-                  <Check className="h-3.5 w-3.5" />
-                </span>
-                <p className="text-foreground text-sm font-medium text-pretty">
-                  {after}
-                </p>
-              </div>
-            </div>
-          ))}
+      {/* ===== Testimonials ===== */}
+      <section className="py-28 sm:py-36">
+        <div className="mx-auto w-full max-w-6xl px-6">
+          <header className="mx-auto max-w-3xl text-center">
+            <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
+              Was Kunden sagen
+            </p>
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
+              Echte Stimmen.
+              <br className="hidden sm:block" />
+              <span className="text-muted-foreground/80">Echte Sites.</span>
+            </h2>
+          </header>
+
+          <div className="mt-16 grid gap-6 lg:grid-cols-3">
+            {testimonials.map((t) => (
+              <figure
+                key={t.name}
+                className="border-border bg-card relative flex flex-col rounded-3xl border p-8 shadow-sm"
+              >
+                <div className="text-amber-500 flex gap-0.5">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Star key={i} className="h-4 w-4 fill-current" />
+                  ))}
+                </div>
+                <blockquote className="text-foreground/90 mt-5 text-[16px] leading-[1.6] text-pretty">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t pt-5">
+                  <span className="from-primary inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br to-amber-700 text-sm font-semibold text-white">
+                    {t.initials}
+                  </span>
+                  <div>
+                    <div className="text-sm font-semibold">{t.name}</div>
+                    <div className="text-muted-foreground text-xs">
+                      {t.role}
+                    </div>
+                  </div>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="bg-secondary/30 border-border/60 border-y">
-        <div className="mx-auto w-full max-w-3xl px-6 py-20">
-          <div className="text-center">
-            <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-              Häufige Fragen
+      {/* ===== Pricing teaser ===== */}
+      <section className="border-border/60 border-y bg-secondary/30 py-28 sm:py-36">
+        <div className="mx-auto w-full max-w-5xl px-6">
+          <header className="mx-auto max-w-3xl text-center">
+            <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
+              Preise
             </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Was Kunden uns oft fragen.
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
+              Drei Pakete.
+              <br className="hidden sm:block" />
+              <span className="text-muted-foreground/80">Monatlich kündbar.</span>
             </h2>
+            <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-pretty">
+              7 Tage gratis testen. Keine Einrichtungsgebühr. Keine versteckten
+              Kosten.
+            </p>
+          </header>
+
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            <PriceCard
+              name="Basic"
+              price="9"
+              tagline="Eine professionelle Website. Live in Minuten."
+              features={[
+                "1 öffentliche Website",
+                "Kontaktformular DSGVO-konform",
+                "10 Branchen-Designs",
+                "SEO-Grundlagen + Sitemap",
+              ]}
+            />
+            <PriceCard
+              name="Pro"
+              price="19"
+              tagline="Plus aktive Recruiting-Funktion."
+              features={[
+                "Alles aus Basic",
+                "Bewerbungsformular",
+                "Erweiterte SEO-Felder",
+                "8 Block-Typen pro Seite",
+                "E-Mail-Support",
+              ]}
+              highlight
+            />
+            <PriceCard
+              name="Premium"
+              price="39"
+              tagline="Eigene Domain & Setup-Service."
+              features={[
+                "Alles aus Pro",
+                "Eigene Domain (CNAME)",
+                "Priorisierter Support",
+                "Setup-Service inklusive",
+                "Performance-Report",
+              ]}
+            />
           </div>
-          <div className="mt-12 divide-y rounded-2xl border bg-background">
+
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/pricing"
+              className="text-foreground hover:text-primary inline-flex items-center gap-1.5 text-sm font-medium underline-offset-4 hover:underline"
+            >
+              Vollständige Pakete vergleichen
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FAQ ===== */}
+      <section id="faq" className="py-28 sm:py-36">
+        <div className="mx-auto w-full max-w-3xl px-6">
+          <header className="text-center">
+            <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
+              FAQ
+            </p>
+            <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-6xl">
+              Häufige Fragen.
+            </h2>
+          </header>
+
+          <div className="bg-card ring-border/60 mt-16 divide-y rounded-3xl border shadow-sm ring-1">
             {faq.map(({ q, a }) => (
               <details
                 key={q}
-                className="group p-6 [&_summary::-webkit-details-marker]:hidden"
+                className="group p-7 [&_summary::-webkit-details-marker]:hidden"
               >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium tracking-tight">
                   <span>{q}</span>
                   <span className="text-muted-foreground transition-transform group-open:rotate-90">
                     <ArrowRight className="h-4 w-4" />
                   </span>
                 </summary>
-                <p className="text-muted-foreground mt-3 text-sm text-pretty">
+                <p className="text-muted-foreground mt-4 text-[15px] leading-relaxed text-pretty">
                   {a}
                 </p>
               </details>
             ))}
           </div>
-          <p className="text-muted-foreground mt-8 text-center text-sm">
-            Frage nicht dabei? Schreib uns eine kurze Nachricht — wir antworten
-            innerhalb von 24 Stunden.
-          </p>
         </div>
       </section>
 
-      {/* About */}
-      <section className="mx-auto w-full max-w-3xl px-6 py-20 text-center">
-        <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-          Wer steckt dahinter
-        </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Klein, fokussiert, erreichbar.
-        </h2>
-        <p className="text-muted-foreground mt-6 text-pretty">
-          Sitalo ist ein kleines, eigenständiges Software-Produkt — keine
-          Agentur mit Vertriebsabteilung. Wir bauen Tools, die lokale
-          Dienstleister tatsächlich nutzen können, ohne IT-Abteilung. Wenn du
-          Fragen hast, antwortet derselbe Mensch, der den Code geschrieben hat.
-        </p>
-      </section>
-
-      {/* Final CTA */}
-      <section className="mx-auto w-full max-w-4xl px-6 pb-24 text-center">
-        <div className="border-border bg-secondary/40 rounded-3xl border p-12">
-          <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+      {/* ===== Final CTA ===== */}
+      <section className="px-6 pb-32">
+        <div className="from-primary/15 via-primary/5 ring-primary/20 relative mx-auto w-full max-w-5xl overflow-hidden rounded-[40px] bg-gradient-to-br to-amber-700/15 p-12 text-center shadow-xl ring-1 sm:p-16">
+          <div
+            aria-hidden
+            className="bg-primary/15 pointer-events-none absolute -top-20 left-1/2 -z-10 h-72 w-72 -translate-x-1/2 rounded-full blur-3xl"
+          />
+          <h2 className="text-foreground text-4xl font-semibold leading-[1.05] tracking-[-0.025em] text-balance sm:text-6xl">
             Bereit, online zu gehen?
           </h2>
-          <p className="text-muted-foreground mx-auto mt-4 max-w-xl text-pretty">
-            Erstelle dein Konto, fülle dein Profil aus, geh live. Du brauchst
-            nichts zu installieren.
+          <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-pretty sm:text-lg">
+            Konto anlegen, Branche wählen, ausfüllen, klicken. 7 Tage gratis,
+            keine Kreditkarte.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/register"
-              className="bg-primary text-primary-foreground inline-flex h-11 items-center justify-center rounded-md px-6 text-sm font-medium transition hover:opacity-90"
+              className="bg-primary text-primary-foreground group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-lg transition-all hover:scale-[1.03] hover:shadow-xl"
             >
               Jetzt kostenlos starten
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="/pricing"
-              className="border-border bg-background hover:bg-secondary inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-medium transition"
+              className="border-border bg-background hover:bg-secondary inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-all hover:scale-[1.02]"
             >
               Pakete ansehen
             </Link>
@@ -523,24 +650,62 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-border border-t">
-        <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-xs">
-          <span>© {new Date().getFullYear()} Sitalo</span>
-          <nav className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link href="/pricing" className="hover:text-foreground">
-              Preise
-            </Link>
-            <Link href="/login" className="hover:text-foreground">
-              Login
-            </Link>
-            <Link href="/register" className="hover:text-foreground">
-              Registrieren
-            </Link>
-          </nav>
-          <span>Made for local businesses.</span>
+      {/* ===== Rich footer ===== */}
+      <footer className="border-border bg-secondary/20 border-t">
+        <div className="mx-auto w-full max-w-7xl px-6 py-16">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <SitaloLogo size="md" />
+              <p className="text-muted-foreground mt-5 max-w-xs text-sm leading-relaxed">
+                Die Website-Plattform für lokale Dienstleister in Deutschland.
+                Schnell, ehrlich, monatlich kündbar.
+              </p>
+            </div>
+
+            <FooterCol title="Produkt">
+              <FooterLink href="#designs">Designs</FooterLink>
+              <FooterLink href="#funktionen">Funktionen</FooterLink>
+              <FooterLink href="/pricing">Preise</FooterLink>
+              <FooterLink href="#vergleich">Vergleich</FooterLink>
+            </FooterCol>
+
+            <FooterCol title="Konto">
+              <FooterLink href="/register">Kostenlos starten</FooterLink>
+              <FooterLink href="/login">Login</FooterLink>
+              <FooterLink href="/forgot-password">Passwort vergessen</FooterLink>
+            </FooterCol>
+
+            <FooterCol title="Rechtliches">
+              <FooterLink href="/impressum">Impressum</FooterLink>
+              <FooterLink href="/datenschutz">Datenschutz</FooterLink>
+              <FooterLink href="/agb">AGB</FooterLink>
+            </FooterCol>
+          </div>
+
+          <div className="border-border/60 text-muted-foreground mt-12 flex flex-col items-center justify-between gap-3 border-t pt-8 text-xs sm:flex-row">
+            <span>© {new Date().getFullYear()} Sitalo Webdesign</span>
+            <span>Made for local businesses · EU-gehostet · DSGVO-konform</span>
+          </div>
         </div>
       </footer>
     </main>
+  );
+}
+
+function NavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="text-muted-foreground hover:bg-secondary hover:text-foreground inline-flex h-9 items-center justify-center rounded-full px-3.5 transition-colors"
+    >
+      {children}
+    </Link>
   );
 }
 
@@ -555,15 +720,98 @@ function Stat({
 }) {
   return (
     <div
-      className={`bg-background flex flex-col items-center justify-center gap-1 px-6 py-8 text-center ${highlight ? "bg-primary/5" : ""}`}
+      className={`bg-background flex flex-col items-center justify-center gap-1.5 px-6 py-10 text-center ${highlight ? "bg-primary/5" : ""}`}
     >
-      <span className="text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl">
+      <span className="text-3xl font-semibold tracking-[-0.02em] tabular-nums sm:text-4xl">
         {value}
       </span>
-      <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+      <span className="text-muted-foreground text-[11px] font-medium tracking-[0.15em] uppercase">
         {label}
       </span>
     </div>
+  );
+}
+
+function PriceCard({
+  name,
+  price,
+  tagline,
+  features,
+  highlight,
+}: {
+  name: string;
+  price: string;
+  tagline: string;
+  features: string[];
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`relative flex flex-col rounded-3xl border p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl ${
+        highlight
+          ? "ring-primary border-primary bg-card ring-2"
+          : "border-border bg-card"
+      }`}
+    >
+      {highlight ? (
+        <span className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.15em] uppercase">
+          Beliebt
+        </span>
+      ) : null}
+      <h3 className="text-2xl font-semibold tracking-tight">{name}</h3>
+      <p className="text-muted-foreground mt-1.5 text-sm">{tagline}</p>
+      <div className="mt-6 flex items-baseline gap-1">
+        <span className="text-5xl font-semibold tracking-[-0.04em]">
+          {price}
+        </span>
+        <span className="text-foreground/70 text-lg">€</span>
+        <span className="text-muted-foreground text-sm">/ Monat</span>
+      </div>
+      <ul className="mt-7 flex flex-1 flex-col gap-3 text-sm">
+        {features.map((f) => (
+          <li key={f} className="flex items-start gap-2">
+            <Check className="text-primary mt-0.5 h-4 w-4 shrink-0" />
+            <span className="text-pretty">{f}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function FooterCol({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <h4 className="text-foreground text-[11px] font-semibold tracking-[0.2em] uppercase">
+        {title}
+      </h4>
+      <ul className="mt-4 space-y-2.5 text-sm">{children}</ul>
+    </div>
+  );
+}
+
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li>
+      <Link
+        href={href}
+        className="text-muted-foreground hover:text-foreground transition-colors"
+      >
+        {children}
+      </Link>
+    </li>
   );
 }
 
