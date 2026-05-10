@@ -1,27 +1,50 @@
 "use client";
 
-import { useFormStatus } from "react-dom";
+import { useState, useTransition } from "react";
 
-import { createPortalAction } from "@/lib/actions/billing";
 import { Button } from "@/components/ui/button";
-
-function SubmitButton({ label }: { label: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending}>
-      {pending ? "Öffne Stripe …" : label}
-    </Button>
-  );
-}
 
 export function ManagePlanButton({
   label = "Plan verwalten",
 }: {
   label?: string;
 }) {
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  function onClick() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/billing/portal", { method: "POST" });
+        const body = (await res.json()) as {
+          ok: boolean;
+          message?: string;
+          redirect?: string;
+        };
+        if (body.redirect) {
+          window.location.href = body.redirect;
+          return;
+        }
+        if (!body.ok) {
+          setError(body.message ?? "Portal nicht verfügbar.");
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? `Portal nicht verfügbar: ${err.message}`
+            : "Portal nicht verfügbar.",
+        );
+      }
+    });
+  }
+
   return (
-    <form action={createPortalAction}>
-      <SubmitButton label={label} />
-    </form>
+    <div className="flex flex-col items-end gap-2">
+      <Button type="button" disabled={pending} onClick={onClick}>
+        {pending ? "Öffne Stripe …" : label}
+      </Button>
+      {error ? <p className="text-destructive text-xs">{error}</p> : null}
+    </div>
   );
 }
