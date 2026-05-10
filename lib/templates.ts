@@ -9,7 +9,9 @@ export type TemplateKey =
   | "zahnarzt"
   | "reinigung"
   | "schreiner"
-  | "kosmetik";
+  | "kosmetik"
+  | "anwalt"
+  | "restaurant";
 
 export type TemplateMeta = {
   key: TemplateKey;
@@ -96,6 +98,22 @@ const META: Record<TemplateKey, TemplateMeta> = {
       "Hautpflege, Wellness, Wohlbefinden. Auszeit für Sie und Ihre Haut.",
     primaryCtaLabel: "Termin reservieren",
   },
+  anwalt: {
+    key: "anwalt",
+    hero: "split",
+    label: "Anwaltskanzlei",
+    defaultHeroSubtitle:
+      "Erfahrene Rechtsberatung in einem persönlichen, vertraulichen Rahmen.",
+    primaryCtaLabel: "Erstgespräch vereinbaren",
+  },
+  restaurant: {
+    key: "restaurant",
+    hero: "centered",
+    label: "Restaurant / Café",
+    defaultHeroSubtitle:
+      "Frische Küche, herzlicher Service. Wir freuen uns auf Ihren Besuch.",
+    primaryCtaLabel: "Tisch reservieren",
+  },
 };
 
 const INDUSTRY_TO_KEY: Record<string, TemplateKey> = {
@@ -114,6 +132,15 @@ const INDUSTRY_TO_KEY: Record<string, TemplateKey> = {
   tischlerei: "schreiner",
   kosmetik: "kosmetik",
   kosmetikstudio: "kosmetik",
+  anwalt: "anwalt",
+  anwaltskanzlei: "anwalt",
+  rechtsanwalt: "anwalt",
+  kanzlei: "anwalt",
+  restaurant: "restaurant",
+  cafe: "restaurant",
+  café: "restaurant",
+  bistro: "restaurant",
+  gastronomie: "restaurant",
 };
 
 /**
@@ -139,6 +166,8 @@ export const ALL_TEMPLATE_KEYS: TemplateKey[] = [
   "physio",
   "friseur",
   "kosmetik",
+  "anwalt",
+  "restaurant",
   "reinigung",
   "schreiner",
 ];

@@ -94,7 +94,7 @@ create trigger templates_set_updated_at
   before update on public.templates
   for each row execute function public.set_updated_at();
 
--- Seed three MVP templates (id is deterministic-ish via name uniqueness).
+-- Seed MVP templates (id is deterministic-ish via name uniqueness).
 insert into public.templates (name, industry) values
   ('Pflegedienst Klassisch',  'pflegedienst'),
   ('Arztpraxis Modern',       'arztpraxis'),
@@ -103,7 +103,9 @@ insert into public.templates (name, industry) values
   ('Zahnarztpraxis Sanft',    'zahnarzt'),
   ('Reinigung Frisch',        'reinigung'),
   ('Schreinerei Manufaktur',  'schreiner'),
-  ('Kosmetikstudio Eleganz',  'kosmetik')
+  ('Kosmetikstudio Eleganz',  'kosmetik'),
+  ('Anwaltskanzlei Klassisch','anwalt'),
+  ('Restaurant Warm',         'restaurant')
 on conflict (name) do nothing;
 
 -- ----------------------------------------------------------------------------
@@ -160,6 +162,28 @@ alter table public.websites
   add column if not exists hero_image_url text;
 alter table public.websites
   add column if not exists about_image_url text;
+
+-- Per-site brand color override. Lets a customer keep their template
+-- but tweak the primary accent (e.g. a Pflegedienst that wants a
+-- particular shade of green). Validated to hex format at write time.
+alter table public.websites
+  add column if not exists brand_primary_color text
+    check (brand_primary_color is null or
+           brand_primary_color ~* '^#[0-9a-f]{6}$');
+
+-- Custom-domain support. Customers can attach their own .de/.com/etc.
+-- domain to point at their site. The verification timestamp is set
+-- once we've confirmed DNS resolves to Vercel and the domain has been
+-- attached to the project. Stored lowercase to make the middleware
+-- lookup deterministic; the unique constraint prevents two sites from
+-- claiming the same host.
+alter table public.websites
+  add column if not exists custom_domain text unique;
+alter table public.websites
+  add column if not exists custom_domain_verified_at timestamptz;
+
+create index if not exists websites_custom_domain_idx
+  on public.websites (custom_domain) where custom_domain is not null;
 
 drop trigger if exists websites_set_updated_at on public.websites;
 create trigger websites_set_updated_at

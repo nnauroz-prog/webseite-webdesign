@@ -486,6 +486,103 @@ Mo, So: Ruhetag`,
     imprint_placeholder: DEFAULT_IMPRINT_PLACEHOLDER,
     privacy_placeholder: DEFAULT_PRIVACY_PLACEHOLDER,
   },
+  anwalt: {
+    hero_title: "Vertrauen. Diskretion. Klarheit.",
+    hero_subtitle:
+      "Erfahrene Rechtsberatung in einem persönlichen, vertraulichen Rahmen — Familienrecht, Arbeitsrecht, Erbrecht.",
+    about_text:
+      "Unsere Kanzlei berät Privatpersonen und mittelständische Unternehmen seit über 20 Jahren. Wir nehmen uns Zeit, hören zu und finden gemeinsam mit Ihnen den rechtlich tragfähigsten Weg.\n\nDas Erstgespräch ist unverbindlich. Wir erklären Ihnen offen, ob ein Verfahren Aussicht auf Erfolg hat, mit welchem Aufwand zu rechnen ist und welche Kosten anfallen.",
+    opening_hours_text: `Mo–Fr: 9:00–18:00 Uhr
+Termine nach Vereinbarung
+Notfall-Mandate auch außerhalb der Öffnungszeiten`,
+    services: [
+      {
+        title: "Familienrecht",
+        description:
+          "Trennung, Scheidung, Unterhalt, Sorgerecht — wir begleiten Sie durch persönlich belastende Situationen.",
+      },
+      {
+        title: "Arbeitsrecht",
+        description:
+          "Kündigungsschutz, Aufhebungsverträge, Lohnstreitigkeiten — für Arbeitnehmer:innen und Arbeitgeber.",
+      },
+      {
+        title: "Erbrecht",
+        description:
+          "Testament, Erbauseinandersetzung, Pflichtteil — wir gestalten und durchsetzen, immer mit Augenmaß.",
+      },
+      {
+        title: "Vertragsrecht",
+        description:
+          "Prüfung, Erstellung und Verhandlung von Verträgen — schützt Sie vor späteren Streitigkeiten.",
+      },
+      {
+        title: "Mietrecht",
+        description:
+          "Mängelanzeigen, Mieterhöhungen, Räumungsklagen — auf der Seite von Mietern und Vermietern.",
+      },
+    ],
+    team: [
+      {
+        name: "Dr. Stefan Berg",
+        role: "Rechtsanwalt & Partner",
+        bio: "Fachanwalt für Familien- und Erbrecht. Mehr als 20 Jahre Praxiserfahrung.",
+      },
+      {
+        name: "Lena Hoffmann",
+        role: "Rechtsanwältin",
+        bio: "Schwerpunkte Arbeits- und Mietrecht. Mediationsausbildung.",
+      },
+    ],
+    imprint_placeholder: DEFAULT_IMPRINT_PLACEHOLDER,
+    privacy_placeholder: DEFAULT_PRIVACY_PLACEHOLDER,
+  },
+  restaurant: {
+    hero_title: "Frische Küche. Herzlicher Service.",
+    hero_subtitle:
+      "Saisonale Gerichte, regionale Zutaten — täglich neu für Sie zubereitet. Wir freuen uns auf Ihren Besuch.",
+    about_text:
+      "Unser Familienbetrieb steht seit 1998 für ehrliche, saisonale Küche. Die Zutaten beziehen wir wann immer möglich von Höfen aus der Region — kurze Wege, beste Qualität.\n\nOb Geschäftsessen, Familienfeier oder Spaziergänger:innen mit Hunger: bei uns sitzen Sie gut. Reservieren Sie online, telefonisch oder kommen Sie spontan vorbei.",
+    opening_hours_text: `Di–Fr: 11:30–14:30 & 17:30–22:00 Uhr
+Sa & So: 11:30–22:00 Uhr durchgehend
+Mo: Ruhetag`,
+    services: [
+      {
+        title: "Mittagsmenü",
+        description:
+          "Wechselnde 2- und 3-Gänge-Menüs zwischen 11:30 und 14:30 — perfekt fürs Geschäftsessen.",
+      },
+      {
+        title: "À la carte",
+        description:
+          "Saisonale Karte mit klassischen und modernen Gerichten, vegetarische und vegane Optionen.",
+      },
+      {
+        title: "Familienfeiern & Events",
+        description:
+          "Hochzeiten, Geburtstage, Firmenfeiern — wir organisieren Menü, Service und Räume bis 60 Personen.",
+      },
+      {
+        title: "Catering",
+        description:
+          "Wir liefern auch außer Haus: Buffets, Fingerfood, Mehrgang-Menüs für Ihre Gäste zuhause oder im Büro.",
+      },
+    ],
+    team: [
+      {
+        name: "Marco Reiter",
+        role: "Inhaber & Küchenchef",
+        bio: "Gelernter Koch, Stationen in München und Wien. Liebt regionale Küche mit modernen Akzenten.",
+      },
+      {
+        name: "Carla Reiter",
+        role: "Service-Leitung",
+        bio: "Sorgt seit 1998 dafür, dass sich jeder Gast willkommen und entspannt fühlt.",
+      },
+    ],
+    imprint_placeholder: DEFAULT_IMPRINT_PLACEHOLDER,
+    privacy_placeholder: DEFAULT_PRIVACY_PLACEHOLDER,
+  },
 };
 
 export function getDemoContent(key: TemplateKey): DemoContent {

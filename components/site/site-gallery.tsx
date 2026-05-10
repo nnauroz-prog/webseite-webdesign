@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { SiteGalleryGrid } from "@/components/site/site-gallery-grid";
 import type { GalleryImageRow } from "@/types/website";
 
 export function SiteGallery({ images }: { images: GalleryImageRow[] }) {
@@ -19,22 +18,7 @@ export function SiteGallery({ images }: { images: GalleryImageRow[] }) {
             Eindrücke aus unserer Arbeit und unseren Räumen.
           </p>
         </div>
-        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {images.map((img) => (
-            <li
-              key={img.id}
-              className="bg-muted aspect-[4/3] overflow-hidden rounded-xl border"
-            >
-              <Image
-                src={img.image_url}
-                alt={img.alt_text ?? ""}
-                width={800}
-                height={600}
-                className="h-full w-full object-cover"
-              />
-            </li>
-          ))}
-        </ul>
+        <SiteGalleryGrid images={images} />
       </div>
     </section>
   );

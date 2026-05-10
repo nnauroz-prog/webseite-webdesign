@@ -103,9 +103,18 @@ export default async function PublicSitePage({
     url: canonicalUrl,
   });
 
+  // Brand color override — when set, replaces --primary on the wrapper
+  // and recomputes a readable foreground color (cream on dark, espresso
+  // on light) using a simple luminance check so primary buttons stay
+  // legible without us asking the user to pick a foreground too.
+  const brandStyle = website.brand_primary_color
+    ? buildBrandColorStyle(website.brand_primary_color)
+    : undefined;
+
   return (
     <div
       data-template={templateKey}
+      style={brandStyle}
       className="bg-background flex min-h-screen flex-1 flex-col"
     >
       {/* Structured data + analytics — only on the live site. Preview
@@ -147,4 +156,30 @@ function truncate(value: string | null | undefined, max: number): string {
   if (!s) return "";
   if (s.length <= max) return s;
   return s.slice(0, max - 1).trimEnd() + "…";
+}
+
+/**
+ * Build inline CSS-vars from a customer-chosen `#rrggbb`. Uses a
+ * relative-luminance test so primary-foreground flips between cream
+ * and espresso depending on whether the chosen color is dark or
+ * light. Bad input falls back to no override.
+ */
+function buildBrandColorStyle(
+  hex: string,
+): React.CSSProperties | undefined {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return undefined;
+  const int = parseInt(m[1], 16);
+  const r = (int >> 16) & 0xff;
+  const g = (int >> 8) & 0xff;
+  const b = int & 0xff;
+  // Rec. 709 luma — quick & good enough for a contrast check.
+  const luma = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  const fg = luma < 0.55 ? "#fbf6e8" : "#22160c";
+  // CSS custom property assignment via the React style API.
+  return {
+    ["--primary" as string]: hex,
+    ["--primary-foreground" as string]: fg,
+    ["--ring" as string]: hex,
+  };
 }
