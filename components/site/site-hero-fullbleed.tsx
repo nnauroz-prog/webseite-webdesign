@@ -78,7 +78,8 @@ export function SiteHeroFullbleed({
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <a
             href="#kontakt"
-            className="bg-white text-foreground group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-lg transition-all duration-200 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
+            style={{ borderRadius: "var(--site-button-radius)" }}
+            className="bg-white text-foreground group inline-flex h-12 items-center justify-center px-7 text-[15px] font-medium tracking-tight shadow-lg transition-all duration-200 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
           >
             {meta.primaryCtaLabel}
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -86,7 +87,8 @@ export function SiteHeroFullbleed({
           {website.phone ? (
             <a
               href={`tel:${website.phone.replace(/\s+/g, "")}`}
-              className="inline-flex h-12 items-center justify-center rounded-full border border-white/30 bg-white/10 px-7 text-[15px] font-medium tracking-tight text-white backdrop-blur-md transition-all duration-200 hover:scale-[1.02] hover:bg-white/20"
+              style={{ borderRadius: "var(--site-button-radius)" }}
+              className="inline-flex h-12 items-center justify-center border border-white/30 bg-white/10 px-7 text-[15px] font-medium tracking-tight text-white backdrop-blur-md transition-all duration-200 hover:scale-[1.02] hover:bg-white/20"
             >
               Anrufen
             </a>

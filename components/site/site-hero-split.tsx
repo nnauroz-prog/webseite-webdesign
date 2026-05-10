@@ -81,8 +81,9 @@ export function SiteHeroSplit({
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <a
               href="#kontakt"
+              style={{ borderRadius: "var(--site-button-radius)" }}
               className={cn(
-                "group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]",
+                "group inline-flex h-12 items-center justify-center px-7 text-[15px] font-medium tracking-tight transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]",
                 hasBgImage
                   ? "bg-white text-foreground shadow-lg hover:shadow-xl"
                   : "bg-primary text-primary-foreground shadow-md hover:shadow-lg",
@@ -94,8 +95,9 @@ export function SiteHeroSplit({
             {phone ? (
               <a
                 href={`tel:${phone.replace(/\s+/g, "")}`}
+                style={{ borderRadius: "var(--site-button-radius)" }}
                 className={cn(
-                  "inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-all duration-200 hover:scale-[1.02]",
+                  "inline-flex h-12 items-center justify-center border px-7 text-[15px] font-medium tracking-tight transition-all duration-200 hover:scale-[1.02]",
                   hasBgImage
                     ? "border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white/20"
                     : "border-border bg-background hover:bg-secondary",

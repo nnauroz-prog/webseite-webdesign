@@ -12,14 +12,21 @@ export function SiteTeam({ team }: { team: TeamMemberRow[] }) {
   return (
     <section
       id="team"
-      className="border-border/60 border-b py-28 sm:py-36"
+      className="border-border/60 border-b"
+      style={{ paddingTop: "var(--site-section-py)", paddingBottom: "var(--site-section-py)" }}
     >
-      <div className="mx-auto w-full max-w-6xl px-6">
+      <div
+        className="mx-auto w-full px-6"
+        style={{ maxWidth: "var(--site-container-max)" }}
+      >
         <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
+          <p
+            className="text-muted-foreground text-[11px] font-medium uppercase"
+            style={{ letterSpacing: "var(--site-eyebrow-tracking)" }}
+          >
             Unser Team
           </p>
-          <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-5xl">
+          <h2 className="mt-3 text-4xl font-semibold leading-[1.1] sm:text-5xl">
             Die Menschen hinter unserer Arbeit
           </h2>
           <p className="text-muted-foreground mx-auto mt-5 max-w-xl text-pretty">
@@ -33,7 +40,13 @@ export function SiteTeam({ team }: { team: TeamMemberRow[] }) {
               key={m.id}
               className="group flex flex-col"
             >
-              <div className="bg-muted relative aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-md ring-1 ring-border/50">
+              <div
+                className="bg-muted relative aspect-[4/5] w-full overflow-hidden ring-1 ring-border/50"
+                style={{
+                  borderRadius: "var(--site-image-radius)",
+                  boxShadow: "var(--site-card-shadow)",
+                }}
+              >
                 {m.image_url ? (
                   <Image
                     src={m.image_url}

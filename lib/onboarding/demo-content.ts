@@ -74,7 +74,11 @@ const DEFAULT_HOURS = `Mo–Fr: 8:00–18:00 Uhr
 Sa: 9:00–13:00 Uhr
 Sonntag geschlossen`;
 
-const DEMO: Record<TemplateKey, DemoContent> = {
+// New industry keys (agentur, spa, cafe, fitness) fall back to the
+// `default` entry via getDemoContent — we'll author dedicated demo
+// copy for them in a follow-up. Until then they get the neutral
+// "Willkommen bei …" placeholders, fully editable in the dashboard.
+const DEMO: Partial<Record<TemplateKey, DemoContent>> = {
   default: {
     hero_title: "Willkommen bei [Firmenname]",
     hero_subtitle:
@@ -586,5 +590,8 @@ Mo: Ruhetag`,
 };
 
 export function getDemoContent(key: TemplateKey): DemoContent {
-  return DEMO[key];
+  // The Partial<Record<...>> means `default` could in principle be
+  // undefined per TypeScript, but the seed above always defines it.
+  // We bang it to keep the public return type clean.
+  return DEMO[key] ?? (DEMO.default as DemoContent);
 }

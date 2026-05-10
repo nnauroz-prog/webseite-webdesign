@@ -17,26 +17,37 @@ export type TemplateKey =
   | "schreiner"
   | "kosmetik"
   | "anwalt"
-  | "restaurant";
+  | "restaurant"
+  | "agentur"
+  | "spa"
+  | "cafe"
+  | "fitness";
 
 /**
- * The 5 design personalities. Each one drives:
+ * The 8 design personalities. Each one drives:
  *   - Hero composition + image treatment
  *   - Typography (font-family hint, heading weight, tracking)
- *   - Card chrome (radius, shadow weight)
+ *   - Card chrome (radius, shadow weight, border width)
+ *   - Button shape (pill / square / rounded)
+ *   - Image radius
  *   - Section density (vertical spacing between sections)
+ *   - Container max-width
+ *   - Color palette (dark-luxury flips to dark mode)
  *
  * The actual visuals are configured in globals.css under
  * `[data-personality="..."]` selectors. Components read the resulting
- * CSS variables instead of hard-coding values, so the same component
- * tree renders meaningfully different per personality.
+ * CSS variables (`var(--site-…)`) instead of hard-coding values, so
+ * the same component tree renders meaningfully different per design.
  */
 export type Personality =
-  | "soft" // warm, organic, generous whitespace, rounded sans
+  | "soft" // warm, organic, generous whitespace, rounded sans, pill buttons
   | "clinical" // modern-clean, sharp grid, geometric sans, dense
-  | "editorial" // luxury-magazine, serif headlines, asymmetric image
+  | "editorial" // luxury magazine, serif headlines, sharp corners
   | "crafted" // hand-made warmth, mixed serif/sans, textured
-  | "formal"; // classical professional, structured serif, conservative
+  | "formal" // classical professional, structured serif, conservative
+  | "bold" // Stripe/Linear-style SaaS — heavy weight, crisp, modern
+  | "brutalist" // raw, blocky, monospace headings, thick borders
+  | "dark-luxury"; // Aesop / hotel — deep dark bg, serif, gold accents
 
 /** Hero layout variants. */
 export type HeroVariant = "centered" | "split" | "fullbleed";
@@ -181,6 +192,50 @@ const META: Record<TemplateKey, TemplateMeta> = {
       "Frische Küche, herzlicher Service. Wir freuen uns auf Ihren Besuch.",
     primaryCtaLabel: "Tisch reservieren",
   },
+  agentur: {
+    key: "agentur",
+    label: "Atlas",
+    industry: "agentur",
+    personality: "bold",
+    hero: "split",
+    vibe: "Stripe-/Linear-Vibe — kräftige Sans, klare Schatten, moderne SaaS-Optik.",
+    defaultHeroSubtitle:
+      "Strategie, Design, Code. Wir bauen digitale Produkte, die wirklich liefern.",
+    primaryCtaLabel: "Projekt anfragen",
+  },
+  spa: {
+    key: "spa",
+    label: "Onyx",
+    industry: "spa",
+    personality: "dark-luxury",
+    hero: "fullbleed",
+    vibe: "Aesop-Stil — dunkler Hintergrund, cremefarbene Serif, ruhige Eleganz.",
+    defaultHeroSubtitle:
+      "Ein stiller Ort. Behandlungen, die wirken, in einer Atmosphäre, die trägt.",
+    primaryCtaLabel: "Behandlung reservieren",
+  },
+  cafe: {
+    key: "cafe",
+    label: "Kiosk",
+    industry: "cafe",
+    personality: "brutalist",
+    hero: "centered",
+    vibe: "Roh und ehrlich — Monospace-Headlines, harte Kanten, schwarze Schatten.",
+    defaultHeroSubtitle:
+      "Kaffee, Brot, Kuchen — direkt von der Theke. Frisch jeden Morgen.",
+    primaryCtaLabel: "Auf der Karte sehen",
+  },
+  fitness: {
+    key: "fitness",
+    label: "Pulse",
+    industry: "fitness",
+    personality: "bold",
+    hero: "fullbleed",
+    vibe: "Energetisch — schwere Sans, große Headlines, formatfüllende Action-Bilder.",
+    defaultHeroSubtitle:
+      "Training mit Plan. Krafttraining, Group-Classes und 1:1-Coaching.",
+    primaryCtaLabel: "Probetraining buchen",
+  },
 };
 
 const INDUSTRY_TO_KEY: Record<string, TemplateKey> = {
@@ -204,10 +259,28 @@ const INDUSTRY_TO_KEY: Record<string, TemplateKey> = {
   rechtsanwalt: "anwalt",
   kanzlei: "anwalt",
   restaurant: "restaurant",
-  cafe: "restaurant",
-  café: "restaurant",
   bistro: "restaurant",
   gastronomie: "restaurant",
+  cafe: "cafe",
+  café: "cafe",
+  kaffee: "cafe",
+  bäckerei: "cafe",
+  agentur: "agentur",
+  webagentur: "agentur",
+  marketingagentur: "agentur",
+  designstudio: "agentur",
+  it: "agentur",
+  software: "agentur",
+  startup: "agentur",
+  spa: "spa",
+  wellness: "spa",
+  massage: "spa",
+  hotel: "spa",
+  fitness: "fitness",
+  fitnessstudio: "fitness",
+  gym: "fitness",
+  personaltraining: "fitness",
+  yoga: "fitness",
 };
 
 /**
@@ -233,8 +306,12 @@ export const ALL_TEMPLATE_KEYS: TemplateKey[] = [
   "physio",
   "friseur",
   "kosmetik",
+  "spa",
+  "fitness",
   "anwalt",
+  "agentur",
   "restaurant",
+  "cafe",
   "reinigung",
   "schreiner",
 ];
