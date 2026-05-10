@@ -8,7 +8,10 @@ import {
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
-import { notifyNewInquiry } from "@/lib/email/notifications";
+import {
+  notifyInquiryReceived,
+  notifyNewInquiry,
+} from "@/lib/email/notifications";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/auth";
@@ -17,9 +20,16 @@ import {
   submitInquirySchema,
 } from "@/lib/validations/inquiries";
 
-/** Configurable via env. Falls back to a placeholder so dev still works. */
+/** Configurable via env. Falls back to a placeholder so dev still
+ * works. `LEAD_NOTIFICATION_EMAIL` is the new name; `SITALO_INQUIRY_TO`
+ * stays supported for the duration of the current Vercel deploy so
+ * nothing breaks if only one of the two is configured. */
 function getInquiryRecipient(): string {
-  return process.env.SITALO_INQUIRY_TO ?? "hallo@sitalo.de";
+  return (
+    process.env.LEAD_NOTIFICATION_EMAIL ??
+    process.env.SITALO_INQUIRY_TO ??
+    "hallo@sitalo.de"
+  );
 }
 
 /**
@@ -79,7 +89,7 @@ export async function submitInquiryAction(
       message: error.message,
     });
     return fail(
-      "Wir konnten deine Anfrage gerade nicht speichern. Bitte versuche es später erneut oder schreib uns direkt per WhatsApp.",
+      "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt per WhatsApp.",
     );
   }
 
@@ -108,8 +118,23 @@ export async function submitInquiryAction(
     });
   }
 
+  // Best-effort customer-confirmation. Same fail-soft semantics —
+  // a missing/failed receipt mail never blocks the success response.
+  try {
+    await notifyInquiryReceived({
+      toEmail: data.email,
+      name: data.name,
+    });
+  } catch (err) {
+    console.error("[submitInquiryAction] customer receipt failed", {
+      message: err instanceof Error ? err.message : String(err),
+    });
+  }
+
   revalidatePath("/admin/inquiries");
-  return ok("Danke für deine Anfrage. Wir melden uns innerhalb von 24 Stunden.");
+  return ok(
+    "Danke für Ihre Anfrage. Wir haben Ihre Nachricht erhalten und melden uns zeitnah.",
+  );
 }
 
 /** Admin-only — flip status from the admin inquiries list. */

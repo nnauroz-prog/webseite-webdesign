@@ -110,6 +110,10 @@ export function InquiryForm({
   const [selectedPackage, setSelectedPackage] = useState<
     InquiryPackage | null
   >(initialPackage ?? null);
+  // Shown in the error-state fallback when the env var is configured.
+  // Reads NEXT_PUBLIC_… at module level — value is baked into the
+  // client bundle so this is safe to use in a client component.
+  const whatsappFallbackHref = buildWhatsappFallbackHref();
 
   useEffect(() => {
     if (state.status === "success") formRef.current?.reset();
@@ -170,7 +174,21 @@ export function InquiryForm({
 
       {state.status === "error" && state.message && (
         <Alert variant="destructive">
-          <AlertDescription>{state.message}</AlertDescription>
+          <AlertDescription>
+            {state.message}
+            {whatsappFallbackHref ? (
+              <span className="mt-3 block">
+                <a
+                  href={whatsappFallbackHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline-offset-4 font-medium hover:underline"
+                >
+                  → Direkt per WhatsApp schreiben
+                </a>
+              </span>
+            ) : null}
+          </AlertDescription>
         </Alert>
       )}
 
@@ -568,4 +586,14 @@ function SelectField({
       {error && <p className="text-destructive text-sm">{error}</p>}
     </div>
   );
+}
+
+function buildWhatsappFallbackHref(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
+  if (!raw) return null;
+  const digits = raw.replace(/[^\d]/g, "");
+  if (digits.length < 6) return null;
+  const message =
+    "Hallo Sitalo, ich wollte eine Anfrage über das Formular senden, aber das hat gerade nicht funktioniert. Können Sie mir helfen?";
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }

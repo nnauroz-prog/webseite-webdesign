@@ -348,6 +348,55 @@ export async function notifyNewInquiry(
   }
 }
 
+type InquiryConfirmationPayload = {
+  toEmail: string;
+  name: string;
+};
+
+/**
+ * Short receipt-style confirmation back to the inquirer. Reassures
+ * them their message landed and we'll be in touch. Fail-soft — if
+ * Resend isn't configured or rejects, we just log and move on.
+ */
+export async function notifyInquiryReceived(
+  payload: InquiryConfirmationPayload,
+): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  try {
+    await resend.emails.send({
+      from: getMailFrom(),
+      to: payload.toEmail,
+      subject: "Ihre Anfrage bei Sitalo ist eingegangen",
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+          <h2 style="margin: 0 0 12px 0;">Vielen Dank für Ihre Anfrage</h2>
+          <p style="color: #444; line-height: 1.6;">Hallo ${escape(payload.name)},</p>
+          <p style="color: #444; line-height: 1.6;">
+            wir haben Ihre Anfrage erhalten und prüfen Ihre Angaben.
+            Sie hören innerhalb von 24 Stunden persönlich von uns —
+            mit einer ersten Einschätzung zu Umfang, Zeitplan und
+            Preis.
+          </p>
+          <p style="color: #444; line-height: 1.6;">
+            Falls Sie in der Zwischenzeit etwas vergessen oder
+            ergänzen möchten, antworten Sie einfach auf diese Mail.
+          </p>
+          <p style="color: #888; margin-top: 32px; font-size: 13px;">
+            Sitalo Webdesign · Done-for-you-Service für lokale Unternehmen
+          </p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[notifyInquiryReceived] resend failed", {
+      message: err instanceof Error ? err.message : String(err),
+      email: payload.toEmail,
+    });
+  }
+}
+
 function escape(value: string): string {
   return value
     .replace(/&/g, "&amp;")
