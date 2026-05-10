@@ -1,5 +1,6 @@
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 
+import { PreviewFormNotice } from "@/components/site/preview-form-notice";
 import { SiteContactForm } from "@/components/site/site-contact-form";
 import type { WebsiteRow } from "@/types/website";
 
@@ -8,7 +9,13 @@ import type { WebsiteRow } from "@/types/website";
  * and a card-style form on the right. Generous whitespace, larger
  * type, hairline icons, premium card chrome.
  */
-export function SiteContact({ website }: { website: WebsiteRow }) {
+export function SiteContact({
+  website,
+  isPreview,
+}: {
+  website: WebsiteRow;
+  isPreview: boolean;
+}) {
   const phone = website.phone?.trim();
   const email = website.email?.trim();
   const address = website.address?.trim();
@@ -78,7 +85,11 @@ export function SiteContact({ website }: { website: WebsiteRow }) {
               <p className="text-muted-foreground mt-2 mb-7 text-sm">
                 Beschreiben Sie kurz Ihr Anliegen — wir melden uns zurück.
               </p>
-              <SiteContactForm slug={website.slug} />
+              {isPreview ? (
+                <PreviewFormNotice formLabel="Anfragen" />
+              ) : (
+                <SiteContactForm slug={website.slug} />
+              )}
             </div>
           ) : null}
         </div>

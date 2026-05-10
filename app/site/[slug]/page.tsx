@@ -151,9 +151,13 @@ export default async function PublicSitePage({
         <SiteAbout website={website} />
         <SiteTeam team={team} />
         <SiteGallery images={gallery} />
-        <SiteBooking website={website} services={services} />
-        <SiteContact website={website} />
-        <SiteApplication website={website} />
+        <SiteBooking
+          website={website}
+          services={services}
+          isPreview={isPreview}
+        />
+        <SiteContact website={website} isPreview={isPreview} />
+        <SiteApplication website={website} isPreview={isPreview} />
       </main>
       <SiteFooter website={website} />
       <SiteWhatsappButton website={website} />

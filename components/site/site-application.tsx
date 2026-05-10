@@ -1,7 +1,14 @@
+import { PreviewFormNotice } from "@/components/site/preview-form-notice";
 import { SiteApplicationForm } from "@/components/site/site-application-form";
 import type { WebsiteRow } from "@/types/website";
 
-export function SiteApplication({ website }: { website: WebsiteRow }) {
+export function SiteApplication({
+  website,
+  isPreview,
+}: {
+  website: WebsiteRow;
+  isPreview: boolean;
+}) {
   if (!website.application_form_enabled) return null;
 
   return (
@@ -19,8 +26,14 @@ export function SiteApplication({ website }: { website: WebsiteRow }) {
             offene Positionen.
           </p>
         </div>
-        <div className="bg-card mt-8 rounded-xl border p-6 shadow-sm">
-          <SiteApplicationForm slug={website.slug} />
+        <div className="mt-8">
+          {isPreview ? (
+            <PreviewFormNotice formLabel="Bewerbungen" />
+          ) : (
+            <div className="bg-card rounded-xl border p-6 shadow-sm">
+              <SiteApplicationForm slug={website.slug} />
+            </div>
+          )}
         </div>
       </div>
     </section>

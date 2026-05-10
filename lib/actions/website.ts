@@ -12,10 +12,10 @@ import {
 } from "@/lib/actions/shared";
 import { getDemoContent } from "@/lib/onboarding/demo-content";
 import { deleteStorageObjectByPublicUrl, uploadImage } from "@/lib/storage";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite, requireUser } from "@/lib/supabase/auth";
 import { setActiveWebsiteId } from "@/lib/active-website";
 import { getCurrentPlan } from "@/lib/billing/current-plan";
+import { ensureTrialSubscription } from "@/lib/billing/start-trial";
 import { getSiteLimit } from "@/lib/stripe/plans";
 import { resolveTemplateKey } from "@/lib/templates";
 import {
@@ -155,6 +155,29 @@ export async function createWebsiteAction(
   // Make the new website the active one so the dashboard reflects it
   // immediately after the redirect.
   await setActiveWebsiteId(websiteId);
+
+  // Auto-publish: start a 7-day trial (idempotent — no-op if the user
+  // already has a subscription row) and flip the website live. Without
+  // this step, customers wonder why their applicants get "nicht
+  // verfügbar" until they hunt for the publish toggle.
+  //
+  // Best-effort: if the trial start or the publish flip fails, we keep
+  // the website in private mode so the user can still publish manually
+  // later. Onboarding doesn't roll back.
+  try {
+    const trial = await ensureTrialSubscription(user.id);
+    if (trial.ok) {
+      await supabase
+        .from("websites")
+        .update({ is_active: true })
+        .eq("id", websiteId);
+    }
+  } catch (err) {
+    console.error("[createWebsiteAction] auto-publish failed", {
+      message: err instanceof Error ? err.message : String(err),
+      website_id: websiteId,
+    });
+  }
 
   revalidatePath("/dashboard", "layout");
   redirect("/dashboard/website");
@@ -533,25 +556,11 @@ export async function updatePublishAction(
 
     if (!eligible) {
       // First-publish path: no row yet → start a 7-day trial without
-      // requiring payment. Service-role client bypasses the read-only
-      // RLS we expose to authenticated users.
+      // requiring payment. Same helper used by createWebsiteAction's
+      // auto-publish path.
       if (!row) {
-        const trialEnd = new Date();
-        trialEnd.setDate(trialEnd.getDate() + 7);
-        const admin = createAdminClient();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error: trialError } = await (admin
-          .from("subscriptions") as any).insert({
-          user_id: user.id,
-          provider: "stripe",
-          status: "trialing",
-          current_period_end: trialEnd.toISOString(),
-          plan: "basic",
-        });
-        if (trialError) {
-          console.error("[updatePublishAction] trial start failed", {
-            message: trialError.message,
-          });
+        const trial = await ensureTrialSubscription(user.id);
+        if (!trial.ok) {
           return fail(
             "Wir konnten den Probezeitraum nicht starten. Bitte versuche es erneut.",
           );
