@@ -121,6 +121,82 @@ export async function notifyNewApplication(
   }
 }
 
+type NewBookingPayload = {
+  ownerEmail: string;
+  businessName: string;
+  slug: string;
+  booking: {
+    customer_name: string;
+    customer_email: string;
+    customer_phone: string | null;
+    service_title: string | null;
+    preferred_date: string;
+    preferred_time: string | null;
+    message: string | null;
+  };
+};
+
+/**
+ * Sends a "new booking" notification to the website owner. Same
+ * fail-soft semantics as notifyNewLead.
+ */
+export async function notifyNewBooking(
+  payload: NewBookingPayload,
+): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const dashboardUrl = `${getSiteUrl()}/dashboard/bookings`;
+  const b = payload.booking;
+
+  const phoneRow = b.customer_phone
+    ? `<tr><td><strong>Telefon:</strong></td><td>${escape(b.customer_phone)}</td></tr>`
+    : "";
+  const serviceRow = b.service_title
+    ? `<tr><td><strong>Leistung:</strong></td><td>${escape(b.service_title)}</td></tr>`
+    : "";
+  const timeStr = b.preferred_time
+    ? `${escape(b.preferred_date)} um ${escape(b.preferred_time)} Uhr`
+    : escape(b.preferred_date);
+  const messageBlock = b.message
+    ? `
+      <h3 style="margin: 24px 0 8px 0;">Nachricht</h3>
+      <p style="white-space: pre-line; background: #f5f5f5; padding: 16px; border-radius: 8px;">${escape(b.message)}</p>
+    `
+    : "";
+
+  try {
+    await resend.emails.send({
+      from: getMailFrom(),
+      to: payload.ownerEmail,
+      subject: `Neue Terminanfrage über ${payload.businessName}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+          <h2 style="margin: 0 0 8px 0;">Neue Terminanfrage</h2>
+          <p style="color: #666; margin: 0 0 24px 0;">über deine Website <strong>${escape(payload.businessName)}</strong></p>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 4px 0;"><strong>Wunschtermin:</strong></td><td>${timeStr}</td></tr>
+            ${serviceRow}
+            <tr><td style="padding: 4px 0;"><strong>Name:</strong></td><td>${escape(b.customer_name)}</td></tr>
+            <tr><td style="padding: 4px 0;"><strong>E-Mail:</strong></td><td><a href="mailto:${escape(b.customer_email)}">${escape(b.customer_email)}</a></td></tr>
+            ${phoneRow}
+          </table>
+          ${messageBlock}
+          <p style="margin-top: 32px;">
+            <a href="${dashboardUrl}" style="display: inline-block; background: #3a2a1c; color: #fbf6e8; padding: 10px 18px; border-radius: 6px; text-decoration: none;">Termin im Dashboard prüfen</a>
+          </p>
+        </div>
+      `,
+      replyTo: b.customer_email,
+    });
+  } catch (err) {
+    console.error("[notifyNewBooking] resend failed", {
+      message: err instanceof Error ? err.message : String(err),
+      slug: payload.slug,
+    });
+  }
+}
+
 function escape(value: string): string {
   return value
     .replace(/&/g, "&amp;")

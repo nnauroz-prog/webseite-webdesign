@@ -30,6 +30,7 @@ export function SiteTeam({ team }: { team: TeamMemberRow[] }) {
                     width={480}
                     height={600}
                     className="h-full w-full object-cover"
+                    unoptimized
                   />
                 ) : (
                   <div className="text-muted-foreground flex h-full items-center justify-center text-sm">

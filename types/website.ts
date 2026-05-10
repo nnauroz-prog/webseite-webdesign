@@ -11,6 +11,12 @@ export type Industry = string;
 
 export type LeadStatus = "new" | "contacted" | "closed";
 export type ApplicationStatus = "new" | "reviewed" | "accepted" | "rejected";
+export type BookingStatus =
+  | "new"
+  | "confirmed"
+  | "declined"
+  | "cancelled"
+  | "completed";
 
 export type WebsiteRow = {
   id: string;
@@ -42,6 +48,7 @@ export type WebsiteRow = {
   is_active: boolean;
   contact_form_enabled: boolean;
   application_form_enabled: boolean;
+  booking_form_enabled: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -108,6 +115,37 @@ export type ApplicationRow = {
   desired_position: string | null;
   message: string;
   status: ApplicationStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PageRow = {
+  id: string;
+  website_id: string;
+  slug: string;
+  title: string;
+  body: string;
+  sort_order: number;
+  is_published: boolean;
+  show_in_nav: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type BookingRow = {
+  id: string;
+  website_id: string;
+  service_id: string | null;
+  service_title: string | null;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string | null;
+  /** ISO date `YYYY-MM-DD`. */
+  preferred_date: string;
+  /** ISO time `HH:MM:SS` or null when the customer left it open. */
+  preferred_time: string | null;
+  message: string | null;
+  status: BookingStatus;
   created_at: string;
   updated_at: string;
 };

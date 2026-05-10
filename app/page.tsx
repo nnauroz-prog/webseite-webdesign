@@ -104,7 +104,7 @@ const comparison = [
     sitalo: "30 Minuten",
   },
   { feature: "Einmalkosten", diy: "0–500 €", agency: "1.500–6.000 €", sitalo: "0 €" },
-  { feature: "Monatliche Kosten", diy: "10–30 €", agency: "30–150 €", sitalo: "ab 29 €" },
+  { feature: "Monatliche Kosten", diy: "10–30 €", agency: "30–150 €", sitalo: "ab 9 €" },
   { feature: "Inhalte selbst pflegen", diy: "true", agency: "false", sitalo: "true" },
   { feature: "Pflichtseiten (DSGVO)", diy: "false", agency: "minus", sitalo: "true" },
   { feature: "Branchen-Template", diy: "false", agency: "minus", sitalo: "true" },
@@ -137,7 +137,7 @@ const faq = [
   },
   {
     q: "Was kostet das genau?",
-    a: "Drei Pakete ab 29 € pro Monat, monatlich kündbar. Keine Einrichtungsgebühr. Solange du nicht veröffentlichst, kostet es nichts — der Demo-Modus ist gratis.",
+    a: "Drei Pakete ab 9 € pro Monat, monatlich kündbar. Keine Einrichtungsgebühr. Solange du nicht veröffentlichst, kostet es nichts — der Demo-Modus ist gratis.",
   },
   {
     q: "Kann ich meine eigene Domain benutzen?",
@@ -225,7 +225,7 @@ export default function HomePage() {
           <Stat value="30 Min." label="bis online" />
           <Stat value="0 €" label="Einrichtungs­gebühr" />
           <Stat value="DSGVO" label="EU-Hosting inklusive" />
-          <Stat value="ab 29 €" label="pro Monat" highlight />
+          <Stat value="ab 9 €" label="pro Monat" highlight />
         </div>
       </section>
 
