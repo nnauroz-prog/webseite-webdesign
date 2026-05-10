@@ -8,7 +8,10 @@ import {
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
-import { notifyNewBooking } from "@/lib/email/notifications";
+import {
+  notifyBookingConfirmation,
+  notifyNewBooking,
+} from "@/lib/email/notifications";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
@@ -153,6 +156,28 @@ export async function updateBookingStatusAction(
   }
 
   const { supabase, website } = await requireCurrentWebsite();
+
+  // We need the previous status + customer details to know whether to
+  // fire the customer-facing confirmation email — only on the
+  // new→confirmed transition.
+  const { data: existing } = await supabase
+    .from("bookings")
+    .select(
+      "status, customer_email, customer_name, preferred_date, preferred_time, service_title",
+    )
+    .eq("id", parsed.data.id)
+    .eq("website_id", website.id)
+    .maybeSingle();
+  if (!existing) return fail("Buchung nicht gefunden.");
+  const prev = existing as {
+    status: string;
+    customer_email: string;
+    customer_name: string;
+    preferred_date: string;
+    preferred_time: string | null;
+    service_title: string | null;
+  };
+
   const { error } = await supabase
     .from("bookings")
     .update({ status: parsed.data.status })
@@ -160,7 +185,39 @@ export async function updateBookingStatusAction(
     .eq("website_id", website.id);
   if (error) return fail(error.message);
 
+  // Fire-and-forget customer notification when an owner confirms a
+  // booking. Errors don't fail the action — the status change is the
+  // source of truth.
+  if (
+    parsed.data.status === "confirmed" &&
+    prev.status !== "confirmed" &&
+    prev.customer_email
+  ) {
+    try {
+      await notifyBookingConfirmation({
+        customerEmail: prev.customer_email,
+        customerName: prev.customer_name,
+        businessName: website.business_name,
+        slug: website.slug,
+        preferred_date: prev.preferred_date,
+        preferred_time: prev.preferred_time,
+        service_title: prev.service_title,
+      });
+    } catch (err) {
+      console.error(
+        "[updateBookingStatusAction] confirmation email failed",
+        {
+          message: err instanceof Error ? err.message : String(err),
+        },
+      );
+    }
+  }
+
   revalidatePath("/dashboard/bookings");
   revalidatePath("/dashboard", "layout");
-  return ok("Status aktualisiert.");
+  return ok(
+    parsed.data.status === "confirmed" && prev.status !== "confirmed"
+      ? "Termin bestätigt — Bestätigungs-E-Mail an Kund:in geschickt."
+      : "Status aktualisiert.",
+  );
 }

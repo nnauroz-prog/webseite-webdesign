@@ -76,6 +76,62 @@ function defaultDataFor(type: BlockType): Record<string, unknown> {
         title: "",
         body: "Schreibe hier deinen Text. Eine Leerzeile beginnt einen neuen Absatz.\n\nLängere Texte sind hier ideal, wenn du detailliert über deine Arbeit, Werte oder Geschichte erzählen möchtest.",
       };
+    case "pricing_table":
+      return {
+        title: "Unsere Pakete",
+        items: [
+          {
+            name: "Basis",
+            price: "49 €",
+            unit: "ab",
+            description: "Das Wichtigste für den Einstieg.",
+            features: ["Erstgespräch", "Standard-Service", "E-Mail-Support"],
+            highlight: false,
+          },
+          {
+            name: "Pro",
+            price: "99 €",
+            unit: "ab",
+            description: "Erweiterter Service mit allem Drum und Dran.",
+            features: ["Alles aus Basis", "Premium-Service", "Telefon-Support"],
+            highlight: true,
+          },
+          {
+            name: "Premium",
+            price: "199 €",
+            unit: "ab",
+            description: "Für anspruchsvolle Kunden.",
+            features: ["Alles aus Pro", "Persönliche Betreuung", "24/7-Support"],
+            highlight: false,
+          },
+        ],
+      };
+    case "steps":
+      return {
+        title: "So läuft es ab",
+        items: [
+          { title: "Erstgespräch", body: "Wir lernen uns kennen und besprechen dein Anliegen — kostenlos und unverbindlich." },
+          { title: "Angebot", body: "Du bekommst ein klares, schriftliches Angebot ohne versteckte Kosten." },
+          { title: "Umsetzung", body: "Wir liefern was wir versprochen haben — pünktlich und sorgfältig." },
+        ],
+      };
+    case "image_text_split":
+      return {
+        title: "Über unsere Arbeit",
+        body: "Hier kannst du erzählen, was dich besonders macht — eine Geschichte, ein Detail, eine Philosophie. Eine Leerzeile beginnt einen neuen Absatz.",
+        image_url: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200",
+        image_side: "left",
+      };
+    case "logo_cloud":
+      return {
+        title: "Vertraut von",
+        items: [
+          { name: "Beispiel-Kunde", url: "" },
+          { name: "Partner GmbH", url: "" },
+          { name: "Branchen-Verband", url: "" },
+          { name: "Local Press", url: "" },
+        ],
+      };
   }
 }
 

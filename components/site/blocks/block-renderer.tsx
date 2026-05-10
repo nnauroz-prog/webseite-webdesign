@@ -1,21 +1,29 @@
 import type {
   CtaBannerBlockData,
   FaqBlockData,
+  ImageTextSplitBlockData,
+  LogoCloudBlockData,
   MapBlockData,
   OpeningHoursBlockData,
   PageBlockRow,
+  PricingTableBlockData,
   RichTextBlockData,
   StatsBlockData,
+  StepsBlockData,
   TestimonialsBlockData,
   VideoBlockData,
 } from "@/types/website";
 
 import { BlockCtaBanner } from "./block-cta-banner";
 import { BlockFaq } from "./block-faq";
+import { BlockImageTextSplit } from "./block-image-text-split";
+import { BlockLogoCloud } from "./block-logo-cloud";
 import { BlockMap } from "./block-map";
 import { BlockOpeningHours } from "./block-opening-hours";
+import { BlockPricingTable } from "./block-pricing-table";
 import { BlockRichText } from "./block-rich-text";
 import { BlockStats } from "./block-stats";
+import { BlockSteps } from "./block-steps";
 import { BlockTestimonials } from "./block-testimonials";
 import { BlockVideo } from "./block-video";
 
@@ -57,6 +65,18 @@ function BlockRow({ block }: { block: PageBlockRow }) {
       return <BlockStats data={block.data as StatsBlockData} />;
     case "rich_text":
       return <BlockRichText data={block.data as RichTextBlockData} />;
+    case "pricing_table":
+      return (
+        <BlockPricingTable data={block.data as PricingTableBlockData} />
+      );
+    case "steps":
+      return <BlockSteps data={block.data as StepsBlockData} />;
+    case "image_text_split":
+      return (
+        <BlockImageTextSplit data={block.data as ImageTextSplitBlockData} />
+      );
+    case "logo_cloud":
+      return <BlockLogoCloud data={block.data as LogoCloudBlockData} />;
     default:
       return null;
   }

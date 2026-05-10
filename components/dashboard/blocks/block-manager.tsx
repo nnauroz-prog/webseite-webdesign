@@ -2,12 +2,16 @@
 
 import { useState, useTransition } from "react";
 import {
+  Building2,
   ChevronDown,
   ChevronUp,
+  CreditCard,
   Eye,
   EyeOff,
   FileText,
   HelpCircle,
+  Image as ImageIcon,
+  ListOrdered,
   MapPin,
   MessageSquareQuote,
   Megaphone,
@@ -91,6 +95,34 @@ const BLOCK_LIBRARY: Array<{
     description: "Mehr Platz für Geschichten und Details",
     icon: FileText,
     tone: "bg-stone-500/10 text-stone-600 dark:text-stone-400",
+  },
+  {
+    type: "pricing_table",
+    label: "Preise / Pakete",
+    description: "Bis 4 Pakete mit Preis, Features, Beliebt-Badge",
+    icon: CreditCard,
+    tone: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  },
+  {
+    type: "steps",
+    label: "Ablauf-Schritte",
+    description: "Numerierter 'So funktioniert's' Prozess",
+    icon: ListOrdered,
+    tone: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+  },
+  {
+    type: "image_text_split",
+    label: "Bild + Text",
+    description: "Großes Foto links/rechts neben Headline + Text",
+    icon: ImageIcon,
+    tone: "bg-pink-500/10 text-pink-600 dark:text-pink-400",
+  },
+  {
+    type: "logo_cloud",
+    label: "Partner-Logos",
+    description: "Reihe von Partner-/Kunden-/Presse-Namen",
+    icon: Building2,
+    tone: "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400",
   },
 ];
 

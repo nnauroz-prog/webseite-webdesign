@@ -14,11 +14,15 @@ import { updateBlockAction } from "@/lib/actions/blocks";
 import type {
   CtaBannerBlockData,
   FaqBlockData,
+  ImageTextSplitBlockData,
+  LogoCloudBlockData,
   MapBlockData,
   OpeningHoursBlockData,
   PageBlockRow,
+  PricingTableBlockData,
   RichTextBlockData,
   StatsBlockData,
+  StepsBlockData,
   TestimonialsBlockData,
   VideoBlockData,
 } from "@/types/website";
@@ -60,6 +64,18 @@ export function BlockEditor({ block }: { block: PageBlockRow }) {
       ) : null}
       {block.type === "rich_text" ? (
         <RichTextEditor data={block.data as RichTextBlockData} />
+      ) : null}
+      {block.type === "pricing_table" ? (
+        <PricingTableEditor data={block.data as PricingTableBlockData} />
+      ) : null}
+      {block.type === "steps" ? (
+        <StepsEditor data={block.data as StepsBlockData} />
+      ) : null}
+      {block.type === "image_text_split" ? (
+        <ImageTextSplitEditor data={block.data as ImageTextSplitBlockData} />
+      ) : null}
+      {block.type === "logo_cloud" ? (
+        <LogoCloudEditor data={block.data as LogoCloudBlockData} />
       ) : null}
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
@@ -595,6 +611,425 @@ function CtaBannerEditor({ data }: { data: CtaBannerBlockData }) {
             className="font-mono text-xs"
           />
         </div>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Pricing-table editor                                              */
+/* ------------------------------------------------------------------ */
+
+function PricingTableEditor({ data }: { data: PricingTableBlockData }) {
+  const initial = data?.items?.length
+    ? data.items
+    : [{ name: "", price: "", unit: "", description: "", features: [] as string[], highlight: false }];
+  const [items, setItems] = useState(initial);
+  const [title, setTitle] = useState(data?.title ?? "");
+
+  const payload = JSON.stringify({ title, items });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="pt-title">Block-Titel (optional)</Label>
+        <Input
+          id="pt-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={120}
+        />
+      </div>
+      <div className="space-y-3">
+        {items.map((it, i) => (
+          <div key={i} className="bg-secondary/30 space-y-2 rounded-lg p-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground text-xs">
+                Paket {i + 1}
+              </span>
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-1.5 text-xs">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(it.highlight)}
+                    onChange={(e) =>
+                      setItems((s) =>
+                        s.map((x, j) =>
+                          j === i ? { ...x, highlight: e.target.checked } : x,
+                        ),
+                      )
+                    }
+                  />
+                  Beliebt
+                </label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  disabled={items.length === 1}
+                  onClick={() =>
+                    setItems((s) => s.filter((_, j) => j !== i))
+                  }
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <Input
+                value={it.name}
+                onChange={(e) =>
+                  setItems((s) =>
+                    s.map((x, j) =>
+                      j === i ? { ...x, name: e.target.value } : x,
+                    ),
+                  )
+                }
+                placeholder="Paket-Name"
+                maxLength={80}
+                required
+              />
+              <Input
+                value={it.unit ?? ""}
+                onChange={(e) =>
+                  setItems((s) =>
+                    s.map((x, j) =>
+                      j === i ? { ...x, unit: e.target.value } : x,
+                    ),
+                  )
+                }
+                placeholder="ab / pro Monat (optional)"
+                maxLength={40}
+              />
+              <Input
+                value={it.price}
+                onChange={(e) =>
+                  setItems((s) =>
+                    s.map((x, j) =>
+                      j === i ? { ...x, price: e.target.value } : x,
+                    ),
+                  )
+                }
+                placeholder="49 €"
+                maxLength={40}
+                required
+              />
+            </div>
+            <Textarea
+              value={it.description ?? ""}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i ? { ...x, description: e.target.value } : x,
+                  ),
+                )
+              }
+              placeholder="Beschreibung (optional)"
+              maxLength={280}
+              rows={2}
+            />
+            <Textarea
+              value={(it.features ?? []).join("\n")}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i
+                      ? {
+                          ...x,
+                          features: e.target.value
+                            .split("\n")
+                            .map((l) => l.trim())
+                            .filter((l) => l.length > 0)
+                            .slice(0, 10),
+                        }
+                      : x,
+                  ),
+                )
+              }
+              placeholder={"Features — eine pro Zeile\nz.B. Erstgespräch\nE-Mail-Support"}
+              rows={4}
+            />
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={items.length >= 4}
+          onClick={() =>
+            setItems((s) => [
+              ...s,
+              { name: "", price: "", unit: "", description: "", features: [], highlight: false },
+            ])
+          }
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          Paket hinzufügen
+        </Button>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Steps editor                                                      */
+/* ------------------------------------------------------------------ */
+
+function StepsEditor({ data }: { data: StepsBlockData }) {
+  const initial = data?.items?.length
+    ? data.items
+    : [{ title: "", body: "" }, { title: "", body: "" }];
+  const [items, setItems] = useState(initial);
+  const [title, setTitle] = useState(data?.title ?? "");
+
+  const payload = JSON.stringify({ title, items });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="st-title">Block-Titel (optional)</Label>
+        <Input
+          id="st-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={120}
+        />
+      </div>
+      <div className="space-y-3">
+        {items.map((it, i) => (
+          <div key={i} className="bg-secondary/30 space-y-2 rounded-lg p-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-muted-foreground text-xs">
+                Schritt {i + 1}
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                disabled={items.length <= 2}
+                onClick={() =>
+                  setItems((s) => s.filter((_, j) => j !== i))
+                }
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <Input
+              value={it.title}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i ? { ...x, title: e.target.value } : x,
+                  ),
+                )
+              }
+              placeholder="Schritt-Titel"
+              maxLength={120}
+              required
+            />
+            <Textarea
+              value={it.body}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i ? { ...x, body: e.target.value } : x,
+                  ),
+                )
+              }
+              placeholder="Was passiert in diesem Schritt?"
+              maxLength={600}
+              rows={3}
+              required
+            />
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={items.length >= 8}
+          onClick={() =>
+            setItems((s) => [...s, { title: "", body: "" }])
+          }
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          Schritt hinzufügen
+        </Button>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Image-text split editor                                           */
+/* ------------------------------------------------------------------ */
+
+function ImageTextSplitEditor({ data }: { data: ImageTextSplitBlockData }) {
+  const [title, setTitle] = useState(data?.title ?? "");
+  const [body, setBody] = useState(data?.body ?? "");
+  const [imageUrl, setImageUrl] = useState(data?.image_url ?? "");
+  const [imageSide, setImageSide] = useState<"left" | "right">(
+    data?.image_side === "right" ? "right" : "left",
+  );
+
+  const payload = JSON.stringify({
+    title,
+    body,
+    image_url: imageUrl,
+    image_side: imageSide,
+  });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="its-title">Überschrift (optional)</Label>
+        <Input
+          id="its-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={160}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="its-body">Text</Label>
+        <Textarea
+          id="its-body"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={6}
+          maxLength={2000}
+          placeholder="Eine Leerzeile beginnt einen neuen Absatz."
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="its-img">Bild-URL</Label>
+        <Input
+          id="its-img"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          maxLength={2000}
+          placeholder="https://… (z.B. ein Galerie-Bild oder hero_image_url)"
+          required
+          className="font-mono text-xs"
+        />
+        <p className="text-muted-foreground text-xs">
+          Tipp: kopier die URL eines bereits hochgeladenen Galerie-Bildes
+          oder verwende den ✨ KI-Generator unter Hero/Galerie um schnell
+          ein passendes Bild zu erstellen.
+        </p>
+      </div>
+      <div className="space-y-2">
+        <Label>Bild-Position</Label>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant={imageSide === "left" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setImageSide("left")}
+          >
+            Bild links
+          </Button>
+          <Button
+            type="button"
+            variant={imageSide === "right" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setImageSide("right")}
+          >
+            Bild rechts
+          </Button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Logo-cloud editor                                                 */
+/* ------------------------------------------------------------------ */
+
+function LogoCloudEditor({ data }: { data: LogoCloudBlockData }) {
+  const initial = data?.items?.length
+    ? data.items
+    : [{ name: "", url: "" }, { name: "", url: "" }];
+  const [items, setItems] = useState(initial);
+  const [title, setTitle] = useState(data?.title ?? "");
+
+  const payload = JSON.stringify({ title, items });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="lc-title">Block-Titel (optional)</Label>
+        <Input
+          id="lc-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Vertraut von / Partner / Presse"
+          maxLength={120}
+        />
+      </div>
+      <div className="space-y-3">
+        {items.map((it, i) => (
+          <div
+            key={i}
+            className="bg-secondary/30 grid gap-2 rounded-lg p-3 sm:grid-cols-[1fr_1fr_auto]"
+          >
+            <Input
+              value={it.name}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i ? { ...x, name: e.target.value } : x,
+                  ),
+                )
+              }
+              placeholder="Name"
+              maxLength={80}
+              required
+            />
+            <Input
+              value={it.url ?? ""}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i ? { ...x, url: e.target.value } : x,
+                  ),
+                )
+              }
+              placeholder="https://… (optional)"
+              maxLength={2000}
+              className="font-mono text-xs"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={items.length <= 2}
+              onClick={() =>
+                setItems((s) => s.filter((_, j) => j !== i))
+              }
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={items.length >= 16}
+          onClick={() =>
+            setItems((s) => [...s, { name: "", url: "" }])
+          }
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          Eintrag hinzufügen
+        </Button>
       </div>
     </>
   );
