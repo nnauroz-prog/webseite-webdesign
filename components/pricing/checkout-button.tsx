@@ -1,9 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState, useTransition } from "react";
 
-import { createCheckoutAction } from "@/lib/actions/billing";
-import { initialState } from "@/lib/actions/states";
 import { Button } from "@/components/ui/button";
 import type { PlanId } from "@/lib/stripe/plans";
 
@@ -14,25 +12,56 @@ type Props = {
 };
 
 export function CheckoutButton({ plan, label, variant = "default" }: Props) {
-  const [state, action, pending] = useActionState(
-    createCheckoutAction,
-    initialState,
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  function onClick() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/billing/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan }),
+        });
+        const body = (await res.json()) as {
+          ok: boolean;
+          message?: string;
+          redirect?: string;
+        };
+        if (!body.ok) {
+          if (body.redirect) {
+            window.location.href = body.redirect;
+            return;
+          }
+          setError(body.message ?? "Checkout fehlgeschlagen.");
+          return;
+        }
+        if (body.redirect) {
+          window.location.href = body.redirect;
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? `Checkout fehlgeschlagen: ${err.message}`
+            : "Checkout gerade nicht möglich.",
+        );
+      }
+    });
+  }
 
   return (
-    <form action={action} className="flex flex-col gap-2">
-      <input type="hidden" name="plan" value={plan} />
+    <div className="flex flex-col gap-2">
       <Button
-        type="submit"
+        type="button"
         variant={variant}
         disabled={pending}
         className="w-full"
+        onClick={onClick}
       >
         {pending ? "Weiter zu Stripe …" : (label ?? "Plan wählen")}
       </Button>
-      {state.status === "error" && state.message ? (
-        <p className="text-destructive text-xs">{state.message}</p>
-      ) : null}
-    </form>
+      {error ? <p className="text-destructive text-xs">{error}</p> : null}
+    </div>
   );
 }
