@@ -20,8 +20,11 @@ export const INQUIRY_NEEDS = [
   "mehrseitig",
   "kundenbereich",
   "speisekarte",
-  "bewerbungsformular",
   "kontaktformular",
+  "bewerbungsformular",
+  "buchung",
+  "maps-oeffnungszeiten",
+  "seo",
 ] as const;
 export type InquiryNeed = (typeof INQUIRY_NEEDS)[number];
 

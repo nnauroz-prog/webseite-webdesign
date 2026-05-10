@@ -24,8 +24,11 @@ const NEED_LABELS: Record<InquiryNeed, string> = {
   mehrseitig: "Mehrseitige Website",
   kundenbereich: "Kundenbereich",
   speisekarte: "Speisekarte / Wochenangebot",
-  bewerbungsformular: "Bewerbungsformular",
   kontaktformular: "Kontaktformular",
+  bewerbungsformular: "Bewerbungsformular",
+  buchung: "Buchung / Reservierung",
+  "maps-oeffnungszeiten": "Google Maps / Öffnungszeiten",
+  seo: "SEO-Grundlagen",
 };
 
 const TIMEFRAME_LABELS: Record<(typeof INQUIRY_TIMEFRAMES)[number], string> = {

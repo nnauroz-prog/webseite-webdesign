@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const PACKAGES = [
   {
-    name: "Starter Onepager",
+    name: "Starter-Projekt",
     badge: "Für kleine Betriebe",
     setup: "499 €",
     monthly: "49 €",
@@ -34,7 +34,7 @@ const PACKAGES = [
     ],
   },
   {
-    name: "Business Website",
+    name: "Business-Auftritt",
     badge: "Beliebteste Wahl",
     highlight: true,
     setup: "899 €",
@@ -55,7 +55,7 @@ const PACKAGES = [
     ],
   },
   {
-    name: "Premium System",
+    name: "Premium-System",
     badge: "Mit Kundenbereich",
     setup: "1.499 €",
     monthly: "129 €",

@@ -7,7 +7,6 @@ import {
   Image as ImageIcon,
   MessageCircle,
   Minus,
-  Phone,
   Send,
   Sparkles,
   Wrench,
@@ -36,10 +35,17 @@ export const metadata: Metadata = {
 };
 
 const TRUST_LINE = [
+  "Keine Registrierung nötig",
   "Persönliche Umsetzung",
   "Mobil optimiert",
   "Für lokale Unternehmen",
-  "Auf Wunsch mit Kundenbereich",
+];
+
+const TRUST_BAR = [
+  { label: "48h Umsetzung möglich", icon: "clock" as const },
+  { label: "Persönlicher Ansprechpartner", icon: "user" as const },
+  { label: "Keine Registrierung nötig", icon: "check" as const },
+  { label: "Mobil optimiert", icon: "device" as const },
 ];
 
 const PROBLEMS = [
@@ -134,24 +140,9 @@ const COMPARISON: Array<{
   },
 ];
 
-const INDUSTRIES = [
-  "Pflegedienste",
-  "Arztpraxen",
-  "Zahnarztpraxen",
-  "Friseure",
-  "Kosmetikstudios",
-  "Cafés",
-  "Restaurants",
-  "Handwerker",
-  "Reinigungsfirmen",
-  "Kanzleien",
-  "Fitnessstudios",
-  "Lokale Dienstleister",
-];
-
 const PACKAGES = [
   {
-    name: "Starter Onepager",
+    name: "Starter-Projekt",
     badge: "Schnell online",
     setup: "ab 499 €",
     monthly: "ab 49 € / Monat",
@@ -169,7 +160,7 @@ const PACKAGES = [
     ],
   },
   {
-    name: "Business Website",
+    name: "Business-Auftritt",
     badge: "Beliebteste Wahl",
     highlight: true,
     setup: "ab 899 €",
@@ -188,7 +179,7 @@ const PACKAGES = [
     ],
   },
   {
-    name: "Premium System",
+    name: "Premium-System",
     badge: "Mit Kundenbereich",
     setup: "ab 1.499 €",
     monthly: "ab 129 € / Monat",
@@ -256,14 +247,66 @@ const FAQ = [
       "Ja. Entweder übernehmen wir Änderungen für Sie (in der monatlichen Betreuung enthalten) oder Sie erhalten optional einen Kundenbereich, in dem Sie alles selbst pflegen können.",
   },
   {
-    question: "Ist das günstiger als Wix?",
+    question: "Was ist besser: Wix oder Sitalo?",
     answer:
-      "Wix ist günstiger, wenn Sie alles selbst bauen möchten. Sitalo ist für Unternehmen gedacht, die eine fertige professionelle Website möchten, ohne sich selbst um Technik, Design und Einrichtung zu kümmern.",
+      "Wix ist gut, wenn Sie selbst bauen möchten. Sitalo ist besser, wenn Sie eine fertige professionelle Website möchten und keine Zeit für Technik, Design und Einrichtung haben. Wir liefern das fertige Ergebnis statt nur das Werkzeug.",
+  },
+  {
+    question: "Gibt es monatliche Kosten?",
+    answer:
+      "Ja, wenn Hosting, Wartung, Änderungen und Support über uns laufen sollen. Die monatlichen Kosten hängen vom Paket ab (49 €, 79 € oder 129 €) und sind jederzeit zum Monatsende kündbar.",
+  },
+  {
+    question: "Sind Impressum und Datenschutz dabei?",
+    answer:
+      "Wir integrieren die entsprechenden Seiten und Bereiche technisch. Rechtssichere Inhalte (Impressums-Text, Datenschutzerklärung) sollten Sie selbst oder von einem geeigneten Anbieter beziehen — wir können bei Bedarf Empfehlungen aussprechen.",
   },
   {
     question: "Was passiert nach dem Launch?",
     answer:
       "Sie erhalten laufende Betreuung im monatlichen Paket: kleine Änderungen, Updates, Sicherheits-Patches, Backups. Größere Erweiterungen besprechen wir im Einzelfall.",
+  },
+];
+
+/**
+ * Industry value props — replaces the chip list with per-trade
+ * "what you get" cards. Same trades, just communicated as outcomes.
+ */
+const INDUSTRY_VALUE: Array<{
+  name: string;
+  body: string;
+}> = [
+  {
+    name: "Pflegedienste",
+    body: "Leistungen, Kontakt, Bewerbungen und Vertrauen auf einen Blick.",
+  },
+  {
+    name: "Arzt- & Zahnarztpraxen",
+    body: "Seriöser Auftritt, Sprechzeiten, Leistungen und klare Patienteninformation.",
+  },
+  {
+    name: "Friseure & Kosmetikstudios",
+    body: "Bilder, Leistungen, Preise und Termin-Anfragen hochwertig präsentieren.",
+  },
+  {
+    name: "Cafés & Restaurants",
+    body: "Speisekarte, Öffnungszeiten, Wochenangebote und Reservierungs-Anfragen.",
+  },
+  {
+    name: "Handwerker",
+    body: "Projekte, Galerie, Anfahrt und schnelle Kontaktmöglichkeiten.",
+  },
+  {
+    name: "Reinigungsfirmen",
+    body: "Leistungspakete, Angebotsanfrage und 24/7-Erreichbarkeit klar dargestellt.",
+  },
+  {
+    name: "Kanzleien",
+    body: "Rechtsgebiete, Anwält:innen und vertrauliche Erstberatungs-Anfrage.",
+  },
+  {
+    name: "Fitnessstudios",
+    body: "Kursplan, Probetraining und Mitgliedschafts-Anfragen ohne Hürden.",
   },
 ];
 
@@ -273,11 +316,13 @@ export default function HomePage() {
       <MarketingHeader />
       <main className="flex-1">
         <Hero />
+        <TrustBar />
         <Problems />
         <Solutions />
         <Steps />
         <Comparison />
         <Industries />
+        <Showcase />
         <Examples />
         <Pricing />
         <Why />
@@ -293,6 +338,8 @@ export default function HomePage() {
 /* ---------- Sections ---------- */
 
 function Hero() {
+  const whatsappHref = buildWhatsappHref();
+
   return (
     <section className="border-border/40 relative overflow-hidden border-b">
       <div
@@ -305,13 +352,14 @@ function Hero() {
             Webdesign-Service · Lokale Unternehmen
           </p>
           <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-6xl">
-            Ihre professionelle Website.
+            Sie schicken uns Ihre Daten.
             <br />
-            Fertig in 48 Stunden.
+            <span className="text-primary">Wir bauen Ihre Website.</span>
           </h1>
-          <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
-            Senden Sie uns Logo, Bilder, Texte und Kontaktdaten. Wir übernehmen
-            Design, Technik, Mobiloptimierung und Veröffentlichung.
+          <p className="text-muted-foreground mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed sm:text-xl">
+            Logo, Bilder, Texte und Kontaktdaten reichen aus. Wir übernehmen
+            Design, Technik, Mobiloptimierung und Veröffentlichung — meist
+            innerhalb von 48 Stunden.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
@@ -321,9 +369,20 @@ function Hero() {
               Website anfragen
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
+            {whatsappHref ? (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-[#25D366]/40 text-[#128C7E] hover:bg-[#25D366]/10 inline-flex h-12 items-center justify-center gap-2 rounded-full border bg-white px-7 text-[15px] font-medium tracking-tight transition-colors"
+              >
+                <WhatsappGlyph className="h-4 w-4" />
+                WhatsApp schreiben
+              </a>
+            ) : null}
             <Link
               href="#beispiele"
-              className="border-border bg-background hover:bg-secondary inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
+              className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center justify-center px-4 text-sm font-medium underline-offset-4 hover:underline"
             >
               Beispiele ansehen
             </Link>
@@ -343,6 +402,48 @@ function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+function TrustBar() {
+  return (
+    <div className="border-border/40 bg-background border-b">
+      <ul className="text-muted-foreground mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-6 py-5 text-sm">
+        {TRUST_BAR.map((item) => (
+          <li
+            key={item.label}
+            className="inline-flex items-center gap-2 whitespace-nowrap"
+          >
+            <Check className="text-emerald-600 h-3.5 w-3.5" />
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function buildWhatsappHref(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
+  if (!raw) return null;
+  const digits = raw.replace(/[^\d]/g, "");
+  if (digits.length < 6) return null;
+  const message =
+    process.env.NEXT_PUBLIC_SITALO_WHATSAPP_MESSAGE?.trim() ||
+    "Hallo, ich interessiere mich für eine professionelle Website. Können Sie mir ein Angebot machen?";
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+}
+
+function WhatsappGlyph({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M16.001 3.2c-7.067 0-12.8 5.733-12.8 12.8 0 2.241.586 4.434 1.7 6.366L3.2 28.8l6.601-1.728a12.79 12.79 0 0 0 6.198 1.577h.002c7.067 0 12.799-5.732 12.799-12.799 0-3.422-1.332-6.638-3.752-9.057a12.726 12.726 0 0 0-9.047-3.593zm0 23.342h-.002a10.591 10.591 0 0 1-5.4-1.479l-.387-.229-4.014 1.051 1.07-3.915-.252-.4a10.587 10.587 0 0 1-1.624-5.668c0-5.866 4.775-10.641 10.641-10.641 2.842 0 5.514 1.108 7.525 3.12a10.557 10.557 0 0 1 3.116 7.527c0 5.866-4.774 10.634-10.673 10.634zm5.834-7.967c-.32-.16-1.893-.934-2.187-1.04-.293-.107-.507-.16-.72.16s-.827 1.04-1.014 1.254c-.187.214-.374.241-.694.08-.32-.16-1.353-.499-2.578-1.591-.953-.85-1.597-1.9-1.784-2.22-.187-.32-.02-.493.14-.652.143-.143.32-.374.48-.561.16-.187.213-.32.32-.534.107-.214.054-.4-.026-.561-.08-.16-.72-1.733-.987-2.373-.26-.622-.524-.538-.72-.548-.187-.01-.4-.012-.614-.012a1.18 1.18 0 0 0-.854.4c-.293.32-1.12 1.094-1.12 2.667 0 1.574 1.147 3.094 1.307 3.307.16.213 2.254 3.44 5.466 4.825.764.329 1.36.526 1.826.674.766.244 1.464.21 2.014.127.615-.092 1.893-.774 2.16-1.521.267-.748.267-1.387.187-1.521-.08-.134-.293-.213-.614-.374z" />
+    </svg>
   );
 }
 
@@ -540,11 +641,15 @@ function Comparison() {
           </div>
         </div>
 
-        <p className="text-muted-foreground mx-auto mt-8 max-w-2xl text-center text-pretty">
-          Wenn Sie selbst bauen möchten, ist Wix eine starke Lösung. Wenn Sie
-          eine fertige professionelle Website möchten, übernehmen wir das für
-          Sie.
-        </p>
+        <div className="bg-foreground text-background mx-auto mt-10 max-w-3xl rounded-2xl p-6 text-center shadow-xl sm:p-8">
+          <p className="text-background/70 text-[11px] font-medium uppercase tracking-[0.22em]">
+            Kurz gesagt
+          </p>
+          <p className="mt-2 text-balance text-xl font-semibold leading-snug sm:text-2xl">
+            Wix liefert das Werkzeug.
+            <br className="sm:hidden" /> Sitalo liefert die fertige Website.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -553,31 +658,139 @@ function Comparison() {
 function Industries() {
   return (
     <section className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28">
-      <div className="mx-auto w-full max-w-5xl px-6">
+      <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
             Branchen
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Erfahrung mit lokalen Unternehmen.
+            Websites für lokale Unternehmen, die professionell wirken müssen.
           </h2>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
             Wir nutzen bewährte Premium-Strukturen für verschiedene Branchen und
             passen Design, Texte und Inhalte individuell an Ihr Unternehmen an.
           </p>
         </header>
-        <ul className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-2">
-          {INDUSTRIES.map((name) => (
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {INDUSTRY_VALUE.map((row) => (
             <li
-              key={name}
-              className="border-border bg-card text-foreground/80 inline-flex rounded-full border px-4 py-2 text-sm"
+              key={row.name}
+              className="bg-card border-border/60 flex flex-col gap-2 rounded-2xl border p-6 shadow-sm"
             >
-              {name}
+              <h3 className="text-base font-semibold tracking-tight">
+                {row.name}
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {row.body}
+              </p>
             </li>
           ))}
         </ul>
       </div>
     </section>
+  );
+}
+
+/**
+ * Alstercafé Showcase. Real example project explicitly labelled as
+ * "Beispielprojekt" — no fake customer testimonials, no implied
+ * endorsement. Demonstrates the Premium-System with managed menu /
+ * weekly-special content.
+ */
+function Showcase() {
+  return (
+    <section
+      id="showcase"
+      className="border-border/40 border-b py-20 sm:py-28"
+    >
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <header className="mx-auto max-w-2xl text-center">
+          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
+            Beispielprojekt
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
+            Café-Webseite mit Speisekarte & Wochenangebot
+          </h2>
+          <p className="text-muted-foreground mt-4 text-lg text-pretty">
+            Für ein Café kann Sitalo nicht nur eine schöne Website erstellen,
+            sondern auch verwaltbare Inhalte wie Speisekarte, Wochenangebot
+            oder Mittagstisch integrieren.
+          </p>
+        </header>
+
+        <div className="border-border/60 bg-card mt-12 grid gap-0 overflow-hidden rounded-3xl border shadow-xl lg:grid-cols-[1.1fr_1fr]">
+          <div className="bg-foreground text-background relative flex aspect-[4/3] flex-col justify-end overflow-hidden p-8 sm:aspect-auto sm:p-10">
+            <div
+              aria-hidden="true"
+              className="bg-primary/40 absolute inset-x-0 top-0 h-[60%] opacity-50 blur-3xl"
+            />
+            <div className="relative">
+              <p className="text-background/60 text-[10px] font-medium uppercase tracking-[0.25em]">
+                Alstercafé · Hamburg
+              </p>
+              <h3 className="mt-3 text-4xl font-semibold leading-[1.05] tracking-[-0.02em] sm:text-5xl">
+                Frischer Kaffee.
+                <br />
+                Wechselndes Wochenangebot.
+              </h3>
+              <p className="text-background/75 mt-5 max-w-sm text-base leading-relaxed">
+                Onepager mit großem Hero, Speisekarte als verwaltbarer Inhalt,
+                Wochenangebot mit Mittagstisch, Öffnungszeiten und Anfahrt.
+              </p>
+              <p className="text-background/60 mt-6 text-xs">
+                Beispielprojekt zur Darstellung des Premium-Systems.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col p-8 sm:p-10">
+            <dl className="grid gap-4 sm:grid-cols-2">
+              <ShowcaseFact label="Branche" value="Café / Gastronomie" />
+              <ShowcaseFact label="Umsetzung" value="Onepager + Kundenbereich" />
+              <ShowcaseFact label="Gerät" value="Mobil-optimiert" />
+              <ShowcaseFact label="Inhalte" value="Selbst pflegbar" />
+            </dl>
+
+            <ul className="mt-7 space-y-2.5 text-sm">
+              {[
+                "Onepager mit großem Hero und Atmosphäre-Bildern",
+                "Speisekarte als verwaltbarer Inhalt im Kundenbereich",
+                "Wochenangebot + Mittagstisch wöchentlich änderbar",
+                "Öffnungszeiten, Google Maps, Telefon-Direktwahl",
+                "Reservierungs-Anfrage per Formular oder WhatsApp",
+                "Bilder-Galerie der Räumlichkeiten",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2.5">
+                  <Check className="text-emerald-600 mt-0.5 h-4 w-4 shrink-0" />
+                  <span className="text-foreground/85">{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-auto pt-8">
+              <Link
+                href="/anfrage"
+                className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 w-full items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight transition-colors sm:w-auto"
+              >
+                Ähnliche Website anfragen
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ShowcaseFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border-border/60 rounded-xl border p-4">
+      <dt className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.18em]">
+        {label}
+      </dt>
+      <dd className="mt-1 text-sm font-medium">{value}</dd>
+    </div>
   );
 }
 
@@ -828,9 +1041,7 @@ function Faq() {
 }
 
 function FinalCta() {
-  const whatsappConfigured = Boolean(
-    process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER,
-  );
+  const whatsappHref = buildWhatsappHref();
   return (
     <section className="bg-foreground text-background py-20 sm:py-28">
       <div className="mx-auto w-full max-w-4xl px-6 text-center">
@@ -841,29 +1052,27 @@ function FinalCta() {
         </h2>
         <p className="text-background/70 mx-auto mt-5 max-w-xl text-pretty text-lg">
           Schicken Sie uns Ihre Anfrage. Wir melden uns innerhalb von 24 Stunden
-          mit einem klaren Vorschlag.
+          mit einem klaren Vorschlag — persönlich, nicht von einer Hotline.
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/anfrage"
             className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
           >
-            Website anfragen
+            Jetzt Website anfragen
             <Send className="ml-2 h-4 w-4" />
           </Link>
-          {whatsappConfigured && (
+          {whatsappHref ? (
             <a
-              href={`https://wa.me/${(
-                process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER ?? ""
-              ).replace(/[^\d]/g, "")}`}
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-background/40 bg-background/10 text-background hover:bg-background/20 inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight backdrop-blur-md transition-colors"
+              className="border-background/40 bg-background/10 text-background hover:bg-background/20 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight backdrop-blur-md transition-colors"
             >
-              <Phone className="mr-2 h-4 w-4" />
-              WhatsApp schreiben
+              <WhatsappGlyph className="h-4 w-4" />
+              Direkt per WhatsApp schreiben
             </a>
-          )}
+          ) : null}
         </div>
         <p className="text-background/60 mt-6 inline-flex items-center gap-2 text-sm">
           <Clock className="h-4 w-4" />
