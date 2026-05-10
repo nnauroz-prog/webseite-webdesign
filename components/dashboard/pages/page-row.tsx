@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState, useState, useTransition } from "react";
 import { ChevronDown, Eye, EyeOff, ExternalLink, Trash2 } from "lucide-react";
 
+import { BlockManager } from "@/components/dashboard/blocks/block-manager";
 import { FieldError, FormStatus } from "@/components/dashboard/form-status";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Button } from "@/components/ui/button";
@@ -16,13 +17,18 @@ import {
   updatePageAction,
 } from "@/lib/actions/pages";
 import { cn } from "@/lib/utils";
-import type { PageRow as PageModel } from "@/types/website";
+import type {
+  PageBlockRow,
+  PageRow as PageModel,
+} from "@/types/website";
 
 export function PageRow({
   page,
+  blocks,
   websiteSlug,
 }: {
   page: PageModel;
+  blocks: PageBlockRow[];
   websiteSlug: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -176,6 +182,12 @@ export function PageRow({
             <SubmitButton label="Speichern" />
           </div>
         </form>
+      ) : null}
+
+      {open ? (
+        <div className="border-t bg-secondary/20 p-4">
+          <BlockManager pageId={page.id} blocks={blocks} />
+        </div>
       ) : null}
     </div>
   );

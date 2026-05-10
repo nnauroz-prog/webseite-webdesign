@@ -119,6 +119,52 @@ export type ApplicationRow = {
   updated_at: string;
 };
 
+export type BlockType =
+  | "faq"
+  | "testimonials"
+  | "opening_hours"
+  | "cta_banner";
+
+export type FaqBlockData = {
+  title?: string;
+  items: Array<{ question: string; answer: string }>;
+};
+
+export type TestimonialsBlockData = {
+  title?: string;
+  items: Array<{ name: string; role?: string; quote: string }>;
+};
+
+export type OpeningHoursBlockData = {
+  title?: string;
+  /** Free-text multi-line, e.g. "Mo–Fr: 9–18 Uhr\nSa: 10–14 Uhr" */
+  text: string;
+};
+
+export type CtaBannerBlockData = {
+  headline: string;
+  subtitle?: string;
+  button_label: string;
+  button_href: string;
+};
+
+export type PageBlockRow = {
+  id: string;
+  website_id: string;
+  page_id: string | null;
+  type: BlockType;
+  data:
+    | FaqBlockData
+    | TestimonialsBlockData
+    | OpeningHoursBlockData
+    | CtaBannerBlockData
+    | Record<string, unknown>;
+  sort_order: number;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type PageRow = {
   id: string;
   website_id: string;

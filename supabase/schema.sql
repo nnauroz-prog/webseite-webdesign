@@ -342,6 +342,45 @@ create trigger pages_set_updated_at
   for each row execute function public.set_updated_at();
 
 -- ----------------------------------------------------------------------------
+-- 10a-2. page_blocks  (polymorphic content blocks per page)
+-- ----------------------------------------------------------------------------
+-- Each page can carry an ordered list of typed content blocks (FAQ
+-- accordion, testimonials grid, opening-hours table, CTA banner, …).
+-- The `data` jsonb holds type-specific fields validated server-side
+-- via Zod before write.
+create table if not exists public.page_blocks (
+  id           uuid        primary key default gen_random_uuid(),
+  website_id   uuid        not null references public.websites(id) on delete cascade,
+  -- page_id NULL = block lives on the home/landing page (currently
+  -- unused — home renders fixed sections — kept nullable so we can
+  -- add home-page blocks later without a migration).
+  page_id      uuid        references public.pages(id) on delete cascade,
+  type         text        not null
+                           check (type in (
+                             'faq',
+                             'testimonials',
+                             'opening_hours',
+                             'cta_banner'
+                           )),
+  data         jsonb       not null default '{}'::jsonb,
+  sort_order   int         not null default 0,
+  is_published boolean     not null default true,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+
+create index if not exists page_blocks_page_idx
+  on public.page_blocks (page_id, sort_order, created_at);
+
+create index if not exists page_blocks_website_idx
+  on public.page_blocks (website_id);
+
+drop trigger if exists page_blocks_set_updated_at on public.page_blocks;
+create trigger page_blocks_set_updated_at
+  before update on public.page_blocks
+  for each row execute function public.set_updated_at();
+
+-- ----------------------------------------------------------------------------
 -- 10b. bookings  (online appointment requests)
 -- ----------------------------------------------------------------------------
 create table if not exists public.bookings (
@@ -412,6 +451,7 @@ alter table public.leads          enable row level security;
 alter table public.applications   enable row level security;
 alter table public.bookings       enable row level security;
 alter table public.pages          enable row level security;
+alter table public.page_blocks    enable row level security;
 
 alter table public.profiles       force row level security;
 alter table public.admin_roles    force row level security;
@@ -423,6 +463,7 @@ alter table public.leads          force row level security;
 alter table public.applications   force row level security;
 alter table public.bookings       force row level security;
 alter table public.pages          force row level security;
+alter table public.page_blocks    force row level security;
 
 -- ----------------------------------------------------------------------------
 --  profiles policies
@@ -887,6 +928,80 @@ create policy "pages: owner or admin update"
 
 create policy "pages: owner or admin delete"
   on public.pages for delete
+  to authenticated
+  using (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  );
+
+-- ----- page_blocks -----
+drop policy if exists "page_blocks: public read"            on public.page_blocks;
+drop policy if exists "page_blocks: owner or admin read"    on public.page_blocks;
+drop policy if exists "page_blocks: owner or admin write"   on public.page_blocks;
+drop policy if exists "page_blocks: owner or admin update"  on public.page_blocks;
+drop policy if exists "page_blocks: owner or admin delete"  on public.page_blocks;
+
+-- Public can read PUBLISHED blocks of PUBLISHED pages on ACTIVE
+-- websites. Three checks because a draft page with published blocks
+-- still shouldn't render.
+create policy "page_blocks: public read"
+  on public.page_blocks for select
+  to anon, authenticated
+  using (
+    is_published = true
+    and exists (
+      select 1 from public.websites w
+      where w.id = website_id and w.is_active = true
+    )
+    and (
+      page_id is null
+      or exists (
+        select 1 from public.pages p
+        where p.id = page_id and p.is_published = true
+      )
+    )
+  );
+
+create policy "page_blocks: owner or admin read"
+  on public.page_blocks for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  );
+
+create policy "page_blocks: owner or admin write"
+  on public.page_blocks for insert
+  to authenticated
+  with check (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  );
+
+create policy "page_blocks: owner or admin update"
+  on public.page_blocks for update
+  to authenticated
+  using (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  );
+
+create policy "page_blocks: owner or admin delete"
+  on public.page_blocks for delete
   to authenticated
   using (
     exists (

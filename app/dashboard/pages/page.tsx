@@ -12,14 +12,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { listAllPagesForOwner } from "@/lib/page-data";
+import { listAllPagesForOwner, listPageBlocks } from "@/lib/page-data";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
+import type { PageBlockRow } from "@/types/website";
 
 export const metadata: Metadata = { title: "Seiten" };
 
 export default async function PagesPage() {
   const { website } = await requireCurrentWebsite();
   const pages = await listAllPagesForOwner(website.id);
+
+  // Pre-load each page's blocks once so the client BlockManager
+  // hydrates with real data instead of waiting for a second fetch.
+  const blocksByPage: Record<string, PageBlockRow[]> = {};
+  await Promise.all(
+    pages.map(async (p) => {
+      blocksByPage[p.id] = await listPageBlocks(p.id);
+    }),
+  );
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-6 py-8">
@@ -81,7 +91,11 @@ export default async function PagesPage() {
           <ul className="space-y-3">
             {pages.map((p) => (
               <li key={p.id}>
-                <PageRowComp page={p} websiteSlug={website.slug} />
+                <PageRowComp
+                  page={p}
+                  blocks={blocksByPage[p.id] ?? []}
+                  websiteSlug={website.slug}
+                />
               </li>
             ))}
           </ul>
