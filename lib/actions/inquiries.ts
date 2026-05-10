@@ -69,6 +69,15 @@ export async function submitInquiryAction(
   const data = parsed.data;
   const supabase = await createClient();
 
+  // Structured log so the entry is grep-able in Vercel Runtime Logs.
+  // Helps confirm the action even ran when "no mail arrived" reports
+  // come in — if you see no [submitInquiryAction] line at all, the
+  // request never reached the server.
+  console.log("[submitInquiryAction] received", {
+    email: data.email,
+    selected_package: data.selected_package ?? null,
+  });
+
   const { error } = await supabase.from("inquiries").insert({
     name: data.name,
     email: data.email,
@@ -87,11 +96,13 @@ export async function submitInquiryAction(
   if (error) {
     console.error("[submitInquiryAction] insert failed", {
       message: error.message,
+      code: (error as { code?: string }).code,
     });
     return fail(
       "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt per WhatsApp.",
     );
   }
+  console.log("[submitInquiryAction] inserted into inquiries");
 
   // Best-effort email — never blocks the success response.
   try {
