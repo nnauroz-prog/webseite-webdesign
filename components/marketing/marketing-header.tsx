@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 
@@ -45,7 +44,6 @@ export function MarketingHeader({
   nav?: NavItem[];
   className?: string;
 }) {
-  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -57,12 +55,9 @@ export function MarketingHeader({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close menu on navigation. Path-change is the safest signal —
-  // anchor clicks within the same page don't trigger this, so we
-  // additionally close it from the per-link onClick below.
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+  // Each link in the sheet calls onClose directly, so menu state is
+  // already shut by the time navigation happens — no pathname effect
+  // needed.
 
   // Lock body scroll while the mobile sheet is open.
   useEffect(() => {
