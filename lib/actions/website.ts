@@ -12,6 +12,7 @@ import {
 } from "@/lib/actions/shared";
 import { getDemoContent } from "@/lib/onboarding/demo-content";
 import { deleteStorageObjectByPublicUrl, uploadImage } from "@/lib/storage";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite, requireUser } from "@/lib/supabase/auth";
 import { resolveTemplateKey } from "@/lib/templates";
 import {
@@ -452,14 +453,59 @@ export async function updatePublishAction(
   if (parsed.data.is_active) {
     const { data: sub } = await supabase
       .from("subscriptions")
-      .select("status")
+      .select("status, current_period_end")
       .eq("user_id", user.id)
       .maybeSingle();
-    const status = (sub as { status: string | null } | null)?.status ?? null;
-    if (!status || !["active", "trialing"].includes(status)) {
-      return fail(
-        "Bitte wähle zuerst ein Paket, um deine Website öffentlich zu schalten.",
-      );
+    const row = sub as
+      | {
+          status: string | null;
+          current_period_end: string | null;
+        }
+      | null;
+    const status = row?.status ?? null;
+    const periodEnd = row?.current_period_end
+      ? new Date(row.current_period_end).getTime()
+      : null;
+    const trialStillValid =
+      periodEnd === null || periodEnd > Date.now();
+
+    const eligible =
+      status &&
+      ["active", "trialing"].includes(status) &&
+      trialStillValid;
+
+    if (!eligible) {
+      // First-publish path: no row yet → start a 7-day trial without
+      // requiring payment. Service-role client bypasses the read-only
+      // RLS we expose to authenticated users.
+      if (!row) {
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 7);
+        const admin = createAdminClient();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error: trialError } = await (admin
+          .from("subscriptions") as any).insert({
+          user_id: user.id,
+          provider: "stripe",
+          status: "trialing",
+          current_period_end: trialEnd.toISOString(),
+          plan: "basic",
+        });
+        if (trialError) {
+          console.error("[updatePublishAction] trial start failed", {
+            message: trialError.message,
+          });
+          return fail(
+            "Wir konnten den Probezeitraum nicht starten. Bitte versuche es erneut.",
+          );
+        }
+      } else {
+        // Row exists but is expired or in a non-active state — must add
+        // a payment method to revive.
+        return fail(
+          "Dein Probezeitraum ist abgelaufen. Bitte hinterlege eine Zahlungsmethode, um deine Website wieder zu veröffentlichen.",
+        );
+      }
     }
   }
 
