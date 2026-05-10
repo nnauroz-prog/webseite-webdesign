@@ -12,13 +12,14 @@ export function SiteHeader({ website }: { website: WebsiteRow }) {
           className="flex items-center gap-3"
         >
           {website.logo_url ? (
-            <span className="bg-muted relative h-9 w-9 overflow-hidden rounded-md border">
+            <span className="bg-muted inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border">
               <Image
                 src={website.logo_url}
                 alt={`${website.business_name} Logo`}
-                fill
-                sizes="36px"
-                className="object-contain"
+                width={36}
+                height={36}
+                className="h-full w-full object-contain"
+                unoptimized
               />
             </span>
           ) : null}
