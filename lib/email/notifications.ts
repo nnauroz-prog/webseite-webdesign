@@ -1,0 +1,131 @@
+import { getMailFrom, getResend } from "@/lib/email/client";
+import { getSiteUrl } from "@/lib/site-url";
+
+type NewLeadPayload = {
+  ownerEmail: string;
+  businessName: string;
+  slug: string;
+  lead: {
+    name: string;
+    email: string;
+    phone: string | null;
+    message: string;
+  };
+};
+
+type NewApplicationPayload = {
+  ownerEmail: string;
+  businessName: string;
+  slug: string;
+  application: {
+    name: string;
+    email: string;
+    phone: string | null;
+    desired_position: string | null;
+    message: string;
+  };
+};
+
+/**
+ * Sends a "new contact request" notification to the website owner. Failure
+ * is logged and swallowed — the lead is already saved in the DB so the user
+ * can still see it in the dashboard, the email is just a nice-to-have.
+ */
+export async function notifyNewLead(payload: NewLeadPayload): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const dashboardUrl = `${getSiteUrl()}/dashboard/leads`;
+  const phoneRow = payload.lead.phone
+    ? `<tr><td><strong>Telefon:</strong></td><td>${escape(payload.lead.phone)}</td></tr>`
+    : "";
+
+  try {
+    await resend.emails.send({
+      from: getMailFrom(),
+      to: payload.ownerEmail,
+      subject: `Neue Anfrage über ${payload.businessName}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+          <h2 style="margin: 0 0 8px 0;">Neue Kontaktanfrage</h2>
+          <p style="color: #666; margin: 0 0 24px 0;">über deine Website <strong>${escape(payload.businessName)}</strong></p>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 4px 0;"><strong>Name:</strong></td><td>${escape(payload.lead.name)}</td></tr>
+            <tr><td style="padding: 4px 0;"><strong>E-Mail:</strong></td><td><a href="mailto:${escape(payload.lead.email)}">${escape(payload.lead.email)}</a></td></tr>
+            ${phoneRow}
+          </table>
+          <h3 style="margin: 24px 0 8px 0;">Nachricht</h3>
+          <p style="white-space: pre-line; background: #f5f5f5; padding: 16px; border-radius: 8px;">${escape(payload.lead.message)}</p>
+          <p style="margin-top: 32px;">
+            <a href="${dashboardUrl}" style="display: inline-block; background: #111; color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none;">Im Dashboard öffnen</a>
+          </p>
+        </div>
+      `,
+      replyTo: payload.lead.email,
+    });
+  } catch (err) {
+    console.error("[notifyNewLead] resend failed", {
+      message: err instanceof Error ? err.message : String(err),
+      slug: payload.slug,
+    });
+  }
+}
+
+/**
+ * Sends a "new application" notification to the website owner. Same
+ * fail-soft semantics as notifyNewLead.
+ */
+export async function notifyNewApplication(
+  payload: NewApplicationPayload,
+): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+
+  const dashboardUrl = `${getSiteUrl()}/dashboard/applications`;
+  const phoneRow = payload.application.phone
+    ? `<tr><td><strong>Telefon:</strong></td><td>${escape(payload.application.phone)}</td></tr>`
+    : "";
+  const positionRow = payload.application.desired_position
+    ? `<tr><td><strong>Stelle:</strong></td><td>${escape(payload.application.desired_position)}</td></tr>`
+    : "";
+
+  try {
+    await resend.emails.send({
+      from: getMailFrom(),
+      to: payload.ownerEmail,
+      subject: `Neue Bewerbung über ${payload.businessName}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px;">
+          <h2 style="margin: 0 0 8px 0;">Neue Bewerbung</h2>
+          <p style="color: #666; margin: 0 0 24px 0;">über deine Website <strong>${escape(payload.businessName)}</strong></p>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 4px 0;"><strong>Name:</strong></td><td>${escape(payload.application.name)}</td></tr>
+            <tr><td style="padding: 4px 0;"><strong>E-Mail:</strong></td><td><a href="mailto:${escape(payload.application.email)}">${escape(payload.application.email)}</a></td></tr>
+            ${phoneRow}
+            ${positionRow}
+          </table>
+          <h3 style="margin: 24px 0 8px 0;">Nachricht</h3>
+          <p style="white-space: pre-line; background: #f5f5f5; padding: 16px; border-radius: 8px;">${escape(payload.application.message)}</p>
+          <p style="margin-top: 32px;">
+            <a href="${dashboardUrl}" style="display: inline-block; background: #111; color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none;">Im Dashboard öffnen</a>
+          </p>
+        </div>
+      `,
+      replyTo: payload.application.email,
+    });
+  } catch (err) {
+    console.error("[notifyNewApplication] resend failed", {
+      message: err instanceof Error ? err.message : String(err),
+      slug: payload.slug,
+    });
+  }
+}
+
+function escape(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}

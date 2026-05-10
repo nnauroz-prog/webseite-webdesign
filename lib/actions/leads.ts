@@ -8,7 +8,9 @@ import {
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
+import { notifyNewLead } from "@/lib/email/notifications";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
 import { leadStatusSchema, submitLeadSchema } from "@/lib/validations/leads";
 
@@ -40,7 +42,7 @@ export async function submitLeadAction(
   const supabase = await createClient();
   const { data: site } = await supabase
     .from("websites")
-    .select("id, slug, is_active, contact_form_enabled")
+    .select("id, slug, user_id, business_name, is_active, contact_form_enabled")
     .eq("slug", parsed.data.slug)
     .maybeSingle();
 
@@ -49,6 +51,8 @@ export async function submitLeadAction(
   const w = site as {
     id: string;
     slug: string;
+    user_id: string;
+    business_name: string;
     is_active: boolean;
     contact_form_enabled: boolean;
   };
@@ -68,6 +72,35 @@ export async function submitLeadAction(
     return fail(
       "Wir konnten deine Nachricht nicht zustellen. Bitte versuche es später erneut.",
     );
+  }
+
+  // Best-effort owner notification. We use the service-role client to fetch
+  // the owner email since the anon client can't read auth.users.
+  try {
+    const admin = createAdminClient();
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("email")
+      .eq("id", w.user_id)
+      .maybeSingle();
+    const ownerEmail = (profile as { email: string | null } | null)?.email;
+    if (ownerEmail) {
+      await notifyNewLead({
+        ownerEmail,
+        businessName: w.business_name,
+        slug: w.slug,
+        lead: {
+          name: parsed.data.name,
+          email: parsed.data.email,
+          phone: parsed.data.phone ?? null,
+          message: parsed.data.message,
+        },
+      });
+    }
+  } catch (err) {
+    console.error("[submitLeadAction] notification failed", {
+      message: err instanceof Error ? err.message : String(err),
+    });
   }
 
   revalidatePath("/dashboard", "layout");
