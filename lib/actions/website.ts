@@ -14,6 +14,7 @@ import { getDemoContent } from "@/lib/onboarding/demo-content";
 import { deleteStorageObjectByPublicUrl, uploadImage } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite, requireUser } from "@/lib/supabase/auth";
+import { setActiveWebsiteId } from "@/lib/active-website";
 import { resolveTemplateKey } from "@/lib/templates";
 import {
   isVercelConfigured,
@@ -57,14 +58,9 @@ export async function createWebsiteAction(
 
   const { supabase, user } = await requireUser();
 
-  // Don't allow a second website to be created via this onboarding action.
-  const { data: existing } = await supabase
-    .from("websites")
-    .select("id")
-    .eq("user_id", user.id)
-    .limit(1)
-    .maybeSingle();
-  if (existing) return fail("Du hast bereits eine Website.");
+  // Multi-site: a user may own any number of websites. The action
+  // simply creates a fresh row + flips the active-website cookie so
+  // the dashboard lands on the new site after redirect.
 
   // Resolve which industry template the user picked so we can seed the
   // matching demo content (services, team, hero copy, opening hours…).
@@ -136,8 +132,41 @@ export async function createWebsiteAction(
     );
   }
 
+  // Make the new website the active one so the dashboard reflects it
+  // immediately after the redirect.
+  await setActiveWebsiteId(websiteId);
+
   revalidatePath("/dashboard", "layout");
   redirect("/dashboard/website");
+}
+
+// ---------------------------------------------------------------------------
+//  switchActiveWebsiteAction (multi-site site switcher)
+// ---------------------------------------------------------------------------
+export async function switchActiveWebsiteAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const id = formData.get("website_id");
+  if (typeof id !== "string" || !/^[0-9a-f-]{36}$/i.test(id)) {
+    return fail("Ungültige Website-ID.");
+  }
+
+  const { supabase, user } = await requireUser();
+
+  // Make sure the user actually owns the target website before we
+  // hand out a cookie pointing at it.
+  const { data } = await supabase
+    .from("websites")
+    .select("id")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!data) return fail("Website nicht gefunden.");
+
+  await setActiveWebsiteId(id);
+  revalidatePath("/dashboard", "layout");
+  return ok("Website gewechselt.");
 }
 
 // ---------------------------------------------------------------------------

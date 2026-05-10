@@ -4,7 +4,11 @@ import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { SignOutButton } from "@/components/dashboard/sign-out-button";
 import { SitaloLogo } from "@/components/sitalo-logo";
-import { requireUser } from "@/lib/supabase/auth";
+import { getActiveWebsiteId } from "@/lib/active-website";
+import {
+  listUserWebsites,
+  requireUser,
+} from "@/lib/supabase/auth";
 
 export default async function DashboardLayout({
   children,
@@ -13,9 +17,20 @@ export default async function DashboardLayout({
 }) {
   const { user } = await requireUser();
 
+  // Multi-site: load the user's full website list + the cookie-selected
+  // active id once at the layout level so every dashboard child gets
+  // the same context via the SiteSwitcher.
+  const websites = await listUserWebsites();
+  const cookieId = await getActiveWebsiteId();
+  const activeWebsiteId =
+    websites.find((w) => w.id === cookieId)?.id ?? websites[0]?.id ?? "";
+
   return (
     <div className="flex flex-1">
-      <DashboardSidebar />
+      <DashboardSidebar
+        websites={websites}
+        activeWebsiteId={activeWebsiteId}
+      />
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Sticky header
          *  - z-30 sits below the mobile-drawer backdrop (z-[80]) and
@@ -26,7 +41,10 @@ export default async function DashboardLayout({
          *    overflows. */}
         <header className="border-border bg-background/85 sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b px-3 backdrop-blur sm:h-16 sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
-            <MobileNav />
+            <MobileNav
+              websites={websites}
+              activeWebsiteId={activeWebsiteId}
+            />
             <span className="md:hidden">
               <SitaloLogo size="sm" />
             </span>

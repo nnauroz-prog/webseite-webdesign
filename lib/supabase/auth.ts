@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { getActiveWebsiteId } from "@/lib/active-website";
 import { createClient } from "@/lib/supabase/server";
 import type { WebsiteRow } from "@/types/website";
 
@@ -65,34 +66,81 @@ export async function requireAdmin() {
 }
 
 /**
- * Fetches the current user's primary website (oldest one), or null.
- * The MVP UI assumes one user → one website, but the data model allows N.
+ * Fetches the user's *active* website (per the active-website cookie),
+ * or — when no cookie is set — their oldest website. Multiple websites
+ * per user are supported as of the multi-site PR; the SiteSwitcher in
+ * the dashboard rotates the cookie via switchActiveWebsiteAction.
  *
- * Defensive: if the websites query throws we log and return null so the
- * dashboard shows the onboarding form instead of crashing.
+ * Defensive: if any query throws we log and fall back gracefully so a
+ * stale cookie or a Supabase blip never takes the dashboard down.
  */
 export async function getCurrentWebsite() {
   const { supabase, user } = await requireUser();
 
   let website: WebsiteRow | null = null;
+
+  // 1. Try the cookie-selected website first.
+  const activeId = await getActiveWebsiteId();
+  if (activeId) {
+    try {
+      const { data } = await supabase
+        .from("websites")
+        .select("*")
+        .eq("id", activeId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      website = (data as WebsiteRow | null) ?? null;
+    } catch (err) {
+      console.error("[getCurrentWebsite] active-id query threw", {
+        message: err instanceof Error ? err.message : String(err),
+        active_id: activeId,
+      });
+    }
+  }
+
+  // 2. Otherwise (no cookie, or cookie points at a deleted/foreign
+  //    site) fall back to the oldest website the user owns.
+  if (!website) {
+    try {
+      const { data } = await supabase
+        .from("websites")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      website = (data as WebsiteRow | null) ?? null;
+    } catch (err) {
+      console.error("[getCurrentWebsite] fallback query threw", {
+        message: err instanceof Error ? err.message : String(err),
+        user_id: user.id,
+      });
+      website = null;
+    }
+  }
+
+  return { supabase, user, website };
+}
+
+/**
+ * Lists every website the current user owns, oldest-first. Used by the
+ * SiteSwitcher dropdown in the dashboard sidebar.
+ */
+export async function listUserWebsites(): Promise<WebsiteRow[]> {
+  const { supabase, user } = await requireUser();
   try {
     const { data } = await supabase
       .from("websites")
       .select("*")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    website = (data as WebsiteRow | null) ?? null;
+      .order("created_at", { ascending: true });
+    return (data as WebsiteRow[] | null) ?? [];
   } catch (err) {
-    console.error("[getCurrentWebsite] websites query threw", {
+    console.error("[listUserWebsites] threw", {
       message: err instanceof Error ? err.message : String(err),
-      user_id: user.id,
     });
-    website = null;
+    return [];
   }
-
-  return { supabase, user, website };
 }
 
 /**
