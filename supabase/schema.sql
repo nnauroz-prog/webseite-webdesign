@@ -161,6 +161,20 @@ alter table public.websites
 alter table public.websites
   add column if not exists about_image_url text;
 
+-- Custom-domain support. Customers can attach their own .de/.com/etc.
+-- domain to point at their site. The verification timestamp is set
+-- once we've confirmed DNS resolves to Vercel and the domain has been
+-- attached to the project. Stored lowercase to make the middleware
+-- lookup deterministic; the unique constraint prevents two sites from
+-- claiming the same host.
+alter table public.websites
+  add column if not exists custom_domain text unique;
+alter table public.websites
+  add column if not exists custom_domain_verified_at timestamptz;
+
+create index if not exists websites_custom_domain_idx
+  on public.websites (custom_domain) where custom_domain is not null;
+
 drop trigger if exists websites_set_updated_at on public.websites;
 create trigger websites_set_updated_at
   before update on public.websites

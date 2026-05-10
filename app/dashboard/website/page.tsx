@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { LivePreview } from "@/components/dashboard/live-preview";
 import { AboutForm } from "@/components/dashboard/website/about-form";
 import { AboutImageForm } from "@/components/dashboard/website/about-image-form";
+import { CustomDomainForm } from "@/components/dashboard/website/custom-domain-form";
 import { FormsToggleForm } from "@/components/dashboard/website/forms-toggle-form";
 import { HeroForm } from "@/components/dashboard/website/hero-form";
 import { HeroImageForm } from "@/components/dashboard/website/hero-image-form";
@@ -54,6 +55,7 @@ export default async function WebsitePage() {
           <LegalForm website={website} />
           <FormsToggleForm website={website} />
           <SlugForm website={website} />
+          <CustomDomainForm website={website} />
         </div>
         <div className="hidden lg:block">
           <LivePreview slug={website.slug} />

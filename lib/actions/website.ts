@@ -17,6 +17,7 @@ import { resolveTemplateKey } from "@/lib/templates";
 import {
   aboutSchema,
   createWebsiteSchema,
+  customDomainSchema,
   formsToggleSchema,
   heroSchema,
   integrationsSchema,
@@ -663,6 +664,69 @@ export async function uploadAboutImageAction(
 
 export async function removeAboutImageAction(): Promise<ActionState> {
   return removeSiteImage("about_image_url", "Über-uns-Bild entfernt.");
+}
+
+// ---------------------------------------------------------------------------
+//  Custom domain actions
+// ---------------------------------------------------------------------------
+export async function setCustomDomainAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = customDomainSchema.safeParse({
+    custom_domain: formData.get("custom_domain"),
+  });
+  if (!parsed.success) {
+    return fail("Bitte prüfe die Domain.", flattenZodErrors(parsed.error));
+  }
+
+  const { supabase, website } = await requireCurrentWebsite();
+
+  // Saving the same domain again is a no-op — keep verified_at.
+  if (parsed.data.custom_domain === website.custom_domain) {
+    return ok("Domain unverändert.");
+  }
+
+  const { error } = await supabase
+    .from("websites")
+    .update({
+      custom_domain: parsed.data.custom_domain,
+      // Reset verification on every change — DNS may need to be redone.
+      custom_domain_verified_at: null,
+    })
+    .eq("id", website.id);
+
+  if (error) {
+    // Friendlier message for the unique-violation case.
+    if (
+      error.code === "23505" ||
+      /duplicate key|unique/i.test(error.message)
+    ) {
+      return fail("Diese Domain wird bereits von einer anderen Site genutzt.");
+    }
+    return fail(error.message);
+  }
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  revalidatePath("/dashboard", "layout");
+  return ok("Domain gespeichert. Bitte DNS einrichten.");
+}
+
+export async function removeCustomDomainAction(): Promise<ActionState> {
+  const { supabase, website } = await requireCurrentWebsite();
+
+  const { error } = await supabase
+    .from("websites")
+    .update({
+      custom_domain: null,
+      custom_domain_verified_at: null,
+    })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  revalidatePath("/dashboard", "layout");
+  return ok("Domain entfernt.");
 }
 
 // ---------------------------------------------------------------------------
