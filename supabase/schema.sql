@@ -750,6 +750,22 @@ create index if not exists subscriptions_status_idx
 create index if not exists subscriptions_customer_idx
   on public.subscriptions (stripe_customer_id);
 
+-- Lemon Squeezy support runs alongside Stripe. `provider` records which
+-- backend issued the subscription so the webhook handlers + cancel flows
+-- know which API to call. Existing Stripe rows default to 'stripe'.
+alter table public.subscriptions
+  add column if not exists provider text not null default 'stripe'
+    check (provider in ('stripe', 'lemon'));
+alter table public.subscriptions
+  add column if not exists lemon_customer_id text unique;
+alter table public.subscriptions
+  add column if not exists lemon_subscription_id text unique;
+alter table public.subscriptions
+  add column if not exists lemon_variant_id text;
+
+create index if not exists subscriptions_lemon_customer_idx
+  on public.subscriptions (lemon_customer_id);
+
 drop trigger if exists subscriptions_set_updated_at on public.subscriptions;
 create trigger subscriptions_set_updated_at
   before update on public.subscriptions
