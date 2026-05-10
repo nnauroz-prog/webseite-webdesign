@@ -21,6 +21,24 @@ export function SiteApplicationForm({ slug }: { slug: string }) {
     if (state.status === "success") formRef.current?.reset();
   }, [state]);
 
+  // The server-side action rejects submissions when the website is in
+  // preview mode (is_active=false) or the owner toggled the application
+  // form off after the page was rendered. In either case we don't want
+  // to keep showing empty input fields below the "nicht verfügbar"
+  // alert — that just looks broken.
+  const serverDisabled =
+    state.status === "error" &&
+    typeof state.message === "string" &&
+    state.message.includes("nicht verfügbar");
+
+  if (serverDisabled) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{state.message}</AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <form ref={formRef} action={formAction} className="space-y-4">
       <input type="hidden" name="slug" value={slug} />

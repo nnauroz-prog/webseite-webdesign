@@ -125,6 +125,50 @@ export const brandColorSchema = z.object({
     .or(z.literal("")),
 });
 
+/** WhatsApp floating-button settings. */
+export const whatsappSchema = z.object({
+  whatsapp_number: z
+    .string()
+    .trim()
+    .max(20, "Maximal 20 Zeichen.")
+    .regex(/^(\+?[0-9 ]{6,20})?$/, "Format: +49 170 1234567 oder 0170 1234567.")
+    .optional()
+    .or(z.literal("")),
+  whatsapp_message: z
+    .string()
+    .trim()
+    .max(400, "Maximal 400 Zeichen.")
+    .optional()
+    .or(z.literal("")),
+});
+
+/** Sticky promo banner on top of the public site. */
+export const bannerSchema = z.object({
+  banner_text: z
+    .string()
+    .trim()
+    .max(200, "Maximal 200 Zeichen.")
+    .optional()
+    .or(z.literal("")),
+  banner_link: z
+    .string()
+    .trim()
+    .max(2000)
+    .refine(
+      (v) =>
+        !v ||
+        v.startsWith("/") ||
+        v.startsWith("#") ||
+        v.startsWith("mailto:") ||
+        v.startsWith("tel:") ||
+        /^https?:\/\//i.test(v),
+      { message: "Link muss mit /, #, http(s):, mailto: oder tel: beginnen." },
+    )
+    .optional()
+    .or(z.literal("")),
+  banner_enabled: z.coerce.boolean(),
+});
+
 /**
  * Custom-domain validation. Accepts only lowercase apex or sub-domains
  * with at least one dot (so "localhost" or single-label hosts are

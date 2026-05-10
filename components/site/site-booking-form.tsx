@@ -33,6 +33,22 @@ export function SiteBookingForm({
     if (state.status === "success") formRef.current?.reset();
   }, [state]);
 
+  // Server signals the form is deactivated → drop the fields and show
+  // only the alert. Otherwise users see empty inputs under a red error
+  // and the page looks broken.
+  const serverDisabled =
+    state.status === "error" &&
+    typeof state.message === "string" &&
+    state.message.includes("nicht verfügbar");
+
+  if (serverDisabled) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{state.message}</AlertDescription>
+      </Alert>
+    );
+  }
+
   // Min-date for the date picker — today, in the user's local TZ.
   const today = new Date();
   today.setHours(0, 0, 0, 0);

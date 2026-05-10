@@ -21,6 +21,23 @@ export function SiteContactForm({ slug }: { slug: string }) {
     if (state.status === "success") formRef.current?.reset();
   }, [state]);
 
+  // When the server signals the form is deactivated (preview mode, or
+  // toggle flipped after the page was rendered), drop the fields and
+  // show only the alert — leaving empty inputs below the error looks
+  // broken.
+  const serverDisabled =
+    state.status === "error" &&
+    typeof state.message === "string" &&
+    state.message.includes("nicht verfügbar");
+
+  if (serverDisabled) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{state.message}</AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <form ref={formRef} action={formAction} className="space-y-4">
       <input type="hidden" name="slug" value={slug} />
