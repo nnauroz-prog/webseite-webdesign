@@ -60,23 +60,23 @@ const PROBLEMS = [
 const SOLUTIONS = [
   {
     icon: ImageIcon,
-    title: "Onepager & Mehrseitige Sites",
-    body: "Vom kompakten Onepager bis zur vollständigen Unternehmens-Website mit Team, Leistungen und Galerie.",
+    title: "Onepager & Mehrseitig",
+    body: "Vom Onepager bis zur Unternehmens-Website mit Team, Leistungen und Galerie.",
   },
   {
     icon: MessageCircle,
-    title: "Kontakt, WhatsApp, Maps",
-    body: "Anfragen kommen direkt aufs Handy. WhatsApp-Knopf, Google-Maps-Einbettung, Öffnungszeiten — alles drin.",
+    title: "Kontakt & Maps",
+    body: "Anfragen direkt aufs Handy. Google Maps, Öffnungszeiten — alles drin.",
   },
   {
     icon: Sparkles,
-    title: "SEO & Hosting inklusive",
-    body: "Saubere SEO-Basis, schnelles Hosting, mobile Optimierung und Wartung. Sie müssen nichts selbst einrichten.",
+    title: "SEO & Hosting",
+    body: "Saubere SEO-Basis, schnelles Hosting, Mobil-Optimierung und Wartung — inklusive.",
   },
   {
     icon: Wrench,
-    title: "Verwaltbare Inhalte (optional)",
-    body: "Auf Wunsch bauen wir verwaltbare Bereiche direkt in Ihre Website ein — Speisekarte, Öffnungszeiten, Wochenangebote oder Bilder.",
+    title: "Verwaltbare Inhalte",
+    body: "Optional: Speisekarte, Öffnungszeiten, Wochenangebote oder Bilder selbst pflegen.",
   },
 ];
 
@@ -84,17 +84,17 @@ const STEPS = [
   {
     number: "01",
     title: "Anfrage senden",
-    body: "Kurz das Formular ausfüllen oder eine WhatsApp schicken — wir melden uns innerhalb von 24 Stunden.",
+    body: "Formular ausfüllen — Antwort innerhalb von 24 Stunden.",
   },
   {
     number: "02",
     title: "Daten liefern",
-    body: "Logo, Bilder, Texte, Öffnungszeiten, Leistungen, Kontaktdaten. Was Sie nicht haben, finden wir gemeinsam.",
+    body: "Logo, Bilder, Texte, Kontaktdaten. Was fehlt, klären wir.",
   },
   {
     number: "03",
-    title: "Website geht online",
-    body: "Wir bauen, Sie geben frei, wir veröffentlichen. In den meisten Fällen 1–2 Werktage nach Datenlieferung.",
+    title: "Online gehen",
+    body: "Wir bauen, Sie geben frei, wir veröffentlichen — meist in 1–2 Werktagen.",
   },
 ];
 
@@ -260,23 +260,21 @@ function Hero() {
         aria-hidden="true"
         className="bg-primary/10 absolute -right-32 top-12 -z-10 h-96 w-96 rounded-full blur-3xl"
       />
-      <div className="mx-auto w-full max-w-6xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+      <div className="mx-auto w-full max-w-6xl px-6 pt-10 pb-14 sm:pt-20 sm:pb-24">
+        <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
           <div>
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]">
+            <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
               Webdesign-Service · Lokale Unternehmen
             </p>
-            <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-6xl">
-              Website erstellen lassen —
-              <br className="hidden sm:inline" />{" "}
+            <h1 className="mt-4 text-balance text-[2.5rem] font-semibold leading-[1.02] tracking-[-0.03em] sm:mt-5 sm:text-5xl lg:text-6xl">
+              Website erstellen lassen —{" "}
               <span className="text-primary">ohne Baukasten-Stress.</span>
             </h1>
-            <p className="text-muted-foreground mt-6 max-w-xl text-pretty text-lg leading-relaxed">
-              Sie senden uns Logo, Bilder, Texte und Kontaktdaten. Wir
-              übernehmen Design, Technik, Mobiloptimierung und Veröffentlichung
-              — meist innerhalb von 48 Stunden.
+            <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:mt-6 sm:text-lg">
+              Sie senden Logo, Bilder, Texte und Kontaktdaten. Wir liefern die
+              fertige Website — meist in 48 Stunden.
             </p>
-            <div className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+            <div className="mt-7 flex flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:items-center">
               <Link
                 href="/anfrage"
                 className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
@@ -292,7 +290,7 @@ function Hero() {
               </Link>
             </div>
 
-            <ul className="text-muted-foreground mt-9 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <ul className="text-muted-foreground mt-7 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] sm:mt-9 sm:gap-x-5 sm:text-sm">
               {TRUST_LINE.map((item) => (
                 <li
                   key={item}
@@ -305,7 +303,7 @@ function Hero() {
             </ul>
           </div>
 
-          <div className="order-first lg:order-last">
+          <div className="order-first -mx-2 lg:order-last lg:mx-0">
             <HeroMockups />
           </div>
         </div>
@@ -334,7 +332,7 @@ function TrustBar() {
 
 function Problems() {
   return (
-    <section className="bg-secondary/30 border-border/40 border-b py-20 sm:py-28">
+    <section className="bg-secondary/30 border-border/40 border-b py-14 sm:py-24">
       <div className="mx-auto w-full max-w-5xl px-6">
         <header className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
@@ -380,7 +378,7 @@ function Solutions() {
   return (
     <section
       id="leistungen"
-      className="border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
+      className="border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
@@ -420,7 +418,7 @@ function Steps() {
   return (
     <section
       id="ablauf"
-      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
+      className="bg-secondary/20 border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-5xl px-6">
         <header className="mx-auto max-w-2xl text-center">
@@ -468,7 +466,7 @@ function Pricing() {
   return (
     <section
       id="pakete"
-      className="bg-secondary/30 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
+      className="bg-secondary/30 border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
@@ -484,31 +482,29 @@ function Pricing() {
           </p>
         </header>
 
-        <ul className="mt-12 grid gap-6 lg:grid-cols-3">
+        <ul className="mt-10 grid gap-5 lg:grid-cols-3 lg:items-stretch sm:mt-12 sm:gap-6">
           {PACKAGES.map((p) => (
             <li
               key={p.name}
-              className={`flex flex-col rounded-2xl border p-7 shadow-sm sm:p-8 ${
+              className={`relative flex flex-col rounded-2xl border p-6 shadow-sm transition-shadow sm:p-7 ${
                 p.highlight
-                  ? "bg-foreground text-background border-foreground"
+                  ? "bg-foreground text-background border-foreground shadow-xl ring-2 ring-foreground/20 lg:-mt-3 lg:mb-0"
                   : "bg-card"
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p
-                    className={`text-[10px] font-medium uppercase tracking-[0.18em] ${
-                      p.highlight ? "text-background/70" : "text-muted-foreground"
-                    }`}
-                  >
-                    {p.badge}
-                  </p>
-                  <h3 className="mt-1 text-xl font-semibold tracking-tight">
-                    {p.name}
-                  </h3>
-                </div>
-              </div>
-              <div className="mt-6">
+              {p.highlight ? (
+                <span className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] shadow-md">
+                  {p.badge}
+                </span>
+              ) : (
+                <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.18em]">
+                  {p.badge}
+                </p>
+              )}
+              <h3 className={`text-xl font-semibold tracking-tight ${p.highlight ? "mt-2" : "mt-1"}`}>
+                {p.name}
+              </h3>
+              <div className="mt-5">
                 <p className="text-3xl font-semibold tracking-tight">
                   {p.setup}
                 </p>
@@ -521,34 +517,44 @@ function Pricing() {
                 </p>
               </div>
               <p
-                className={`mt-5 text-sm leading-relaxed ${
+                className={`mt-4 text-[14px] leading-relaxed ${
                   p.highlight ? "text-background/85" : "text-muted-foreground"
                 }`}
               >
                 {p.description}
               </p>
-              <ul className="mt-6 space-y-2.5 text-sm">
-                {p.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2.5">
+              <ul className="mt-5 space-y-2 text-[13px] sm:text-sm">
+                {p.bullets.slice(0, 5).map((b) => (
+                  <li key={b} className="flex items-start gap-2">
                     <Check
-                      className={`mt-0.5 h-4 w-4 shrink-0 ${
+                      className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
                         p.highlight ? "text-background" : "text-emerald-600"
                       }`}
                     />
                     <span>{b}</span>
                   </li>
                 ))}
+                {p.bullets.length > 5 ? (
+                  <li
+                    className={`pt-1 text-[12px] ${
+                      p.highlight ? "text-background/60" : "text-muted-foreground"
+                    }`}
+                  >
+                    + {p.bullets.length - 5} weitere Funktionen
+                  </li>
+                ) : null}
               </ul>
-              <div className="mt-auto pt-7">
+              <div className="mt-auto pt-6">
                 <Link
                   href={`/anfrage?paket=${p.slug}`}
-                  className={`inline-flex h-11 w-full items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight transition-colors ${
+                  className={`group inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-all hover:shadow-md ${
                     p.highlight
                       ? "bg-background text-foreground hover:bg-background/90"
                       : "bg-foreground text-background hover:bg-foreground/90"
                   }`}
                 >
                   {p.cta}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </div>
             </li>
@@ -575,7 +581,7 @@ function Faq() {
   return (
     <section
       id="faq"
-      className="bg-secondary/20 border-border/40 border-b py-20 sm:py-28 scroll-mt-20"
+      className="bg-secondary/20 border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-3xl px-6">
         <header className="text-center">
@@ -623,35 +629,74 @@ function Faq() {
 }
 
 function FinalCta() {
+  const whatsappHref = buildWhatsappHref();
   return (
     <section
       id="kontakt"
-      className="bg-foreground text-background py-20 sm:py-28 scroll-mt-20"
+      className="bg-foreground text-background relative overflow-hidden py-14 sm:py-24 scroll-mt-20"
     >
-      <div className="mx-auto w-full max-w-4xl px-6 text-center">
-        <h2 className="text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-5xl">
+      <div
+        aria-hidden="true"
+        className="bg-primary/25 absolute -top-32 right-1/2 h-96 w-96 translate-x-1/2 rounded-full blur-3xl"
+      />
+      <div className="relative mx-auto w-full max-w-3xl px-6 text-center">
+        <h2 className="text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-5xl">
           Bereit für eine Website,
-          <br />
-          die professionell wirkt und Kunden bringt?
+          <br className="hidden sm:inline" />{" "}
+          <span className="text-background/70">die professionell wirkt?</span>
         </h2>
-        <p className="text-background/70 mx-auto mt-5 max-w-xl text-pretty text-lg">
-          Schicken Sie uns Ihre Anfrage. Wir melden uns innerhalb von 24 Stunden
-          mit einem klaren Vorschlag — persönlich, nicht von einer Hotline.
+        <p className="text-background/70 mx-auto mt-5 max-w-xl text-pretty text-base sm:text-lg">
+          Anfrage senden, Daten liefern, fertige Website erhalten.
         </p>
-        <div className="mt-10 flex flex-col items-center justify-center gap-3">
+        <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-3">
           <Link
             href="/anfrage"
             className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
           >
-            Jetzt Website anfragen
+            Website anfragen
             <Send className="ml-2 h-4 w-4" />
           </Link>
+          {whatsappHref ? (
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-background/30 bg-background/10 text-background hover:bg-background/15 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight backdrop-blur-sm transition-colors"
+            >
+              <WhatsappGlyph className="h-4 w-4" />
+              WhatsApp schreiben
+            </a>
+          ) : null}
         </div>
-        <p className="text-background/60 mt-6 inline-flex items-center gap-2 text-sm">
-          <Clock className="h-4 w-4" />
+        <p className="text-background/55 mt-6 inline-flex items-center gap-2 text-xs sm:text-sm">
+          <Clock className="h-3.5 w-3.5" />
           Antwort innerhalb von 24 Stunden, persönlich.
         </p>
       </div>
     </section>
+  );
+}
+
+function buildWhatsappHref(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
+  if (!raw) return null;
+  const digits = raw.replace(/[^\d]/g, "");
+  if (digits.length < 6) return null;
+  const message =
+    process.env.NEXT_PUBLIC_SITALO_WHATSAPP_MESSAGE?.trim() ||
+    "Hallo Sitalo, ich interessiere mich für eine professionelle Website. Können Sie mir ein Angebot machen?";
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+}
+
+function WhatsappGlyph({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M16.001 3.2c-7.067 0-12.8 5.733-12.8 12.8 0 2.241.586 4.434 1.7 6.366L3.2 28.8l6.601-1.728a12.79 12.79 0 0 0 6.198 1.577h.002c7.067 0 12.799-5.732 12.799-12.799 0-3.422-1.332-6.638-3.752-9.057a12.726 12.726 0 0 0-9.047-3.593zm0 23.342h-.002a10.591 10.591 0 0 1-5.4-1.479l-.387-.229-4.014 1.051 1.07-3.915-.252-.4a10.587 10.587 0 0 1-1.624-5.668c0-5.866 4.775-10.641 10.641-10.641 2.842 0 5.514 1.108 7.525 3.12a10.557 10.557 0 0 1 3.116 7.527c0 5.866-4.774 10.634-10.673 10.634zm5.834-7.967c-.32-.16-1.893-.934-2.187-1.04-.293-.107-.507-.16-.72.16s-.827 1.04-1.014 1.254c-.187.214-.374.241-.694.08-.32-.16-1.353-.499-2.578-1.591-.953-.85-1.597-1.9-1.784-2.22-.187-.32-.02-.493.14-.652.143-.143.32-.374.48-.561.16-.187.213-.32.32-.534.107-.214.054-.4-.026-.561-.08-.16-.72-1.733-.987-2.373-.26-.622-.524-.538-.72-.548-.187-.01-.4-.012-.614-.012a1.18 1.18 0 0 0-.854.4c-.293.32-1.12 1.094-1.12 2.667 0 1.574 1.147 3.094 1.307 3.307.16.213 2.254 3.44 5.466 4.825.764.329 1.36.526 1.826.674.766.244 1.464.21 2.014.127.615-.092 1.893-.774 2.16-1.521.267-.748.267-1.387.187-1.521-.08-.134-.293-.213-.614-.374z" />
+    </svg>
   );
 }

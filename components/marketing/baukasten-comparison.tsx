@@ -97,13 +97,18 @@ export function BaukastenComparison() {
           </article>
         </div>
 
-        {/* Closing statement */}
-        <p className="mx-auto mt-10 max-w-2xl text-center text-balance text-xl font-semibold leading-snug sm:text-2xl">
-          Ein Baukasten liefert Ihnen das Werkzeug.{" "}
-          <span className="text-muted-foreground">
-            Sitalo liefert Ihnen die fertige Website.
-          </span>
-        </p>
+        {/* Closing statement — prominent card so the takeaway lands */}
+        <div className="bg-foreground text-background mx-auto mt-10 max-w-3xl rounded-2xl p-6 text-center shadow-xl sm:mt-12 sm:rounded-3xl sm:p-8">
+          <p className="text-background/65 text-[10px] font-medium uppercase tracking-[0.22em]">
+            Kurz gesagt
+          </p>
+          <p className="mt-2 text-balance text-xl font-semibold leading-snug sm:text-2xl">
+            Ein Baukasten liefert das Werkzeug.{" "}
+            <span className="text-background/65">
+              Sitalo liefert die fertige Website.
+            </span>
+          </p>
+        </div>
       </div>
     </section>
   );
