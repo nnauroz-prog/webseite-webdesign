@@ -16,6 +16,12 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite, requireUser } from "@/lib/supabase/auth";
 import { resolveTemplateKey } from "@/lib/templates";
 import {
+  isVercelConfigured,
+  vercelAddDomain,
+  vercelGetDomainConfig,
+  vercelRemoveDomain,
+} from "@/lib/vercel/client";
+import {
   aboutSchema,
   createWebsiteSchema,
   brandColorSchema,
@@ -784,6 +790,12 @@ export async function updateBrandColorAction(
 
 // ---------------------------------------------------------------------------
 //  Custom domain actions
+//
+//  When VERCEL_API_TOKEN + VERCEL_PROJECT_ID are configured, save/remove
+//  also call the Vercel REST API so the domain is attached/detached
+//  automatically — no operator intervention needed. Without those env
+//  vars we fall back to the manual workflow (operator adds the domain
+//  in Vercel UI + sets verified_at directly in Supabase).
 // ---------------------------------------------------------------------------
 export async function setCustomDomainAction(
   _prev: ActionState | undefined,
@@ -803,6 +815,25 @@ export async function setCustomDomainAction(
     return ok("Domain unverändert.");
   }
 
+  // If a previous domain was set, detach it from Vercel best-effort.
+  if (website.custom_domain) {
+    const removed = await vercelRemoveDomain(website.custom_domain);
+    if (!removed.ok && removed.configured) {
+      console.warn("[setCustomDomainAction] vercel detach failed", {
+        domain: website.custom_domain,
+        message: removed.message,
+      });
+    }
+  }
+
+  // Attach the new domain to Vercel BEFORE saving — if Vercel rejects
+  // (already used by another project, invalid format, …) we want the
+  // user to fix it before the DB row diverges from reality.
+  const attached = await vercelAddDomain(parsed.data.custom_domain);
+  if (!attached.ok && attached.configured) {
+    return fail(`Vercel-Anbindung fehlgeschlagen: ${attached.message}`);
+  }
+
   const { error } = await supabase
     .from("websites")
     .update({
@@ -813,7 +844,6 @@ export async function setCustomDomainAction(
     .eq("id", website.id);
 
   if (error) {
-    // Friendlier message for the unique-violation case.
     if (
       error.code === "23505" ||
       /duplicate key|unique/i.test(error.message)
@@ -825,11 +855,26 @@ export async function setCustomDomainAction(
 
   revalidatePath(`/site/${website.slug}`, "layout");
   revalidatePath("/dashboard", "layout");
-  return ok("Domain gespeichert. Bitte DNS einrichten.");
+  return ok(
+    attached.ok && attached.configured
+      ? "Domain gespeichert + bei Vercel angebunden. Sobald DNS steht, wird automatisch verifiziert."
+      : "Domain gespeichert. Bitte DNS einrichten.",
+  );
 }
 
 export async function removeCustomDomainAction(): Promise<ActionState> {
   const { supabase, website } = await requireCurrentWebsite();
+
+  // Detach from Vercel best-effort first.
+  if (website.custom_domain) {
+    const removed = await vercelRemoveDomain(website.custom_domain);
+    if (!removed.ok && removed.configured) {
+      console.warn("[removeCustomDomainAction] vercel detach failed", {
+        domain: website.custom_domain,
+        message: removed.message,
+      });
+    }
+  }
 
   const { error } = await supabase
     .from("websites")
@@ -843,6 +888,55 @@ export async function removeCustomDomainAction(): Promise<ActionState> {
   revalidatePath(`/site/${website.slug}`, "layout");
   revalidatePath("/dashboard", "layout");
   return ok("Domain entfernt.");
+}
+
+/**
+ * Manually re-check the Vercel-verification state of the customer's
+ * domain. Polls vercelGetDomainConfig — when Vercel reports the
+ * domain is no longer misconfigured (DNS resolves), we set
+ * custom_domain_verified_at = now() so the proxy starts serving
+ * the customer's site at their domain.
+ *
+ * Returns useful state via the message string so the UI can show
+ * progress without us inventing a new ActionState shape.
+ */
+export async function verifyCustomDomainAction(): Promise<ActionState> {
+  const { supabase, website } = await requireCurrentWebsite();
+  if (!website.custom_domain) {
+    return fail("Keine Domain hinterlegt.");
+  }
+  if (!isVercelConfigured()) {
+    return fail(
+      "Vercel-API ist nicht konfiguriert — verifiziere die Domain manuell oder setze VERCEL_API_TOKEN + VERCEL_PROJECT_ID.",
+    );
+  }
+
+  const config = await vercelGetDomainConfig(website.custom_domain);
+  if (!config.ok) {
+    return fail(config.message);
+  }
+  const isReady = config.data.misconfigured === false;
+
+  if (!isReady) {
+    return fail(
+      "DNS zeigt noch nicht auf Vercel. Bitte Einträge prüfen — kann bis zu 48 Stunden dauern.",
+    );
+  }
+
+  // Already verified? Just confirm.
+  if (website.custom_domain_verified_at) {
+    return ok("Domain bereits verifiziert.");
+  }
+
+  const { error } = await supabase
+    .from("websites")
+    .update({ custom_domain_verified_at: new Date().toISOString() })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  revalidatePath("/dashboard", "layout");
+  return ok("Domain verifiziert — deine Site ist jetzt unter dieser Adresse erreichbar.");
 }
 
 // ---------------------------------------------------------------------------

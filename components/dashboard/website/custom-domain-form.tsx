@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useTransition } from "react";
-import { CheckCircle2, Clock } from "lucide-react";
+import { useActionState, useState, useTransition } from "react";
+import { CheckCircle2, Clock, RefreshCw } from "lucide-react";
 
 import { FieldError, FormStatus } from "@/components/dashboard/form-status";
 import { SectionCard } from "@/components/dashboard/section-card";
@@ -13,7 +13,9 @@ import { initialState } from "@/lib/actions/states";
 import {
   removeCustomDomainAction,
   setCustomDomainAction,
+  verifyCustomDomainAction,
 } from "@/lib/actions/website";
+import type { ActionState } from "@/lib/actions/shared";
 import type { WebsiteRow } from "@/types/website";
 
 export function CustomDomainForm({ website }: { website: WebsiteRow }) {
@@ -22,9 +24,19 @@ export function CustomDomainForm({ website }: { website: WebsiteRow }) {
     initialState,
   );
   const [removing, startRemove] = useTransition();
+  const [verifying, startVerify] = useTransition();
+  const [verifyResult, setVerifyResult] = useState<ActionState | null>(null);
 
   const verified = Boolean(website.custom_domain_verified_at);
   const hasDomain = Boolean(website.custom_domain);
+
+  const onVerify = () => {
+    setVerifyResult(null);
+    startVerify(async () => {
+      const result = await verifyCustomDomainAction();
+      setVerifyResult(result);
+    });
+  };
 
   return (
     <SectionCard
@@ -88,7 +100,7 @@ export function CustomDomainForm({ website }: { website: WebsiteRow }) {
       {hasDomain ? (
         <div className="mt-5 space-y-4 border-t pt-5">
           {/* Status pill */}
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
             {verified ? (
               <>
                 <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -105,9 +117,40 @@ export function CustomDomainForm({ website }: { website: WebsiteRow }) {
                 <span className="text-foreground font-medium">
                   Wartet auf DNS-Konfiguration
                 </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={verifying}
+                  onClick={onVerify}
+                  className="ml-auto"
+                >
+                  <RefreshCw
+                    className={
+                      verifying
+                        ? "mr-1.5 h-3.5 w-3.5 animate-spin"
+                        : "mr-1.5 h-3.5 w-3.5"
+                    }
+                  />
+                  {verifying ? "Prüfe …" : "Status prüfen"}
+                </Button>
               </>
             )}
           </div>
+
+          {verifyResult ? (
+            <p
+              className={
+                verifyResult.status === "success"
+                  ? "text-emerald-700 bg-emerald-50 dark:bg-emerald-950/30 dark:text-emerald-300 rounded-md px-3 py-2 text-xs"
+                  : verifyResult.status === "error"
+                    ? "text-amber-800 bg-amber-50 dark:bg-amber-950/30 dark:text-amber-200 rounded-md px-3 py-2 text-xs"
+                    : ""
+              }
+            >
+              {verifyResult.message}
+            </p>
+          ) : null}
 
           {!verified && <DnsSetupHelp domain={website.custom_domain!} />}
         </div>
