@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import { NAV_ITEMS } from "@/components/dashboard/nav-items";
+import { SitaloLogo } from "@/components/sitalo-logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -67,20 +68,13 @@ export function MobileNav() {
         <div className="border-border flex h-16 items-center justify-between border-b px-5">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2.5"
+            className="flex items-center gap-3"
             onClick={() => setOpen(false)}
           >
-            <span className="from-primary inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br to-violet-600 text-[15px] font-bold text-white shadow-sm">
-              S
+            <SitaloLogo size="sm" />
+            <span className="text-muted-foreground text-[11px] tracking-wide uppercase">
+              Dashboard
             </span>
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold tracking-tight">
-                SitePilot
-              </span>
-              <span className="text-muted-foreground text-[11px]">
-                Dashboard
-              </span>
-            </div>
           </Link>
           <Button
             type="button"

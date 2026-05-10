@@ -21,5 +21,5 @@ export function getResend(): Resend | null {
  * out-of-the-box for development without DNS setup.
  */
 export function getMailFrom(): string {
-  return process.env.MAIL_FROM ?? "SitePilot <onboarding@resend.dev>";
+  return process.env.MAIL_FROM ?? "Sitalo <onboarding@resend.dev>";
 }

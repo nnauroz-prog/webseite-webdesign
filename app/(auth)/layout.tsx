@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { SitaloLogo } from "@/components/sitalo-logo";
+
 export default function AuthLayout({
   children,
 }: {
@@ -9,8 +11,12 @@ export default function AuthLayout({
     <main className="flex flex-1 flex-col">
       <header className="border-border/60 border-b">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold tracking-tight">
-            ← SitePilot
+          <Link
+            href="/"
+            aria-label="Zur Startseite"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <SitaloLogo size="md" priority />
           </Link>
           <nav className="text-muted-foreground flex items-center gap-5 text-sm">
             <Link
@@ -32,7 +38,7 @@ export default function AuthLayout({
 
       <footer className="border-border/60 border-t">
         <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs">
-          <span>© {new Date().getFullYear()} SitePilot</span>
+          <span>© {new Date().getFullYear()} Sitalo</span>
           <span>Made for local businesses.</span>
         </div>
       </footer>

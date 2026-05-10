@@ -28,7 +28,7 @@ export function AdminSidebar() {
   return (
     <aside className="border-border bg-card hidden w-60 shrink-0 border-r md:flex md:flex-col">
       <div className="border-border flex h-14 items-center border-b px-5 text-sm font-semibold">
-        SitePilot · Admin
+        Sitalo · Admin
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4 text-sm">
         {items.map(({ label, href, icon: Icon }) => {

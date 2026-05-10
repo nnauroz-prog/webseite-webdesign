@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Konto erstellen — SitePilot" };
+export const metadata: Metadata = { title: "Konto erstellen — Sitalo" };
 
 const onboardingHighlights = [
   "Im Dashboard Texte, Bilder, Leistungen, Team und Galerie pflegen.",
@@ -32,7 +32,7 @@ export default async function RegisterPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">SitePilot starten</CardTitle>
+          <CardTitle className="text-2xl">Sitalo starten</CardTitle>
           <CardDescription>
             Lege ein Konto an — kostenlos, ohne Kreditkarte. Du zahlst erst,
             wenn du deine Website öffentlich schaltest.

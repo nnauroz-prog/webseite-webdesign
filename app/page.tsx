@@ -9,6 +9,8 @@ import {
   X,
 } from "lucide-react";
 
+import { SitaloLogo } from "@/components/sitalo-logo";
+
 const features = [
   {
     title: "Fertige Branchen-Templates",
@@ -99,14 +101,14 @@ const comparison = [
     feature: "Zeit bis online",
     diy: "2–8 Wochen",
     agency: "4–12 Wochen",
-    sitepilot: "30 Minuten",
+    sitalo: "30 Minuten",
   },
-  { feature: "Einmalkosten", diy: "0–500 €", agency: "1.500–6.000 €", sitepilot: "0 €" },
-  { feature: "Monatliche Kosten", diy: "10–30 €", agency: "30–150 €", sitepilot: "ab 29 €" },
-  { feature: "Inhalte selbst pflegen", diy: "true", agency: "false", sitepilot: "true" },
-  { feature: "Pflichtseiten (DSGVO)", diy: "false", agency: "minus", sitepilot: "true" },
-  { feature: "Branchen-Template", diy: "false", agency: "minus", sitepilot: "true" },
-  { feature: "Updates & Wartung", diy: "false", agency: "minus", sitepilot: "true" },
+  { feature: "Einmalkosten", diy: "0–500 €", agency: "1.500–6.000 €", sitalo: "0 €" },
+  { feature: "Monatliche Kosten", diy: "10–30 €", agency: "30–150 €", sitalo: "ab 29 €" },
+  { feature: "Inhalte selbst pflegen", diy: "true", agency: "false", sitalo: "true" },
+  { feature: "Pflichtseiten (DSGVO)", diy: "false", agency: "minus", sitalo: "true" },
+  { feature: "Branchen-Template", diy: "false", agency: "minus", sitalo: "true" },
+  { feature: "Updates & Wartung", diy: "false", agency: "minus", sitalo: "true" },
 ] as const;
 
 const valueShifts = [
@@ -131,7 +133,7 @@ const valueShifts = [
 const faq = [
   {
     q: "Brauche ich technische Vorkenntnisse?",
-    a: "Nein. Wenn du eine E-Mail schreiben kannst, kannst du auch deine SitePilot-Website pflegen. Alles läuft über ein einfaches Formular im Dashboard.",
+    a: "Nein. Wenn du eine E-Mail schreiben kannst, kannst du auch deine Sitalo-Website pflegen. Alles läuft über ein einfaches Formular im Dashboard.",
   },
   {
     q: "Was kostet das genau?",
@@ -160,7 +162,9 @@ export default function HomePage() {
     <main className="flex flex-1 flex-col">
       <header className="border-border/60 border-b">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <span className="text-sm font-semibold tracking-tight">SitePilot</span>
+          <Link href="/" aria-label="Sitalo Webdesign">
+            <SitaloLogo size="md" priority />
+          </Link>
           <nav className="flex items-center gap-2">
             <Link
               href="/pricing"
@@ -187,7 +191,7 @@ export default function HomePage() {
       {/* Hero */}
       <section className="mx-auto flex w-full max-w-5xl flex-col items-center px-6 py-20 text-center sm:py-28">
         <span className="border-border bg-secondary text-secondary-foreground mb-6 inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium">
-          SitePilot · für lokale Unternehmen
+          Sitalo · für lokale Unternehmen
         </span>
         <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
           Eine professionelle Website. Ohne Agentur. Ohne Code.
@@ -364,7 +368,7 @@ export default function HomePage() {
               Vergleich
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Selber bauen, Agentur, oder SitePilot.
+              Selber bauen, Agentur, oder Sitalo.
             </h2>
             <p className="text-muted-foreground mt-4 text-pretty">
               Drei Wege zur Unternehmens-Website. Mit ehrlichem Vergleich.
@@ -378,7 +382,7 @@ export default function HomePage() {
                   <th className="px-5 py-4">Selber bauen</th>
                   <th className="px-5 py-4">Agentur</th>
                   <th className="text-foreground bg-primary/5 px-5 py-4">
-                    SitePilot
+                    Sitalo
                   </th>
                 </tr>
               </thead>
@@ -393,7 +397,7 @@ export default function HomePage() {
                       <Cell value={row.agency} />
                     </td>
                     <td className="bg-primary/5 px-5 py-4">
-                      <Cell value={row.sitepilot} />
+                      <Cell value={row.sitalo} />
                     </td>
                   </tr>
                 ))}
@@ -485,7 +489,7 @@ export default function HomePage() {
           Klein, fokussiert, erreichbar.
         </h2>
         <p className="text-muted-foreground mt-6 text-pretty">
-          SitePilot ist ein kleines, eigenständiges Software-Produkt — keine
+          Sitalo ist ein kleines, eigenständiges Software-Produkt — keine
           Agentur mit Vertriebsabteilung. Wir bauen Tools, die lokale
           Dienstleister tatsächlich nutzen können, ohne IT-Abteilung. Wenn du
           Fragen hast, antwortet derselbe Mensch, der den Code geschrieben hat.
@@ -521,7 +525,7 @@ export default function HomePage() {
 
       <footer className="border-border border-t">
         <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-xs">
-          <span>© {new Date().getFullYear()} SitePilot</span>
+          <span>© {new Date().getFullYear()} Sitalo</span>
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
             <Link href="/pricing" className="hover:text-foreground">
               Preise

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { NAV_ITEMS } from "@/components/dashboard/nav-items";
+import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
 
 export function DashboardSidebar() {
@@ -11,14 +12,11 @@ export function DashboardSidebar() {
 
   return (
     <aside className="from-background to-secondary/40 hidden w-64 shrink-0 flex-col border-r bg-gradient-to-b md:flex">
-      <div className="border-border flex h-16 items-center gap-2.5 border-b px-5">
-        <span className="from-primary inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br to-violet-600 text-[15px] font-bold text-white shadow-sm">
-          S
+      <div className="border-border flex h-16 items-center gap-3 border-b px-5">
+        <SitaloLogo size="sm" priority />
+        <span className="text-muted-foreground text-[11px] tracking-wide uppercase">
+          Dashboard
         </span>
-        <div className="flex min-w-0 flex-col leading-tight">
-          <span className="text-sm font-semibold tracking-tight">SitePilot</span>
-          <span className="text-muted-foreground text-[11px]">Dashboard</span>
-        </div>
       </div>
 
       <nav className="flex-1 space-y-0.5 px-3 py-4 text-sm">

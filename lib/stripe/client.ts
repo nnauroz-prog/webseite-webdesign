@@ -18,7 +18,7 @@ export function getStripe(): Stripe {
 
   cached = new Stripe(key, {
     typescript: true,
-    appInfo: { name: "SitePilot", version: "0.1.0" },
+    appInfo: { name: "Sitalo", version: "0.1.0" },
   });
   return cached;
 }

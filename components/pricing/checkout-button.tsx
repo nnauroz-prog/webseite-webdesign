@@ -11,15 +11,34 @@ type Props = {
   variant?: "default" | "outline";
 };
 
+/** Which payment backend handles checkouts in this deployment. */
+type Provider = "stripe" | "lemon";
+
+function getProvider(): Provider {
+  const v = process.env.NEXT_PUBLIC_BILLING_PROVIDER;
+  return v === "lemon" ? "lemon" : "stripe";
+}
+
+const ENDPOINT: Record<Provider, string> = {
+  stripe: "/api/billing/checkout",
+  lemon: "/api/billing/lemon/checkout",
+};
+
+const PROVIDER_LABEL: Record<Provider, string> = {
+  stripe: "Stripe",
+  lemon: "Lemon Squeezy",
+};
+
 export function CheckoutButton({ plan, label, variant = "default" }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const provider = getProvider();
 
   function onClick() {
     setError(null);
     startTransition(async () => {
       try {
-        const res = await fetch("/api/billing/checkout", {
+        const res = await fetch(ENDPOINT[provider], {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ plan }),
@@ -59,7 +78,7 @@ export function CheckoutButton({ plan, label, variant = "default" }: Props) {
         className="w-full"
         onClick={onClick}
       >
-        {pending ? "Weiter zu Stripe …" : (label ?? "Plan wählen")}
+        {pending ? `Weiter zu ${PROVIDER_LABEL[provider]} …` : (label ?? "Plan wählen")}
       </Button>
       {error ? <p className="text-destructive text-xs">{error}</p> : null}
     </div>

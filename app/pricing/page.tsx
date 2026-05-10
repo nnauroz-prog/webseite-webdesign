@@ -3,13 +3,14 @@ import Link from "next/link";
 import { ArrowRight, Check, Minus } from "lucide-react";
 
 import { CheckoutButton } from "@/components/pricing/checkout-button";
+import { SitaloLogo } from "@/components/sitalo-logo";
 import { Button } from "@/components/ui/button";
 import { PLANS, type PlanId } from "@/lib/stripe/plans";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Preise — SitePilot",
+  title: "Preise — Sitalo",
   description:
     "Drei einfache Pakete für lokale Dienstleister. Monatlich kündbar, keine Einrichtungsgebühr.",
 };
@@ -82,8 +83,8 @@ export default async function PricingPage({
     <main className="flex flex-1 flex-col">
       <header className="border-border/60 border-b">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold tracking-tight">
-            SitePilot
+          <Link href="/" aria-label="Sitalo Webdesign">
+            <SitaloLogo size="md" priority />
           </Link>
           <nav className="flex items-center gap-2">
             {isLoggedIn ? (
@@ -380,7 +381,7 @@ export default async function PricingPage({
 
       <footer className="border-border border-t">
         <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs">
-          <span>© {new Date().getFullYear()} SitePilot</span>
+          <span>© {new Date().getFullYear()} Sitalo</span>
           <Link href="/" className="hover:text-foreground">
             Zurück zur Startseite
           </Link>

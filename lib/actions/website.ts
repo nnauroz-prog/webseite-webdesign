@@ -19,6 +19,7 @@ import {
   createWebsiteSchema,
   formsToggleSchema,
   heroSchema,
+  integrationsSchema,
   legalSchema,
   publishSchema,
   seoSchema,
@@ -333,6 +334,40 @@ export async function updateSeoAction(
 
   revalidatePath(`/site/${website.slug}`, "layout");
   return ok("SEO gespeichert.");
+}
+
+// ---------------------------------------------------------------------------
+//  updateIntegrationsAction (Google Search Console, Bing, GA4)
+// ---------------------------------------------------------------------------
+export async function updateIntegrationsAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = integrationsSchema.safeParse({
+    seo_google_site_verification: formData.get("seo_google_site_verification"),
+    seo_bing_site_verification: formData.get("seo_bing_site_verification"),
+    analytics_ga4_id: formData.get("analytics_ga4_id"),
+  });
+  if (!parsed.success) {
+    return fail("Bitte prüfe deine Angaben.", flattenZodErrors(parsed.error));
+  }
+
+  const empty = (s: string | undefined) =>
+    s && s.length > 0 ? s : null;
+
+  const { supabase, website } = await requireCurrentWebsite();
+  const { error } = await supabase
+    .from("websites")
+    .update({
+      seo_google_site_verification: empty(parsed.data.seo_google_site_verification),
+      seo_bing_site_verification: empty(parsed.data.seo_bing_site_verification),
+      analytics_ga4_id: empty(parsed.data.analytics_ga4_id),
+    })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok("Suchmaschinen-Integrationen gespeichert.");
 }
 
 // ---------------------------------------------------------------------------

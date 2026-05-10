@@ -60,6 +60,41 @@ export const seoSchema = z.object({
   seo_description: optionalString(180, "SEO-Beschreibung"),
 });
 
+/**
+ * Search-engine + analytics integrations. The verification codes Google
+ * and Bing hand out are short opaque tokens (alphanumeric, dashes,
+ * underscores). The GA4 measurement ID always starts with "G-".
+ */
+export const integrationsSchema = z.object({
+  seo_google_site_verification: z
+    .string()
+    .trim()
+    .max(200, "Verification-Code zu lang.")
+    .regex(/^[A-Za-z0-9_-]*$/, {
+      message: "Nur Buchstaben, Zahlen, _ und - erlaubt.",
+    })
+    .optional()
+    .or(z.literal("")),
+  seo_bing_site_verification: z
+    .string()
+    .trim()
+    .max(200, "Verification-Code zu lang.")
+    .regex(/^[A-Za-z0-9_-]*$/, {
+      message: "Nur Buchstaben, Zahlen, _ und - erlaubt.",
+    })
+    .optional()
+    .or(z.literal("")),
+  analytics_ga4_id: z
+    .string()
+    .trim()
+    .max(40, "GA4 Measurement-ID zu lang.")
+    .regex(/^(G-[A-Z0-9]+)?$/, {
+      message: 'Format: "G-" gefolgt von Buchstaben/Zahlen.',
+    })
+    .optional()
+    .or(z.literal("")),
+});
+
 export const legalSchema = z.object({
   imprint_text: optionalString(8000, "Impressum"),
   privacy_text: optionalString(12000, "Datenschutz"),

@@ -1,5 +1,5 @@
 -- ============================================================================
---  SitePilot — schema.sql
+--  Sitalo — schema.sql
 --  Run this once in the Supabase SQL editor of a fresh project.
 --  Re-running is safe: every statement uses IF [NOT] EXISTS / OR REPLACE /
 --  ON CONFLICT and policies are dropped before being recreated.
@@ -142,6 +142,15 @@ create table if not exists public.websites (
 create index if not exists websites_user_id_idx       on public.websites (user_id);
 create index if not exists websites_template_id_idx   on public.websites (template_id);
 create index if not exists websites_active_slug_idx   on public.websites (slug) where is_active = true;
+
+-- Per-site SEO + analytics integrations. Idempotent ALTERs so existing
+-- deploys can pick these up without a destructive migration.
+alter table public.websites
+  add column if not exists seo_google_site_verification text;
+alter table public.websites
+  add column if not exists seo_bing_site_verification text;
+alter table public.websites
+  add column if not exists analytics_ga4_id text;
 
 drop trigger if exists websites_set_updated_at on public.websites;
 create trigger websites_set_updated_at
@@ -749,6 +758,22 @@ create index if not exists subscriptions_status_idx
   on public.subscriptions (status);
 create index if not exists subscriptions_customer_idx
   on public.subscriptions (stripe_customer_id);
+
+-- Lemon Squeezy support runs alongside Stripe. `provider` records which
+-- backend issued the subscription so the webhook handlers + cancel flows
+-- know which API to call. Existing Stripe rows default to 'stripe'.
+alter table public.subscriptions
+  add column if not exists provider text not null default 'stripe'
+    check (provider in ('stripe', 'lemon'));
+alter table public.subscriptions
+  add column if not exists lemon_customer_id text unique;
+alter table public.subscriptions
+  add column if not exists lemon_subscription_id text unique;
+alter table public.subscriptions
+  add column if not exists lemon_variant_id text;
+
+create index if not exists subscriptions_lemon_customer_idx
+  on public.subscriptions (lemon_customer_id);
 
 drop trigger if exists subscriptions_set_updated_at on public.subscriptions;
 create trigger subscriptions_set_updated_at

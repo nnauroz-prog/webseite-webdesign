@@ -41,9 +41,13 @@ export type Database = {
       subscriptions: {
         Row: {
           user_id: string;
+          provider: "stripe" | "lemon";
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
           stripe_price_id: string | null;
+          lemon_customer_id: string | null;
+          lemon_subscription_id: string | null;
+          lemon_variant_id: string | null;
           plan: string | null;
           status: string | null;
           current_period_end: string | null;
@@ -53,9 +57,13 @@ export type Database = {
         };
         Insert: {
           user_id: string;
+          provider?: "stripe" | "lemon";
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           stripe_price_id?: string | null;
+          lemon_customer_id?: string | null;
+          lemon_subscription_id?: string | null;
+          lemon_variant_id?: string | null;
           plan?: string | null;
           status?: string | null;
           current_period_end?: string | null;
@@ -65,9 +73,13 @@ export type Database = {
         };
         Update: {
           user_id?: string;
+          provider?: "stripe" | "lemon";
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           stripe_price_id?: string | null;
+          lemon_customer_id?: string | null;
+          lemon_subscription_id?: string | null;
+          lemon_variant_id?: string | null;
           plan?: string | null;
           status?: string | null;
           current_period_end?: string | null;

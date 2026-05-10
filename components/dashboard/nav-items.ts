@@ -5,6 +5,7 @@ import {
   Image as ImageIcon,
   Inbox,
   LayoutDashboard,
+  Search,
   Settings,
   Users,
 } from "lucide-react";
@@ -60,6 +61,12 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/dashboard/applications",
     icon: Briefcase,
     tone: "text-orange-500",
+  },
+  {
+    label: "SEO",
+    href: "/dashboard/seo",
+    icon: Search,
+    tone: "text-violet-500",
   },
   {
     label: "Abrechnung",

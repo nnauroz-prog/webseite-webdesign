@@ -1,4 +1,4 @@
-# SitePilot
+# Sitalo
 
 Eine White-Label-Plattform für professionelle Unternehmenswebseiten mit
 Kunden-Dashboard. Fokus: Pflegedienste, Arztpraxen, Friseure, Handwerker und
@@ -29,15 +29,15 @@ andere lokale Dienstleister.
 ### 1. Repository klonen + Dependencies installieren
 
 ```bash
-git clone <repo-url> sitepilot
-cd sitepilot
+git clone <repo-url> sitalo
+cd sitalo
 npm install
 ```
 
 ### 2. Supabase-Projekt anlegen
 
 1. Auf [supabase.com](https://supabase.com) einloggen → **New project**.
-2. Organisation wählen, Projekt benennen (z. B. `sitepilot-dev`), starkes
+2. Organisation wählen, Projekt benennen (z. B. `sitalo-dev`), starkes
    Datenbank-Passwort vergeben, Region in der EU wählen (DSGVO).
 3. Auf „Create new project" klicken und ~1 Minute warten, bis die DB läuft.
 
@@ -255,7 +255,7 @@ Alle 8 MVP-Phasen erledigt:
 
 Direkt nach Deploy in einem Inkognito-Fenster durchgehen:
 
-- [ ] `https://deine-domain.de/` → SitePilot-Marketing-Page lädt.
+- [ ] `https://deine-domain.de/` → Sitalo-Marketing-Page lädt.
 - [ ] `https://deine-domain.de/robots.txt` → enthält Sitemap-Verweis.
 - [ ] `https://deine-domain.de/sitemap.xml` → enthält Marketing-Root + alle aktiven Public-Sites.
 - [ ] `/register` → Konto anlegen, Bestätigungs-Mail kommt von Production-Domain, Link führt korrekt zum Dashboard.
