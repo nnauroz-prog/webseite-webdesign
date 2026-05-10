@@ -13,6 +13,7 @@ import {
 
 import { OnboardingForm } from "@/components/dashboard/onboarding-form";
 import { SeedDemoButton } from "@/components/dashboard/seed-demo-button";
+import { TrialBanner } from "@/components/dashboard/trial-banner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -77,6 +78,7 @@ export default async function DashboardHomePage() {
     { count: applicationCount },
     { count: newLeadCount },
     { count: newApplicationCount },
+    { data: subRow },
   ] = await Promise.all([
     supabase
       .from("services")
@@ -108,7 +110,16 @@ export default async function DashboardHomePage() {
       .select("id", { count: "exact", head: true })
       .eq("website_id", website.id)
       .eq("status", "new"),
+    supabase
+      .from("subscriptions")
+      .select("status, current_period_end")
+      .maybeSingle(),
   ]);
+
+  const subscription =
+    (subRow as
+      | { status: string | null; current_period_end: string | null }
+      | null) ?? null;
 
   const checklist = [
     { label: "Hero-Überschrift", done: !!website.hero_title?.trim() },
@@ -131,6 +142,8 @@ export default async function DashboardHomePage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-8">
+      <TrialBanner subscription={subscription} />
+
       {/* Hero header */}
       <div className="from-primary/5 via-background to-background border-primary/10 relative overflow-hidden rounded-2xl border bg-gradient-to-br p-6 sm:p-8">
         <div className="bg-primary/10 pointer-events-none absolute -top-8 -right-8 h-40 w-40 rounded-full blur-3xl" />

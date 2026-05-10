@@ -1004,8 +1004,9 @@ create trigger subscriptions_set_updated_at
   for each row execute function public.set_updated_at();
 
 -- has_active_subscription(uid) — true iff the given user has a subscription
--- row in an access-granting status. Used by both server actions and the
--- automatic websites.is_active gating below.
+-- row in an access-granting status AND (for trialing rows) the trial hasn't
+-- run out yet. Used by both server actions and the automatic
+-- websites.is_active gating below.
 create or replace function public.has_active_subscription(uid uuid)
 returns boolean
 language sql
@@ -1017,6 +1018,12 @@ as $$
     select 1 from public.subscriptions
     where user_id = uid
       and status in ('active', 'trialing')
+      and (
+        -- "active" rows from Stripe always have a current_period_end; we
+        -- treat NULL as "still entitled" so legacy rows never auto-expire.
+        current_period_end is null
+        or current_period_end > now()
+      )
   );
 $$;
 
