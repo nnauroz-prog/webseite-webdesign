@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Check, Minus } from "lucide-react";
 
 import { CheckoutButton } from "@/components/pricing/checkout-button";
+import { SitaloLogo } from "@/components/sitalo-logo";
 import { Button } from "@/components/ui/button";
 import { PLANS, type PlanId } from "@/lib/stripe/plans";
 import { createClient } from "@/lib/supabase/server";
@@ -82,8 +83,8 @@ export default async function PricingPage({
     <main className="flex flex-1 flex-col">
       <header className="border-border/60 border-b">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold tracking-tight">
-            Sitalo
+          <Link href="/" aria-label="Sitalo Webdesign">
+            <SitaloLogo size="md" priority />
           </Link>
           <nav className="flex items-center gap-2">
             {isLoggedIn ? (

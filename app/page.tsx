@@ -9,6 +9,8 @@ import {
   X,
 } from "lucide-react";
 
+import { SitaloLogo } from "@/components/sitalo-logo";
+
 const features = [
   {
     title: "Fertige Branchen-Templates",
@@ -160,7 +162,9 @@ export default function HomePage() {
     <main className="flex flex-1 flex-col">
       <header className="border-border/60 border-b">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <span className="text-sm font-semibold tracking-tight">Sitalo</span>
+          <Link href="/" aria-label="Sitalo Webdesign">
+            <SitaloLogo size="md" priority />
+          </Link>
           <nav className="flex items-center gap-2">
             <Link
               href="/pricing"

@@ -68,7 +68,7 @@ export default async function SeoPage() {
           Wichtig: Sitalo schaltet keine bezahlten Google-Anzeigen.
         </p>
         <p className="text-muted-foreground mt-1 text-pretty">
-          Bezahlte Ads (oben mit „Anzeige" markiert) müssten deine Kunden
+          Bezahlte Ads (oben mit „Anzeige” markiert) müssten deine Kunden
           selbst in Google Ads aufsetzen — das kostet pro Klick. Was wir
           stattdessen tun: dafür sorgen, dass eure Sites in der{" "}
           <strong className="text-foreground">organischen Suche</strong>{" "}
@@ -131,7 +131,7 @@ export default async function SeoPage() {
         tone="emerald"
         title="Google Business Profile anlegen — der wichtigste Schritt"
         time="~10 Min · einmalig"
-        description="Damit erscheint deine Praxis/Salon/Pflegedienst in Google Maps und bei lokalen Suchen wie „Pflegedienst Berlin" mit Karten-Pin, Sternen und Anrufen-Button."
+        description="Damit erscheint deine Praxis/Salon/Pflegedienst in Google Maps und bei lokalen Suchen wie „Pflegedienst Berlin” mit Karten-Pin, Sternen und Anrufen-Button."
       >
         <ol className="text-foreground list-decimal space-y-2 pl-5 text-sm">
           <li>
@@ -142,7 +142,7 @@ export default async function SeoPage() {
             anmelden (mit deinem Google-Konto).
           </li>
           <li>
-            Firmenname, Kategorie (z.B. „Pflegedienst", „Zahnarzt"), Adresse,
+            Firmenname, Kategorie (z.B. „Pflegedienst”, „Zahnarzt”), Adresse,
             Telefon eintragen.
           </li>
           <li>
@@ -172,7 +172,7 @@ export default async function SeoPage() {
         tone="indigo"
         title="Google Search Console verifizieren"
         time="~5 Min · einmalig"
-        description="Sagt Google: „Diese Site gehört mir, bitte indexieren." Verkürzt die Zeit bis zur ersten Listung von Wochen auf Tage."
+        description="Sagt Google: „Diese Site gehört mir, bitte indexieren.” Verkürzt die Zeit bis zur ersten Listung von Wochen auf Tage."
       >
         <ol className="text-foreground list-decimal space-y-2 pl-5 text-sm">
           <li>
@@ -183,21 +183,21 @@ export default async function SeoPage() {
             anmelden.
           </li>
           <li>
-            „Property hinzufügen" → URL-Präfix → einfügen:{" "}
+            „Property hinzufügen” → URL-Präfix → einfügen:{" "}
             <code className="bg-muted rounded px-1.5 py-0.5 text-xs">
               {publicUrl}
             </code>
           </li>
           <li>
-            Verifikationsmethode <strong>„HTML-Tag"</strong> wählen.
+            Verifikationsmethode <strong>„HTML-Tag”</strong> wählen.
           </li>
           <li>
             Den Wert zwischen <code>content=&quot;…&quot;</code> kopieren und
             unten im Formular einfügen.
           </li>
-          <li>Speichern → in Search Console auf „Bestätigen" klicken.</li>
+          <li>Speichern → in Search Console auf „Bestätigen” klicken.</li>
           <li>
-            Nach Verifikation: <strong>„Sitemaps"</strong> aufrufen und{" "}
+            Nach Verifikation: <strong>„Sitemaps”</strong> aufrufen und{" "}
             <code className="bg-muted rounded px-1.5 py-0.5 text-xs">
               sitemap.xml
             </code>{" "}
@@ -229,14 +229,14 @@ export default async function SeoPage() {
           </li>
           <li>Property erstellen, Branche und Zeitzone einstellen.</li>
           <li>
-            Datenstrom „Web" anlegen mit URL{" "}
+            Datenstrom „Web” anlegen mit URL{" "}
             <code className="bg-muted rounded px-1.5 py-0.5 text-xs">
               {publicUrl}
             </code>
             .
           </li>
           <li>
-            <strong>Mess-ID</strong> kopieren (beginnt mit „G-") und unten
+            <strong>Mess-ID</strong> kopieren (beginnt mit „G-”) und unten
             einfügen. Das war&apos;s — gtag.js wird automatisch geladen.
           </li>
         </ol>
