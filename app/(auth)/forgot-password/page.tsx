@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const metadata: Metadata = { title: "Passwort zurücksetzen — SitePilot" };
+export const metadata: Metadata = { title: "Passwort zurücksetzen — Sitalo" };
 
 export default function ForgotPasswordPage() {
   return (

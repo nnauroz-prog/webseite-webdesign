@@ -16,7 +16,7 @@ export function DashboardSidebar() {
           S
         </span>
         <div className="flex min-w-0 flex-col leading-tight">
-          <span className="text-sm font-semibold tracking-tight">SitePilot</span>
+          <span className="text-sm font-semibold tracking-tight">Sitalo</span>
           <span className="text-muted-foreground text-[11px]">Dashboard</span>
         </div>
       </div>

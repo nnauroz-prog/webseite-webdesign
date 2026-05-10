@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Anmelden — SitePilot" };
+export const metadata: Metadata = { title: "Anmelden — Sitalo" };
 
 export default async function LoginPage() {
   const supabase = await createClient();

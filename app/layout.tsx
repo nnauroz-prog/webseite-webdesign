@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SitePilot — Professionelle Webseiten für lokale Unternehmen",
-    template: "%s · SitePilot",
+    default: "Sitalo — Professionelle Webseiten für lokale Unternehmen",
+    template: "%s · Sitalo",
   },
   description:
-    "SitePilot ist die Plattform für professionelle Unternehmenswebseiten mit einfachem Kunden-Dashboard. Hosting, Wartung und SEO inklusive.",
+    "Sitalo ist die Plattform für professionelle Unternehmenswebseiten mit einfachem Kunden-Dashboard. Hosting, Wartung und SEO inklusive.",
 };
 
 export default function RootLayout({

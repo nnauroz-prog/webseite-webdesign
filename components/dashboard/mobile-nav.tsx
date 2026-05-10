@@ -75,7 +75,7 @@ export function MobileNav() {
             </span>
             <div className="flex flex-col leading-tight">
               <span className="text-sm font-semibold tracking-tight">
-                SitePilot
+                Sitalo
               </span>
               <span className="text-muted-foreground text-[11px]">
                 Dashboard

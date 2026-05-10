@@ -14,7 +14,7 @@ import { getPlan, isActiveStatus, PLANS } from "@/lib/stripe/plans";
 import { requireUser } from "@/lib/supabase/auth";
 import type { SubscriptionRow } from "@/types/billing";
 
-export const metadata: Metadata = { title: "Abrechnung — SitePilot" };
+export const metadata: Metadata = { title: "Abrechnung — Sitalo" };
 
 const STATUS_LABEL: Record<string, string> = {
   active: "Aktiv",

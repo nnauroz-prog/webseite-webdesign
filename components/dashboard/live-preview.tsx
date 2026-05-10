@@ -16,7 +16,7 @@ const SIZES: Record<Viewport, { width: string; label: string }> = {
 /**
  * Iframe-based live preview panel. Loads /site/[slug] inside an iframe
  * and exposes a refresh + viewport toggle. The iframe is reloaded after
- * a save by listening for `sitepilot:saved` custom events on window —
+ * a save by listening for `sitalo:saved` custom events on window —
  * dashboard forms can dispatch this to trigger a refresh.
  */
 export function LivePreview({
@@ -36,8 +36,8 @@ export function LivePreview({
 
   useEffect(() => {
     const handler = () => refresh();
-    window.addEventListener("sitepilot:saved", handler);
-    return () => window.removeEventListener("sitepilot:saved", handler);
+    window.addEventListener("sitalo:saved", handler);
+    return () => window.removeEventListener("sitalo:saved", handler);
   }, []);
 
   // A polling refresh every 3s ensures recently-saved server-action edits

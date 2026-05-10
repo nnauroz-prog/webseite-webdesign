@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Preise — SitePilot",
+  title: "Preise — Sitalo",
   description:
     "Drei einfache Pakete für lokale Dienstleister. Monatlich kündbar, keine Einrichtungsgebühr.",
 };
@@ -83,7 +83,7 @@ export default async function PricingPage({
       <header className="border-border/60 border-b">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-sm font-semibold tracking-tight">
-            SitePilot
+            Sitalo
           </Link>
           <nav className="flex items-center gap-2">
             {isLoggedIn ? (
@@ -380,7 +380,7 @@ export default async function PricingPage({
 
       <footer className="border-border border-t">
         <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs">
-          <span>© {new Date().getFullYear()} SitePilot</span>
+          <span>© {new Date().getFullYear()} Sitalo</span>
           <Link href="/" className="hover:text-foreground">
             Zurück zur Startseite
           </Link>

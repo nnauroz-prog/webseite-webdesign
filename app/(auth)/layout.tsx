@@ -10,7 +10,7 @@ export default function AuthLayout({
       <header className="border-border/60 border-b">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-sm font-semibold tracking-tight">
-            ← SitePilot
+            ← Sitalo
           </Link>
           <nav className="text-muted-foreground flex items-center gap-5 text-sm">
             <Link
@@ -32,7 +32,7 @@ export default function AuthLayout({
 
       <footer className="border-border/60 border-t">
         <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs">
-          <span>© {new Date().getFullYear()} SitePilot</span>
+          <span>© {new Date().getFullYear()} Sitalo</span>
           <span>Made for local businesses.</span>
         </div>
       </footer>

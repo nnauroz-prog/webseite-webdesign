@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { Ga4Script } from "@/components/site/ga4-script";
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { SiteAbout } from "@/components/site/site-about";
 import { SiteApplication } from "@/components/site/site-application";
@@ -42,6 +43,18 @@ export async function generateMetadata({
 
   const url = `${getSiteUrl()}/site/${website.slug}`;
 
+  // Search-engine site verification — only attached when the operator
+  // pasted their token. Next renders these as <meta name="..."> tags.
+  const verification: Metadata["verification"] = {};
+  if (website.seo_google_site_verification) {
+    verification.google = website.seo_google_site_verification;
+  }
+  if (website.seo_bing_site_verification) {
+    verification.other = {
+      "msvalidate.01": website.seo_bing_site_verification,
+    };
+  }
+
   return {
     title: { absolute: title },
     description,
@@ -49,6 +62,8 @@ export async function generateMetadata({
       ? { index: true, follow: true }
       : { index: false, follow: false },
     alternates: { canonical: url },
+    verification:
+      Object.keys(verification).length > 0 ? verification : undefined,
     openGraph: {
       type: "website",
       url,
@@ -93,14 +108,19 @@ export default async function PublicSitePage({
       data-template={templateKey}
       className="bg-background flex min-h-screen flex-1 flex-col"
     >
-      {/* Structured data for Google. Only emitted for active sites — preview
-          renders should not be indexed. */}
+      {/* Structured data + analytics — only on the live site. Preview
+          renders stay out of the index and never report to GA. */}
       {!isPreview && (
-        <script
-          type="application/ld+json"
-          // JSON.stringify is safe — no user-content concatenation.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <>
+          <script
+            type="application/ld+json"
+            // JSON.stringify is safe — no user-content concatenation.
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+          {website.analytics_ga4_id ? (
+            <Ga4Script measurementId={website.analytics_ga4_id} />
+          ) : null}
+        </>
       )}
       {isPreview && <PreviewBanner />}
       <SiteHeader website={website} />

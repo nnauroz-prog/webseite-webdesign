@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Neues Passwort setzen — SitePilot" };
+export const metadata: Metadata = { title: "Neues Passwort setzen — Sitalo" };
 
 export default async function UpdatePasswordPage() {
   // The user must be authenticated via the recovery callback before they can
@@ -28,7 +28,7 @@ export default async function UpdatePasswordPage() {
       <CardHeader>
         <CardTitle className="text-2xl">Neues Passwort setzen</CardTitle>
         <CardDescription>
-          Vergib ein sicheres Passwort für dein SitePilot-Konto. Mindestens 8
+          Vergib ein sicheres Passwort für dein Sitalo-Konto. Mindestens 8
           Zeichen — danach bist du direkt eingeloggt.
         </CardDescription>
       </CardHeader>

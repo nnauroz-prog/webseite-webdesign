@@ -132,7 +132,7 @@ export function SiteFooter({ website }: { website: WebsiteRow }) {
         </div>
       </div>
 
-      {/* "Erstellt mit SitePilot" — Shopify-style attribution. Drives traffic
+      {/* "Erstellt mit Sitalo" — Shopify-style attribution. Drives traffic
           back to the marketing site so each customer site is also a sales
           channel. */}
       <div className="border-border/40 border-t bg-black/[0.02] py-3 dark:bg-white/[0.02]">
@@ -147,7 +147,7 @@ export function SiteFooter({ website }: { website: WebsiteRow }) {
             <span className="from-primary inline-flex h-3.5 w-3.5 items-center justify-center rounded-[3px] bg-gradient-to-br to-violet-600 text-[8px] font-bold text-white">
               S
             </span>
-            SitePilot
+            Sitalo
           </Link>
         </div>
       </div>

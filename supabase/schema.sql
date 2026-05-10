@@ -1,5 +1,5 @@
 -- ============================================================================
---  SitePilot — schema.sql
+--  Sitalo — schema.sql
 --  Run this once in the Supabase SQL editor of a fresh project.
 --  Re-running is safe: every statement uses IF [NOT] EXISTS / OR REPLACE /
 --  ON CONFLICT and policies are dropped before being recreated.
@@ -142,6 +142,15 @@ create table if not exists public.websites (
 create index if not exists websites_user_id_idx       on public.websites (user_id);
 create index if not exists websites_template_id_idx   on public.websites (template_id);
 create index if not exists websites_active_slug_idx   on public.websites (slug) where is_active = true;
+
+-- Per-site SEO + analytics integrations. Idempotent ALTERs so existing
+-- deploys can pick these up without a destructive migration.
+alter table public.websites
+  add column if not exists seo_google_site_verification text;
+alter table public.websites
+  add column if not exists seo_bing_site_verification text;
+alter table public.websites
+  add column if not exists analytics_ga4_id text;
 
 drop trigger if exists websites_set_updated_at on public.websites;
 create trigger websites_set_updated_at

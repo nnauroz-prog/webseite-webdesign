@@ -1,5 +1,5 @@
 /**
- * Plan catalog for SitePilot.
+ * Plan catalog for Sitalo.
  *
  * Stripe holds the source of truth for prices. We map our human-friendly
  * plan slugs ('basic' | 'pro' | 'premium') to the Stripe Price IDs that the
@@ -29,7 +29,7 @@ export const PLANS: readonly Plan[] = [
     features: [
       "1 öffentliche Website",
       "Kontaktformular mit DSGVO-Hinweis",
-      "Eigene URL (sitepilot.app/site/...)",
+      "Eigene URL (sitalo.app/site/...)",
       "Logo, Hero, Leistungen, Team, Galerie",
       "SEO-Grundlagen + Sitemap",
     ],
