@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { Check, ChevronDown, Plus } from "lucide-react";
+import { Check, ChevronDown, Plus, Sparkles } from "lucide-react";
 
 import { switchActiveWebsiteAction } from "@/lib/actions/website";
 import { cn } from "@/lib/utils";
@@ -19,9 +19,12 @@ import type { WebsiteRow } from "@/types/website";
 export function SiteSwitcher({
   websites,
   activeId,
+  canAddMore = true,
 }: {
   websites: WebsiteRow[];
   activeId: string;
+  /** False when the user has hit their plan's site limit. */
+  canAddMore?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [, startSwitch] = useTransition();
@@ -123,14 +126,27 @@ export function SiteSwitcher({
             ))}
           </ul>
           <div className="border-border border-t">
-            <Link
-              href="/dashboard/new-site"
-              className="hover:bg-secondary flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition"
-              onClick={() => setOpen(false)}
-            >
-              <Plus className="h-4 w-4" />
-              Neue Website anlegen
-            </Link>
+            {canAddMore ? (
+              <Link
+                href="/dashboard/new-site"
+                className="hover:bg-secondary flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition"
+                onClick={() => setOpen(false)}
+              >
+                <Plus className="h-4 w-4" />
+                Neue Website anlegen
+              </Link>
+            ) : (
+              <Link
+                href="/pricing"
+                className="hover:bg-secondary flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition"
+                onClick={() => setOpen(false)}
+              >
+                <Sparkles className="text-primary h-4 w-4" />
+                <span>
+                  Premium für mehr Sites
+                </span>
+              </Link>
+            )}
           </div>
         </div>
       ) : null}

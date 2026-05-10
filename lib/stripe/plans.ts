@@ -70,6 +70,24 @@ export function getPlan(id: PlanId): Plan {
 }
 
 /**
+ * How many websites a given plan may own. Multi-site is a Premium
+ * upsell — Basic and Pro each allow exactly one site, Premium up to
+ * 10. Users without an active subscription (status null / inactive
+ * trial) get the same allowance as Basic so the trial flow can still
+ * create their first site.
+ */
+export const SITES_PER_PLAN: Record<PlanId, number> = {
+  basic: 1,
+  pro: 1,
+  premium: 10,
+};
+
+export function getSiteLimit(plan: PlanId | null | undefined): number {
+  if (!plan) return 1;
+  return SITES_PER_PLAN[plan] ?? 1;
+}
+
+/**
  * Returns the Stripe Price ID configured for a plan slug, or undefined when
  * the env var is missing (operator hasn't finished setup yet).
  */

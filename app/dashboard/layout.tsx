@@ -5,6 +5,8 @@ import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { SignOutButton } from "@/components/dashboard/sign-out-button";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { getActiveWebsiteId } from "@/lib/active-website";
+import { getCurrentPlan } from "@/lib/billing/current-plan";
+import { getSiteLimit } from "@/lib/stripe/plans";
 import {
   listUserWebsites,
   requireUser,
@@ -17,19 +19,25 @@ export default async function DashboardLayout({
 }) {
   const { user } = await requireUser();
 
-  // Multi-site: load the user's full website list + the cookie-selected
-  // active id once at the layout level so every dashboard child gets
-  // the same context via the SiteSwitcher.
+  // Multi-site: load website list + cookie-selected active id once
+  // at the layout level so every dashboard child gets the same
+  // context via the SiteSwitcher. Plan-gating: figure out whether
+  // the user is allowed to create another site so the switcher's
+  // footer flips between "+ Neue Website" and "Premium für mehr
+  // Sites" automatically.
   const websites = await listUserWebsites();
   const cookieId = await getActiveWebsiteId();
   const activeWebsiteId =
     websites.find((w) => w.id === cookieId)?.id ?? websites[0]?.id ?? "";
+  const plan = await getCurrentPlan(user.id);
+  const canAddMore = websites.length < getSiteLimit(plan);
 
   return (
     <div className="flex flex-1">
       <DashboardSidebar
         websites={websites}
         activeWebsiteId={activeWebsiteId}
+        canAddMore={canAddMore}
       />
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Sticky header
@@ -44,6 +52,7 @@ export default async function DashboardLayout({
             <MobileNav
               websites={websites}
               activeWebsiteId={activeWebsiteId}
+              canAddMore={canAddMore}
             />
             <span className="md:hidden">
               <SitaloLogo size="sm" />

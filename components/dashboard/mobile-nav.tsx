@@ -27,9 +27,11 @@ import type { WebsiteRow } from "@/types/website";
 export function MobileNav({
   websites = [],
   activeWebsiteId = "",
+  canAddMore = true,
 }: {
   websites?: WebsiteRow[];
   activeWebsiteId?: string;
+  canAddMore?: boolean;
 } = {}) {
   const pathname = usePathname() ?? "";
   const [open, setOpen] = useState(false);
@@ -101,7 +103,11 @@ export function MobileNav({
 
         {websites.length > 0 ? (
           <div className="border-border border-b p-3">
-            <SiteSwitcher websites={websites} activeId={activeWebsiteId} />
+            <SiteSwitcher
+              websites={websites}
+              activeId={activeWebsiteId}
+              canAddMore={canAddMore}
+            />
           </div>
         ) : null}
 
