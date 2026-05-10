@@ -7,10 +7,8 @@ import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  createServiceAction,
-  initialServiceState,
-} from "@/lib/actions/services";
+import { createServiceAction } from "@/lib/actions/services";
+import { initialServiceState } from "@/lib/actions/states";
 
 export function ServiceCreateForm() {
   const [state, formAction] = useActionState(

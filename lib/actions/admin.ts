@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import {
   fail,
   flattenZodErrors,
-  idleState,
   isUniqueViolation,
   ok,
   type ActionState,
@@ -20,7 +19,6 @@ import {
   toggleTemplateSchema,
 } from "@/lib/validations/admin";
 
-export const initialAdminState: ActionState = idleState;
 
 // ---------------------------------------------------------------------------
 //  Helpers — RLS allows admin to update/delete across all owners. The

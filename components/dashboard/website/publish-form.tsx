@@ -7,7 +7,8 @@ import { FormStatus } from "@/components/dashboard/form-status";
 import { SectionCard } from "@/components/dashboard/section-card";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Switch } from "@/components/ui/switch";
-import { initialState, updatePublishAction } from "@/lib/actions/website";
+import { updatePublishAction } from "@/lib/actions/website";
+import { initialState } from "@/lib/actions/states";
 import type { WebsiteRow } from "@/types/website";
 
 export function PublishForm({ website }: { website: WebsiteRow }) {

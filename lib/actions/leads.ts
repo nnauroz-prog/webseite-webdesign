@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import {
   fail,
   flattenZodErrors,
-  idleState,
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
@@ -13,7 +12,6 @@ import { createClient } from "@/lib/supabase/server";
 import { requireCurrentWebsite } from "@/lib/supabase/auth";
 import { leadStatusSchema, submitLeadSchema } from "@/lib/validations/leads";
 
-export const initialLeadState: ActionState = idleState;
 
 // ---------------------------------------------------------------------------
 //  submitLeadAction (anonymous-callable from /site/[slug])

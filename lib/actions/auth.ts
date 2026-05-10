@@ -227,4 +227,3 @@ export async function updatePasswordAction(
   redirect("/dashboard");
 }
 
-export const initialAuthState = idle;

@@ -2,10 +2,8 @@
 
 import { useActionState } from "react";
 
-import {
-  createCheckoutAction,
-  initialState,
-} from "@/lib/actions/billing";
+import { createCheckoutAction } from "@/lib/actions/billing";
+import { initialState } from "@/lib/actions/states";
 import { Button } from "@/components/ui/button";
 import type { PlanId } from "@/lib/stripe/plans";
 

@@ -11,10 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTeamMemberAction,
-  initialTeamState,
   updateTeamMemberAction,
   uploadTeamImageAction,
 } from "@/lib/actions/team";
+import { initialTeamState } from "@/lib/actions/states";
 import type { TeamMemberRow as TeamModel } from "@/types/website";
 
 export function TeamRow({ member }: { member: TeamModel }) {

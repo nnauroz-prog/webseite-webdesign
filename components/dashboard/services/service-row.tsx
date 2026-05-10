@@ -10,9 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteServiceAction,
-  initialServiceState,
   updateServiceAction,
 } from "@/lib/actions/services";
+import { initialServiceState } from "@/lib/actions/states";
 import type { ServiceRow as ServiceModel } from "@/types/website";
 
 export function ServiceRow({ service }: { service: ServiceModel }) {

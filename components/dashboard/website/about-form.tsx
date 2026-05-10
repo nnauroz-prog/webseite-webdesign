@@ -7,7 +7,8 @@ import { SectionCard } from "@/components/dashboard/section-card";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { initialState, updateAboutAction } from "@/lib/actions/website";
+import { updateAboutAction } from "@/lib/actions/website";
+import { initialState } from "@/lib/actions/states";
 import type { WebsiteRow } from "@/types/website";
 
 export function AboutForm({ website }: { website: WebsiteRow }) {

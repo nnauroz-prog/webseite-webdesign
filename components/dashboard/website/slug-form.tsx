@@ -7,7 +7,8 @@ import { SectionCard } from "@/components/dashboard/section-card";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { initialState, updateSlugAction } from "@/lib/actions/website";
+import { updateSlugAction } from "@/lib/actions/website";
+import { initialState } from "@/lib/actions/states";
 import type { WebsiteRow } from "@/types/website";
 
 export function SlugForm({ website }: { website: WebsiteRow }) {

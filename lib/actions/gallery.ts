@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import {
   fail,
   flattenZodErrors,
-  idleState,
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
@@ -16,7 +15,6 @@ import {
   galleryUploadSchema,
 } from "@/lib/validations/gallery";
 
-export const initialGalleryState: ActionState = idleState;
 
 export async function uploadGalleryImageAction(
   _prev: ActionState | undefined,

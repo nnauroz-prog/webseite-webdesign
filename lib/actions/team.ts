@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import {
   fail,
   flattenZodErrors,
-  idleState,
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
@@ -19,7 +18,6 @@ import {
 } from "@/lib/validations/team";
 import type { TeamMemberRow } from "@/types/website";
 
-export const initialTeamState: ActionState = idleState;
 
 export async function createTeamMemberAction(
   _prev: ActionState | undefined,

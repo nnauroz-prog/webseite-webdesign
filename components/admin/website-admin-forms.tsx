@@ -12,8 +12,8 @@ import {
   adminUpdateWebsitePublishAction,
   adminUpdateWebsiteSlugAction,
   adminUpdateWebsiteTemplateAction,
-  initialAdminState,
 } from "@/lib/actions/admin";
+import { initialAdminState } from "@/lib/actions/states";
 import type { TemplateRow, WebsiteRow } from "@/types/website";
 
 export function AdminPublishForm({ website }: { website: WebsiteRow }) {

@@ -6,10 +6,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  initialApplicationState,
-  submitApplicationAction,
-} from "@/lib/actions/applications";
+import { submitApplicationAction } from "@/lib/actions/applications";
+import { initialApplicationState } from "@/lib/actions/states";
 import { SubmitButton } from "@/components/dashboard/submit-button";
 
 export function SiteApplicationForm({ slug }: { slug: string }) {

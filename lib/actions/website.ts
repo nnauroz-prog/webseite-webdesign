@@ -6,17 +6,12 @@ import { redirect } from "next/navigation";
 import {
   fail,
   flattenZodErrors,
-  idleState,
   isUniqueViolation,
   ok,
   type ActionState,
 } from "@/lib/actions/shared";
 import { deleteStorageObjectByPublicUrl, uploadImage } from "@/lib/storage";
-import {
-  getCurrentWebsite,
-  requireCurrentWebsite,
-  requireUser,
-} from "@/lib/supabase/auth";
+import { requireCurrentWebsite, requireUser } from "@/lib/supabase/auth";
 import {
   aboutSchema,
   createWebsiteSchema,
@@ -30,7 +25,6 @@ import {
   websiteMetaSchema,
 } from "@/lib/validations/website";
 
-export const initialState: ActionState = idleState;
 
 // ---------------------------------------------------------------------------
 //  createWebsiteAction (onboarding)
@@ -436,5 +430,3 @@ export async function updateTemplateAction(
   return ok("Template aktualisiert.");
 }
 
-// Re-export so onboarding form can detect "no website yet" state.
-export { getCurrentWebsite };
