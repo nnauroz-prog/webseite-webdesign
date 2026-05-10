@@ -14,6 +14,13 @@ import { cn } from "@/lib/utils";
  * Mobile navigation drawer for the dashboard. Hamburger button visible
  * only below `md`. Drawer slides in from the left with the same nav
  * items as the desktop sidebar.
+ *
+ * Stacking:
+ *   - hamburger button: stays in normal flow
+ *   - backdrop:        z-[80] — strong opacity so dashboard chrome
+ *                      behind doesn't bleed through
+ *   - drawer:          z-[90] — above the backdrop and the sticky
+ *                      dashboard header (z-10 / z-30)
  */
 export function MobileNav() {
   const pathname = usePathname() ?? "";
@@ -47,34 +54,31 @@ export function MobileNav() {
         <Menu className="h-5 w-5" />
       </Button>
 
-      {/* Backdrop */}
+      {/* Backdrop — high opacity so the dashboard behind disappears */}
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity md:hidden",
+          "fixed inset-0 z-[80] bg-black/75 backdrop-blur-md transition-opacity md:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={() => setOpen(false)}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
+      {/* Drawer — full width on phones, max 320px on tablets */}
       <aside
         className={cn(
-          "from-background to-secondary/60 fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r bg-gradient-to-b shadow-xl transition-transform md:hidden",
+          "fixed inset-y-0 left-0 z-[90] flex w-full max-w-[320px] flex-col border-r bg-background shadow-2xl transition-transform md:hidden",
           open ? "translate-x-0" : "-translate-x-full",
         )}
         aria-hidden={!open}
       >
-        <div className="border-border flex h-16 items-center justify-between border-b px-5">
+        <div className="border-border bg-background flex h-16 items-center justify-between border-b px-5">
           <Link
             href="/dashboard"
             className="flex items-center gap-3"
             onClick={() => setOpen(false)}
           >
             <SitaloLogo size="sm" />
-            <span className="text-muted-foreground text-[11px] tracking-wide uppercase">
-              Dashboard
-            </span>
           </Link>
           <Button
             type="button"
@@ -97,7 +101,7 @@ export function MobileNav() {
                 key={href}
                 href={href}
                 className={cn(
-                  "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all",
+                  "group relative flex items-center gap-3 rounded-lg px-3 py-3 transition-all",
                   active
                     ? "bg-primary/10 text-foreground font-medium"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground",
@@ -109,7 +113,7 @@ export function MobileNav() {
                     active ? "text-primary" : tone,
                   )}
                 />
-                <span className="text-base">{label}</span>
+                <span className="text-[15px]">{label}</span>
               </Link>
             );
           })}
@@ -118,7 +122,7 @@ export function MobileNav() {
         <div className="border-border border-t px-5 py-4">
           <Link
             href="/"
-            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center text-xs transition-colors"
           >
             ← Zur Startseite
           </Link>

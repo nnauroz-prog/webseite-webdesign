@@ -141,15 +141,15 @@ export default async function DashboardHomePage() {
   const publicHref = `/site/${website.slug}`;
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-8">
+    <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
       <TrialBanner subscription={subscription} />
 
       {/* Hero header */}
-      <div className="from-primary/5 via-background to-background border-primary/10 relative overflow-hidden rounded-2xl border bg-gradient-to-br p-6 sm:p-8">
+      <div className="from-primary/5 via-background to-background border-primary/10 relative overflow-hidden rounded-2xl border bg-gradient-to-br p-5 sm:p-8">
         <div className="bg-primary/10 pointer-events-none absolute -top-8 -right-8 h-40 w-40 rounded-full blur-3xl" />
-        <div className="relative flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
               <span
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium",
@@ -166,26 +166,26 @@ export default async function DashboardHomePage() {
                 />
                 {website.is_active ? "Öffentlich" : "Privat"}
               </span>
-              <span className="text-muted-foreground font-mono text-xs">
+              <span className="text-muted-foreground truncate font-mono text-[11px] sm:text-xs">
                 /site/{website.slug}
               </span>
             </div>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl md:text-4xl">
               {website.business_name}
             </h1>
-            <p className="text-muted-foreground mt-1.5 text-sm">
+            <p className="text-muted-foreground mt-2 text-[13px] leading-relaxed sm:text-sm">
               {website.industry
-                ? `Dein ${website.industry}-Auftritt — bearbeite Inhalte links, sieh die Wirkung sofort rechts.`
-                : "Bearbeite Inhalte links, sieh die Wirkung sofort rechts."}
+                ? `Dein ${website.industry}-Auftritt — bearbeite Inhalte und veröffentliche mit einem Klick.`
+                : "Bearbeite Inhalte und veröffentliche mit einem Klick."}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline" size="sm" className="flex-1 sm:flex-none">
               <Link href={publicHref} target="_blank" rel="noreferrer">
                 Vorschau öffnen
               </Link>
             </Button>
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="flex-1 sm:flex-none">
               <Link href="/dashboard/website">Website bearbeiten</Link>
             </Button>
           </div>
