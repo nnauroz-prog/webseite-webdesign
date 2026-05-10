@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
 import { OnboardingForm } from "@/components/dashboard/onboarding-form";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,19 +11,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { requireUser } from "@/lib/supabase/auth";
+import { getCurrentPlan } from "@/lib/billing/current-plan";
+import { getSiteLimit } from "@/lib/stripe/plans";
+import { listUserWebsites, requireUser } from "@/lib/supabase/auth";
 import type { TemplateRow } from "@/types/website";
 
 export const metadata: Metadata = { title: "Neue Website" };
 
-/**
- * Standalone onboarding page reachable via the SiteSwitcher's
- * "+ Neue Website anlegen" link. Re-uses the existing OnboardingForm —
- * createWebsiteAction now allows multi-site so we just render it here
- * without the dashboard-home nudge wrapper.
- */
 export default async function NewSitePage() {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
+
+  // Show the upgrade CTA when the user has already hit their site
+  // quota — same gate the server action enforces, just rendered up
+  // front so the user doesn't fill in the wizard for nothing.
+  const websites = await listUserWebsites();
+  const plan = await getCurrentPlan(user.id);
+  const limit = getSiteLimit(plan);
+  const atLimit = websites.length >= limit;
+
   const { data } = await supabase
     .from("templates")
     .select("*")
@@ -43,23 +49,56 @@ export default async function NewSitePage() {
         Weitere Website anlegen
       </h1>
       <p className="text-muted-foreground mt-2 text-sm">
-        Du kannst beliebig viele Sites verwalten — z.B. für mehrere Kunden
-        oder Standorte. Jede Site hat eigene Inhalte, eigene Domain, eigene
+        Du kannst mehrere Sites verwalten — z.B. für mehrere Kunden oder
+        Standorte. Jede Site hat eigene Inhalte, eigene Domain, eigene
         Anfragen-Postfächer.
       </p>
-      <div className="mt-6">
-        <Card className="border-primary/20 shadow-sm">
+
+      {atLimit ? (
+        <Card className="border-primary/40 from-primary/10 mt-6 bg-gradient-to-br to-amber-700/10 shadow-md">
           <CardHeader>
-            <CardTitle className="text-lg">Branche + Daten</CardTitle>
+            <span className="bg-primary/20 text-primary mb-2 inline-flex h-9 w-9 items-center justify-center rounded-full">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <CardTitle className="text-lg">
+              {plan === "premium"
+                ? `Maximum von ${limit} Websites erreicht`
+                : "Mehrere Websites sind ein Premium-Feature"}
+            </CardTitle>
             <CardDescription>
-              Drei Schritte — Beispiel-Inhalte werden automatisch eingefügt.
+              {plan === "premium"
+                ? "Schreib uns kurz wenn du mehr Sites brauchst — wir heben das Limit individuell."
+                : "Mit Premium kannst du bis zu 10 Websites verwalten — perfekt für Agenturen oder Multi-Standort-Betriebe."}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <OnboardingForm templates={templates} />
+            <p className="text-muted-foreground text-sm">
+              Aktuell: <strong className="text-foreground">{websites.length}</strong> von{" "}
+              <strong className="text-foreground">{limit}</strong> Sites genutzt
+              {plan ? ` · Plan: ${plan}` : ""}.
+            </p>
+            {plan !== "premium" ? (
+              <Button asChild className="mt-5">
+                <Link href="/pricing">Auf Premium upgraden</Link>
+              </Button>
+            ) : null}
           </CardContent>
         </Card>
-      </div>
+      ) : (
+        <div className="mt-6">
+          <Card className="border-primary/20 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg">Branche + Daten</CardTitle>
+              <CardDescription>
+                Drei Schritte — Beispiel-Inhalte werden automatisch eingefügt.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <OnboardingForm templates={templates} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

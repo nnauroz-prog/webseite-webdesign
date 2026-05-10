@@ -15,6 +15,8 @@ import { deleteStorageObjectByPublicUrl, uploadImage } from "@/lib/storage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireCurrentWebsite, requireUser } from "@/lib/supabase/auth";
 import { setActiveWebsiteId } from "@/lib/active-website";
+import { getCurrentPlan } from "@/lib/billing/current-plan";
+import { getSiteLimit } from "@/lib/stripe/plans";
 import { resolveTemplateKey } from "@/lib/templates";
 import {
   isVercelConfigured,
@@ -58,9 +60,25 @@ export async function createWebsiteAction(
 
   const { supabase, user } = await requireUser();
 
-  // Multi-site: a user may own any number of websites. The action
-  // simply creates a fresh row + flips the active-website cookie so
-  // the dashboard lands on the new site after redirect.
+  // Multi-site is gated by plan: Basic/Pro/Trial = 1 site, Premium = up
+  // to 10. We only block AFTER the user already owns sites — the very
+  // first website is always free so onboarding works without a paid
+  // subscription.
+  const { count: existingCount } = await supabase
+    .from("websites")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id);
+  if ((existingCount ?? 0) > 0) {
+    const plan = await getCurrentPlan(user.id);
+    const limit = getSiteLimit(plan);
+    if ((existingCount ?? 0) >= limit) {
+      return fail(
+        plan === "premium"
+          ? `Du hast das Maximum von ${limit} Websites erreicht. Schreib uns wenn du mehr brauchst.`
+          : "Mehrere Websites sind ein Premium-Feature. Bitte upgrade auf Premium, um weitere Sites anzulegen.",
+      );
+    }
+  }
 
   // Resolve which industry template the user picked so we can seed the
   // matching demo content (services, team, hero copy, opening hours…).
