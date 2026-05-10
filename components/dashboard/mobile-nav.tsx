@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import { NAV_ITEMS } from "@/components/dashboard/nav-items";
+import { SiteSwitcher } from "@/components/dashboard/site-switcher";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { WebsiteRow } from "@/types/website";
 
 /**
  * Mobile navigation drawer for the dashboard. Hamburger button visible
@@ -22,7 +24,13 @@ import { cn } from "@/lib/utils";
  *   - drawer:          z-[90] — above the backdrop and the sticky
  *                      dashboard header (z-10 / z-30)
  */
-export function MobileNav() {
+export function MobileNav({
+  websites = [],
+  activeWebsiteId = "",
+}: {
+  websites?: WebsiteRow[];
+  activeWebsiteId?: string;
+} = {}) {
   const pathname = usePathname() ?? "";
   const [open, setOpen] = useState(false);
 
@@ -90,6 +98,12 @@ export function MobileNav() {
             <X className="h-5 w-5" />
           </Button>
         </div>
+
+        {websites.length > 0 ? (
+          <div className="border-border border-b p-3">
+            <SiteSwitcher websites={websites} activeId={activeWebsiteId} />
+          </div>
+        ) : null}
 
         <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4 text-sm">
           {NAV_ITEMS.map(({ label, href, icon: Icon, tone }) => {

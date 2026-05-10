@@ -4,10 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { NAV_ITEMS } from "@/components/dashboard/nav-items";
+import { SiteSwitcher } from "@/components/dashboard/site-switcher";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
+import type { WebsiteRow } from "@/types/website";
 
-export function DashboardSidebar() {
+export function DashboardSidebar({
+  websites,
+  activeWebsiteId,
+}: {
+  websites: WebsiteRow[];
+  activeWebsiteId: string;
+}) {
   const pathname = usePathname() ?? "";
 
   return (
@@ -18,6 +26,12 @@ export function DashboardSidebar() {
           Dashboard
         </span>
       </div>
+
+      {websites.length > 0 ? (
+        <div className="border-border border-b p-3">
+          <SiteSwitcher websites={websites} activeId={activeWebsiteId} />
+        </div>
+      ) : null}
 
       <nav className="flex-1 space-y-0.5 px-3 py-4 text-sm">
         {NAV_ITEMS.map(({ label, href, icon: Icon, tone }) => {
