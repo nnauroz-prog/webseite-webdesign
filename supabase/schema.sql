@@ -105,7 +105,11 @@ insert into public.templates (name, industry) values
   ('Schreinerei Manufaktur',  'schreiner'),
   ('Kosmetikstudio Eleganz',  'kosmetik'),
   ('Anwaltskanzlei Klassisch','anwalt'),
-  ('Restaurant Warm',         'restaurant')
+  ('Restaurant Warm',         'restaurant'),
+  ('Agentur Modern',          'agentur'),
+  ('Spa Onyx',                'spa'),
+  ('Cafe Kiosk',              'cafe'),
+  ('Fitness Pulse',           'fitness')
 on conflict (name) do nothing;
 
 -- ----------------------------------------------------------------------------

@@ -74,6 +74,22 @@ const SAMPLE_FOR_KEY: Record<
     headline: "Frische Küche. Herzlicher Service.",
     bullet: "Tageskarte, Reservierungs-Hinweis, Öffnungszeiten",
   },
+  agentur: {
+    headline: "Strategie. Design. Code.",
+    bullet: "Stripe-/Linear-Vibe — heavy sans, crisp shadows, modernes Layout",
+  },
+  spa: {
+    headline: "Ein stiller Ort.",
+    bullet: "Aesop-Stil — dunkler Hintergrund, cremefarbene Serif, ruhige Eleganz",
+  },
+  cafe: {
+    headline: "Kaffee. Brot. Kuchen.",
+    bullet: "Brutalist — Monospace-Headlines, harte Kanten, schwarze Schatten",
+  },
+  fitness: {
+    headline: "Training mit Plan.",
+    bullet: "Energetisch — kräftige Sans, große Headlines, action-orientiert",
+  },
 };
 
 const STEPS = ["Branche", "Firmendaten", "Bestätigen"] as const;

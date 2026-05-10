@@ -61,7 +61,11 @@ export function SiteGalleryGrid({ images }: { images: GalleryImageRow[] }) {
             <button
               type="button"
               onClick={() => setOpenIndex(i)}
-              className="bg-muted group block aspect-[4/3] w-full overflow-hidden rounded-xl border transition-shadow hover:shadow-md"
+              className="bg-muted group block aspect-[4/3] w-full overflow-hidden border transition-shadow hover:shadow-md"
+              style={{
+                borderRadius: "var(--site-image-radius)",
+                borderWidth: "var(--site-card-border-width)",
+              }}
               aria-label={
                 img.alt_text
                   ? `${img.alt_text} — vergrößern`

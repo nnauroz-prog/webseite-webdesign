@@ -114,6 +114,24 @@ const CHROME: Record<Personality, Chrome> = {
     headline: "h-2",
     density: "gap-1",
   },
+  bold: {
+    frame: "rounded-2xl shadow-2xl",
+    cardRadius: "rounded-lg",
+    headline: "h-3",
+    density: "gap-1.5",
+  },
+  brutalist: {
+    frame: "rounded-none shadow-[4px_4px_0_0_var(--foreground)] ring-2 ring-foreground",
+    cardRadius: "rounded-none ring-2 ring-foreground border-0",
+    headline: "h-2.5",
+    density: "gap-1",
+  },
+  "dark-luxury": {
+    frame: "rounded-sm shadow-2xl",
+    cardRadius: "rounded-sm",
+    headline: "h-2.5",
+    density: "gap-2",
+  },
 };
 
 function NavStrip() {
