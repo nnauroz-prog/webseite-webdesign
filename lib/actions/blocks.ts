@@ -51,6 +51,31 @@ function defaultDataFor(type: BlockType): Record<string, unknown> {
         button_label: "Kontakt aufnehmen",
         button_href: "#kontakt",
       };
+    case "map":
+      return {
+        title: "So finden Sie uns",
+        address: "Musterstraße 1, 10115 Berlin",
+      };
+    case "video":
+      return {
+        title: "",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        caption: "",
+      };
+    case "stats":
+      return {
+        title: "",
+        items: [
+          { value: "20+", label: "Jahre Erfahrung" },
+          { value: "500+", label: "Zufriedene Kunden" },
+          { value: "24/7", label: "Erreichbar" },
+        ],
+      };
+    case "rich_text":
+      return {
+        title: "",
+        body: "Schreibe hier deinen Text. Eine Leerzeile beginnt einen neuen Absatz.\n\nLängere Texte sind hier ideal, wenn du detailliert über deine Arbeit, Werte oder Geschichte erzählen möchtest.",
+      };
   }
 }
 

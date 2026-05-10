@@ -360,7 +360,11 @@ create table if not exists public.page_blocks (
                              'faq',
                              'testimonials',
                              'opening_hours',
-                             'cta_banner'
+                             'cta_banner',
+                             'map',
+                             'video',
+                             'stats',
+                             'rich_text'
                            )),
   data         jsonb       not null default '{}'::jsonb,
   sort_order   int         not null default 0,
@@ -379,6 +383,26 @@ drop trigger if exists page_blocks_set_updated_at on public.page_blocks;
 create trigger page_blocks_set_updated_at
   before update on public.page_blocks
   for each row execute function public.set_updated_at();
+
+-- Idempotent migration for existing deployments — replace the original
+-- type CHECK with the expanded list (map / video / stats / rich_text).
+do $$
+begin
+  alter table public.page_blocks
+    drop constraint if exists page_blocks_type_check;
+  alter table public.page_blocks
+    add constraint page_blocks_type_check
+    check (type in (
+      'faq',
+      'testimonials',
+      'opening_hours',
+      'cta_banner',
+      'map',
+      'video',
+      'stats',
+      'rich_text'
+    ));
+end $$;
 
 -- ----------------------------------------------------------------------------
 -- 10b. bookings  (online appointment requests)

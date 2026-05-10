@@ -123,7 +123,11 @@ export type BlockType =
   | "faq"
   | "testimonials"
   | "opening_hours"
-  | "cta_banner";
+  | "cta_banner"
+  | "map"
+  | "video"
+  | "stats"
+  | "rich_text";
 
 export type FaqBlockData = {
   title?: string;
@@ -148,6 +152,30 @@ export type CtaBannerBlockData = {
   button_href: string;
 };
 
+export type MapBlockData = {
+  title?: string;
+  /** Free-form address — geocoded by the embed itself. */
+  address: string;
+};
+
+export type VideoBlockData = {
+  title?: string;
+  /** YouTube or Vimeo URL — we extract the ID and embed. */
+  url: string;
+  caption?: string;
+};
+
+export type StatsBlockData = {
+  title?: string;
+  items: Array<{ value: string; label: string }>;
+};
+
+export type RichTextBlockData = {
+  title?: string;
+  /** Plain text with paragraphs separated by blank lines. */
+  body: string;
+};
+
 export type PageBlockRow = {
   id: string;
   website_id: string;
@@ -158,6 +186,10 @@ export type PageBlockRow = {
     | TestimonialsBlockData
     | OpeningHoursBlockData
     | CtaBannerBlockData
+    | MapBlockData
+    | VideoBlockData
+    | StatsBlockData
+    | RichTextBlockData
     | Record<string, unknown>;
   sort_order: number;
   is_published: boolean;

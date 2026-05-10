@@ -14,9 +14,13 @@ import { updateBlockAction } from "@/lib/actions/blocks";
 import type {
   CtaBannerBlockData,
   FaqBlockData,
+  MapBlockData,
   OpeningHoursBlockData,
   PageBlockRow,
+  RichTextBlockData,
+  StatsBlockData,
   TestimonialsBlockData,
+  VideoBlockData,
 } from "@/types/website";
 
 /**
@@ -44,6 +48,18 @@ export function BlockEditor({ block }: { block: PageBlockRow }) {
       ) : null}
       {block.type === "cta_banner" ? (
         <CtaBannerEditor data={block.data as CtaBannerBlockData} />
+      ) : null}
+      {block.type === "map" ? (
+        <MapEditor data={block.data as MapBlockData} />
+      ) : null}
+      {block.type === "video" ? (
+        <VideoEditor data={block.data as VideoBlockData} />
+      ) : null}
+      {block.type === "stats" ? (
+        <StatsEditor data={block.data as StatsBlockData} />
+      ) : null}
+      {block.type === "rich_text" ? (
+        <RichTextEditor data={block.data as RichTextBlockData} />
       ) : null}
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
@@ -301,6 +317,224 @@ function OpeningHoursEditor({ data }: { data: OpeningHoursBlockData }) {
 /* ------------------------------------------------------------------ */
 /*  CTA banner editor                                                 */
 /* ------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------ */
+/*  Map editor                                                        */
+/* ------------------------------------------------------------------ */
+
+function MapEditor({ data }: { data: MapBlockData }) {
+  const [title, setTitle] = useState(data?.title ?? "So finden Sie uns");
+  const [address, setAddress] = useState(data?.address ?? "");
+
+  const payload = JSON.stringify({ title, address });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="map-title">Titel (optional)</Label>
+        <Input
+          id="map-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={120}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="map-address">Adresse</Label>
+        <Textarea
+          id="map-address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          rows={3}
+          maxLength={400}
+          placeholder="Musterstraße 1, 10115 Berlin"
+          required
+        />
+        <p className="text-muted-foreground text-xs">
+          Wird per Google Maps direkt eingebettet — kein API-Key nötig.
+        </p>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Video editor                                                      */
+/* ------------------------------------------------------------------ */
+
+function VideoEditor({ data }: { data: VideoBlockData }) {
+  const [title, setTitle] = useState(data?.title ?? "");
+  const [url, setUrl] = useState(data?.url ?? "");
+  const [caption, setCaption] = useState(data?.caption ?? "");
+
+  const payload = JSON.stringify({ title, url, caption });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="vid-title">Titel (optional)</Label>
+        <Input
+          id="vid-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={120}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="vid-url">YouTube- oder Vimeo-Link</Label>
+        <Input
+          id="vid-url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          maxLength={2000}
+          placeholder="https://www.youtube.com/watch?v=…"
+          required
+          className="font-mono text-xs"
+        />
+        <p className="text-muted-foreground text-xs">
+          Standard-Share-Link reicht — wir machen daraus automatisch ein Embed.
+        </p>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="vid-caption">Bildunterschrift (optional)</Label>
+        <Input
+          id="vid-caption"
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          maxLength={400}
+        />
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Stats editor                                                      */
+/* ------------------------------------------------------------------ */
+
+function StatsEditor({ data }: { data: StatsBlockData }) {
+  const initial = data?.items?.length
+    ? data.items
+    : [{ value: "", label: "" }];
+  const [items, setItems] = useState(initial);
+  const [title, setTitle] = useState(data?.title ?? "");
+
+  const payload = JSON.stringify({ title, items });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="stats-title">Block-Titel (optional)</Label>
+        <Input
+          id="stats-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={120}
+        />
+      </div>
+      <div className="space-y-3">
+        {items.map((it, i) => (
+          <div
+            key={i}
+            className="bg-secondary/30 grid gap-2 rounded-lg p-3 sm:grid-cols-[120px_1fr_auto]"
+          >
+            <Input
+              value={it.value}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i ? { ...x, value: e.target.value } : x,
+                  ),
+                )
+              }
+              placeholder="20+"
+              maxLength={40}
+              className="font-mono"
+              required
+            />
+            <Input
+              value={it.label}
+              onChange={(e) =>
+                setItems((s) =>
+                  s.map((x, j) =>
+                    j === i ? { ...x, label: e.target.value } : x,
+                  ),
+                )
+              }
+              placeholder="Jahre Erfahrung"
+              maxLength={120}
+              required
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={items.length === 1}
+              onClick={() =>
+                setItems((s) => s.filter((_, j) => j !== i))
+              }
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={items.length >= 8}
+          onClick={() =>
+            setItems((s) => [...s, { value: "", label: "" }])
+          }
+        >
+          <Plus className="mr-1 h-4 w-4" />
+          Kennzahl hinzufügen
+        </Button>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Rich text editor                                                  */
+/* ------------------------------------------------------------------ */
+
+function RichTextEditor({ data }: { data: RichTextBlockData }) {
+  const [title, setTitle] = useState(data?.title ?? "");
+  const [body, setBody] = useState(data?.body ?? "");
+
+  const payload = JSON.stringify({ title, body });
+
+  return (
+    <>
+      <input type="hidden" name="data" value={payload} />
+      <div className="space-y-2">
+        <Label htmlFor="rt-title">Überschrift (optional)</Label>
+        <Input
+          id="rt-title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={160}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="rt-body">Text</Label>
+        <Textarea
+          id="rt-body"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={12}
+          maxLength={8000}
+          placeholder="Eine Leerzeile beginnt einen neuen Absatz."
+          required
+        />
+      </div>
+    </>
+  );
+}
 
 function CtaBannerEditor({ data }: { data: CtaBannerBlockData }) {
   const [headline, setHeadline] = useState(data?.headline ?? "");
