@@ -24,6 +24,14 @@ export async function GET() {
   const stripePremium = process.env.NEXT_PUBLIC_STRIPE_PRICE_PREMIUM ?? "";
   const resendKey = process.env.RESEND_API_KEY ?? "";
   const mailFrom = process.env.MAIL_FROM ?? "";
+  const leadEmail = process.env.LEAD_NOTIFICATION_EMAIL ?? "";
+  const inquiryTo = process.env.SITALO_INQUIRY_TO ?? "";
+  const whatsappNumber = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER ?? "";
+
+  // Show which lead recipient the action would actually use right
+  // now, with the same fallback chain as lib/actions/inquiries.ts.
+  const resolvedLeadRecipient =
+    leadEmail.trim() || inquiryTo.trim() || "hallo@sitalo.de";
 
   return NextResponse.json({
     runtime: process.version,
@@ -39,6 +47,19 @@ export async function GET() {
       NEXT_PUBLIC_STRIPE_PRICE_PREMIUM: presence(stripePremium),
       RESEND_API_KEY: presence(resendKey),
       MAIL_FROM: presence(mailFrom, { showPrefix: true }),
+      LEAD_NOTIFICATION_EMAIL: presence(leadEmail, { showPrefix: true }),
+      SITALO_INQUIRY_TO: presence(inquiryTo, { showPrefix: true }),
+      NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER: presence(whatsappNumber, {
+        showPrefix: true,
+      }),
+    },
+    leads: {
+      resolved_recipient: resolvedLeadRecipient,
+      mail_from: mailFrom || "(empty — Resend will reject)",
+      hint:
+        resendKey && mailFrom
+          ? "Visit /api/diag/lead-test?secret=<CRON_SECRET> to send a real test email and see Resend's response."
+          : "RESEND_API_KEY and MAIL_FROM must both be set for the agency notification to leave the server.",
     },
   });
 }

@@ -284,7 +284,12 @@ export async function notifyNewInquiry(
   payload: NewInquiryPayload,
 ): Promise<void> {
   const resend = getResend();
-  if (!resend) return;
+  if (!resend) {
+    console.warn("[notifyNewInquiry] skipped — RESEND_API_KEY not set", {
+      would_send_to: payload.toEmail,
+    });
+    return;
+  }
 
   const i = payload.inquiry;
   const adminUrl = `${getSiteUrl()}/admin/inquiries`;
@@ -320,9 +325,10 @@ export async function notifyNewInquiry(
        <p style="white-space: pre-line; background: #f5f5f5; padding: 16px; border-radius: 8px;">${escape(i.message)}</p>`
     : "";
 
+  const from = getMailFrom();
   try {
-    await resend.emails.send({
-      from: getMailFrom(),
+    const result = await resend.emails.send({
+      from,
       to: payload.toEmail,
       subject: `Neue Anfrage von ${i.name}${i.company ? ` (${i.company})` : ""}`,
       html: `
@@ -340,10 +346,25 @@ export async function notifyNewInquiry(
       `,
       replyTo: i.email,
     });
+    if (result.error) {
+      console.error("[notifyNewInquiry] resend rejected", {
+        from,
+        to: payload.toEmail,
+        name: result.error.name,
+        message: result.error.message,
+      });
+    } else {
+      console.log("[notifyNewInquiry] sent", {
+        to: payload.toEmail,
+        from,
+        message_id: result.data?.id,
+      });
+    }
   } catch (err) {
-    console.error("[notifyNewInquiry] resend failed", {
+    console.error("[notifyNewInquiry] resend threw", {
+      from,
+      to: payload.toEmail,
       message: err instanceof Error ? err.message : String(err),
-      email: i.email,
     });
   }
 }
