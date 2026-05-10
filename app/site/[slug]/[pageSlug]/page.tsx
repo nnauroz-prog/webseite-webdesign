@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { BlockRenderer } from "@/components/site/blocks/block-renderer";
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { getPublicSite } from "@/lib/site-data";
-import { getCustomPage } from "@/lib/page-data";
+import { getCustomPage, listPageBlocks } from "@/lib/page-data";
 import { getSiteUrl } from "@/lib/site-url";
 import { resolveTemplateKey } from "@/lib/templates";
 
@@ -53,6 +54,9 @@ export default async function CustomPageRoute({
 
   const { website, isPreview } = data;
   const templateKey = resolveTemplateKey(data.template);
+  const blocks = await listPageBlocks(page.id);
+  const hasBody = Boolean(page.body?.trim());
+  const hasBlocks = blocks.length > 0;
 
   return (
     <div
@@ -62,11 +66,11 @@ export default async function CustomPageRoute({
       {isPreview && <PreviewBanner />}
       <SiteHeader website={website} />
       <main className="flex-1">
-        <article className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-20">
+        <article className="border-border/60 mx-auto w-full max-w-3xl border-b px-6 py-16 sm:py-20">
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
             {page.title}
           </h1>
-          {page.body ? (
+          {hasBody ? (
             <div className="text-foreground/90 mt-8 space-y-5 text-base leading-relaxed">
               {page.body.split(/\n{2,}/).map((paragraph, i) => (
                 <p key={i} className="whitespace-pre-line">
@@ -74,12 +78,13 @@ export default async function CustomPageRoute({
                 </p>
               ))}
             </div>
-          ) : (
+          ) : !hasBlocks ? (
             <p className="text-muted-foreground mt-8 text-sm">
               Diese Seite hat noch keinen Inhalt.
             </p>
-          )}
+          ) : null}
         </article>
+        <BlockRenderer blocks={blocks} />
       </main>
       <SiteFooter website={website} />
     </div>

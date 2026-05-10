@@ -1,7 +1,7 @@
 import { cache } from "react";
 
 import { createClient } from "@/lib/supabase/server";
-import type { PageRow } from "@/types/website";
+import type { PageBlockRow, PageRow } from "@/types/website";
 
 /**
  * Fetch a single custom page by `(website_id, slug)`.
@@ -57,3 +57,21 @@ export async function listAllPagesForOwner(
     .order("created_at", { ascending: true });
   return (data as PageRow[] | null) ?? [];
 }
+
+/**
+ * Blocks attached to a single custom page, ordered for rendering.
+ * RLS already filters published-only on public reads + owner sees
+ * everything on /dashboard.
+ */
+export const listPageBlocks = cache(
+  async (pageId: string): Promise<PageBlockRow[]> => {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("page_blocks")
+      .select("*")
+      .eq("page_id", pageId)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+    return (data as PageBlockRow[] | null) ?? [];
+  },
+);
