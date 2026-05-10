@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useActionState, useRef, useState, useTransition } from "react";
 
+import { AiImageButton } from "@/components/dashboard/ai-image-button";
 import { FormStatus } from "@/components/dashboard/form-status";
 import { SectionCard } from "@/components/dashboard/section-card";
 import { SubmitButton } from "@/components/dashboard/submit-button";
@@ -121,6 +122,11 @@ export function HeroImageForm({ website }: { website: WebsiteRow }) {
           </div>
         </form>
       </div>
+
+      <AiImageButton
+        kind="hero"
+        placeholder="Z.B. Helle, einladende Aufnahme einer modernen Arztpraxis bei Tageslicht, weite Perspektive, kein Text, redaktioneller Stil."
+      />
     </SectionCard>
   );
 }
