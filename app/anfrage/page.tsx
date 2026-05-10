@@ -4,7 +4,6 @@ import Link from "next/link";
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { MarketingWhatsapp } from "@/components/marketing/marketing-whatsapp";
 
 export const metadata: Metadata = {
   title: "Website anfragen — Sitalo",
@@ -74,7 +73,7 @@ export default function AnfragePage() {
                   Lieber direkt schreiben?
                 </h2>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  Schick uns eine WhatsApp — wir antworten oft noch am selben
+                  Schreib uns eine E-Mail — wir antworten oft noch am selben
                   Tag.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -105,7 +104,6 @@ export default function AnfragePage() {
       </main>
 
       <MarketingFooter />
-      <MarketingWhatsapp />
     </div>
   );
 }

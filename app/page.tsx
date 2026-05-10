@@ -15,7 +15,6 @@ import {
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { MarketingWhatsapp } from "@/components/marketing/marketing-whatsapp";
 import { TemplatePreview } from "@/components/dashboard/template-preview";
 import { ALL_TEMPLATE_KEYS, getTemplateMeta } from "@/lib/templates";
 
@@ -229,7 +228,7 @@ const FAQ = [
   {
     question: "Muss ich mich registrieren?",
     answer:
-      "Nein. Für eine Anfrage reicht das Formular oder WhatsApp. Der Kundenbereich ist nur für bestehende Kunden oder auf Wunsch verfügbar.",
+      "Nein. Für eine Anfrage reicht das Formular auf der Anfrage-Seite. Der Kundenbereich ist nur für bestehende Kunden oder auf Wunsch verfügbar.",
   },
   {
     question: "Wie schnell ist meine Website fertig?",
@@ -330,7 +329,6 @@ export default function HomePage() {
         <FinalCta />
       </main>
       <MarketingFooter />
-      <MarketingWhatsapp />
     </div>
   );
 }
@@ -338,8 +336,6 @@ export default function HomePage() {
 /* ---------- Sections ---------- */
 
 function Hero() {
-  const whatsappHref = buildWhatsappHref();
-
   return (
     <section className="border-border/40 relative overflow-hidden border-b">
       <div
@@ -369,22 +365,11 @@ function Hero() {
               Website anfragen
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-            {whatsappHref ? (
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-[#25D366]/40 text-[#128C7E] hover:bg-[#25D366]/10 inline-flex h-12 items-center justify-center gap-2 rounded-full border bg-white px-7 text-[15px] font-medium tracking-tight transition-colors"
-              >
-                <WhatsappGlyph className="h-4 w-4" />
-                WhatsApp schreiben
-              </a>
-            ) : null}
             <Link
-              href="#beispiele"
-              className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center justify-center px-4 text-sm font-medium underline-offset-4 hover:underline"
+              href="#leistungen"
+              className="border-border bg-background hover:bg-secondary inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
             >
-              Beispiele ansehen
+              Leistungen ansehen
             </Link>
           </div>
 
@@ -420,30 +405,6 @@ function TrustBar() {
         ))}
       </ul>
     </div>
-  );
-}
-
-function buildWhatsappHref(): string | null {
-  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
-  if (!raw) return null;
-  const digits = raw.replace(/[^\d]/g, "");
-  if (digits.length < 6) return null;
-  const message =
-    process.env.NEXT_PUBLIC_SITALO_WHATSAPP_MESSAGE?.trim() ||
-    "Hallo, ich interessiere mich für eine professionelle Website. Können Sie mir ein Angebot machen?";
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
-}
-
-function WhatsappGlyph({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M16.001 3.2c-7.067 0-12.8 5.733-12.8 12.8 0 2.241.586 4.434 1.7 6.366L3.2 28.8l6.601-1.728a12.79 12.79 0 0 0 6.198 1.577h.002c7.067 0 12.799-5.732 12.799-12.799 0-3.422-1.332-6.638-3.752-9.057a12.726 12.726 0 0 0-9.047-3.593zm0 23.342h-.002a10.591 10.591 0 0 1-5.4-1.479l-.387-.229-4.014 1.051 1.07-3.915-.252-.4a10.587 10.587 0 0 1-1.624-5.668c0-5.866 4.775-10.641 10.641-10.641 2.842 0 5.514 1.108 7.525 3.12a10.557 10.557 0 0 1 3.116 7.527c0 5.866-4.774 10.634-10.673 10.634zm5.834-7.967c-.32-.16-1.893-.934-2.187-1.04-.293-.107-.507-.16-.72.16s-.827 1.04-1.014 1.254c-.187.214-.374.241-.694.08-.32-.16-1.353-.499-2.578-1.591-.953-.85-1.597-1.9-1.784-2.22-.187-.32-.02-.493.14-.652.143-.143.32-.374.48-.561.16-.187.213-.32.32-.534.107-.214.054-.4-.026-.561-.08-.16-.72-1.733-.987-2.373-.26-.622-.524-.538-.72-.548-.187-.01-.4-.012-.614-.012a1.18 1.18 0 0 0-.854.4c-.293.32-1.12 1.094-1.12 2.667 0 1.574 1.147 3.094 1.307 3.307.16.213 2.254 3.44 5.466 4.825.764.329 1.36.526 1.826.674.766.244 1.464.21 2.014.127.615-.092 1.893-.774 2.16-1.521.267-.748.267-1.387.187-1.521-.08-.134-.293-.213-.614-.374z" />
-    </svg>
   );
 }
 
@@ -692,91 +653,113 @@ function Industries() {
 }
 
 /**
- * Alstercafé Showcase. Real example project explicitly labelled as
- * "Beispielprojekt" — no fake customer testimonials, no implied
- * endorsement. Demonstrates the Premium-System with managed menu /
- * weekly-special content.
+ * Neutral "fits-your-business" section. No specific customer names,
+ * no fake testimonials, no implied references — we don't have public
+ * permission to use any current customer projects as showcase yet.
+ *
+ * Communicates the same value (we build per-industry, content-managed
+ * sites) without making claims we can't back up.
  */
 function Showcase() {
+  const examples = [
+    {
+      title: "Café-Website",
+      lead: "Speisekarte, Öffnungszeiten und Wochenangebot",
+      features: [
+        "Verwaltbare Speisekarte im Kundenbereich",
+        "Wochenangebot / Mittagstisch änderbar",
+        "Reservierungs-Anfrage per Formular oder WhatsApp",
+      ],
+      industry: "Café · Gastronomie",
+    },
+    {
+      title: "Pflegedienst-Website",
+      lead: "Leistungen, Vertrauen und Bewerbungen",
+      features: [
+        "Leistungen mit klarer Struktur",
+        "Bewerbungsformular für Pflegekräfte",
+        "Kontakt + Notfallnummer prominent",
+      ],
+      industry: "Pflege · Soziales",
+    },
+    {
+      title: "Praxis-Website",
+      lead: "Patienteninformation und Online-Termin",
+      features: [
+        "Sprechzeiten, Notdienst, Anfahrt",
+        "Online-Termin-Anfrage mit Bestätigungsmail",
+        "Team-Bereich mit Qualifikationen",
+      ],
+      industry: "Arzt · Zahnarzt",
+    },
+    {
+      title: "Friseur-Website",
+      lead: "Bilder, Preise und Termin-Anfragen",
+      features: [
+        "Galerie mit Lightbox",
+        "Leistungen und Preise transparent",
+        "Termin-Anfrage per Formular oder WhatsApp",
+      ],
+      industry: "Friseur · Kosmetik",
+    },
+  ];
+
   return (
     <section
-      id="showcase"
+      id="passt-zu-ihnen"
       className="border-border/40 border-b py-20 sm:py-28"
     >
       <div className="mx-auto w-full max-w-6xl px-6">
         <header className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Beispielprojekt
+            Individuell pro Branche
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Café-Webseite mit Speisekarte & Wochenangebot
+            Webseiten, die zu Ihrem Unternehmen passen.
           </h2>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Für ein Café kann Sitalo nicht nur eine schöne Website erstellen,
-            sondern auch verwaltbare Inhalte wie Speisekarte, Wochenangebot
-            oder Mittagstisch integrieren.
+            Ob Café, Praxis, Pflegedienst oder Handwerksbetrieb — wir passen
+            Struktur, Design und Inhalte individuell an Ihre Branche an. Auf
+            Wunsch mit Kundenbereich, in dem Sie Inhalte selbst pflegen können.
           </p>
         </header>
 
-        <div className="border-border/60 bg-card mt-12 grid gap-0 overflow-hidden rounded-3xl border shadow-xl lg:grid-cols-[1.1fr_1fr]">
-          <div className="bg-foreground text-background relative flex aspect-[4/3] flex-col justify-end overflow-hidden p-8 sm:aspect-auto sm:p-10">
-            <div
-              aria-hidden="true"
-              className="bg-primary/40 absolute inset-x-0 top-0 h-[60%] opacity-50 blur-3xl"
-            />
-            <div className="relative">
-              <p className="text-background/60 text-[10px] font-medium uppercase tracking-[0.25em]">
-                Alstercafé · Hamburg
+        <ul className="mt-12 grid gap-6 sm:grid-cols-2">
+          {examples.map((ex) => (
+            <li
+              key={ex.title}
+              className="bg-card border-border/60 group flex flex-col rounded-2xl border p-7 shadow-sm transition-shadow hover:shadow-md sm:p-8"
+            >
+              <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
+                {ex.industry}
               </p>
-              <h3 className="mt-3 text-4xl font-semibold leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-                Frischer Kaffee.
-                <br />
-                Wechselndes Wochenangebot.
+              <h3 className="mt-2 text-xl font-semibold tracking-tight">
+                {ex.title}
               </h3>
-              <p className="text-background/75 mt-5 max-w-sm text-base leading-relaxed">
-                Onepager mit großem Hero, Speisekarte als verwaltbarer Inhalt,
-                Wochenangebot mit Mittagstisch, Öffnungszeiten und Anfahrt.
-              </p>
-              <p className="text-background/60 mt-6 text-xs">
-                Beispielprojekt zur Darstellung des Premium-Systems.
-              </p>
-            </div>
-          </div>
+              <p className="text-foreground/80 mt-1 text-[15px]">{ex.lead}</p>
+              <ul className="mt-5 space-y-2 text-sm">
+                {ex.features.map((f) => (
+                  <li
+                    key={f}
+                    className="text-muted-foreground flex items-start gap-2.5"
+                  >
+                    <Check className="text-emerald-600 mt-0.5 h-4 w-4 shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
 
-          <div className="flex flex-col p-8 sm:p-10">
-            <dl className="grid gap-4 sm:grid-cols-2">
-              <ShowcaseFact label="Branche" value="Café / Gastronomie" />
-              <ShowcaseFact label="Umsetzung" value="Onepager + Kundenbereich" />
-              <ShowcaseFact label="Gerät" value="Mobil-optimiert" />
-              <ShowcaseFact label="Inhalte" value="Selbst pflegbar" />
-            </dl>
-
-            <ul className="mt-7 space-y-2.5 text-sm">
-              {[
-                "Onepager mit großem Hero und Atmosphäre-Bildern",
-                "Speisekarte als verwaltbarer Inhalt im Kundenbereich",
-                "Wochenangebot + Mittagstisch wöchentlich änderbar",
-                "Öffnungszeiten, Google Maps, Telefon-Direktwahl",
-                "Reservierungs-Anfrage per Formular oder WhatsApp",
-                "Bilder-Galerie der Räumlichkeiten",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2.5">
-                  <Check className="text-emerald-600 mt-0.5 h-4 w-4 shrink-0" />
-                  <span className="text-foreground/85">{item}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-auto pt-8">
-              <Link
-                href="/anfrage"
-                className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 w-full items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight transition-colors sm:w-auto"
-              >
-                Ähnliche Website anfragen
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-          </div>
+        <div className="mt-10 text-center">
+          <Link
+            href="/anfrage"
+            className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+          >
+            Passende Website anfragen
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>
@@ -1041,7 +1024,6 @@ function Faq() {
 }
 
 function FinalCta() {
-  const whatsappHref = buildWhatsappHref();
   return (
     <section className="bg-foreground text-background py-20 sm:py-28">
       <div className="mx-auto w-full max-w-4xl px-6 text-center">
@@ -1054,7 +1036,7 @@ function FinalCta() {
           Schicken Sie uns Ihre Anfrage. Wir melden uns innerhalb von 24 Stunden
           mit einem klaren Vorschlag — persönlich, nicht von einer Hotline.
         </p>
-        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-center gap-3">
           <Link
             href="/anfrage"
             className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
@@ -1062,17 +1044,6 @@ function FinalCta() {
             Jetzt Website anfragen
             <Send className="ml-2 h-4 w-4" />
           </Link>
-          {whatsappHref ? (
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border-background/40 bg-background/10 text-background hover:bg-background/20 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight backdrop-blur-md transition-colors"
-            >
-              <WhatsappGlyph className="h-4 w-4" />
-              Direkt per WhatsApp schreiben
-            </a>
-          ) : null}
         </div>
         <p className="text-background/60 mt-6 inline-flex items-center gap-2 text-sm">
           <Clock className="h-4 w-4" />

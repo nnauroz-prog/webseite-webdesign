@@ -4,7 +4,6 @@ import { ArrowRight, Check, Minus } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { MarketingWhatsapp } from "@/components/marketing/marketing-whatsapp";
 
 export const metadata: Metadata = {
   title: "Preise — Sitalo Webdesign",
@@ -151,7 +150,6 @@ export default function PricingPage() {
       </main>
 
       <MarketingFooter />
-      <MarketingWhatsapp />
     </div>
   );
 }
