@@ -5,9 +5,24 @@ import { ArrowRight, Check, Minus } from "lucide-react";
 import { CheckoutButton } from "@/components/pricing/checkout-button";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { Button } from "@/components/ui/button";
-import { PLANS, type PlanId } from "@/lib/stripe/plans";
+import { getLemonVariantId } from "@/lib/lemon/plans";
+import { PLANS, getStripePriceId, type PlanId } from "@/lib/stripe/plans";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
+
+/**
+ * Returns true when at least one payment provider is configured for the
+ * given plan. We check the active provider's env first; if it has no
+ * price/variant ID we treat the plan as not yet buyable and render a
+ * "Bald verfügbar" hint instead of the checkout button.
+ */
+function isPlanBuyable(planId: PlanId): boolean {
+  const provider = process.env.NEXT_PUBLIC_BILLING_PROVIDER;
+  if (provider === "lemon") {
+    return Boolean(getLemonVariantId(planId));
+  }
+  return Boolean(getStripePriceId(planId));
+}
 
 export const metadata: Metadata = {
   title: "Preise — Sitalo",
@@ -183,7 +198,22 @@ export default async function PricingPage({
               </ul>
 
               <div className="mt-8">
-                {isLoggedIn ? (
+                {!isPlanBuyable(plan.id) ? (
+                  <div className="space-y-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      disabled
+                    >
+                      Bald verfügbar
+                    </Button>
+                    <p className="text-muted-foreground text-center text-xs">
+                      Kostenlos testen geht jetzt — Bezahlung sobald wir live
+                      schalten.
+                    </p>
+                  </div>
+                ) : isLoggedIn ? (
                   <CheckoutButton
                     plan={plan.id}
                     label={plan.highlight ? "Jetzt buchen" : "Plan wählen"}

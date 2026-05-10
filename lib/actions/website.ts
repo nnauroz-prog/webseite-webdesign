@@ -573,6 +573,99 @@ export async function removeLogoAction(): Promise<ActionState> {
 }
 
 // ---------------------------------------------------------------------------
+//  Hero & About images — same upload pattern as the logo. We re-use the
+//  existing `gallery` bucket so the storage policies already cover it.
+// ---------------------------------------------------------------------------
+async function uploadSiteImage(
+  field: "hero_image_url" | "about_image_url",
+  formField: string,
+  formData: FormData,
+  successMessage: string,
+): Promise<ActionState> {
+  const file = formData.get(formField);
+  if (!(file instanceof File) || file.size === 0) {
+    return fail("Bitte wähle eine Bilddatei aus.");
+  }
+
+  const { supabase, user, website } = await requireCurrentWebsite();
+  const previous = (website as unknown as Record<string, string | null>)[field];
+
+  const result = await uploadImage({
+    supabase,
+    bucket: "gallery",
+    file,
+    userId: user.id,
+    subPath: `${website.id}/${formField}`,
+  });
+  if (!result.ok) return fail(result.message);
+
+  const { error } = await supabase
+    .from("websites")
+    .update({ [field]: result.publicUrl })
+    .eq("id", website.id);
+  if (error) {
+    await deleteStorageObjectByPublicUrl(supabase, "gallery", result.publicUrl);
+    return fail(error.message);
+  }
+
+  await deleteStorageObjectByPublicUrl(supabase, "gallery", previous);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok(successMessage);
+}
+
+async function removeSiteImage(
+  field: "hero_image_url" | "about_image_url",
+  successMessage: string,
+): Promise<ActionState> {
+  const { supabase, website } = await requireCurrentWebsite();
+  const previous = (website as unknown as Record<string, string | null>)[field];
+
+  const { error } = await supabase
+    .from("websites")
+    .update({ [field]: null })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  await deleteStorageObjectByPublicUrl(supabase, "gallery", previous);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok(successMessage);
+}
+
+export async function uploadHeroImageAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  return uploadSiteImage(
+    "hero_image_url",
+    "hero_image",
+    formData,
+    "Hero-Bild aktualisiert.",
+  );
+}
+
+export async function removeHeroImageAction(): Promise<ActionState> {
+  return removeSiteImage("hero_image_url", "Hero-Bild entfernt.");
+}
+
+export async function uploadAboutImageAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  return uploadSiteImage(
+    "about_image_url",
+    "about_image",
+    formData,
+    "Über-uns-Bild aktualisiert.",
+  );
+}
+
+export async function removeAboutImageAction(): Promise<ActionState> {
+  return removeSiteImage("about_image_url", "Über-uns-Bild entfernt.");
+}
+
+// ---------------------------------------------------------------------------
 //  updateTemplateAction
 // ---------------------------------------------------------------------------
 export async function updateTemplateAction(

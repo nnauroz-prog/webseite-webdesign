@@ -1,12 +1,19 @@
+import Image from "next/image";
 import { Clock, MapPin, Phone } from "lucide-react";
 
 import type { TemplateMeta } from "@/lib/templates";
+import { cn } from "@/lib/utils";
 import type { WebsiteRow } from "@/types/website";
 
 /**
  * Split hero used by templates that benefit from prominent appointment /
  * contact info next to the headline (e.g., a doctor's office). Falls back
  * gracefully when contact fields are missing.
+ *
+ * When `hero_image_url` is set, it lives as a full-section background
+ * with a dark gradient overlay; left text turns white and the right
+ * aside card keeps its own background so the contact info stays
+ * readable.
  */
 export function SiteHeroSplit({
   website,
@@ -20,20 +27,53 @@ export function SiteHeroSplit({
   const phone = website.phone?.trim();
   const address = website.address?.trim();
   const hours = website.opening_hours?.text?.trim();
+  const hasBgImage = Boolean(website.hero_image_url);
 
   return (
-    <section className="border-border/60 bg-accent/30 relative overflow-hidden border-b">
+    <section
+      className={cn(
+        "border-border/60 relative overflow-hidden border-b",
+        hasBgImage ? "isolate text-white" : "bg-accent/30",
+      )}
+    >
+      {hasBgImage ? (
+        <>
+          <Image
+            src={website.hero_image_url!}
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            className="-z-20 object-cover"
+            unoptimized
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/55 via-black/45 to-black/65" />
+        </>
+      ) : null}
+
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-20 sm:py-24 lg:grid-cols-[1.2fr_1fr]">
         <div>
           {website.industry && (
-            <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-3 py-1 text-xs font-medium tracking-wide uppercase">
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium tracking-wide uppercase",
+                hasBgImage
+                  ? "bg-white/15 text-white backdrop-blur-sm"
+                  : "bg-primary/10 text-primary",
+              )}
+            >
               {website.industry}
             </span>
           )}
           <h1 className="mt-5 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             {title}
           </h1>
-          <p className="text-muted-foreground mt-5 max-w-xl text-lg leading-relaxed text-pretty">
+          <p
+            className={cn(
+              "mt-5 max-w-xl text-lg leading-relaxed text-pretty",
+              hasBgImage ? "text-white/90" : "text-muted-foreground",
+            )}
+          >
             {subtitle}
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -46,7 +86,12 @@ export function SiteHeroSplit({
             {phone && (
               <a
                 href={`tel:${phone.replace(/\s+/g, "")}`}
-                className="bg-background hover:bg-secondary inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-medium transition"
+                className={cn(
+                  "inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-medium transition",
+                  hasBgImage
+                    ? "border-white/40 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
+                    : "bg-background hover:bg-secondary",
+                )}
               >
                 Anrufen
               </a>
@@ -54,7 +99,7 @@ export function SiteHeroSplit({
           </div>
         </div>
 
-        <aside className="bg-card rounded-2xl border p-6 shadow-sm">
+        <aside className="bg-card text-foreground rounded-2xl border p-6 shadow-sm">
           <h2 className="text-base font-semibold tracking-tight">
             Sprechzeiten &amp; Kontakt
           </h2>

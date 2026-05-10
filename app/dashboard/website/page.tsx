@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 
 import { LivePreview } from "@/components/dashboard/live-preview";
 import { AboutForm } from "@/components/dashboard/website/about-form";
+import { AboutImageForm } from "@/components/dashboard/website/about-image-form";
 import { FormsToggleForm } from "@/components/dashboard/website/forms-toggle-form";
 import { HeroForm } from "@/components/dashboard/website/hero-form";
+import { HeroImageForm } from "@/components/dashboard/website/hero-image-form";
 import { LegalForm } from "@/components/dashboard/website/legal-form";
 import { LogoForm } from "@/components/dashboard/website/logo-form";
 import { MetaForm } from "@/components/dashboard/website/meta-form";
@@ -45,7 +47,9 @@ export default async function WebsitePage() {
           <MetaForm website={website} />
           <LogoForm website={website} />
           <HeroForm website={website} />
+          <HeroImageForm website={website} />
           <AboutForm website={website} />
+          <AboutImageForm website={website} />
           <SeoForm website={website} />
           <LegalForm website={website} />
           <FormsToggleForm website={website} />

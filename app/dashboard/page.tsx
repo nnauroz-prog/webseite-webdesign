@@ -40,7 +40,7 @@ export default async function DashboardHomePage() {
 
     return (
       <div className="mx-auto w-full max-w-2xl px-6 py-10">
-        <div className="from-primary inline-flex items-center gap-2 rounded-full bg-gradient-to-r to-violet-500 px-3 py-1 text-xs font-medium text-white shadow-sm">
+        <div className="from-primary inline-flex items-center gap-2 rounded-full bg-gradient-to-r to-amber-700 px-3 py-1 text-xs font-medium text-white shadow-sm">
           <Sparkles className="h-3.5 w-3.5" />
           Willkommen
         </div>
@@ -180,9 +180,9 @@ export default async function DashboardHomePage() {
       </div>
 
       {showSeedBanner ? (
-        <div className="from-primary/10 to-violet-500/10 border-primary/30 mt-6 flex flex-wrap items-start justify-between gap-4 rounded-2xl border bg-gradient-to-r p-5">
+        <div className="from-primary/10 to-amber-700/10 border-primary/30 mt-6 flex flex-wrap items-start justify-between gap-4 rounded-2xl border bg-gradient-to-r p-5">
           <div className="flex items-start gap-3">
-            <span className="from-primary inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br to-violet-600 text-white shadow-sm">
+            <span className="from-primary inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br to-amber-800 text-white shadow-sm">
               <Sparkles className="h-5 w-5" />
             </span>
             <div>
@@ -218,7 +218,7 @@ export default async function DashboardHomePage() {
           </div>
           <div className="bg-secondary mt-4 h-2 w-full overflow-hidden rounded-full">
             <div
-              className="from-primary h-full rounded-full bg-gradient-to-r to-violet-500 transition-all"
+              className="from-primary h-full rounded-full bg-gradient-to-r to-amber-700 transition-all"
               style={{ width: `${completeness}%` }}
             />
           </div>

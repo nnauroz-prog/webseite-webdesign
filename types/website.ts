@@ -32,6 +32,8 @@ export type WebsiteRow = {
   seo_google_site_verification: string | null;
   seo_bing_site_verification: string | null;
   analytics_ga4_id: string | null;
+  hero_image_url: string | null;
+  about_image_url: string | null;
   imprint_text: string | null;
   privacy_text: string | null;
   is_active: boolean;
