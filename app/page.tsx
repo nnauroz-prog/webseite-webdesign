@@ -425,7 +425,7 @@ function Steps() {
       <div className="mx-auto w-full max-w-5xl px-6">
         <header className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            So einfach geht's
+            So einfach geht es
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
             In 3 Schritten zur fertigen Website.
