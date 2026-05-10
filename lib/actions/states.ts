@@ -16,4 +16,5 @@ export const initialTeamState: ActionState = idleState;
 export const initialGalleryState: ActionState = idleState;
 export const initialLeadState: ActionState = idleState;
 export const initialApplicationState: ActionState = idleState;
+export const initialBookingState: ActionState = idleState;
 export const initialAdminState: ActionState = idleState;

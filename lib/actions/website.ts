@@ -412,6 +412,7 @@ export async function updateFormsAction(
   const parsed = formsToggleSchema.safeParse({
     contact_form_enabled: formData.get("contact_form_enabled") === "on",
     application_form_enabled: formData.get("application_form_enabled") === "on",
+    booking_form_enabled: formData.get("booking_form_enabled") === "on",
   });
   if (!parsed.success) {
     return fail("Ungültige Formulareinstellungen.");
@@ -423,6 +424,7 @@ export async function updateFormsAction(
     .update({
       contact_form_enabled: parsed.data.contact_form_enabled,
       application_form_enabled: parsed.data.application_form_enabled,
+      booking_form_enabled: parsed.data.booking_form_enabled,
     })
     .eq("id", website.id);
   if (error) return fail(error.message);
