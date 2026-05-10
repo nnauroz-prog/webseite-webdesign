@@ -2,450 +2,431 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, Minus } from "lucide-react";
 
-import { CheckoutButton } from "@/components/pricing/checkout-button";
-import { SitaloLogo } from "@/components/sitalo-logo";
-import { Button } from "@/components/ui/button";
-import { getLemonVariantId } from "@/lib/lemon/plans";
-import { PLANS, getStripePriceId, type PlanId } from "@/lib/stripe/plans";
-import { createClient } from "@/lib/supabase/server";
-import { cn } from "@/lib/utils";
-
-/**
- * Returns true when at least one payment provider is configured for the
- * given plan. We check the active provider's env first; if it has no
- * price/variant ID we treat the plan as not yet buyable and render a
- * "Bald verfügbar" hint instead of the checkout button.
- */
-function isPlanBuyable(planId: PlanId): boolean {
-  const provider = process.env.NEXT_PUBLIC_BILLING_PROVIDER;
-  if (provider === "lemon") {
-    return Boolean(getLemonVariantId(planId));
-  }
-  return Boolean(getStripePriceId(planId));
-}
+import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { MarketingWhatsapp } from "@/components/marketing/marketing-whatsapp";
 
 export const metadata: Metadata = {
-  title: "Preise — Sitalo",
+  title: "Preise — Sitalo Webdesign",
   description:
-    "Drei einfache Pakete für lokale Dienstleister. Monatlich kündbar, keine Einrichtungsgebühr.",
+    "Klare Pakete für lokale Unternehmen. Einmalige Erstellung + monatliche Betreuung. Sie liefern die Daten, wir bauen Ihre Website.",
+  alternates: { canonical: "/pricing" },
 };
 
-type ComparisonRow = {
+const PACKAGES = [
+  {
+    name: "Starter Onepager",
+    badge: "Für kleine Betriebe",
+    setup: "499 €",
+    monthly: "49 €",
+    description:
+      "Eine moderne Seite, alles Wichtige auf einen Blick. Perfekt, um schnell professionell auftreten zu können.",
+    bullets: [
+      "Moderne Onepage-Website",
+      "Mobil optimiert",
+      "Kontaktformular",
+      "WhatsApp-Button",
+      "Google Maps-Einbettung",
+      "Öffnungszeiten",
+      "Impressum & Datenschutz",
+      "Hosting inklusive",
+      "Bis zu 1 kleine Änderung pro Monat",
+    ],
+  },
+  {
+    name: "Business Website",
+    badge: "Beliebteste Wahl",
+    highlight: true,
+    setup: "899 €",
+    monthly: "79 €",
+    description:
+      "Mehrere professionelle Sektionen. Für Unternehmen, die mehr brauchen als einen Onepager.",
+    bullets: [
+      "Hochwertige Mehrseiten-Website",
+      "Bis zu 5 Sektionen / Unterseiten",
+      "Team-Bereich mit Fotos",
+      "Leistungen mit Beschreibung",
+      "Galerie mit Lightbox",
+      "SEO-Grundlagen + Sitemap",
+      "Bilderaufbereitung inklusive",
+      "Kontaktformular & WhatsApp",
+      "Bis zu 3 kleine Änderungen pro Monat",
+      "Persönlicher Ansprechpartner",
+    ],
+  },
+  {
+    name: "Premium System",
+    badge: "Mit Kundenbereich",
+    setup: "1.499 €",
+    monthly: "129 €",
+    description:
+      "Premium-Design mit Kundenbereich. Sie pflegen Speisekarte, Wochenangebot oder Termine selbst.",
+    bullets: [
+      "Premium-Design",
+      "Individuelle Anpassung",
+      "Kundenbereich (Login)",
+      "Selbst pflegbare Inhalte",
+      "Speisekarte / Wochenangebot",
+      "Online-Buchung mit Bestätigung",
+      "Bewerbungsformular",
+      "Stärkere SEO-Basis",
+      "Erweiterte Wartung",
+      "Bis zu 6 kleine Änderungen pro Monat",
+      "Prioritäts-Support",
+    ],
+  },
+];
+
+const COMPARISON_ROWS: Array<{
   feature: string;
-  basic: string | boolean;
-  pro: string | boolean;
-  premium: string | boolean;
-};
-
-const comparison: ComparisonRow[] = [
-  { feature: "Öffentliche Website", basic: true, pro: true, premium: true },
-  { feature: "Branchen-Template", basic: true, pro: true, premium: true },
-  { feature: "Logo, Hero, Über-uns", basic: true, pro: true, premium: true },
-  { feature: "Leistungen, Team, Galerie", basic: true, pro: true, premium: true },
-  { feature: "Kontaktformular", basic: true, pro: true, premium: true },
-  { feature: "DSGVO-Pflichtseiten", basic: true, pro: true, premium: true },
-  { feature: "Sitemap & robots.txt", basic: true, pro: true, premium: true },
-  { feature: "Bewerbungsformular", basic: false, pro: true, premium: true },
-  { feature: "Erweiterte SEO-Felder", basic: false, pro: true, premium: true },
-  { feature: "OpenGraph-Bilder", basic: false, pro: true, premium: true },
-  { feature: "E-Mail-Support", basic: false, pro: true, premium: true },
-  { feature: "Eigene Domain", basic: false, pro: false, premium: true },
-  { feature: "Setup-Service (wir bauen)", basic: false, pro: false, premium: true },
-  { feature: "Priorisierter Support", basic: false, pro: false, premium: true },
-  { feature: "Monatlicher Performance-Report", basic: false, pro: false, premium: true },
+  values: [string | boolean, string | boolean, string | boolean];
+}> = [
+  { feature: "Onepage-Website", values: [true, true, true] },
+  { feature: "Mehrseiten-Website", values: [false, true, true] },
+  { feature: "Team-Bereich", values: [false, true, true] },
+  { feature: "Leistungen mit Beschreibung", values: [false, true, true] },
+  { feature: "Galerie mit Lightbox", values: [false, true, true] },
+  { feature: "Kontaktformular", values: [true, true, true] },
+  { feature: "WhatsApp-Button", values: [true, true, true] },
+  { feature: "Google Maps", values: [true, true, true] },
+  { feature: "SEO-Grundlagen", values: ["—", true, "Stark"] },
+  { feature: "Bilderaufbereitung", values: [false, true, true] },
+  { feature: "Kundenbereich (Login)", values: [false, false, true] },
+  { feature: "Speisekarte / Wochenangebot", values: [false, false, true] },
+  { feature: "Online-Buchung", values: [false, false, true] },
+  { feature: "Bewerbungsformular", values: [false, true, true] },
+  {
+    feature: "Änderungen pro Monat (inkl.)",
+    values: ["1", "3", "6"],
+  },
+  { feature: "Hosting & Wartung", values: [true, true, true] },
+  { feature: "Persönlicher Ansprechpartner", values: [false, true, true] },
+  { feature: "Prioritäts-Support", values: [false, false, true] },
 ];
 
-const pricingFaq = [
+const FAQ = [
   {
-    q: "Gibt es eine Mindestlaufzeit?",
-    a: "Nein. Du buchst monatsweise und kannst jederzeit zum Ende des aktuellen Abrechnungs­zeitraums kündigen — direkt im Stripe-Kundenportal.",
+    question: "Sind die Preise verbindlich?",
+    answer:
+      "Die hier genannten Preise sind unsere Standardpakete. Die finalen Kosten hängen vom Umfang, vorhandenen Inhalten und gewünschten Sonderfunktionen ab. Sie erhalten vor Auftragserteilung immer ein verbindliches Angebot.",
   },
   {
-    q: "Was ist im Demo-Modus enthalten?",
-    a: "Du kannst dich kostenlos registrieren und deine Website komplett im Dashboard aufbauen — Texte, Bilder, Team, Leistungen, alles. Erst wenn du sie öffentlich schalten willst, brauchst du ein Paket.",
+    question: "Was passiert, wenn ich die Website kündige?",
+    answer:
+      "Die monatliche Betreuung ist immer zum Monatsende kündbar. Die einmalige Erstellung wird nicht erstattet, da die Arbeit bereits geleistet wurde. Auf Wunsch übergeben wir Ihnen die Inhalte in einem üblichen Format.",
   },
   {
-    q: "Kann ich später das Paket wechseln?",
-    a: "Ja. Im Stripe-Kundenportal kannst du jederzeit hoch- oder runterstufen. Stripe rechnet anteilig ab, du zahlst keine Doppelmonate.",
+    question: "Brauche ich ein eigenes Hosting?",
+    answer:
+      "Nein. Hosting ist im monatlichen Beitrag enthalten. Sie brauchen sich um nichts zu kümmern.",
   },
   {
-    q: "Was passiert bei einer fehlgeschlagenen Zahlung?",
-    a: "Stripe versucht die Zahlung mehrfach automatisch erneut. Schlägt sie endgültig fehl, geht deine öffentliche Website offline — bis du die Zahlungs­methode aktualisierst und die offene Rechnung beglichst.",
+    question: "Was ist mit der Domain?",
+    answer:
+      "Eine .de-Domain pro Website ist im Preis enthalten. Falls Sie eine spezielle Domain (z.B. .com, .eu) wünschen, klären wir die Mehrkosten vorab.",
   },
   {
-    q: "Bekomme ich eine ordentliche Rechnung?",
-    a: "Ja. Stripe stellt automatisch eine MwSt.-konforme Rechnung pro Monat aus, die du im Kunden­portal als PDF herunterladen kannst.",
+    question: "Kann ich später wechseln?",
+    answer:
+      "Ja. Ein Upgrade vom Starter ins Business- oder Premium-Paket ist jederzeit möglich. Wir verrechnen nur den Aufpreis.",
   },
   {
-    q: "Kann ich auch über die Webseite testen, bevor ich bezahle?",
-    a: "Ja, das ist genau der Demo-Modus: Konto anlegen, Inhalte einpflegen, Vorschau ansehen — komplett kostenlos. Bezahlt wird erst, wenn die Site öffentlich gehen soll.",
+    question: "Was kosten zusätzliche Änderungen?",
+    answer:
+      "Innerhalb der monatlichen Inklusiv-Änderungen: kostenfrei. Darüber hinaus rechnen wir nach Aufwand (typisch 60–90 € pro Stunde) — Sie erhalten vorher immer eine Schätzung.",
   },
 ];
 
-export default async function PricingPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ checkout?: string; error?: string }>;
-}) {
-  const params = await searchParams;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const isLoggedIn = Boolean(user);
-
+export default function PricingPage() {
   return (
-    <main className="flex flex-1 flex-col">
-      <header className="border-border/60 border-b">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" aria-label="Sitalo Webdesign">
-            <SitaloLogo size="md" priority />
-          </Link>
-          <nav className="flex items-center gap-2">
-            {isLoggedIn ? (
-              <Link
-                href="/dashboard"
-                className="bg-primary text-primary-foreground inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition hover:opacity-90"
-              >
-                Zum Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="hover:bg-secondary inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="bg-primary text-primary-foreground inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition hover:opacity-90"
-                >
-                  Kostenlos starten
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
+    <div className="bg-background flex min-h-screen flex-col">
+      <MarketingHeader />
 
-      {/* Hero */}
-      <section className="mx-auto w-full max-w-6xl px-6 pt-16 pb-12 sm:pt-24">
-        <div className="mx-auto max-w-2xl text-center">
-          <span className="border-border bg-secondary text-secondary-foreground mb-6 inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium">
-            Drei Pakete · Monatlich kündbar
-          </span>
-          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            Einfache Preise. Keine versteckten Kosten.
-          </h1>
-          <p className="text-muted-foreground mt-5 text-pretty">
-            Bau deine Website kostenlos im Demo-Modus. Erst wenn du live gehen
-            willst, wählst du ein Paket — und kannst jederzeit wieder kündigen.
-          </p>
-        </div>
+      <main className="flex-1">
+        <Hero />
+        <Packages />
+        <ComparisonTable />
+        <FaqSection />
+        <FinalCta />
+      </main>
 
-        {params.checkout === "cancelled" ? (
-          <p className="text-muted-foreground mx-auto mt-8 max-w-md rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm dark:border-amber-900/40 dark:bg-amber-950/30">
-            Checkout abgebrochen. Du kannst jederzeit erneut versuchen.
-          </p>
-        ) : null}
-        {params.error === "no_subscription" ? (
-          <p className="text-muted-foreground mx-auto mt-8 max-w-md rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm dark:border-amber-900/40 dark:bg-amber-950/30">
-            Du hast noch kein aktives Abo. Bitte wähle zuerst ein Paket.
-          </p>
-        ) : null}
-      </section>
-
-      {/* Plan cards */}
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20">
-        <div className="grid gap-6 md:grid-cols-3">
-          {PLANS.map((plan) => (
-            <div
-              key={plan.id}
-              className={cn(
-                "border-border bg-background relative flex flex-col rounded-2xl border p-8 shadow-sm",
-                plan.highlight && "ring-primary border-primary ring-2",
-              )}
-            >
-              {plan.highlight ? (
-                <span className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase">
-                  Beliebteste Wahl
-                </span>
-              ) : null}
-              <h2 className="text-2xl font-semibold tracking-tight">
-                {plan.name}
-              </h2>
-              <p className="text-muted-foreground mt-2 text-sm text-pretty">
-                {plan.tagline}
-              </p>
-              <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-4xl font-semibold tracking-tight">
-                  {plan.price_eur_per_month}&nbsp;€
-                </span>
-                <span className="text-muted-foreground text-sm">/ Monat</span>
-              </div>
-              <p className="text-muted-foreground mt-1 text-xs">
-                zzgl. MwSt. · monatlich kündbar
-              </p>
-
-              <ul className="mt-8 flex flex-1 flex-col gap-3 text-sm">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2">
-                    <Check className="text-primary mt-0.5 h-4 w-4 shrink-0" />
-                    <span className="text-pretty">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-8">
-                {!isPlanBuyable(plan.id) ? (
-                  <div className="space-y-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                      disabled
-                    >
-                      Bald verfügbar
-                    </Button>
-                    <p className="text-muted-foreground text-center text-xs">
-                      Kostenlos testen geht jetzt — Bezahlung sobald wir live
-                      schalten.
-                    </p>
-                  </div>
-                ) : isLoggedIn ? (
-                  <CheckoutButton
-                    plan={plan.id}
-                    label={plan.highlight ? "Jetzt buchen" : "Plan wählen"}
-                    variant={plan.highlight ? "default" : "outline"}
-                  />
-                ) : (
-                  <Button
-                    asChild
-                    variant={plan.highlight ? "default" : "outline"}
-                    className="w-full"
-                  >
-                    <Link href="/register">Konto anlegen</Link>
-                  </Button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Comparison table */}
-      <section className="bg-secondary/30 border-border/60 border-y">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-              Vergleich
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Was steckt in welchem Paket?
-            </h2>
-            <p className="text-muted-foreground mt-4 text-pretty">
-              Genauer Funktionsvergleich. Alle Pakete enthalten die Basis — Pro
-              und Premium ergänzen Recruiting, eigene Domain und Service.
-            </p>
-          </div>
-
-          <div className="mt-12 overflow-x-auto">
-            <table className="border-border bg-background min-w-full overflow-hidden rounded-2xl border text-sm">
-              <thead className="bg-muted/50 text-left text-xs tracking-wide uppercase">
-                <tr>
-                  <th className="text-muted-foreground px-5 py-4 font-medium">
-                    Funktion
-                  </th>
-                  {PLANS.map((p) => (
-                    <th
-                      key={p.id}
-                      className={cn(
-                        "text-foreground px-5 py-4 text-center text-sm font-semibold",
-                        p.highlight && "bg-primary/5",
-                      )}
-                    >
-                      <div>{p.name}</div>
-                      <div className="text-muted-foreground mt-1 text-xs font-normal">
-                        {p.price_eur_per_month}&nbsp;€ / Monat
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-border divide-y">
-                {comparison.map((row) => (
-                  <tr key={row.feature}>
-                    <td className="px-5 py-3 font-medium">{row.feature}</td>
-                    {(["basic", "pro", "premium"] as PlanId[]).map((id) => {
-                      const plan = PLANS.find((p) => p.id === id);
-                      return (
-                        <td
-                          key={id}
-                          className={cn(
-                            "px-5 py-3 text-center",
-                            plan?.highlight && "bg-primary/5",
-                          )}
-                        >
-                          <CompCell value={row[id]} />
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot className="bg-muted/30">
-                <tr>
-                  <td className="text-muted-foreground px-5 py-4 text-xs">
-                    Buchen
-                  </td>
-                  {PLANS.map((plan) => (
-                    <td
-                      key={plan.id}
-                      className={cn(
-                        "px-5 py-4 text-center",
-                        plan.highlight && "bg-primary/5",
-                      )}
-                    >
-                      {isLoggedIn ? (
-                        <CheckoutButton
-                          plan={plan.id}
-                          label="Wählen"
-                          variant={plan.highlight ? "default" : "outline"}
-                        />
-                      ) : (
-                        <Button
-                          asChild
-                          size="sm"
-                          variant={plan.highlight ? "default" : "outline"}
-                        >
-                          <Link href="/register">Konto anlegen</Link>
-                        </Button>
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* Promise / value strip */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <div className="grid gap-6 md:grid-cols-3">
-          <PromiseCard
-            title="Keine Einrichtungs­gebühr"
-            body="Konto anlegen, Inhalte pflegen, veröffentlichen. Wir berechnen keinen einmaligen Setup-Preis — nur den monatlichen Beitrag deines Pakets."
-          />
-          <PromiseCard
-            title="DSGVO & EU-Hosting"
-            body="Alles auf EU-Servern (Vercel + Supabase Frankfurt). Pflichtseiten Impressum & Datenschutz sind eingebaut, du füllst nur deine Daten ein."
-          />
-          <PromiseCard
-            title="Monatlich kündbar"
-            body="Keine Mindestlaufzeit, keine versteckten Klauseln. Kündigen direkt im Stripe-Kundenportal — ohne Mail, ohne Anruf."
-          />
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="bg-secondary/30 border-border/60 border-y">
-        <div className="mx-auto w-full max-w-3xl px-6 py-20">
-          <div className="text-center">
-            <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-              Preise — Details
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Häufige Fragen zur Abrechnung.
-            </h2>
-          </div>
-          <div className="bg-background mt-12 divide-y rounded-2xl border">
-            {pricingFaq.map(({ q, a }) => (
-              <details
-                key={q}
-                className="group p-6 [&_summary::-webkit-details-marker]:hidden"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
-                  <span>{q}</span>
-                  <span className="text-muted-foreground transition-transform group-open:rotate-90">
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                </summary>
-                <p className="text-muted-foreground mt-3 text-sm text-pretty">
-                  {a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="mx-auto w-full max-w-4xl px-6 py-20 text-center">
-        <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-          Erst bauen, dann zahlen.
-        </h2>
-        <p className="text-muted-foreground mx-auto mt-4 max-w-xl text-pretty">
-          Leg ein kostenloses Konto an und bau im Demo-Modus deine Website. Du
-          kannst sie jederzeit live schalten — und genauso wieder offline
-          nehmen.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          {isLoggedIn ? (
-            <Button asChild size="lg">
-              <Link href="/dashboard">Zum Dashboard</Link>
-            </Button>
-          ) : (
-            <>
-              <Button asChild size="lg">
-                <Link href="/register">Kostenlos starten</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/login">Ich habe schon ein Konto</Link>
-              </Button>
-            </>
-          )}
-        </div>
-      </section>
-
-      <footer className="border-border border-t">
-        <div className="text-muted-foreground mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs">
-          <span>© {new Date().getFullYear()} Sitalo</span>
-          <Link href="/" className="hover:text-foreground">
-            Zurück zur Startseite
-          </Link>
-        </div>
-      </footer>
-    </main>
+      <MarketingFooter />
+      <MarketingWhatsapp />
+    </div>
   );
 }
 
-function CompCell({ value }: { value: string | boolean }) {
-  if (value === true) {
-    return (
-      <span className="inline-flex items-center justify-center text-emerald-700 dark:text-emerald-300">
-        <Check className="h-4 w-4" />
-        <span className="sr-only">Enthalten</span>
-      </span>
-    );
-  }
-  if (value === false) {
-    return (
-      <span className="text-muted-foreground inline-flex items-center justify-center">
-        <Minus className="h-4 w-4" />
-        <span className="sr-only">Nicht enthalten</span>
-      </span>
-    );
-  }
-  return <span className="font-medium">{value}</span>;
+function Hero() {
+  return (
+    <section className="border-border/40 border-b py-20 sm:py-24">
+      <div className="mx-auto w-full max-w-4xl px-6 text-center">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]">
+          Preise
+        </p>
+        <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.02em] sm:text-5xl">
+          Klare Pakete. Faire Preise.
+        </h1>
+        <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
+          Einmalige Erstellung + monatliche Betreuung. Hosting, Updates und
+          kleinere Änderungen sind enthalten — keine versteckten Kosten.
+        </p>
+      </div>
+    </section>
+  );
 }
 
-function PromiseCard({ title, body }: { title: string; body: string }) {
+function Packages() {
   return (
-    <div className="border-border bg-background rounded-2xl border p-6">
-      <h3 className="text-base font-semibold tracking-tight">{title}</h3>
-      <p className="text-muted-foreground mt-2 text-sm text-pretty">{body}</p>
+    <section className="border-border/40 border-b py-20 sm:py-24">
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <ul className="grid gap-6 lg:grid-cols-3">
+          {PACKAGES.map((p) => (
+            <li
+              key={p.name}
+              className={`flex flex-col rounded-2xl border p-7 shadow-sm sm:p-8 ${
+                p.highlight
+                  ? "bg-foreground text-background border-foreground"
+                  : "bg-card"
+              }`}
+            >
+              <div>
+                <p
+                  className={`text-[10px] font-medium uppercase tracking-[0.18em] ${
+                    p.highlight ? "text-background/70" : "text-muted-foreground"
+                  }`}
+                >
+                  {p.badge}
+                </p>
+                <h2 className="mt-1 text-xl font-semibold tracking-tight">
+                  {p.name}
+                </h2>
+              </div>
+              <div className="mt-6">
+                <p className="text-3xl font-semibold tracking-tight">
+                  ab {p.setup}
+                </p>
+                <p
+                  className={`text-sm ${
+                    p.highlight ? "text-background/70" : "text-muted-foreground"
+                  }`}
+                >
+                  einmalig
+                </p>
+                <p className="mt-3 text-base font-medium">
+                  + ab {p.monthly}
+                  <span
+                    className={`ml-1 text-sm font-normal ${
+                      p.highlight ? "text-background/70" : "text-muted-foreground"
+                    }`}
+                  >
+                    / Monat
+                  </span>
+                </p>
+              </div>
+              <p
+                className={`mt-5 text-sm leading-relaxed ${
+                  p.highlight ? "text-background/85" : "text-muted-foreground"
+                }`}
+              >
+                {p.description}
+              </p>
+              <ul className="mt-6 space-y-2.5 text-sm">
+                {p.bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2.5">
+                    <Check
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${
+                        p.highlight ? "text-background" : "text-emerald-600"
+                      }`}
+                    />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto pt-7">
+                <Link
+                  href="/anfrage"
+                  className={`inline-flex h-11 w-full items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight transition-colors ${
+                    p.highlight
+                      ? "bg-background text-foreground hover:bg-background/90"
+                      : "bg-foreground text-background hover:bg-foreground/90"
+                  }`}
+                >
+                  Paket anfragen
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p className="text-muted-foreground mx-auto mt-8 max-w-2xl text-center text-sm">
+          Preise zzgl. MwSt. · Monatliche Betreuung jederzeit zum Monatsende
+          kündbar · Mindestlaufzeit 6 Monate
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function ComparisonTable() {
+  return (
+    <section className="bg-secondary/20 border-border/40 border-b py-20 sm:py-24">
+      <div className="mx-auto w-full max-w-5xl px-6">
+        <header className="mx-auto max-w-2xl text-center">
+          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
+            Im Detail
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
+            Was ist in welchem Paket dabei?
+          </h2>
+        </header>
+
+        <div className="bg-card mt-12 overflow-hidden rounded-2xl border shadow-sm">
+          <div className="bg-muted/40 grid grid-cols-[1.4fr_repeat(3,1fr)] border-b">
+            <div className="p-4 text-sm font-medium">Funktion</div>
+            <ColHeader label="Starter" />
+            <ColHeader label="Business" highlight />
+            <ColHeader label="Premium" />
+          </div>
+          <div className="divide-y">
+            {COMPARISON_ROWS.map((row) => (
+              <div
+                key={row.feature}
+                className="grid grid-cols-[1.4fr_repeat(3,1fr)] text-sm"
+              >
+                <div className="text-foreground/85 p-4 font-medium">
+                  {row.feature}
+                </div>
+                <Cell value={row.values[0]} />
+                <Cell value={row.values[1]} highlight />
+                <Cell value={row.values[2]} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ColHeader({
+  label,
+  highlight,
+}: {
+  label: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`border-l p-4 text-center ${
+        highlight ? "bg-foreground/[0.02]" : ""
+      }`}
+    >
+      <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.18em]">
+        {label}
+      </span>
     </div>
+  );
+}
+
+function Cell({
+  value,
+  highlight,
+}: {
+  value: string | boolean;
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`border-l p-4 text-center text-sm ${
+        highlight ? "bg-foreground/[0.02] font-medium" : ""
+      }`}
+    >
+      {value === true ? (
+        <Check className="text-emerald-600 mx-auto h-4 w-4" />
+      ) : value === false ? (
+        <Minus className="text-muted-foreground/40 mx-auto h-4 w-4" />
+      ) : (
+        <span>{value}</span>
+      )}
+    </div>
+  );
+}
+
+function FaqSection() {
+  return (
+    <section className="border-border/40 border-b py-20 sm:py-24">
+      <div className="mx-auto w-full max-w-3xl px-6">
+        <header className="text-center">
+          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
+            FAQ
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
+            Fragen zu den Paketen
+          </h2>
+        </header>
+        <dl className="mt-10 space-y-3">
+          {FAQ.map((item) => (
+            <details
+              key={item.question}
+              className="bg-card border-border/60 group rounded-xl border p-5 open:shadow-sm"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
+                {item.question}
+                <span className="text-muted-foreground transition-transform group-open:rotate-180">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M6 9l6 6 6-6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </summary>
+              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed text-pretty">
+                {item.answer}
+              </p>
+            </details>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
+function FinalCta() {
+  return (
+    <section className="bg-foreground text-background py-20 sm:py-24">
+      <div className="mx-auto w-full max-w-3xl px-6 text-center">
+        <h2 className="text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
+          Welches Paket passt zu Ihnen?
+        </h2>
+        <p className="text-background/70 mx-auto mt-5 max-w-xl text-pretty text-lg">
+          Schicken Sie uns eine kurze Anfrage — wir empfehlen das passende Paket
+          und nennen Ihnen einen verbindlichen Preis.
+        </p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link
+            href="/anfrage"
+            className="bg-background text-foreground hover:bg-background/90 inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+          >
+            Website anfragen
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+          <Link
+            href="/login"
+            className="text-background/80 hover:text-background inline-flex h-12 items-center justify-center px-4 text-sm"
+          >
+            Bestehender Kunde? Einloggen
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }

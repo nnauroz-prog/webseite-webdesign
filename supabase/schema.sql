@@ -1242,6 +1242,70 @@ create policy "subscriptions: self or admin can read"
   using (user_id = auth.uid() or public.is_admin());
 
 -- ============================================================================
+-- 13. inquiries  (direct requests to Sitalo from the marketing site)
+--     Distinct from `leads`, which belong to a customer's published site.
+--     Every row here is a sales lead for OUR agency, captured by the
+--     `/anfrage` form. Anyone may insert (anon-callable form). Only
+--     admins may read / update.
+-- ============================================================================
+create table if not exists public.inquiries (
+  id              uuid        primary key default gen_random_uuid(),
+  name            text        not null,
+  company         text,
+  industry        text,
+  phone           text,
+  email           text        not null,
+  has_website     boolean     not null default false,
+  current_website text,
+  needs           text[]      not null default array[]::text[],
+  timeframe       text,
+  budget          text,
+  message         text,
+  status          text        not null default 'new'
+                              check (status in ('new', 'contacted', 'won', 'lost')),
+  source          text        not null default 'web',
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now()
+);
+
+create index if not exists inquiries_status_idx
+  on public.inquiries (status, created_at desc);
+
+drop trigger if exists inquiries_set_updated_at on public.inquiries;
+create trigger inquiries_set_updated_at
+  before update on public.inquiries
+  for each row execute function public.set_updated_at();
+
+alter table public.inquiries enable row level security;
+alter table public.inquiries force row level security;
+
+drop policy if exists "inquiries: anyone can submit" on public.inquiries;
+drop policy if exists "inquiries: admin can read"    on public.inquiries;
+drop policy if exists "inquiries: admin can update"  on public.inquiries;
+drop policy if exists "inquiries: admin can delete"  on public.inquiries;
+
+create policy "inquiries: anyone can submit"
+  on public.inquiries for insert
+  to anon, authenticated
+  with check (true);
+
+create policy "inquiries: admin can read"
+  on public.inquiries for select
+  to authenticated
+  using (public.is_admin());
+
+create policy "inquiries: admin can update"
+  on public.inquiries for update
+  to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+create policy "inquiries: admin can delete"
+  on public.inquiries for delete
+  to authenticated
+  using (public.is_admin());
+
+-- ============================================================================
 --  Done.
 --  Bootstrap your first admin (replace the email):
 --    insert into public.admin_roles (user_id, granted_by)
