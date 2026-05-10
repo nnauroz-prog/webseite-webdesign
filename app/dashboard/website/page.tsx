@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { LivePreview } from "@/components/dashboard/live-preview";
 import { AboutForm } from "@/components/dashboard/website/about-form";
 import { FormsToggleForm } from "@/components/dashboard/website/forms-toggle-form";
 import { HeroForm } from "@/components/dashboard/website/hero-form";
@@ -26,26 +27,34 @@ export default async function WebsitePage() {
   const templates = (templatesRows as TemplateRow[] | null) ?? [];
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6 px-6 py-8">
-      <div>
+    <div className="mx-auto w-full max-w-7xl px-6 py-8">
+      <div className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">
           Website-Inhalte
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Jede Sektion wird einzeln gespeichert.
+          Links bearbeiten, rechts live prüfen. Jede Sektion wird einzeln
+          gespeichert.
         </p>
       </div>
 
-      <PublishForm website={website} />
-      <TemplateForm website={website} templates={templates} />
-      <MetaForm website={website} />
-      <LogoForm website={website} />
-      <HeroForm website={website} />
-      <AboutForm website={website} />
-      <SeoForm website={website} />
-      <LegalForm website={website} />
-      <FormsToggleForm website={website} />
-      <SlugForm website={website} />
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <div className="space-y-6">
+          <PublishForm website={website} />
+          <TemplateForm website={website} templates={templates} />
+          <MetaForm website={website} />
+          <LogoForm website={website} />
+          <HeroForm website={website} />
+          <AboutForm website={website} />
+          <SeoForm website={website} />
+          <LegalForm website={website} />
+          <FormsToggleForm website={website} />
+          <SlugForm website={website} />
+        </div>
+        <div className="hidden lg:block">
+          <LivePreview slug={website.slug} />
+        </div>
+      </div>
     </div>
   );
 }

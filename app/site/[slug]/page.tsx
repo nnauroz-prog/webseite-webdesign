@@ -13,6 +13,7 @@ import { SiteHeroSplit } from "@/components/site/site-hero-split";
 import { SiteServices } from "@/components/site/site-services";
 import { SiteTeam } from "@/components/site/site-team";
 import { getPublicSite } from "@/lib/site-data";
+import { buildLocalBusinessJsonLd } from "@/lib/site-jsonld";
 import { getSiteUrl } from "@/lib/site-url";
 import { getTemplateMeta, resolveTemplateKey } from "@/lib/templates";
 
@@ -78,12 +79,29 @@ export default async function PublicSitePage({
   const { website, services, team, gallery, template, isPreview } = data;
   const templateKey = resolveTemplateKey(template);
   const meta = getTemplateMeta(templateKey);
+  const canonicalUrl = `${getSiteUrl()}/site/${website.slug}`;
+  const jsonLd = buildLocalBusinessJsonLd({
+    website,
+    services,
+    team,
+    template,
+    url: canonicalUrl,
+  });
 
   return (
     <div
       data-template={templateKey}
       className="bg-background flex min-h-screen flex-1 flex-col"
     >
+      {/* Structured data for Google. Only emitted for active sites — preview
+          renders should not be indexed. */}
+      {!isPreview && (
+        <script
+          type="application/ld+json"
+          // JSON.stringify is safe — no user-content concatenation.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       {isPreview && <PreviewBanner />}
       <SiteHeader website={website} />
       <main className="flex-1">
