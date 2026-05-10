@@ -5,6 +5,7 @@ import { Ga4Script } from "@/components/site/ga4-script";
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { SiteAbout } from "@/components/site/site-about";
 import { SiteApplication } from "@/components/site/site-application";
+import { SiteBooking } from "@/components/site/site-booking";
 import { SiteContact } from "@/components/site/site-contact";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteGallery } from "@/components/site/site-gallery";
@@ -143,6 +144,7 @@ export default async function PublicSitePage({
         <SiteAbout website={website} />
         <SiteTeam team={team} />
         <SiteGallery images={gallery} />
+        <SiteBooking website={website} services={services} />
         <SiteContact website={website} />
         <SiteApplication website={website} />
       </main>

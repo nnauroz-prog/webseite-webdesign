@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   Briefcase,
+  CalendarCheck,
   CheckCircle2,
   Image as ImageIcon,
   Inbox,
@@ -76,8 +77,10 @@ export default async function DashboardHomePage() {
     { count: galleryCount },
     { count: leadCount },
     { count: applicationCount },
+    { count: bookingCount },
     { count: newLeadCount },
     { count: newApplicationCount },
+    { count: newBookingCount },
     { data: subRow },
   ] = await Promise.all([
     supabase
@@ -101,12 +104,21 @@ export default async function DashboardHomePage() {
       .select("id", { count: "exact", head: true })
       .eq("website_id", website.id),
     supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .eq("website_id", website.id),
+    supabase
       .from("leads")
       .select("id", { count: "exact", head: true })
       .eq("website_id", website.id)
       .eq("status", "new"),
     supabase
       .from("applications")
+      .select("id", { count: "exact", head: true })
+      .eq("website_id", website.id)
+      .eq("status", "new"),
+    supabase
+      .from("bookings")
       .select("id", { count: "exact", head: true })
       .eq("website_id", website.id)
       .eq("status", "new"),
@@ -270,7 +282,7 @@ export default async function DashboardHomePage() {
       </Card>
 
       {/* Stat cards — color-coded per section */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <StatCard
           label="Leistungen"
           value={serviceCount ?? 0}
@@ -307,6 +319,14 @@ export default async function DashboardHomePage() {
           href="/dashboard/applications"
           icon={Briefcase}
           tone="orange"
+        />
+        <StatCard
+          label="Termine"
+          value={bookingCount ?? 0}
+          newCount={newBookingCount ?? 0}
+          href="/dashboard/bookings"
+          icon={CalendarCheck}
+          tone="rose"
         />
       </div>
     </div>
@@ -346,6 +366,12 @@ const TONE_CLASSES: Record<
     text: "text-orange-600 dark:text-orange-400",
     ring: "group-hover:ring-orange-500/30",
     badge: "bg-orange-500 text-white",
+  },
+  rose: {
+    bg: "bg-rose-500/10",
+    text: "text-rose-600 dark:text-rose-400",
+    ring: "group-hover:ring-rose-500/30",
+    badge: "bg-rose-500 text-white",
   },
 };
 

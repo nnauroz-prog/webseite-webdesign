@@ -103,6 +103,7 @@ export const legalSchema = z.object({
 export const formsToggleSchema = z.object({
   contact_form_enabled: z.coerce.boolean(),
   application_form_enabled: z.coerce.boolean(),
+  booking_form_enabled: z.coerce.boolean(),
 });
 
 export const publishSchema = z.object({

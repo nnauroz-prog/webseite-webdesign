@@ -37,6 +37,12 @@ export function FormsToggleForm({ website }: { website: WebsiteRow }) {
           description="Besucher können sich auf offene Stellen bewerben."
           defaultChecked={website.application_form_enabled}
         />
+        <ToggleRow
+          name="booking_form_enabled"
+          title="Online-Termin-Buchung"
+          description="Besucher können online einen Termin anfragen — mit Datum, Uhrzeit und gewünschter Leistung."
+          defaultChecked={website.booking_form_enabled}
+        />
       </SectionCard>
     </form>
   );

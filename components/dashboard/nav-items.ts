@@ -1,5 +1,6 @@
 import {
   Briefcase,
+  CalendarCheck,
   CreditCard,
   FileText,
   Globe,
@@ -68,6 +69,12 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/dashboard/applications",
     icon: Briefcase,
     tone: "text-orange-500",
+  },
+  {
+    label: "Termine",
+    href: "/dashboard/bookings",
+    icon: CalendarCheck,
+    tone: "text-rose-500",
   },
   {
     label: "SEO",

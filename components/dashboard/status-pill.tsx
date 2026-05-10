@@ -10,6 +10,14 @@ const PALETTE: Record<string, string> = {
   accepted:
     "bg-emerald-100 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-100",
   rejected: "bg-rose-100 text-rose-900 dark:bg-rose-950/60 dark:text-rose-100",
+  // Booking-specific statuses
+  confirmed:
+    "bg-emerald-100 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-100",
+  declined: "bg-rose-100 text-rose-900 dark:bg-rose-950/60 dark:text-rose-100",
+  cancelled:
+    "bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200",
+  completed:
+    "bg-emerald-100 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-100",
 };
 
 export function StatusPill({
