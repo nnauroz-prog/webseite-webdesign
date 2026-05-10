@@ -221,3 +221,27 @@
   --muted-foreground: oklch(0.45 0.02 350);
   --ring: oklch(0.6 0.12 0);
 }
+
+[data-template="anwalt"] {
+  --primary: oklch(0.27 0.05 260);
+  --primary-foreground: oklch(0.985 0 0);
+  --accent: oklch(0.93 0.03 260);
+  --accent-foreground: oklch(0.3 0.06 260);
+  --secondary: oklch(0.96 0.012 260);
+  --secondary-foreground: oklch(0.3 0.06 260);
+  --muted: oklch(0.97 0.008 260);
+  --muted-foreground: oklch(0.45 0.02 260);
+  --ring: oklch(0.45 0.06 260);
+}
+
+[data-template="restaurant"] {
+  --primary: oklch(0.45 0.15 35);
+  --primary-foreground: oklch(0.985 0.01 80);
+  --accent: oklch(0.92 0.06 60);
+  --accent-foreground: oklch(0.3 0.08 35);
+  --secondary: oklch(0.95 0.025 60);
+  --secondary-foreground: oklch(0.3 0.08 35);
+  --muted: oklch(0.96 0.015 60);
+  --muted-foreground: oklch(0.45 0.02 50);
+  --ring: oklch(0.55 0.15 35);
+}

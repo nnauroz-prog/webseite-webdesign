@@ -100,6 +100,8 @@ const SCHEMA_TYPE: Partial<
   kosmetik: "BeautySalon",
   reinigung: "ProfessionalService",
   schreiner: "ProfessionalService",
+  anwalt: "LegalService",
+  restaurant: "Restaurant",
 };
 
 function parseAddress(raw: string | null): unknown {

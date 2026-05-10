@@ -113,6 +113,17 @@ export const slugUpdateSchema = z.object({
   slug: slugSchema,
 });
 
+/** Hex color override. Empty string is normalized to null in the action. */
+export const brandColorSchema = z.object({
+  brand_primary_color: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^(#[0-9a-f]{6})?$/, "Format: #RRGGBB (z.B. #2a4d3e).")
+    .optional()
+    .or(z.literal("")),
+});
+
 /**
  * Custom-domain validation. Accepts only lowercase apex or sub-domains
  * with at least one dot (so "localhost" or single-label hosts are

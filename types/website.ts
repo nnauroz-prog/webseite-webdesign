@@ -34,6 +34,7 @@ export type WebsiteRow = {
   analytics_ga4_id: string | null;
   hero_image_url: string | null;
   about_image_url: string | null;
+  brand_primary_color: string | null;
   custom_domain: string | null;
   custom_domain_verified_at: string | null;
   imprint_text: string | null;

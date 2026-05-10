@@ -17,6 +17,7 @@ import { resolveTemplateKey } from "@/lib/templates";
 import {
   aboutSchema,
   createWebsiteSchema,
+  brandColorSchema,
   customDomainSchema,
   formsToggleSchema,
   heroSchema,
@@ -664,6 +665,34 @@ export async function uploadAboutImageAction(
 
 export async function removeAboutImageAction(): Promise<ActionState> {
   return removeSiteImage("about_image_url", "Über-uns-Bild entfernt.");
+}
+
+// ---------------------------------------------------------------------------
+//  Brand color override
+// ---------------------------------------------------------------------------
+export async function updateBrandColorAction(
+  _prev: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = brandColorSchema.safeParse({
+    brand_primary_color: formData.get("brand_primary_color"),
+  });
+  if (!parsed.success) {
+    return fail("Bitte prüfe die Farbe.", flattenZodErrors(parsed.error));
+  }
+
+  const value = parsed.data.brand_primary_color;
+  const next = value && value.length > 0 ? value : null;
+
+  const { supabase, website } = await requireCurrentWebsite();
+  const { error } = await supabase
+    .from("websites")
+    .update({ brand_primary_color: next })
+    .eq("id", website.id);
+  if (error) return fail(error.message);
+
+  revalidatePath(`/site/${website.slug}`, "layout");
+  return ok(next ? "Farbe gespeichert." : "Auf Template-Farbe zurückgesetzt.");
 }
 
 // ---------------------------------------------------------------------------

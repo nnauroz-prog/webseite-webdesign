@@ -12,6 +12,7 @@ import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 
 import { FieldError, FormStatus } from "@/components/dashboard/form-status";
 import { SubmitButton } from "@/components/dashboard/submit-button";
+import { TemplatePreview } from "@/components/dashboard/template-preview";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,6 +65,14 @@ const SAMPLE_FOR_KEY: Record<
   kosmetik: {
     headline: "Auszeit für Sie und Ihre Haut",
     bullet: "5 Behandlungen, 1 Kosmetikerin",
+  },
+  anwalt: {
+    headline: "Vertrauen. Diskretion. Klarheit.",
+    bullet: "5 Rechtsgebiete, 2 Anwält:innen, vertrauliche Erstberatung",
+  },
+  restaurant: {
+    headline: "Frische Küche. Herzlicher Service.",
+    bullet: "Tageskarte, Reservierungs-Hinweis, Öffnungszeiten",
   },
 };
 
@@ -244,7 +253,7 @@ function StepBranche({
           passend ein.
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {ALL_TEMPLATE_KEYS.map((key) => {
           const meta = getTemplateMeta(key);
           const sample = SAMPLE_FOR_KEY[key];
@@ -255,17 +264,20 @@ function StepBranche({
               type="button"
               onClick={() => setSelectedKey(key)}
               className={cn(
-                "border-border bg-background hover:border-foreground/40 group relative flex flex-col rounded-xl border p-4 text-left transition-colors",
-                active && "ring-primary border-primary ring-2",
+                "group relative flex flex-col gap-3 rounded-xl border p-3 text-left transition-all",
+                active
+                  ? "ring-primary border-primary bg-primary/5 ring-2"
+                  : "border-border bg-card hover:border-foreground/30 hover:shadow-sm",
               )}
-              data-template={key}
             >
-              <div className="bg-primary mb-3 h-10 w-full rounded-md" />
-              <div className="text-foreground text-sm font-semibold">
-                {meta.label}
-              </div>
-              <div className="text-muted-foreground mt-1 line-clamp-2 text-xs text-pretty">
-                {sample.bullet}
+              <TemplatePreview templateKey={key} hero={meta.hero} />
+              <div>
+                <div className="text-foreground text-sm font-semibold">
+                  {meta.label}
+                </div>
+                <div className="text-muted-foreground mt-0.5 line-clamp-2 text-xs text-pretty">
+                  {sample.bullet}
+                </div>
               </div>
               {active ? (
                 <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold">
