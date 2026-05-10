@@ -171,6 +171,11 @@ alter table public.websites
     check (brand_primary_color is null or
            brand_primary_color ~* '^#[0-9a-f]{6}$');
 
+-- Online booking flag. Mirrors contact_form_enabled / application_form_enabled
+-- so the public site only renders the section when the customer flips it on.
+alter table public.websites
+  add column if not exists booking_form_enabled boolean not null default false;
+
 -- Custom-domain support. Customers can attach their own .de/.com/etc.
 -- domain to point at their site. The verification timestamp is set
 -- once we've confirmed DNS resolves to Vercel and the domain has been
@@ -301,6 +306,35 @@ create trigger applications_set_updated_at
   for each row execute function public.set_updated_at();
 
 -- ----------------------------------------------------------------------------
+-- 10b. bookings  (online appointment requests)
+-- ----------------------------------------------------------------------------
+create table if not exists public.bookings (
+  id              uuid        primary key default gen_random_uuid(),
+  website_id      uuid        not null references public.websites(id) on delete cascade,
+  -- Optional service link — when present we surface it in the dashboard list.
+  service_id      uuid        references public.services(id) on delete set null,
+  service_title   text,                  -- snapshot at booking time
+  customer_name   text        not null,
+  customer_email  text        not null,
+  customer_phone  text,
+  preferred_date  date        not null,
+  preferred_time  time,                  -- nullable: customer may leave time open
+  message         text,
+  status          text        not null default 'new'
+                              check (status in ('new', 'confirmed', 'declined', 'cancelled', 'completed')),
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now()
+);
+
+create index if not exists bookings_website_id_status_idx
+  on public.bookings (website_id, status, preferred_date desc, created_at desc);
+
+drop trigger if exists bookings_set_updated_at on public.bookings;
+create trigger bookings_set_updated_at
+  before update on public.bookings
+  for each row execute function public.set_updated_at();
+
+-- ----------------------------------------------------------------------------
 -- 11. Profile auto-create on auth.users insert
 -- ----------------------------------------------------------------------------
 create or replace function public.handle_new_user()
@@ -340,6 +374,7 @@ alter table public.team_members   enable row level security;
 alter table public.gallery_images enable row level security;
 alter table public.leads          enable row level security;
 alter table public.applications   enable row level security;
+alter table public.bookings       enable row level security;
 
 alter table public.profiles       force row level security;
 alter table public.admin_roles    force row level security;
@@ -349,6 +384,7 @@ alter table public.team_members   force row level security;
 alter table public.gallery_images force row level security;
 alter table public.leads          force row level security;
 alter table public.applications   force row level security;
+alter table public.bookings       force row level security;
 
 -- ----------------------------------------------------------------------------
 --  profiles policies
@@ -702,6 +738,55 @@ create policy "applications: owner or admin update"
 
 create policy "applications: admin can delete"
   on public.applications for delete
+  to authenticated
+  using (public.is_admin());
+
+-- ----- bookings -----
+drop policy if exists "bookings: public can submit"      on public.bookings;
+drop policy if exists "bookings: owner or admin read"    on public.bookings;
+drop policy if exists "bookings: owner or admin update"  on public.bookings;
+drop policy if exists "bookings: admin can delete"       on public.bookings;
+
+create policy "bookings: public can submit"
+  on public.bookings for insert
+  to anon, authenticated
+  with check (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id
+        and w.is_active = true
+        and w.booking_form_enabled = true
+    )
+  );
+
+create policy "bookings: owner or admin read"
+  on public.bookings for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  );
+
+create policy "bookings: owner or admin update"
+  on public.bookings for update
+  to authenticated
+  using (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.websites w
+      where w.id = website_id and (w.user_id = auth.uid() or public.is_admin())
+    )
+  );
+
+create policy "bookings: admin can delete"
+  on public.bookings for delete
   to authenticated
   using (public.is_admin());
 
