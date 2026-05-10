@@ -6,6 +6,13 @@ export type ActionState = {
   fieldErrors?: Record<string, string>;
 };
 
+/**
+ * Alias kept around because the auth forms historically imported
+ * AuthActionState from the auth action file. We can't export types from
+ * a "use server" module under Next.js 16 / Turbopack, so it lives here.
+ */
+export type AuthActionState = ActionState;
+
 export const idleState: ActionState = { status: "idle" };
 
 export function fail(

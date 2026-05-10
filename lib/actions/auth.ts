@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import type { AuthActionState } from "@/lib/actions/shared";
 import { createClient } from "@/lib/supabase/server";
 import { getSiteUrl } from "@/lib/site-url";
 import {
@@ -11,14 +12,6 @@ import {
   registerSchema,
   updatePasswordSchema,
 } from "@/lib/validations/auth";
-
-export type AuthActionState = {
-  status: "idle" | "success" | "error";
-  message?: string;
-  fieldErrors?: Record<string, string>;
-};
-
-const idle: AuthActionState = { status: "idle" };
 
 function fail(
   message: string,

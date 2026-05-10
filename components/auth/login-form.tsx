@@ -7,7 +7,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginAction, type AuthActionState } from "@/lib/actions/auth";
+import { loginAction } from "@/lib/actions/auth";
+import type { AuthActionState } from "@/lib/actions/shared";
 
 const initialState: AuthActionState = { status: "idle" };
 
