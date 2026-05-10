@@ -2,34 +2,45 @@ import Image from "next/image";
 
 import type { TeamMemberRow } from "@/types/website";
 
+/**
+ * Team — large portraits on a generous grid, refined card chrome,
+ * subtle hover-zoom on photos. Apple "Designed by..." gallery vibe.
+ */
 export function SiteTeam({ team }: { team: TeamMemberRow[] }) {
   if (team.length === 0) return null;
 
   return (
-    <section id="team" className="border-border/60 border-b py-20 sm:py-24">
+    <section
+      id="team"
+      className="border-border/60 border-b py-28 sm:py-36"
+    >
       <div className="mx-auto w-full max-w-6xl px-6">
-        <div className="max-w-2xl">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <header className="mx-auto max-w-2xl text-center">
+          <p className="text-muted-foreground text-[11px] font-medium tracking-[0.2em] uppercase">
             Unser Team
-          </h2>
-          <p className="text-muted-foreground mt-3">
-            Die Menschen hinter unserer Arbeit.
           </p>
-        </div>
-        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 className="mt-3 text-4xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-5xl">
+            Die Menschen hinter unserer Arbeit
+          </h2>
+          <p className="text-muted-foreground mx-auto mt-5 max-w-xl text-pretty">
+            Wir nehmen uns Zeit. Lernen Sie uns kennen.
+          </p>
+        </header>
+
+        <ul className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {team.map((m) => (
             <li
               key={m.id}
-              className="bg-card overflow-hidden rounded-xl border shadow-sm"
+              className="group flex flex-col"
             >
-              <div className="bg-muted aspect-[4/5] w-full overflow-hidden">
+              <div className="bg-muted relative aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-md ring-1 ring-border/50">
                 {m.image_url ? (
                   <Image
                     src={m.image_url}
                     alt={m.name}
-                    width={480}
-                    height={600}
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     unoptimized
                   />
                 ) : (
@@ -38,18 +49,20 @@ export function SiteTeam({ team }: { team: TeamMemberRow[] }) {
                   </div>
                 )}
               </div>
-              <div className="p-5">
-                <h3 className="text-base font-semibold tracking-tight">
+              <div className="mt-5 px-1">
+                <h3 className="text-lg font-semibold tracking-tight">
                   {m.name}
                 </h3>
-                {m.role && (
-                  <p className="text-muted-foreground mt-1 text-sm">{m.role}</p>
-                )}
-                {m.bio && (
-                  <p className="mt-3 text-sm leading-relaxed whitespace-pre-line">
+                {m.role ? (
+                  <p className="text-muted-foreground mt-0.5 text-sm">
+                    {m.role}
+                  </p>
+                ) : null}
+                {m.bio ? (
+                  <p className="text-foreground/75 mt-3 text-[14px] leading-relaxed whitespace-pre-line">
                     {m.bio}
                   </p>
-                )}
+                ) : null}
               </div>
             </li>
           ))}

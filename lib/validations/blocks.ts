@@ -6,6 +6,10 @@ export const blockTypeSchema = z.enum([
   "testimonials",
   "opening_hours",
   "cta_banner",
+  "map",
+  "video",
+  "stats",
+  "rich_text",
 ]);
 export type BlockType = z.infer<typeof blockTypeSchema>;
 
@@ -71,6 +75,49 @@ export const ctaBannerDataSchema = z.object({
     ),
 });
 
+export const mapDataSchema = z.object({
+  title: trimOptional(120),
+  address: trimNonEmpty(400, "Adresse"),
+});
+
+export const videoDataSchema = z.object({
+  title: trimOptional(120),
+  url: z
+    .string()
+    .trim()
+    .min(1, "URL erforderlich.")
+    .max(2000)
+    .refine((v) => /^https?:\/\//i.test(v), {
+      message: "URL muss mit http(s):// beginnen.",
+    })
+    .refine(
+      (v) =>
+        /youtube\.com|youtu\.be|vimeo\.com/i.test(v),
+      {
+        message: "Nur YouTube oder Vimeo werden unterstützt.",
+      },
+    ),
+  caption: trimOptional(400),
+});
+
+export const statsDataSchema = z.object({
+  title: trimOptional(120),
+  items: z
+    .array(
+      z.object({
+        value: trimNonEmpty(40, "Zahl"),
+        label: trimNonEmpty(120, "Beschreibung"),
+      }),
+    )
+    .min(1, "Mindestens eine Kennzahl.")
+    .max(8, "Maximal 8 Kennzahlen pro Block."),
+});
+
+export const richTextDataSchema = z.object({
+  title: trimOptional(160),
+  body: trimNonEmpty(8000, "Text"),
+});
+
 /**
  * Validate a block's `data` payload by its declared `type`. The full
  * server actions layer this on top of a discriminated-union check.
@@ -85,6 +132,14 @@ export function dataSchemaFor(type: BlockType) {
       return openingHoursDataSchema;
     case "cta_banner":
       return ctaBannerDataSchema;
+    case "map":
+      return mapDataSchema;
+    case "video":
+      return videoDataSchema;
+    case "stats":
+      return statsDataSchema;
+    case "rich_text":
+      return richTextDataSchema;
   }
 }
 

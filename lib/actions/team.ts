@@ -122,58 +122,70 @@ export async function uploadTeamImageAction(
   _prev: ActionState | undefined,
   formData: FormData,
 ): Promise<ActionState> {
-  const parsedId = teamImageSchema.safeParse({
-    member_id: formData.get("member_id"),
-  });
-  if (!parsedId.success) return fail("Ungültiges Teammitglied.");
+  try {
+    const parsedId = teamImageSchema.safeParse({
+      member_id: formData.get("member_id"),
+    });
+    if (!parsedId.success) return fail("Ungültiges Teammitglied.");
 
-  const file = formData.get("image");
-  if (!(file instanceof File) || file.size === 0) {
-    return fail("Bitte wähle eine Bilddatei aus.");
-  }
+    const file = formData.get("image");
+    if (!(file instanceof File) || file.size === 0) {
+      return fail("Bitte wähle eine Bilddatei aus.");
+    }
 
-  const { supabase, user, website } = await requireCurrentWebsite();
+    const { supabase, user, website } = await requireCurrentWebsite();
 
-  // Verify the member belongs to the user's website (defense in depth on top
-  // of RLS) and grab the previous image URL for cleanup.
-  const { data: member } = await supabase
-    .from("team_members")
-    .select("id, image_url")
-    .eq("id", parsedId.data.member_id)
-    .eq("website_id", website.id)
-    .maybeSingle();
-  if (!member) return fail("Teammitglied nicht gefunden.");
+    // Verify the member belongs to the user's website (defense in depth on
+    // top of RLS) and grab the previous image URL for cleanup.
+    const { data: member } = await supabase
+      .from("team_members")
+      .select("id, image_url")
+      .eq("id", parsedId.data.member_id)
+      .eq("website_id", website.id)
+      .maybeSingle();
+    if (!member) return fail("Teammitglied nicht gefunden.");
 
-  const result = await uploadImage({
-    supabase,
-    bucket: "team-images",
-    file,
-    userId: user.id,
-    subPath: `${website.id}/team/${parsedId.data.member_id}`,
-  });
-  if (!result.ok) return fail(result.message);
+    const result = await uploadImage({
+      supabase,
+      bucket: "team-images",
+      file,
+      userId: user.id,
+      subPath: `${website.id}/team/${parsedId.data.member_id}`,
+    });
+    if (!result.ok) return fail(result.message);
 
-  const { error } = await supabase
-    .from("team_members")
-    .update({ image_url: result.publicUrl })
-    .eq("id", parsedId.data.member_id)
-    .eq("website_id", website.id);
-  if (error) {
+    const { error } = await supabase
+      .from("team_members")
+      .update({ image_url: result.publicUrl })
+      .eq("id", parsedId.data.member_id)
+      .eq("website_id", website.id);
+    if (error) {
+      await deleteStorageObjectByPublicUrl(
+        supabase,
+        "team-images",
+        result.publicUrl,
+      );
+      return fail(error.message);
+    }
+
     await deleteStorageObjectByPublicUrl(
       supabase,
       "team-images",
-      result.publicUrl,
+      (member as Pick<TeamMemberRow, "image_url">).image_url,
     );
-    return fail(error.message);
+
+    revalidatePath("/dashboard/team");
+    revalidatePath(`/site/${website.slug}`, "layout");
+    return ok("Foto aktualisiert.");
+  } catch (err) {
+    console.error("[uploadTeamImageAction] thrown", {
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    return fail(
+      err instanceof Error
+        ? `Foto-Upload fehlgeschlagen: ${err.message}`
+        : "Foto-Upload gerade nicht möglich.",
+    );
   }
-
-  await deleteStorageObjectByPublicUrl(
-    supabase,
-    "team-images",
-    (member as Pick<TeamMemberRow, "image_url">).image_url,
-  );
-
-  revalidatePath("/dashboard/team");
-  revalidatePath(`/site/${website.slug}`, "layout");
-  return ok("Foto aktualisiert.");
 }

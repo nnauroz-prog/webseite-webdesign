@@ -562,42 +562,63 @@ export async function updateSlugAction(
 
 // ---------------------------------------------------------------------------
 //  uploadLogoAction
+//
+//  Wrapped in a try/catch so any unexpected throw (storage outage, schema
+//  drift, missing bucket, …) returns a friendly fail() instead of bubbling
+//  up to the global Next.js error boundary. The original error is logged
+//  to Vercel Runtime Logs for debugging.
 // ---------------------------------------------------------------------------
 export async function uploadLogoAction(
   _prev: ActionState | undefined,
   formData: FormData,
 ): Promise<ActionState> {
-  const file = formData.get("logo");
-  if (!(file instanceof File) || file.size === 0) {
-    return fail("Bitte wähle eine Bilddatei aus.");
+  try {
+    const file = formData.get("logo");
+    if (!(file instanceof File) || file.size === 0) {
+      return fail("Bitte wähle eine Bilddatei aus.");
+    }
+
+    const { supabase, user, website } = await requireCurrentWebsite();
+    const previousLogo = website.logo_url;
+
+    const result = await uploadImage({
+      supabase,
+      bucket: "logos",
+      file,
+      userId: user.id,
+      subPath: `${website.id}/logo`,
+    });
+    if (!result.ok) return fail(result.message);
+
+    const { error } = await supabase
+      .from("websites")
+      .update({ logo_url: result.publicUrl })
+      .eq("id", website.id);
+    if (error) {
+      await deleteStorageObjectByPublicUrl(
+        supabase,
+        "logos",
+        result.publicUrl,
+      );
+      return fail(error.message);
+    }
+
+    await deleteStorageObjectByPublicUrl(supabase, "logos", previousLogo);
+
+    revalidatePath(`/site/${website.slug}`, "layout");
+    revalidatePath("/dashboard", "layout");
+    return ok("Logo aktualisiert.");
+  } catch (err) {
+    console.error("[uploadLogoAction] thrown", {
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    return fail(
+      err instanceof Error
+        ? `Logo-Upload fehlgeschlagen: ${err.message}`
+        : "Logo-Upload gerade nicht möglich.",
+    );
   }
-
-  const { supabase, user, website } = await requireCurrentWebsite();
-  const previousLogo = website.logo_url;
-
-  const result = await uploadImage({
-    supabase,
-    bucket: "logos",
-    file,
-    userId: user.id,
-    subPath: `${website.id}/logo`,
-  });
-  if (!result.ok) return fail(result.message);
-
-  const { error } = await supabase
-    .from("websites")
-    .update({ logo_url: result.publicUrl })
-    .eq("id", website.id);
-  if (error) {
-    await deleteStorageObjectByPublicUrl(supabase, "logos", result.publicUrl);
-    return fail(error.message);
-  }
-
-  await deleteStorageObjectByPublicUrl(supabase, "logos", previousLogo);
-
-  revalidatePath(`/site/${website.slug}`, "layout");
-  revalidatePath("/dashboard", "layout");
-  return ok("Logo aktualisiert.");
 }
 
 // ---------------------------------------------------------------------------
@@ -630,36 +651,54 @@ async function uploadSiteImage(
   formData: FormData,
   successMessage: string,
 ): Promise<ActionState> {
-  const file = formData.get(formField);
-  if (!(file instanceof File) || file.size === 0) {
-    return fail("Bitte wähle eine Bilddatei aus.");
+  try {
+    const file = formData.get(formField);
+    if (!(file instanceof File) || file.size === 0) {
+      return fail("Bitte wähle eine Bilddatei aus.");
+    }
+
+    const { supabase, user, website } = await requireCurrentWebsite();
+    const previous = (
+      website as unknown as Record<string, string | null>
+    )[field];
+
+    const result = await uploadImage({
+      supabase,
+      bucket: "gallery",
+      file,
+      userId: user.id,
+      subPath: `${website.id}/${formField}`,
+    });
+    if (!result.ok) return fail(result.message);
+
+    const { error } = await supabase
+      .from("websites")
+      .update({ [field]: result.publicUrl })
+      .eq("id", website.id);
+    if (error) {
+      await deleteStorageObjectByPublicUrl(
+        supabase,
+        "gallery",
+        result.publicUrl,
+      );
+      return fail(error.message);
+    }
+
+    await deleteStorageObjectByPublicUrl(supabase, "gallery", previous);
+
+    revalidatePath(`/site/${website.slug}`, "layout");
+    return ok(successMessage);
+  } catch (err) {
+    console.error(`[uploadSiteImage:${field}] thrown`, {
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    return fail(
+      err instanceof Error
+        ? `Upload fehlgeschlagen: ${err.message}`
+        : "Upload gerade nicht möglich.",
+    );
   }
-
-  const { supabase, user, website } = await requireCurrentWebsite();
-  const previous = (website as unknown as Record<string, string | null>)[field];
-
-  const result = await uploadImage({
-    supabase,
-    bucket: "gallery",
-    file,
-    userId: user.id,
-    subPath: `${website.id}/${formField}`,
-  });
-  if (!result.ok) return fail(result.message);
-
-  const { error } = await supabase
-    .from("websites")
-    .update({ [field]: result.publicUrl })
-    .eq("id", website.id);
-  if (error) {
-    await deleteStorageObjectByPublicUrl(supabase, "gallery", result.publicUrl);
-    return fail(error.message);
-  }
-
-  await deleteStorageObjectByPublicUrl(supabase, "gallery", previous);
-
-  revalidatePath(`/site/${website.slug}`, "layout");
-  return ok(successMessage);
 }
 
 async function removeSiteImage(

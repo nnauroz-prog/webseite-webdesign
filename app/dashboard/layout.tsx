@@ -3,6 +3,7 @@ import { User } from "lucide-react";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { SignOutButton } from "@/components/dashboard/sign-out-button";
+import { SitaloLogo } from "@/components/sitalo-logo";
 import { requireUser } from "@/lib/supabase/auth";
 
 export default async function DashboardLayout({
@@ -16,19 +17,31 @@ export default async function DashboardLayout({
     <div className="flex flex-1">
       <DashboardSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="border-border bg-background/80 sticky top-0 z-10 flex h-16 items-center justify-between gap-2 border-b px-4 backdrop-blur sm:px-6">
+        {/* Sticky header
+         *  - z-30 sits below the mobile-drawer backdrop (z-[80]) and
+         *    the drawer itself (z-[90]) so the email/SignOut bleeds
+         *    don't show through when the drawer is open.
+         *  - On phones we hide the user-email text and just show a
+         *    compact icon + the sign-out button so the row never
+         *    overflows. */}
+        <header className="border-border bg-background/85 sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b px-3 backdrop-blur sm:h-16 sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <MobileNav />
-            <span className="bg-secondary inline-flex h-8 w-8 items-center justify-center rounded-full">
-              <User className="text-muted-foreground h-4 w-4" />
+            <span className="md:hidden">
+              <SitaloLogo size="sm" />
             </span>
-            <div className="flex min-w-0 flex-col leading-tight">
-              <span className="text-muted-foreground hidden text-[11px] tracking-wide uppercase sm:block">
-                Eingeloggt als
+            <div className="hidden min-w-0 items-center gap-2 sm:flex">
+              <span className="bg-secondary inline-flex h-8 w-8 items-center justify-center rounded-full">
+                <User className="text-muted-foreground h-4 w-4" />
               </span>
-              <span className="text-foreground max-w-[40vw] truncate text-sm font-medium sm:max-w-[60vw]">
-                {user.email}
-              </span>
+              <div className="flex min-w-0 flex-col leading-tight">
+                <span className="text-muted-foreground text-[11px] tracking-wide uppercase">
+                  Eingeloggt als
+                </span>
+                <span className="text-foreground max-w-[60vw] truncate text-sm font-medium">
+                  {user.email}
+                </span>
+              </div>
             </div>
           </div>
           <SignOutButton />
