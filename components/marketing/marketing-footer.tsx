@@ -41,7 +41,7 @@ export function MarketingFooter() {
       <div className="border-border/40 border-t">
         <div className="text-muted-foreground mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-5 text-xs sm:flex-row">
           <span>© {year} Sitalo Webdesign. Alle Rechte vorbehalten.</span>
-          <span className="text-muted-foreground/80">Made in Germany</span>
+          <span className="text-muted-foreground/80">Made in Hamburg</span>
         </div>
       </div>
     </footer>
