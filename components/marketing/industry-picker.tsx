@@ -207,6 +207,15 @@ export function IndustryPicker() {
             </Link>
           </div>
         </div>
+        <div className="mt-8 text-center">
+          <Link
+            href="/branchen"
+            className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
+          >
+            Alle Branchen im Detail
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -20,15 +20,15 @@ export function MarketingFooter() {
           </p>
         </div>
         <FooterCol title="Service">
-          <FooterLink href="/#leistungen">Leistungen</FooterLink>
-          <FooterLink href="/#ablauf">Ablauf</FooterLink>
-          <FooterLink href="/#beispiele">Beispiele</FooterLink>
-          <FooterLink href="/pricing">Preise</FooterLink>
+          <FooterLink href="/leistungen">Leistungen</FooterLink>
+          <FooterLink href="/ablauf">Ablauf</FooterLink>
+          <FooterLink href="/branchen">Branchen</FooterLink>
+          <FooterLink href="/pakete">Pakete</FooterLink>
         </FooterCol>
         <FooterCol title="Sitalo">
           <FooterLink href="/anfrage">Website anfragen</FooterLink>
-          <FooterLink href="/#faq">FAQ</FooterLink>
-          <FooterLink href="/#kontakt">Kontakt</FooterLink>
+          <FooterLink href="/faq">FAQ</FooterLink>
+          <FooterLink href="/kontakt">Kontakt</FooterLink>
         </FooterCol>
         <FooterCol title="Rechtliches">
           <FooterLink href="/impressum">Impressum</FooterLink>
