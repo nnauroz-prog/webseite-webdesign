@@ -55,6 +55,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "friseur",
     label: "Friseure & Kosmetikstudios",
     inquirySlug: "friseur",
+    image: {
+      src: "/images/sitalo-friseur-mobile.png",
+      alt: 'Friseur-Website von Sitalo auf einem iPhone, daneben gedruckte Visitenkarten und ein Flyer für „Friseur am Markt".',
+    },
     body: "Bilder verkaufen. Die Website lebt von hochwertigen Aufnahmen, klaren Leistungen und transparenten Preisen — und einem direkten Weg zur Termin-Anfrage.",
     bullets: [
       "Galerie mit Lightbox für vor/nach-Bilder",
