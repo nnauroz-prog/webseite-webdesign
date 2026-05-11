@@ -46,6 +46,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "praxis",
     label: "Arzt- und Zahnarztpraxen",
     inquirySlug: "praxis",
+    image: {
+      src: "/images/sitalo-praxis-laptop.png",
+      alt: 'Zahnarztpraxis-Website von Sitalo („Moderne Zahnmedizin für Ihr schönstes Lächeln.") auf einem Laptop im hellen Praxisempfang.',
+    },
     body: "Patient:innen recherchieren vor dem ersten Termin. Die Website muss seriös wirken, Sprechzeiten und Leistungen sofort liefern und eine reibungslose Termin-Anfrage erlauben — am Handy genauso wie am Desktop.",
     bullets: [
       "Sprechzeiten, Notdienst und Anfahrt prominent",
