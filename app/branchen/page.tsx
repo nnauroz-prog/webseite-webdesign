@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
@@ -19,6 +20,8 @@ type BranchEntry = {
   bullets: string[];
   /** Used to build the /anfrage?branche=... deep link. */
   inquirySlug: string;
+  /** Optional photograph rendered above the card title. */
+  image?: { src: string; alt: string };
 };
 
 const BRANCHEN: BranchEntry[] = [
@@ -65,6 +68,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "gastro",
     label: "Cafés & Restaurants",
     inquirySlug: "gastro",
+    image: {
+      src: "/images/sitalo-cafe-mobile.png",
+      alt: "Café-Website von Sitalo auf einem iPhone, vor einem Café im Hintergrund — daneben eine Sitalo-Webdesign-Visitenkarte.",
+    },
     body: "Die meisten Gäste googeln vorm Besuch. Die Website muss Speisekarte, Öffnungszeiten und Anfahrt sofort liefern — am besten verwaltbar, damit Wochenangebote ohne Webdesign-Termin geändert werden können.",
     bullets: [
       "Speisekarte als verwaltbarer Inhalt",
@@ -170,17 +177,29 @@ function Sections() {
           {BRANCHEN.map((b) => (
             <li
               key={b.slug}
-              className="border-border/60 bg-card rounded-3xl border p-6 shadow-sm sm:p-9"
+              className="border-border/60 bg-card overflow-hidden rounded-3xl border shadow-sm"
             >
-              <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
-                Branche
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
-                {b.label}
-              </h2>
-              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed">
-                {b.body}
-              </p>
+              {b.image ? (
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary/40">
+                  <Image
+                    src={b.image.src}
+                    alt={b.image.alt}
+                    fill
+                    sizes="(min-width: 1024px) 900px, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              ) : null}
+              <div className="p-6 sm:p-9">
+                <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
+                  Branche
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
+                  {b.label}
+                </h2>
+                <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed">
+                  {b.body}
+                </p>
               <ul className="mt-5 grid gap-2 sm:grid-cols-2">
                 {b.bullets.map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm">
@@ -189,14 +208,15 @@ function Sections() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-6">
-                <Link
-                  href={`/anfrage?branche=${b.inquirySlug}`}
-                  className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-all hover:shadow"
-                >
-                  Website für diese Branche anfragen
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+                <div className="mt-6">
+                  <Link
+                    href={`/anfrage?branche=${b.inquirySlug}`}
+                    className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-all hover:shadow"
+                  >
+                    Website für diese Branche anfragen
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </div>
             </li>
           ))}
