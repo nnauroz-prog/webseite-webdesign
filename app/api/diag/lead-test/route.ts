@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getMailFrom, getResend } from "@/lib/email/client";
 
 /**
- * GET /api/diag/lead-test?secret=<CRON_SECRET>
+ * GET /api/diag/lead-test
  *
  * Production-debugging endpoint. Triggers a real Resend send to the
  * configured lead recipient and returns Resend's full response — id
@@ -18,33 +18,16 @@ import { getMailFrom, getResend } from "@/lib/email/client";
  *     puts it in spam / blocks it (Resend reports ok=true here —
  *     check your spam folder next)
  *
- * Gated by CRON_SECRET so random visitors can't fire test mails.
+ * Not auth-gated: the recipient is always whatever the operator put
+ * in LEAD_NOTIFICATION_EMAIL — a random visitor can at worst fill
+ * the operator's own inbox with test mails, which Resend's rate
+ * limit caps anyway. Remove this route once the lead path is
+ * verified working in production.
  */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(request: Request) {
-  const cronSecret = process.env.CRON_SECRET?.trim();
-  const { searchParams } = new URL(request.url);
-  const provided = searchParams.get("secret")?.trim() ?? "";
-
-  if (!cronSecret) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error:
-          "CRON_SECRET is not set. Set it in Vercel env vars to enable this diagnostic.",
-      },
-      { status: 503 },
-    );
-  }
-  if (provided !== cronSecret) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid secret." },
-      { status: 401 },
-    );
-  }
-
+export async function GET() {
   const resend = getResend();
   if (!resend) {
     return NextResponse.json(
