@@ -106,6 +106,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "reinigung",
     label: "Reinigungsfirmen",
     inquirySlug: "reinigung",
+    image: {
+      src: "/images/sitalo-reinigung-laptop.png",
+      alt: 'Reinigungs-Website von Sitalo („Saubere Räume. Besseres Arbeiten.") auf einem Laptop, daneben Sprühflasche, Tasse und Wischmopp.',
+    },
     body: "Reinigung wird über Service-Pakete verkauft. Die Website muss Pakete vergleichbar machen, ein Angebots-Formular bieten und Vertrauen aufbauen — denn der Kunde lässt fremde Menschen in seine Räume.",
     bullets: [
       "Service-Pakete im direkten Vergleich",
@@ -119,6 +123,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "kanzlei",
     label: "Kanzleien",
     inquirySlug: "kanzlei",
+    image: {
+      src: "/images/sitalo-kanzlei-laptop.png",
+      alt: 'Kanzlei-Website von Sitalo („Recht, das Klarheit schafft.") auf einem Laptop im Büro mit Aktenordnern und Tasse.',
+    },
     body: "Bei Kanzleien zählt Seriosität. Klare Rechtsgebiete, ein ruhiger Auftritt, vertrauliche Erstkontakt-Anfrage — und ein Design, das mehr wie ein traditionelles Boutique-Office wirkt als wie ein Start-up.",
     bullets: [
       "Rechtsgebiete übersichtlich strukturiert",
