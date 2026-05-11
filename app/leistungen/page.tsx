@@ -17,92 +17,92 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 export const metadata: Metadata = {
   title: "Leistungen | Sitalo Webdesign",
   description:
-    "Professionelle Websites für lokale Unternehmen — Design, Technik, Hosting, SEO-Grundlagen und Betreuung.",
+    "Was ich für Sie mache: Webdesign, Inhalte strukturieren, Kontakt sauber, Google-Basis, Hosting, laufende Pflege. Aus Hamburg.",
   alternates: { canonical: "/leistungen" },
 };
 
 const SECTIONS = [
   {
     icon: Layout,
-    title: "Website-Erstellung",
+    title: "Ihre Website bauen",
     intro:
-      "Vom kompakten Onepager bis zur vollständigen Unternehmens-Website. Wir gestalten Struktur, Design und alle Inhaltsbereiche.",
+      "Vom kompakten Onepager bis zur größeren Seite mit mehreren Bereichen. Ich gestalte Aufbau, Design und Inhalte so, dass es zu Ihrem Betrieb passt — nicht zu einer Vorlage.",
     bullets: [
-      "Onepager-Websites — alles auf einer starken Seite",
-      "Mehrseitige Websites mit eigenen Bereichen für Leistungen, Team, Galerie, Kontakt",
-      "Moderne, branchenpassende Designsprache",
-      "Komplette Mobiloptimierung (Smartphone & Tablet)",
-      "Schnelle Ladezeiten als Standard",
-      "Klare Kontakt- und Anfrageführung",
+      "Onepager — alles Wichtige auf einer starken Seite",
+      "Mehrseitige Seiten mit Bereichen für Leistungen, Team, Galerie, Kontakt",
+      "Modernes Design, passend zur Branche und zu Ihnen",
+      "Funktioniert auf Handy und Tablet genauso gut wie am PC",
+      "Schnelle Ladezeiten sind bei mir Standard",
+      "Klare Wege zur Anfrage — kein Kunde verirrt sich",
     ],
   },
   {
     icon: Sparkles,
-    title: "Inhalte & Struktur",
+    title: "Inhalte, die Vertrauen schaffen",
     intro:
-      "Wir helfen Ihnen, Ihre Inhalte so zu strukturieren, dass sie Vertrauen aufbauen und zur Anfrage führen — auch ohne Texterfahrung.",
+      "Sie müssen kein Texter sein. Ich helfe Ihnen, Ihre Leistungen so zu beschreiben, dass Besucher sich abgeholt fühlen — und am Ende zum Hörer greifen oder schreiben.",
     bullets: [
-      "Leistungen verständlich präsentieren",
-      "Team-Bereich mit Fotos und Qualifikationen",
-      "Galerie mit Bildaufbereitung",
-      "Öffnungszeiten und Standort prominent",
-      "Über-uns-Bereich für Vertrauensaufbau",
-      "Beratung zu Aufbau und Reihenfolge der Inhalte",
+      "Leistungen verständlich erklären, ohne Fachchinesisch",
+      "Team-Bereich mit Fotos — Menschen vertrauen Menschen",
+      "Galerie mit gut aufbereiteten Bildern",
+      "Öffnungszeiten und Standort an der richtigen Stelle",
+      "Über-uns-Bereich mit Ihrer Geschichte",
+      "Beratung zu Aufbau, Reihenfolge, Formulierungen",
     ],
   },
   {
     icon: Inbox,
-    title: "Kontakt & Anfragen",
+    title: "Anfragen, die wirklich ankommen",
     intro:
-      "Anfragen müssen ohne Hürden bei Ihnen landen — am besten direkt aufs Handy.",
+      "Was nützt eine schöne Seite, wenn Anfragen verloren gehen? Bei mir landet jede Anfrage direkt auf Ihrem Handy — ohne Umwege.",
     bullets: [
       "Kontaktformular mit Spam-Schutz",
-      "WhatsApp-Button für direkten Draht",
-      "Google Maps mit Einsatzgebiet oder Standort",
-      "Klick-zum-Anrufen auf mobilen Geräten",
-      "Optional: Bewerbungsformular oder Reservierungs-Anfrage",
+      "WhatsApp-Button für den direkten Draht",
+      "Google Maps mit Standort oder Einsatzgebiet",
+      "Tippen-zum-Anrufen auf dem Handy",
+      "Auf Wunsch: Bewerbungs- oder Reservierungsformular",
     ],
   },
   {
     icon: Search,
-    title: "SEO-Grundlagen",
+    title: "Bei Google auffindbar",
     intro:
-      "Wir legen eine saubere SEO-Basis, damit Sie bei lokalen Suchanfragen gefunden werden können. Keine Platz-1-Garantien — aber solide Voraussetzungen.",
+      "Ich verspreche Ihnen keinen Platz 1 — das macht niemand seriös. Aber ich lege die Basis sauber, damit Sie für die richtigen Suchen gefunden werden.",
     bullets: [
-      "Sinnvolle Seiten-Titel und Meta-Beschreibungen",
-      "Klare Überschriftenstruktur (H1/H2/H3)",
-      "Lokale Suchbegriffe in den Inhalten",
+      "Saubere Seiten-Titel und Beschreibungen",
+      "Klare Struktur, damit Google Ihre Seite versteht",
+      "Lokale Suchbegriffe (Stadtteil, Branche) eingebaut",
       "Sitemap und maschinenlesbare Daten",
-      "Schnelle Ladezeiten und Mobile-First",
-      "Optional: Anbindung an Google Search Console",
+      "Schnelle Ladezeiten — auch das wertet Google",
+      "Auf Wunsch: Anbindung an Google Search Console",
     ],
   },
   {
     icon: ServerCog,
-    title: "Hosting & Betreuung",
+    title: "Hosting & laufende Pflege",
     intro:
-      "Sie müssen sich um nichts kümmern. Hosting, Wartung und kleinere Änderungen laufen bei uns.",
+      "Wenn Sie es haben wollen: alles aus einer Hand. Hosting, Updates, Sicherheit, kleine Änderungen — Sie müssen sich um nichts kümmern.",
     bullets: [
       "Hosting in der EU inklusive",
-      "Sicherheits-Updates und Backups",
-      "Kleinere Inhaltsänderungen pro Monat",
-      "Technische Pflege und Monitoring",
-      "Erweiterungen und neue Sektionen jederzeit möglich",
-      "Persönlicher Ansprechpartner für Rückfragen",
+      "Sicherheits-Updates und Backups automatisch",
+      "Kleine Änderungen jeden Monat (je nach Paket)",
+      "Technische Pflege und Monitoring im Hintergrund",
+      "Erweiterungen jederzeit möglich",
+      "Sie schreiben mir, ich kümmere mich",
     ],
   },
   {
     icon: Globe2,
-    title: "Verwaltbare Inhalte (optional)",
+    title: "Selbst pflegen (wenn Sie möchten)",
     intro:
-      "Auf Wunsch können bestimmte Inhalte direkt auf Ihrer Website verwaltbar gemacht werden — zum Beispiel Öffnungszeiten, Speisekarte, Wochenangebot, Leistungen oder Bilder.",
+      "Wenn Sie bestimmte Inhalte selbst aktualisieren möchten, baue ich Ihnen entsprechende Bereiche ein. Wenn nicht, übernehme ich das.",
     bullets: [
       "Speisekarte oder Wochenangebot selbst pflegen",
       "Öffnungszeiten kurzfristig ändern",
       "Bilder und Galerie selbst aktualisieren",
       "Leistungen und Preise jederzeit anpassen",
-      "Hinweisbanner aktivieren (z.B. Feiertag, Sommerpause)",
-      "Premium-Feature — nicht erforderlich",
+      "Hinweisbanner aktivieren (z. B. Feiertag, Sommerpause)",
+      "Premium-Funktion — Sie entscheiden, ob Sie sie brauchen",
     ],
   },
 ];
@@ -129,11 +129,11 @@ function Hero() {
           Leistungen
         </p>
         <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl">
-          Webdesign-Service für lokale Unternehmen.
+          Was ich für Sie übernehme.
         </h1>
         <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-          Wir erstellen Ihre Website fertig für Sie — von Struktur und Design
-          bis zur Veröffentlichung.
+          Von der ersten Idee bis zur fertigen Seite — und danach genauso.
+          Sie kümmern sich um Ihren Betrieb, ich kümmere mich um Ihre Online-Präsenz.
         </p>
       </div>
     </section>
@@ -184,11 +184,11 @@ function FinalCta() {
     <section className="bg-foreground text-background py-14 sm:py-20">
       <div className="mx-auto w-full max-w-3xl px-6 text-center">
         <h2 className="text-balance text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
-          Bereit für eine Website, die professionell wirkt?
+          Klingt nach dem, was Sie suchen?
         </h2>
         <p className="text-background/70 mx-auto mt-4 max-w-xl text-pretty text-base sm:text-lg">
-          Schicken Sie uns kurz Ihre Anfrage — wir melden uns innerhalb von
-          24 Stunden mit einer persönlichen Einschätzung.
+          Schreiben Sie mir kurz Ihre Anfrage — ich melde mich innerhalb
+          von 24 Stunden persönlich mit einer ehrlichen Einschätzung.
         </p>
         <Link
           href="/anfrage"

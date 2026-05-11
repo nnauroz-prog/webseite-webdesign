@@ -1,33 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Check,
-  Clock,
-  Image as ImageIcon,
-  MessageCircle,
-  Send,
-  Sparkles,
-  Wrench,
-} from "lucide-react";
+import { ArrowRight, Check, Clock, Send } from "lucide-react";
 
 import { HeroMockups } from "@/components/marketing/hero-mockups";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
-import { VerwaltbareInhalteSection } from "@/components/marketing/verwaltbare-inhalte-section";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { BaukastenComparison } from "@/components/marketing/baukasten-comparison";
 
 export const metadata: Metadata = {
-  title: "Sitalo — Ihre professionelle Website. Fertig in 48 Stunden.",
+  title: "Sitalo — Ihre Website, persönlich gemacht. Aus Hamburg.",
   description:
-    "Sitalo erstellt Websites für lokale Unternehmen — schnell, persönlich, ohne Baukasten-Stress. Sie liefern Logo, Bilder und Texte. Wir übernehmen den Rest.",
+    "Hallo, ich bin Nadim. Ich baue Websites für lokale Unternehmen — Sie schicken mir Ihre Unterlagen, ich melde mich persönlich und liefere die fertige Seite. Aus Hamburg, deutschlandweit.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    title: "Sitalo — Ihre professionelle Website. Fertig in 48 Stunden.",
+    title: "Sitalo — Ihre Website, persönlich gemacht. Aus Hamburg.",
     description:
-      "Wir bauen Ihre Website fertig — keine Technik, kein Stress. In 1–2 Werktagen online.",
+      "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest. Meist in 1–2 Werktagen online.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
     images: [
@@ -41,74 +30,35 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sitalo — Ihre professionelle Website. Fertig in 48 Stunden.",
+    title: "Sitalo — Ihre Website, persönlich gemacht. Aus Hamburg.",
     description:
-      "Wir bauen Ihre Website fertig — keine Technik, kein Stress.",
+      "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest.",
     images: ["/images/sitalo-laptop-hero.png"],
   },
 };
 
 const TRUST_LINE = [
+  "Aus Hamburg, deutschlandweit",
+  "Persönlich von mir gemacht",
+  "Auch am Telefon erreichbar",
   "Keine Registrierung nötig",
-  "Persönliche Umsetzung",
-  "Mobil optimiert",
-  "Für lokale Unternehmen",
-];
-
-const TRUST_BAR = [
-  { label: "48h Umsetzung möglich", icon: "clock" as const },
-  { label: "Persönlicher Ansprechpartner", icon: "user" as const },
-  { label: "Keine Registrierung nötig", icon: "check" as const },
-  { label: "Mobil optimiert", icon: "device" as const },
-];
-
-const BENEFITS = [
-  "Eine moderne Website, die auf den ersten Blick überzeugt",
-  "Perfekte Darstellung auf Smartphone, Tablet und Desktop",
-  "Anfragen, die direkt auf Ihrem Handy landen",
-  "Saubere SEO-Basis, damit Kunden Sie bei Google finden",
-  "Hosting, Wartung und Updates aus einer Hand",
-  "Ein persönlicher Ansprechpartner — kein Support-Ticket",
-];
-
-const SOLUTIONS = [
-  {
-    icon: ImageIcon,
-    title: "Onepager & Mehrseitig",
-    body: "Vom Onepager bis zur Unternehmens-Website mit Team, Leistungen und Galerie.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Kontakt & Maps",
-    body: "Anfragen direkt aufs Handy. Google Maps, Öffnungszeiten — alles drin.",
-  },
-  {
-    icon: Sparkles,
-    title: "SEO & Hosting",
-    body: "Saubere SEO-Basis, schnelles Hosting, Mobil-Optimierung und Wartung — inklusive.",
-  },
-  {
-    icon: Wrench,
-    title: "Verwaltbare Inhalte",
-    body: "Optional: Speisekarte, Öffnungszeiten, Wochenangebote oder Bilder selbst pflegen.",
-  },
 ];
 
 const STEPS = [
   {
     number: "01",
-    title: "Anfrage senden",
-    body: "Formular ausfüllen — Antwort innerhalb von 24 Stunden.",
+    title: "Sie melden sich",
+    body: "Formular ausfüllen oder kurz auf WhatsApp schreiben. Ich antworte persönlich innerhalb von 24 Stunden.",
   },
   {
     number: "02",
-    title: "Daten liefern",
-    body: "Logo, Bilder, Texte, Kontaktdaten. Was fehlt, klären wir.",
+    title: "Wir sprechen",
+    body: "Kurzes Gespräch — am Telefon oder bei einem Kaffee in Hamburg. Sie schicken mir Logo, Bilder und Texte. Was fehlt, klären wir gemeinsam.",
   },
   {
     number: "03",
-    title: "Online gehen",
-    body: "Wir bauen, Sie geben frei, wir veröffentlichen — meist in 1–2 Werktagen.",
+    title: "Ihre Seite geht online",
+    body: "Ich baue, Sie schauen drüber, wir gehen live. Meist in 1–2 Werktagen — und danach bin ich weiter Ihr Ansprechpartner.",
   },
 ];
 
@@ -180,54 +130,29 @@ const PACKAGES = [
 
 const FAQ = [
   {
-    question: "Muss ich mich registrieren?",
+    question: "Wie schnell ist meine Seite fertig?",
     answer:
-      "Nein. Für eine Anfrage reicht das Formular oder eine E-Mail. Sie müssen keinen Account erstellen.",
+      "Wenn Sie mir alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
   },
   {
-    question: "Wie schnell ist meine Website fertig?",
+    question: "Was brauchen Sie von mir?",
     answer:
-      "In den meisten Fällen innerhalb von 1–2 Werktagen nach vollständiger Datenlieferung. Für größere Projekte besprechen wir den Zeitplan vorab.",
+      "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Bescheid und helfe bei Formulierungen.",
   },
   {
-    question: "Was muss ich liefern?",
+    question: "Gibt es laufende Kosten?",
     answer:
-      "Logo, Bilder, Texte, Leistungen, Öffnungszeiten, Kontaktdaten — und falls vorhanden Ihre aktuelle Website. Was fehlt, klären wir gemeinsam.",
+      "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Jederzeit zum Monatsende kündbar, kein Kleingedrucktes.",
   },
   {
-    question: "Kann ich später Inhalte ändern?",
+    question: "Kann ich später noch Sachen ändern lassen?",
     answer:
-      "Ja. Änderungen können wir im Rahmen der Betreuung übernehmen. Auf Wunsch können bestimmte Inhalte auch direkt auf Ihrer Website verwaltbar gemacht werden — z. B. Öffnungszeiten, Speisekarte, Wochenangebot oder Leistungen.",
-  },
-  {
-    question: "Was ist besser: Baukasten oder Sitalo?",
-    answer:
-      "Website-Baukästen sind gut, wenn Sie selbst bauen möchten. Sitalo ist besser, wenn Sie eine fertige professionelle Website möchten und keine Zeit für Technik, Design, Texte und Einrichtung haben. Wir liefern das fertige Ergebnis — Sie liefern nur die Daten.",
-  },
-  {
-    question: "Gibt es monatliche Kosten?",
-    answer:
-      "Ja, wenn Hosting, Wartung, Änderungen und Support über uns laufen sollen. Die monatlichen Kosten hängen vom Paket ab (49 €, 79 € oder 129 €) und sind jederzeit zum Monatsende kündbar.",
-  },
-  {
-    question: "Warum gibt es Einstiegspreise und keine festen Endpreise?",
-    answer:
-      "Die Pakete geben eine klare Orientierung. Der finale Preis hängt davon ab, welche Inhalte vorhanden sind, welche Funktionen gewünscht werden und wie umfangreich die Website wird. Nach Ihrer Anfrage erhalten Sie eine klare Einschätzung.",
-  },
-  {
-    question: "Was soll ich auswählen, wenn ich unsicher bin?",
-    answer:
-      'Wählen Sie im Anfrageformular einfach „Ich bin unsicher". Wir prüfen Ihr Vorhaben und empfehlen Ihnen das passende Paket — kostenlos und unverbindlich.',
-  },
-  {
-    question: "Sind Impressum und Datenschutz dabei?",
-    answer:
-      "Wir integrieren die entsprechenden Seiten und Bereiche technisch. Rechtssichere Inhalte (Impressums-Text, Datenschutzerklärung) sollten Sie selbst oder von einem geeigneten Anbieter beziehen — wir können bei Bedarf Empfehlungen aussprechen.",
+      "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben mir kurz, ich mache es. Auf Wunsch kann ich auch Bereiche einbauen, die Sie selbst pflegen.",
   },
   {
     question: "Was passiert nach dem Launch?",
     answer:
-      "Sie erhalten laufende Betreuung im monatlichen Paket: kleine Änderungen, Updates, Sicherheits-Patches, Backups. Größere Erweiterungen besprechen wir im Einzelfall.",
+      "Sie bekommen einen Ansprechpartner — mich. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie mir, ich kümmere mich.",
   },
 ];
 
@@ -242,13 +167,9 @@ export default function HomePage() {
       <MarketingHeader />
       <main className="flex-1">
         <Hero />
-        <TrustBar />
+        <PersonalNote />
         <IndustryPicker />
-        <Problems />
-        <Solutions />
         <Steps />
-        <BaukastenComparison />
-        <VerwaltbareInhalteSection />
         <Pricing />
         <Faq />
         <FinalCta />
@@ -278,15 +199,16 @@ function Hero() {
         <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
           <div>
             <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-              Webdesign-Service · Lokale Unternehmen
+              Hallo aus Hamburg · Webdesign für lokale Unternehmen
             </p>
             <h1 className="mt-4 text-balance text-[2.5rem] font-semibold leading-[1.02] tracking-[-0.03em] sm:mt-5 sm:text-5xl lg:text-6xl">
-              Website erstellen lassen —{" "}
-              <span className="text-primary">ohne Baukasten-Stress.</span>
+              Ihre Website.{" "}
+              <span className="text-primary">Ich kümmere mich darum.</span>
             </h1>
             <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:mt-6 sm:text-lg">
-              Sie senden Logo, Bilder, Texte und Kontaktdaten. Wir liefern die
-              fertige Website — meist in 48 Stunden.
+              Ich bin Nadim. Sie schicken mir Logo, Bilder und ein paar Zeilen
+              zu Ihrem Betrieb — ich melde mich bei Ihnen, baue Ihre Seite und
+              bringe sie online. Meist in 1–2 Werktagen.
             </p>
             <div className="mt-7 flex flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:items-center">
               <Link
@@ -326,111 +248,42 @@ function Hero() {
   );
 }
 
-function TrustBar() {
+function PersonalNote() {
   return (
-    <div className="border-border/40 bg-background border-b">
-      <ul className="text-muted-foreground mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-6 py-5 text-sm">
-        {TRUST_BAR.map((item) => (
-          <li
-            key={item.label}
-            className="inline-flex items-center gap-2 whitespace-nowrap"
-          >
-            <Check className="text-emerald-600 h-3.5 w-3.5" />
-            {item.label}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function Problems() {
-  return (
-    <section className="bg-secondary/30 border-border/40 border-b py-14 sm:py-24">
-      <div className="mx-auto w-full max-w-5xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Das bekommen Sie
+    <section className="border-border/40 border-b py-14 sm:py-20">
+      <div className="mx-auto w-full max-w-3xl px-6">
+        <div className="bg-card border-border/60 relative rounded-2xl border p-8 shadow-sm sm:p-12">
+          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
+            Persönlich · Aus Hamburg
           </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Eine Website, die endlich für Sie arbeitet.
+          <h2 className="mt-3 text-balance text-2xl font-semibold leading-tight tracking-[-0.01em] sm:text-3xl">
+            Warum ich das mache.
           </h2>
-        </header>
-        <ul className="mt-12 grid gap-3 sm:grid-cols-2">
-          {BENEFITS.map((benefit) => (
-            <li
-              key={benefit}
-              className="bg-card border-border/60 flex items-start gap-3 rounded-xl border p-5 shadow-sm"
-            >
-              <span className="bg-emerald-500/10 text-emerald-600 mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
-                <Check className="h-3 w-3" />
-              </span>
-              <span className="text-foreground/85 text-[15px] leading-relaxed">
-                {benefit}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <div className="mx-auto mt-10 max-w-xl text-center">
-          <p className="text-foreground text-lg font-medium">
-            Sie liefern die Daten, wir übernehmen den Rest.
-          </p>
-          <Link
-            href="/anfrage"
-            className="text-primary mt-3 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+          <div className="text-foreground/85 mt-6 space-y-4 text-[16px] leading-relaxed sm:text-[17px]">
+            <p>
+              Ich weiß, wie wichtig es ist, dass man heute eine gute
+              Onlinepräsenz hat. Wer Sie online nicht findet, kommt auch nicht
+              durch die Tür — egal wie gut Sie Ihre Arbeit machen.
+            </p>
+            <p>
+              Vielen Inhabern fehlt schlicht die Zeit (oder die Lust), sich
+              durch Baukästen zu klicken, Texte zu schreiben und am Ende doch
+              eine Seite zu haben, die wie tausend andere aussieht. Genau da
+              springe ich ein.
+            </p>
+            <p>
+              Sie schicken mir ein paar Unterlagen — Logo, Bilder, ein paar
+              Sätze zu Ihrem Betrieb. Ich melde mich, baue Ihre Seite, und
+              danach bleibe ich Ihr Ansprechpartner. Keine Hotline, kein
+              Ticket. Sie schreiben mir, ich antworte.
+            </p>
+          </div>
+          <p
+            className="text-foreground mt-8 text-lg"
+            style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic" }}
           >
-            Jetzt anfragen
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Solutions() {
-  return (
-    <section
-      id="leistungen"
-      className="border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
-    >
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Was Sitalo macht
+            — Nadim Nauroz
           </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Webdesign-Service mit eigenem System.
-          </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Wir erstellen moderne Websites für lokale Unternehmen — schnell,
-            persönlich, professionell. Ohne Baukasten-Stress.
-          </p>
-        </header>
-        <ul className="mt-12 grid gap-px overflow-hidden rounded-2xl border bg-border/60 sm:grid-cols-2">
-          {SOLUTIONS.map(({ icon: Icon, title, body }) => (
-            <li
-              key={title}
-              className="bg-card flex flex-col gap-3 p-7 sm:p-8"
-            >
-              <span className="bg-primary/10 text-primary inline-flex h-10 w-10 items-center justify-center rounded-lg">
-                <Icon className="h-5 w-5" />
-              </span>
-              <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
-              <p className="text-muted-foreground text-[15px] leading-relaxed">
-                {body}
-              </p>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-10 text-center">
-          <Link
-            href="/leistungen"
-            className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
-          >
-            Alle Leistungen ansehen
-            <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </div>
     </section>
@@ -446,10 +299,10 @@ function Steps() {
       <div className="mx-auto w-full max-w-5xl px-6">
         <header className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            So einfach geht es
+            So läuft es bei mir ab
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            In 3 Schritten zur fertigen Website.
+            Drei Schritte. Kein Papierkram dazwischen.
           </h2>
         </header>
         <ol className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -503,11 +356,12 @@ function Pricing() {
             Preise
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Klare Pakete. Faire Preise.
+            Drei Wege, Ihre Seite zu bekommen.
           </h2>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Einmalige Erstellung + monatliche Betreuung. Sie zahlen nur für das,
-            was Sie wirklich brauchen.
+            Eine einmalige Einrichtung, danach ein fairer Monatsbeitrag für
+            Hosting, Pflege und kleine Änderungen. Was Sie nicht brauchen,
+            zahlen Sie nicht.
           </p>
         </header>
 
@@ -679,12 +533,13 @@ function FinalCta() {
       />
       <div className="relative mx-auto w-full max-w-3xl px-6 text-center">
         <h2 className="text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-5xl">
-          Bereit für eine Website,
+          Lust auf eine Seite,
           <br className="hidden sm:inline" />{" "}
-          <span className="text-background/70">die professionell wirkt?</span>
+          <span className="text-background/70">die wirklich zu Ihnen passt?</span>
         </h2>
         <p className="text-background/70 mx-auto mt-5 max-w-xl text-pretty text-base sm:text-lg">
-          Anfrage senden, Daten liefern, fertige Website erhalten.
+          Schreiben Sie mir kurz, was Sie vorhaben. Ich melde mich
+          persönlich — meist noch am selben Tag.
         </p>
         <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-3">
           <Link
@@ -710,6 +565,12 @@ function FinalCta() {
           <Clock className="h-3.5 w-3.5" />
           Antwort innerhalb von 24 Stunden, persönlich.
         </p>
+        <p
+          className="text-background/70 mt-6 text-base"
+          style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic" }}
+        >
+          — Nadim Nauroz, Hamburg
+        </p>
       </div>
     </section>
   );
@@ -722,7 +583,7 @@ function buildWhatsappHref(): string | null {
   if (digits.length < 6) return null;
   const message =
     process.env.NEXT_PUBLIC_SITALO_WHATSAPP_MESSAGE?.trim() ||
-    "Hallo Sitalo, ich interessiere mich für eine professionelle Website. Können Sie mir ein Angebot machen?";
+    "Hallo Nadim, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 

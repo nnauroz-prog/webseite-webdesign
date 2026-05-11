@@ -18,8 +18,14 @@ export function MarketingFooter() {
         <div className="space-y-3">
           <SitaloLogo size="sm" />
           <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
-            Wir erstellen professionelle Websites für lokale Unternehmen —
-            schnell, persönlich, ohne Technik-Stress.
+            Ich baue Websites für lokale Unternehmen. Persönlich, ohne
+            Baukasten-Stress, mit einem festen Ansprechpartner — mir.
+          </p>
+          <p
+            className="text-foreground/80 text-sm"
+            style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic" }}
+          >
+            — Nadim Nauroz
           </p>
         </div>
         <FooterCol title="Service">

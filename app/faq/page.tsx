@@ -14,79 +14,79 @@ export const metadata: Metadata = {
 
 const FAQ: Array<{ question: string; answer: string }> = [
   {
-    question: "Muss ich mich registrieren?",
+    question: "Muss ich mich irgendwo registrieren?",
     answer:
-      "Nein. Für eine Anfrage reicht das Formular oder WhatsApp. Sie müssen keinen Account erstellen.",
+      "Nein. Schicken Sie mir einfach das Formular oder schreiben Sie kurz auf WhatsApp — kein Account, kein Login, nichts dergleichen.",
   },
   {
-    question: "Wie schnell ist meine Website fertig?",
+    question: "Wie schnell ist meine Seite fertig?",
     answer:
-      "Viele einfache Websites können innerhalb von 1–2 Werktagen nach vollständiger Datenlieferung umgesetzt werden. Bei größeren Projekten klären wir den Zeitplan vor Projektbeginn — transparent und verbindlich.",
+      "Wenn Sie mir alle Unterlagen geschickt haben, dauert eine einfache Seite bei mir oft nur 1–2 Werktage. Größere Projekte besprechen wir vorher in Ruhe und ich nenne Ihnen einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
   },
   {
-    question: "Was muss ich liefern?",
+    question: "Was brauchen Sie von mir?",
     answer:
-      "Logo, Bilder, Texte, Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, klären wir das gemeinsam — wir helfen bei Struktur und Formulierung.",
+      "Ihr Logo (falls vorhanden), ein paar Bilder von Ihnen oder Ihrem Betrieb, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Ihnen, was ich noch brauche — und helfe bei Formulierungen oder Bildauswahl.",
   },
   {
-    question: "Kann ich später Inhalte ändern lassen?",
+    question: "Kann ich später noch Sachen ändern lassen?",
     answer:
-      "Ja. Änderungen können wir im Rahmen der monatlichen Betreuung übernehmen. Je nach Paket sind 1, 3 oder 6 Änderungen pro Monat inklusive.",
+      "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei (1, 3 oder 6 pro Monat, je nach Paket). Sie schreiben mir kurz, was geändert werden soll — ich melde mich, mache es, und melde mich wieder, wenn es online ist.",
   },
   {
-    question: "Kann ich bestimmte Inhalte selbst verwalten?",
+    question: "Kann ich bestimmte Inhalte selbst pflegen?",
     answer:
-      "Auf Wunsch ja. Im Premium-System können bestimmte Inhalte direkt auf Ihrer Website verwaltbar gemacht werden — zum Beispiel Öffnungszeiten, Speisekarte, Wochenangebot, Leistungen oder Bilder. Das ist eine optionale Funktion, kein zentrales Login-Portal.",
+      "Wenn Sie möchten, ja. Im Premium-Paket kann ich Ihnen Bereiche einbauen, die Sie selbst aktualisieren können — Öffnungszeiten, Wochenangebot, Speisekarte, Bilder. Wenn Sie das nicht wollen, übernehme ich das. Sie entscheiden.",
   },
   {
-    question: "Was kostet eine Website?",
+    question: "Was kostet das Ganze?",
     answer:
-      "Wir arbeiten mit drei Einstiegspaketen: Starter-Projekt ab 499 €, Business-Auftritt ab 899 €, Premium-System ab 1.499 € (jeweils einmalig). Dazu kommt eine monatliche Betreuung ab 49 € / 79 € / 129 €. Der finale Preis hängt vom Projekt-Umfang ab.",
+      "Ich arbeite mit drei Einstiegspreisen: Starter ab 499 €, Business ab 899 €, Premium ab 1.499 € — jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ab 49 € / 79 € / 129 € für Hosting, Pflege und kleine Änderungen. Den genauen Endpreis nenne ich Ihnen nach Ihrer Anfrage — verbindlich, kein böses Erwachen.",
   },
   {
-    question: "Warum gibt es Einstiegspreise statt fester Endpreise?",
+    question: "Warum gibt es nur Einstiegspreise?",
     answer:
-      "Die Pakete geben eine klare Orientierung. Der finale Preis hängt davon ab, welche Inhalte vorhanden sind, welche Funktionen gewünscht werden und wie umfangreich die Website wird. Nach Ihrer Anfrage erhalten Sie eine klare und verbindliche Einschätzung.",
+      "Weil ehrlich gesagt jedes Projekt anders ist. Manche schicken mir komplette Unterlagen, andere brauchen mehr Hilfe. Manche wollen eine Seite, andere fünf. Die Einstiegspreise zeigen Ihnen, wo es losgeht — den endgültigen Preis vereinbaren wir vorher, schwarz auf weiß.",
   },
   {
-    question: "Ist Hosting enthalten?",
+    question: "Ist Hosting dabei?",
     answer:
-      "Ja. Hosting ist im monatlichen Beitrag enthalten — Server in der EU, SSL-Verschlüsselung, regelmäßige Backups. Sie brauchen kein eigenes Hosting zu organisieren.",
+      "Ja, alles inklusive. Server stehen in der EU, SSL ist Pflicht, Backups laufen automatisch. Sie müssen sich um nichts kümmern — auch nicht um Updates oder Sicherheit. Das ist mein Job.",
   },
   {
-    question: "Wird meine Website mobil optimiert?",
+    question: "Funktioniert die Seite auch auf dem Handy?",
     answer:
-      "Ja, immer. Wir bauen Mobile-First — die Website funktioniert auf Smartphone, Tablet und Desktop gleichermaßen gut. Wir testen auf echten Geräten vor der Live-Schaltung.",
+      "Ja, immer. Die meisten Ihrer Kunden schauen heute zuerst aufs Handy — also baue ich auch zuerst für das Handy. Vor dem Live-Gang teste ich auf echten Geräten, nicht nur im Simulator.",
   },
   {
-    question: "Sind SEO-Grundlagen enthalten?",
+    question: "Wird man die Seite bei Google finden?",
     answer:
-      "Ja. Saubere Seiten-Titel, Meta-Beschreibungen, klare Überschriften-Struktur, lokale Suchbegriffe, Sitemap und schnelle Ladezeiten sind in allen Paketen enthalten. Wir versprechen keine Google-Platz-1-Garantien, aber legen die solide Basis.",
+      "Ich lege die Basis sauber: Titel, Beschreibungen, klare Struktur, schnelle Ladezeiten, lokale Suchbegriffe, Sitemap. Garantieren kann Ihnen Platz 1 niemand seriös — aber das Fundament passt, und für lokale Suchen („Friseur Eimsbüttel\", „Pflegedienst Altona\") sind die Chancen sehr gut.",
   },
   {
-    question: "Sind Impressum und Datenschutz enthalten?",
+    question: "Sind Impressum und Datenschutz dabei?",
     answer:
-      "Wir integrieren die entsprechenden Seiten und Bereiche technisch. Rechtssichere Inhalte (Impressums-Text, Datenschutzerklärung) sollten Sie selbst oder von einem geeigneten Anbieter beziehen — wir können bei Bedarf Empfehlungen aussprechen.",
+      "Die Seiten lege ich technisch an. Den juristisch sicheren Text dazu sollten Sie aber von einer geeigneten Quelle beziehen — Generator, Anwalt oder Verband. Ich empfehle Ihnen gerne, was zu Ihrem Fall passt.",
   },
   {
-    question: "Kann ich meine bestehende Website modernisieren lassen?",
+    question: "Ich habe schon eine Website — kann die modernisiert werden?",
     answer:
-      'Ja. Im Anfrage-Formular können Sie „Redesign" auswählen und die URL Ihrer aktuellen Website angeben. Wir prüfen den Bestand und schlagen eine Modernisierung vor — manchmal lohnt sich auch ein Neuaufbau, das klären wir nach Ihrer Anfrage.',
+      'Ja, schauen wir uns gerne an. Im Formular wählen Sie „Redesign\" und schicken mir die URL. Ich melde mich nach einer ersten Sichtung mit ehrlicher Einschätzung — manchmal lohnt sich ein Update, manchmal ein Neuaufbau. Ich sage Ihnen, was sinnvoller ist.',
   },
   {
-    question: "Für welche Branchen erstellt Sitalo Websites?",
+    question: "Für welche Branchen arbeiten Sie?",
     answer:
-      "Wir sind auf lokale Unternehmen spezialisiert: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios und weitere lokale Dienstleister. Eine Übersicht steht auf der Branchen-Seite.",
+      "Vor allem für lokale Unternehmen in und um Hamburg: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios. Wenn Sie nicht sicher sind, ob Ihre Branche passt — fragen Sie einfach.",
   },
   {
     question: "Kann ich per WhatsApp anfragen?",
     answer:
-      "Ja. Auf der Anfrage-Seite finden Sie einen WhatsApp-Link mit vorgefüllter Nachricht. Für eine vollständige Projekt-Aufnahme ist das Formular allerdings besser geeignet, weil wir dann alle relevanten Angaben strukturiert vorliegen haben.",
+      "Sehr gerne. Auf der Anfrage-Seite finden Sie einen Knopf mit vorgefüllter Nachricht. Für die vollständige Aufnahme bitte trotzdem einmal das Formular ausfüllen — dann habe ich alles strukturiert vorliegen und kann Ihnen schneller antworten.",
   },
   {
-    question: "Was passiert nach dem Absenden der Anfrage?",
+    question: "Was passiert nach meiner Anfrage?",
     answer:
-      "Sie erhalten eine kurze Empfangsbestätigung. Wir prüfen Ihre Angaben und melden uns innerhalb von 24 Stunden persönlich mit einer ersten Einschätzung — Umfang, Zeitplan, verbindlicher Preisrahmen. Es entstehen für Sie noch keine Kosten.",
+      "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Ich schaue mir Ihre Angaben in Ruhe an und melde mich innerhalb von 24 Stunden — meist deutlich schneller — persönlich bei Ihnen. Kein Vertrag, keine Kosten, kein Druck.",
   },
 ];
 
@@ -115,8 +115,9 @@ function Hero() {
           Häufige Fragen
         </h1>
         <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-          Antworten auf die Fragen, die wir am häufigsten gestellt bekommen.
-          Sollte etwas fehlen, schreiben Sie uns einfach.
+          Hier finden Sie Antworten auf das, was Kunden mich am häufigsten
+          fragen. Wenn Ihre Frage nicht dabei ist — schreiben Sie mir einfach,
+          ich antworte persönlich.
         </p>
       </div>
     </section>
@@ -168,11 +169,11 @@ function FinalCta() {
     <section className="bg-foreground text-background py-14 sm:py-20">
       <div className="mx-auto w-full max-w-3xl px-6 text-center">
         <h2 className="text-balance text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
-          Weitere Frage?
+          Noch eine Frage offen?
         </h2>
         <p className="text-background/70 mx-auto mt-4 max-w-xl text-pretty text-base sm:text-lg">
-          Schreiben Sie uns über das Anfrage-Formular oder WhatsApp — wir
-          antworten innerhalb von 24 Stunden.
+          Schreiben Sie mir kurz — über das Formular oder WhatsApp. Ich melde
+          mich persönlich innerhalb von 24 Stunden.
         </p>
         <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row">
           <Link

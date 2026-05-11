@@ -7,7 +7,8 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
   title: "Kontakt | Sitalo Webdesign",
-  description: "Kontaktieren Sie Sitalo für Ihre professionelle Website-Anfrage.",
+  description:
+    "Schreiben Sie mir kurz — über Formular, WhatsApp oder E-Mail. Ich melde mich persönlich, meist noch am selben Tag.",
   alternates: { canonical: "/kontakt" },
 };
 
@@ -17,7 +18,7 @@ function buildWhatsappHref(): string | null {
   const digits = raw.replace(/[^\d]/g, "");
   if (digits.length < 6) return null;
   const message =
-    "Hallo Sitalo, ich interessiere mich für eine professionelle Website. Können Sie mir ein Angebot machen?";
+    "Hallo Nadim, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
@@ -35,12 +36,12 @@ export default function KontaktPage() {
               Kontakt
             </p>
             <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl">
-              Sprechen wir über Ihre Website.
+              Schreiben Sie mir.
             </h1>
             <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-              Am schnellsten erreichen Sie uns über das Anfrage-Formular oder
-              WhatsApp. Wir antworten innerhalb von 24 Stunden — persönlich,
-              nicht von einer Hotline.
+              Am schnellsten erreichen Sie mich über das Anfrage-Formular oder
+              WhatsApp. Ich melde mich persönlich innerhalb von 24 Stunden —
+              keine Hotline, kein Ticket.
             </p>
           </div>
         </section>
@@ -56,8 +57,8 @@ export default function KontaktPage() {
                   Anfrage-Formular
                 </h2>
                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  Vier kurze Schritte. Sie geben uns die wichtigsten
-                  Eckdaten, wir melden uns mit einem klaren Vorschlag.
+                  Ein paar kurze Schritte: Sie geben mir die wichtigsten
+                  Eckdaten, ich melde mich mit einem klaren Vorschlag.
                 </p>
                 <Link
                   href="/anfrage"
@@ -76,8 +77,8 @@ export default function KontaktPage() {
                   WhatsApp
                 </h2>
                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  Schnelle Rückfrage oder einfach kurz Hallo sagen — wir
-                  antworten oft noch am selben Tag.
+                  Eine schnelle Rückfrage oder einfach kurz Hallo sagen —
+                  ich antworte oft noch am selben Tag.
                 </p>
                 {whatsappHref ? (
                   <a
@@ -110,10 +111,10 @@ export default function KontaktPage() {
                     className="hover:text-foreground underline"
                   >
                     hallo@sitalo.de
-                  </a>{" "}
-                  — wir antworten oft noch am selben Tag. Für eine
-                  vollständige Projekt-Aufnahme ist allerdings das
-                  Anfrage-Formular besser geeignet.
+                  </a>
+                  . Ich antworte meist noch am selben Tag. Für eine
+                  vollständige Projekt-Aufnahme ist das Formular trotzdem
+                  praktischer — dann habe ich alles auf einen Blick.
                 </p>
               </li>
             </ul>
