@@ -29,6 +29,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "pflege",
     label: "Pflegedienste",
     inquirySlug: "pflege",
+    image: {
+      src: "/images/sitalo-pflege-laptop.png",
+      alt: "Pflegedienst-Website von Sitalo auf einem Laptop, im warmen Tageslicht eines Büros mit Pflanzen und Notizbuch.",
+    },
     body: "Pflegedienste verkaufen Vertrauen. Die Website muss Leistungen, Einzugsgebiet und seriöse Kontaktwege auf einen Blick zeigen — und gleichzeitig ein gutes Bewerbungsformular bieten, weil neue Pflegekräfte die teuerste Ressource sind.",
     bullets: [
       "Leistungen klar strukturiert (Grundpflege, Behandlungspflege, Verhinderungspflege …)",
