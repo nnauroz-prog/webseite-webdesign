@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BackToTop } from "@/components/marketing/back-to-top";
 import { SitaloLogo } from "@/components/sitalo-logo";
 
 /**
@@ -10,7 +11,9 @@ import { SitaloLogo } from "@/components/sitalo-logo";
 export function MarketingFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-border/40 bg-background border-t">
+    <>
+      <BackToTop />
+      <footer className="border-border/40 bg-background border-t">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-2 md:grid-cols-4">
         <div className="space-y-3">
           <SitaloLogo size="sm" />
@@ -42,6 +45,7 @@ export function MarketingFooter() {
         </div>
       </div>
     </footer>
+    </>
   );
 }
 
