@@ -10,18 +10,19 @@ import { cn } from "@/lib/utils";
 type NavItem = { href: string; label: string };
 
 /**
- * Default nav for the homepage onepager — each entry is either an
- * absolute path or a `/#anchor` reference that smooth-scrolls (CSS
- * scroll-margin on the target sections handles the sticky-header
- * offset).
+ * Default nav for the marketing site. Each entry points to a real
+ * page route — these used to be `/#anchor` references back when the
+ * site was a single long onepager. Now every nav item opens a
+ * dedicated subpage with full content, while the homepage carries a
+ * short overview that deep-links into the same routes.
  */
 const DEFAULT_NAV: NavItem[] = [
-  { href: "/#leistungen", label: "Leistungen" },
-  { href: "/#branchen", label: "Branchen" },
-  { href: "/#ablauf", label: "Ablauf" },
-  { href: "/#pakete", label: "Pakete" },
-  { href: "/#faq", label: "FAQ" },
-  { href: "/#kontakt", label: "Kontakt" },
+  { href: "/leistungen", label: "Leistungen" },
+  { href: "/branchen", label: "Branchen" },
+  { href: "/ablauf", label: "Ablauf" },
+  { href: "/pakete", label: "Pakete" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/kontakt", label: "Kontakt" },
 ];
 
 /**

@@ -409,6 +409,15 @@ function Solutions() {
             </li>
           ))}
         </ul>
+        <div className="mt-10 text-center">
+          <Link
+            href="/leistungen"
+            className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
+          >
+            Alle Leistungen ansehen
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -447,13 +456,19 @@ function Steps() {
             </li>
           ))}
         </ol>
-        <div className="mt-10 text-center">
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/anfrage"
             className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
           >
             Jetzt Anfrage senden
             <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+          <Link
+            href="/ablauf"
+            className="text-muted-foreground hover:text-foreground inline-flex h-11 items-center justify-center px-4 text-sm font-medium underline-offset-4 hover:underline"
+          >
+            Ablauf im Detail
           </Link>
         </div>
       </div>
@@ -563,12 +578,12 @@ function Pricing() {
 
         <p className="text-muted-foreground mx-auto mt-8 max-w-2xl text-center text-sm">
           Die finalen Kosten hängen vom Umfang, vorhandenen Inhalten und
-          gewünschten Funktionen ab. Mehr Details auf der{" "}
+          gewünschten Funktionen ab. Volle Details auf der{" "}
           <Link
-            href="/pricing"
+            href="/pakete"
             className="hover:text-foreground underline"
           >
-            Preise-Seite
+            Pakete-Seite
           </Link>
           .
         </p>
@@ -623,6 +638,15 @@ function Faq() {
             </details>
           ))}
         </dl>
+        <div className="mt-8 text-center">
+          <Link
+            href="/faq"
+            className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
+          >
+            Alle Fragen ansehen
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
