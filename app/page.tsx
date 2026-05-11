@@ -31,6 +31,21 @@ export const metadata: Metadata = {
       "Wir bauen Ihre Website fertig — keine Technik, kein Stress. In 1–2 Werktagen online.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
+    images: [
+      {
+        url: "/images/sitalo-laptop-hero.png",
+        width: 1536,
+        height: 1024,
+        alt: "Sitalo Webdesign — Laptop mit einer fertigen Kunden-Website auf einem warmen Holzschreibtisch.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sitalo — Ihre professionelle Website. Fertig in 48 Stunden.",
+    description:
+      "Wir bauen Ihre Website fertig — keine Technik, kein Stress.",
+    images: ["/images/sitalo-laptop-hero.png"],
   },
 };
 
