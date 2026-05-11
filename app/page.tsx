@@ -9,7 +9,6 @@ import {
   Send,
   Sparkles,
   Wrench,
-  X,
 } from "lucide-react";
 
 import { HeroMockups } from "@/components/marketing/hero-mockups";
@@ -63,13 +62,13 @@ const TRUST_BAR = [
   { label: "Mobil optimiert", icon: "device" as const },
 ];
 
-const PROBLEMS = [
-  "Veraltete Website, die niemand mehr besucht",
-  "Mobil sieht alles kaputt aus",
-  "Keine Zeit, sich mit Baukästen zu beschäftigen",
-  "Kontakt-Formular geht ins Nichts oder existiert gar nicht",
-  "Bei Google nicht zu finden",
-  "Baukasten angefangen, Projekt liegt seit Monaten halb fertig",
+const BENEFITS = [
+  "Eine moderne Website, die auf den ersten Blick überzeugt",
+  "Perfekte Darstellung auf Smartphone, Tablet und Desktop",
+  "Anfragen, die direkt auf Ihrem Handy landen",
+  "Saubere SEO-Basis, damit Kunden Sie bei Google finden",
+  "Hosting, Wartung und Updates aus einer Hand",
+  "Ein persönlicher Ansprechpartner — kein Support-Ticket",
 ];
 
 const SOLUTIONS = [
@@ -351,30 +350,30 @@ function Problems() {
       <div className="mx-auto w-full max-w-5xl px-6">
         <header className="mx-auto max-w-2xl text-center">
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Kennen Sie das?
+            Das bekommen Sie
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Eine eigene Website ist überfällig — aber irgendwas hält Sie auf.
+            Eine Website, die endlich für Sie arbeitet.
           </h2>
         </header>
         <ul className="mt-12 grid gap-3 sm:grid-cols-2">
-          {PROBLEMS.map((problem) => (
+          {BENEFITS.map((benefit) => (
             <li
-              key={problem}
+              key={benefit}
               className="bg-card border-border/60 flex items-start gap-3 rounded-xl border p-5 shadow-sm"
             >
-              <span className="text-destructive/80 mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center">
-                <X className="h-4 w-4" />
+              <span className="bg-emerald-500/10 text-emerald-600 mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full">
+                <Check className="h-3 w-3" />
               </span>
               <span className="text-foreground/85 text-[15px] leading-relaxed">
-                {problem}
+                {benefit}
               </span>
             </li>
           ))}
         </ul>
         <div className="mx-auto mt-10 max-w-xl text-center">
           <p className="text-foreground text-lg font-medium">
-            Wir übernehmen das für Sie.
+            Sie liefern die Daten, wir übernehmen den Rest.
           </p>
           <Link
             href="/anfrage"
