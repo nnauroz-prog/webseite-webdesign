@@ -12,6 +12,10 @@ import {
   notifyInquiryReceived,
   notifyNewInquiry,
 } from "@/lib/email/notifications";
+import {
+  isFormspreeConfigured,
+  sendToFormspree,
+} from "@/lib/formspree/client";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/auth";
@@ -104,29 +108,65 @@ export async function submitInquiryAction(
   }
   console.log("[submitInquiryAction] inserted into inquiries");
 
-  // Best-effort email — never blocks the success response.
-  try {
-    await notifyNewInquiry({
-      toEmail: getInquiryRecipient(),
-      inquiry: {
-        name: data.name,
-        email: data.email,
-        company: data.company ?? null,
-        industry: data.industry ?? null,
-        phone: data.phone ?? null,
-        has_website: data.has_website,
-        current_website: data.current_website ?? null,
-        needs: data.needs,
-        selected_package: data.selected_package ?? null,
-        special_features: data.special_features,
-        timeframe: data.timeframe ?? null,
-        message: data.message ?? null,
+  // Mail transport: Formspree first if configured (most reliable,
+  // handles inbox reputation for us), else Resend, else nothing.
+  // Either way the inquiry is already saved in Supabase so the lead
+  // is never lost.
+  if (isFormspreeConfigured()) {
+    const result = await sendToFormspree({
+      subject: `Neue Anfrage von ${data.name}${data.company ? ` (${data.company})` : ""}`,
+      replyTo: data.email,
+      fields: {
+        Name: data.name,
+        Firma: data.company ?? null,
+        Branche: data.industry ?? null,
+        Telefon: data.phone ?? null,
+        "E-Mail": data.email,
+        "Bestehende Website": data.has_website ? "Ja" : "Nein",
+        "Website-URL": data.current_website ?? null,
+        Bedarf: data.needs.length > 0 ? data.needs.join(", ") : null,
+        "Paket-Interesse": data.selected_package ?? null,
+        Sonderwünsche:
+          data.special_features.length > 0
+            ? data.special_features.join(", ")
+            : null,
+        Wunschzeitraum: data.timeframe ?? null,
+        Nachricht: data.message ?? null,
       },
     });
-  } catch (err) {
-    console.error("[submitInquiryAction] notification failed", {
-      message: err instanceof Error ? err.message : String(err),
-    });
+    if (result.ok) {
+      console.log("[submitInquiryAction] formspree sent");
+    } else {
+      console.error("[submitInquiryAction] formspree failed", {
+        status: result.status,
+        error: result.error,
+      });
+    }
+  } else {
+    // Best-effort Resend fallback. Never blocks the success response.
+    try {
+      await notifyNewInquiry({
+        toEmail: getInquiryRecipient(),
+        inquiry: {
+          name: data.name,
+          email: data.email,
+          company: data.company ?? null,
+          industry: data.industry ?? null,
+          phone: data.phone ?? null,
+          has_website: data.has_website,
+          current_website: data.current_website ?? null,
+          needs: data.needs,
+          selected_package: data.selected_package ?? null,
+          special_features: data.special_features,
+          timeframe: data.timeframe ?? null,
+          message: data.message ?? null,
+        },
+      });
+    } catch (err) {
+      console.error("[submitInquiryAction] notification failed", {
+        message: err instanceof Error ? err.message : String(err),
+      });
+    }
   }
 
   // Best-effort customer-confirmation. Same fail-soft semantics —

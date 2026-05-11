@@ -27,6 +27,7 @@ export async function GET() {
   const leadEmail = process.env.LEAD_NOTIFICATION_EMAIL ?? "";
   const inquiryTo = process.env.SITALO_INQUIRY_TO ?? "";
   const whatsappNumber = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER ?? "";
+  const formspreeId = process.env.FORMSPREE_FORM_ID ?? "";
 
   // Show which lead recipient the action would actually use right
   // now, with the same fallback chain as lib/actions/inquiries.ts.
@@ -52,14 +53,21 @@ export async function GET() {
       NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER: presence(whatsappNumber, {
         showPrefix: true,
       }),
+      FORMSPREE_FORM_ID: presence(formspreeId, { showPrefix: true }),
     },
     leads: {
       resolved_recipient: resolvedLeadRecipient,
       mail_from: mailFrom || "(empty — Resend will reject)",
-      hint:
-        resendKey && mailFrom
-          ? "Visit /api/diag/lead-test?secret=<CRON_SECRET> to send a real test email and see Resend's response."
-          : "RESEND_API_KEY and MAIL_FROM must both be set for the agency notification to leave the server.",
+      transport: formspreeId
+        ? "formspree"
+        : resendKey
+          ? "resend"
+          : "(none configured — inquiries will save to DB but no email leaves)",
+      hint: formspreeId
+        ? "Formspree active. Submit /anfrage to test — the mail goes to the address the Formspree form is wired to."
+        : resendKey && mailFrom
+          ? "Resend active. Visit /api/diag/lead-test to send a real test email and see Resend's response."
+          : "Set FORMSPREE_FORM_ID (preferred) or RESEND_API_KEY + MAIL_FROM for outbound email.",
     },
   });
 }
