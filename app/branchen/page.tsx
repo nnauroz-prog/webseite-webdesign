@@ -97,6 +97,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "handwerker",
     label: "Handwerker",
     inquirySlug: "handwerker",
+    image: {
+      src: "/images/sitalo-handwerker-laptop.png",
+      alt: 'Tischlerei-Website von Sitalo („Maßarbeit mit Tradition und Leidenschaft") auf einem Laptop auf einer Werkbank.',
+    },
     body: "Im Handwerk kommt der Auftrag oft schon vor dem ersten Telefonat. Eine Website mit klaren Leistungen, Referenz-Bildern und kurzem Anfrageweg gewinnt Aufträge, die sonst beim nächsten Konkurrenten landen.",
     bullets: [
       "Leistungen und Einsatzgebiet klar dargestellt",
@@ -144,6 +148,10 @@ const BRANCHEN: BranchEntry[] = [
     slug: "fitness",
     label: "Fitnessstudios",
     inquirySlug: "fitness",
+    image: {
+      src: "/images/sitalo-fitness-laptop.png",
+      alt: 'Fitnessstudio-Website von Sitalo („Stronger Every Day. Premium Training.") auf einem Laptop im Studio.',
+    },
     body: "Studios verkaufen Mitgliedschaften. Probetraining und Kursplan müssen ohne Hürden zu finden sein, und der Anmeldeweg darf nicht in einer veralteten PDF enden.",
     bullets: [
       "Kursplan und Trainer:innen sichtbar",
