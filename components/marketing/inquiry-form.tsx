@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { ArrowRight } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { SubmitButton } from "@/components/dashboard/submit-button";
-import { submitInquiryAction } from "@/lib/actions/inquiries";
-import { initialInquiryState } from "@/lib/actions/states";
 import {
   INQUIRY_NEEDS,
   INQUIRY_SPECIAL_FEATURES,
@@ -81,11 +81,7 @@ const PACKAGES: PackageCard[] = [
     priceLine: "ab 1.499 € einmalig + ab 129 € / Monat",
     description:
       "Für individuelle Websites mit verwaltbaren Inhalten direkt auf Ihrer Seite.",
-    benefits: [
-      "Verwaltbare Inhalte",
-      "Individuelle Struktur",
-      "Premium-Design",
-    ],
+    benefits: ["Verwaltbare Inhalte", "Individuelle Struktur", "Premium-Design"],
   },
   {
     value: "unsicher",
@@ -96,28 +92,93 @@ const PACKAGES: PackageCard[] = [
   },
 ];
 
+type FormState =
+  | { status: "idle" }
+  | { status: "submitting" }
+  | { status: "success" }
+  | { status: "error"; message: string };
+
+/**
+ * Posts the inquiry directly to Formspree from the browser. No
+ * server action, no Supabase, no Resend in between — the whole
+ * stack that kept silently swallowing submissions is bypassed.
+ *
+ * The form ID is passed in as a prop so the server component
+ * resolves it from `FORMSPREE_FORM_ID`. When the form ID isn't
+ * configured we still render the form, but disable the submit
+ * button and explain why.
+ */
 export function InquiryForm({
   initialPackage,
+  formspreeId,
 }: {
   initialPackage?: InquiryPackage;
+  formspreeId?: string;
 }) {
-  const [state, formAction] = useActionState(
-    submitInquiryAction,
-    initialInquiryState,
-  );
   const formRef = useRef<HTMLFormElement>(null);
   const [hasWebsite, setHasWebsite] = useState<"ja" | "nein">("nein");
   const [selectedPackage, setSelectedPackage] = useState<
     InquiryPackage | null
   >(initialPackage ?? null);
-  // Shown in the error-state fallback when the env var is configured.
-  // Reads NEXT_PUBLIC_… at module level — value is baked into the
-  // client bundle so this is safe to use in a client component.
+  const [state, setState] = useState<FormState>({ status: "idle" });
   const whatsappFallbackHref = buildWhatsappFallbackHref();
 
   useEffect(() => {
     if (state.status === "success") formRef.current?.reset();
-  }, [state]);
+  }, [state.status]);
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!formspreeId) {
+      setState({
+        status: "error",
+        message:
+          "Anfrage-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder per WhatsApp schreiben.",
+      });
+      return;
+    }
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    // Honeypot — bots fill it, humans don't.
+    if ((formData.get("website_url") ?? "").toString().trim() !== "") {
+      setState({ status: "success" });
+      return;
+    }
+
+    setState({ status: "submitting" });
+    try {
+      const response = await fetch(
+        `https://formspree.io/f/${formspreeId}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(buildFormspreePayload(formData)),
+        },
+      );
+      if (response.ok) {
+        setState({ status: "success" });
+      } else {
+        const detail = await response.text().catch(() => "");
+        setState({
+          status: "error",
+          message:
+            detail || `Die Anfrage konnte gerade nicht gesendet werden (HTTP ${response.status}).`,
+        });
+      }
+    } catch (err) {
+      setState({
+        status: "error",
+        message:
+          err instanceof Error
+            ? `Netzwerkfehler: ${err.message}`
+            : "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.",
+      });
+    }
+  }
 
   if (state.status === "success") {
     return (
@@ -138,12 +199,15 @@ export function InquiryForm({
           Anfrage angekommen.
         </h2>
         <p className="text-muted-foreground mt-3 text-pretty">
-          {state.message}
+          Wir haben Ihre Nachricht erhalten und melden uns zeitnah.
         </p>
         <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
-          In der Zwischenzeit kannst du dir gerne unsere{" "}
-          <Link href="/#passt-zu-ihnen" className="hover:text-foreground underline">
-            Beispiele
+          In der Zwischenzeit können Sie unsere{" "}
+          <Link
+            href="/#branchen"
+            className="hover:text-foreground underline"
+          >
+            Branchen-Beispiele
           </Link>{" "}
           ansehen.
         </p>
@@ -154,10 +218,11 @@ export function InquiryForm({
   return (
     <form
       ref={formRef}
-      action={formAction}
+      onSubmit={onSubmit}
+      noValidate={false}
       className="bg-card ring-border/50 space-y-8 rounded-3xl border p-8 shadow-xl ring-1 sm:p-10"
     >
-      {/* Honeypot */}
+      {/* Honeypot — visually hidden, ignored by humans, filled by bots. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-[-9999px] h-0 w-0 overflow-hidden"
@@ -172,7 +237,7 @@ export function InquiryForm({
         />
       </div>
 
-      {state.status === "error" && state.message && (
+      {state.status === "error" && (
         <Alert variant="destructive">
           <AlertDescription>
             {state.message}
@@ -182,7 +247,7 @@ export function InquiryForm({
                   href={whatsappFallbackHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline-offset-4 font-medium hover:underline"
+                  className="font-medium underline-offset-4 hover:underline"
                 >
                   → Direkt per WhatsApp schreiben
                 </a>
@@ -201,21 +266,18 @@ export function InquiryForm({
             name="name"
             autoComplete="name"
             maxLength={120}
-            error={state.fieldErrors?.name}
           />
           <Field
             label="Firma"
             name="company"
             autoComplete="organization"
             maxLength={120}
-            error={state.fieldErrors?.company}
           />
           <Field
             label="Branche"
             name="industry"
             placeholder="z.B. Pflegedienst"
             maxLength={60}
-            error={state.fieldErrors?.industry}
           />
           <Field
             label="Telefon"
@@ -223,7 +285,6 @@ export function InquiryForm({
             type="tel"
             autoComplete="tel"
             maxLength={40}
-            error={state.fieldErrors?.phone}
           />
           <Field
             label="E-Mail"
@@ -232,7 +293,6 @@ export function InquiryForm({
             type="email"
             autoComplete="email"
             className="sm:col-span-2"
-            error={state.fieldErrors?.email}
           />
         </div>
       </FormSection>
@@ -269,7 +329,6 @@ export function InquiryForm({
               placeholder="https://…"
               autoCapitalize="none"
               spellCheck={false}
-              error={state.fieldErrors?.current_website}
             />
           </div>
         )}
@@ -328,9 +387,7 @@ export function InquiryForm({
                     </h4>
                     <p
                       className={`mt-1 text-xs font-medium ${
-                        selected
-                          ? "text-foreground"
-                          : "text-muted-foreground"
+                        selected ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
                       {pkg.priceLine}
@@ -339,9 +396,7 @@ export function InquiryForm({
                   <span
                     aria-hidden="true"
                     className={`mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                      selected
-                        ? "border-foreground bg-foreground"
-                        : "border-border"
+                      selected ? "border-foreground bg-foreground" : "border-border"
                     }`}
                   >
                     {selected ? (
@@ -379,11 +434,6 @@ export function InquiryForm({
           Umfang, vorhandenen Inhalten und gewünschten Funktionen ab. Sie
           erhalten nach Ihrer Anfrage eine klare Einschätzung.
         </p>
-        {state.fieldErrors?.selected_package && (
-          <p className="text-destructive mt-2 text-sm">
-            {state.fieldErrors.selected_package}
-          </p>
-        )}
       </FormSection>
 
       {/* 5. Special features */}
@@ -419,7 +469,6 @@ export function InquiryForm({
             value: v,
             label: TIMEFRAME_LABELS[v],
           }))}
-          error={state.fieldErrors?.timeframe}
         />
       </FormSection>
 
@@ -432,9 +481,6 @@ export function InquiryForm({
           maxLength={4000}
           placeholder="Was sollen wir wissen? Was ist Ihnen wichtig?"
         />
-        {state.fieldErrors?.message && (
-          <p className="text-destructive text-sm">{state.fieldErrors.message}</p>
-        )}
       </FormSection>
 
       {/* 8. Consent */}
@@ -442,34 +488,42 @@ export function InquiryForm({
         <input
           type="checkbox"
           name="consent"
+          value="yes"
           required
           className="mt-1 h-4 w-4 shrink-0"
         />
         <span className="text-muted-foreground leading-relaxed">
           Ich habe die{" "}
-          <Link
-            href="/datenschutz"
-            className="hover:text-foreground underline"
-          >
+          <Link href="/datenschutz" className="hover:text-foreground underline">
             Datenschutzerklärung
           </Link>{" "}
           gelesen und akzeptiere die Verarbeitung meiner Daten zur Bearbeitung
           dieser Anfrage.
         </span>
       </label>
-      {state.fieldErrors?.consent && (
-        <p className="text-destructive -mt-4 text-sm">
-          {state.fieldErrors.consent}
-        </p>
-      )}
 
       <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-        <SubmitButton label="Anfrage senden" pendingLabel="Wird gesendet …" />
+        <SendButton submitting={state.status === "submitting"} />
         <p className="text-muted-foreground text-xs">
           Antwort innerhalb von 24 Stunden, persönlich.
         </p>
       </div>
     </form>
+  );
+}
+
+function SendButton({ submitting }: { submitting: boolean }) {
+  const { pending } = useFormStatus();
+  const isBusy = submitting || pending;
+  return (
+    <Button
+      type="submit"
+      disabled={isBusy}
+      className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+    >
+      {isBusy ? "Wird gesendet …" : "Anfrage senden"}
+      {isBusy ? null : <ArrowRight className="ml-2 h-4 w-4" />}
+    </Button>
   );
 }
 
@@ -511,7 +565,6 @@ function Field({
   autoComplete,
   maxLength,
   className,
-  error,
   autoCapitalize,
   spellCheck,
 }: {
@@ -523,7 +576,6 @@ function Field({
   autoComplete?: string;
   maxLength?: number;
   className?: string;
-  error?: string;
   autoCapitalize?: "none" | "sentences" | "words";
   spellCheck?: boolean;
 }) {
@@ -548,9 +600,7 @@ function Field({
         maxLength={maxLength}
         autoCapitalize={autoCapitalize}
         spellCheck={spellCheck}
-        aria-invalid={Boolean(error) || undefined}
       />
-      {error && <p className="text-destructive text-sm">{error}</p>}
     </div>
   );
 }
@@ -559,12 +609,10 @@ function SelectField({
   label,
   name,
   options,
-  error,
 }: {
   label: string;
   name: string;
   options: { value: string; label: string }[];
-  error?: string;
 }) {
   const id = `inq-${name}`;
   return (
@@ -583,9 +631,57 @@ function SelectField({
           </option>
         ))}
       </select>
-      {error && <p className="text-destructive text-sm">{error}</p>}
     </div>
   );
+}
+
+/**
+ * Map FormData into a Formspree-friendly object. Keys are rendered
+ * as rows in the email Formspree sends — using readable German
+ * labels so the inbox reads naturally.
+ */
+function buildFormspreePayload(formData: FormData): Record<string, unknown> {
+  const get = (key: string) => {
+    const v = formData.get(key);
+    return v == null ? "" : v.toString().trim();
+  };
+  const getAll = (key: string) =>
+    formData.getAll(key).map((v) => v.toString().trim()).filter(Boolean);
+
+  const name = get("name");
+  const company = get("company");
+  const email = get("email");
+
+  const payload: Record<string, unknown> = {
+    Name: name,
+    "E-Mail": email,
+    _subject: `Neue Anfrage von ${name}${company ? ` (${company})` : ""}`,
+    _replyto: email,
+  };
+
+  if (company) payload.Firma = company;
+  const industry = get("industry");
+  if (industry) payload.Branche = industry;
+  const phone = get("phone");
+  if (phone) payload.Telefon = phone;
+  const hasWebsite = get("has_website") === "ja";
+  payload["Bestehende Website"] = hasWebsite ? "Ja" : "Nein";
+  if (hasWebsite) {
+    const url = get("current_website");
+    if (url) payload["Website-URL"] = url;
+  }
+  const needs = getAll("needs");
+  if (needs.length > 0) payload.Bedarf = needs.join(", ");
+  const pkg = get("selected_package");
+  if (pkg) payload["Paket-Interesse"] = pkg;
+  const specials = getAll("special_features");
+  if (specials.length > 0) payload.Sonderwünsche = specials.join(", ");
+  const timeframe = get("timeframe");
+  if (timeframe) payload.Wunschzeitraum = timeframe;
+  const message = get("message");
+  if (message) payload.Nachricht = message;
+
+  return payload;
 }
 
 function buildWhatsappFallbackHref(): string | null {

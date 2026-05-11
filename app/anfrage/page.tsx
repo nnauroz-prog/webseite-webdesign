@@ -43,6 +43,7 @@ export default async function AnfragePage({
 }) {
   const params = await searchParams;
   const initialPackage = resolveInitialPackage(params.paket);
+  const formspreeId = process.env.FORMSPREE_FORM_ID?.trim() || undefined;
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -113,7 +114,10 @@ export default async function AnfragePage({
             </div>
 
             <div>
-              <InquiryForm initialPackage={initialPackage} />
+              <InquiryForm
+                initialPackage={initialPackage}
+                formspreeId={formspreeId}
+              />
             </div>
           </div>
         </section>
