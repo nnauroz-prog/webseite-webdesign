@@ -51,6 +51,13 @@ const SPECIAL_LABELS: Record<InquirySpecialFeature, string> = {
   unsicher: "Noch unsicher",
 };
 
+const PACKAGE_LABELS: Record<InquiryPackage, string> = {
+  starter: "Starter-Projekt",
+  business: "Business-Auftritt",
+  premium: "Premium-System",
+  unsicher: "Ich bin unsicher — bitte empfehlen",
+};
+
 type PackageCard = {
   value: InquiryPackage;
   title: string;
@@ -636,9 +643,9 @@ function SelectField({
 }
 
 /**
- * Map FormData into a Formspree-friendly object. Keys are rendered
- * as rows in the email Formspree sends — using readable German
- * labels so the inbox reads naturally.
+ * Map FormData into a Formspree-friendly object. Slugs are looked up
+ * in the label dictionaries so the inbox reads naturally — e.g. the
+ * Wunschzeitraum row shows "Innerhalb von 2 Wochen", not "2-wochen".
  */
 function buildFormspreePayload(formData: FormData): Record<string, unknown> {
   const get = (key: string) => {
@@ -671,13 +678,28 @@ function buildFormspreePayload(formData: FormData): Record<string, unknown> {
     if (url) payload["Website-URL"] = url;
   }
   const needs = getAll("needs");
-  if (needs.length > 0) payload.Bedarf = needs.join(", ");
+  if (needs.length > 0) {
+    payload.Bedarf = needs
+      .map((slug) => NEED_LABELS[slug as InquiryNeed] ?? slug)
+      .join(", ");
+  }
   const pkg = get("selected_package");
-  if (pkg) payload["Paket-Interesse"] = pkg;
+  if (pkg) {
+    payload["Paket-Interesse"] =
+      PACKAGE_LABELS[pkg as InquiryPackage] ?? pkg;
+  }
   const specials = getAll("special_features");
-  if (specials.length > 0) payload.Sonderwünsche = specials.join(", ");
+  if (specials.length > 0) {
+    payload.Sonderwünsche = specials
+      .map((slug) => SPECIAL_LABELS[slug as InquirySpecialFeature] ?? slug)
+      .join(", ");
+  }
   const timeframe = get("timeframe");
-  if (timeframe) payload.Wunschzeitraum = timeframe;
+  if (timeframe) {
+    payload.Wunschzeitraum =
+      TIMEFRAME_LABELS[timeframe as (typeof INQUIRY_TIMEFRAMES)[number]] ??
+      timeframe;
+  }
   const message = get("message");
   if (message) payload.Nachricht = message;
 
