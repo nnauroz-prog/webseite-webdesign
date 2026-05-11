@@ -18,4 +18,3 @@ export const initialLeadState: ActionState = idleState;
 export const initialApplicationState: ActionState = idleState;
 export const initialBookingState: ActionState = idleState;
 export const initialAdminState: ActionState = idleState;
-export const initialInquiryState: ActionState = idleState;
