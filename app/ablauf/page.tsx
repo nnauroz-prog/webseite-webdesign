@@ -98,19 +98,24 @@ export default function AblaufPage() {
 
 function Hero() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32 lg:pb-36">
-        <div className="max-w-3xl">
-          <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
-            So läuft es
-            <br />
-            <span className="serif-italic text-muted-foreground font-normal">
-              bei mir ab.
-            </span>
-          </h1>
-          <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
-            Sechs Schritte, ein Ansprechpartner. Sie schreiben mir, wir
-            sprechen, ich baue — und danach bleibe ich da.
+    <section className="bg-secondary/40 border-border/40 border-b">
+      <div className="mx-auto w-full max-w-7xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 lg:pt-36">
+        <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+              Ablauf
+            </p>
+            <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+              Sechs Schritte.
+              <br />
+              <span className="serif-italic text-muted-foreground font-normal">
+                Vom Hallo zum Live-Gang.
+              </span>
+            </h1>
+          </div>
+          <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
+            Sie schreiben mir, wir sprechen, ich baue — und danach bleibe
+            ich da. Kein Papierkram dazwischen, kein verlorenes Ticket.
           </p>
         </div>
       </div>
@@ -120,42 +125,82 @@ function Hero() {
 
 function Steps() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <ol className="divide-border/60 divide-y">
-          {STEPS.map((step) => (
-            <li
-              key={step.number}
-              className="grid gap-10 py-14 sm:py-20 lg:grid-cols-[0.7fr_1.6fr] lg:gap-20"
-            >
-              <div>
-                <span className="serif text-foreground/15 block text-[6rem] font-normal leading-none tracking-[-0.04em] sm:text-[8rem]">
+    <section className="relative">
+      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-32">
+        {/* Vertical timeline spine — hidden on mobile, centered on lg+ */}
+        <div
+          aria-hidden="true"
+          className="border-border/70 absolute top-20 bottom-20 left-1/2 hidden -translate-x-1/2 border-l lg:block"
+        />
+        <ol className="space-y-20 sm:space-y-28">
+          {STEPS.map((step, i) => {
+            const right = i % 2 === 1;
+            return (
+              <li
+                key={step.number}
+                className={`relative grid gap-10 lg:grid-cols-2 lg:gap-20 ${
+                  right ? "lg:[&>div:first-child]:order-2" : ""
+                }`}
+              >
+                <div
+                  className={
+                    right
+                      ? "lg:pl-16 lg:text-left"
+                      : "lg:pr-16 lg:text-right"
+                  }
+                >
+                  <h2 className="text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
+                    {step.title}
+                  </h2>
+                  <p className="text-foreground/75 mt-6 text-pretty text-base leading-relaxed sm:text-lg">
+                    {step.body}
+                  </p>
+                </div>
+                <div
+                  className={
+                    right
+                      ? "lg:pr-16 lg:text-right"
+                      : "lg:pl-16 lg:text-left"
+                  }
+                >
+                  <ul
+                    className={
+                      right
+                        ? "lg:[&>li]:justify-end space-y-3"
+                        : "space-y-3"
+                    }
+                  >
+                    {step.bullets.map((b) => (
+                      <li
+                        key={b}
+                        className="text-foreground/80 flex items-baseline gap-3 text-[15px] leading-relaxed sm:text-base"
+                      >
+                        <span className="text-muted-foreground/60 font-mono text-xs">
+                          ·
+                        </span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Spine marker — large numeral on the center line */}
+                <div
+                  aria-hidden="true"
+                  className="bg-background absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 px-3 lg:block"
+                >
+                  <span className="serif text-foreground/25 block text-[6rem] font-normal leading-none tracking-[-0.04em]">
+                    {step.number}
+                  </span>
+                </div>
+
+                {/* Mobile: numeral on top, no spine */}
+                <span className="serif text-foreground/20 absolute -top-12 left-0 text-[5rem] font-normal leading-none tracking-[-0.04em] lg:hidden">
                   {step.number}
                 </span>
-                <h2 className="mt-6 text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
-                  {step.title}
-                </h2>
-              </div>
-              <div>
-                <p className="text-foreground/80 max-w-xl text-pretty text-lg leading-relaxed">
-                  {step.body}
-                </p>
-                <ul className="divide-border/60 mt-8 divide-y">
-                  {step.bullets.map((b) => (
-                    <li
-                      key={b}
-                      className="text-foreground/85 flex items-baseline gap-4 py-3 text-[15px] leading-relaxed sm:text-base"
-                    >
-                      <span className="text-muted-foreground/70 font-mono text-xs">
-                        ·
-                      </span>
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ol>
       </div>
     </section>
@@ -164,22 +209,22 @@ function Steps() {
 
 function Tempo() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
-          Wie schnell
+    <section className="bg-secondary/40 border-border/40 border-t border-b">
+      <div className="mx-auto w-full max-w-5xl px-6 py-24 text-center sm:py-32">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+          Tempo
         </p>
-        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
+        <h2 className="text-foreground mx-auto mt-8 max-w-3xl text-balance text-3xl font-semibold leading-[1.15] tracking-[-0.03em] sm:text-5xl">
           Viele einfache Seiten sind bei mir{" "}
-          <span className="serif-italic text-muted-foreground font-normal">
+          <span className="serif-italic text-foreground/50 font-normal">
             in 1–2 Werktagen
           </span>{" "}
-          fertig — wenn Sie mir Ihre Unterlagen geschickt haben.
+          fertig.
         </h2>
-        <p className="text-muted-foreground mt-8 max-w-2xl text-pretty text-lg leading-relaxed">
+        <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
           Bei größeren Projekten oder fehlenden Inhalten besprechen wir
-          vorab einen verbindlichen Termin. Ich verspreche nichts, was ich
-          nicht halten kann.
+          vorab einen verbindlichen Termin.
+          <span className="serif-italic"> Ich verspreche nichts, was ich nicht halten kann.</span>
         </p>
       </div>
     </section>
@@ -188,36 +233,31 @@ function Tempo() {
 
 function FinalCta() {
   return (
-    <section className="bg-foreground text-background relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="bg-gold/15 pointer-events-none absolute top-10 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-3xl"
-      />
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 text-center sm:py-32">
-        <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-          Klingt nach einem
-          <br />
-          <span className="serif-italic text-background/70 font-normal">
-            guten Weg?
-          </span>
-        </h2>
-        <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-          Beantworten Sie ein paar kurze Fragen im Formular — ich melde
-          mich innerhalb von 24 Stunden persönlich bei Ihnen.
-        </p>
-        <div className="mt-10 flex justify-center">
+    <section className="border-border/40 border-t">
+      <div className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32">
+        <div className="flex flex-col items-start gap-10 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
+              Schritt 01.
+              <br />
+              <span className="serif-italic text-muted-foreground font-normal">
+                Sie schreiben mir.
+              </span>
+            </h2>
+            <p className="text-muted-foreground mt-6 max-w-md text-lg leading-relaxed">
+              Antwort innerhalb von 24 Stunden. Persönlich, von mir.
+            </p>
+          </div>
           <Link
             href="/anfrage"
-            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
+            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
           >
-            Projekt starten
+            Anfrage starten
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
-        <p className="serif-italic text-background/80 mt-12 text-xl">
-          — Nadim Nauroz, Hamburg
-        </p>
       </div>
     </section>
   );
 }
+

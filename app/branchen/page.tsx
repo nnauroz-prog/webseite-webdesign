@@ -179,23 +179,67 @@ export default function BranchenPage() {
 
 function Hero() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32 lg:pb-36">
-        <div className="max-w-3xl">
-          <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
-            Websites,
-            <br />
-            <span className="serif-italic text-muted-foreground font-normal">
-              die zu Ihrer Branche passen.
-            </span>
-          </h1>
-          <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
-            Ich passe Struktur, Design und Inhalte an Ihren Alltag an —
-            vom Pflegedienst bis zum Café um die Ecke.
-          </p>
+    <>
+      <section className="border-border/40 border-b">
+        <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32">
+          <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
+            <div>
+              <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                Branchen
+              </p>
+              <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+                Layouts, die zu
+                <br />
+                <span className="serif-italic text-muted-foreground font-normal">
+                  Ihrem Alltag passen.
+                </span>
+              </h1>
+            </div>
+            <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
+              Eine Pflegedienst-Seite muss anders aussehen als ein Café —
+              und beide anders als eine Kanzlei. Ich passe Struktur und
+              Tonalität an Ihre Branche an.
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      {/* Horizontal gallery strip — preview of all branches */}
+      <section className="border-border/40 overflow-hidden border-b py-8 sm:py-10">
+        <div className="-mx-6 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <ul className="mx-auto flex w-max gap-3 sm:gap-4">
+            {BRANCHEN.map((b) => (
+              <li key={b.slug} className="shrink-0">
+                <a
+                  href={`#${b.slug}`}
+                  className="group block w-[200px] sm:w-[260px]"
+                >
+                  {b.image ? (
+                    <div className="bg-secondary/40 relative aspect-[16/10] w-full overflow-hidden rounded-xl ring-1 ring-black/5 transition-shadow group-hover:shadow-[0_20px_40px_-16px_rgb(0_0_0/0.25)]">
+                      <Image
+                        src={b.image.src}
+                        alt={b.image.alt}
+                        fill
+                        sizes="260px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-secondary/50 flex aspect-[16/10] w-full items-center justify-center rounded-xl ring-1 ring-black/5">
+                      <span className="text-muted-foreground/40 serif text-3xl">
+                        {b.label[0]}
+                      </span>
+                    </div>
+                  )}
+                  <p className="text-foreground/85 group-hover:text-foreground mt-3 text-sm font-medium tracking-tight transition-colors">
+                    {b.label}
+                  </p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -207,7 +251,8 @@ function Sections() {
           {BRANCHEN.map((b, i) => (
             <li
               key={b.slug}
-              className="grid gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-20"
+              id={b.slug}
+              className="scroll-mt-20 grid gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-20"
             >
               <div
                 className={
@@ -281,35 +326,26 @@ function Sections() {
 
 function FinalCta() {
   return (
-    <section className="bg-foreground text-background relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="bg-gold/15 pointer-events-none absolute top-10 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-3xl"
-      />
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 text-center sm:py-32">
-        <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-          Ihre Branche
-          <br />
-          <span className="serif-italic text-background/70 font-normal">
-            nicht dabei?
-          </span>
-        </h2>
-        <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-          Ich baue Websites für lokale Unternehmen aller Art — sagen Sie mir
-          einfach, was Sie brauchen.
-        </p>
-        <div className="mt-10 flex justify-center">
-          <Link
-            href="/anfrage"
-            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-          >
-            Anfrage starten
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+    <section className="bg-accent/30 border-border/40 border-t">
+      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
+        <div className="text-center">
+          <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
+            Ihre Branche{" "}
+            <span className="serif-italic text-muted-foreground">
+              nicht dabei?
+            </span>{" "}
+            Fragen Sie mich trotzdem.
+          </p>
+          <div className="mt-10 flex justify-center">
+            <Link
+              href="/anfrage"
+              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
+            >
+              Anfrage starten
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
         </div>
-        <p className="serif-italic text-background/80 mt-12 text-xl">
-          — Nadim Nauroz, Hamburg
-        </p>
       </div>
     </section>
   );
