@@ -134,24 +134,26 @@ export function IndustryPicker() {
   return (
     <section
       id="branchen"
-      className="bg-secondary/30 border-border/40 border-b py-16 sm:py-24 scroll-mt-20"
+      className="border-border/40 border-t scroll-mt-20"
     >
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-            Branchen
-          </p>
-          <h2 className="mt-3 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
-            Welche Website brauchen Sie?
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        <div className="max-w-2xl">
+          <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+            Welche Seite
+            <br />
+            <span className="serif-italic text-muted-foreground font-normal">
+              brauchen Sie?
+            </span>
           </h2>
-          <p className="text-muted-foreground mx-auto mt-3 max-w-lg text-[15px] sm:text-base">
-            Wählen Sie Ihre Branche.
+          <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-lg leading-relaxed">
+            Wählen Sie Ihre Branche. Jede bekommt ein Layout, das wirklich
+            zu Ihrem Alltag passt — nicht eine Vorlage von der Stange.
           </p>
-        </header>
+        </div>
 
-        {/* Chips — horizontal scroll on mobile, wrap-center on desktop */}
-        <div className="-mx-6 mt-8 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap sm:justify-center">
+        {/* Chips */}
+        <div className="-mx-6 mt-12 overflow-x-auto px-6 sm:mt-16 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
             {INDUSTRIES.map((industry) => {
               const active = industry.slug === selected.slug;
               return (
@@ -160,10 +162,10 @@ export function IndustryPicker() {
                   type="button"
                   onClick={() => setSelected(industry)}
                   aria-pressed={active}
-                  className={`inline-flex shrink-0 items-center rounded-full border px-3.5 py-2 text-[13px] font-medium tracking-tight transition-all sm:text-sm ${
+                  className={`inline-flex shrink-0 items-center rounded-full border px-4 py-2 text-sm font-medium tracking-tight transition-all ${
                     active
-                      ? "border-foreground bg-foreground text-background shadow-md ring-2 ring-foreground/15"
-                      : "border-border/70 bg-card text-foreground/75 hover:border-foreground/40 hover:bg-background hover:text-foreground"
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border/70 text-foreground/65 hover:border-foreground/40 hover:text-foreground"
                   }`}
                 >
                   {industry.label}
@@ -173,44 +175,45 @@ export function IndustryPicker() {
           </div>
         </div>
 
-        {/* Detail card */}
-        <div className="bg-card border-border/60 mx-auto mt-6 max-w-3xl rounded-2xl border p-6 shadow-md sm:mt-8 sm:rounded-3xl sm:p-8">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-7">
-            <div className="flex-1">
-              <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
-                {selected.label}
-              </p>
-              <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
-                {selected.headline}
-              </h3>
-              <p className="text-muted-foreground mt-2 text-[14px] leading-relaxed sm:text-[15px]">
-                {selected.body}
-              </p>
-              <ul className="mt-4 space-y-1.5 text-sm">
-                {selected.bullets.map((bullet) => (
-                  <li
-                    key={bullet}
-                    className="flex items-start gap-2.5"
-                  >
-                    <span className="bg-primary mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full" />
-                    <span className="text-foreground/85">{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        {/* Detail card — editorial */}
+        <div className="border-border/60 mt-12 grid gap-10 border-t pt-12 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
+          <div>
+            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
+              {selected.label}
+            </p>
+            <h3 className="mt-4 text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
+              {selected.headline}
+            </h3>
+            <p className="text-muted-foreground mt-5 text-pretty text-base leading-relaxed">
+              {selected.body}
+            </p>
             <Link
               href={`/anfrage?branche=${selected.slug}`}
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium tracking-tight shadow-md transition-all hover:shadow-lg sm:self-start"
+              className="bg-foreground text-background hover:bg-foreground/90 group mt-8 inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
             >
-              Diese Website anfragen
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              Diese Seite anfragen
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
+          <ul className="divide-border/60 divide-y">
+            {selected.bullets.map((bullet) => (
+              <li
+                key={bullet}
+                className="text-foreground/85 flex items-baseline gap-4 py-4 text-[15px] leading-relaxed sm:text-base"
+              >
+                <span className="text-muted-foreground/70 font-mono text-xs">
+                  ·
+                </span>
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="mt-8 text-center">
+
+        <div className="mt-12">
           <Link
             href="/branchen"
-            className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
+            className="text-foreground inline-flex items-center gap-2 text-[15px] font-medium underline-offset-4 hover:underline"
           >
             Alle Branchen im Detail
             <ArrowRight className="h-4 w-4" />

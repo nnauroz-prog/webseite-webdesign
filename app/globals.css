@@ -1,89 +1,34 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
-/* Disable discretionary ligatures everywhere — some serif and display
-   fonts (Cormorant Garamond, Playfair Display, Lora) ship with `dlig`
-   ligatures for `ff`, `fi`, `tt` that render as missing-glyph
-   fallbacks ("!" / """) on certain Safari + system-font combos. We
-   keep standard `liga` (essential for fi / fl) but turn off the
-   stylistic ones globally. */
+/* Stylistic ligatures off — keep essential ligatures only. */
 html {
   font-feature-settings: "liga" 1, "dlig" 0, "hlig" 0, "calt" 0;
 }
 
-/* ----------------------------------------------------------------------
- * Sitalo brand palette — derived from the logo:
- *   - cream background (#f5ecd9-ish)
- *   - dark espresso brown text (#3a2a1c-ish)
- *   - gold-bronze accent (the doubled "O" mark)
- *
- * --primary uses the dark brown so primary buttons read as serious /
- * editorial, matching the logo's serif-driven luxury feel. The gold
- * lives in --accent + --warning for highlights, badges and dividers.
- * ---------------------------------------------------------------------- */
-
+/* Sitalo palette — warm cream, espresso brown, single gold accent.
+   Sober, editorial, intentionally restrained. */
 :root {
   --radius: 0.6rem;
 
-  /* Foundation — warm cream */
-  --background: oklch(0.965 0.018 80);
-  --foreground: oklch(0.22 0.025 50);
-  --card: oklch(0.99 0.012 85);
-  --card-foreground: oklch(0.22 0.025 50);
-  --popover: oklch(0.99 0.012 85);
-  --popover-foreground: oklch(0.22 0.025 50);
+  --background: oklch(0.97 0.012 80);
+  --foreground: oklch(0.18 0.025 50);
+  --card: oklch(0.99 0.008 85);
+  --card-foreground: oklch(0.18 0.025 50);
 
-  /* Brand — espresso brown, like the SITALO wordmark */
-  --primary: oklch(0.28 0.04 50);
-  --primary-foreground: oklch(0.97 0.018 80);
-  --primary-50: oklch(0.94 0.02 70);
-  --primary-100: oklch(0.88 0.04 70);
+  --primary: oklch(0.22 0.03 50);
+  --primary-foreground: oklch(0.97 0.012 80);
 
-  /* Surfaces — slightly warmer cream than background */
-  --secondary: oklch(0.93 0.025 80);
-  --secondary-foreground: oklch(0.28 0.04 50);
-  --muted: oklch(0.94 0.02 80);
-  --muted-foreground: oklch(0.48 0.03 60);
+  --secondary: oklch(0.94 0.018 80);
+  --secondary-foreground: oklch(0.22 0.03 50);
+  --muted: oklch(0.95 0.014 80);
+  --muted-foreground: oklch(0.45 0.025 60);
 
-  /* Accent = gold-bronze (matches the doubled-O mark in the logo) */
-  --accent: oklch(0.92 0.06 85);
-  --accent-foreground: oklch(0.3 0.06 60);
+  --accent: oklch(0.92 0.05 85);
+  --accent-foreground: oklch(0.28 0.06 60);
   --gold: oklch(0.66 0.13 80);
 
-  /* Status colors — kept warm to harmonize with cream palette */
-  --info: oklch(0.55 0.13 220);
-  --success: oklch(0.52 0.13 150);
-  --warning: oklch(0.66 0.13 80);
-  --destructive: oklch(0.55 0.2 30);
-  --destructive-foreground: oklch(0.99 0.01 80);
-
-  --border: oklch(0.86 0.025 75);
-  --input: oklch(0.88 0.025 75);
-  --ring: oklch(0.6 0.1 70);
-}
-
-.dark {
-  /* Inverted but still warm — espresso bg, cream text */
-  --background: oklch(0.18 0.02 50);
-  --foreground: oklch(0.95 0.02 80);
-  --card: oklch(0.23 0.025 50);
-  --card-foreground: oklch(0.95 0.02 80);
-  --popover: oklch(0.23 0.025 50);
-  --popover-foreground: oklch(0.95 0.02 80);
-  --primary: oklch(0.92 0.025 80);
-  --primary-foreground: oklch(0.22 0.04 50);
-  --secondary: oklch(0.28 0.03 50);
-  --secondary-foreground: oklch(0.95 0.02 80);
-  --muted: oklch(0.28 0.03 50);
-  --muted-foreground: oklch(0.7 0.02 75);
-  --accent: oklch(0.32 0.05 70);
-  --accent-foreground: oklch(0.95 0.04 80);
-  --gold: oklch(0.7 0.13 80);
-  --destructive: oklch(0.62 0.2 27);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
+  --border: oklch(0.88 0.018 75);
+  --input: oklch(0.88 0.018 75);
   --ring: oklch(0.6 0.1 70);
 }
 
@@ -92,8 +37,6 @@ html {
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -103,8 +46,6 @@ html {
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-gold: var(--gold);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -114,6 +55,7 @@ html {
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif);
 }
 
 @layer base {
@@ -125,392 +67,41 @@ html {
     color: var(--foreground);
     font-family: var(--font-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Editorial display defaults — tighter tracking, refined hierarchy. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.032em;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  /* Smooth scroll-anchored reveal — used on .reveal elements. */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: reveal 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation-delay: var(--reveal-delay, 0ms);
+    }
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   }
 }
 
-/* ------------------------------------------------------------------
- * Public-site template themes + design personalities.
- *
- * Two cascading axes are applied at the root of /site/[slug]:
- *
- *   <div data-template="..." data-personality="...">
- *
- *   - data-template overrides the brand palette (--primary, --accent,
- *     --secondary, --muted, --ring) via the existing per-industry
- *     selectors below.
- *
- *   - data-personality drives typography + chrome variables so the
- *     same component tree renders meaningfully different per design.
- *     Variables exposed to components:
- *       --site-display-tracking : letter-spacing for headlines
- *       --site-display-weight   : numeric font-weight for headlines
- *       --site-display-family   : 'serif' | system-ui sans
- *       --site-card-radius      : px / rem value for site Card chrome
- *       --site-card-shadow      : full Tailwind shadow value
- *       --site-section-py       : vertical section padding
- *
- * Components apply these via Tailwind arbitrary values, e.g.
- *   className="rounded-[var(--site-card-radius)]"
- * ------------------------------------------------------------------ */
-
-/* Default personality vars — overridden per data-personality below. */
-[data-template] {
-  --site-display-tracking: -0.02em;
-  --site-display-weight: 600;
-  --site-display-family: var(--font-sans), system-ui, sans-serif;
-  --site-card-radius: 1.5rem;
-  --site-card-shadow:
-    0 1px 2px 0 rgb(0 0 0 / 0.04),
-    0 8px 24px -8px rgb(0 0 0 / 0.08);
-  --site-section-py: 7rem;
-
-  /* Chrome variables that components consume so different personalities
-     yield visibly different layouts, not just different fonts. */
-  --site-button-radius: 0.5rem;
-  --site-image-radius: 1.5rem;
-  --site-divider: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
-  --site-container-max: 72rem;
-  --site-section-bg: transparent;
-  --site-eyebrow-tracking: 0.2em;
-  --site-eyebrow-transform: uppercase;
-  --site-card-border-width: 1px;
-  --site-card-bg: var(--card);
-  --site-card-fg: var(--card-foreground);
+/* Editorial pull-quote serif italic — used for signatures and quotes. */
+.serif-italic {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
 }
 
-/* Soft — warm, organic, very rounded, generous breathing room.
-   DM Sans: friendly geometric grotesque with humanist warmth. */
-[data-personality="soft"] {
-  --site-display-tracking: -0.01em;
-  --site-display-weight: 600;
-  --site-display-family: var(--font-dm-sans), system-ui, sans-serif;
-  --site-card-radius: 1.75rem;
-  --site-card-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.06);
-  --site-section-py: 9rem;
-  --site-button-radius: 9999px;
-  --site-image-radius: 2rem;
-  --site-container-max: 70rem;
-  --site-eyebrow-tracking: 0.15em;
-}
-
-/* Clinical — modern-sharp, condensed grid, geometric sans.
-   Stays on Geist (default) — pairs well with the sharp chrome. */
-[data-personality="clinical"] {
-  --site-display-tracking: -0.03em;
-  --site-display-weight: 700;
-  --site-display-family: var(--font-geist-sans), system-ui, sans-serif;
-  --site-card-radius: 0.75rem;
-  --site-card-shadow:
-    0 1px 0 0 rgb(0 0 0 / 0.04),
-    0 4px 16px -8px rgb(0 0 0 / 0.06);
-  --site-section-py: 6rem;
-  --site-button-radius: 0.5rem;
-  --site-image-radius: 0.75rem;
-  --site-container-max: 76rem;
-  --site-eyebrow-tracking: 0.25em;
-}
-
-/* Editorial — luxury magazine.
-   Cormorant Garamond: high-contrast display serif with elegant italics. */
-[data-personality="editorial"] {
-  --site-display-tracking: -0.02em;
-  --site-display-weight: 500;
-  --site-display-family: var(--font-cormorant), ui-serif, Georgia, serif;
-  --site-card-radius: 0.5rem;
-  --site-card-shadow: 0 24px 48px -12px rgb(0 0 0 / 0.18);
-  --site-section-py: 8rem;
-  --site-button-radius: 0;
-  --site-image-radius: 0.25rem;
-  --site-container-max: 68rem;
-  --site-eyebrow-tracking: 0.35em;
-  --site-divider: 1px solid color-mix(in oklch, var(--foreground) 30%, transparent);
-}
-
-/* Crafted — hand-made warmth, mixed serif/sans.
-   Lora: warm, well-balanced workhorse serif. */
-[data-personality="crafted"] {
-  --site-display-tracking: -0.015em;
-  --site-display-weight: 600;
-  --site-display-family: var(--font-lora), ui-serif, Georgia, serif;
-  --site-card-radius: 1rem;
-  --site-card-shadow:
-    inset 0 0 0 1px rgb(0 0 0 / 0.04),
-    0 6px 16px -6px rgb(0 0 0 / 0.08);
-  --site-section-py: 7.5rem;
-  --site-button-radius: 0.25rem;
-  --site-image-radius: 0.75rem;
-  --site-container-max: 72rem;
-}
-
-/* Formal — classical professional, structured, reserved.
-   Playfair Display: high-contrast didone-style serif for headlines. */
-[data-personality="formal"] {
-  --site-display-tracking: -0.02em;
-  --site-display-weight: 600;
-  --site-display-family: var(--font-playfair), ui-serif, Georgia, serif;
-  --site-card-radius: 0.375rem;
-  --site-card-shadow: 0 2px 8px -2px rgb(0 0 0 / 0.08);
-  --site-section-py: 6.5rem;
-  --site-button-radius: 0.125rem;
-  --site-image-radius: 0.125rem;
-  --site-container-max: 64rem;
-  --site-eyebrow-tracking: 0.4em;
-}
-
-/* Bold — Stripe/Linear-style modern SaaS: heavy weight, crisp shadows,
-   medium roundedness, vivid accents land on the brand color. Uses
-   Geist for that "this is a tech company" feel. */
-[data-personality="bold"] {
-  --site-display-tracking: -0.04em;
-  --site-display-weight: 800;
-  --site-display-family: var(--font-geist-sans), system-ui, sans-serif;
-  --site-card-radius: 1.25rem;
-  --site-card-shadow:
-    0 4px 12px -2px rgb(0 0 0 / 0.08),
-    0 12px 40px -12px rgb(0 0 0 / 0.12);
-  --site-section-py: 7rem;
-  --site-button-radius: 0.75rem;
-  --site-image-radius: 1.25rem;
-  --site-container-max: 76rem;
-  --site-card-border-width: 0;
-  --site-eyebrow-tracking: 0.2em;
-}
-
-/* Brutalist — raw, blocky, mono-headings, thick borders, no shadows.
-   Pairs well with tech-agency or hand-crafted-but-modern brands. */
-[data-personality="brutalist"] {
-  --site-display-tracking: -0.04em;
-  --site-display-weight: 800;
-  --site-display-family: var(--font-geist-mono), ui-monospace, monospace;
-  --site-card-radius: 0;
-  --site-card-shadow: 4px 4px 0 0 var(--foreground);
-  --site-section-py: 5.5rem;
-  --site-button-radius: 0;
-  --site-image-radius: 0;
-  --site-container-max: 72rem;
-  --site-card-border-width: 2px;
-  --site-divider: 2px solid var(--foreground);
-  --site-eyebrow-tracking: 0.25em;
-}
-
-/* Dark-luxury — deep dark background, cream foreground, gold-leaning
-   accents, large serif headlines. Aesop / hospitality / hotel vibe. */
-[data-personality="dark-luxury"] {
-  --site-display-tracking: -0.025em;
-  --site-display-weight: 500;
-  --site-display-family: var(--font-cormorant), ui-serif, Georgia, serif;
-  --site-card-radius: 0.25rem;
-  --site-card-shadow: 0 1px 0 0 color-mix(in oklch, var(--foreground) 8%, transparent);
-  --site-section-py: 8.5rem;
-  --site-button-radius: 0;
-  --site-image-radius: 0.25rem;
-  --site-container-max: 70rem;
-  --site-card-border-width: 1px;
-  --site-eyebrow-tracking: 0.4em;
-}
-
-/* Apply the personality's display-family + tracking to all h1/h2/h3
-   inside a personality scope so customer-uploaded text in the public
-   site picks up the right typography automatically. */
-[data-personality] h1,
-[data-personality] h2,
-[data-personality] h3 {
-  font-family: var(--site-display-family);
-  letter-spacing: var(--site-display-tracking);
-  font-weight: var(--site-display-weight);
-}
-
-/* Dark-luxury inverts the whole page — applied as a personality-level
-   background + foreground override rather than as a separate theme
-   variable so the customer's brand-color stays the brand-color. */
-[data-personality="dark-luxury"] {
-  --background: oklch(0.18 0.012 60);
-  --foreground: oklch(0.92 0.018 80);
-  --card: oklch(0.21 0.014 65);
-  --card-foreground: oklch(0.92 0.018 80);
-  --muted: oklch(0.24 0.014 60);
-  --muted-foreground: oklch(0.72 0.018 70);
-  --secondary: oklch(0.22 0.012 60);
-  --secondary-foreground: oklch(0.92 0.018 80);
-  --border: oklch(0.32 0.014 65);
-  --input: oklch(0.28 0.014 65);
-}
-
-/* Brutalist tightens borders to a single bold color across cards. */
-[data-personality="brutalist"] {
-  --border: var(--foreground);
-}
-
-/* ------------------------------------------------------------------
- * Per-template palette overrides (industry-specific brand colors).
- * ------------------------------------------------------------------ */
-
-[data-template="pflegedienst"] {
-  --primary: oklch(0.48 0.1 155);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.95 0.04 100);
-  --accent-foreground: oklch(0.25 0.05 110);
-  --secondary: oklch(0.96 0.02 130);
-  --secondary-foreground: oklch(0.3 0.06 145);
-  --muted: oklch(0.97 0.015 120);
-  --muted-foreground: oklch(0.45 0.02 130);
-  --ring: oklch(0.6 0.1 155);
-}
-
-[data-template="arztpraxis"] {
-  --primary: oklch(0.5 0.13 235);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.95 0.03 230);
-  --accent-foreground: oklch(0.3 0.08 235);
-  --secondary: oklch(0.97 0.015 230);
-  --secondary-foreground: oklch(0.3 0.08 235);
-  --muted: oklch(0.97 0.012 230);
-  --muted-foreground: oklch(0.45 0.02 230);
-  --ring: oklch(0.6 0.13 235);
-}
-
-[data-template="friseur"] {
-  --primary: oklch(0.22 0.04 50);
-  --primary-foreground: oklch(0.97 0.02 80);
-  --accent: oklch(0.86 0.08 75);
-  --accent-foreground: oklch(0.22 0.04 50);
-  --secondary: oklch(0.95 0.02 60);
-  --secondary-foreground: oklch(0.25 0.04 50);
-  --muted: oklch(0.96 0.015 60);
-  --muted-foreground: oklch(0.45 0.02 60);
-  --ring: oklch(0.45 0.05 60);
-}
-
-[data-template="physio"] {
-  --primary: oklch(0.55 0.15 195);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.94 0.05 195);
-  --accent-foreground: oklch(0.3 0.1 200);
-  --secondary: oklch(0.96 0.02 195);
-  --secondary-foreground: oklch(0.3 0.1 200);
-  --muted: oklch(0.97 0.012 195);
-  --muted-foreground: oklch(0.45 0.02 195);
-  --ring: oklch(0.6 0.15 195);
-}
-
-[data-template="zahnarzt"] {
-  --primary: oklch(0.55 0.1 175);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.94 0.04 175);
-  --accent-foreground: oklch(0.3 0.07 175);
-  --secondary: oklch(0.97 0.012 175);
-  --secondary-foreground: oklch(0.3 0.07 175);
-  --muted: oklch(0.97 0.01 175);
-  --muted-foreground: oklch(0.45 0.02 175);
-  --ring: oklch(0.6 0.1 175);
-}
-
-[data-template="reinigung"] {
-  --primary: oklch(0.5 0.15 250);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.92 0.06 90);
-  --accent-foreground: oklch(0.3 0.06 80);
-  --secondary: oklch(0.96 0.02 250);
-  --secondary-foreground: oklch(0.3 0.1 250);
-  --muted: oklch(0.97 0.012 250);
-  --muted-foreground: oklch(0.45 0.02 250);
-  --ring: oklch(0.6 0.15 250);
-}
-
-[data-template="schreiner"] {
-  --primary: oklch(0.42 0.08 60);
-  --primary-foreground: oklch(0.97 0.02 80);
-  --accent: oklch(0.85 0.1 65);
-  --accent-foreground: oklch(0.3 0.06 50);
-  --secondary: oklch(0.94 0.025 70);
-  --secondary-foreground: oklch(0.3 0.06 50);
-  --muted: oklch(0.96 0.015 70);
-  --muted-foreground: oklch(0.45 0.02 60);
-  --ring: oklch(0.55 0.08 60);
-}
-
-[data-template="kosmetik"] {
-  --primary: oklch(0.55 0.12 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.92 0.05 350);
-  --accent-foreground: oklch(0.35 0.1 350);
-  --secondary: oklch(0.96 0.02 350);
-  --secondary-foreground: oklch(0.35 0.1 350);
-  --muted: oklch(0.97 0.012 350);
-  --muted-foreground: oklch(0.45 0.02 350);
-  --ring: oklch(0.6 0.12 0);
-}
-
-[data-template="anwalt"] {
-  --primary: oklch(0.27 0.05 260);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.93 0.03 260);
-  --accent-foreground: oklch(0.3 0.06 260);
-  --secondary: oklch(0.96 0.012 260);
-  --secondary-foreground: oklch(0.3 0.06 260);
-  --muted: oklch(0.97 0.008 260);
-  --muted-foreground: oklch(0.45 0.02 260);
-  --ring: oklch(0.45 0.06 260);
-}
-
-[data-template="restaurant"] {
-  --primary: oklch(0.45 0.15 35);
-  --primary-foreground: oklch(0.985 0.01 80);
-  --accent: oklch(0.92 0.06 60);
-  --accent-foreground: oklch(0.3 0.08 35);
-  --secondary: oklch(0.95 0.025 60);
-  --secondary-foreground: oklch(0.3 0.08 35);
-  --muted: oklch(0.96 0.015 60);
-  --muted-foreground: oklch(0.45 0.02 50);
-  --ring: oklch(0.55 0.15 35);
-}
-
-/* Agentur — Stripe-style indigo accent for a tech-SaaS feel. */
-[data-template="agentur"] {
-  --primary: oklch(0.5 0.2 265);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.92 0.05 265);
-  --accent-foreground: oklch(0.3 0.12 265);
-  --secondary: oklch(0.96 0.015 265);
-  --secondary-foreground: oklch(0.3 0.12 265);
-  --muted: oklch(0.97 0.008 265);
-  --muted-foreground: oklch(0.5 0.02 265);
-  --ring: oklch(0.55 0.18 265);
-}
-
-/* Spa — onyx/cream palette is set by the `dark-luxury` personality
-   overrides above; just supply a warm-gold accent that survives the
-   dark background. */
-[data-template="spa"] {
-  --primary: oklch(0.75 0.13 80);
-  --primary-foreground: oklch(0.18 0.012 60);
-  --accent: oklch(0.32 0.04 80);
-  --accent-foreground: oklch(0.85 0.05 80);
-  --ring: oklch(0.7 0.12 80);
-}
-
-/* Cafe — espresso brown anchors the brutalist palette. */
-[data-template="cafe"] {
-  --primary: oklch(0.28 0.05 50);
-  --primary-foreground: oklch(0.985 0.01 80);
-  --accent: oklch(0.92 0.04 60);
-  --accent-foreground: oklch(0.25 0.05 50);
-  --secondary: oklch(0.96 0.02 60);
-  --secondary-foreground: oklch(0.25 0.05 50);
-  --muted: oklch(0.97 0.012 60);
-  --muted-foreground: oklch(0.45 0.02 50);
-  --ring: oklch(0.4 0.05 50);
-}
-
-/* Fitness — high-energy red-orange, gym-poster vibe. */
-[data-template="fitness"] {
-  --primary: oklch(0.6 0.2 25);
-  --primary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.95 0.05 35);
-  --accent-foreground: oklch(0.3 0.12 25);
-  --secondary: oklch(0.96 0.015 30);
-  --secondary-foreground: oklch(0.3 0.12 25);
-  --muted: oklch(0.97 0.008 30);
-  --muted-foreground: oklch(0.5 0.02 30);
-  --ring: oklch(0.6 0.18 25);
+.serif {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
 }

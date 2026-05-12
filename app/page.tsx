@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, Clock, Send } from "lucide-react";
+import { ArrowRight, Send } from "lucide-react";
 
 import { HeroMockups } from "@/components/marketing/hero-mockups";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
@@ -8,15 +8,15 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Sitalo — Ihre Website, persönlich gemacht. Aus Hamburg.",
+  title: "Sitalo — Webdesign aus Hamburg",
   description:
-    "Hallo, ich bin Nadim. Ich baue Websites für lokale Unternehmen — Sie schicken mir Ihre Unterlagen, ich melde mich persönlich und liefere die fertige Seite. Aus Hamburg, deutschlandweit.",
+    "Hallo, ich bin Nadim. Ich baue Websites für lokale Unternehmen — Sie schicken mir Ihre Unterlagen, ich melde mich persönlich und liefere die fertige Seite.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    title: "Sitalo — Ihre Website, persönlich gemacht. Aus Hamburg.",
+    title: "Sitalo — Webdesign aus Hamburg",
     description:
-      "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest. Meist in 1–2 Werktagen online.",
+      "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest. Aus Hamburg, persönlich gemacht.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
     images: [
@@ -24,142 +24,108 @@ export const metadata: Metadata = {
         url: "/images/sitalo-laptop-hero.png",
         width: 1536,
         height: 1024,
-        alt: "Sitalo Webdesign — Laptop mit einer fertigen Kunden-Website auf einem warmen Holzschreibtisch.",
+        alt: "Sitalo Webdesign — Laptop mit einer fertigen Kunden-Website.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sitalo — Ihre Website, persönlich gemacht. Aus Hamburg.",
-    description:
-      "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest.",
+    title: "Sitalo — Webdesign aus Hamburg",
+    description: "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest.",
     images: ["/images/sitalo-laptop-hero.png"],
   },
 };
 
-const TRUST_LINE = [
-  "Aus Hamburg, deutschlandweit",
-  "Persönlich von mir gemacht",
-  "Auch am Telefon erreichbar",
-  "Keine Registrierung nötig",
-];
-
 const STEPS = [
   {
-    number: "01",
-    title: "Sie melden sich",
-    body: "Formular ausfüllen oder kurz auf WhatsApp schreiben. Ich antworte persönlich innerhalb von 24 Stunden.",
+    n: "01",
+    title: "Sie schreiben mir.",
+    body: "Ein paar Sätze zum Vorhaben — per Formular oder WhatsApp. Ich melde mich innerhalb von 24 Stunden persönlich.",
   },
   {
-    number: "02",
-    title: "Wir sprechen",
-    body: "Kurzes Gespräch — am Telefon oder bei einem Kaffee in Hamburg. Sie schicken mir Logo, Bilder und Texte. Was fehlt, klären wir gemeinsam.",
+    n: "02",
+    title: "Wir sprechen kurz.",
+    body: "Telefon oder Kaffee in Hamburg. Sie schicken mir Logo, Bilder und ein paar Zeilen. Was fehlt, klären wir.",
   },
   {
-    number: "03",
-    title: "Ihre Seite geht online",
-    body: "Ich baue, Sie schauen drüber, wir gehen live. Meist in 1–2 Werktagen — und danach bin ich weiter Ihr Ansprechpartner.",
+    n: "03",
+    title: "Ihre Seite geht online.",
+    body: "Ich baue, Sie schauen drüber, wir gehen live — meist in 1–2 Werktagen. Danach bleibe ich Ihr Ansprechpartner.",
   },
 ];
-
 
 const PACKAGES = [
   {
     slug: "starter",
-    name: "Starter-Projekt",
-    badge: "Schnell online",
+    name: "Starter",
     setup: "ab 499 €",
     monthly: "ab 49 € / Monat",
-    cta: "Starter anfragen",
     description:
-      "Eine moderne Seite, alles Wichtige auf einen Blick. Perfekt für Einzelunternehmer und kleine Betriebe.",
+      "Eine Seite. Alles Wichtige auf einen Blick. Für Einzelunternehmer und kleine Betriebe.",
     bullets: [
-      "Moderne Onepage-Website",
+      "Onepage-Website",
       "Mobil optimiert",
       "Kontaktformular",
-      "WhatsApp-Button",
-      "Google Maps & Öffnungszeiten",
-      "Impressum & Datenschutz",
+      "WhatsApp & Google Maps",
       "Hosting inklusive",
-      "Kleine monatliche Änderungen",
     ],
   },
   {
     slug: "business",
-    name: "Business-Auftritt",
-    badge: "Beliebteste Wahl",
+    name: "Business",
+    badge: "Empfohlen",
     highlight: true,
     setup: "ab 899 €",
     monthly: "ab 79 € / Monat",
-    cta: "Business anfragen",
     description:
       "Mehrere Sektionen, Team, Leistungen, Galerie. Für lokale Unternehmen, die professionell auftreten wollen.",
     bullets: [
-      "Hochwertige Mehrseiten-Website",
-      "Mehrere professionelle Sektionen",
+      "Mehrseitige Website",
+      "Eigene Bereiche & Galerie",
       "SEO-Grundlagen",
-      "Bilder- & Bildbearbeitung",
-      "Kontaktformular & WhatsApp",
-      "Google Maps",
-      "Texte gemeinsam erarbeitet",
+      "Bilder­bearbeitung",
       "Laufende Betreuung",
     ],
   },
   {
     slug: "premium",
-    name: "Premium-System",
-    badge: "Mit verwaltbaren Inhalten",
+    name: "Premium",
     setup: "ab 1.499 €",
     monthly: "ab 129 € / Monat",
-    cta: "Premium anfragen",
     description:
-      "Individuelle Website-Struktur mit verwaltbaren Inhalten direkt auf Ihrer Seite. Speisekarte, Wochenangebot, Termine — Sie pflegen, was Sie pflegen wollen.",
+      "Individuelle Struktur mit Bereichen, die Sie selbst pflegen können. Speisekarte, Angebote, Termine.",
     bullets: [
       "Premium-Design",
-      "Individuelle Website-Struktur",
-      "Verwaltbare Inhalte auf Wunsch",
-      "Speisekarte / Wochenangebot / Leistungen",
-      "Formularsystem (Kontakt, Bewerbung, Buchung)",
-      "Stärkere SEO-Basis",
-      "Laufender Support",
-      "Erweiterte Wartung",
+      "Selbst pflegbare Inhalte",
+      "Formularsystem",
+      "Erweiterte SEO-Basis",
+      "Bevorzugter Support",
     ],
   },
 ];
 
-
 const FAQ = [
   {
-    question: "Wie schnell ist meine Seite fertig?",
-    answer:
-      "Wenn Sie mir alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
+    q: "Wie schnell ist meine Seite fertig?",
+    a: "Wenn Sie mir alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
   },
   {
-    question: "Was brauchen Sie von mir?",
-    answer:
-      "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Bescheid und helfe bei Formulierungen.",
+    q: "Was brauchen Sie von mir?",
+    a: "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Bescheid und helfe bei Formulierungen.",
   },
   {
-    question: "Gibt es laufende Kosten?",
-    answer:
-      "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Jederzeit zum Monatsende kündbar, kein Kleingedrucktes.",
+    q: "Gibt es laufende Kosten?",
+    a: "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Jederzeit zum Monatsende kündbar, kein Kleingedrucktes.",
   },
   {
-    question: "Kann ich später noch Sachen ändern lassen?",
-    answer:
-      "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben mir kurz, ich mache es. Auf Wunsch kann ich auch Bereiche einbauen, die Sie selbst pflegen.",
+    q: "Kann ich später noch Sachen ändern lassen?",
+    a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben mir kurz, ich mache es. Auf Wunsch kann ich auch Bereiche einbauen, die Sie selbst pflegen.",
   },
   {
-    question: "Was passiert nach dem Launch?",
-    answer:
-      "Sie bekommen einen Ansprechpartner — mich. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie mir, ich kümmere mich.",
+    q: "Was passiert nach dem Launch?",
+    a: "Sie bekommen einen Ansprechpartner — mich. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie mir, ich kümmere mich.",
   },
 ];
-
-/**
- * Industry value props — replaces the chip list with per-trade
- * "what you get" cards. Same trades, just communicated as outcomes.
- */
 
 export default function HomePage() {
   return (
@@ -179,67 +145,48 @@ export default function HomePage() {
   );
 }
 
-/* ---------- Sections ---------- */
-
+/* ============================================================
+ * Hero — editorial, oversized typography, image as canvas
+ * ============================================================ */
 function Hero() {
   return (
-    <section
-      id="start"
-      className="border-border/40 relative overflow-hidden border-b scroll-mt-20"
-    >
-      <div
-        className="from-secondary/50 absolute inset-0 -z-10 bg-gradient-to-b to-transparent"
-        aria-hidden="true"
-      />
-      <div
-        aria-hidden="true"
-        className="bg-primary/10 absolute -right-32 top-12 -z-10 h-96 w-96 rounded-full blur-3xl"
-      />
-      <div className="mx-auto w-full max-w-6xl px-6 pt-10 pb-14 sm:pt-20 sm:pb-24">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-          <div>
-            <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-              Hallo aus Hamburg · Webdesign für lokale Unternehmen
-            </p>
-            <h1 className="mt-4 text-balance text-[2.5rem] font-semibold leading-[1.02] tracking-[-0.03em] sm:mt-5 sm:text-5xl lg:text-6xl">
-              Ihre Website.{" "}
-              <span className="text-primary">Ich kümmere mich darum.</span>
+    <section id="start" className="relative overflow-hidden scroll-mt-20">
+      <div className="mx-auto w-full max-w-7xl px-6 pt-14 pb-20 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+          <div className="reveal">
+            <h1 className="text-[2.75rem] font-semibold leading-[0.98] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+              Ihre Website.
+              <br />
+              <span className="serif-italic text-foreground/85 font-normal">
+                Persönlich gemacht.
+              </span>
             </h1>
-            <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:mt-6 sm:text-lg">
-              Ich bin Nadim. Sie schicken mir Logo, Bilder und ein paar Zeilen
-              zu Ihrem Betrieb — ich melde mich bei Ihnen, baue Ihre Seite und
-              bringe sie online. Meist in 1–2 Werktagen.
+            <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-lg leading-relaxed sm:text-xl">
+              Sie schicken mir Ihre Unterlagen — ich melde mich persönlich
+              und baue Ihre Seite. Aus Hamburg, in 1–2 Werktagen.
             </p>
-            <div className="mt-7 flex flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:items-center">
+            <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/anfrage"
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
               >
                 Website anfragen
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
-                href="#branchen"
-                className="border-border bg-background hover:bg-secondary inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
+                href="/branchen"
+                className="text-foreground inline-flex h-12 items-center text-[15px] font-medium tracking-tight underline-offset-[6px] hover:underline"
               >
                 Beispiele ansehen
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
-
-            <ul className="text-muted-foreground mt-7 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] sm:mt-9 sm:gap-x-5 sm:text-sm">
-              {TRUST_LINE.map((item) => (
-                <li
-                  key={item}
-                  className="inline-flex items-center gap-2 whitespace-nowrap"
-                >
-                  <span className="bg-primary inline-block h-1 w-1 rounded-full" />
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
 
-          <div className="order-first -mx-2 lg:order-last lg:mx-0">
+          <div
+            className="reveal -mx-2 lg:mx-0"
+            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+          >
             <HeroMockups />
           </div>
         </div>
@@ -248,92 +195,94 @@ function Hero() {
   );
 }
 
+/* ============================================================
+ * PersonalNote — full-bleed editorial pull-quote, dark backdrop
+ * ============================================================ */
 function PersonalNote() {
   return (
-    <section className="border-border/40 border-b py-14 sm:py-20">
-      <div className="mx-auto w-full max-w-3xl px-6">
-        <div className="bg-card border-border/60 relative rounded-2xl border p-8 shadow-sm sm:p-12">
-          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-            Persönlich · Aus Hamburg
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-96 w-96 rounded-full blur-3xl"
+      />
+      <div className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
+        <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+          Aus Hamburg
+        </p>
+        <blockquote className="mt-8 max-w-4xl">
+          <p className="serif text-[1.6rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3rem] lg:leading-[1.15]">
+            Ich weiß, wie wichtig eine gute Onlinepräsenz heute ist. Wer
+            Sie online nicht findet, kommt auch nicht durch die Tür —{" "}
+            <span className="serif-italic text-background/75">
+              egal wie gut Sie Ihre Arbeit machen.
+            </span>
           </p>
-          <h2 className="mt-3 text-balance text-2xl font-semibold leading-tight tracking-[-0.01em] sm:text-3xl">
-            Warum ich das mache.
-          </h2>
-          <div className="text-foreground/85 mt-6 space-y-4 text-[16px] leading-relaxed sm:text-[17px]">
-            <p>
-              Ich weiß, wie wichtig es ist, dass man heute eine gute
-              Onlinepräsenz hat. Wer Sie online nicht findet, kommt auch nicht
-              durch die Tür — egal wie gut Sie Ihre Arbeit machen.
-            </p>
-            <p>
-              Vielen Inhabern fehlt schlicht die Zeit (oder die Lust), sich
-              durch Baukästen zu klicken, Texte zu schreiben und am Ende doch
-              eine Seite zu haben, die wie tausend andere aussieht. Genau da
-              springe ich ein.
-            </p>
-            <p>
-              Sie schicken mir ein paar Unterlagen — Logo, Bilder, ein paar
-              Sätze zu Ihrem Betrieb. Ich melde mich, baue Ihre Seite, und
-              danach bleibe ich Ihr Ansprechpartner. Keine Hotline, kein
-              Ticket. Sie schreiben mir, ich antworte.
-            </p>
-          </div>
-          <p
-            className="text-foreground mt-8 text-lg"
-            style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic" }}
-          >
-            — Nadim Nauroz
+        </blockquote>
+        <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 sm:grid-cols-2">
+          <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
+            Vielen Inhabern fehlt schlicht die Zeit, sich durch
+            Baukästen zu klicken — und am Ende doch eine Seite zu haben,
+            die wie tausend andere aussieht. Genau da springe ich ein.
+          </p>
+          <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
+            Sie schicken mir ein paar Unterlagen — Logo, Bilder, ein paar
+            Sätze. Ich melde mich, baue Ihre Seite, und bleibe danach Ihr
+            Ansprechpartner. Keine Hotline, kein Ticket.
           </p>
         </div>
+        <p className="serif-italic text-background mt-12 text-2xl">
+          — Nadim Nauroz
+        </p>
       </div>
     </section>
   );
 }
 
+/* ============================================================
+ * Steps — three editorial cells, oversized numerals
+ * ============================================================ */
 function Steps() {
   return (
     <section
       id="ablauf"
-      className="bg-secondary/20 border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
+      className="border-border/40 border-t border-b scroll-mt-20"
     >
-      <div className="mx-auto w-full max-w-5xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            So läuft es bei mir ab
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Drei Schritte. Kein Papierkram dazwischen.
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        <div className="max-w-2xl">
+          <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+            Drei Schritte.
+            <br />
+            <span className="serif-italic text-muted-foreground font-normal">
+              Kein Papierkram dazwischen.
+            </span>
           </h2>
-        </header>
-        <ol className="mt-12 grid gap-6 sm:grid-cols-3">
+        </div>
+        <ol className="mt-16 grid gap-x-10 gap-y-14 sm:mt-24 sm:grid-cols-3">
           {STEPS.map((step) => (
-            <li
-              key={step.number}
-              className="bg-card border-border/60 flex flex-col rounded-2xl border p-7 shadow-sm"
-            >
-              <span className="text-primary text-sm font-mono font-medium tracking-widest">
-                {step.number}
+            <li key={step.n} className="flex flex-col">
+              <span className="serif text-foreground/15 text-[8rem] font-normal leading-none tracking-[-0.04em] sm:text-[10rem]">
+                {step.n}
               </span>
-              <h3 className="mt-3 text-lg font-semibold tracking-tight">
+              <h3 className="text-foreground mt-4 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
                 {step.title}
               </h3>
-              <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
+              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed sm:text-base">
                 {step.body}
               </p>
             </li>
           ))}
         </ol>
-        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-16 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           <Link
             href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
           >
             Jetzt Anfrage senden
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
             href="/ablauf"
-            className="text-muted-foreground hover:text-foreground inline-flex h-11 items-center justify-center px-4 text-sm font-medium underline-offset-4 hover:underline"
+            className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-4 hover:underline"
           >
             Ablauf im Detail
           </Link>
@@ -343,114 +292,114 @@ function Steps() {
   );
 }
 
-
+/* ============================================================
+ * Pricing — refined, less visual noise
+ * ============================================================ */
 function Pricing() {
   return (
-    <section
-      id="pakete"
-      className="bg-secondary/30 border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
-    >
-      <div className="mx-auto w-full max-w-6xl px-6">
-        <header className="mx-auto max-w-2xl text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Preise
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Drei Wege, Ihre Seite zu bekommen.
+    <section id="pakete" className="scroll-mt-20">
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        <div className="max-w-2xl">
+          <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+            Drei Wege,
+            <br />
+            <span className="serif-italic text-muted-foreground font-normal">
+              Ihre Seite zu bekommen.
+            </span>
           </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-pretty">
+          <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed">
             Eine einmalige Einrichtung, danach ein fairer Monatsbeitrag für
-            Hosting, Pflege und kleine Änderungen. Was Sie nicht brauchen,
-            zahlen Sie nicht.
+            Hosting, Pflege und kleine Änderungen.
           </p>
-        </header>
+        </div>
 
-        <ul className="mt-10 grid gap-5 lg:grid-cols-3 lg:items-stretch sm:mt-12 sm:gap-6">
+        <ul className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-border/60 bg-border/60 lg:grid-cols-3">
           {PACKAGES.map((p) => (
             <li
-              key={p.name}
-              className={`relative flex flex-col rounded-2xl border p-6 shadow-sm transition-shadow sm:p-7 ${
+              key={p.slug}
+              className={
                 p.highlight
-                  ? "bg-foreground text-background border-foreground shadow-xl ring-2 ring-foreground/20 lg:-mt-3 lg:mb-0"
-                  : "bg-card"
-              }`}
+                  ? "bg-foreground text-background relative flex flex-col p-8 sm:p-10"
+                  : "bg-background relative flex flex-col p-8 sm:p-10"
+              }
             >
-              {p.highlight ? (
-                <span className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] shadow-md">
+              {p.badge ? (
+                <span className="bg-gold/90 text-foreground absolute top-6 right-6 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]">
                   {p.badge}
                 </span>
-              ) : (
-                <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.18em]">
-                  {p.badge}
-                </p>
-              )}
-              <h3 className={`text-xl font-semibold tracking-tight ${p.highlight ? "mt-2" : "mt-1"}`}>
-                {p.name}
-              </h3>
-              <div className="mt-5">
-                <p className="text-3xl font-semibold tracking-tight">
-                  {p.setup}
-                </p>
-                <p
-                  className={`text-sm ${
-                    p.highlight ? "text-background/70" : "text-muted-foreground"
-                  }`}
-                >
-                  einmalig · zzgl. {p.monthly}
-                </p>
-              </div>
+              ) : null}
               <p
-                className={`mt-4 text-[14px] leading-relaxed ${
-                  p.highlight ? "text-background/85" : "text-muted-foreground"
-                }`}
+                className={
+                  p.highlight
+                    ? "text-background/55 text-[11px] font-medium uppercase tracking-[0.25em]"
+                    : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]"
+                }
+              >
+                {p.name}
+              </p>
+              <p className="mt-6 text-4xl font-semibold tracking-[-0.025em] sm:text-5xl">
+                {p.setup}
+              </p>
+              <p
+                className={
+                  p.highlight
+                    ? "text-background/65 mt-2 text-sm"
+                    : "text-muted-foreground mt-2 text-sm"
+                }
+              >
+                einmalig · zzgl. {p.monthly}
+              </p>
+              <p
+                className={
+                  p.highlight
+                    ? "text-background/85 mt-6 max-w-sm text-[15px] leading-relaxed"
+                    : "text-foreground/75 mt-6 max-w-sm text-[15px] leading-relaxed"
+                }
               >
                 {p.description}
               </p>
-              <ul className="mt-5 space-y-2 text-[13px] sm:text-sm">
-                {p.bullets.slice(0, 5).map((b) => (
-                  <li key={b} className="flex items-start gap-2">
-                    <Check
-                      className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
-                        p.highlight ? "text-background" : "text-emerald-600"
-                      }`}
+              <ul className="mt-8 space-y-3 text-sm">
+                {p.bullets.map((b) => (
+                  <li
+                    key={b}
+                    className={
+                      p.highlight
+                        ? "text-background/90 flex items-baseline gap-3"
+                        : "text-foreground/85 flex items-baseline gap-3"
+                    }
+                  >
+                    <span
+                      className={
+                        p.highlight
+                          ? "bg-background/40 mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
+                          : "bg-foreground/40 mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
+                      }
                     />
                     <span>{b}</span>
                   </li>
                 ))}
-                {p.bullets.length > 5 ? (
-                  <li
-                    className={`pt-1 text-[12px] ${
-                      p.highlight ? "text-background/60" : "text-muted-foreground"
-                    }`}
-                  >
-                    + {p.bullets.length - 5} weitere Funktionen
-                  </li>
-                ) : null}
               </ul>
-              <div className="mt-auto pt-6">
+              <div className="mt-10 pt-2">
                 <Link
                   href={`/anfrage?paket=${p.slug}`}
-                  className={`group inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-all hover:shadow-md ${
+                  className={
                     p.highlight
-                      ? "bg-background text-foreground hover:bg-background/90"
-                      : "bg-foreground text-background hover:bg-foreground/90"
-                  }`}
+                      ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-11 items-center justify-center rounded-full px-6 text-[14px] font-medium tracking-tight"
+                      : "border-foreground text-foreground hover:bg-foreground hover:text-background group inline-flex h-11 items-center justify-center rounded-full border px-6 text-[14px] font-medium tracking-tight transition-colors"
+                  }
                 >
-                  {p.cta}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  {p.name} anfragen
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </div>
             </li>
           ))}
         </ul>
 
-        <p className="text-muted-foreground mx-auto mt-8 max-w-2xl text-center text-sm">
+        <p className="text-muted-foreground mt-12 max-w-2xl text-sm">
           Die finalen Kosten hängen vom Umfang, vorhandenen Inhalten und
           gewünschten Funktionen ab. Volle Details auf der{" "}
-          <Link
-            href="/pakete"
-            className="hover:text-foreground underline"
-          >
+          <Link href="/pakete" className="text-foreground underline underline-offset-4">
             Pakete-Seite
           </Link>
           .
@@ -460,56 +409,58 @@ function Pricing() {
   );
 }
 
+/* ============================================================
+ * FAQ — quiet accordion, hairlines instead of cards
+ * ============================================================ */
 function Faq() {
   return (
     <section
       id="faq"
-      className="bg-secondary/20 border-border/40 border-b py-14 sm:py-24 scroll-mt-20"
+      className="border-border/40 border-t scroll-mt-20"
     >
-      <div className="mx-auto w-full max-w-3xl px-6">
-        <header className="text-center">
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            FAQ
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-            Häufige Fragen
-          </h2>
-        </header>
-        <dl className="mt-10 space-y-3">
-          {FAQ.map((item) => (
-            <details
-              key={item.question}
-              className="bg-card border-border/60 group rounded-xl border p-5 open:shadow-sm"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
-                {item.question}
-                <span className="text-muted-foreground transition-transform group-open:rotate-180">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    className="h-4 w-4"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M6 9l6 6 6-6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </summary>
-              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed text-pretty">
-                {item.answer}
-              </p>
-            </details>
-          ))}
-        </dl>
-        <div className="mt-8 text-center">
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        <div className="grid gap-16 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
+          <div>
+            <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
+              Häufige Fragen.
+            </h2>
+            <p className="text-muted-foreground mt-6 max-w-sm text-pretty text-lg leading-relaxed">
+              Was Kunden mich am häufigsten fragen. Ihre Frage ist nicht
+              dabei?{" "}
+              <Link href="/kontakt" className="text-foreground underline underline-offset-4">
+                Schreiben Sie mir.
+              </Link>
+            </p>
+          </div>
+          <dl className="divide-border/70 -mt-4 divide-y">
+            {FAQ.map((item) => (
+              <details key={item.q} className="group py-6">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
+                  {item.q}
+                  <span className="text-muted-foreground transition-transform group-open:rotate-45">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      className="h-5 w-5"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </summary>
+                <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed text-pretty">
+                  {item.a}
+                </p>
+              </details>
+            ))}
+          </dl>
+        </div>
+        <div className="mt-16 text-left">
           <Link
             href="/faq"
-            className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
+            className="text-foreground inline-flex items-center gap-2 text-[15px] font-medium underline-offset-4 hover:underline"
           >
             Alle Fragen ansehen
             <ArrowRight className="h-4 w-4" />
@@ -520,55 +471,53 @@ function Faq() {
   );
 }
 
+/* ============================================================
+ * FinalCta — quiet but confident closer
+ * ============================================================ */
 function FinalCta() {
   const whatsappHref = buildWhatsappHref();
   return (
     <section
       id="kontakt"
-      className="bg-foreground text-background relative overflow-hidden py-14 sm:py-24 scroll-mt-20"
+      className="bg-foreground text-background relative overflow-hidden scroll-mt-20"
     >
       <div
         aria-hidden="true"
-        className="bg-primary/25 absolute -top-32 right-1/2 h-96 w-96 translate-x-1/2 rounded-full blur-3xl"
+        className="bg-gold/15 pointer-events-none absolute top-10 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-3xl"
       />
-      <div className="relative mx-auto w-full max-w-3xl px-6 text-center">
-        <h2 className="text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-5xl">
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-28 text-center sm:py-40">
+        <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
           Lust auf eine Seite,
-          <br className="hidden sm:inline" />{" "}
-          <span className="text-background/70">die wirklich zu Ihnen passt?</span>
+          <br />
+          <span className="serif-italic text-background/70 font-normal">
+            die wirklich zu Ihnen passt?
+          </span>
         </h2>
-        <p className="text-background/70 mx-auto mt-5 max-w-xl text-pretty text-base sm:text-lg">
+        <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
           Schreiben Sie mir kurz, was Sie vorhaben. Ich melde mich
           persönlich — meist noch am selben Tag.
         </p>
-        <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-3">
+        <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/anfrage"
-            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
           >
             Website anfragen
-            <Send className="ml-2 h-4 w-4" />
+            <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           {whatsappHref ? (
             <a
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-background/30 bg-background/10 text-background hover:bg-background/15 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight backdrop-blur-sm transition-colors"
+              className="border-background/30 text-background hover:bg-background/10 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
             >
               <WhatsappGlyph className="h-4 w-4" />
-              WhatsApp schreiben
+              WhatsApp
             </a>
           ) : null}
         </div>
-        <p className="text-background/55 mt-6 inline-flex items-center gap-2 text-xs sm:text-sm">
-          <Clock className="h-3.5 w-3.5" />
-          Antwort innerhalb von 24 Stunden, persönlich.
-        </p>
-        <p
-          className="text-background/70 mt-6 text-base"
-          style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic" }}
-        >
+        <p className="serif-italic text-background/80 mt-12 text-xl">
           — Nadim Nauroz, Hamburg
         </p>
       </div>

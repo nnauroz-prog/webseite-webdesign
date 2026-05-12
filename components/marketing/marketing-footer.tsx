@@ -4,9 +4,8 @@ import { BackToTop } from "@/components/marketing/back-to-top";
 import { SitaloLogo } from "@/components/sitalo-logo";
 
 /**
- * Shared marketing footer. Mirrors the marketing header's CTA
- * hierarchy — primary action is "Website anfragen", login is a quiet
- * link, no "Kostenlos starten".
+ * Marketing footer. Editorial layout — a left-aligned statement block
+ * with the signature, a small links grid on the right.
  */
 export function MarketingFooter() {
   const year = new Date().getFullYear();
@@ -14,43 +13,42 @@ export function MarketingFooter() {
     <>
       <BackToTop />
       <footer className="border-border/40 bg-background border-t">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-2 md:grid-cols-4">
-        <div className="space-y-3">
-          <SitaloLogo size="sm" />
-          <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
-            Ich baue Websites für lokale Unternehmen. Persönlich, ohne
-            Baukasten-Stress, mit einem festen Ansprechpartner — mir.
-          </p>
-          <p
-            className="text-foreground/80 text-sm"
-            style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic" }}
-          >
-            — Nadim Nauroz
-          </p>
+        <div className="mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-24 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+          <div className="max-w-sm">
+            <SitaloLogo size="md" />
+            <p className="text-muted-foreground mt-6 text-[15px] leading-relaxed">
+              Websites für lokale Unternehmen. Persönlich gemacht, in
+              Hamburg.
+            </p>
+            <p className="serif-italic text-foreground mt-6 text-lg">
+              — Nadim Nauroz
+            </p>
+          </div>
+          <FooterCol title="Service">
+            <FooterLink href="/leistungen">Leistungen</FooterLink>
+            <FooterLink href="/ablauf">Ablauf</FooterLink>
+            <FooterLink href="/branchen">Branchen</FooterLink>
+            <FooterLink href="/pakete">Pakete</FooterLink>
+          </FooterCol>
+          <FooterCol title="Sitalo">
+            <FooterLink href="/anfrage">Website anfragen</FooterLink>
+            <FooterLink href="/faq">FAQ</FooterLink>
+            <FooterLink href="/kontakt">Kontakt</FooterLink>
+          </FooterCol>
+          <FooterCol title="Rechtliches">
+            <FooterLink href="/impressum">Impressum</FooterLink>
+            <FooterLink href="/datenschutz">Datenschutz</FooterLink>
+          </FooterCol>
         </div>
-        <FooterCol title="Service">
-          <FooterLink href="/leistungen">Leistungen</FooterLink>
-          <FooterLink href="/ablauf">Ablauf</FooterLink>
-          <FooterLink href="/branchen">Branchen</FooterLink>
-          <FooterLink href="/pakete">Pakete</FooterLink>
-        </FooterCol>
-        <FooterCol title="Sitalo">
-          <FooterLink href="/anfrage">Website anfragen</FooterLink>
-          <FooterLink href="/faq">FAQ</FooterLink>
-          <FooterLink href="/kontakt">Kontakt</FooterLink>
-        </FooterCol>
-        <FooterCol title="Rechtliches">
-          <FooterLink href="/impressum">Impressum</FooterLink>
-          <FooterLink href="/datenschutz">Datenschutz</FooterLink>
-        </FooterCol>
-      </div>
-      <div className="border-border/40 border-t">
-        <div className="text-muted-foreground mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-5 text-xs sm:flex-row">
-          <span>© {year} Sitalo Webdesign. Alle Rechte vorbehalten.</span>
-          <span className="text-muted-foreground/80">Made in Hamburg</span>
+        <div className="border-border/40 border-t">
+          <div className="text-muted-foreground mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-2 px-6 py-6 text-xs sm:flex-row sm:items-center">
+            <span>© {year} Sitalo Webdesign</span>
+            <span className="serif-italic text-muted-foreground/80 text-sm">
+              Made in Hamburg
+            </span>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
     </>
   );
 }
@@ -64,10 +62,10 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h3 className="text-foreground/80 mb-3 text-[11px] font-semibold uppercase tracking-[0.18em]">
+      <h3 className="text-foreground/70 mb-5 text-[11px] font-medium uppercase tracking-[0.22em]">
         {title}
       </h3>
-      <ul className="space-y-2 text-sm">{children}</ul>
+      <ul className="space-y-3 text-[15px]">{children}</ul>
     </div>
   );
 }
@@ -83,7 +81,7 @@ function FooterLink({
     <li>
       <Link
         href={href}
-        className="text-muted-foreground hover:text-foreground transition-colors"
+        className="text-foreground/85 hover:text-foreground underline-offset-4 transition-colors hover:underline"
       >
         {children}
       </Link>
