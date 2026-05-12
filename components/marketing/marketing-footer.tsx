@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
+import { TrustBar } from "@/components/marketing/trust-bar";
 import { SitaloLogo } from "@/components/sitalo-logo";
 
 /**
@@ -12,6 +13,7 @@ export function MarketingFooter() {
   return (
     <>
       <BackToTop />
+      <TrustBar />
       <footer className="border-border/40 bg-background border-t">
         <div className="mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-24 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
           <div className="max-w-sm">

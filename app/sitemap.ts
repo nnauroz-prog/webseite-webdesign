@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
 
+import { getAllBrancheSlugs } from "@/lib/branchen-data";
+
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
   "https://webseite-webdesign.vercel.app";
 
-const ROUTES = [
+const STATIC_ROUTES = [
   "",
   "/leistungen",
   "/branchen",
@@ -17,10 +19,22 @@ const ROUTES = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return ROUTES.map((path) => ({
+
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: now,
     changeFrequency: "monthly",
     priority: path === "" ? 1 : 0.7,
   }));
+
+  const brancheEntries: MetadataRoute.Sitemap = getAllBrancheSlugs().map(
+    (slug) => ({
+      url: `${SITE_URL}/branchen/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }),
+  );
+
+  return [...staticEntries, ...brancheEntries];
 }

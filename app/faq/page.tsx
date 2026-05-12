@@ -96,6 +96,17 @@ const GROUPS: Group[] = [
 ];
 
 export default function FaqPage() {
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: GROUPS.flatMap((g) =>
+      g.items.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+    ),
+  };
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -107,6 +118,11 @@ export default function FaqPage() {
         <Closer />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
     </div>
   );
 }
