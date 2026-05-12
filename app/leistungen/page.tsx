@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
-  Check,
   Globe2,
   Inbox,
   Layout,
@@ -124,17 +123,21 @@ export default function LeistungenPage() {
 function Hero() {
   return (
     <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-4xl px-6 py-16 text-center sm:py-24">
-        <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-          Leistungen
-        </p>
-        <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl">
-          Was ich für Sie übernehme.
-        </h1>
-        <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-          Von der ersten Idee bis zur fertigen Seite — und danach genauso.
-          Sie kümmern sich um Ihren Betrieb, ich kümmere mich um Ihre Online-Präsenz.
-        </p>
+      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32 lg:pb-36">
+        <div className="max-w-3xl">
+          <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+            Was ich
+            <br />
+            <span className="serif-italic text-muted-foreground font-normal">
+              für Sie übernehme.
+            </span>
+          </h1>
+          <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
+            Von der ersten Idee bis zur fertigen Seite — und danach genauso.
+            Sie kümmern sich um Ihren Betrieb, ich kümmere mich um Ihre
+            Online-Präsenz.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -142,38 +145,46 @@ function Hero() {
 
 function Sections() {
   return (
-    <section className="border-border/40 border-b py-16 sm:py-24">
-      <div className="mx-auto w-full max-w-5xl px-6">
-        <ul className="space-y-10 sm:space-y-14">
-          {SECTIONS.map(({ icon: Icon, title, intro, bullets }) => (
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
+        <ol className="divide-border/60 divide-y">
+          {SECTIONS.map(({ icon: Icon, title, intro, bullets }, i) => (
             <li
               key={title}
-              className="border-border/60 bg-card rounded-3xl border p-6 shadow-sm sm:p-9"
+              className="grid gap-10 py-14 sm:py-20 lg:grid-cols-[0.7fr_1.6fr] lg:gap-20"
             >
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
-                <span className="bg-primary/10 text-primary inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg">
+              <div>
+                <p className="text-muted-foreground font-mono text-xs tracking-[0.2em]">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <span className="bg-foreground text-background mt-6 inline-flex h-11 w-11 items-center justify-center rounded-full">
                   <Icon className="h-5 w-5" />
                 </span>
-                <div className="flex-1">
-                  <h2 className="text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
-                    {title}
-                  </h2>
-                  <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed">
-                    {intro}
-                  </p>
-                  <ul className="mt-5 space-y-2">
-                    {bullets.map((b) => (
-                      <li key={b} className="flex items-start gap-2.5 text-sm">
-                        <Check className="text-emerald-600 mt-0.5 h-4 w-4 shrink-0" />
-                        <span className="text-foreground/85">{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <h2 className="mt-6 text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
+                  {title}
+                </h2>
+              </div>
+              <div>
+                <p className="text-foreground/80 max-w-xl text-pretty text-lg leading-relaxed">
+                  {intro}
+                </p>
+                <ul className="divide-border/60 mt-8 divide-y">
+                  {bullets.map((b) => (
+                    <li
+                      key={b}
+                      className="text-foreground/85 flex items-baseline gap-4 py-3 text-[15px] leading-relaxed sm:text-base"
+                    >
+                      <span className="text-muted-foreground/70 font-mono text-xs">
+                        ·
+                      </span>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   );
@@ -181,22 +192,35 @@ function Sections() {
 
 function FinalCta() {
   return (
-    <section className="bg-foreground text-background py-14 sm:py-20">
-      <div className="mx-auto w-full max-w-3xl px-6 text-center">
-        <h2 className="text-balance text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
-          Klingt nach dem, was Sie suchen?
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="bg-gold/15 pointer-events-none absolute top-10 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-3xl"
+      />
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 text-center sm:py-32">
+        <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+          Klingt nach dem,
+          <br />
+          <span className="serif-italic text-background/70 font-normal">
+            was Sie suchen?
+          </span>
         </h2>
-        <p className="text-background/70 mx-auto mt-4 max-w-xl text-pretty text-base sm:text-lg">
-          Schreiben Sie mir kurz Ihre Anfrage — ich melde mich innerhalb
-          von 24 Stunden persönlich mit einer ehrlichen Einschätzung.
+        <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
+          Schreiben Sie mir kurz — ich melde mich innerhalb von 24 Stunden
+          persönlich, mit einer ehrlichen Einschätzung.
         </p>
-        <Link
-          href="/anfrage"
-          className="bg-background text-foreground hover:bg-background/90 mt-7 inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
-        >
-          Website anfragen
-          <ArrowRight className="h-4 w-4" />
-        </Link>
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/anfrage"
+            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
+          >
+            Website anfragen
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+        <p className="serif-italic text-background/80 mt-12 text-xl">
+          — Nadim Nauroz, Hamburg
+        </p>
       </div>
     </section>
   );

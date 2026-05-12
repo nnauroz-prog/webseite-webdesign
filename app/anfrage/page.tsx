@@ -50,66 +50,46 @@ export default async function AnfragePage({
       <MarketingHeader />
 
       <main className="flex-1">
-        <section className="border-border/40 border-b py-16 sm:py-24">
-          <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-            <div className="space-y-8">
-              <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-                  Anfrage
-                </p>
-                <h1 className="mt-3 text-4xl font-semibold leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-                  Lass uns deine Website bauen.
-                </h1>
-                <p className="text-muted-foreground mt-5 text-lg leading-relaxed text-pretty">
-                  Sag uns kurz, was du brauchst. Wir melden uns persönlich
-                  innerhalb von 24 Stunden — mit einem klaren Vorschlag, was
-                  möglich ist und was es kostet.
-                </p>
-              </div>
+        <section className="border-border/40 border-b">
+          <div className="mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-28 lg:grid-cols-[1fr_1.2fr] lg:gap-20 lg:py-32">
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl">
+                Lassen Sie uns
+                <br />
+                <span className="serif-italic text-muted-foreground font-normal">
+                  Ihre Seite bauen.
+                </span>
+              </h1>
+              <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-lg leading-relaxed">
+                Sagen Sie mir kurz, was Sie brauchen. Ich melde mich
+                persönlich innerhalb von 24 Stunden — mit einem klaren
+                Vorschlag, was möglich ist und was es kostet.
+              </p>
 
-              <ul className="space-y-3">
+              <ul className="divide-border/60 mt-10 divide-y">
                 {TRUST.map((item) => (
                   <li
                     key={item}
-                    className="text-foreground/80 flex items-center gap-3 text-sm"
+                    className="text-foreground/85 flex items-baseline gap-4 py-3 text-[15px]"
                   >
-                    <span className="bg-primary/10 text-primary inline-flex h-6 w-6 items-center justify-center rounded-full">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2.5}
-                        className="h-3.5 w-3.5"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M5 13l4 4L19 7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                    <span className="text-muted-foreground/70 font-mono text-xs">
+                      ·
                     </span>
-                    {item}
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="border-border/60 bg-secondary/30 rounded-2xl border p-6">
-                <h2 className="text-base font-semibold tracking-tight">
-                  Lieber direkt schreiben?
-                </h2>
-                <p className="text-muted-foreground mt-1 text-sm">
-                  Schreib uns eine E-Mail — wir antworten oft noch am selben
-                  Tag.
+              <div className="border-border/60 mt-10 border-t pt-8">
+                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
+                  Lieber direkt
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <a
-                    href="mailto:hallo@sitalo.de"
-                    className="border-border bg-background hover:bg-secondary inline-flex h-10 items-center justify-center rounded-full border px-4 text-sm"
-                  >
-                    hallo@sitalo.de
-                  </a>
-                </div>
+                <a
+                  href="mailto:hallo@sitalo.de"
+                  className="text-foreground mt-3 inline-block text-lg underline underline-offset-4 hover:no-underline"
+                >
+                  hallo@sitalo.de
+                </a>
               </div>
             </div>
 

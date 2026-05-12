@@ -107,18 +107,21 @@ export default function FaqPage() {
 function Hero() {
   return (
     <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-4xl px-6 py-16 text-center sm:py-24">
-        <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-          FAQ
-        </p>
-        <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl">
-          Häufige Fragen
-        </h1>
-        <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-          Hier finden Sie Antworten auf das, was Kunden mich am häufigsten
-          fragen. Wenn Ihre Frage nicht dabei ist — schreiben Sie mir einfach,
-          ich antworte persönlich.
-        </p>
+      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32 lg:pb-36">
+        <div className="max-w-3xl">
+          <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+            Häufige
+            <br />
+            <span className="serif-italic text-muted-foreground font-normal">
+              Fragen.
+            </span>
+          </h1>
+          <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
+            Hier finden Sie Antworten auf das, was Kunden mich am häufigsten
+            fragen. Wenn Ihre Frage nicht dabei ist — schreiben Sie mir
+            einfach, ich antworte persönlich.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -126,34 +129,27 @@ function Hero() {
 
 function Accordion() {
   return (
-    <section className="border-border/40 border-b py-16 sm:py-24">
-      <div className="mx-auto w-full max-w-3xl px-6">
-        <dl className="space-y-3">
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
+        <dl className="divide-border/70 mx-auto max-w-4xl divide-y">
           {FAQ.map((item) => (
-            <details
-              key={item.question}
-              className="bg-card border-border/60 group rounded-xl border p-5 open:shadow-sm"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
+            <details key={item.question} className="group py-6 sm:py-7">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
                 {item.question}
-                <span className="text-muted-foreground transition-transform group-open:rotate-180">
+                <span className="text-muted-foreground transition-transform group-open:rotate-45">
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth={2}
-                    className="h-4 w-4"
+                    strokeWidth={1.5}
+                    className="h-5 w-5"
                     aria-hidden="true"
                   >
-                    <path
-                      d="M6 9l6 6 6-6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                   </svg>
                 </span>
               </summary>
-              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed text-pretty">
+              <p className="text-muted-foreground mt-5 max-w-3xl text-[15px] leading-relaxed text-pretty sm:text-base">
                 {item.answer}
               </p>
             </details>
@@ -166,30 +162,41 @@ function Accordion() {
 
 function FinalCta() {
   return (
-    <section className="bg-foreground text-background py-14 sm:py-20">
-      <div className="mx-auto w-full max-w-3xl px-6 text-center">
-        <h2 className="text-balance text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
-          Noch eine Frage offen?
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="bg-gold/15 pointer-events-none absolute top-10 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-3xl"
+      />
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 text-center sm:py-32">
+        <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+          Noch eine Frage
+          <br />
+          <span className="serif-italic text-background/70 font-normal">
+            offen?
+          </span>
         </h2>
-        <p className="text-background/70 mx-auto mt-4 max-w-xl text-pretty text-base sm:text-lg">
-          Schreiben Sie mir kurz — über das Formular oder WhatsApp. Ich melde
-          mich persönlich innerhalb von 24 Stunden.
+        <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
+          Schreiben Sie mir kurz — über das Formular oder WhatsApp. Ich
+          melde mich persönlich innerhalb von 24 Stunden.
         </p>
-        <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/anfrage"
-            className="bg-background text-foreground hover:bg-background/90 inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
+            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
           >
             Projekt anfragen
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
             href="/kontakt"
-            className="border-background/30 text-background hover:bg-background/10 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
+            className="border-background/30 text-background hover:bg-background/10 inline-flex h-12 items-center justify-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
           >
-            Kontakt-Seite
+            Kontakt
           </Link>
         </div>
+        <p className="serif-italic text-background/80 mt-12 text-xl">
+          — Nadim Nauroz, Hamburg
+        </p>
       </div>
     </section>
   );

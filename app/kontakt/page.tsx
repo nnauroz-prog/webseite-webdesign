@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Clock, Mail, MessageCircle } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -31,95 +31,84 @@ export default function KontaktPage() {
 
       <main className="flex-1">
         <section className="border-border/40 border-b">
-          <div className="mx-auto w-full max-w-4xl px-6 py-16 text-center sm:py-24">
-            <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-              Kontakt
-            </p>
-            <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl">
-              Schreiben Sie mir.
-            </h1>
-            <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-              Am schnellsten erreichen Sie mich über das Anfrage-Formular oder
-              WhatsApp. Ich melde mich persönlich innerhalb von 24 Stunden —
-              keine Hotline, kein Ticket.
-            </p>
+          <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32 lg:pb-36">
+            <div className="max-w-3xl">
+              <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+                Schreiben Sie
+                <br />
+                <span className="serif-italic text-muted-foreground font-normal">
+                  mir.
+                </span>
+              </h1>
+              <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
+                Am schnellsten erreichen Sie mich über das Anfrage-Formular
+                oder WhatsApp. Ich melde mich persönlich innerhalb von 24
+                Stunden — keine Hotline, kein Ticket.
+              </p>
+            </div>
           </div>
         </section>
 
-        <section className="border-border/40 border-b py-14 sm:py-20">
-          <div className="mx-auto w-full max-w-4xl px-6">
-            <ul className="grid gap-5 sm:grid-cols-2">
-              <li className="border-border/60 bg-card rounded-3xl border p-7 shadow-sm">
-                <span className="bg-primary/10 text-primary inline-flex h-11 w-11 items-center justify-center rounded-lg">
-                  <ArrowRight className="h-5 w-5" />
-                </span>
-                <h2 className="mt-5 text-xl font-semibold tracking-tight">
-                  Anfrage-Formular
-                </h2>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  Ein paar kurze Schritte: Sie geben mir die wichtigsten
-                  Eckdaten, ich melde mich mit einem klaren Vorschlag.
-                </p>
-                <Link
-                  href="/anfrage"
-                  className="bg-foreground text-background hover:bg-foreground/90 mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium shadow-sm transition-all hover:shadow"
-                >
-                  Anfrage starten
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </li>
-
-              <li className="border-border/60 bg-card rounded-3xl border p-7 shadow-sm">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600">
-                  <MessageCircle className="h-5 w-5" />
-                </span>
-                <h2 className="mt-5 text-xl font-semibold tracking-tight">
-                  WhatsApp
-                </h2>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  Eine schnelle Rückfrage oder einfach kurz Hallo sagen —
-                  ich antworte oft noch am selben Tag.
-                </p>
-                {whatsappHref ? (
-                  <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="border-border bg-background hover:bg-secondary mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-medium transition-colors"
+        <section className="border-border/40 border-b">
+          <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
+            <ol className="divide-border/60 divide-y">
+              <ContactRow
+                index="01"
+                title="Anfrage-Formular"
+                body="Ein paar kurze Schritte: Sie geben mir die wichtigsten Eckdaten, ich melde mich persönlich mit einem klaren Vorschlag — meist noch am selben Tag."
+                action={
+                  <Link
+                    href="/anfrage"
+                    className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
                   >
-                    WhatsApp schreiben
-                    <ArrowRight className="h-4 w-4" />
-                  </a>
-                ) : (
-                  <p className="text-muted-foreground mt-6 text-xs">
-                    WhatsApp-Nummer wird gerade konfiguriert.
-                  </p>
-                )}
-              </li>
+                    Anfrage starten
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                }
+              />
+              <ContactRow
+                index="02"
+                title="WhatsApp"
+                body="Eine schnelle Rückfrage oder einfach kurz Hallo sagen — ich antworte oft noch am selben Tag."
+                action={
+                  whatsappHref ? (
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="border-foreground text-foreground hover:bg-foreground hover:text-background group inline-flex h-12 items-center rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
+                    >
+                      WhatsApp schreiben
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </a>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">
+                      WhatsApp-Nummer wird gerade konfiguriert.
+                    </p>
+                  )
+                }
+              />
+              <ContactRow
+                index="03"
+                title="E-Mail"
+                body={
+                  <>
+                    Klassisch per E-Mail an{" "}
+                    <a
+                      href="mailto:hallo@sitalo.de"
+                      className="text-foreground underline underline-offset-4"
+                    >
+                      hallo@sitalo.de
+                    </a>
+                    . Für eine vollständige Projekt-Aufnahme ist das
+                    Formular praktischer — dann habe ich alles auf einen
+                    Blick.
+                  </>
+                }
+              />
+            </ol>
 
-              <li className="border-border/60 bg-card rounded-3xl border p-7 shadow-sm sm:col-span-2">
-                <span className="bg-primary/10 text-primary inline-flex h-11 w-11 items-center justify-center rounded-lg">
-                  <Mail className="h-5 w-5" />
-                </span>
-                <h2 className="mt-5 text-xl font-semibold tracking-tight">
-                  E-Mail
-                </h2>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  Klassisch per E-Mail an{" "}
-                  <a
-                    href="mailto:hallo@sitalo.de"
-                    className="hover:text-foreground underline"
-                  >
-                    hallo@sitalo.de
-                  </a>
-                  . Ich antworte meist noch am selben Tag. Für eine
-                  vollständige Projekt-Aufnahme ist das Formular trotzdem
-                  praktischer — dann habe ich alles auf einen Blick.
-                </p>
-              </li>
-            </ul>
-
-            <div className="text-muted-foreground mt-10 flex items-center justify-center gap-2 text-sm">
+            <div className="text-muted-foreground border-border/60 mt-16 flex items-center gap-3 border-t pt-8 text-sm">
               <Clock className="h-4 w-4" />
               Antwort innerhalb von 24 Stunden, persönlich.
             </div>
@@ -129,5 +118,34 @@ export default function KontaktPage() {
 
       <MarketingFooter />
     </div>
+  );
+}
+
+function ContactRow({
+  index,
+  title,
+  body,
+  action,
+}: {
+  index: string;
+  title: string;
+  body: React.ReactNode;
+  action?: React.ReactNode;
+}) {
+  return (
+    <li className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[0.5fr_1.5fr_auto] lg:items-center lg:gap-16">
+      <span className="text-muted-foreground/70 font-mono text-xs tracking-[0.25em]">
+        {index}
+      </span>
+      <div>
+        <h2 className="text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
+          {title}
+        </h2>
+        <p className="text-foreground/75 mt-4 max-w-xl text-pretty text-lg leading-relaxed">
+          {body}
+        </p>
+      </div>
+      {action ? <div className="lg:justify-self-end">{action}</div> : <div />}
+    </li>
   );
 }

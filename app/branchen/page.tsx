@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -180,18 +180,20 @@ export default function BranchenPage() {
 function Hero() {
   return (
     <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-4xl px-6 py-16 text-center sm:py-24">
-        <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-          Branchen
-        </p>
-        <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl">
-          Websites für lokale Unternehmen,
-          <br className="hidden sm:inline" /> die professionell wirken müssen.
-        </h1>
-        <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-          Wir passen Struktur, Design und Inhalte an Ihre Branche an — vom
-          Pflegedienst bis zum Café um die Ecke.
-        </p>
+      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32 lg:pb-36">
+        <div className="max-w-3xl">
+          <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+            Websites,
+            <br />
+            <span className="serif-italic text-muted-foreground font-normal">
+              die zu Ihrer Branche passen.
+            </span>
+          </h1>
+          <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
+            Ich passe Struktur, Design und Inhalte an Ihren Alltag an —
+            vom Pflegedienst bis zum Café um die Ecke.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -199,56 +201,79 @@ function Hero() {
 
 function Sections() {
   return (
-    <section className="border-border/40 border-b py-16 sm:py-24">
-      <div className="mx-auto w-full max-w-5xl px-6">
-        <ul className="space-y-10 sm:space-y-14">
-          {BRANCHEN.map((b) => (
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
+        <ol className="divide-border/60 divide-y">
+          {BRANCHEN.map((b, i) => (
             <li
               key={b.slug}
-              className="border-border/60 bg-card overflow-hidden rounded-3xl border shadow-sm"
+              className="grid gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-20"
             >
-              {b.image ? (
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-secondary/40">
-                  <Image
-                    src={b.image.src}
-                    alt={b.image.alt}
-                    fill
-                    sizes="(min-width: 1024px) 900px, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-              ) : null}
-              <div className="p-6 sm:p-9">
-                <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
+              <div
+                className={
+                  i % 2 === 0 ? "lg:order-1" : "lg:order-2"
+                }
+              >
+                {b.image ? (
+                  <div className="bg-secondary/40 relative aspect-[16/10] w-full overflow-hidden rounded-2xl shadow-[0_24px_48px_-16px_rgb(0_0_0/0.18)] ring-1 ring-black/5">
+                    <Image
+                      src={b.image.src}
+                      alt={b.image.alt}
+                      fill
+                      sizes="(min-width: 1024px) 720px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-secondary/30 flex aspect-[16/10] w-full items-center justify-center rounded-2xl">
+                    <span className="serif text-foreground/20 text-[8rem] font-normal leading-none">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div
+                className={
+                  i % 2 === 0
+                    ? "flex flex-col justify-center lg:order-2"
+                    : "flex flex-col justify-center lg:order-1"
+                }
+              >
+                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
                   Branche
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
+                <h2 className="mt-4 text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
                   {b.label}
                 </h2>
-                <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed">
+                <p className="text-foreground/80 mt-6 max-w-xl text-pretty text-lg leading-relaxed">
                   {b.body}
                 </p>
-              <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-                {b.bullets.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm">
-                    <Check className="text-emerald-600 mt-0.5 h-4 w-4 shrink-0" />
-                    <span className="text-foreground/85">{item}</span>
-                  </li>
-                ))}
-              </ul>
-                <div className="mt-6">
+                <ul className="divide-border/60 mt-8 divide-y">
+                  {b.bullets.map((item) => (
+                    <li
+                      key={item}
+                      className="text-foreground/85 flex items-baseline gap-4 py-3 text-[15px] leading-relaxed"
+                    >
+                      <span className="text-muted-foreground/70 font-mono text-xs">
+                        ·
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-10">
                   <Link
                     href={`/anfrage?branche=${b.inquirySlug}`}
-                    className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-all hover:shadow"
+                    className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
                   >
-                    Website für diese Branche anfragen
-                    <ArrowRight className="h-4 w-4" />
+                    Diese Seite anfragen
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </div>
               </div>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   );
@@ -256,22 +281,35 @@ function Sections() {
 
 function FinalCta() {
   return (
-    <section className="bg-foreground text-background py-14 sm:py-20">
-      <div className="mx-auto w-full max-w-3xl px-6 text-center">
-        <h2 className="text-balance text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
-          Ihre Branche nicht dabei?
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="bg-gold/15 pointer-events-none absolute top-10 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-3xl"
+      />
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 text-center sm:py-32">
+        <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+          Ihre Branche
+          <br />
+          <span className="serif-italic text-background/70 font-normal">
+            nicht dabei?
+          </span>
         </h2>
-        <p className="text-background/70 mx-auto mt-4 max-w-xl text-pretty text-base sm:text-lg">
-          Wir bauen Websites für lokale Unternehmen aller Art — sagen Sie uns
+        <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
+          Ich baue Websites für lokale Unternehmen aller Art — sagen Sie mir
           einfach, was Sie brauchen.
         </p>
-        <Link
-          href="/anfrage"
-          className="bg-background text-foreground hover:bg-background/90 mt-7 inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
-        >
-          Anfrage starten
-          <ArrowRight className="h-4 w-4" />
-        </Link>
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/anfrage"
+            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
+          >
+            Anfrage starten
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+        <p className="serif-italic text-background/80 mt-12 text-xl">
+          — Nadim Nauroz, Hamburg
+        </p>
       </div>
     </section>
   );
