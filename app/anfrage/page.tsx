@@ -39,10 +39,11 @@ function resolveInitialPackage(
 export default async function AnfragePage({
   searchParams,
 }: {
-  searchParams: Promise<{ paket?: string }>;
+  searchParams: Promise<{ paket?: string; vorhaben?: string }>;
 }) {
   const params = await searchParams;
   const initialPackage = resolveInitialPackage(params.paket);
+  const initialMessage = params.vorhaben?.toString().trim().slice(0, 500);
   const formspreeId = process.env.FORMSPREE_FORM_ID?.trim() || undefined;
 
   return (
@@ -96,6 +97,7 @@ export default async function AnfragePage({
             <div>
               <InquiryForm
                 initialPackage={initialPackage}
+                initialMessage={initialMessage}
                 formspreeId={formspreeId}
               />
             </div>

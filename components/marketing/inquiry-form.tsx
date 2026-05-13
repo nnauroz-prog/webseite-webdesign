@@ -239,9 +239,11 @@ const STEP_TITLES = [
 
 export function InquiryForm({
   initialPackage,
+  initialMessage,
   formspreeId,
 }: {
   initialPackage?: InquiryPackage;
+  initialMessage?: string;
   formspreeId?: string;
 }) {
   const [step, setStep] = useState(0);
@@ -257,7 +259,7 @@ export function InquiryForm({
     hasWebsite: false,
     currentWebsite: "",
     timeframe: "",
-    message: "",
+    message: initialMessage ?? "",
     consent: false,
     websiteUrl: "",
   });
