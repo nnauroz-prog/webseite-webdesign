@@ -93,6 +93,47 @@ html {
       }
     }
   }
+
+  /* Apple-style View Transitions — sanftes Crossfade beim Navigieren
+     zwischen Seiten. Browser-native, kein JS-Overhead. Wirkt nur in
+     Browsern, die View Transitions API unterstützen (Chrome, Safari,
+     Firefox ab '26). Andere Browser: harter Cut wie vorher. */
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 280ms;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    ::view-transition-old(root) {
+      animation-name: fade-out;
+    }
+    ::view-transition-new(root) {
+      animation-name: fade-in;
+    }
+    @keyframes fade-out {
+      to {
+        opacity: 0;
+      }
+    }
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+
+  /* Subtile Press-Feedback auf interaktive Elemente — wirkt sehr
+     premium, ist aber kaum bewusst spürbar. */
+  button:not(:disabled),
+  [role="button"],
+  a[href] {
+    transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  button:not(:disabled):active,
+  [role="button"]:active,
+  a[href]:active {
+    transform: scale(0.985);
+  }
 }
 
 /* Editorial pull-quote serif italic — used for signatures and quotes. */
