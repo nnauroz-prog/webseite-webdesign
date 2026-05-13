@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Send } from "lucide-react";
+import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
+import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { HeroMockups } from "@/components/marketing/hero-mockups";
+import { HeroPrompt } from "@/components/marketing/hero-prompt";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -39,16 +41,19 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     n: "01",
+    icon: MessageSquare,
     title: "Sie schreiben mir.",
     body: "Ein paar Sätze zum Vorhaben — per Formular oder WhatsApp. Ich melde mich innerhalb von 24 Stunden persönlich.",
   },
   {
     n: "02",
+    icon: Coffee,
     title: "Wir sprechen kurz.",
     body: "Telefon oder Kaffee in Hamburg. Sie schicken mir Logo, Bilder und ein paar Zeilen. Was fehlt, klären wir.",
   },
   {
     n: "03",
+    icon: Rocket,
     title: "Ihre Seite geht online.",
     body: "Ich baue, Sie schauen drüber, wir gehen live — meist in 1–2 Werktagen. Danach bleibe ich Ihr Ansprechpartner.",
   },
@@ -135,6 +140,7 @@ export default function HomePage() {
         <Hero />
         <PersonalNote />
         <IndustryPicker />
+        <ExamplesGallery />
         <Steps />
         <Pricing />
         <Faq />
@@ -165,20 +171,21 @@ function Hero() {
               Sie schicken mir Ihre Unterlagen — ich melde mich persönlich
               und baue Ihre Seite. Aus Hamburg, in 1–2 Werktagen.
             </p>
-            <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <HeroPrompt />
+            <div className="text-muted-foreground mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+              <span>Oder direkt:</span>
               <Link
                 href="/anfrage"
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
+                className="text-foreground inline-flex items-center underline-offset-4 hover:underline"
               >
-                Website anfragen
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                Vollständige Anfrage
               </Link>
+              <span aria-hidden="true">·</span>
               <Link
-                href="/branchen"
-                className="text-foreground inline-flex h-12 items-center text-[15px] font-medium tracking-tight underline-offset-[6px] hover:underline"
+                href="#beispiele"
+                className="text-foreground inline-flex items-center underline-offset-4 hover:underline"
               >
                 Beispiele ansehen
-                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -258,16 +265,21 @@ function Steps() {
           </h2>
         </div>
         <ol className="mt-16 grid gap-x-10 gap-y-14 sm:mt-24 sm:grid-cols-3">
-          {STEPS.map((step) => (
-            <li key={step.n} className="flex flex-col">
-              <span className="serif text-foreground/15 text-[8rem] font-normal leading-none tracking-[-0.04em] sm:text-[10rem]">
-                {step.n}
-              </span>
+          {STEPS.map(({ n, icon: Icon, title, body }) => (
+            <li key={n} className="flex flex-col">
+              <div className="flex items-start justify-between">
+                <span className="serif text-foreground/15 text-[8rem] font-normal leading-none tracking-[-0.04em] sm:text-[10rem]">
+                  {n}
+                </span>
+                <span className="bg-foreground text-background mt-2 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full sm:h-14 sm:w-14">
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                </span>
+              </div>
               <h3 className="text-foreground mt-4 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
-                {step.title}
+                {title}
               </h3>
               <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed sm:text-base">
-                {step.body}
+                {body}
               </p>
             </li>
           ))}
