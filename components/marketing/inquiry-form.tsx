@@ -239,16 +239,28 @@ const STEP_TITLES = [
 
 export function InquiryForm({
   initialPackage,
+  initialIndustry,
   initialMessage,
   formspreeId,
 }: {
   initialPackage?: InquiryPackage;
+  initialIndustry?: string;
   initialMessage?: string;
   formspreeId?: string;
 }) {
-  const [step, setStep] = useState(0);
+  // Bekannten Industry-Slug vorvalidieren (sonst startet der Wizard
+  // mit garbage und der User merkts spät).
+  const validIndustry =
+    initialIndustry &&
+    INDUSTRIES.some((i) => i.slug === initialIndustry)
+      ? initialIndustry
+      : null;
+  // Wenn Industrie schon vorausgewählt ist, springen wir auf
+  // Schritt 2 (Website-Art) — der User soll nicht nochmal seine
+  // Branche bestätigen.
+  const [step, setStep] = useState(validIndustry ? 2 : 0);
   const [data, setData] = useState<WizardData>({
-    industry: null,
+    industry: validIndustry,
     websiteTypes: [],
     features: [],
     selectedPackage: initialPackage ?? null,
@@ -351,8 +363,29 @@ export function InquiryForm({
     return <SuccessScreen />;
   }
 
+  const prefillLabel = (() => {
+    const parts: string[] = [];
+    if (validIndustry) {
+      const ind = INDUSTRIES.find((i) => i.slug === validIndustry);
+      if (ind) parts.push(ind.label);
+    }
+    if (initialMessage) {
+      parts.push(`„${initialMessage.slice(0, 80)}${initialMessage.length > 80 ? "…" : ""}"`);
+    }
+    return parts.length > 0 ? parts.join(" · ") : null;
+  })();
+
   return (
     <div className="bg-card ring-border/50 rounded-3xl border p-6 shadow-xl ring-1 sm:p-8 lg:p-10">
+      {prefillLabel ? (
+        <div className="bg-accent/40 text-foreground/85 border-border/60 mb-6 rounded-2xl border px-4 py-3 text-sm leading-relaxed">
+          <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
+            Übernommen
+          </span>
+          <span className="ml-2">{prefillLabel}</span>
+        </div>
+      ) : null}
+
       <ProgressHeader step={step} total={TOTAL_STEPS} title={STEP_TITLES[step]} />
 
       {/* Honeypot field — visually hidden. */}

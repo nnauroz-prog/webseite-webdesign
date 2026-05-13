@@ -180,17 +180,17 @@ export default function HomePage() {
 function Hero() {
   return (
     <section id="start" className="relative overflow-hidden scroll-mt-20">
-      <div className="mx-auto w-full max-w-7xl px-6 pt-14 pb-20 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+      <div className="mx-auto w-full max-w-7xl px-5 pt-10 pb-16 sm:px-6 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
           <div className="reveal">
-            <h1 className="text-[2.75rem] font-semibold leading-[0.98] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
+            <h1 className="text-[2.25rem] font-semibold leading-[1.02] tracking-[-0.035em] text-balance sm:text-6xl sm:leading-[0.98] sm:tracking-[-0.04em] lg:text-[5.5rem]">
               Ihre Website.
               <br />
               <span className="serif-italic text-foreground/85 font-normal">
                 Persönlich gemacht.
               </span>
             </h1>
-            <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-lg leading-relaxed sm:text-xl">
+            <p className="text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-8 sm:text-xl">
               Sie schicken mir Ihre Unterlagen — ich melde mich persönlich
               und baue Ihre Seite. Aus Hamburg, in 1–2 Werktagen.
             </p>
