@@ -134,6 +134,36 @@ html {
   a[href]:active {
     transform: scale(0.985);
   }
+
+  /* Bild-Fade-In — wenn Bilder fertig geladen sind (next/image
+     setzt data-loaded="true" intern nicht, also nutzen wir den
+     img-Selektor in einer Next-Image-Hülle). Sanfter Übergang
+     statt hartem Pop-In. */
+  @media (prefers-reduced-motion: no-preference) {
+    img[data-nimg],
+    img[data-nimg] + img {
+      animation: img-fade-in 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes img-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* Gradient-Section-Divider — sanfter als border-t/b */
+.divider-gradient {
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklch, var(--border) 100%, transparent),
+    transparent
+  );
 }
 
 /* Editorial pull-quote serif italic — used for signatures and quotes. */
