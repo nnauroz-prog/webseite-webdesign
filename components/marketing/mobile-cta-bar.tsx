@@ -23,7 +23,7 @@ function buildWhatsappHref(): string | null {
   if (digits.length < 6) return null;
   const message =
     process.env.NEXT_PUBLIC_SITALO_WHATSAPP_MESSAGE?.trim() ||
-    "Hallo Nadim, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
+    "Hallo Sitalo, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
