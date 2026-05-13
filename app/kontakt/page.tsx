@@ -7,25 +7,13 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Kontakt — schreiben Sie mir direkt | Sitalo Hamburg",
+  title: "Kontakt — schreiben Sie uns direkt | Sitalo Hamburg",
   description:
-    "Schreiben Sie mir kurz — über Formular, WhatsApp oder E-Mail. Ich melde mich persönlich, meist noch am selben Tag.",
+    "Schreiben Sie uns über Formular oder E-Mail. Wir melden uns persönlich, meist noch am selben Tag.",
   alternates: { canonical: "/kontakt" },
 };
 
-function buildWhatsappHref(): string | null {
-  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
-  if (!raw) return null;
-  const digits = raw.replace(/[^\d]/g, "");
-  if (digits.length < 6) return null;
-  const message =
-    "Hallo Sitalo, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
-}
-
 export default function KontaktPage() {
-  const whatsappHref = buildWhatsappHref();
-
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -48,8 +36,8 @@ export default function KontaktPage() {
             </span>
           </p>
 
-          {/* Three contact methods as compact inline blocks */}
-          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {/* Two contact methods */}
+          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-2 sm:divide-x sm:divide-y-0">
             <ContactMethod
               label="Per Formular"
               detail="Schritt-für-Schritt"
@@ -62,22 +50,6 @@ export default function KontaktPage() {
               href="mailto:info@sitalo.de"
               cta="Schreiben"
             />
-            {whatsappHref ? (
-              <ContactMethod
-                label="Per WhatsApp"
-                detail="Schnelle Rückfragen"
-                href={whatsappHref}
-                cta="Öffnen"
-                external
-              />
-            ) : (
-              <ContactMethod
-                label="Per WhatsApp"
-                detail="In Kürze verfügbar"
-                href="/anfrage"
-                cta="Formular nutzen"
-              />
-            )}
           </div>
 
           <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
@@ -115,28 +87,39 @@ export default function KontaktPage() {
               </p>
             </div>
 
-            {/* Hamburg-Speicherstadt-Foto. Statisches Asset, kein
-                externes Google-Maps-Embed — DSGVO-freundlich, kein
-                Cookie-Banner nötig, schnellere LCP. */}
-            <div className="relative aspect-square w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-              <Image
-                src="/images/hamburg-speicherstadt.png"
-                alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle, warmes Sonnenlicht."
-                fill
-                sizes="(min-width: 1024px) 500px, 100vw"
-                className="object-cover"
-              />
-              <div
-                aria-hidden="true"
-                className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
-              />
-              <div className="absolute bottom-5 left-5 right-5 text-background">
-                <p className="font-mono text-[10px] tracking-[0.25em] uppercase opacity-80">
-                  53.5511° N · 9.9937° E
-                </p>
-                <p className="serif mt-2 text-3xl font-normal tracking-[-0.01em]">
-                  Hamburg
-                </p>
+            {/* Zwei Hamburg-Aufnahmen übereinander — Speicherstadt
+                (Identität) + Eimsbüttel-Café (Alltag). Beide statisch,
+                keine externen Embeds. */}
+            <div className="space-y-3 sm:space-y-4">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                <Image
+                  src="/images/hamburg-speicherstadt.png"
+                  alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
+                  fill
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                  className="object-cover"
+                />
+                <div
+                  aria-hidden="true"
+                  className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
+                />
+                <div className="absolute bottom-4 left-5 right-5 text-background">
+                  <p className="font-mono text-[10px] tracking-[0.25em] uppercase opacity-80">
+                    53.5511° N · 9.9937° E
+                  </p>
+                  <p className="serif mt-1 text-2xl font-normal tracking-[-0.01em]">
+                    Hamburg
+                  </p>
+                </div>
+              </div>
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                <Image
+                  src="/images/cafe-eimsbuettel.png"
+                  alt="Ruhige Straße in Hamburg-Eimsbüttel am Morgen — Café-Terrasse, Altbau-Fassaden, weicher Nebel."
+                  fill
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>

@@ -40,7 +40,7 @@ const PACKAGES: Package[] = [
       "Moderne Onepage-Website",
       "Mobil optimiert",
       "Kontaktformular mit Spam-Schutz",
-      "WhatsApp-Button",
+      "Direktwahl & E-Mail",
       "Google Maps & Öffnungszeiten",
       "Impressum & Datenschutz-Bereich",
       "Hosting in der EU",

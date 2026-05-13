@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
-import { HeroPrompt } from "@/components/marketing/hero-prompt";
 import { HeroRotatingMockups } from "@/components/marketing/hero-rotating-mockups";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -46,20 +45,20 @@ const STEPS = [
   {
     n: "01",
     icon: MessageSquare,
-    title: "Sie schreiben mir.",
-    body: "Ein paar Sätze zum Vorhaben — per Formular oder WhatsApp. Ich melde mich innerhalb von 24 Stunden persönlich.",
+    title: "Sie schreiben uns.",
+    body: "Drei Felder im Formular, fertig. Wir melden uns innerhalb von 24 Stunden — persönlich, kostenlos, ohne Verkaufsdruck.",
   },
   {
     n: "02",
     icon: Coffee,
-    title: "Wir sprechen kurz.",
-    body: "Telefon oder Kaffee in Hamburg. Sie schicken mir Logo, Bilder und ein paar Zeilen. Was fehlt, klären wir.",
+    title: "Kurzer Austausch.",
+    body: "15 Minuten am Telefon oder bei einem Kaffee in Hamburg. Sie erzählen, was Sie brauchen — wir hören zu und schlagen vor.",
   },
   {
     n: "03",
     icon: Rocket,
-    title: "Ihre Seite geht online.",
-    body: "Ich baue, Sie schauen drüber, wir gehen live — meist in 1–2 Werktagen. Danach bleibe ich Ihr Ansprechpartner.",
+    title: "48 Stunden später live.",
+    body: "Wir bauen, Sie schauen drüber, wir gehen online. Danach bleiben wir Ihr Ansprechpartner — kein Ticket, keine Hotline.",
   },
 ];
 
@@ -75,7 +74,7 @@ const PACKAGES = [
       "Onepage-Website",
       "Mobil optimiert",
       "Kontaktformular",
-      "WhatsApp & Google Maps",
+      "Google Maps & Direktwahl",
       "Hosting inklusive",
     ],
   },
@@ -211,31 +210,33 @@ function Hero() {
         <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
           <div className="reveal">
             <h1 className="text-[2.25rem] font-semibold leading-[1.02] tracking-[-0.035em] text-balance sm:text-6xl sm:leading-[0.98] sm:tracking-[-0.04em] lg:text-[5.5rem]">
-              Ihre Website.
+              Während andere
+              <br />
+              noch Vorlagen
               <br />
               <span className="serif-italic text-foreground/85 font-normal">
-                Persönlich gemacht.
+                klicken — sind Sie online.
               </span>
             </h1>
             <p className="text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-8 sm:text-xl">
-              Sie schicken mir Ihre Unterlagen — ich melde mich persönlich
-              und baue Ihre Seite. Aus Hamburg, in 1–2 Werktagen.
+              Hand-gebaute Websites für lokale Unternehmen aus Hamburg.
+              Sie schicken uns drei Sachen, wir liefern den Rest —
+              meistens schon übermorgen.
             </p>
-            <HeroPrompt />
-            <div className="text-muted-foreground mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-              <span>Oder direkt:</span>
+            <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/anfrage"
-                className="text-foreground inline-flex items-center underline-offset-4 hover:underline"
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
               >
-                Vollständige Anfrage
+                Website anfragen
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <span aria-hidden="true">·</span>
               <Link
                 href="#beispiele"
-                className="text-foreground inline-flex items-center underline-offset-4 hover:underline"
+                className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
               >
                 Beispiele ansehen
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -287,24 +288,26 @@ function PersonalNote() {
             „
           </span>
           <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
-            Ich weiß, wie wichtig eine gute Onlinepräsenz heute ist. Wer
-            Sie online nicht findet, kommt auch nicht durch die Tür —{" "}
+            Jeden Tag verlieren Sie Kunden an die Konkurrenz —{" "}
             <span className="serif-italic text-background/75">
-              egal wie gut Sie Ihre Arbeit machen.
+              nicht weil die besser ist, sondern weil sie online besser
+              gefunden wird.
             </span>
           </p>
         </blockquote>
         <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
             <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
-              Vielen Inhabern fehlt schlicht die Zeit, sich durch
-              Baukästen zu klicken — und am Ende doch eine Seite zu haben,
-              die wie tausend andere aussieht. Genau da springen wir ein.
+              Eine Website zu bauen ist viele Wochen Arbeit. Vorlagen
+              durchsuchen, Texte schreiben, Bilder zuschneiden, Hosting
+              klären, am Ende sieht's trotzdem aus wie tausend andere.
+              Wir nehmen Ihnen das ab.
             </p>
             <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
-              Sie schicken uns ein paar Unterlagen — Logo, Bilder, ein paar
-              Sätze. Wir melden uns, bauen Ihre Seite, und bleiben danach
-              Ihr Ansprechpartner. Keine Hotline, kein Ticket.
+              Sie schicken uns drei Sachen — Logo, Bilder, ein paar
+              Sätze zu Ihrem Betrieb. Wir bauen daraus eine Seite, die
+              sich anfühlt wie Ihre, nicht wie eine Vorlage. Übermorgen
+              ist sie online.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo, aus Hamburg
@@ -337,10 +340,10 @@ function Steps() {
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
         <div className="max-w-2xl">
           <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            Drei Schritte.
+            Vom „Hallo"
             <br />
             <span className="serif-italic text-muted-foreground font-normal">
-              Kein Papierkram dazwischen.
+              zur Live-Seite — in 48 Stunden.
             </span>
           </h2>
         </div>
@@ -399,15 +402,16 @@ function Pricing() {
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
         <div className="max-w-2xl">
           <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            Drei Wege,
+            Klare Preise.
             <br />
             <span className="serif-italic text-muted-foreground font-normal">
-              Ihre Seite zu bekommen.
+              Keine Überraschungen.
             </span>
           </h2>
           <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-            Eine einmalige Einrichtung, danach ein fairer Monatsbeitrag für
-            Hosting, Pflege und kleine Änderungen.
+            Einmal zahlen, dann ein fairer Monatsbeitrag für Hosting und
+            Pflege. Was eine Hamburger Agentur für 5.000 € macht, gibt's
+            bei uns ab 499 € — weil wir keine Hochhaus-Miete bezahlen.
           </p>
         </div>
 
@@ -586,7 +590,6 @@ function Faq() {
  * FinalCta — quiet but confident closer
  * ============================================================ */
 function FinalCta() {
-  const whatsappHref = buildWhatsappHref();
   return (
     <section
       id="kontakt"
@@ -598,17 +601,17 @@ function FinalCta() {
       />
       <div className="relative mx-auto w-full max-w-5xl px-6 py-28 text-center sm:py-40">
         <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
-          Lust auf eine Seite,
+          Jeden Tag, den Sie warten,
           <br />
           <span className="serif-italic text-background/70 font-normal">
-            die wirklich zu Ihnen passt?
+            findet Sie ein Kunde weniger.
           </span>
         </h2>
         <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-          Schreiben Sie mir kurz, was Sie vorhaben. Ich melde mich
-          persönlich — meist noch am selben Tag.
+          Schreiben Sie uns kurz — drei Felder, zwei Minuten. Wir melden
+          uns innerhalb von 24 Stunden mit einem konkreten Vorschlag.
         </p>
-        <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-12 flex justify-center">
           <Link
             href="/anfrage"
             className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
@@ -616,46 +619,11 @@ function FinalCta() {
             Website anfragen
             <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
-          {whatsappHref ? (
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border-background/30 text-background hover:bg-background/10 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
-            >
-              <WhatsappGlyph className="h-4 w-4" />
-              WhatsApp
-            </a>
-          ) : null}
         </div>
         <p className="serif-italic text-background/80 mt-12 text-xl">
           — Sitalo, Hamburg
         </p>
       </div>
     </section>
-  );
-}
-
-function buildWhatsappHref(): string | null {
-  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
-  if (!raw) return null;
-  const digits = raw.replace(/[^\d]/g, "");
-  if (digits.length < 6) return null;
-  const message =
-    process.env.NEXT_PUBLIC_SITALO_WHATSAPP_MESSAGE?.trim() ||
-    "Hallo Sitalo, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
-}
-
-function WhatsappGlyph({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M16.001 3.2c-7.067 0-12.8 5.733-12.8 12.8 0 2.241.586 4.434 1.7 6.366L3.2 28.8l6.601-1.728a12.79 12.79 0 0 0 6.198 1.577h.002c7.067 0 12.799-5.732 12.799-12.799 0-3.422-1.332-6.638-3.752-9.057a12.726 12.726 0 0 0-9.047-3.593zm0 23.342h-.002a10.591 10.591 0 0 1-5.4-1.479l-.387-.229-4.014 1.051 1.07-3.915-.252-.4a10.587 10.587 0 0 1-1.624-5.668c0-5.866 4.775-10.641 10.641-10.641 2.842 0 5.514 1.108 7.525 3.12a10.557 10.557 0 0 1 3.116 7.527c0 5.866-4.774 10.634-10.673 10.634zm5.834-7.967c-.32-.16-1.893-.934-2.187-1.04-.293-.107-.507-.16-.72.16s-.827 1.04-1.014 1.254c-.187.214-.374.241-.694.08-.32-.16-1.353-.499-2.578-1.591-.953-.85-1.597-1.9-1.784-2.22-.187-.32-.02-.493.14-.652.143-.143.32-.374.48-.561.16-.187.213-.32.32-.534.107-.214.054-.4-.026-.561-.08-.16-.72-1.733-.987-2.373-.26-.622-.524-.538-.72-.548-.187-.01-.4-.012-.614-.012a1.18 1.18 0 0 0-.854.4c-.293.32-1.12 1.094-1.12 2.667 0 1.574 1.147 3.094 1.307 3.307.16.213 2.254 3.44 5.466 4.825.764.329 1.36.526 1.826.674.766.244 1.464.21 2.014.127.615-.092 1.893-.774 2.16-1.521.267-.748.267-1.387.187-1.521-.08-.134-.293-.213-.614-.374z" />
-    </svg>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -56,7 +57,7 @@ const SECTIONS = [
       "Was nützt eine schöne Seite, wenn Anfragen verloren gehen? Bei mir landet jede Anfrage direkt auf Ihrem Handy — ohne Umwege.",
     bullets: [
       "Kontaktformular mit Spam-Schutz",
-      "WhatsApp-Button für den direkten Draht",
+      "Direktwahl-Button auf dem Handy",
       "Google Maps mit Standort oder Einsatzgebiet",
       "Tippen-zum-Anrufen auf dem Handy",
       "Auf Wunsch: Bewerbungs- oder Reservierungsformular",
@@ -153,20 +154,35 @@ function Hero() {
         className="bg-gold/10 pointer-events-none absolute -top-32 -right-20 h-[36rem] w-[36rem] rounded-full blur-3xl"
       />
       <div className="relative mx-auto w-full max-w-7xl px-6 pt-24 pb-32 sm:pt-32 sm:pb-40 lg:pt-40 lg:pb-48">
-        <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
-          Leistungen
-        </p>
-        <h1 className="mt-8 max-w-5xl text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-balance sm:text-7xl lg:text-[7rem]">
-          Sechs Dinge,
-          <br />
-          <span className="serif-italic text-background/65 font-normal">
-            die ich für Sie übernehme.
-          </span>
-        </h1>
-        <p className="text-background/70 mt-10 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
-          Von der ersten Idee bis zur fertigen Seite — und danach genauso.
-          Sie kümmern sich um Ihren Betrieb, ich um Ihre Online-Präsenz.
-        </p>
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:gap-16">
+          <div>
+            <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+              Leistungen
+            </p>
+            <h1 className="mt-8 text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-balance sm:text-7xl lg:text-[6rem]">
+              Sechs Dinge,
+              <br />
+              <span className="serif-italic text-background/65 font-normal">
+                die wir übernehmen.
+              </span>
+            </h1>
+            <p className="text-background/70 mt-10 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
+              Von der ersten Idee bis zur fertigen Seite — und danach
+              genauso. Sie kümmern sich um Ihren Betrieb, wir um Ihre
+              Online-Präsenz.
+            </p>
+          </div>
+          <div className="relative hidden aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10 lg:block">
+            <Image
+              src="/images/workspace-laptop.png"
+              alt="Laptop auf einem warmen Holzschreibtisch, Notizbuch und Tasse — ruhige Arbeitsatmosphäre."
+              fill
+              priority
+              sizes="(min-width: 1024px) 480px, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

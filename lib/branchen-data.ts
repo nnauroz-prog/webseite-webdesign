@@ -198,14 +198,14 @@ export const BRANCHEN: Branche[] = [
     bullets: [
       "Galerie mit Lightbox",
       "Leistungen und Preise transparent",
-      "Termin-Anfrage per Formular oder WhatsApp",
+      "Termin-Anfrage per Formular",
       "Online-Reservierung auf Wunsch",
       "Ruhige, hochwertige Atmosphäre",
     ],
     detailHeadline: "Eine Seite, auf der man sehen will, was Sie können.",
     detailIntro: [
       "Im Friseur- und Kosmetik-Geschäft wird die Entscheidung über Augen getroffen. Wer Ihre Arbeit nicht sieht, ruft auch nicht an. Deshalb sind die Bilder auf Ihrer Seite kein Schmuck, sondern das wichtigste Verkaufsargument.",
-      "Genauso wichtig: transparente Preise und ein direkter Weg zur Buchung. Die meisten Anfragen kommen heute über das Handy — Tippen auf Telefonnummer, kurze WhatsApp, fertig. Wenn das nicht funktioniert, ist die Anfrage weg.",
+      "Genauso wichtig: transparente Preise und ein direkter Weg zur Buchung. Die meisten Anfragen kommen heute übers Handy — wer die Telefonnummer nicht in zwei Sekunden findet, ruft den Konkurrenten an.",
     ],
     typicalPages: [
       "Startseite mit Galerie",
@@ -226,7 +226,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Direkter Buchungsweg",
-        body: "Tippen-zum-Anrufen aufs Handy, WhatsApp-Button, Termin-Anfrage per Formular. Auf Wunsch auch Anbindung an Online-Buchungssysteme.",
+        body: "Tippen-zum-Anrufen aufs Handy, Termin-Anfrage per Formular. Auf Wunsch auch Anbindung an Online-Buchungssysteme.",
       },
       {
         title: "Team-Vorstellung",
@@ -334,14 +334,14 @@ export const BRANCHEN: Branche[] = [
     bullets: [
       "Leistungen und Einsatzgebiet klar",
       "Galerie mit umgesetzten Projekten",
-      "Rückruf-Anfrage und WhatsApp",
+      "Rückruf-Anfrage und Direktwahl",
       "Notfall- und Direktkontakt",
       "Vertrauen durch Team, Innung, Zertifikate",
     ],
     detailHeadline: "Eine Seite, die Aufträge bringt — nicht nur Visitenkarte ist.",
     detailIntro: [
       "Im Handwerk entscheiden sich Kund:innen häufig nach drei Klicks: Galerie geöffnet, ein Referenzprojekt angeschaut, Kontaktnummer notiert. Wenn Ihre Seite diese drei Schritte nicht reibungslos liefert, verlieren Sie an die Konkurrenz — oft an Konkurrenz, deren handwerkliche Arbeit nicht besser ist.",
-      "Gleichzeitig sind Sie selten am Schreibtisch. Eine Website, die das berücksichtigt, hat eine prominente Rückruf-Anfrage, klar erreichbare Telefonnummer und WhatsApp-Button — und ein Layout, das auf der Baustelle am Handy lesbar bleibt.",
+      "Gleichzeitig sind Sie selten am Schreibtisch. Eine Website, die das berücksichtigt, hat eine prominente Rückruf-Anfrage, klar erreichbare Telefonnummer und Direktwahl-Knopf — und ein Layout, das auf der Baustelle am Handy lesbar bleibt.",
     ],
     typicalPages: [
       "Startseite mit Leistungs-Überblick",
@@ -361,8 +361,8 @@ export const BRANCHEN: Branche[] = [
         body: "Schlankes Formular: Name, Nummer, kurze Beschreibung. Sie rufen zurück, wenn die Hände frei sind. Funktioniert besser als ein langes Kontaktformular.",
       },
       {
-        title: "WhatsApp & Direktwahl",
-        body: "Tippen-zum-Anrufen aufs Handy, WhatsApp-Button für schnelle Rückfragen mit Foto.",
+        title: "Telefon + Anfrageformular",
+        body: "Tippen-zum-Anrufen aufs Handy, schnelle Anfrage per Formular oder E-Mail.",
       },
       {
         title: "Vertrauen durch Details",
@@ -538,7 +538,7 @@ export const BRANCHEN: Branche[] = [
     bullets: [
       "Kursplan und Trainer:innen sichtbar",
       "Probetraining mit einer Anfrage gebucht",
-      "Mitgliedschaftsanfrage per Formular/WhatsApp",
+      "Mitgliedschaftsanfrage per Formular",
       "Öffnungszeiten und Standort prominent",
       "Bildergalerie der Räumlichkeiten",
     ],
@@ -588,6 +588,134 @@ export const BRANCHEN: Branche[] = [
       },
     ],
     recommendedPackage: "business",
+  },
+  {
+    slug: "kosmetik",
+    label: "Kosmetik- & Beautystudios",
+    inquirySlug: "kosmetik",
+    image: {
+      src: "/images/sitalo-kosmetik-laptop.png",
+      alt: 'Kosmetikstudio-Website von Sitalo („Pflege, die berührt.") auf einem Laptop, daneben getrocknetes Pampasgras und kleine Pflegeprodukte.',
+    },
+    shortBody:
+      "Beauty wird über Atmosphäre verkauft. Hochwertige Bilder, klare Behandlungen und ein direkter Buchungs-Weg machen den Unterschied.",
+    bullets: [
+      "Behandlungen elegant präsentiert",
+      "Vorher/Nachher-Galerie",
+      "Termin-Anfrage per Formular",
+      "Online-Buchung optional",
+      "Atmosphäre durch Bildqualität",
+    ],
+    detailHeadline: "Eine Seite, die Atmosphäre verkauft.",
+    detailIntro: [
+      "Kosmetik-Kundinnen entscheiden über Bilder. Wer Ihre Behandlungsräume nicht sieht, kommt nicht — selbst wenn Ihre Behandlung exzellent ist. Eine Kosmetik-Seite lebt von hochwertigen Aufnahmen, dezenten Farben und einem direkten Weg zur Termin-Anfrage.",
+      "Gleichzeitig zählt Vertrauen: Behandlungen werden am eigenen Körper gemacht, das ist intim. Eine seriös und ruhig gestaltete Seite signalisiert Professionalität, ohne Effekthascherei.",
+    ],
+    typicalPages: [
+      "Startseite mit Atmosphäre",
+      "Behandlungen + Preise",
+      "Vorher/Nachher-Galerie",
+      "Über mich / Team",
+      "Termin-Anfrage",
+      "Standort & Öffnungszeiten",
+    ],
+    features: [
+      {
+        title: "Atmosphäre in Bild",
+        body: "Großzügige Bildflächen, dezente Farben, ruhige Typografie — entspricht der Atmosphäre eines guten Kosmetikstudios.",
+      },
+      {
+        title: "Behandlungen + Preise transparent",
+        body: "Klare Liste der Behandlungen mit Dauer und Preisspanne. Filtert Anfragen vor — Sie sparen sich Telefonate über Selbstverständliches.",
+      },
+      {
+        title: "Vorher/Nachher-Galerie",
+        body: "Optional mit Datenschutz-Einwilligung der Kund:innen. Stärkstes Verkaufsargument für Behandlungen wie Permanent-Make-Up oder HydraFacial.",
+      },
+      {
+        title: "Termin-Anfrage einfach",
+        body: "Formular mit Wunschbehandlung, Wunschtermin und kurzer Nachricht. Auf Wunsch auch Online-Buchungs-System wie Treatwell.",
+      },
+    ],
+    faq: [
+      {
+        q: "Brauche ich Online-Buchung?",
+        a: "Für kleine Studios reicht meist eine gut gestaltete Termin-Anfrage. Bei Studios mit mehreren Behandlerinnen und vollem Kalender lohnt sich ein System wie Treatwell oder Shore — ich binde das passend ein.",
+      },
+      {
+        q: "Was mit Vorher/Nachher-Bildern und Datenschutz?",
+        a: "Bevor Bilder online gehen, brauchen Sie eine schriftliche Einwilligung der jeweiligen Kundin. Vorlagen kann ich Ihnen empfehlen. Anonymisierte Detail-Aufnahmen (z. B. nur Augenpartie) sind ebenfalls möglich.",
+      },
+      {
+        q: "Lohnt sich ein Instagram-Feed auf der Seite?",
+        a: "Für Beauty-Studios ja — die Seite bleibt lebendig auch zwischen Updates. Ich integriere Ihren Feed datenschutzkonform (keine direkten Embeds von Instagram, sondern Bild-Caching).",
+      },
+    ],
+    recommendedPackage: "business",
+  },
+  {
+    slug: "hotel",
+    label: "Hotels & Pensionen",
+    inquirySlug: "hotel",
+    image: {
+      src: "/images/sitalo-hotel-laptop.png",
+      alt: 'Boutique-Hotel-Website von Sitalo („Hamburg, neu erlebt") auf einem Laptop, Messing-Klingel und Blumenstrauß auf einem polierten Empfangstresen.',
+    },
+    shortBody:
+      "Gäste googeln vor jeder Buchung. Eine starke Seite mit Atmosphäre, klaren Preisen und direktem Buchungsweg gewinnt direkte Buchungen statt Booking-Kommissionen.",
+    bullets: [
+      "Atmosphärische Zimmer-Galerie",
+      "Direkte Buchungs-Anfrage",
+      "Anfahrt + Umgebung",
+      "Mehrsprachig (DE/EN) auf Wunsch",
+      "Bewertungen sichtbar",
+    ],
+    detailHeadline: "Eine Seite, die direkt bucht — ohne Booking-Provision.",
+    detailIntro: [
+      "Booking.com nimmt 15–18 % Kommission auf jede Buchung. Eine eigene Hotel-Seite, die wirklich überzeugt, holt 20–40 % der Buchungen direkt zurück. Das macht in einem Jahr schnell vier- bis fünfstellige Beträge aus.",
+      "Was direkte Buchungen treibt: starke Bilder, transparente Preise, klare Verfügbarkeits-Anzeige, mehrsprachige Inhalte (DE + EN reichen meist) und eine direkte Buchungs-Anfrage ohne Umweg. Plus: Ihre Geschichte. Boutique-Hotels verkaufen Atmosphäre, nicht Sterne.",
+    ],
+    typicalPages: [
+      "Startseite mit Hero-Bild",
+      "Zimmer & Suiten",
+      "Über das Haus / Geschichte",
+      "Umgebung & Anfahrt",
+      "Bewertungen",
+      "Direkt-Buchungs-Anfrage",
+    ],
+    features: [
+      {
+        title: "Atmosphärische Bilder",
+        body: "Großzügige Zimmer-Galerien mit Hover-Details, Außenansicht, Frühstücksraum. Investition in professionelle Fotos lohnt sich hier am stärksten von allen Branchen.",
+      },
+      {
+        title: "Direkte Buchungs-Anfrage",
+        body: "Formular mit Datum, Personen, Zimmer-Wunsch. Kein Channel-Manager nötig — Bestätigung läuft per E-Mail. Auf Wunsch Anbindung an Cloudbeds, Mews oder lite Booking-Tools.",
+      },
+      {
+        title: "Mehrsprachig (DE + EN)",
+        body: "Für Hamburg-Hotels mit internationalem Publikum praktisch Pflicht. Beide Sprachen sauber gepflegt, nicht maschinen-übersetzt.",
+      },
+      {
+        title: "Echte Bewertungen integriert",
+        body: "Google- und HolidayCheck-Bewertungen ohne Tracker-Last. Datenschutzkonform, kein Cookie-Banner-Problem.",
+      },
+    ],
+    faq: [
+      {
+        q: "Konkurriert eine eigene Seite mit Booking.com?",
+        a: "Nein — sie ergänzt. Booking bleibt der Akquise-Kanal für Erst-Gäste. Eine starke eigene Seite holt diese Gäste beim zweiten Besuch direkt zurück (Booking-Gäste, die zufrieden sind, suchen oft nach dem Hotelnamen).",
+      },
+      {
+        q: "Brauche ich eine Verfügbarkeits-Anzeige in Echtzeit?",
+        a: "Nicht zwingend. Für kleine Hotels reicht oft die schlichte Anfrage. Wenn Sie Cloudbeds, Mews oder ein vergleichbares PMS nutzen, integriere ich die Live-Verfügbarkeit.",
+      },
+      {
+        q: "Wie wichtig ist die englische Version?",
+        a: "Sehr — vor allem in Hamburg. Etwa 30–40 % der Hamburg-Hotel-Sucher kommen aus dem Ausland. Eine saubere englische Version verdoppelt oft die Anfrage-Quote.",
+      },
+    ],
+    recommendedPackage: "premium",
   },
 ];
 

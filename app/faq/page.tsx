@@ -23,7 +23,7 @@ const GROUPS: Group[] = [
     items: [
       {
         q: "Muss ich mich irgendwo registrieren?",
-        a: "Nein. Schicken Sie mir einfach das Formular oder schreiben Sie kurz auf WhatsApp — kein Account, kein Login, nichts dergleichen.",
+        a: "Nein. Schicken Sie uns einfach das Formular oder eine E-Mail — kein Account, kein Login, nichts dergleichen.",
       },
       {
         q: "Wie schnell ist meine Seite fertig?",
@@ -38,8 +38,8 @@ const GROUPS: Group[] = [
         a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Ich schaue mir Ihre Angaben in Ruhe an und melde mich innerhalb von 24 Stunden — meist deutlich schneller — persönlich bei Ihnen. Kein Vertrag, keine Kosten, kein Druck.",
       },
       {
-        q: "Kann ich per WhatsApp anfragen?",
-        a: "Sehr gerne. Auf der Anfrage-Seite finden Sie einen Knopf mit vorgefüllter Nachricht. Für die vollständige Aufnahme bitte trotzdem einmal das Formular ausfüllen — dann habe ich alles strukturiert vorliegen und kann Ihnen schneller antworten.",
+        q: "Kann ich auch per E-Mail anfragen?",
+        a: "Ja, schreiben Sie uns direkt an info@sitalo.de. Für eine vollständige Projekt-Aufnahme ist das Formular allerdings praktischer — dann haben wir alles strukturiert auf einen Blick und können schneller antworten.",
       },
     ],
   },

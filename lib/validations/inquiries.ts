@@ -38,7 +38,6 @@ export const INQUIRY_SPECIAL_FEATURES = [
   "verwaltbare-inhalte",
   "speisekarte",
   "bewerbungsformular",
-  "whatsapp-button",
   "google-maps",
   "online-reservierung",
   "mehrere-unterseiten",
