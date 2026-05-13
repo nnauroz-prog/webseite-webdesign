@@ -33,10 +33,24 @@ export function MobileCtaBar() {
   const whatsappHref = buildWhatsappHref();
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400);
+    const onScroll = () => {
+      const scrolled = window.scrollY;
+      const viewportBottom = scrolled + window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+      // Sichtbar erst nach 500px Scroll, aber unsichtbar im
+      // letzten Viertel der Seite — dort gibt es eigene CTAs
+      // (Pakete, Final-CTA), die sticky-Pille würde sie nur
+      // visuell überlagern.
+      const inLastQuarter = viewportBottom / docHeight > 0.78;
+      setVisible(scrolled > 500 && !inLastQuarter);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   // Auf /anfrage und Rechtsseiten kein CTA-Banner einblenden.
