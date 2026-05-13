@@ -51,11 +51,11 @@ export function ExamplesGallery() {
             >
               <Link
                 href={`/branchen/${b.slug}`}
-                className="group block"
+                className="group block transition-transform duration-500 hover:-translate-y-1"
                 aria-label={`${b.label} — Beispiel ansehen`}
               >
                 <div
-                  className={`bg-secondary/40 relative w-full overflow-hidden rounded-2xl ring-1 ring-black/5 transition-shadow group-hover:shadow-[0_24px_48px_-16px_rgb(0_0_0/0.25)] ${
+                  className={`bg-secondary/40 relative w-full overflow-hidden rounded-2xl ring-1 ring-black/5 transition-shadow duration-500 group-hover:shadow-[0_32px_64px_-20px_rgb(0_0_0/0.32)] ${
                     i === 0 || i === 5
                       ? "aspect-[16/10]"
                       : "aspect-[4/3]"
@@ -67,21 +67,35 @@ export function ExamplesGallery() {
                       alt={b.image.alt}
                       fill
                       sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                     />
                   ) : (
                     <div className="serif text-foreground/20 flex h-full w-full items-center justify-center text-7xl">
                       {b.label[0]}
                     </div>
                   )}
+                  {/* Subtiles dunkles Overlay on hover für besseren Kontrast */}
+                  <div
+                    aria-hidden="true"
+                    className="from-foreground/40 absolute inset-0 bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  />
+                  {/* Branche-Label als Overlay-Pille on hover */}
+                  <div className="absolute bottom-3 left-3 right-3 flex translate-y-1 items-center justify-between gap-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                    <span className="bg-background/95 text-foreground inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium tracking-tight backdrop-blur-sm">
+                      Beispiel ansehen
+                    </span>
+                    <span className="bg-background/95 text-foreground inline-flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-sm">
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
                 </div>
                 <div className="mt-4 flex items-baseline justify-between gap-4">
-                  <h3 className="text-foreground text-lg font-medium tracking-[-0.01em]">
+                  <h3 className="text-foreground group-hover:text-foreground text-lg font-medium tracking-[-0.01em] transition-colors">
                     {b.label}
                   </h3>
-                  <span className="text-muted-foreground group-hover:text-foreground inline-flex items-center gap-1 text-sm font-medium transition-colors">
+                  <span className="text-muted-foreground group-hover:text-foreground hidden items-center gap-1 text-sm font-medium transition-colors sm:inline-flex">
                     Ansehen
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-0.5" />
                   </span>
                 </div>
               </Link>

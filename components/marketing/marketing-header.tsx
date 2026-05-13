@@ -25,6 +25,14 @@ const DEFAULT_NAV: NavItem[] = [
   { href: "/kontakt", label: "Kontakt" },
 ];
 
+// Auf Mobile zeigen wir das Vollbild-Menü mit "Startseite" als
+// erstem Eintrag — das Logo oben ist im Vollbild-Menü versteckt,
+// also brauchts den expliziten Home-Link.
+const MOBILE_NAV: NavItem[] = [
+  { href: "/", label: "Startseite" },
+  ...DEFAULT_NAV,
+];
+
 /**
  * Shared marketing header used on /, /pricing, /anfrage.
  *
@@ -146,76 +154,108 @@ export function MarketingHeader({
         </div>
       </div>
 
-      {/* Mobile sheet */}
-      <MobileSheet
+      {/* Vollbild-Mobile-Menü */}
+      <MobileFullscreenMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        nav={nav}
       />
     </header>
   );
 }
 
-function MobileSheet({
+/**
+ * Editorial-Vollbild-Menü auf Mobile. Inspiriert von hochwertigen
+ * Praxis-/Studio-Sites: dunkle Take-over-Fläche, große ruhige Nav-
+ * Items, kein Card-Lärm. Kommt von oben mit kurzem Fade.
+ */
+function MobileFullscreenMenu({
   open,
   onClose,
-  nav,
 }: {
   open: boolean;
   onClose: () => void;
-  nav: NavItem[];
 }) {
   return (
-    <>
-      {/* Backdrop — fades in/out, click closes. */}
-      <div
-        aria-hidden="true"
-        onClick={onClose}
-        className={cn(
-          "fixed inset-0 top-16 z-30 bg-foreground/40 transition-opacity duration-200 md:hidden",
-          open
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0",
-        )}
-      />
-      {/* Sheet */}
-      <div
-        id="mobile-menu"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Hauptmenü"
-        className={cn(
-          "bg-background fixed inset-x-0 top-16 z-40 border-b shadow-2xl transition-transform duration-200 md:hidden",
-          open ? "translate-y-0" : "pointer-events-none -translate-y-2 opacity-0",
-        )}
-        style={{
-          maxHeight: "calc(100dvh - 4rem)",
-          overflowY: "auto",
-        }}
-      >
-        <nav className="flex flex-col gap-1 px-6 py-6">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onClose}
-              className="text-foreground hover:bg-secondary -mx-2 rounded-lg px-4 py-3 text-base font-medium transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
-          <div className="border-border/60 mt-3 border-t pt-4">
-            <Link
-              href="/anfrage"
-              onClick={onClose}
-              className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-base font-medium shadow-md transition-all"
-            >
-              Website anfragen
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </nav>
+    <div
+      id="mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Hauptmenü"
+      aria-hidden={!open}
+      className={cn(
+        "bg-foreground text-background fixed inset-0 z-[60] flex flex-col transition-all duration-300 ease-out md:hidden",
+        open
+          ? "pointer-events-auto opacity-100"
+          : "pointer-events-none opacity-0",
+      )}
+      style={{
+        paddingTop: "max(env(safe-area-inset-top, 0px), 1rem)",
+        paddingBottom: "max(env(safe-area-inset-bottom, 0px), 1rem)",
+      }}
+    >
+      {/* Header-Zeile innerhalb des Menüs: Wordmark links, X rechts */}
+      <div className="flex items-center justify-between px-6 pt-4">
+        <span className="serif text-background text-lg uppercase tracking-[0.25em]">
+          Sitalo
+        </span>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Menü schließen"
+          className="border-background/20 text-background hover:bg-background/10 inline-flex h-10 w-10 items-center justify-center rounded-full border transition-colors"
+        >
+          <X className="h-5 w-5" aria-hidden="true" />
+        </button>
       </div>
-    </>
+
+      {/* Hauptnavigation: groß, links-bündig, viel Luft */}
+      <nav className="flex flex-1 flex-col justify-center gap-1 px-6 sm:gap-2">
+        {MOBILE_NAV.map((item, i) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onClose}
+            className={cn(
+              "text-background block py-3 text-4xl font-semibold uppercase tracking-[-0.01em] transition-opacity",
+              open
+                ? "translate-y-0 opacity-100"
+                : "translate-y-3 opacity-0",
+            )}
+            style={{
+              transitionDuration: "500ms",
+              transitionDelay: open ? `${100 + i * 60}ms` : "0ms",
+              transitionProperty: "opacity, transform",
+            }}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      {/* Footer-Zeile mit primärem CTA + Kontakt-Mini-Block */}
+      <div className="space-y-6 border-t border-white/10 px-6 pt-6 pb-4">
+        <Link
+          href="/anfrage"
+          onClick={onClose}
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-[15px] font-medium tracking-tight transition-all"
+        >
+          Website anfragen
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
+        <div className="text-background/65 flex flex-col gap-1 text-sm">
+          <a
+            href="mailto:info@sitalo.de"
+            className="hover:text-background transition-colors"
+          >
+            info@sitalo.de
+          </a>
+          <span
+            className="serif-italic text-background/50 text-base"
+          >
+            — Aus Hamburg
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
