@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
+
+import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -79,6 +81,7 @@ export default function RootLayout({
           Direkt zum Inhalt
         </a>
         {children}
+        <MobileCtaBar />
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger

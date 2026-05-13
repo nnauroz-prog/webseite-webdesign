@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { BRANCHEN } from "@/lib/branchen-data";
 
 export const metadata: Metadata = {
-  title: "Branchen | Sitalo Webdesign",
+  title: "Branchen — passende Layouts für Ihren Betrieb | Sitalo",
   description:
     "Websites für Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien und Fitnessstudios — pro Branche eigene Layouts.",
   alternates: { canonical: "/branchen" },

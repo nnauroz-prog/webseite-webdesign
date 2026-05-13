@@ -6,7 +6,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Pakete & Preise | Sitalo Webdesign",
+  title: "Pakete & Preise — Websites ab 499 € | Sitalo Hamburg",
   description:
     "Drei Wege, Ihre Seite zu bekommen. Einmalige Erstellung plus fairer Monatsbeitrag — keine versteckten Kosten.",
   alternates: { canonical: "/pakete" },

@@ -14,7 +14,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Leistungen | Sitalo Webdesign",
+  title: "Webdesign-Leistungen für lokale Unternehmen aus Hamburg",
   description:
     "Was ich für Sie mache: Webdesign, Inhalte strukturieren, Kontakt sauber, Google-Basis, Hosting, laufende Pflege. Aus Hamburg.",
   alternates: { canonical: "/leistungen" },

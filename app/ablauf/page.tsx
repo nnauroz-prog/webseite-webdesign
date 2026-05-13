@@ -6,7 +6,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Ablauf | Sitalo Webdesign",
+  title: "So läuft Ihr Website-Projekt ab — Schritt für Schritt",
   description:
     "So läuft es bei mir: Sie schreiben mir, wir sprechen kurz, ich baue, Sie schauen drüber, wir gehen live. Persönlich, ohne Papierkram.",
   alternates: { canonical: "/ablauf" },

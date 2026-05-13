@@ -29,8 +29,8 @@ export async function generateMetadata({
   const branche = getBrancheBySlug(slug);
   if (!branche) return {};
 
-  const title = `${branche.label} — Website von Sitalo Webdesign`;
-  const description = branche.shortBody;
+  const title = `Website für ${branche.label} — aus Hamburg | Sitalo`;
+  const description = `${branche.shortBody} Persönlich gemacht, in Hamburg.`;
   return {
     title,
     description,

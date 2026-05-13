@@ -10,6 +10,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
+import { StackBlock } from "@/components/marketing/stack-block";
 
 export const metadata: Metadata = {
   title: "Sitalo — Webdesign aus Hamburg",
@@ -154,6 +155,9 @@ export default function HomePage() {
         </RevealOnScroll>
         <RevealOnScroll>
           <Promises />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <StackBlock />
         </RevealOnScroll>
         <RevealOnScroll>
           <Pricing />
