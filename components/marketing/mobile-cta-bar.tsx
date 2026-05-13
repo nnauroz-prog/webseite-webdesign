@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight, MessageCircle } from "lucide-react";
 
@@ -9,6 +10,8 @@ import { ArrowRight, MessageCircle } from "lucide-react";
  * Erscheint nach 400px Scrollen, damit der Hero nicht überdeckt
  * wird. Zwei Aktionen: primär "Anfrage" (bringt direkt zum
  * Wizard), sekundär WhatsApp wenn konfiguriert.
+ *
+ * Versteckt auf /anfrage, weil dort die Form selbst der CTA ist.
  *
  * Beachtet env(safe-area-inset-bottom) für iPhones mit Home-Indicator.
  */
@@ -25,6 +28,7 @@ function buildWhatsappHref(): string | null {
 }
 
 export function MobileCtaBar() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const whatsappHref = buildWhatsappHref();
 
@@ -34,6 +38,15 @@ export function MobileCtaBar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Auf /anfrage und Rechtsseiten kein CTA-Banner einblenden.
+  if (
+    pathname?.startsWith("/anfrage") ||
+    pathname?.startsWith("/impressum") ||
+    pathname?.startsWith("/datenschutz")
+  ) {
+    return null;
+  }
 
   return (
     <div
