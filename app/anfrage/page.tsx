@@ -85,10 +85,10 @@ export default async function AnfragePage({
                   Lieber direkt
                 </p>
                 <a
-                  href="mailto:hallo@sitalo.de"
+                  href="mailto:info@sitalo.de"
                   className="text-foreground mt-3 inline-block text-lg underline underline-offset-4 hover:no-underline"
                 >
-                  hallo@sitalo.de
+                  info@sitalo.de
                 </a>
               </div>
             </div>

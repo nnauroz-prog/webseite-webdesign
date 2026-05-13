@@ -54,13 +54,21 @@ export default function DatenschutzPage() {
                 ist:
               </p>
               <p className="text-muted-foreground">
-                [Firmenname / Inhaber]
+                Sitalo
                 <br />
-                [Straße und Hausnummer]
+                Inhaber: Nadim Nauroz
                 <br />
-                [PLZ Ort]
+                [BITTE ERGÄNZEN: Straße und Hausnummer]
                 <br />
-                E-Mail: [Kontakt-E-Mail]
+                [BITTE ERGÄNZEN: PLZ Ort]
+                <br />
+                E-Mail:{" "}
+                <a
+                  href="mailto:info@sitalo.de"
+                  className="hover:text-foreground underline"
+                >
+                  info@sitalo.de
+                </a>
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
@@ -148,7 +156,7 @@ export default function DatenschutzPage() {
             </div>
 
             <p className="text-muted-foreground mt-12 text-sm">
-              Stand: [Datum]. ·{" "}
+              Stand: November 2026. ·{" "}
               <Link href="/impressum" className="hover:text-foreground underline">
                 Impressum
               </Link>
