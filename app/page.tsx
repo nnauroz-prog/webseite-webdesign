@@ -8,6 +8,8 @@ import { HeroPrompt } from "@/components/marketing/hero-prompt";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Promises } from "@/components/marketing/promises";
+import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
 
 export const metadata: Metadata = {
   title: "Sitalo — Webdesign aus Hamburg",
@@ -136,15 +138,32 @@ export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
-        <PersonalNote />
-        <IndustryPicker />
-        <ExamplesGallery />
-        <Steps />
-        <Pricing />
-        <Faq />
-        <FinalCta />
+        <RevealOnScroll>
+          <PersonalNote />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <IndustryPicker />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <ExamplesGallery />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <Steps />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <Promises />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <Pricing />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <Faq />
+        </RevealOnScroll>
+        <RevealOnScroll>
+          <FinalCta />
+        </RevealOnScroll>
       </main>
       <MarketingFooter />
     </div>
