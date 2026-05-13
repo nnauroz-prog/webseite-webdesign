@@ -57,8 +57,10 @@ export function MarketingHeader({
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Subtle visual shift when the user scrolls past the hero.
+  // Trigger erst bei 80px, damit der Effekt nicht beim leichten
+  // Scrollen flackert. Ein einziger sauberer Übergang.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -92,10 +94,10 @@ export function MarketingHeader({
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 border-b backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-200",
+          "sticky top-0 z-40 backdrop-blur-xl transition-[background-color,border-color] duration-500",
           scrolled
-            ? "border-border/60 bg-background/95 shadow-[0_1px_0_0_rgb(0_0_0/0.02)]"
-            : "border-border/40 bg-background/80",
+            ? "border-border/40 border-b bg-background/85"
+            : "border-transparent border-b bg-background/0",
           className,
         )}
       >
