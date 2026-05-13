@@ -35,9 +35,10 @@ export default function ImpressumPage() {
             </h1>
 
             <div className="border-warning/60 bg-warning/10 text-warning-foreground mt-8 rounded-xl border p-4 text-sm">
-              <strong>Hinweis für den Betreiber:</strong> Bitte alle Platzhalter
-              [...] mit echten Daten ersetzen, bevor die Seite live geht. Sonst
-              bestehen Abmahnrisiken.
+              <strong>Hinweis für den Betreiber:</strong> Anschrift,
+              Telefonnummer und Steuer-Angaben müssen noch ergänzt werden
+              (mit [BITTE ERGÄNZEN] markiert). Vor dem öffentlichen Bewerben
+              der Seite vollständig ausfüllen, sonst bestehen Abmahnrisiken.
             </div>
 
             <div className="prose prose-sm sm:prose-base mt-10 max-w-none space-y-6 text-[15px] leading-relaxed">
@@ -45,36 +46,44 @@ export default function ImpressumPage() {
                 Angaben gemäß § 5 TMG
               </h2>
               <p className="text-muted-foreground">
-                [Firmenname / Inhaber]
+                Sitalo
                 <br />
-                [Straße und Hausnummer]
+                Inhaber: Nadim Nauroz
                 <br />
-                [PLZ Ort]
+                [BITTE ERGÄNZEN: Straße und Hausnummer]
+                <br />
+                [BITTE ERGÄNZEN: PLZ Ort]
                 <br />
                 Deutschland
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">Kontakt</h2>
               <p className="text-muted-foreground">
-                Telefon: [Telefonnummer]
+                Telefon: [BITTE ERGÄNZEN: Telefonnummer]
                 <br />
-                E-Mail: [Kontakt-E-Mail]
+                E-Mail:{" "}
+                <a
+                  href="mailto:info@sitalo.de"
+                  className="hover:text-foreground underline"
+                >
+                  info@sitalo.de
+                </a>
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
                 Umsatzsteuer-ID
               </h2>
               <p className="text-muted-foreground">
-                Umsatzsteuer-Identifikationsnummer nach § 27 a
-                Umsatzsteuergesetz: [USt-IdNr.] — falls nicht vorhanden,
-                Hinweis auf Kleinunternehmerregelung gemäß § 19 UStG.
+                [BITTE ERGÄNZEN: Umsatzsteuer-Identifikationsnummer nach § 27 a
+                UStG — ODER falls Kleinunternehmer: „Gemäß § 19 UStG wird keine
+                Umsatzsteuer ausgewiesen."]
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
                 Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
               </h2>
               <p className="text-muted-foreground">
-                [Name]
+                Nadim Nauroz
                 <br />
                 [Anschrift wie oben]
               </p>

@@ -57,8 +57,8 @@ export default function KontaktPage() {
             />
             <ContactMethod
               label="Per E-Mail"
-              detail="hallo@sitalo.de"
-              href="mailto:hallo@sitalo.de"
+              detail="info@sitalo.de"
+              href="mailto:info@sitalo.de"
               cta="Schreiben"
             />
             {whatsappHref ? (
