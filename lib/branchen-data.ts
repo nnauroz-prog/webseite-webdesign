@@ -21,8 +21,11 @@ export type Branche = {
   bullets: string[];
   /** Vorgeschlagener ?branche=... Wert im Anfrageformular. */
   inquirySlug: string;
-  /** Hero-Foto für Übersicht + Detail-Hero. */
+  /** Hero-Foto für Übersicht + Detail-Hero (Laptop-Mockup). */
   image?: { src: string; alt: string };
+  /** Optionales Atmosphäre-Bild — wird auf der Detailseite
+   *  als emotional anchor zwischen Hero und Intro gezeigt. */
+  atmosphere?: { src: string; alt: string };
 
   /* === Erweiterte Inhalte für /branchen/[slug] === */
 
@@ -48,6 +51,10 @@ export const BRANCHEN: Branche[] = [
     image: {
       src: "/images/sitalo-pflege-laptop.png",
       alt: "Pflegedienst-Website von Sitalo auf einem Laptop, im warmen Tageslicht eines Büros mit Pflanzen und Notizbuch.",
+    },
+    atmosphere: {
+      src: "/images/atmosphere/pflege-eingang.png",
+      alt: "Ruhiger Empfangsbereich eines Pflegedienstes — warmes Tageslicht, Holzkommode mit Pflanze, Wartezimmer im Hintergrund.",
     },
     shortBody:
       "Pflegedienste verkaufen Vertrauen. Die Website muss Leistungen, Einzugsgebiet und Bewerbungsweg auf einen Blick zeigen.",
@@ -112,6 +119,10 @@ export const BRANCHEN: Branche[] = [
     image: {
       src: "/images/sitalo-praxis-laptop.png",
       alt: 'Zahnarztpraxis-Website von Sitalo („Moderne Zahnmedizin für Ihr schönstes Lächeln.") auf einem Laptop im hellen Praxisempfang.',
+    },
+    atmosphere: {
+      src: "/images/atmosphere/praxis-raum.png",
+      alt: "Ruhiger, moderner Behandlungsraum mit Holzschreibtisch, Tablet und botanischem Wandbild — seriöse Atmosphäre.",
     },
     shortBody:
       "Patient:innen recherchieren vor dem ersten Termin. Die Seite muss seriös wirken, Sprechzeiten liefern und Termin-Anfragen reibungslos machen.",
@@ -178,6 +189,10 @@ export const BRANCHEN: Branche[] = [
       src: "/images/sitalo-friseur-mobile.png",
       alt: 'Friseur-Website von Sitalo auf einem iPhone, daneben gedruckte Visitenkarten und ein Flyer für „Friseur am Markt".',
     },
+    atmosphere: {
+      src: "/images/atmosphere/friseur-stuhl.png",
+      alt: "Vintage Friseur-Stuhl vor einem großen runden Spiegel, warme Holztöne, Produkte auf einem Regal — hochwertige Salon-Atmosphäre.",
+    },
     shortBody:
       "Bilder verkaufen. Die Seite lebt von hochwertigen Aufnahmen, klaren Preisen und einem direkten Weg zur Termin-Anfrage.",
     bullets: [
@@ -241,6 +256,10 @@ export const BRANCHEN: Branche[] = [
     image: {
       src: "/images/sitalo-cafe-mobile.png",
       alt: "Café-Website von Sitalo auf einem iPhone, vor einem Café im Hintergrund — daneben eine Sitalo-Webdesign-Visitenkarte.",
+    },
+    atmosphere: {
+      src: "/images/atmosphere/gastro-cafe.png",
+      alt: "Stilvolles Café-Interieur vor Öffnung — Holztische, kupferne Espresso-Maschine, weiche Morgensonne durch die Fenster.",
     },
     shortBody:
       "Die meisten Gäste googeln vorm Besuch. Speisekarte, Öffnungszeiten und Anfahrt müssen sofort sichtbar sein — und änderbar.",
@@ -306,6 +325,10 @@ export const BRANCHEN: Branche[] = [
       src: "/images/sitalo-handwerker-laptop.png",
       alt: 'Tischlerei-Website von Sitalo („Maßarbeit mit Tradition und Leidenschaft") auf einem Laptop auf einer Werkbank.',
     },
+    atmosphere: {
+      src: "/images/atmosphere/handwerker-werkbank.png",
+      alt: "Werkbank eines Tischlers mit Handhobel, Holzspänen und Kaffeebecher — warmes Sonnenlicht, ehrliche Handarbeit.",
+    },
     shortBody:
       "Im Handwerk kommt der Auftrag oft vor dem ersten Telefonat. Eine Seite mit Leistungen, Referenzen und kurzem Anfrageweg gewinnt Aufträge.",
     bullets: [
@@ -368,7 +391,11 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "reinigung",
     image: {
       src: "/images/sitalo-reinigung-laptop.png",
-      alt: 'Reinigungs-Website von Sitalo („Saubere Räume. Besseres Arbeiten.") auf einem Laptop, daneben Sprühflasche, Tasse und Wischmopp.',
+      alt: 'Reinigungs-Website von Sitalo („Saubere Räume. Besseres Arbeiten.") auf einem Laptop, daneben gefaltetes Mikrofasertuch und Sprühflasche.',
+    },
+    atmosphere: {
+      src: "/images/atmosphere/reinigung-flur.png",
+      alt: "Gepflegter, sauberer Bürogang mit poliertem Boden und einem Reinigungswagen — Eindruck professioneller Sauberkeit.",
     },
     shortBody:
       "Reinigung wird über Service-Pakete verkauft. Die Seite muss Pakete vergleichbar machen und Vertrauen aufbauen.",
@@ -432,7 +459,11 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "kanzlei",
     image: {
       src: "/images/sitalo-kanzlei-laptop.png",
-      alt: 'Kanzlei-Website von Sitalo („Recht, das Klarheit schafft.") auf einem Laptop im Büro mit Aktenordnern und Tasse.',
+      alt: 'Kanzlei-Website von Sitalo („Recht, das Klarheit schafft.") auf einem Laptop mit Messing-Schreibtischlampe und Lederbüchern.',
+    },
+    atmosphere: {
+      src: "/images/atmosphere/kanzlei-buecher.png",
+      alt: "Detail aus einer Kanzlei-Bücherwand: Reihen Leder-gebundener Rechtsbücher in Dunkelgrün, Messing-Schreibtischlampe, warmes Glühlampenlicht.",
     },
     shortBody:
       "Bei Kanzleien zählt Seriosität. Klare Rechtsgebiete, ruhiger Auftritt, vertrauliche Erstkontakt-Anfrage.",
@@ -497,6 +528,10 @@ export const BRANCHEN: Branche[] = [
     image: {
       src: "/images/sitalo-fitness-laptop.png",
       alt: 'Fitnessstudio-Website von Sitalo („Stronger Every Day. Premium Training.") auf einem Laptop im Studio.',
+    },
+    atmosphere: {
+      src: "/images/atmosphere/fitness-studio.png",
+      alt: "Ruhiges Studio mit Reihe von Kettlebells, hohen Fenstern und sanftem Morgenlicht — minimalistische Premium-Atmosphäre.",
     },
     shortBody:
       "Studios verkaufen Mitgliedschaften. Probetraining und Kursplan müssen ohne Hürden zu finden sein.",

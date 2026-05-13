@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -114,54 +115,29 @@ export default function KontaktPage() {
               </p>
             </div>
 
-            {/* Stilisierte Karten-Andeutung, keine externe Google-Embed.
-                DSGVO-freundlich, schnell, kein Cookie-Banner nötig. */}
-            <div
-              aria-hidden="true"
-              className="bg-accent/30 border-border/60 relative aspect-square w-full overflow-hidden rounded-2xl border"
-            >
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-muted-foreground/70 font-mono text-xs tracking-[0.25em] uppercase">
-                    53.5511° N
-                  </p>
-                  <p className="serif text-foreground mt-4 text-5xl font-normal tracking-[-0.02em] sm:text-6xl">
-                    Hamburg
-                  </p>
-                  <p className="text-muted-foreground/70 font-mono mt-4 text-xs tracking-[0.25em] uppercase">
-                    9.9937° E
-                  </p>
-                </div>
-              </div>
-              {/* Dezente Linien als Karten-Andeutung */}
-              <svg
+            {/* Hamburg-Speicherstadt-Foto. Statisches Asset, kein
+                externes Google-Maps-Embed — DSGVO-freundlich, kein
+                Cookie-Banner nötig, schnellere LCP. */}
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+              <Image
+                src="/images/hamburg-speicherstadt.png"
+                alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle, warmes Sonnenlicht."
+                fill
+                sizes="(min-width: 1024px) 500px, 100vw"
+                className="object-cover"
+              />
+              <div
                 aria-hidden="true"
-                viewBox="0 0 400 400"
-                className="text-foreground/5 absolute inset-0 h-full w-full"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1}
-              >
-                <line x1="0" y1="100" x2="400" y2="100" />
-                <line x1="0" y1="200" x2="400" y2="200" />
-                <line x1="0" y1="300" x2="400" y2="300" />
-                <line x1="100" y1="0" x2="100" y2="400" />
-                <line x1="200" y1="0" x2="200" y2="400" />
-                <line x1="300" y1="0" x2="300" y2="400" />
-                <circle
-                  cx="200"
-                  cy="200"
-                  r="60"
-                  className="text-foreground/10"
-                />
-                <circle
-                  cx="200"
-                  cy="200"
-                  r="3"
-                  className="text-foreground/30"
-                  fill="currentColor"
-                />
-              </svg>
+                className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
+              />
+              <div className="absolute bottom-5 left-5 right-5 text-background">
+                <p className="font-mono text-[10px] tracking-[0.25em] uppercase opacity-80">
+                  53.5511° N · 9.9937° E
+                </p>
+                <p className="serif mt-2 text-3xl font-normal tracking-[-0.01em]">
+                  Hamburg
+                </p>
+              </div>
             </div>
           </div>
         </section>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
@@ -293,21 +294,32 @@ function PersonalNote() {
             </span>
           </p>
         </blockquote>
-        <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 sm:grid-cols-2">
-          <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
-            Vielen Inhabern fehlt schlicht die Zeit, sich durch
-            Baukästen zu klicken — und am Ende doch eine Seite zu haben,
-            die wie tausend andere aussieht. Genau da springe ich ein.
-          </p>
-          <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
-            Sie schicken mir ein paar Unterlagen — Logo, Bilder, ein paar
-            Sätze. Ich melde mich, baue Ihre Seite, und bleibe danach Ihr
-            Ansprechpartner. Keine Hotline, kein Ticket.
-          </p>
+        <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+          <div className="space-y-6">
+            <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
+              Vielen Inhabern fehlt schlicht die Zeit, sich durch
+              Baukästen zu klicken — und am Ende doch eine Seite zu haben,
+              die wie tausend andere aussieht. Genau da springen wir ein.
+            </p>
+            <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
+              Sie schicken uns ein paar Unterlagen — Logo, Bilder, ein paar
+              Sätze. Wir melden uns, bauen Ihre Seite, und bleiben danach
+              Ihr Ansprechpartner. Keine Hotline, kein Ticket.
+            </p>
+            <p className="serif-italic text-background pt-4 text-2xl">
+              — Sitalo, aus Hamburg
+            </p>
+          </div>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
+            <Image
+              src="/images/workspace-macbook.png"
+              alt="Arbeitsplatz mit MacBook, Notizbuch und Espresso — warmes Schreibtischlicht."
+              fill
+              sizes="(min-width: 1024px) 480px, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
-        <p className="serif-italic text-background mt-12 text-2xl">
-          — Sitalo, aus Hamburg
-        </p>
       </div>
     </section>
   );
