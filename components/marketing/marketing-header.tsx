@@ -215,15 +215,20 @@ function MobileFullscreenMenu({
         </button>
       </div>
 
-      {/* Hauptnavigation: groß, links-bündig, viel Luft */}
-      <nav className="flex flex-1 flex-col justify-center gap-1 px-6 sm:gap-2">
+      {/* Hauptnavigation — scrollbar wenn der Viewport zu klein ist.
+          min-h-0 ist wichtig, sonst kann die flex-1 Fläche nicht
+          unter die Höhe ihres Inhalts schrumpfen → kein Scroll. */}
+      <nav
+        className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-6 py-6 sm:gap-2"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         {MOBILE_NAV.map((item, i) => (
           <Link
             key={item.href}
             href={item.href}
             onClick={onClose}
             className={cn(
-              "text-background block py-3 text-4xl font-semibold uppercase tracking-[-0.01em] transition-opacity",
+              "text-background block shrink-0 py-3 text-3xl font-semibold uppercase tracking-[-0.01em] transition-opacity sm:text-4xl",
               open
                 ? "translate-y-0 opacity-100"
                 : "translate-y-3 opacity-0",
