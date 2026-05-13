@@ -1,50 +1,40 @@
 import type { MetadataRoute } from "next";
 
-import { getSiteUrl } from "@/lib/site-url";
-import { createClient } from "@/lib/supabase/server";
+import { getAllBrancheSlugs } from "@/lib/branchen-data";
 
-type ActiveSite = { slug: string; updated_at: string | null };
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
+  "https://webseite-webdesign.vercel.app";
 
-/**
- * Dynamic sitemap. Lists the marketing landing plus every public site under
- * /site/[slug]. RLS filters to is_active=true automatically (anon read).
- *
- * We deliberately exclude imprint/privacy pages — those are tagged noindex
- * via metadata in Phase 4.
- */
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = getSiteUrl();
+const STATIC_ROUTES = [
+  "",
+  "/leistungen",
+  "/branchen",
+  "/ablauf",
+  "/pakete",
+  "/faq",
+  "/kontakt",
+  "/anfrage",
+];
+
+export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const entries: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((path) => ({
+    url: `${SITE_URL}${path}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: path === "" ? 1 : 0.7,
+  }));
+
+  const brancheEntries: MetadataRoute.Sitemap = getAllBrancheSlugs().map(
+    (slug) => ({
+      url: `${SITE_URL}/branchen/${slug}`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 1,
-    },
-  ];
+      priority: 0.8,
+    }),
+  );
 
-  try {
-    const supabase = await createClient();
-    const { data } = await supabase
-      .from("websites")
-      .select("slug, updated_at")
-      .eq("is_active", true)
-      .limit(5000);
-
-    for (const site of (data as ActiveSite[] | null) ?? []) {
-      entries.push({
-        url: `${baseUrl}/site/${site.slug}`,
-        lastModified: site.updated_at ? new Date(site.updated_at) : now,
-        changeFrequency: "weekly",
-        priority: 0.8,
-      });
-    }
-  } catch {
-    // If Supabase is unreachable at request time, return the marketing root
-    // only. Better to serve a partial sitemap than a 500 to crawlers.
-  }
-
-  return entries;
+  return [...staticEntries, ...brancheEntries];
 }

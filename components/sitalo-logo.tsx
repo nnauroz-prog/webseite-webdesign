@@ -3,9 +3,11 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * Sitalo wordmark. Renders the cream-background JPEG inside a tinted
+ * Sitalo wordmark. Renders the cream-background PNG inside a tinted
  * card so the cream blends seamlessly into both light and dark
- * surfaces (the JPEG has no alpha channel).
+ * surfaces (the source has no alpha channel).
+ *
+ * Source asset: 1672×941 (~1.78:1).
  *
  * Sizes:
  *   - sm: ~28px tall (sidebar, footer attribution)
@@ -22,7 +24,7 @@ export function SitaloLogo({
   priority?: boolean;
 }) {
   const heights: Record<string, number> = { sm: 28, md: 40, lg: 64 };
-  const widths: Record<string, number> = { sm: 73, md: 105, lg: 168 };
+  const widths: Record<string, number> = { sm: 50, md: 71, lg: 114 };
   const h = heights[size];
   const w = widths[size];
 
@@ -36,10 +38,10 @@ export function SitaloLogo({
       aria-label="Sitalo Webdesign"
     >
       <Image
-        src="/sitalo-logo.jpeg"
+        src="/sitalo-logo.png"
         alt="Sitalo Webdesign"
-        width={940}
-        height={359}
+        width={1672}
+        height={941}
         priority={priority}
         className="h-full w-full object-contain"
       />

@@ -1,29 +1,13 @@
 import type { MetadataRoute } from "next";
 
-import { getSiteUrl } from "@/lib/site-url";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
+  "https://webseite-webdesign.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = getSiteUrl();
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: [
-          "/dashboard",
-          "/dashboard/",
-          "/admin",
-          "/admin/",
-          "/auth/",
-          "/login",
-          "/register",
-          "/forgot-password",
-          "/update-password",
-          "/api/",
-        ],
-      },
-    ],
-    sitemap: `${baseUrl}/sitemap.xml`,
-    host: baseUrl,
+    rules: [{ userAgent: "*", allow: "/" }],
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

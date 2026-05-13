@@ -8,98 +8,121 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 export const metadata: Metadata = {
   title: "FAQ | Sitalo Webdesign",
   description:
-    "Antworten auf häufige Fragen zur Website-Erstellung, Preisen, Hosting, SEO und Betreuung.",
+    "Antworten auf das, was Kunden mich am häufigsten fragen — Preise, Ablauf, Hosting, SEO, Betreuung.",
   alternates: { canonical: "/faq" },
 };
 
-const FAQ: Array<{ question: string; answer: string }> = [
+type Group = {
+  label: string;
+  items: { q: string; a: string }[];
+};
+
+const GROUPS: Group[] = [
   {
-    question: "Muss ich mich registrieren?",
-    answer:
-      "Nein. Für eine Anfrage reicht das Formular oder WhatsApp. Sie müssen keinen Account erstellen.",
+    label: "Anfrage & Ablauf",
+    items: [
+      {
+        q: "Muss ich mich irgendwo registrieren?",
+        a: "Nein. Schicken Sie mir einfach das Formular oder schreiben Sie kurz auf WhatsApp — kein Account, kein Login, nichts dergleichen.",
+      },
+      {
+        q: "Wie schnell ist meine Seite fertig?",
+        a: "Wenn Sie mir alle Unterlagen geschickt haben, dauert eine einfache Seite bei mir oft nur 1–2 Werktage. Größere Projekte besprechen wir vorher in Ruhe und ich nenne Ihnen einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
+      },
+      {
+        q: "Was brauchen Sie von mir?",
+        a: "Ihr Logo (falls vorhanden), ein paar Bilder von Ihnen oder Ihrem Betrieb, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Ihnen, was ich noch brauche — und helfe bei Formulierungen oder Bildauswahl.",
+      },
+      {
+        q: "Was passiert nach meiner Anfrage?",
+        a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Ich schaue mir Ihre Angaben in Ruhe an und melde mich innerhalb von 24 Stunden — meist deutlich schneller — persönlich bei Ihnen. Kein Vertrag, keine Kosten, kein Druck.",
+      },
+      {
+        q: "Kann ich per WhatsApp anfragen?",
+        a: "Sehr gerne. Auf der Anfrage-Seite finden Sie einen Knopf mit vorgefüllter Nachricht. Für die vollständige Aufnahme bitte trotzdem einmal das Formular ausfüllen — dann habe ich alles strukturiert vorliegen und kann Ihnen schneller antworten.",
+      },
+    ],
   },
   {
-    question: "Wie schnell ist meine Website fertig?",
-    answer:
-      "Viele einfache Websites können innerhalb von 1–2 Werktagen nach vollständiger Datenlieferung umgesetzt werden. Bei größeren Projekten klären wir den Zeitplan vor Projektbeginn — transparent und verbindlich.",
+    label: "Preise & Betreuung",
+    items: [
+      {
+        q: "Was kostet das Ganze?",
+        a: "Ich arbeite mit drei Einstiegspreisen: Starter ab 499 €, Business ab 899 €, Premium ab 1.499 € — jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ab 49 € / 79 € / 129 € für Hosting, Pflege und kleine Änderungen. Den genauen Endpreis nenne ich Ihnen nach Ihrer Anfrage — verbindlich, kein böses Erwachen.",
+      },
+      {
+        q: "Warum gibt es nur Einstiegspreise?",
+        a: "Weil ehrlich gesagt jedes Projekt anders ist. Manche schicken mir komplette Unterlagen, andere brauchen mehr Hilfe. Manche wollen eine Seite, andere fünf. Die Einstiegspreise zeigen Ihnen, wo es losgeht — den endgültigen Preis vereinbaren wir vorher, schwarz auf weiß.",
+      },
+      {
+        q: "Kann ich später noch Sachen ändern lassen?",
+        a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei (1, 3 oder 6 pro Monat, je nach Paket). Sie schreiben mir kurz, was geändert werden soll — ich melde mich, mache es, und melde mich wieder, wenn es online ist.",
+      },
+      {
+        q: "Kann ich bestimmte Inhalte selbst pflegen?",
+        a: "Wenn Sie möchten, ja. Im Premium-Paket kann ich Ihnen Bereiche einbauen, die Sie selbst aktualisieren können — Öffnungszeiten, Wochenangebot, Speisekarte, Bilder. Wenn Sie das nicht wollen, übernehme ich das. Sie entscheiden.",
+      },
+    ],
   },
   {
-    question: "Was muss ich liefern?",
-    answer:
-      "Logo, Bilder, Texte, Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, klären wir das gemeinsam — wir helfen bei Struktur und Formulierung.",
-  },
-  {
-    question: "Kann ich später Inhalte ändern lassen?",
-    answer:
-      "Ja. Änderungen können wir im Rahmen der monatlichen Betreuung übernehmen. Je nach Paket sind 1, 3 oder 6 Änderungen pro Monat inklusive.",
-  },
-  {
-    question: "Kann ich bestimmte Inhalte selbst verwalten?",
-    answer:
-      "Auf Wunsch ja. Im Premium-System können bestimmte Inhalte direkt auf Ihrer Website verwaltbar gemacht werden — zum Beispiel Öffnungszeiten, Speisekarte, Wochenangebot, Leistungen oder Bilder. Das ist eine optionale Funktion, kein zentrales Login-Portal.",
-  },
-  {
-    question: "Was kostet eine Website?",
-    answer:
-      "Wir arbeiten mit drei Einstiegspaketen: Starter-Projekt ab 499 €, Business-Auftritt ab 899 €, Premium-System ab 1.499 € (jeweils einmalig). Dazu kommt eine monatliche Betreuung ab 49 € / 79 € / 129 €. Der finale Preis hängt vom Projekt-Umfang ab.",
-  },
-  {
-    question: "Warum gibt es Einstiegspreise statt fester Endpreise?",
-    answer:
-      "Die Pakete geben eine klare Orientierung. Der finale Preis hängt davon ab, welche Inhalte vorhanden sind, welche Funktionen gewünscht werden und wie umfangreich die Website wird. Nach Ihrer Anfrage erhalten Sie eine klare und verbindliche Einschätzung.",
-  },
-  {
-    question: "Ist Hosting enthalten?",
-    answer:
-      "Ja. Hosting ist im monatlichen Beitrag enthalten — Server in der EU, SSL-Verschlüsselung, regelmäßige Backups. Sie brauchen kein eigenes Hosting zu organisieren.",
-  },
-  {
-    question: "Wird meine Website mobil optimiert?",
-    answer:
-      "Ja, immer. Wir bauen Mobile-First — die Website funktioniert auf Smartphone, Tablet und Desktop gleichermaßen gut. Wir testen auf echten Geräten vor der Live-Schaltung.",
-  },
-  {
-    question: "Sind SEO-Grundlagen enthalten?",
-    answer:
-      "Ja. Saubere Seiten-Titel, Meta-Beschreibungen, klare Überschriften-Struktur, lokale Suchbegriffe, Sitemap und schnelle Ladezeiten sind in allen Paketen enthalten. Wir versprechen keine Google-Platz-1-Garantien, aber legen die solide Basis.",
-  },
-  {
-    question: "Sind Impressum und Datenschutz enthalten?",
-    answer:
-      "Wir integrieren die entsprechenden Seiten und Bereiche technisch. Rechtssichere Inhalte (Impressums-Text, Datenschutzerklärung) sollten Sie selbst oder von einem geeigneten Anbieter beziehen — wir können bei Bedarf Empfehlungen aussprechen.",
-  },
-  {
-    question: "Kann ich meine bestehende Website modernisieren lassen?",
-    answer:
-      'Ja. Im Anfrage-Formular können Sie „Redesign" auswählen und die URL Ihrer aktuellen Website angeben. Wir prüfen den Bestand und schlagen eine Modernisierung vor — manchmal lohnt sich auch ein Neuaufbau, das klären wir nach Ihrer Anfrage.',
-  },
-  {
-    question: "Für welche Branchen erstellt Sitalo Websites?",
-    answer:
-      "Wir sind auf lokale Unternehmen spezialisiert: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios und weitere lokale Dienstleister. Eine Übersicht steht auf der Branchen-Seite.",
-  },
-  {
-    question: "Kann ich per WhatsApp anfragen?",
-    answer:
-      "Ja. Auf der Anfrage-Seite finden Sie einen WhatsApp-Link mit vorgefüllter Nachricht. Für eine vollständige Projekt-Aufnahme ist das Formular allerdings besser geeignet, weil wir dann alle relevanten Angaben strukturiert vorliegen haben.",
-  },
-  {
-    question: "Was passiert nach dem Absenden der Anfrage?",
-    answer:
-      "Sie erhalten eine kurze Empfangsbestätigung. Wir prüfen Ihre Angaben und melden uns innerhalb von 24 Stunden persönlich mit einer ersten Einschätzung — Umfang, Zeitplan, verbindlicher Preisrahmen. Es entstehen für Sie noch keine Kosten.",
+    label: "Technik & Rechtliches",
+    items: [
+      {
+        q: "Ist Hosting dabei?",
+        a: "Ja, alles inklusive. Server stehen in der EU, SSL ist Pflicht, Backups laufen automatisch. Sie müssen sich um nichts kümmern — auch nicht um Updates oder Sicherheit. Das ist mein Job.",
+      },
+      {
+        q: "Funktioniert die Seite auch auf dem Handy?",
+        a: "Ja, immer. Die meisten Ihrer Kunden schauen heute zuerst aufs Handy — also baue ich auch zuerst für das Handy. Vor dem Live-Gang teste ich auf echten Geräten, nicht nur im Simulator.",
+      },
+      {
+        q: "Wird man die Seite bei Google finden?",
+        a: "Ich lege die Basis sauber: Titel, Beschreibungen, klare Struktur, schnelle Ladezeiten, lokale Suchbegriffe, Sitemap. Garantieren kann Ihnen Platz 1 niemand seriös — aber das Fundament passt, und für lokale Suchen („Friseur Eimsbüttel\", „Pflegedienst Altona\") sind die Chancen sehr gut.",
+      },
+      {
+        q: "Sind Impressum und Datenschutz dabei?",
+        a: "Die Seiten lege ich technisch an. Den juristisch sicheren Text dazu sollten Sie aber von einer geeigneten Quelle beziehen — Generator, Anwalt oder Verband. Ich empfehle Ihnen gerne, was zu Ihrem Fall passt.",
+      },
+      {
+        q: "Ich habe schon eine Website — kann die modernisiert werden?",
+        a: 'Ja, schauen wir uns gerne an. Im Formular wählen Sie „Redesign" und schicken mir die URL. Ich melde mich nach einer ersten Sichtung mit ehrlicher Einschätzung — manchmal lohnt sich ein Update, manchmal ein Neuaufbau. Ich sage Ihnen, was sinnvoller ist.',
+      },
+      {
+        q: "Für welche Branchen arbeiten Sie?",
+        a: "Vor allem für lokale Unternehmen in und um Hamburg: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios. Wenn Sie nicht sicher sind, ob Ihre Branche passt — fragen Sie einfach.",
+      },
+    ],
   },
 ];
 
 export default function FaqPage() {
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: GROUPS.flatMap((g) =>
+      g.items.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+    ),
+  };
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <main className="flex-1">
         <Hero />
-        <Accordion />
-        <FinalCta />
+        {GROUPS.map((g) => (
+          <Group key={g.label} group={g} />
+        ))}
+        <Closer />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
     </div>
   );
 }
@@ -107,53 +130,57 @@ export default function FaqPage() {
 function Hero() {
   return (
     <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-4xl px-6 py-16 text-center sm:py-24">
-        <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em] sm:text-[11px]">
-          FAQ
-        </p>
-        <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-5xl">
-          Häufige Fragen
+      <div className="mx-auto w-full max-w-7xl px-6 pt-20 pb-16 sm:pt-32 sm:pb-20 lg:pt-40">
+        <h1 className="serif text-balance text-6xl font-normal leading-[1.0] tracking-[-0.025em] sm:text-7xl lg:text-[8rem]">
+          Häufige
+          <br />
+          <span className="serif-italic">Fragen.</span>
         </h1>
-        <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed">
-          Antworten auf die Fragen, die wir am häufigsten gestellt bekommen.
-          Sollte etwas fehlen, schreiben Sie uns einfach.
+        <p className="text-muted-foreground mt-10 max-w-xl text-pretty text-lg leading-relaxed">
+          Was Kunden mich am häufigsten fragen. Eine Antwort fehlt?{" "}
+          <Link href="/kontakt" className="text-foreground underline underline-offset-4">
+            Schreiben Sie mir.
+          </Link>
         </p>
       </div>
     </section>
   );
 }
 
-function Accordion() {
+function Group({ group }: { group: Group }) {
   return (
-    <section className="border-border/40 border-b py-16 sm:py-24">
-      <div className="mx-auto w-full max-w-3xl px-6">
-        <dl className="space-y-3">
-          {FAQ.map((item) => (
-            <details
-              key={item.question}
-              className="bg-card border-border/60 group rounded-xl border p-5 open:shadow-sm"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium">
-                {item.question}
-                <span className="text-muted-foreground transition-transform group-open:rotate-180">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    className="h-4 w-4"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M6 9l6 6 6-6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+          {group.label}
+        </p>
+        <dl className="divide-border/60 mt-10 divide-y">
+          {group.items.map((item) => (
+            <details key={item.q} className="group py-8 sm:py-10">
+              <summary className="grid cursor-pointer list-none items-baseline gap-8 sm:grid-cols-[2fr_1fr] lg:grid-cols-[2.5fr_1fr]">
+                <h3 className="text-foreground text-2xl font-semibold leading-[1.15] tracking-[-0.02em] sm:text-3xl">
+                  {item.q}
+                </h3>
+                <div className="flex items-center justify-between gap-4 sm:justify-end">
+                  <span className="text-muted-foreground/60 group-open:text-foreground font-mono text-xs uppercase tracking-[0.25em] transition-colors">
+                    Antwort
+                  </span>
+                  <span className="text-muted-foreground transition-transform group-open:rotate-45">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      className="h-5 w-5"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </div>
               </summary>
-              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed text-pretty">
-                {item.answer}
+              <p className="text-foreground/75 mt-6 max-w-3xl text-pretty text-[16px] leading-[1.7] sm:text-[17px]">
+                {item.a}
               </p>
             </details>
           ))}
@@ -163,31 +190,32 @@ function Accordion() {
   );
 }
 
-function FinalCta() {
+function Closer() {
   return (
-    <section className="bg-foreground text-background py-14 sm:py-20">
-      <div className="mx-auto w-full max-w-3xl px-6 text-center">
-        <h2 className="text-balance text-3xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
-          Weitere Frage?
-        </h2>
-        <p className="text-background/70 mx-auto mt-4 max-w-xl text-pretty text-base sm:text-lg">
-          Schreiben Sie uns über das Anfrage-Formular oder WhatsApp — wir
-          antworten innerhalb von 24 Stunden.
-        </p>
-        <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row">
-          <Link
-            href="/anfrage"
-            className="bg-background text-foreground hover:bg-background/90 inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
-          >
-            Projekt anfragen
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/kontakt"
-            className="border-background/30 text-background hover:bg-background/10 inline-flex h-12 items-center justify-center gap-2 rounded-full border px-7 text-[15px] font-medium tracking-tight transition-colors"
-          >
-            Kontakt-Seite
-          </Link>
+    <section>
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
+        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <p className="serif text-foreground max-w-xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
+            Etwas fehlt?{" "}
+            <span className="serif-italic text-muted-foreground">
+              Fragen Sie mich direkt.
+            </span>
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/anfrage"
+              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-6 text-[15px] font-medium tracking-tight transition-all"
+            >
+              Projekt anfragen
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="/kontakt"
+              className="border-foreground/20 text-foreground hover:border-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-colors"
+            >
+              Kontakt
+            </Link>
+          </div>
         </div>
       </div>
     </section>
