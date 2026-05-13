@@ -23,7 +23,7 @@ export function MarketingFooter() {
               Hamburg.
             </p>
             <p className="serif-italic text-foreground mt-6 text-lg">
-              — Nadim Nauroz
+              — Sitalo, Hamburg
             </p>
           </div>
           <FooterCol title="Service">

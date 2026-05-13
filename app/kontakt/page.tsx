@@ -18,7 +18,7 @@ function buildWhatsappHref(): string | null {
   const digits = raw.replace(/[^\d]/g, "");
   if (digits.length < 6) return null;
   const message =
-    "Hallo Nadim, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
+    "Hallo Sitalo, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
@@ -37,13 +37,13 @@ export default function KontaktPage() {
           </p>
 
           <p className="serif mt-16 text-balance text-4xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-5xl lg:text-6xl">
-            Hallo,{" "}
+            Schreiben Sie uns kurz,{" "}
             <span className="serif-italic text-muted-foreground">
-              ich bin Nadim.
+              was Sie vorhaben.
             </span>{" "}
-            Schreiben Sie mir kurz, was Sie vorhaben —{" "}
+            Wir melden uns persönlich —{" "}
             <span className="serif-italic text-muted-foreground">
-              ich melde mich persönlich.
+              meist noch am selben Tag.
             </span>
           </p>
 
@@ -110,7 +110,7 @@ export default function KontaktPage() {
                 </p>
               </div>
               <p className="serif-italic text-foreground/80 text-2xl">
-                — Nadim Nauroz
+                — Sitalo, Hamburg
               </p>
             </div>
 

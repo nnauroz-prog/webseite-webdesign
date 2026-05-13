@@ -15,7 +15,7 @@ import { StackBlock } from "@/components/marketing/stack-block";
 export const metadata: Metadata = {
   title: "Sitalo — Webdesign aus Hamburg",
   description:
-    "Hallo, ich bin Nadim. Ich baue Websites für lokale Unternehmen — Sie schicken mir Ihre Unterlagen, ich melde mich persönlich und liefere die fertige Seite.",
+    "Websites für lokale Unternehmen aus Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -306,7 +306,7 @@ function PersonalNote() {
           </p>
         </div>
         <p className="serif-italic text-background mt-12 text-2xl">
-          — Nadim Nauroz
+          — Sitalo, aus Hamburg
         </p>
       </div>
     </section>
@@ -617,7 +617,7 @@ function FinalCta() {
           ) : null}
         </div>
         <p className="serif-italic text-background/80 mt-12 text-xl">
-          — Nadim Nauroz, Hamburg
+          — Sitalo, Hamburg
         </p>
       </div>
     </section>
@@ -631,7 +631,7 @@ function buildWhatsappHref(): string | null {
   if (digits.length < 6) return null;
   const message =
     process.env.NEXT_PUBLIC_SITALO_WHATSAPP_MESSAGE?.trim() ||
-    "Hallo Nadim, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
+    "Hallo Sitalo, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 

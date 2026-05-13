@@ -43,7 +43,6 @@ const LOCAL_BUSINESS_LD = {
   description:
     "Webdesign für lokale Unternehmen — Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien, Fitnessstudios. Persönlich gemacht, in Hamburg.",
   url: SITE_URL,
-  founder: { "@type": "Person", name: "Nadim Nauroz" },
   address: {
     "@type": "PostalAddress",
     addressLocality: "Hamburg",
