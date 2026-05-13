@@ -89,15 +89,16 @@ export function MarketingHeader({
   }, [menuOpen]);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-40 border-b backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-200",
-        scrolled
-          ? "border-border/60 bg-background/95 shadow-[0_1px_0_0_rgb(0_0_0/0.02)]"
-          : "border-border/40 bg-background/80",
-        className,
-      )}
-    >
+    <>
+      <header
+        className={cn(
+          "sticky top-0 z-40 border-b backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-200",
+          scrolled
+            ? "border-border/60 bg-background/95 shadow-[0_1px_0_0_rgb(0_0_0/0.02)]"
+            : "border-border/40 bg-background/80",
+          className,
+        )}
+      >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-6">
         <Link
           href="/"
@@ -154,12 +155,18 @@ export function MarketingHeader({
         </div>
       </div>
 
-      {/* Vollbild-Mobile-Menü */}
+      </header>
+
+      {/* Vollbild-Mobile-Menü — bewusst AUSSERHALB vom <header>,
+          weil der Header backdrop-blur hat. backdrop-filter erzeugt
+          einen Containing Block, der fixed-positionierte Kinder auf
+          die Header-Größe (64px) clippt — das Menü wäre sonst
+          unsichtbar. */}
       <MobileFullscreenMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
       />
-    </header>
+    </>
   );
 }
 
