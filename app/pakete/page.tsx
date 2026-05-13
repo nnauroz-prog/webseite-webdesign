@@ -248,7 +248,7 @@ function Packages() {
                     >
                       einmalig · + {p.monthly}
                     </p>
-                    <div className="mt-8">
+                    <div className="mt-8 flex flex-wrap items-center gap-4">
                       <Link
                         href={`/anfrage?paket=${p.slug}`}
                         className={
@@ -259,6 +259,16 @@ function Packages() {
                       >
                         {p.name} anfragen
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                      </Link>
+                      <Link
+                        href={`/pakete/${p.slug}`}
+                        className={
+                          dark
+                            ? "text-background/80 hover:text-background inline-flex h-14 items-center text-base font-medium underline-offset-4 hover:underline"
+                            : "text-foreground inline-flex h-14 items-center text-base font-medium underline-offset-4 hover:underline"
+                        }
+                      >
+                        Details
                       </Link>
                     </div>
                   </div>

@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
-import { HeroMockups } from "@/components/marketing/hero-mockups";
 import { HeroPrompt } from "@/components/marketing/hero-prompt";
+import { HeroRotatingMockups } from "@/components/marketing/hero-rotating-mockups";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -217,7 +217,7 @@ function Hero() {
             className="reveal -mx-2 lg:mx-0"
             style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
           >
-            <HeroMockups />
+            <HeroRotatingMockups />
           </div>
         </div>
       </div>

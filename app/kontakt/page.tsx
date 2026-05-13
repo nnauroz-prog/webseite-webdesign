@@ -79,24 +79,90 @@ export default function KontaktPage() {
             )}
           </div>
 
-          <div className="mt-16 flex flex-col gap-6 sm:mt-20 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-                Antwortzeit
-              </p>
-              <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
-                Innerhalb von{" "}
-                <span className="serif-italic">24 Stunden.</span>
-              </p>
-              <p className="text-muted-foreground mt-2 text-sm">
-                Meist deutlich schneller. Persönlich, von mir, ohne
-                Ticket-System.
+          <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
+            <div className="space-y-12">
+              <div>
+                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                  Antwortzeit
+                </p>
+                <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
+                  Innerhalb von{" "}
+                  <span className="serif-italic">24 Stunden.</span>
+                </p>
+                <p className="text-muted-foreground mt-2 text-sm">
+                  Meist deutlich schneller. Persönlich, von mir, ohne
+                  Ticket-System.
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                  Standort
+                </p>
+                <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
+                  Aus{" "}
+                  <span className="serif-italic">Hamburg.</span>{" "}
+                  Deutschlandweit.
+                </p>
+                <p className="text-muted-foreground mt-2 text-sm">
+                  Treffen vor Ort auf Wunsch — Café, Ihr Büro oder
+                  meins. Sonst läuft alles per Telefon, Video und
+                  Mail. Funktioniert genauso gut.
+                </p>
+              </div>
+              <p className="serif-italic text-foreground/80 text-2xl">
+                — Nadim Nauroz
               </p>
             </div>
 
-            <p className="serif-italic text-foreground/80 text-2xl">
-              — Nadim Nauroz
-            </p>
+            {/* Stilisierte Karten-Andeutung, keine externe Google-Embed.
+                DSGVO-freundlich, schnell, kein Cookie-Banner nötig. */}
+            <div
+              aria-hidden="true"
+              className="bg-accent/30 border-border/60 relative aspect-square w-full overflow-hidden rounded-2xl border"
+            >
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <p className="text-muted-foreground/70 font-mono text-xs tracking-[0.25em] uppercase">
+                    53.5511° N
+                  </p>
+                  <p className="serif text-foreground mt-4 text-5xl font-normal tracking-[-0.02em] sm:text-6xl">
+                    Hamburg
+                  </p>
+                  <p className="text-muted-foreground/70 font-mono mt-4 text-xs tracking-[0.25em] uppercase">
+                    9.9937° E
+                  </p>
+                </div>
+              </div>
+              {/* Dezente Linien als Karten-Andeutung */}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 400 400"
+                className="text-foreground/5 absolute inset-0 h-full w-full"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1}
+              >
+                <line x1="0" y1="100" x2="400" y2="100" />
+                <line x1="0" y1="200" x2="400" y2="200" />
+                <line x1="0" y1="300" x2="400" y2="300" />
+                <line x1="100" y1="0" x2="100" y2="400" />
+                <line x1="200" y1="0" x2="200" y2="400" />
+                <line x1="300" y1="0" x2="300" y2="400" />
+                <circle
+                  cx="200"
+                  cy="200"
+                  r="60"
+                  className="text-foreground/10"
+                />
+                <circle
+                  cx="200"
+                  cy="200"
+                  r="3"
+                  className="text-foreground/30"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
           </div>
         </section>
       </main>

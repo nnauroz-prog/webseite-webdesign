@@ -106,6 +106,26 @@ const SECTIONS = [
   },
 ];
 
+const SERVICES_LD = {
+  "@context": "https://schema.org",
+  "@graph": SECTIONS.map((s) => ({
+    "@type": "Service",
+    name: s.title,
+    description: s.intro,
+    provider: {
+      "@type": "LocalBusiness",
+      name: "Sitalo Webdesign",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Hamburg",
+        addressCountry: "DE",
+      },
+    },
+    areaServed: { "@type": "Country", name: "Deutschland" },
+    serviceType: "Webdesign",
+  })),
+};
+
 export default function LeistungenPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -116,6 +136,11 @@ export default function LeistungenPage() {
         <FinalCta />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_LD) }}
+      />
     </div>
   );
 }
