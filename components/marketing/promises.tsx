@@ -12,24 +12,24 @@ import { ArrowRight } from "lucide-react";
  */
 const PROMISES = [
   {
-    title: "Ich antworte innerhalb von 24 Stunden.",
-    body: "Meistens deutlich schneller. Persönlich, von mir, nicht von einer Hotline.",
+    title: "Antwort in 24 Stunden.",
+    body: "Meistens schneller. Persönlich. Direkt von uns, nicht von einer Support-Hotline.",
   },
   {
-    title: "Sie bekommen einen verbindlichen Preis vorab.",
-    body: "Schwarz auf weiß, bevor wir starten. Kein böses Erwachen am Ende.",
+    title: "Festpreis vorab — schwarz auf weiß.",
+    body: "Bevor wir starten, wissen Sie genau, was es kostet. Keine Nachträge. Kein böses Erwachen.",
   },
   {
-    title: "Wir korrigieren in einer Runde, sauber.",
-    body: "Sie schicken alle Anmerkungen gesammelt, ich setze sie um. Kein endloses Hin und Her.",
+    title: "Eine Korrekturrunde, alle Wünsche gesammelt.",
+    body: "Sie schicken Ihre Anmerkungen in einer Mail, wir setzen sie sauber um. Kein endloses Hin und Her — weil das nervt, Sie wie uns.",
   },
   {
-    title: "Nach dem Launch bleibe ich Ihr Ansprechpartner.",
-    body: "Hosting, Updates, kleine Änderungen — alles über mich. Keine Tickets, keine Hotline.",
+    title: "Nach dem Launch bleiben wir da.",
+    body: "Hosting, Updates, kleine Änderungen — alles über uns. Sie schreiben, wir kümmern uns.",
   },
   {
-    title: "Wenn etwas nicht passt, sagen Sie es.",
-    body: "Ich mache nach, bis es stimmt. Im Rahmen des Vereinbarten, ohne Wenn und Aber.",
+    title: "Wenn's nicht passt, sagen Sie's.",
+    body: "Wir bessern nach, bis es stimmt. Innerhalb des Vereinbarten — ohne kleingedruckte Wenns und Abers.",
   },
 ];
 
@@ -40,18 +40,18 @@ export function Promises() {
         <div className="grid gap-16 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
           <div>
             <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-              Versprechen
+              Unsere fünf Versprechen
             </p>
             <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-              Was Sie
+              Worauf Sie
               <br />
               <span className="serif-italic text-muted-foreground font-normal">
-                von mir bekommen.
+                sich verlassen können.
               </span>
             </h2>
             <p className="text-muted-foreground mt-8 max-w-md text-pretty text-lg leading-relaxed">
-              Fünf Dinge, die ich Ihnen zusage. Keine Werbephrasen — nur
-              Sachen, die ich auch wirklich halte.
+              Fünf Zusagen — keine Werbephrasen. Wenn wir eine davon
+              nicht halten, sagen Sie's. Wir gleichen aus.
             </p>
             <Link
               href="/anfrage"

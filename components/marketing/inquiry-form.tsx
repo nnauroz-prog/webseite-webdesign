@@ -116,7 +116,6 @@ const SPECIAL_LABELS: Record<InquirySpecialFeature, string> = {
   "verwaltbare-inhalte": "Verwaltbare Inhalte",
   speisekarte: "Speisekarte / Wochenangebot",
   bewerbungsformular: "Bewerbungsformular",
-  "whatsapp-button": "WhatsApp-Button",
   "google-maps": "Google Maps",
   "online-reservierung": "Online-Reservierung",
   "mehrere-unterseiten": "Mehrere Unterseiten",
@@ -130,7 +129,6 @@ const SPECIAL_LABELS: Record<InquirySpecialFeature, string> = {
  *  Kontakt/Maps basics. Each entry maps to a Formspree label. */
 const FEATURE_OPTIONS: Array<{ slug: string; label: string }> = [
   { slug: "kontaktformular", label: "Kontaktformular" },
-  { slug: "whatsapp-button", label: "WhatsApp-Button" },
   { slug: "google-maps", label: "Google Maps" },
   { slug: "oeffnungszeiten", label: "Öffnungszeiten" },
   { slug: "leistungen", label: "Leistungen" },
@@ -276,7 +274,6 @@ export function InquiryForm({
     websiteUrl: "",
   });
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const whatsappFallbackHref = buildWhatsappFallbackHref();
 
   const update = <K extends keyof WizardData>(key: K, value: WizardData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
@@ -318,7 +315,7 @@ export function InquiryForm({
       setStatus({
         kind: "error",
         message:
-          "Anfrage-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder per WhatsApp schreiben.",
+          "Anfrage-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder per E-Mail an info@sitalo.de schreiben.",
       });
       return;
     }
@@ -409,25 +406,21 @@ export function InquiryForm({
         <Alert variant="destructive" className="mt-6">
           <AlertDescription>
             {status.message}
-            {whatsappFallbackHref ? (
-              <span className="mt-3 block">
-                <a
-                  href={whatsappFallbackHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium underline-offset-4 hover:underline"
-                >
-                  → Direkt per WhatsApp schreiben
-                </a>
-              </span>
-            ) : null}
+            <span className="mt-3 block">
+              <a
+                href="mailto:info@sitalo.de"
+                className="font-medium underline-offset-4 hover:underline"
+              >
+                → Direkt an info@sitalo.de schreiben
+              </a>
+            </span>
           </AlertDescription>
         </Alert>
       )}
 
       <div className="mt-8 min-h-[24rem]">
         {step === 0 && (
-          <StepWelcome onStart={() => setStep(1)} whatsappHref={whatsappFallbackHref} />
+          <StepWelcome onStart={() => setStep(1)} />
         )}
         {step === 1 && (
           <StepIndustry
@@ -528,13 +521,7 @@ function ProgressHeader({
 
 /* ---------- Step components ---------- */
 
-function StepWelcome({
-  onStart,
-  whatsappHref,
-}: {
-  onStart: () => void;
-  whatsappHref: string | null;
-}) {
+function StepWelcome({ onStart }: { onStart: () => void }) {
   return (
     <div className="text-center">
       <div className="bg-primary/10 text-primary mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full">
@@ -563,7 +550,7 @@ function StepWelcome({
         </li>
       </ul>
 
-      <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <div className="mt-9 flex justify-center">
         <Button
           type="button"
           onClick={onStart}
@@ -572,16 +559,6 @@ function StepWelcome({
           Konfigurator starten
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
-        {whatsappHref ? (
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground text-sm underline-offset-4 hover:underline"
-          >
-            Lieber per WhatsApp schreiben
-          </a>
-        ) : null}
       </div>
     </div>
   );
@@ -1131,7 +1108,7 @@ function SummaryRow({
   );
 }
 
-/* ---------- Payload + WhatsApp helpers ---------- */
+/* ---------- Payload helpers ---------- */
 
 function buildPayload(data: WizardData): Record<string, unknown> {
   const industryLabel =
@@ -1178,12 +1155,3 @@ function buildPayload(data: WizardData): Record<string, unknown> {
   return payload;
 }
 
-function buildWhatsappFallbackHref(): string | null {
-  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
-  if (!raw) return null;
-  const digits = raw.replace(/[^\d]/g, "");
-  if (digits.length < 6) return null;
-  const message =
-    "Hallo Sitalo, ich interessiere mich für eine Website. Können Sie mir ein Angebot machen?";
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
-}

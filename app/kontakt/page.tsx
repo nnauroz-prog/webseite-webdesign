@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -6,25 +7,13 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Kontakt — schreiben Sie mir direkt | Sitalo Hamburg",
+  title: "Kontakt — schreiben Sie uns direkt | Sitalo Hamburg",
   description:
-    "Schreiben Sie mir kurz — über Formular, WhatsApp oder E-Mail. Ich melde mich persönlich, meist noch am selben Tag.",
+    "Schreiben Sie uns über Formular oder E-Mail. Wir melden uns persönlich, meist noch am selben Tag.",
   alternates: { canonical: "/kontakt" },
 };
 
-function buildWhatsappHref(): string | null {
-  const raw = process.env.NEXT_PUBLIC_SITALO_WHATSAPP_NUMBER?.trim();
-  if (!raw) return null;
-  const digits = raw.replace(/[^\d]/g, "");
-  if (digits.length < 6) return null;
-  const message =
-    "Hallo Sitalo, ich habe Ihre Seite gesehen und überlege, eine eigene Website für mein Unternehmen machen zu lassen. Können wir kurz dazu schreiben?";
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
-}
-
 export default function KontaktPage() {
-  const whatsappHref = buildWhatsappHref();
-
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -47,8 +36,8 @@ export default function KontaktPage() {
             </span>
           </p>
 
-          {/* Three contact methods as compact inline blocks */}
-          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {/* Two contact methods */}
+          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-2 sm:divide-x sm:divide-y-0">
             <ContactMethod
               label="Per Formular"
               detail="Schritt-für-Schritt"
@@ -61,22 +50,6 @@ export default function KontaktPage() {
               href="mailto:info@sitalo.de"
               cta="Schreiben"
             />
-            {whatsappHref ? (
-              <ContactMethod
-                label="Per WhatsApp"
-                detail="Schnelle Rückfragen"
-                href={whatsappHref}
-                cta="Öffnen"
-                external
-              />
-            ) : (
-              <ContactMethod
-                label="Per WhatsApp"
-                detail="In Kürze verfügbar"
-                href="/anfrage"
-                cta="Formular nutzen"
-              />
-            )}
           </div>
 
           <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
@@ -114,54 +87,40 @@ export default function KontaktPage() {
               </p>
             </div>
 
-            {/* Stilisierte Karten-Andeutung, keine externe Google-Embed.
-                DSGVO-freundlich, schnell, kein Cookie-Banner nötig. */}
-            <div
-              aria-hidden="true"
-              className="bg-accent/30 border-border/60 relative aspect-square w-full overflow-hidden rounded-2xl border"
-            >
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-muted-foreground/70 font-mono text-xs tracking-[0.25em] uppercase">
-                    53.5511° N
+            {/* Zwei Hamburg-Aufnahmen übereinander — Speicherstadt
+                (Identität) + Eimsbüttel-Café (Alltag). Beide statisch,
+                keine externen Embeds. */}
+            <div className="space-y-3 sm:space-y-4">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                <Image
+                  src="/images/hamburg-speicherstadt.png"
+                  alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
+                  fill
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                  className="object-cover"
+                />
+                <div
+                  aria-hidden="true"
+                  className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
+                />
+                <div className="absolute bottom-4 left-5 right-5 text-background">
+                  <p className="font-mono text-[10px] tracking-[0.25em] uppercase opacity-80">
+                    53.5511° N · 9.9937° E
                   </p>
-                  <p className="serif text-foreground mt-4 text-5xl font-normal tracking-[-0.02em] sm:text-6xl">
+                  <p className="serif mt-1 text-2xl font-normal tracking-[-0.01em]">
                     Hamburg
-                  </p>
-                  <p className="text-muted-foreground/70 font-mono mt-4 text-xs tracking-[0.25em] uppercase">
-                    9.9937° E
                   </p>
                 </div>
               </div>
-              {/* Dezente Linien als Karten-Andeutung */}
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 400 400"
-                className="text-foreground/5 absolute inset-0 h-full w-full"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1}
-              >
-                <line x1="0" y1="100" x2="400" y2="100" />
-                <line x1="0" y1="200" x2="400" y2="200" />
-                <line x1="0" y1="300" x2="400" y2="300" />
-                <line x1="100" y1="0" x2="100" y2="400" />
-                <line x1="200" y1="0" x2="200" y2="400" />
-                <line x1="300" y1="0" x2="300" y2="400" />
-                <circle
-                  cx="200"
-                  cy="200"
-                  r="60"
-                  className="text-foreground/10"
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                <Image
+                  src="/images/cafe-eimsbuettel.png"
+                  alt="Ruhige Straße in Hamburg-Eimsbüttel am Morgen — Café-Terrasse, Altbau-Fassaden, weicher Nebel."
+                  fill
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                  className="object-cover"
                 />
-                <circle
-                  cx="200"
-                  cy="200"
-                  r="3"
-                  className="text-foreground/30"
-                  fill="currentColor"
-                />
-              </svg>
+              </div>
             </div>
           </div>
         </section>

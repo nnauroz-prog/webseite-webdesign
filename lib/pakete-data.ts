@@ -55,7 +55,7 @@ export const PAKETE: Paket[] = [
       "Moderne Onepage-Website",
       "Mobil optimiert",
       "Kontaktformular mit Spam-Schutz",
-      "WhatsApp-Button",
+      "Direktwahl-Knopf",
       "Google Maps & Öffnungszeiten",
       "Impressum & Datenschutz-Bereich",
       "Hosting in der EU",

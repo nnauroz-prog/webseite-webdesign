@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -16,9 +17,9 @@ const STEPS = [
   {
     number: "01",
     title: "Sie schreiben mir",
-    body: "Schicken Sie mir das Anfrageformular oder eine kurze WhatsApp — egal was Sie bequemer finden. Ich melde mich innerhalb von 24 Stunden persönlich mit einer ersten Einschätzung: Umfang, Zeitplan, ehrlicher Preisrahmen.",
+    body: "Schicken Sie uns das Anfrageformular oder eine kurze E-Mail an info@sitalo.de — egal was Sie bequemer finden. Wir melden uns innerhalb von 24 Stunden persönlich mit einer ersten Einschätzung: Umfang, Zeitplan, ehrlicher Preisrahmen.",
     bullets: [
-      "Anfrage übers Formular oder WhatsApp",
+      "Anfrage übers Formular oder per E-Mail",
       "Kurze Beschreibung, was Sie vorhaben",
       "Antwort von mir innerhalb von 24 Stunden",
       "Kostet nichts, verpflichtet zu nichts",
@@ -215,7 +216,7 @@ function Tempo() {
           Tempo
         </p>
         <h2 className="text-foreground mx-auto mt-8 max-w-3xl text-balance text-3xl font-semibold leading-[1.15] tracking-[-0.03em] sm:text-5xl">
-          Viele einfache Seiten sind bei mir{" "}
+          Viele einfache Seiten sind bei uns{" "}
           <span className="serif-italic text-foreground/50 font-normal">
             in 1–2 Werktagen
           </span>{" "}
@@ -224,8 +225,19 @@ function Tempo() {
         <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
           Bei größeren Projekten oder fehlenden Inhalten besprechen wir
           vorab einen verbindlichen Termin.
-          <span className="serif-italic"> Ich verspreche nichts, was ich nicht halten kann.</span>
+          <span className="serif-italic"> Wir versprechen nichts, was wir nicht halten können.</span>
         </p>
+        <div className="mx-auto mt-16 max-w-3xl">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+            <Image
+              src="/images/workspace-typing.png"
+              alt="Hände auf einem Laptop, warmes Licht — fokussiertes Arbeiten."
+              fill
+              sizes="(min-width: 1024px) 768px, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

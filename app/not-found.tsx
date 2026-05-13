@@ -45,7 +45,7 @@ export default function NotFound() {
               <NotFoundLink
                 href="/kontakt"
                 label="Kontakt"
-                detail="Per E-Mail, WhatsApp oder Formular."
+                detail="Per E-Mail oder Formular."
               />
             </ul>
 

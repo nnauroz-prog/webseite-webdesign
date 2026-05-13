@@ -177,6 +177,21 @@ export default async function BranchePage({
           </div>
         </section>
 
+        {/* Atmosphäre-Bild — emotional anchor zwischen Hero und Intro */}
+        {branche.atmosphere ? (
+          <section className="border-border/40 border-b">
+            <div className="relative aspect-[16/9] w-full overflow-hidden sm:aspect-[21/9] lg:aspect-[3/1]">
+              <Image
+                src={branche.atmosphere.src}
+                alt={branche.atmosphere.alt}
+                fill
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+          </section>
+        ) : null}
+
         {/* Intro — editorial pull-quote style */}
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
