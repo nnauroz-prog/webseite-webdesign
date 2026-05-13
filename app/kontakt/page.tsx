@@ -36,8 +36,8 @@ export default function KontaktPage() {
             </span>
           </p>
 
-          {/* Two contact methods */}
-          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+          {/* Drei Kontaktwege — Formular, Telefon, E-Mail */}
+          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             <ContactMethod
               label="Per Formular"
               detail="Schritt-für-Schritt"
@@ -45,10 +45,18 @@ export default function KontaktPage() {
               cta="Anfrage starten"
             />
             <ContactMethod
+              label="Per Telefon"
+              detail="+49 152 24437370"
+              href="tel:+4915224437370"
+              cta="Anrufen"
+              external
+            />
+            <ContactMethod
               label="Per E-Mail"
               detail="info@sitalo.de"
               href="mailto:info@sitalo.de"
               cta="Schreiben"
+              external
             />
           </div>
 

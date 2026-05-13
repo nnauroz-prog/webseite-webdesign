@@ -43,6 +43,8 @@ const LOCAL_BUSINESS_LD = {
   description:
     "Webdesign für lokale Unternehmen — Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien, Fitnessstudios. Persönlich gemacht, in Hamburg.",
   url: SITE_URL,
+  telephone: "+4915224437370",
+  email: "info@sitalo.de",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Hamburg",
