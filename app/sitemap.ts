@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { getAllBrancheSlugs } from "@/lib/branchen-data";
+import { getAllPaketSlugs } from "@/lib/pakete-data";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
@@ -36,5 +37,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  return [...staticEntries, ...brancheEntries];
+  const paketEntries: MetadataRoute.Sitemap = getAllPaketSlugs().map(
+    (slug) => ({
+      url: `${SITE_URL}/pakete/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }),
+  );
+
+  return [...staticEntries, ...brancheEntries, ...paketEntries];
 }
