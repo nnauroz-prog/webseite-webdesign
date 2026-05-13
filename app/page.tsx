@@ -179,7 +179,33 @@ export default function HomePage() {
  * ============================================================ */
 function Hero() {
   return (
-    <section id="start" className="relative overflow-hidden scroll-mt-20">
+    <section
+      id="start"
+      className="relative overflow-hidden scroll-mt-20"
+    >
+      {/* Warmer Gradient-Backdrop für mehr Atmosphäre */}
+      <div
+        aria-hidden="true"
+        className="from-accent/30 via-background to-background pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br"
+      />
+      {/* Dezentes Gold-Halo links oben */}
+      <div
+        aria-hidden="true"
+        className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[120px]"
+      />
+      {/* Subtile Linien-Andeutung als Brand-Ornament */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 100 100"
+        className="text-foreground/[0.03] absolute right-8 top-32 -z-10 hidden h-32 w-32 lg:block"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={0.5}
+      >
+        <circle cx="50" cy="50" r="48" />
+        <circle cx="50" cy="50" r="32" />
+        <circle cx="50" cy="50" r="16" />
+      </svg>
       <div className="mx-auto w-full max-w-7xl px-5 pt-10 pb-16 sm:px-6 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40">
         <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
           <div className="reveal">
@@ -231,16 +257,35 @@ function Hero() {
 function PersonalNote() {
   return (
     <section className="bg-foreground text-background relative overflow-hidden">
+      {/* Mehrere Halos für mehr atmosphärische Tiefe */}
       <div
         aria-hidden="true"
-        className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-96 w-96 rounded-full blur-3xl"
+        className="bg-gold/20 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[120px]"
       />
-      <div className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
-        <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
-          Aus Hamburg
-        </p>
-        <blockquote className="mt-8 max-w-4xl">
-          <p className="serif text-[1.6rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3rem] lg:leading-[1.15]">
+      <div
+        aria-hidden="true"
+        className="bg-gold/8 pointer-events-none absolute bottom-0 left-[-10%] h-[24rem] w-[24rem] rounded-full blur-[120px]"
+      />
+      {/* Dezente vertikale Linien als Editorial-Marker */}
+      <div
+        aria-hidden="true"
+        className="bg-background/10 pointer-events-none absolute left-6 top-0 hidden h-full w-px sm:block"
+      />
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
+        <div className="flex items-center gap-3">
+          <span className="bg-gold/60 inline-block h-1 w-8" aria-hidden="true" />
+          <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+            Aus Hamburg
+          </p>
+        </div>
+        <blockquote className="mt-10 max-w-4xl">
+          <span
+            aria-hidden="true"
+            className="serif text-gold/40 absolute -mt-12 -ml-6 text-[10rem] leading-none"
+          >
+            „
+          </span>
+          <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
             Ich weiß, wie wichtig eine gute Onlinepräsenz heute ist. Wer
             Sie online nicht findet, kommt auch nicht durch die Tür —{" "}
             <span className="serif-italic text-background/75">
@@ -287,14 +332,20 @@ function Steps() {
             </span>
           </h2>
         </div>
-        <ol className="mt-16 grid gap-x-10 gap-y-14 sm:mt-24 sm:grid-cols-3">
+        <ol className="relative mt-16 grid gap-x-10 gap-y-14 sm:mt-24 sm:grid-cols-3">
+          {/* Verbindungslinie zwischen den Schritten auf Desktop */}
+          <div
+            aria-hidden="true"
+            className="border-border/60 absolute left-0 right-0 top-12 hidden border-t border-dashed sm:block"
+            style={{ marginLeft: "12%", marginRight: "12%" }}
+          />
           {STEPS.map(({ n, icon: Icon, title, body }) => (
-            <li key={n} className="flex flex-col">
+            <li key={n} className="relative flex flex-col">
               <div className="flex items-start justify-between">
                 <span className="serif text-foreground/15 text-[8rem] font-normal leading-none tracking-[-0.04em] sm:text-[10rem]">
                   {n}
                 </span>
-                <span className="bg-foreground text-background mt-2 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full sm:h-14 sm:w-14">
+                <span className="bg-foreground text-background ring-background relative z-10 mt-2 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-[0_8px_20px_-6px_rgb(0_0_0/0.3)] ring-4 sm:h-14 sm:w-14">
                   <Icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                 </span>
               </div>
@@ -354,25 +405,38 @@ function Pricing() {
               key={p.slug}
               className={
                 p.highlight
-                  ? "bg-foreground text-background relative flex flex-col p-8 sm:p-10"
+                  ? "bg-foreground text-background relative flex flex-col overflow-hidden p-8 sm:p-10"
                   : "bg-background relative flex flex-col p-8 sm:p-10"
               }
             >
+              {p.highlight ? (
+                <>
+                  <div
+                    aria-hidden="true"
+                    className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="bg-gold/8 pointer-events-none absolute -bottom-32 -left-20 h-72 w-72 rounded-full blur-[80px]"
+                  />
+                </>
+              ) : null}
               {p.badge ? (
-                <span className="bg-gold/90 text-foreground absolute top-6 right-6 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]">
+                <span className="bg-gold text-foreground relative z-10 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] shadow-[0_8px_20px_-8px_rgb(0_0_0/0.4)]">
+                  <span className="bg-foreground inline-block h-1 w-1 rounded-full" />
                   {p.badge}
                 </span>
               ) : null}
               <p
                 className={
                   p.highlight
-                    ? "text-background/55 text-[11px] font-medium uppercase tracking-[0.25em]"
+                    ? "text-background/55 relative z-10 mt-4 text-[11px] font-medium uppercase tracking-[0.25em]"
                     : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]"
                 }
               >
                 {p.name}
               </p>
-              <p className="mt-6 text-4xl font-semibold tracking-[-0.025em] sm:text-5xl">
+              <p className="relative z-10 mt-6 text-4xl font-semibold tracking-[-0.025em] sm:text-5xl">
                 {p.setup}
               </p>
               <p
