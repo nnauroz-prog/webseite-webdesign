@@ -1,17 +1,20 @@
 /**
  * "Sitalo, auf einen Blick" — ruhige Editorial-Zeile mit den sechs
- * verifizierbaren Fakten zur Werkstatt selbst. Frühere Version war
- * ein 6-Karten-Grid und wirkte zu sehr nach Standard-Stat-Strip
- * eines AI-generierten Marketing-Templates. Jetzt: eine einzelne
- * dichte Zeile in Serif-Italic, durch Bullets getrennt, ohne Cards.
+ * verifizierbaren Fakten zum Atelier selbst. Bewusst keine Cards
+ * (das wirkt nach Standard-AI-Marketing-Strip), sondern eine dichte
+ * Zeile aus Serif-Zahl + Mikro-Label, getrennt durch Gold-Bullets.
+ *
+ * Mikro-Schärfungen pro Label: kleine Hinweise wie „bis Live",
+ * „einmalig", „in Deutschland" geben den nackten Zahlen einen
+ * konkreten Verben-Kontext, ohne nach Werbung zu klingen.
  */
 const FACTS: { number: string; label: string }[] = [
-  { number: "1–2", label: "Werktage Bauzeit" },
-  { number: "24 h", label: "Antwortzeit" },
-  { number: "10", label: "Branchen" },
-  { number: "0", label: "Vorlagen" },
-  { number: "EU", label: "Hosting" },
-  { number: "ab 499 €", label: "Einstieg" },
+  { number: "1–2", label: "Werktage bis Live" },
+  { number: "< 24 h", label: "Erste Antwort" },
+  { number: "10", label: "Branchen erprobt" },
+  { number: "0", label: "Vorlagen verwendet" },
+  { number: "DE", label: "Hosting in Deutschland" },
+  { number: "ab 499 €", label: "Einstieg, einmalig" },
 ];
 
 export function FactsStrip() {
@@ -43,7 +46,7 @@ export function FactsStrip() {
               {i > 0 ? (
                 <span
                   aria-hidden="true"
-                  className="bg-gold/70 mr-3 inline-block h-1 w-1 shrink-0 translate-y-[-0.4em] rounded-full"
+                  className="bg-ink-olive/80 mr-3 inline-block h-1 w-1 shrink-0 translate-y-[-0.4em] rounded-full"
                 />
               ) : null}
               <span className="serif text-foreground text-[1.75rem] font-normal leading-none tracking-[-0.025em] sm:text-3xl">

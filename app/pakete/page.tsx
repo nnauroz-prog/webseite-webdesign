@@ -164,15 +164,15 @@ function Hero() {
             direkt unter der Headline, bevor der Besucher scrollt. */}
         <ul className="text-muted-foreground mx-auto mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
           <li className="inline-flex items-center gap-2">
-            <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
             Live in 1–2 Werktagen
           </li>
           <li className="inline-flex items-center gap-2">
-            <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
             Hosting in der EU
           </li>
           <li className="inline-flex items-center gap-2">
-            <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
             Monatlich kündbar
           </li>
         </ul>
