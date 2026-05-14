@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
@@ -110,6 +111,7 @@ export default function FaqPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
+      <EditorialMasthead section="Häufige Fragen" />
       <main className="flex-1">
         <Hero />
         {GROUPS.map((g) => (
@@ -151,27 +153,41 @@ function Group({ group }: { group: Group }) {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <span
+            aria-hidden="true"
+            className="bg-gold gold-pulse inline-block h-1 w-6"
+          />
           {group.label}
         </p>
         <dl className="divide-border/60 mt-10 divide-y">
           {group.items.map((item) => (
-            <details key={item.q} className="group py-8 sm:py-10">
-              <summary className="grid cursor-pointer list-none items-baseline gap-8 sm:grid-cols-[2fr_1fr] lg:grid-cols-[2.5fr_1fr]">
-                <h3 className="text-foreground text-2xl font-semibold leading-[1.15] tracking-[-0.02em] sm:text-3xl">
+            <details
+              key={item.q}
+              className="faq-item group relative py-7 sm:py-9"
+            >
+              {/* Linke Gold-Markierung beim aufgeklappten Item —
+                  ein dünner Strich, der die aktive Frage visuell
+                  hervorhebt. */}
+              <span
+                aria-hidden="true"
+                className="bg-gold absolute top-7 bottom-7 left-0 hidden w-[2px] opacity-0 transition-opacity duration-300 group-open:opacity-100 sm:block sm:py-9 lg:left-[-12px]"
+              />
+              <summary className="grid cursor-pointer list-none items-baseline gap-8 transition-colors sm:grid-cols-[2fr_1fr] sm:gap-12 lg:grid-cols-[2.5fr_1fr]">
+                <h3 className="text-foreground/80 group-open:text-foreground text-2xl font-semibold leading-[1.15] tracking-[-0.02em] transition-colors sm:text-3xl">
                   {item.q}
                 </h3>
                 <div className="flex items-center justify-between gap-4 sm:justify-end">
                   <span className="text-muted-foreground/60 group-open:text-foreground font-mono text-xs uppercase tracking-[0.25em] transition-colors">
                     Antwort
                   </span>
-                  <span className="text-muted-foreground transition-transform group-open:rotate-45">
+                  <span className="border-border/60 text-muted-foreground group-open:border-foreground group-open:bg-foreground group-open:text-background inline-flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 group-open:rotate-45">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth={1.5}
-                      className="h-5 w-5"
+                      className="h-4 w-4"
                       aria-hidden="true"
                     >
                       <path d="M12 5v14M5 12h14" strokeLinecap="round" />
@@ -179,9 +195,11 @@ function Group({ group }: { group: Group }) {
                   </span>
                 </div>
               </summary>
-              <p className="text-foreground/75 mt-6 max-w-3xl text-pretty text-[16px] leading-[1.7] sm:text-[17px]">
-                {item.a}
-              </p>
+              <div className="faq-content overflow-hidden">
+                <p className="text-foreground/75 mt-6 max-w-3xl text-pretty text-[16px] leading-[1.7] sm:text-[17px]">
+                  {item.a}
+                </p>
+              </div>
             </details>
           ))}
         </dl>

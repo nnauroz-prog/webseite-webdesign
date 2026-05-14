@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { BRANCHEN } from "@/lib/branchen-data";
@@ -18,6 +19,7 @@ export default function BranchenPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
+      <EditorialMasthead section="Branchen" />
       <main className="flex-1">
         <Hero />
         <Sections />

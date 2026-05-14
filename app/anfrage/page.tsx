@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -54,6 +55,7 @@ export default async function AnfragePage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
+      <EditorialMasthead section="Anfrage" />
 
       <main className="flex-1">
         <section className="border-border/40 border-b">

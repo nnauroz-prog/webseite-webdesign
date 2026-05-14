@@ -5,8 +5,14 @@ import { TrustBar } from "@/components/marketing/trust-bar";
 import { SitaloLogo } from "@/components/sitalo-logo";
 
 /**
- * Marketing footer. Editorial layout — a left-aligned statement block
- * with the signature, a small links grid on the right.
+ * Marketing-Footer im Editorial-Stil. Aufgebaut wie eine
+ * Zeitschriften-Rückseite: oben eine ruhige Mast-Linie mit der
+ * Brand-Adresse und den wichtigsten Kontaktwegen, darunter ein
+ * grosses serif-italic Schluss-Statement, dann das Link-Grid und
+ * ganz unten die Copyright-Zeile.
+ *
+ * Bewusst keine Social-Icons (haben wir nicht), keine Newsletter-Box
+ * (haben wir nicht), kein „Made with React"-Marker (peinlich).
  */
 export function MarketingFooter() {
   const year = new Date().getFullYear();
@@ -14,35 +20,67 @@ export function MarketingFooter() {
     <>
       <BackToTop />
       <TrustBar />
-      <footer className="border-border/40 bg-background border-t">
-        <div className="mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-24 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+      <footer className="bg-foreground text-background relative overflow-hidden">
+        {/* Atmosphärischer Gold-Halo links oben — passt zur Brand. */}
+        <div
+          aria-hidden="true"
+          className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+        />
+        {/* Editorial-Mast oben */}
+        <div className="border-background/10 mx-auto flex w-full max-w-7xl flex-col gap-4 border-b px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8">
+          <div className="flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="bg-gold gold-pulse inline-block h-1 w-6"
+            />
+            <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+              Sitalo · Hand-gemacht in Hamburg
+            </p>
+          </div>
+          <div className="text-background/65 flex flex-wrap items-center gap-x-5 gap-y-1 text-[13px]">
+            <a
+              href="tel:+4915224437370"
+              className="hover:text-background underline-offset-4 hover:underline"
+            >
+              +49 152 24437370
+            </a>
+            <span aria-hidden="true" className="text-background/30">
+              ·
+            </span>
+            <a
+              href="mailto:info@sitalo.de"
+              className="hover:text-background underline-offset-4 hover:underline"
+            >
+              info@sitalo.de
+            </a>
+          </div>
+        </div>
+
+        <div className="relative mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-24 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div className="max-w-sm">
             <SitaloLogo size="md" />
-            <p className="text-muted-foreground mt-6 text-[15px] leading-relaxed">
-              Websites für lokale Unternehmen. Persönlich gemacht, in
-              Hamburg.
+            <p className="serif mt-8 text-balance text-2xl font-normal leading-[1.2] tracking-[-0.015em] sm:text-3xl">
+              Drei Sachen reichen.{" "}
+              <span className="serif-italic text-background/65">
+                Den Rest bauen wir.
+              </span>
             </p>
-            <ul className="text-foreground/85 mt-6 space-y-1.5 text-[14px]">
-              <li>
-                <a
-                  href="tel:+4915224437370"
-                  className="hover:text-foreground underline-offset-4 hover:underline"
-                >
-                  +49 152 24437370
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:info@sitalo.de"
-                  className="hover:text-foreground underline-offset-4 hover:underline"
-                >
-                  info@sitalo.de
-                </a>
-              </li>
-            </ul>
-            <p className="serif-italic text-foreground mt-6 text-lg">
-              — Sitalo, Hamburg
+            <p className="text-background/65 mt-5 max-w-xs text-[14px] leading-relaxed">
+              Hand-gebaute Websites für lokale Unternehmen. Persönlich
+              gemacht, aus einer kleinen Werkstatt in Hamburg.
             </p>
+            <Link
+              href="/anfrage"
+              className="bg-background text-foreground hover:bg-background/90 group mt-8 inline-flex h-11 items-center rounded-full px-6 text-[14px] font-medium tracking-tight transition-all"
+            >
+              Anfrage starten
+              <span
+                aria-hidden="true"
+                className="ml-2 transition-transform group-hover:translate-x-0.5"
+              >
+                →
+              </span>
+            </Link>
           </div>
           <FooterCol title="Service">
             <FooterLink href="/leistungen">Leistungen</FooterLink>
@@ -60,11 +98,15 @@ export function MarketingFooter() {
             <FooterLink href="/datenschutz">Datenschutz</FooterLink>
           </FooterCol>
         </div>
-        <div className="border-border/40 border-t">
-          <div className="text-muted-foreground mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-2 px-6 py-6 text-xs sm:flex-row sm:items-center">
-            <span>© {year} Sitalo Webdesign</span>
-            <span className="serif-italic text-muted-foreground/80 text-sm">
-              Made in Hamburg
+
+        {/* Editorial-Schluss */}
+        <div className="border-background/10 border-t">
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-3 px-6 py-6 text-xs sm:flex-row sm:items-center">
+            <span className="text-background/55">
+              © {year} Sitalo Webdesign
+            </span>
+            <span className="serif-italic text-background/60 text-sm">
+              53.5511° N · 9.9937° E — Hamburg
             </span>
           </div>
         </div>
@@ -82,7 +124,7 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h3 className="text-foreground/70 mb-5 text-[11px] font-medium uppercase tracking-[0.22em]">
+      <h3 className="text-background/55 mb-5 text-[11px] font-medium uppercase tracking-[0.22em]">
         {title}
       </h3>
       <ul className="space-y-3 text-[15px]">{children}</ul>
@@ -101,7 +143,7 @@ function FooterLink({
     <li>
       <Link
         href={href}
-        className="text-foreground/85 hover:text-foreground underline-offset-4 transition-colors hover:underline"
+        className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
       >
         {children}
       </Link>
