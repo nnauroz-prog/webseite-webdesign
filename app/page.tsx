@@ -273,8 +273,7 @@ function Hero() {
             >
               Die meisten Cafés in Eppendorf haben eine Speisekarte als
               PDF von 2021. Pflegedienste in Altona stehen nicht mal bei
-              Google Maps. Wir bauen die Seiten der anderen — schnell,
-              sauber, persönlich gemacht.
+              Google Maps. Wir bauen die Seiten der anderen.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -414,16 +413,19 @@ function PersonalNote() {
               raten, welches voll war.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Wir sehen das in Altona bei Pflegediensten. In Eimsbüttel
-              bei Friseuren. In St.&nbsp;Pauli bei Bars. Online-Sichtbarkeit
-              ist kein Talent-Beweis — aber wenn Sie talentiert sind und
-              nicht sichtbar, gewinnt jemand anders. Jeden Tag.
+              Sieht man überall. Der Friseur in Eimsbüttel, dessen
+              Telefonnummer auf der Seite drei Jahre alt ist. Die Bar
+              in St.&nbsp;Pauli, deren Instagram-Link auf einen
+              Lieferdienst-Account zeigt, den's nicht mehr gibt.
+              Online-Sichtbarkeit ist kein Talent-Beweis. Aber wenn Sie
+              talentiert sind und nicht sichtbar, gewinnt jemand
+              anders. Auch wenn der schlechter ist.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Wir bauen Seiten für die anderen. Für die, die wissen,
-              dass die eigene Arbeit erst zählt, wenn sie auch ankommt.
-              Logo, Bilder, ein paar Sätze reichen — übermorgen sind
-              Sie online.
+              dass gute Arbeit erst zählt, wenn jemand davon weiß. Wir
+              brauchen Ihr Logo, ein paar Bilder, was zu sagen. Den
+              Rest machen wir.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo, aus Hamburg
@@ -456,16 +458,11 @@ function Steps() {
       className="border-border/40 relative overflow-hidden border-t border-b scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
+        {/* Bewusst keine Eyebrow-Zeile — Steps soll ohne den gleichen
+            Auftakt-Beat starten, den jede andere Sektion hat. */}
         <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              In drei Schritten
-            </p>
-            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+            <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
               Vom „Hallo"
               <br />
               <span className="serif-italic text-muted-foreground font-normal">
@@ -474,9 +471,9 @@ function Steps() {
             </h2>
           </div>
           <p className="text-foreground/75 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-            Drei Etappen, jede für sich überschaubar. Sie bekommen nach
-            jeder Etappe ein konkretes Ergebnis in der Hand, kein
-            unsichtbares Status-Update aus einem Project-Tool.
+            Nach jedem Schritt haben Sie was in der Hand. Kein
+            PowerPoint-Status, kein Project-Tool-Ticket, das irgendwo
+            im System steht. Sie sehen's einfach.
           </p>
         </div>
 

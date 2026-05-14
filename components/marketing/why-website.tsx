@@ -130,28 +130,25 @@ export function WhyWebsite() {
           </div>
         </div>
 
-        {/* Pull-Quote als markante Editorial-Geste */}
+        {/* Pull-Quote — trocken, hanseatisch, kein Substack-Aphorismus.
+            Bewusst flacher Satz, der so auch über'n Tisch fallen
+            könnte. */}
         <div className="border-ink-petrol/60 mt-16 max-w-4xl border-l-2 pl-6 sm:mt-20 sm:pl-10">
           <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.015em] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
-            Wer nicht da ist,
-            <br />
+            Wer nicht gefunden wird,{" "}
             <span className="serif-italic text-muted-foreground">
-              wenn gesucht wird,
-            </span>
-            <br />
-            wird{" "}
-            <span className="serif-italic text-muted-foreground">
-              nicht gewählt.
-            </span>
+              kriegt halt
+            </span>{" "}
+            auch keinen Anruf.
           </p>
         </div>
 
-        {/* Closer — Hoffnungs-Anker, lösbar statt apokalyptisch. */}
+        {/* Closer — kein Pep-Talk, einfach was Lösbares. */}
         <p className="text-foreground/70 mt-12 max-w-2xl text-pretty text-[15px] leading-relaxed">
-          Bei lokalen Suchen ist die Konkurrenz überschaubar. Eine
-          ordentliche, schnelle Seite mit den richtigen Stichwörtern
-          für Ihre Branche und Ihren Stadtteil reicht meistens, um
-          vorne zu landen. Genau das bauen wir.
+          Die gute Seite an der Sache: lokal ist die Konkurrenz
+          übersichtlich. Eine schnelle, ordentliche Seite mit den
+          richtigen Wörtern für Ihren Stadtteil reicht in den meisten
+          Fällen, um vorne zu stehen. Mehr braucht's selten.
         </p>
       </div>
     </section>

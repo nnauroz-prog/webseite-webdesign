@@ -27,17 +27,11 @@ export function ExamplesGallery() {
       className="border-border/40 border-t scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
-        {/* Header */}
+        {/* Header — bewusst ohne Eyebrow-Caps. Bricht den gleichen
+            Beat, den die anderen Sektionen oben haben. */}
         <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Beispiele aus dem Atelier
-            </p>
-            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+            <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
               So sehen Ihre
               <br />
               <span className="serif-italic text-muted-foreground font-normal">
@@ -46,9 +40,8 @@ export function ExamplesGallery() {
             </h2>
           </div>
           <p className="text-foreground/75 max-w-md text-pretty text-lg leading-relaxed">
-            Zehn Branchen, zehn Layouts. Jedes hand-gemacht, jedes auf
-            den Alltag des Betriebs zugeschnitten — keine Vorlagen
-            zweimal verwendet.
+            Zehn Branchen, zehn Layouts. Wir wiederholen uns nicht —
+            auch dann nicht, wenn keiner zuguckt.
           </p>
         </div>
 
@@ -107,19 +100,16 @@ export function ExamplesGallery() {
                     flip ? "lg:order-1 lg:pr-8" : "lg:pl-8"
                   }
                 >
-                  <div className="flex items-baseline gap-4">
-                    <span className="serif text-ink-petrol/55 text-[3.5rem] font-normal leading-none tracking-[-0.04em] sm:text-[4.5rem] lg:text-[5rem]">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">
-                      Branche · {b.label}
-                    </span>
-                  </div>
-                  <h3 className="serif text-foreground mt-5 text-balance text-3xl font-normal leading-[1.2] tracking-[-0.015em] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
-                    {b.label}.{" "}
-                    <span className="serif-italic text-muted-foreground">
-                      Hand-gebaut.
-                    </span>
+                  {/* Großes Serif-Numeral als Editorial-Anker, kein
+                      doppeltes „Branche · X"-Caps-Label mehr. */}
+                  <span className="serif text-ink-petrol/55 block text-[3.5rem] font-normal leading-none tracking-[-0.04em] sm:text-[4.5rem] lg:text-[5rem]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {/* Headline ohne wiederkehrendes „Hand-gebaut."-
+                      Addendum — das wurde sechsmal hintereinander zu
+                      AI-Repetition. */}
+                  <h3 className="serif text-foreground mt-5 text-balance text-3xl font-normal leading-[1.15] tracking-[-0.015em] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+                    {b.label}.
                   </h3>
                   <p className="text-foreground/80 mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg">
                     {b.shortBody}
