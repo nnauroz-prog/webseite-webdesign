@@ -423,7 +423,7 @@ function FinalCta() {
               Unsicher?
             </p>
             <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
-              Ich empfehle Ihnen
+              Wir empfehlen Ihnen
               <br />
               <span className="serif-italic text-muted-foreground font-normal">
                 das passende Paket.

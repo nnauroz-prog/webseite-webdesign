@@ -161,7 +161,7 @@ export default async function BranchePage({
                 </p>
                 <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                   <MagneticButton
-                    href={`/anfrage?branche=${branche.inquirySlug}`}
+                    href={`/anfrage?branche=${branche.inquirySlug}&paket=${branche.recommendedPackage}`}
                     className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
                   >
                     Diese Seite anfragen
@@ -410,7 +410,7 @@ export default async function BranchePage({
                 </span>
               </p>
               <Link
-                href={`/anfrage?branche=${branche.inquirySlug}`}
+                href={`/anfrage?branche=${branche.inquirySlug}&paket=${branche.recommendedPackage}`}
                 className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 shrink-0 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
               >
                 Anfrage starten

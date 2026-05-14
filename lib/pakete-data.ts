@@ -72,7 +72,7 @@ export const PAKETE: Paket[] = [
       "Keine verwaltbaren Inhalte",
       "Maximal 1 Änderungsrunde pro Monat",
     ],
-    detailHeadline: "Klein, klar, schnell online.",
+    detailHeadline: "Klein und schnell online.",
     detailIntro: [
       "Das Starter-Paket ist für alle, die jetzt eine seriöse Online-Präsenz brauchen — ohne über eine fünfseitige Struktur, Bildergalerien oder Online-Buchung nachzudenken. Eine starke Seite, die alles Wichtige enthält und in 1–2 Werktagen live geht.",
       "Wenn Sie später wachsen wollen, kann jede Starter-Seite zum Business-Paket erweitert werden — Sie zahlen nur die Differenz, kein Neuaufbau nötig.",
@@ -163,7 +163,7 @@ export const PAKETE: Paket[] = [
       },
       {
         q: "Was, wenn ich später Verwaltbare Inhalte will?",
-        a: "Sie können jederzeit aufs Premium-Paket wechseln. Ich erweitere Ihre bestehende Seite um die verwaltbaren Bereiche, kein Neuaufbau.",
+        a: "Sie können jederzeit aufs Premium-Paket wechseln. Wir erweitern Ihre bestehende Seite um die verwaltbaren Bereiche, kein Neuaufbau.",
       },
     ],
   },
