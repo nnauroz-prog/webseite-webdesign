@@ -90,6 +90,7 @@ export function MarketingFooter() {
             <FooterLink href="/leistungen">Leistungen</FooterLink>
             <FooterLink href="/ablauf">Ablauf</FooterLink>
             <FooterLink href="/branchen">Branchen</FooterLink>
+            <FooterLink href="/standorte">Standorte</FooterLink>
             <FooterLink href="/pakete">Pakete</FooterLink>
           </FooterCol>
           <FooterCol title="Sitalo">
