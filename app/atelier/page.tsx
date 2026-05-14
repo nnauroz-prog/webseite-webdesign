@@ -302,7 +302,7 @@ function WarumHamburg() {
         <blockquote className="relative mt-10 max-w-4xl">
           <span
             aria-hidden="true"
-            className="serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
+            className="serif text-gold/40 absolute -top-8 -left-2 text-[5rem] leading-none sm:-top-10 sm:-left-4 sm:text-[7rem] lg:-top-12 lg:-left-6 lg:text-[10rem]"
           >
             „
           </span>

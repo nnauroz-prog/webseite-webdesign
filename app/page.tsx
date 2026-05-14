@@ -385,9 +385,12 @@ function PersonalNote() {
           </p>
         </div>
         <blockquote className="relative mt-10 max-w-4xl">
+          {/* „-Glyph responsiv: auf Mobile war 10rem = 160px deutlich zu
+              fett im Verhältnis zum 27px-Text. Skaliert mit dem
+              Blockquote-Text mit. */}
           <span
             aria-hidden="true"
-            className="serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
+            className="serif text-gold/40 absolute -top-8 -left-2 text-[5rem] leading-none sm:-top-10 sm:-left-4 sm:text-[7rem] lg:-top-12 lg:-left-6 lg:text-[10rem]"
           >
             „
           </span>
@@ -870,7 +873,7 @@ function FinalCta() {
         <div className="grid items-end gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
-              <span className="serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
+              <span className="serif-italic text-gold/70 absolute -mt-8 -ml-2 text-[5rem] leading-none sm:-mt-10 sm:-ml-3 sm:text-[6rem] lg:-mt-12 lg:-ml-4 lg:text-[8rem]">
                 „
               </span>
               Jeden Tag, den{" "}
