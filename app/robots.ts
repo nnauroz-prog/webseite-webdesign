@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://webseite-webdesign.vercel.app";
+  "https://www.sitalo.de";
 
 export default function robots(): MetadataRoute.Robots {
   return {

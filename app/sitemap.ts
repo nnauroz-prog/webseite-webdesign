@@ -6,7 +6,7 @@ import { getAllStandortSlugs } from "@/lib/standorte-data";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://webseite-webdesign.vercel.app";
+  "https://www.sitalo.de";
 
 const STATIC_ROUTES = [
   "",

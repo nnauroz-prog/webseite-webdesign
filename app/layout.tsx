@@ -24,7 +24,7 @@ const cormorant = Cormorant_Garamond({
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://webseite-webdesign.vercel.app";
+  "https://www.sitalo.de";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
