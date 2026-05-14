@@ -24,20 +24,13 @@ export const metadata: Metadata = {
       "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest. Aus Hamburg, persönlich gemacht.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
-    images: [
-      {
-        url: "/images/sitalo-laptop-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Sitalo Webdesign — Laptop mit einer fertigen Kunden-Website.",
-      },
-    ],
+    // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
   },
   twitter: {
     card: "summary_large_image",
     title: "Sitalo — Webdesign aus Hamburg",
     description: "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest.",
-    images: ["/images/sitalo-laptop-hero.png"],
+    // Bild wird automatisch aus app/opengraph-image.tsx (twitter-image-Variante) übernommen.
   },
 };
 
