@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { getAllBrancheSlugs } from "@/lib/branchen-data";
 import { getAllPaketSlugs } from "@/lib/pakete-data";
+import { getAllStandortSlugs } from "@/lib/standorte-data";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
@@ -13,6 +14,7 @@ const STATIC_ROUTES = [
   "/branchen",
   "/ablauf",
   "/pakete",
+  "/standorte",
   "/faq",
   "/kontakt",
   "/anfrage",
@@ -46,5 +48,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  return [...staticEntries, ...brancheEntries, ...paketEntries];
+  const standortEntries: MetadataRoute.Sitemap = getAllStandortSlugs().map(
+    (slug) => ({
+      url: `${SITE_URL}/standorte/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }),
+  );
+
+  return [
+    ...staticEntries,
+    ...brancheEntries,
+    ...paketEntries,
+    ...standortEntries,
+  ];
 }
