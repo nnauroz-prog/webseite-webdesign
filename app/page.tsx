@@ -215,7 +215,7 @@ function Hero() {
               <br />
               noch Vorlagen
               <br />
-              <span className="serif-italic text-foreground/85 font-normal">
+              <span className="serif-italic hero-shine text-foreground/85 font-normal">
                 klicken — sind Sie online.
               </span>
             </h1>

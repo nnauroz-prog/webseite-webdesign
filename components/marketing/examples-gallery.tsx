@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { BRANCHEN } from "@/lib/branchen-data";
+import { TiltCard } from "@/components/marketing/tilt-card";
 
 /**
  * Beispiel-Galerie. Zeigt die existierenden Branchen-Mockups
@@ -49,10 +50,9 @@ export function ExamplesGallery() {
                   : ""
               }
             >
-              <Link
+              <TiltCard
                 href={`/branchen/${b.slug}`}
-                className="group block transition-transform duration-500 hover:-translate-y-1"
-                aria-label={`${b.label} — Beispiel ansehen`}
+                ariaLabel={`${b.label} — Beispiel ansehen`}
               >
                 <div
                   className={`bg-secondary/40 relative w-full overflow-hidden rounded-2xl ring-1 ring-black/5 transition-shadow duration-500 group-hover:shadow-[0_32px_64px_-20px_rgb(0_0_0/0.32)] ${
@@ -98,7 +98,7 @@ export function ExamplesGallery() {
                     <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-0.5" />
                   </span>
                 </div>
-              </Link>
+              </TiltCard>
             </li>
           ))}
         </ul>
