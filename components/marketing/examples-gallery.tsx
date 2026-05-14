@@ -15,11 +15,12 @@ import { DoubleWave, DrawnArrow } from "@/components/marketing/ornaments";
  * Klick auf eine Zeile → /branchen/[slug] zur Detailseite.
  */
 export function ExamplesGallery() {
-  // Erste sechs Branchen als „Aufmacher" mit alternierender Magazin-
-  // Aufteilung, die restlichen vier als kompakte Folge-Liste am
-  // Schluss. So bleibt der Block lesbar statt zu monoton.
-  const featured = BRANCHEN.slice(0, 6);
-  const rest = BRANCHEN.slice(6);
+  // Erste drei Branchen als „Aufmacher" mit alternierender Magazin-
+  // Aufteilung, die restlichen sieben als kompakte Folge-Liste am
+  // Schluss. Vorher waren's sechs Aufmacher — zu viel Magazin-Text
+  // für eine Voice, die laconisch sein will.
+  const featured = BRANCHEN.slice(0, 3);
+  const rest = BRANCHEN.slice(3);
 
   return (
     <section
@@ -65,11 +66,11 @@ export function ExamplesGallery() {
                 >
                   <div
                     className={
-                      // Aspect ratio variiert leicht pro Position →
+                      // Aspect ratio variiert pro Position →
                       // weniger uniform, mehr Magazin-Rhythmus.
                       i === 0
                         ? "bg-secondary/40 ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]"
-                        : i === 3
+                        : i === 2
                           ? "bg-secondary/40 ring-foreground/5 relative aspect-[16/10] w-full overflow-hidden rounded-3xl ring-1"
                           : "bg-secondary/40 ring-foreground/5 relative aspect-[4/3] w-full overflow-hidden rounded-3xl ring-1"
                     }

@@ -19,7 +19,6 @@ import {
 } from "@/components/marketing/ornaments";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
-import { WhyWebsite } from "@/components/marketing/why-website";
 
 export const metadata: Metadata = {
   title: "Sitalo — Webdesign aus Hamburg",
@@ -143,11 +142,10 @@ export default function HomePage() {
       <MarketingHeader />
       <main id="main" className="flex-1">
         <Hero />
-        {/* WhyWebsite trägt den ganzen WARUM-Block — FactsStrip ist
-            redundant, deshalb raus. Weniger Karten-Grid-Rhythmus. */}
-        <RevealOnScroll>
-          <WhyWebsite />
-        </RevealOnScroll>
+        {/* PersonalNote ist jetzt der konsolidierte WARUM-Block —
+            Beobachtung + eine Zahl + dry close. WhyWebsite war
+            redundant: deckt thematisch dasselbe ab, nur akademischer.
+            Eine Stimme statt zwei. */}
         <RevealOnScroll>
           <PersonalNote />
         </RevealOnScroll>
@@ -407,25 +405,21 @@ function PersonalNote() {
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Eppendorf, ein Mittwochmittag. Drei Cafés in zwei Straßen.
               Das mit dem besten Espresso hat eine Speisekarte als PDF
-              von Februar 2021. Das daneben hat keine Öffnungszeiten bei
-              Google Maps. Das dritte, das wir auch nicht empfehlen
-              würden, hat als einziges eine moderne Website. Dreimal
-              raten, welches voll war.
+              von 2021. Das daneben hat keine Öffnungszeiten bei
+              Google Maps. Das dritte, das wir nicht empfehlen würden,
+              hat als einziges eine moderne Website. Dreimal raten,
+              welches voll war.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Sieht man überall. Der Friseur in Eimsbüttel, dessen
-              Telefonnummer auf der Seite drei Jahre alt ist. Die Bar
-              in St.&nbsp;Pauli, deren Instagram-Link auf einen
-              Lieferdienst-Account zeigt, den's nicht mehr gibt.
-              Online-Sichtbarkeit ist kein Talent-Beweis. Aber wenn Sie
-              talentiert sind und nicht sichtbar, gewinnt jemand
-              anders. Auch wenn der schlechter ist.
-            </p>
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Wir bauen Seiten für die anderen. Für die, die wissen,
-              dass gute Arbeit erst zählt, wenn jemand davon weiß. Wir
-              brauchen Ihr Logo, ein paar Bilder, was zu sagen. Den
-              Rest machen wir.
+              Sieht man überall.{" "}
+              <span className="text-background font-semibold">91&nbsp;%</span>{" "}
+              der Leute, die heute zu Ihnen wollen, googeln Sie vorher{" "}
+              <span className="text-background/55 text-[12px] tracking-[0.02em]">
+                (BITKOM)
+              </span>{" "}
+              — wenn da nichts ist, sind sie weg, bevor das Telefon
+              klingelt. Wir bauen die Seiten der anderen. Logo, ein
+              paar Bilder, was zu sagen — den Rest machen wir.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo, aus Hamburg

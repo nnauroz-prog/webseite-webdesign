@@ -53,34 +53,19 @@ export function Promises() {
         </p>
 
         <div className="mt-10 grid gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
-          <div className="space-y-6">
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Vorher gibt's einen Festpreis. Schwarz auf weiß, keine
-              Nachträge am Ende. Wenn sich im Projekt was ändert,
-              reden wir vorher drüber — nicht hinterher auf der
-              Rechnung. So einfach soll's sein.
-            </p>
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Eine ordentliche Korrekturrunde, gesammelt. Sie gehen
-              die Seite in Ruhe durch und schicken uns alles auf
-              einmal. Nicht zwölf Mails über zwei Wochen. Wir setzen
-              das in einem Rutsch um, dann geht die Seite live.
-            </p>
-          </div>
-          <div className="space-y-6">
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Nach dem Launch sind wir nicht weg. Hosting, kleine
-              Änderungen, neue Texte, wenn sich was tut — Sie
-              schreiben uns eine Mail, wir kümmern uns. Kein
-              „dafür sind wir nicht zuständig", weil's nur uns gibt.
-            </p>
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Und wenn was nicht passt, sagen Sie's. Wir bessern
-              nach, bis es stimmt. Wir gewinnen Kunden, weil die
-              Arbeit gut ist — nicht, weil im Kleingedruckten was
-              steht, das sie da hält.
-            </p>
-          </div>
+          <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
+            Vorher gibt's einen Festpreis, schwarz auf weiß. Eine
+            ordentliche Korrekturrunde danach, gesammelt — Sie
+            schicken alles auf einmal, wir setzen's in einem Rutsch
+            um. Dann geht die Seite live.
+          </p>
+          <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
+            Nach dem Launch sind wir nicht weg. Hosting, kleine
+            Änderungen, neue Texte — Sie schreiben uns eine Mail,
+            wir kümmern uns. Und wenn was nicht stimmt, sagen Sie's:
+            wir bessern nach. Da steht nix Kleingedrucktes, das Sie
+            hält.
+          </p>
         </div>
 
         <div className="border-ink-petrol/60 mt-16 max-w-4xl border-l-2 pl-6 sm:mt-20 sm:pl-10">
