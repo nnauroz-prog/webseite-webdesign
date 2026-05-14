@@ -7,7 +7,6 @@ import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
-import { FactsStrip } from "@/components/marketing/facts-strip";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
@@ -16,7 +15,6 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
-import { StackBlock } from "@/components/marketing/stack-block";
 import { WhyWebsite } from "@/components/marketing/why-website";
 
 export const metadata: Metadata = {
@@ -141,14 +139,10 @@ export default function HomePage() {
       <MarketingHeader />
       <main id="main" className="flex-1">
         <Hero />
-        {/* Erst beantworten wir das WARUM (Industry-Stats), dann kommt
-            der emotionale Pull-Quote — die zwei Sektionen verstärken
-            sich gegenseitig. */}
+        {/* WhyWebsite trägt den ganzen WARUM-Block — FactsStrip ist
+            redundant, deshalb raus. Weniger Karten-Grid-Rhythmus. */}
         <RevealOnScroll>
           <WhyWebsite />
-        </RevealOnScroll>
-        <RevealOnScroll>
-          <FactsStrip />
         </RevealOnScroll>
         <RevealOnScroll>
           <PersonalNote />
@@ -171,9 +165,9 @@ export default function HomePage() {
         <RevealOnScroll>
           <Promises />
         </RevealOnScroll>
-        <RevealOnScroll>
-          <StackBlock />
-        </RevealOnScroll>
+        {/* StackBlock raus — 4 tech-stack-Karten interessieren
+            keinen Kunden. Erwähnung der wichtigsten Bausteine
+            steht im Footer („Hosting in Deutschland" etc.). */}
         <RevealOnScroll>
           <Pricing />
         </RevealOnScroll>
