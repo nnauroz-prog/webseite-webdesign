@@ -278,16 +278,25 @@ export function HeroChat() {
             >
               {m.role === "assistant" ? (
                 <>
-                  {m.content
-                    ? renderAssistantText(m.content)
-                    : null}
-                  {m.role === "assistant" &&
-                  streaming &&
-                  m === messages[messages.length - 1] ? (
-                    <span
-                      className="bg-foreground/60 ml-0.5 inline-block h-[1em] w-[2px] translate-y-[2px] animate-pulse"
-                      aria-hidden="true"
-                    />
+                  {m.content ? renderAssistantText(m.content) : null}
+                  {streaming && m === messages[messages.length - 1] ? (
+                    m.content ? (
+                      // Während Tokens reinkommen: blinkender Caret hinter dem Text.
+                      <span
+                        className="bg-foreground/60 ml-0.5 inline-block h-[1em] w-[2px] translate-y-[2px] animate-pulse"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      // Vor dem ersten Token: drei pulsierende Punkte — "Sitalo überlegt".
+                      <span
+                        className="text-muted-foreground inline-flex items-center gap-1.5"
+                        aria-label="Sitalo überlegt"
+                      >
+                        <span className="bg-foreground/50 inline-block h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:-300ms]" />
+                        <span className="bg-foreground/50 inline-block h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:-150ms]" />
+                        <span className="bg-foreground/50 inline-block h-1.5 w-1.5 animate-bounce rounded-full" />
+                      </span>
+                    )
                   ) : null}
                 </>
               ) : (

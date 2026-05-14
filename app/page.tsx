@@ -416,21 +416,21 @@ function Pricing() {
           </p>
         </div>
 
-        <ul className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-border/60 bg-border/60 lg:grid-cols-3">
+        <ul className="mt-16 grid gap-4 lg:grid-cols-3 lg:gap-6">
           {PACKAGES.map((p) => (
             <li
               key={p.slug}
               className={
                 p.highlight
-                  ? "bg-foreground text-background relative flex flex-col overflow-hidden p-8 sm:p-10"
-                  : "bg-background relative flex flex-col p-8 sm:p-10"
+                  ? "border-foreground/15 bg-foreground text-background ring-foreground/10 group relative flex flex-col overflow-hidden rounded-3xl border p-8 ring-1 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_40px_80px_-30px_rgb(0_0_0/0.5)] sm:p-10 lg:scale-[1.02] lg:hover:scale-[1.04]"
+                  : "border-border/60 bg-background ring-foreground/5 group relative flex flex-col overflow-hidden rounded-3xl border p-8 ring-1 transition-all duration-500 hover:-translate-y-1 hover:border-foreground/30 hover:shadow-[0_30px_60px_-30px_rgb(0_0_0/0.25)] sm:p-10"
               }
             >
               {p.highlight ? (
                 <>
                   <div
                     aria-hidden="true"
-                    className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
+                    className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px] transition-opacity duration-500 group-hover:opacity-130"
                   />
                   <div
                     aria-hidden="true"
