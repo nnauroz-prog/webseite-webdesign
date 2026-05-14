@@ -73,8 +73,11 @@ export default async function BranchePage({
 
   const otherBranchen = BRANCHEN.filter((b) => b.slug !== branche.slug);
 
-  /* JSON-LD: Service schema describing this branche-specific offering. */
-  const jsonLd = {
+  /* JSON-LD: Service-Schema + BreadcrumbList als Array. Service
+   * beschreibt das branche-spezifische Angebot, BreadcrumbList
+   * gibt Google die hierarchische Position für Rich-Results-
+   * Breadcrumbs in den SERPs. */
+  const serviceLd = {
     "@context": "https://schema.org",
     "@type": "Service",
     name: `Webdesign für ${branche.label}`,
@@ -93,6 +96,49 @@ export default async function BranchePage({
     serviceType: "Webdesign",
     url: `https://www.sitalo.de/branchen/${branche.slug}`,
   };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: "https://www.sitalo.de/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Branchen",
+        item: "https://www.sitalo.de/branchen",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: branche.label,
+        item: `https://www.sitalo.de/branchen/${branche.slug}`,
+      },
+    ],
+  };
+
+  /* FAQPage-Schema aus den branche-spezifischen FAQs — schaltet
+   * auf der SERP-Seite expandable FAQ-Snippets unter dem normalen
+   * Treffer frei. */
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: branche.faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
+  const jsonLd = [serviceLd, breadcrumbLd, faqLd];
 
   return (
     <div className="bg-background flex min-h-screen flex-col">

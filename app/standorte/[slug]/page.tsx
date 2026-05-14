@@ -56,8 +56,10 @@ export default async function StandortPage({
 
   const otherStandorte = STANDORTE.filter((s) => s.slug !== standort.slug);
 
-  /* JSON-LD: LocalBusiness mit areaServed = dieser Stadtteil. */
-  const jsonLd = {
+  /* JSON-LD: LocalBusiness + BreadcrumbList als Array. LocalBusiness
+   * verknüpft den Stadtteil mit Sitalo, BreadcrumbList gibt Google die
+   * Hierarchie für Rich-Results-Breadcrumbs in den SERPs. */
+  const localBusinessLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: `Sitalo Webdesign — ${standort.name}`,
@@ -76,6 +78,33 @@ export default async function StandortPage({
     telephone: "+4915224437370",
     email: "info@sitalo.de",
   };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: "https://www.sitalo.de/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Standorte",
+        item: "https://www.sitalo.de/standorte",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: standort.name,
+        item: `https://www.sitalo.de/standorte/${standort.slug}`,
+      },
+    ],
+  };
+
+  const jsonLd = [localBusinessLd, breadcrumbLd];
 
   return (
     <div className="bg-background flex min-h-screen flex-col">

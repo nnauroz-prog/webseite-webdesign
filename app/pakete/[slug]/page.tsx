@@ -48,7 +48,11 @@ export default async function PaketDetailPage({
 
   const otherPakete = PAKETE.filter((p) => p.slug !== paket.slug);
 
-  const jsonLd = {
+  /* JSON-LD: Service-Schema (mit Offer + FAQPage) + BreadcrumbList
+   * als Array. Service beschreibt das Paket-Angebot mit Preis und FAQ,
+   * BreadcrumbList gibt Google die Hierarchie für Rich-Results in
+   * den SERPs. */
+  const serviceLd = {
     "@context": "https://schema.org",
     "@type": "Service",
     name: `${paket.name}-Webdesign-Paket`,
@@ -75,6 +79,49 @@ export default async function PaketDetailPage({
     },
     url: `https://www.sitalo.de/pakete/${paket.slug}`,
   };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: "https://www.sitalo.de/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pakete",
+        item: "https://www.sitalo.de/pakete",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: paket.name,
+        item: `https://www.sitalo.de/pakete/${paket.slug}`,
+      },
+    ],
+  };
+
+  /* FAQPage-Schema aus den paket-spezifischen FAQs — schaltet auf
+   * der SERP-Seite expandable FAQ-Snippets unter dem normalen
+   * Treffer frei. */
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: paket.faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
+  const jsonLd = [serviceLd, breadcrumbLd, faqLd];
 
   const dark = paket.highlight === true;
 
