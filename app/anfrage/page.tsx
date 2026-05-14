@@ -17,9 +17,10 @@ export const metadata: Metadata = {
 };
 
 const TRUST = [
-  "Antwort innerhalb von 24 Stunden",
-  "Persönlicher Ansprechpartner",
-  "Unverbindlich & kostenlos",
+  "Antwort innerhalb von 24 Stunden — meistens deutlich schneller",
+  "Persönlicher Ansprechpartner aus dem Hamburger Atelier",
+  "Unverbindlich & kostenlos — kein Vertrag, kein Druck",
+  "Erste Einschätzung mit ehrlichem Preisrahmen",
 ];
 
 /**
@@ -58,35 +59,56 @@ export default async function AnfragePage({
       <EditorialMasthead section="Anfrage" />
 
       <main className="flex-1">
-        <section className="border-border/40 border-b">
+        <section className="border-border/40 relative overflow-hidden border-b">
+          {/* Dezenter Gold-Halo links oben — konsistent mit Hero-
+              Sprache der restlichen Site. */}
+          <div
+            aria-hidden="true"
+            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+          />
           <div className="mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-28 lg:grid-cols-[1fr_1.2fr] lg:gap-20 lg:py-32">
             <div className="lg:sticky lg:top-24 lg:self-start">
-              <h1 className="text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl">
-                Lassen Sie uns
+              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+                <span
+                  aria-hidden="true"
+                  className="bg-gold gold-pulse inline-block h-1 w-6"
+                />
+                Drei Schritte, zwei Minuten
+              </p>
+              <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
+                Erzählen Sie uns,
                 <br />
                 <span className="serif-italic text-muted-foreground font-normal">
-                  Ihre Seite bauen.
+                  was Sie vorhaben.
                 </span>
               </h1>
               <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-lg leading-relaxed">
-                Sagen Sie uns kurz, was Sie brauchen. Wir melden uns
-                persönlich innerhalb von 24 Stunden — mit einem klaren
-                Vorschlag, was möglich ist und was es kostet.
+                Branche, Art der Seite, ein paar Kontaktdaten. Mehr
+                brauchen wir jetzt nicht. Wir melden uns innerhalb von
+                24 Stunden persönlich aus dem Hamburger Atelier —
+                meist deutlich schneller — mit ehrlichem Preisrahmen
+                und konkretem nächstem Schritt.
               </p>
 
-              <ul className="divide-border/60 mt-10 divide-y">
+              <ul className="divide-border/60 mt-10 divide-y border-y">
                 {TRUST.map((item) => (
                   <li
                     key={item}
-                    className="text-foreground/85 flex items-baseline gap-4 py-3 text-[15px]"
+                    className="text-foreground/85 flex items-baseline gap-4 py-3.5 text-[15px]"
                   >
-                    <span className="text-muted-foreground/70 font-mono text-xs">
-                      ·
-                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="bg-ink-olive mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
+                    />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
+
+              <p className="serif-italic text-foreground/75 mt-10 max-w-md text-pretty text-lg leading-snug">
+                — Sie schicken drei Sachen, wir liefern den Rest.
+                Übermorgen sind Sie online.
+              </p>
 
               <div className="border-border/60 mt-10 border-t pt-8">
                 <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
