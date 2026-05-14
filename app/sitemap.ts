@@ -15,6 +15,7 @@ const STATIC_ROUTES = [
   "/ablauf",
   "/pakete",
   "/standorte",
+  "/atelier",
   "/faq",
   "/kontakt",
   "/anfrage",
