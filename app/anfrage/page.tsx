@@ -67,7 +67,7 @@ export default async function AnfragePage({
                 </span>
               </h1>
               <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-lg leading-relaxed">
-                Sagen Sie mir kurz, was Sie brauchen. Ich melde mich
+                Sagen Sie uns kurz, was Sie brauchen. Wir melden uns
                 persönlich innerhalb von 24 Stunden — mit einem klaren
                 Vorschlag, was möglich ist und was es kostet.
               </p>

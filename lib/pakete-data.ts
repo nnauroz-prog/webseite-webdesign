@@ -81,7 +81,7 @@ export const PAKETE: Paket[] = [
       "Hosting in der EU mit SSL und automatischen Backups",
       "Eine kleine Änderung pro Monat (Texte, Bilder, Öffnungszeiten)",
       "Sicherheits-Updates und technische Pflege im Hintergrund",
-      "Sie schreiben mir, ich kümmere mich — meist innerhalb von 24 h",
+      "Sie schreiben uns, wir kümmern uns — meist innerhalb von 24 h",
     ],
     recommendedFor: [
       { slug: "friseur", label: "Friseure & Kosmetikstudios" },
@@ -99,7 +99,7 @@ export const PAKETE: Paket[] = [
       },
       {
         q: "Was ist mit Texten — schreibe ich die selbst?",
-        a: "Sie liefern eine grobe Beschreibung, ich strukturiere und formuliere zu klaren Web-Texten. Sie reviewen, ändern was Sie wollen. Bei Kleinunternehmen reicht das meistens — bei sehr fachspezifischen Themen empfehle ich, dass Sie die Kernaussagen selbst beisteuern.",
+        a: "Sie liefern eine grobe Beschreibung, wir strukturieren und formulieren daraus klare Web-Texte. Sie reviewen, ändern was Sie wollen. Bei Kleinunternehmen reicht das meistens — bei sehr fachspezifischen Themen empfehlen wir, dass Sie die Kernaussagen selbst beisteuern.",
       },
     ],
   },
@@ -136,7 +136,7 @@ export const PAKETE: Paket[] = [
     ],
     detailHeadline: "Die solide Mehrseiten-Lösung.",
     detailIntro: [
-      "Business ist mein meistgewähltes Paket — und meistens das richtige für etablierte lokale Unternehmen. Sie bekommen eine vollwertige Mehrseiten-Website mit eigenem Bereich für Team, Leistungen, Galerie und Kontakt. Plus eine saubere SEO-Basis, damit Sie für die richtigen Suchen gefunden werden.",
+      "Business ist unser meistgewähltes Paket — und meistens das richtige für etablierte lokale Unternehmen. Sie bekommen eine vollwertige Mehrseiten-Website mit eigenem Bereich für Team, Leistungen, Galerie und Kontakt. Plus eine saubere SEO-Basis, damit Sie für die richtigen Suchen gefunden werden.",
       "Konkret heißt das: bis zu fünf Unterseiten, professionelle Bildaufbereitung Ihrer Fotos, Sitemap, strukturierte Daten für Google, und drei kleine Änderungen pro Monat in der laufenden Betreuung.",
     ],
     afterLaunch: [
@@ -155,7 +155,7 @@ export const PAKETE: Paket[] = [
     faq: [
       {
         q: "Was zählt als „kleine Änderung\"?",
-        a: "Texte anpassen, Bilder austauschen, Öffnungszeiten ändern, neuer Team-Eintrag, neuer Service-Block. Etwas, das ich in 15–30 Min erledige. Größere strukturelle Erweiterungen besprechen wir separat.",
+        a: "Texte anpassen, Bilder austauschen, Öffnungszeiten ändern, neuer Team-Eintrag, neuer Service-Block. Etwas, das wir in 15–30 Min erledigen. Größere strukturelle Erweiterungen besprechen wir separat.",
       },
       {
         q: "Brauche ich wirklich fünf Unterseiten?",
@@ -197,13 +197,13 @@ export const PAKETE: Paket[] = [
     ],
     detailHeadline: "Für alle, die Inhalte selbst pflegen wollen.",
     detailIntro: [
-      "Premium ist das Paket für Unternehmen, deren Website kein statisches Schaufenster ist, sondern täglich oder wöchentlich aktualisiert werden muss. Speisekarte ändern, Wochenangebot pflegen, Kursplan anpassen, neue Termine eintragen — alles selbst, ohne mich anzurufen.",
+      "Premium ist das Paket für Unternehmen, deren Website kein statisches Schaufenster ist, sondern täglich oder wöchentlich aktualisiert werden muss. Speisekarte ändern, Wochenangebot pflegen, Kursplan anpassen, neue Termine eintragen — alles selbst, ohne uns anzurufen.",
       "Die verwaltbaren Bereiche werden individuell auf Ihren Bedarf zugeschnitten. Sie loggen sich auf einer eigenen Adresse ein und sehen direkt, was wo geändert werden kann — keine fünfzig Optionen, sondern nur das, was Sie wirklich brauchen.",
       "Dazu kommen sechs kleine Änderungen pro Monat in der laufenden Betreuung, eine stärkere SEO-Basis und priorisierter Support.",
     ],
     afterLaunch: [
       "Verwaltbare Inhalte: Sie pflegen Speisekarte, Angebot, Termine selbst",
-      "Sechs kleine Änderungen pro Monat von mir",
+      "Sechs kleine Änderungen pro Monat von uns",
       "Erweiterte SEO-Pflege (Suchbegriff-Monitoring, Optimierungen)",
       "Hosting + SSL + Backups in der EU",
       "Prioritäts-Support — meist Antwort am selben Tag",
@@ -220,7 +220,7 @@ export const PAKETE: Paket[] = [
       },
       {
         q: "Was wenn ich was kaputt mache?",
-        a: "Geht praktisch nicht. Sie können nur die Inhalte ändern, die ich für die Bearbeitung freigegeben habe. Struktur und Design bleiben unangetastet. Plus: jede Änderung lässt sich rückgängig machen.",
+        a: "Geht praktisch nicht. Sie können nur die Inhalte ändern, die wir für die Bearbeitung freigegeben haben. Struktur und Design bleiben unangetastet. Plus: jede Änderung lässt sich rückgängig machen.",
       },
       {
         q: "Brauche ich Online-Buchung wirklich?",
@@ -228,7 +228,7 @@ export const PAKETE: Paket[] = [
       },
       {
         q: "Was kostet eine zusätzliche Anpassung außer der Reihe?",
-        a: "Kleine Sachen meist gar nichts — ich rechne nicht jede E-Mail ab. Größere Sachen (z. B. neuer Bereich, Funktionserweiterung) bekommen Sie vorher als verbindliches Angebot.",
+        a: "Kleine Sachen meist gar nichts — wir rechnen nicht jede E-Mail ab. Größere Sachen (z. B. neuer Bereich, Funktionserweiterung) bekommen Sie vorher als verbindliches Angebot.",
       },
     ],
   },

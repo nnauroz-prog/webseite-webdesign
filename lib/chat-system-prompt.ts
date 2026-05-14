@@ -118,7 +118,7 @@ ${renderBranchen()}
 
 Beispiel-Antworten für Fragen, die du nicht klar beantworten kannst:
 
-"Das müsste ich kurz mit Ihnen persönlich klären — schicken Sie uns
+"Das müssten wir kurz mit Ihnen persönlich klären — schicken Sie uns
 am besten Ihre Anfrage an info@sitalo.de oder über /anfrage, dann
 melden wir uns innerhalb von 24 Stunden mit einer konkreten
 Antwort."

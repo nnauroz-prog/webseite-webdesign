@@ -272,7 +272,7 @@ export default async function BranchePage({
                   Empfehlung
                 </p>
                 <p className="serif text-foreground mt-4 text-balance text-2xl leading-[1.25] tracking-[-0.015em] sm:text-3xl lg:text-4xl">
-                  Für {branche.label} empfehle ich meist das{" "}
+                  Für {branche.label} empfehlen wir meist das{" "}
                   <span className="serif-italic text-muted-foreground capitalize">
                     {branche.recommendedPackage}-Paket
                   </span>{" "}
@@ -341,7 +341,7 @@ export default async function BranchePage({
               Weitere Branchen
             </p>
             <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
-              Was sonst noch zu mir kommt.
+              Was sonst noch zu uns kommt.
             </h2>
             <ul className="mt-12 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {otherBranchen.map((other) => (
@@ -368,7 +368,7 @@ export default async function BranchePage({
               <p className="serif text-foreground max-w-xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
                 Klingt nach Ihrer Branche?{" "}
                 <span className="serif-italic text-muted-foreground">
-                  Schreiben Sie mir kurz.
+                  Schreiben Sie uns kurz.
                 </span>
               </p>
               <Link

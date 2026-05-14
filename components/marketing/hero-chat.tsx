@@ -33,7 +33,7 @@ const SUGGESTIONS: { label: string; prompt: string }[] = [
 ];
 
 const GREETING =
-  "Hallo — fragen Sie mich gerne, was eine Website bei uns kostet, wie schnell wir bauen oder was wir für Ihre Branche typischerweise machen.";
+  "Hallo — fragen Sie uns gerne, was eine Website bei uns kostet, wie schnell wir bauen oder was wir für Ihre Branche typischerweise machen.";
 
 function makeId(): string {
   if (
@@ -173,7 +173,7 @@ export function HeroChat() {
               ? {
                   ...m,
                   content:
-                    "Sorry, ich habe gerade keine Antwort bekommen. Schreiben Sie uns gerne an info@sitalo.de oder direkt über /anfrage.",
+                    "Sorry, wir haben gerade keine Antwort bekommen. Schreiben Sie uns gerne an info@sitalo.de oder direkt über /anfrage.",
                 }
               : m,
           ),

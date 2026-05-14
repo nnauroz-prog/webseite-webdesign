@@ -13,7 +13,7 @@ const TRUST = [
   {
     icon: User2,
     title: "Ein Ansprechpartner",
-    body: "Sie sprechen direkt mit mir — keine Hotline.",
+    body: "Sie sprechen direkt mit uns — keine Hotline.",
   },
   {
     icon: MapPin,

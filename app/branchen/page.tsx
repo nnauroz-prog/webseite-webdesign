@@ -197,7 +197,7 @@ function FinalCta() {
             <span className="serif-italic text-muted-foreground">
               nicht dabei?
             </span>{" "}
-            Fragen Sie mich trotzdem.
+            Fragen Sie uns trotzdem.
           </p>
           <div className="mt-10 flex justify-center">
             <Link

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Sitalo — Webdesign aus Hamburg",
     description:
-      "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest. Aus Hamburg, persönlich gemacht.",
+      "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest. Aus Hamburg, persönlich gemacht.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
     images: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Sitalo — Webdesign aus Hamburg",
-    description: "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest.",
+    description: "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest.",
     images: ["/images/sitalo-laptop-hero.png"],
   },
 };
@@ -115,11 +115,11 @@ const PACKAGES = [
 const FAQ = [
   {
     q: "Wie schnell ist meine Seite fertig?",
-    a: "Wenn Sie mir alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
+    a: "Wenn Sie uns alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — wir versprechen nichts, was wir nicht halten können.",
   },
   {
     q: "Was brauchen Sie von mir?",
-    a: "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Bescheid und helfe bei Formulierungen.",
+    a: "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sagen wir Bescheid und helfen bei Formulierungen.",
   },
   {
     q: "Gibt es laufende Kosten?",
@@ -127,11 +127,11 @@ const FAQ = [
   },
   {
     q: "Kann ich später noch Sachen ändern lassen?",
-    a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben mir kurz, ich mache es. Auf Wunsch kann ich auch Bereiche einbauen, die Sie selbst pflegen.",
+    a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben uns kurz, wir setzen es um. Auf Wunsch bauen wir auch Bereiche ein, die Sie selbst pflegen.",
   },
   {
     q: "Was passiert nach dem Launch?",
-    a: "Sie bekommen einen Ansprechpartner — mich. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie mir, ich kümmere mich.",
+    a: "Sie bekommen einen festen Ansprechpartner bei uns. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie uns — wir kümmern uns.",
   },
 ];
 
@@ -540,10 +540,10 @@ function Faq() {
               Häufige Fragen.
             </h2>
             <p className="text-muted-foreground mt-6 max-w-sm text-pretty text-lg leading-relaxed">
-              Was Kunden mich am häufigsten fragen. Ihre Frage ist nicht
+              Was Kunden uns am häufigsten fragen. Ihre Frage ist nicht
               dabei?{" "}
               <Link href="/kontakt" className="text-foreground underline underline-offset-4">
-                Schreiben Sie mir.
+                Schreiben Sie uns.
               </Link>
             </p>
           </div>

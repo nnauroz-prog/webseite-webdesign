@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s · Sitalo",
   },
   description:
-    "Websites für lokale Unternehmen. Persönlich gemacht, in Hamburg. Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest.",
+    "Websites für lokale Unternehmen. Persönlich gemacht, in Hamburg. Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest.",
 };
 
 const LOCAL_BUSINESS_LD = {

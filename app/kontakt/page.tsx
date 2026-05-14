@@ -71,7 +71,7 @@ export default function KontaktPage() {
                   <span className="serif-italic">24 Stunden.</span>
                 </p>
                 <p className="text-muted-foreground mt-2 text-sm">
-                  Meist deutlich schneller. Persönlich, von mir, ohne
+                  Meist deutlich schneller. Persönlich, von uns, ohne
                   Ticket-System.
                 </p>
               </div>

@@ -17,7 +17,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 export const metadata: Metadata = {
   title: "Webdesign-Leistungen für lokale Unternehmen aus Hamburg",
   description:
-    "Was ich für Sie mache: Webdesign, Inhalte strukturieren, Kontakt sauber, Google-Basis, Hosting, laufende Pflege. Aus Hamburg.",
+    "Was wir für Sie machen: Webdesign, Inhalte strukturieren, Kontakt sauber, Google-Basis, Hosting, laufende Pflege. Aus Hamburg.",
   alternates: { canonical: "/leistungen" },
 };
 
@@ -26,13 +26,13 @@ const SECTIONS = [
     icon: Layout,
     title: "Ihre Website bauen",
     intro:
-      "Vom kompakten Onepager bis zur größeren Seite mit mehreren Bereichen. Ich gestalte Aufbau, Design und Inhalte so, dass es zu Ihrem Betrieb passt — nicht zu einer Vorlage.",
+      "Vom kompakten Onepager bis zur größeren Seite mit mehreren Bereichen. Wir gestalten Aufbau, Design und Inhalte so, dass es zu Ihrem Betrieb passt — nicht zu einer Vorlage.",
     bullets: [
       "Onepager — alles Wichtige auf einer starken Seite",
       "Mehrseitige Seiten mit Bereichen für Leistungen, Team, Galerie, Kontakt",
       "Modernes Design, passend zur Branche und zu Ihnen",
       "Funktioniert auf Handy und Tablet genauso gut wie am PC",
-      "Schnelle Ladezeiten sind bei mir Standard",
+      "Schnelle Ladezeiten sind bei uns Standard",
       "Klare Wege zur Anfrage — kein Kunde verirrt sich",
     ],
   },
@@ -40,7 +40,7 @@ const SECTIONS = [
     icon: Sparkles,
     title: "Inhalte, die Vertrauen schaffen",
     intro:
-      "Sie müssen kein Texter sein. Ich helfe Ihnen, Ihre Leistungen so zu beschreiben, dass Besucher sich abgeholt fühlen — und am Ende zum Hörer greifen oder schreiben.",
+      "Sie müssen kein Texter sein. Wir helfen Ihnen, Ihre Leistungen so zu beschreiben, dass Besucher sich abgeholt fühlen — und am Ende zum Hörer greifen oder schreiben.",
     bullets: [
       "Leistungen verständlich erklären, ohne Fachchinesisch",
       "Team-Bereich mit Fotos — Menschen vertrauen Menschen",
@@ -54,7 +54,7 @@ const SECTIONS = [
     icon: Inbox,
     title: "Anfragen, die wirklich ankommen",
     intro:
-      "Was nützt eine schöne Seite, wenn Anfragen verloren gehen? Bei mir landet jede Anfrage direkt auf Ihrem Handy — ohne Umwege.",
+      "Was nützt eine schöne Seite, wenn Anfragen verloren gehen? Bei uns landet jede Anfrage direkt auf Ihrem Handy — ohne Umwege.",
     bullets: [
       "Kontaktformular mit Spam-Schutz",
       "Direktwahl-Button auf dem Handy",
@@ -67,7 +67,7 @@ const SECTIONS = [
     icon: Search,
     title: "Bei Google auffindbar",
     intro:
-      "Ich verspreche Ihnen keinen Platz 1 — das macht niemand seriös. Aber ich lege die Basis sauber, damit Sie für die richtigen Suchen gefunden werden.",
+      "Wir versprechen Ihnen keinen Platz 1 — das macht niemand seriös. Aber wir legen die Basis sauber, damit Sie für die richtigen Suchen gefunden werden.",
     bullets: [
       "Saubere Seiten-Titel und Beschreibungen",
       "Klare Struktur, damit Google Ihre Seite versteht",
@@ -88,14 +88,14 @@ const SECTIONS = [
       "Kleine Änderungen jeden Monat (je nach Paket)",
       "Technische Pflege und Monitoring im Hintergrund",
       "Erweiterungen jederzeit möglich",
-      "Sie schreiben mir, ich kümmere mich",
+      "Sie schreiben uns, wir kümmern uns",
     ],
   },
   {
     icon: Globe2,
     title: "Selbst pflegen (wenn Sie möchten)",
     intro:
-      "Wenn Sie bestimmte Inhalte selbst aktualisieren möchten, baue ich Ihnen entsprechende Bereiche ein. Wenn nicht, übernehme ich das.",
+      "Wenn Sie bestimmte Inhalte selbst aktualisieren möchten, bauen wir Ihnen entsprechende Bereiche ein. Wenn nicht, übernehmen wir das.",
     bullets: [
       "Speisekarte oder Wochenangebot selbst pflegen",
       "Öffnungszeiten kurzfristig ändern",
