@@ -6,9 +6,9 @@ import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
-import { HeroFAQ } from "@/components/marketing/hero-faq";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
+import { ParallaxImage } from "@/components/marketing/parallax-image";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Promises } from "@/components/marketing/promises";
@@ -175,6 +175,25 @@ export default function HomePage() {
  * Hero — editorial, oversized typography, image as canvas
  * ============================================================ */
 function Hero() {
+  // Editorial-Eyebrow mit aktuellem Monat ("MAI 2026 · HAMBURG").
+  // Wird zur Render-Zeit (Server) berechnet — kein Hydration-Mismatch.
+  const monthLabels = [
+    "JANUAR",
+    "FEBRUAR",
+    "MÄRZ",
+    "APRIL",
+    "MAI",
+    "JUNI",
+    "JULI",
+    "AUGUST",
+    "SEPTEMBER",
+    "OKTOBER",
+    "NOVEMBER",
+    "DEZEMBER",
+  ];
+  const now = new Date();
+  const issueDate = `${monthLabels[now.getMonth()]} ${now.getFullYear()}`;
+
   return (
     <section
       id="start"
@@ -190,41 +209,66 @@ function Hero() {
         aria-hidden="true"
         className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[120px]"
       />
-      {/* Cursor-Spotlight — sanfter Gold-Halo folgt der Maus.
-          Nur auf Geräten mit feinem Pointer aktiv, respektiert
-          prefers-reduced-motion. */}
       <CursorSpotlight />
-      {/* Subtile Linien-Andeutung als Brand-Ornament */}
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 100 100"
-        className="text-foreground/[0.03] absolute right-8 top-32 -z-10 hidden h-32 w-32 lg:block"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={0.5}
-      >
-        <circle cx="50" cy="50" r="48" />
-        <circle cx="50" cy="50" r="32" />
-        <circle cx="50" cy="50" r="16" />
-      </svg>
-      <div className="mx-auto w-full max-w-7xl px-5 pt-10 pb-16 sm:px-6 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
-          <div className="reveal">
-            <h1 className="text-[2.25rem] font-semibold leading-[1.02] tracking-[-0.035em] text-balance sm:text-6xl sm:leading-[0.98] sm:tracking-[-0.04em] lg:text-[5.5rem]">
-              Während andere
+
+      <div className="mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
+        {/* Editorial-Kopfzeile: dünne Linie + Sperrsatz wie eine
+            Zeitschriften-Mastline. Setzt einen anderen Ton als ein
+            klassischer SaaS-Hero. */}
+        <div className="reveal flex items-center justify-between gap-4 border-b border-border/40 pb-5 sm:pb-6">
+          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            Sitalo · Webdesign
+          </p>
+          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            {issueDate} · Hamburg
+          </p>
+        </div>
+
+        <div className="mt-10 grid items-end gap-10 sm:mt-14 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
+          <div>
+            {/* Staggered Reveal: jede Zeile fadet leicht versetzt rein —
+                wirkt wie ein bewusst gesetztes Layout, nicht wie ein
+                pop-in. Delays kumulieren über die CSS-Variable. */}
+            <p
+              className="reveal text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
+              style={{ "--reveal-delay": "0ms" } as React.CSSProperties}
+            >
+              <span
+                aria-hidden="true"
+                className="bg-gold inline-block h-1 w-6"
+              />
+              Eine kleine Werkstatt in Hamburg
+            </p>
+            <h1
+              className="reveal mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]"
+              style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
+            >
+              Wir bauen{" "}
+              <span className="serif-italic text-muted-foreground font-normal">
+                Websites
+              </span>
               <br />
-              noch Vorlagen
-              <br />
-              <span className="serif-italic hero-shine text-foreground/85 font-normal">
-                klicken — sind Sie online.
+              für Hamburger{" "}
+              <span className="serif-italic text-muted-foreground font-normal">
+                Unternehmen
+              </span>
+              <span className="serif-italic text-muted-foreground font-normal">
+                .
               </span>
             </h1>
-            <p className="text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-8 sm:text-xl">
-              Hand-gebaute Websites für lokale Unternehmen aus Hamburg.
-              Sie schicken uns drei Sachen, wir liefern den Rest —
-              meistens schon übermorgen.
+            <p
+              className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
+              style={{ "--reveal-delay": "180ms" } as React.CSSProperties}
+            >
+              Kein Konzern, kein Callcenter, kein anonymer Vertrieb. Sie
+              schicken uns drei Sachen — Logo, Bilder, ein paar Sätze —
+              und sprechen mit uns persönlich. Meistens sind Sie
+              übermorgen online.
             </p>
-            <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <div
+              className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
+              style={{ "--reveal-delay": "260ms" } as React.CSSProperties}
+            >
               <MagneticButton
                 href="/anfrage"
                 className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
@@ -242,11 +286,40 @@ function Hero() {
             </div>
           </div>
 
+          {/* Rechte Spalte: Workspace-Foto mit Parallax und schwebendem
+              Magazin-Zitat — direkt von uns, nicht aus Kundensicht. */}
           <div
-            className="reveal -mx-1 lg:mx-0"
-            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+            className="reveal relative"
+            style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
-            <HeroFAQ />
+            <div className="ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]">
+              <ParallaxImage
+                src="/images/workspace-macbook.png"
+                alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
+                priority
+                sizes="(min-width: 1024px) 480px, 100vw"
+                className="object-cover"
+                intensityPx={28}
+              />
+              {/* Vignette für Kontrast unter dem Zitat */}
+              <div
+                aria-hidden="true"
+                className="from-foreground/60 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
+              />
+              {/* Schwebendes Zitat — Stimme der Werkstatt, nicht aus Kundenmund. */}
+              <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
+                <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
+                  „Wir bauen jede Seite, als wäre es unsere eigene."
+                </blockquote>
+                <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
+                  <span
+                    aria-hidden="true"
+                    className="bg-gold inline-block h-1 w-5"
+                  />
+                  Sitalo Werkstatt · Hamburg
+                </figcaption>
+              </figure>
+            </div>
           </div>
         </div>
       </div>
