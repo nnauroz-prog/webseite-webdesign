@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
@@ -17,6 +18,7 @@ export default function KontaktPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
+      <EditorialMasthead section="Kontakt" />
 
       <main className="bg-secondary/40 flex-1">
         <section className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
