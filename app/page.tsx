@@ -15,6 +15,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
 import { StackBlock } from "@/components/marketing/stack-block";
+import { WhyWebsite } from "@/components/marketing/why-website";
 
 export const metadata: Metadata = {
   title: "Sitalo — Webdesign aus Hamburg",
@@ -138,6 +139,12 @@ export default function HomePage() {
       <MarketingHeader />
       <main id="main" className="flex-1">
         <Hero />
+        {/* Erst beantworten wir das WARUM (Industry-Stats), dann kommt
+            der emotionale Pull-Quote — die zwei Sektionen verstärken
+            sich gegenseitig. */}
+        <RevealOnScroll>
+          <WhyWebsite />
+        </RevealOnScroll>
         <RevealOnScroll>
           <PersonalNote />
         </RevealOnScroll>
