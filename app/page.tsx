@@ -571,13 +571,14 @@ function Pricing() {
             />
             Pakete & Preise
           </p>
-          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            Klare Preise.
-            <br />
-            <span className="serif-italic text-muted-foreground relative font-normal">
-              Keine Überraschungen.
+          {/* Bewusst keine zweite Italic-Zeile mehr — das Headline-
+              Schema „X. / italic-Y." war 6× auf der Seite identisch. */}
+          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+            <span className="relative">
+              Klare Preise.
               <HandUnderline className="text-gold/60 absolute -bottom-2 left-0 h-3 w-full" />
-            </span>
+            </span>{" "}
+            Kein Kleingedrucktes.
           </h2>
           <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed">
             Einmal zahlen, dann ein fairer Monatsbeitrag für Hosting und
@@ -873,19 +874,15 @@ function FinalCta() {
               <span className="serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
                 „
               </span>
-              Jeden Tag, den{" "}
+              Es gibt selten den richtigen Zeitpunkt.{" "}
               <span className="serif-italic text-background/70">
-                Sie warten,
-              </span>{" "}
-              findet Sie{" "}
-              <span className="serif-italic text-background/70">
-                ein Kunde weniger.
+                Heute geht aber auch.
               </span>
             </h2>
             <p className="text-background/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-              Drei Felder, zwei Minuten. Wir melden uns innerhalb von
-              24 Stunden — persönlich, mit einem konkreten Vorschlag.
-              Kein Vertrag, keine Kosten, kein Druck.
+              Drei Felder, zwei Minuten. Spätestens am nächsten
+              Werktag melden wir uns — persönlich, mit einem konkreten
+              Vorschlag. Kein Vertrag, der gleich mitkommt.
             </p>
             <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <MagneticButton
