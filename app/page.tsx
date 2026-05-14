@@ -294,6 +294,18 @@ function Hero() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
+            {/* Quiet Trust-Hint unter den CTAs — reduziert die
+                Hürde, ohne das Hero zu beladen. */}
+            <p
+              className="reveal text-muted-foreground/85 mt-5 inline-flex items-center gap-2 text-[13px]"
+              style={{ "--reveal-delay": "1300ms" } as React.CSSProperties}
+            >
+              <span
+                aria-hidden="true"
+                className="bg-ink-olive inline-block h-1 w-1 rounded-full"
+              />
+              Antwort meist noch am selben Tag — kostenlos, persönlich.
+            </p>
           </div>
 
           {/* Rechte Spalte: Workspace-Foto mit Parallax und schwebendem
@@ -559,6 +571,25 @@ function Pricing() {
   const featured = PACKAGES.find((p) => p.highlight)!;
   const others = PACKAGES.filter((p) => !p.highlight);
 
+  // Aktueller Monat als kleiner Kapazitäts-Anker — Server-rendered,
+  // damit der Hinweis sich automatisch jeden Monat aktualisiert ohne
+  // Pflegeaufwand.
+  const monthLabels = [
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember",
+  ];
+  const currentMonth = monthLabels[new Date().getMonth()];
+
   return (
     <section id="pakete" className="border-border/40 border-t scroll-mt-20">
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
@@ -583,6 +614,20 @@ function Pricing() {
             Einmal zahlen, dann ein fairer Monatsbeitrag für Hosting und
             Pflege. Was eine Hamburger Agentur für 5.000 € macht, gibt's
             bei uns ab 499 € — weil wir kein Hochhaus mieten.
+          </p>
+          {/* Kapazitäts-Anker — kleiner Hanseatischer Scarcity-Hinweis
+              ohne erfundene Zahlen. „Ein paar" statt „X Slots" lässt
+              die Sache wahr, ohne falsche Präzision vorzutäuschen. */}
+          <p className="text-foreground/75 mt-6 inline-flex flex-wrap items-center gap-2 text-[13.5px]">
+            <span
+              aria-hidden="true"
+              className="bg-gold/80 inline-block h-1.5 w-1.5 rounded-full"
+            />
+            <span className="font-medium">{currentMonth}:</span>
+            <span>
+              noch ein paar Slots offen. Wer früh schreibt, sucht sich
+              den Termin aus.
+            </span>
           </p>
         </div>
 
