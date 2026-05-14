@@ -109,11 +109,7 @@ function Hero() {
               Ablauf
             </p>
             <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
-              Sechs Schritte.
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                Vom Hallo zum Live-Gang.
-              </span>
+              Sechs Schritte vom Hallo zum Live-Gang.
             </h1>
           </div>
           <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">

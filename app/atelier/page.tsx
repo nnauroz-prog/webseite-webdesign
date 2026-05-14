@@ -11,7 +11,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 export const metadata: Metadata = {
   title: "Das Sitalo Atelier — Wer wir sind und warum wir das machen",
   description:
-    "Eine kleine Hamburger Werkstatt für Websites. Was wir glauben, wie wir arbeiten, warum „drei Sachen reichen\" mehr ist als ein Slogan.",
+    "Ein kleines Hamburger Atelier für Websites. Was wir glauben, wie wir arbeiten, warum „drei Sachen reichen\" mehr ist als ein Slogan.",
   alternates: { canonical: "/atelier" },
 };
 
@@ -60,14 +60,14 @@ function Hero() {
               Sitalo ist
               <br />
               <span className="serif-italic text-muted-foreground font-normal">
-                eine kleine Werkstatt.
+                ein kleines Atelier.
               </span>
             </h1>
             <p className="text-foreground/80 mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
-              Kein Konzern, kein Callcenter, kein Verkaufsteam. Ein
-              Atelier in Hamburg, das Websites baut für Leute, die ihr
-              Handwerk gut können — und denen Online-Sichtbarkeit
-              bisher zu kompliziert oder zu beliebig war.
+              Kein Konzern. Kein Verkaufsteam, das anruft. Wir sind ein
+              paar Leute in Hamburg, die Websites bauen — für die, die
+              ihr Handwerk gut können und bei denen Online-Sichtbarkeit
+              bisher hinten runterfiel.
             </p>
             <p className="serif-italic text-foreground/85 mt-8 text-2xl leading-snug sm:text-3xl">
               — Drei Sachen reichen.
@@ -139,20 +139,11 @@ function Glaubenssaetze() {
   return (
     <section className="bg-secondary/40 border-border/40 border-b">
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        {/* Bewusst keine Eyebrow-Caps — bricht das Schema, das die
+            anderen Sektionen oben haben. */}
         <div className="max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
-            />
-            Was wir glauben
-          </p>
-          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            Fünf Sätze,
-            <br />
-            <span className="serif-italic text-muted-foreground font-normal">
-              die alles erklären.
-            </span>
+          <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+            Was wir glauben.
           </h2>
         </div>
         <ol className="mt-14 grid gap-4 sm:gap-5 lg:grid-cols-2 lg:gap-6">
@@ -228,10 +219,7 @@ function WieWirArbeiten() {
             Wie wir arbeiten
           </p>
           <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
-            Klein. Persönlich.{" "}
-            <span className="serif-italic text-muted-foreground font-normal">
-              Übermorgen online.
-            </span>
+            Klein, persönlich, übermorgen online.
           </h2>
         </div>
 
@@ -318,10 +306,9 @@ function WarumHamburg() {
           <div className="space-y-6">
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Wir sind in Hamburg. Wir kennen Eimsbüttel, Altona,
-              Eppendorf, St. Pauli, Winterhude — die Cafés, die Praxen,
-              die Friseure, die Werkstätten. Wir gehen durch die
-              Straßen und sehen, wo eine gute Seite den Unterschied
-              machen würde.
+              Eppendorf, St. Pauli — die Cafés, die Praxen, die
+              Friseure. Wenn wir durch die Straßen gehen, sehen wir,
+              wo eine bessere Seite den Unterschied machen würde.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Hamburg ist groß genug, dass jede Branche dichte

@@ -150,11 +150,7 @@ function Hero() {
           Pakete & Preise
         </p>
         <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[6rem]">
-          Drei Wege.
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            Ein Ergebnis.
-          </span>
+          Drei Pakete. Sie wählen, wir bauen.
         </h1>
         <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
           Einmalige Erstellung, dann ein fairer Monatsbeitrag. Was Sie

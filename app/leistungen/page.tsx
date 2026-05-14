@@ -162,11 +162,7 @@ function Hero() {
               Leistungen
             </p>
             <h1 className="mt-8 text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-balance sm:text-7xl lg:text-[6rem]">
-              Sechs Dinge,
-              <br />
-              <span className="serif-italic text-background/65 font-normal">
-                die wir übernehmen.
-              </span>
+              Sechs Dinge, die wir übernehmen.
             </h1>
             <p className="text-background/70 mt-10 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
               Von der ersten Idee bis zur fertigen Seite — und danach
