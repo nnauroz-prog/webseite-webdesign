@@ -60,15 +60,15 @@ function Hero() {
               </p>
               <ul className="text-muted-foreground mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
                 <li className="inline-flex items-center gap-2">
-                  <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+                  <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
                   Hand-gemacht
                 </li>
                 <li className="inline-flex items-center gap-2">
-                  <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+                  <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
                   Branchen-spezifisch
                 </li>
                 <li className="inline-flex items-center gap-2">
-                  <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+                  <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
                   Keine Vorlagen
                 </li>
               </ul>

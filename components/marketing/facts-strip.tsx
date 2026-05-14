@@ -46,7 +46,7 @@ export function FactsStrip() {
               {i > 0 ? (
                 <span
                   aria-hidden="true"
-                  className="bg-gold/70 mr-3 inline-block h-1 w-1 shrink-0 translate-y-[-0.4em] rounded-full"
+                  className="bg-ink-olive/80 mr-3 inline-block h-1 w-1 shrink-0 translate-y-[-0.4em] rounded-full"
                 />
               ) : null}
               <span className="serif text-foreground text-[1.75rem] font-normal leading-none tracking-[-0.025em] sm:text-3xl">

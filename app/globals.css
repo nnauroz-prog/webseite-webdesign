@@ -5,8 +5,12 @@ html {
   font-feature-settings: "liga" 1, "dlig" 0, "hlig" 0, "calt" 0;
 }
 
-/* Sitalo palette — warm cream, espresso brown, single gold accent.
-   Sober, editorial, intentionally restrained. */
+/* Sitalo palette — warm cream, espresso brown, gold as primary
+   action accent. Plus zwei dezente Tinten-Akzente als Sekundär-
+   Familie: ink-petrol für editoriale Highlights (Drop-Caps,
+   Pull-Quotes, inline-bold Zahlen) und ink-olive für kleine
+   Detail-Akzente (Bullets, Separator-Punkte). Beide bewusst
+   gedeckt — kein Knall-Blau, kein Park-Grün. */
 :root {
   --radius: 0.6rem;
 
@@ -27,6 +31,10 @@ html {
   --accent-foreground: oklch(0.28 0.06 60);
   --gold: oklch(0.66 0.13 80);
 
+  /* Tinten-Akzente — sekundär zur Gold-Primärfarbe. */
+  --ink-petrol: oklch(0.36 0.07 220);
+  --ink-olive: oklch(0.52 0.07 130);
+
   --border: oklch(0.88 0.018 75);
   --input: oklch(0.88 0.018 75);
   --ring: oklch(0.6 0.1 70);
@@ -46,6 +54,8 @@ html {
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-gold: var(--gold);
+  --color-ink-petrol: var(--ink-petrol);
+  --color-ink-olive: var(--ink-olive);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

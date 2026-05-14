@@ -46,12 +46,12 @@ export function WhyWebsite() {
             damit der Leser sofort spürt: hier geht es um etwas, das
             ich verliere, nicht um etwas, das mir verkauft wird. */}
         <p className="text-foreground/85 mt-14 max-w-3xl text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
-          <span className="serif text-foreground float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
+          <span className="serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
             N
           </span>
           eun von zehn Menschen, die heute zu Ihnen kommen könnten,
           googeln Sie vorher.{" "}
-          <span className="text-foreground font-semibold">91 %</span>{" "}
+          <span className="text-ink-petrol font-semibold">91 %</span>{" "}
           informieren sich online, bevor sie kaufen, einen Termin
           machen oder anrufen. Wenn da nichts ist — oder nichts
           Vernünftiges — sind sie weg, bevor das Telefon je klingelt.{" "}
@@ -66,7 +66,7 @@ export function WhyWebsite() {
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
               Sie denken vielleicht, das ist Zukunftsmusik. Es ist
               Gegenwart.{" "}
-              <span className="text-foreground font-semibold">
+              <span className="text-ink-petrol font-semibold">
                 Drei von vier
               </span>{" "}
               Menschen, die nach einem lokalen Anbieter suchen, gehen
@@ -86,7 +86,7 @@ export function WhyWebsite() {
           <div className="space-y-6">
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
               Und der erste Eindruck zählt schneller, als Sie denken:{" "}
-              <span className="text-foreground font-semibold">
+              <span className="text-ink-petrol font-semibold">
                 drei Viertel
               </span>{" "}
               beurteilen einen Anbieter nach dem Website-Design allein.
@@ -98,7 +98,7 @@ export function WhyWebsite() {
             </p>
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
               Die gute Nachricht für lokale Anbieter:{" "}
-              <span className="text-foreground font-semibold">
+              <span className="text-ink-petrol font-semibold">
                 fast die Hälfte
               </span>{" "}
               aller Google-Suchen sind lokal — Stadtteil, Branche,
@@ -113,7 +113,7 @@ export function WhyWebsite() {
         </div>
 
         {/* Pull-Quote als markante Editorial-Geste */}
-        <div className="border-gold/40 mt-16 max-w-4xl border-l-2 pl-6 sm:mt-20 sm:pl-10">
+        <div className="border-ink-petrol/60 mt-16 max-w-4xl border-l-2 pl-6 sm:mt-20 sm:pl-10">
           <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.015em] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
             Wer nicht da ist,
             <br />
