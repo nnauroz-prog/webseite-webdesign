@@ -229,6 +229,128 @@ export const STANDORTE: Standort[] = [
     pullQuote:
       "In Winterhude verliert man gegen den Wettbewerber, der eine echte Geschichte erzählt — nicht gegen den mit dem größten Werbe-Budget.",
   },
+  {
+    slug: "bergedorf",
+    name: "Bergedorf",
+    tagline:
+      "Hamburgs südöstliches Tor — solide Familienbetriebe, Handwerk, kleine Praxen. Hier wirkt eine ordentliche Website wie ein Wettbewerbsvorteil.",
+    intro:
+      "Bergedorf hat den Charakter einer kleinen eigenständigen Stadt — Sachsentor, Bergedorfer Schloss, eigener S-Bahnhof. Die Wirtschaft ist familiengeführt: Handwerker, Pflegedienste, Steuerberater, eine handvoll Praxen. Hier sind 2015er-Websites die Norm. Wer eine moderne Seite hat, sticht sofort heraus.",
+    body: [
+      `Bergedorfer Kunden bleiben lokal — sie googeln nicht „Hamburg", sie googeln „Bergedorf". Das macht die Konkurrenz im Suchergebnis überschaubar, aber die Kunden-Loyalität bemerkenswert hoch: wer einmal als seriöser Anbieter wahrgenommen wird, bekommt Empfehlungen über mehrere Generationen.`,
+      "Wir bauen Bergedorfer Seiten bewusst klar und vertrauensbildend. Keine Hipster-Optik, keine ausufernden Animationen — sondern saubere Struktur, sichtbare Telefonnummer, klare Leistungsbeschreibung. Das passt zur Klientel und gewinnt die lokale Suche.",
+    ],
+    anker: [
+      "Sachsentor",
+      "Bergedorfer Schloss",
+      "Alte Holstenstraße",
+      "Mohnhof",
+      "S-Bahnhof Bergedorf",
+    ],
+    empfohleneBranchen: [
+      {
+        slug: "handwerker",
+        label: "Handwerker & Betriebe",
+        warum:
+          "Hier wird viel über Mund-zu-Mund vergeben, aber neue Kunden googeln. Eine seriöse Seite mit Referenzbildern + Einsatzgebiet-Karte gewinnt sofort.",
+      },
+      {
+        slug: "pflege",
+        label: "Pflegedienste",
+        warum:
+          "Angehörige in Bergedorf suchen lokal. Bewerbungsformular für Pflegekräfte + sichtbare Notfall-Nummer machen den Unterschied.",
+      },
+      {
+        slug: "kanzlei",
+        label: "Steuer- & Anwaltskanzleien",
+        warum:
+          "Familienbetriebe brauchen Steuerberater vor Ort. Eine klare Spezialisierung und Erreichbarkeit zeigen, dass man der Richtige ist.",
+      },
+    ],
+    pullQuote:
+      "Bergedorfer Kunden vergleichen drei Anbieter — und nehmen den mit dem solidesten Auftritt. Hochglanz schadet eher.",
+  },
+  {
+    slug: "harburg",
+    name: "Harburg",
+    tagline:
+      "Süd-Hamburg, eigenständig, industriell geprägt. Werkstätten, Handwerk, Logistik — und ein Markt, in dem man mit einer guten Seite weit kommt.",
+    intro:
+      "Harburg ist Hamburgs südlicher Anker — Phoenix-Viertel, Sandtorpark, Binnenhafen. Der Stadtteil hat eine eigene Identität, eine eigene TU (TU Hamburg-Harburg) und eine starke industrielle Tradition. Hier sitzen viele mittelständische Betriebe und Handwerker, die online noch kaum sichtbar sind.",
+    body: [
+      `Harburger Suchen sind oft B2B-getrieben oder lokal-praktisch: „Schlosser Harburg", „Werkstatt Phoenix-Viertel", „Steuerberater Heimfeld". Für diese Begriffe gibt es selten ernste Suchergebnisse — vier von fünf Treffern sind Branchenbuch-Einträge oder Wix-Seiten ohne klare Botschaft.`,
+      "Wir bauen Harburger Seiten mit Fokus auf konkretes Leistungsangebot, Einsatzgebiet (oft Süd-Hamburg + Speckgürtel), und schnelle Kontaktwege. Mobile First, weil 70 % der Anfragen vom Handy aus dem Auto kommen. Direktwahl-Knopf prominent, Adresse auf Maps.",
+    ],
+    anker: [
+      "Phoenix-Viertel",
+      "Sandtorpark",
+      "Lüneburger Straße",
+      "Schwarzenbergstraße",
+      "Binnenhafen",
+    ],
+    empfohleneBranchen: [
+      {
+        slug: "handwerker",
+        label: "Handwerker & Werkstätten",
+        warum:
+          "Harburger Handwerker bedienen Süd-Hamburg + Speckgürtel. Eine klare Einsatzgebiet-Karte plus Rückruf-Anfrage spart Telefon-Zeit und gewinnt Aufträge.",
+      },
+      {
+        slug: "reinigung",
+        label: "Reinigungsfirmen",
+        warum:
+          "Industrie- und Büroreinigung ist im Süden gefragt. Mit klaren Service-Paketen und Notdienst-Hinweis hebt man sich vom Branchenbuch-Mittelmaß ab.",
+      },
+      {
+        slug: "fitness",
+        label: "Fitness- & Sportstudios",
+        warum:
+          "TU Harburg + junge Familien sorgen für Bedarf. Eine moderne Seite mit Probetraining-Anker konvertiert besser als die übliche Studio-Vorlage.",
+      },
+    ],
+    pullQuote:
+      "Harburger Kunden googeln pragmatisch. Wer klar sagt, was er macht und wo er hinkommt, gewinnt — auch ohne Hochglanz.",
+  },
+  {
+    slug: "wandsbek",
+    name: "Wandsbek",
+    tagline:
+      "Großer Wandsbeker Bezirk — von Marienthal bis Rahlstedt. Mittelschicht-Hamburg, sehr lokaler Suchverhalten, viele kleine Familienbetriebe.",
+    intro:
+      "Wandsbek ist Hamburgs flächenmäßig größter Bezirk und gleichzeitig der unterrepräsentierteste online. Wandsbeker Marktplatz, Markt, Marienthal, Rahlstedt — überall sitzen Friseure, kleine Praxen, Reinigungsfirmen, Steuerberater. Die meisten haben entweder gar keine Website oder eine Wix-Seite von 2018.",
+    body: [
+      `Wandsbeker Kunden sind extrem lokal — sie suchen „Friseur Marienthal" oder „Praxis Rahlstedt", nicht „Hamburg". Das macht den Markt aufgesplittert in kleine, sehr gewinnbare Sub-Märkte. Wer für drei dieser Mikro-Phrasen sichtbar ist, hat seine Auftragsbücher voll.`,
+      `Wir bauen Wandsbeker Seiten gezielt auf Sub-Stadtteile zugeschnitten. Eine Friseur-Seite, die nicht „Friseur Hamburg" optimiert, sondern „Friseur Marienthal" + „Friseur Wandsbeker Marktplatz", gewinnt die richtigen Kunden — die, die wirklich in der Nähe wohnen und kommen.`,
+    ],
+    anker: [
+      "Wandsbeker Marktplatz",
+      "Wandsbek Markt",
+      "Marienthal",
+      "Rahlstedt",
+      "Tonndorf",
+    ],
+    empfohleneBranchen: [
+      {
+        slug: "friseur",
+        label: "Friseure & Salons",
+        warum:
+          "Sehr viele kleine Familien-Salons. Eine moderne Seite mit Online-Termin gewinnt die Marienthal/Rahlstedt-Suche fast automatisch.",
+      },
+      {
+        slug: "praxis",
+        label: "Arzt- und Zahnarztpraxen",
+        warum:
+          "Wandsbeker Praxen sind oft etablierte Familienpraxen mit Stammpatienten. Die Online-Sichtbarkeit für Neupatienten ist ausbaufähig.",
+      },
+      {
+        slug: "reinigung",
+        label: "Reinigungsfirmen",
+        warum:
+          "Büro- und Praxisreinigung im Bezirk ist gefragt. Mit klaren Preispaketen + Anfrage-Formular sticht man aus der Wix-Konkurrenz heraus.",
+      },
+    ],
+    pullQuote: `Wandsbek ist nicht „ein Markt", sondern zwanzig kleine. Wer das versteht, gewinnt sie einzeln.`,
+  },
 ];
 
 export function getStandortBySlug(slug: string): Standort | undefined {
