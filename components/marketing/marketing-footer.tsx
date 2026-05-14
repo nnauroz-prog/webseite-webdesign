@@ -67,7 +67,7 @@ export function MarketingFooter() {
             </p>
             <p className="text-background/65 mt-5 max-w-xs text-[14px] leading-relaxed">
               Hand-gebaute Websites für lokale Unternehmen. Persönlich
-              gemacht, aus einer kleinen Werkstatt in Hamburg.
+              gemacht, aus einem kleinen Atelier in Hamburg.
             </p>
             <Link
               href="/anfrage"
