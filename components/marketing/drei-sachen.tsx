@@ -64,8 +64,8 @@ export function DreiSachen() {
             </span>
           </h2>
           <p className="text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:text-lg">
-            Kein Brand-Workshop, kein Discovery-Sprint, kein PDF mit
-            87 Seiten Fragen. Das hier reicht:
+            Kein Brand-Workshop. Kein 87-seitiger Fragebogen, der so
+            nie ausgefüllt wird. Das hier reicht:
           </p>
         </div>
 
@@ -137,9 +137,10 @@ export function DreiSachen() {
             </div>
 
             <p className="serif-italic text-foreground/75 mt-8 max-w-md text-pretty text-lg leading-snug">
-              Mehr ist nicht nötig. Wirklich. Wir formulieren um,
-              beschneiden Bilder, strukturieren das Ganze — Sie
-              konzentrieren sich auf Ihren Betrieb.
+              Mehr ist nicht nötig. Wirklich. Texte schleifen,
+              Bilder zuschneiden, das Ganze in Form bringen — das
+              ist unser Job. Sie konzentrieren sich auf Ihren
+              Betrieb.
             </p>
           </div>
         </div>

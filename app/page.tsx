@@ -48,7 +48,7 @@ const STEPS = [
     n: "01",
     icon: MessageSquare,
     title: "Sie schreiben uns.",
-    body: "Drei Felder im Formular, fertig. Wir melden uns innerhalb von 24 Stunden — persönlich, kostenlos, ohne Verkaufsdruck.",
+    body: "Drei Felder im Formular, fertig. Wir melden uns innerhalb von 24 Stunden — persönlich, von uns. Kein Verkaufsteam, kein Druck.",
   },
   {
     n: "02",
