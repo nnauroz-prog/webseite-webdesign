@@ -13,6 +13,11 @@ import { ParallaxImage } from "@/components/marketing/parallax-image";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import {
+  DoubleWave,
+  HandUnderline,
+  EditorialStar,
+} from "@/components/marketing/ornaments";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
 import { WhyWebsite } from "@/components/marketing/why-website";
@@ -338,6 +343,19 @@ function Hero() {
 function PersonalNote() {
   return (
     <section className="bg-foreground text-background relative overflow-hidden">
+      {/* Subtile Espresso-Textur als Background-Overlay — minimal
+          opacity, mixed mit Soft-Light. Lässt den dunklen Block
+          nicht mehr wie eine Tailwind-Solid-Fläche aussehen,
+          sondern wie bedrucktes Papier. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-soft-light"
+        style={{
+          backgroundImage: "url(/images/texture-espresso.png)",
+          backgroundSize: "640px auto",
+          backgroundRepeat: "repeat",
+        }}
+      />
       {/* Mehrere Halos für mehr atmosphärische Tiefe */}
       <div
         aria-hidden="true"
@@ -505,133 +523,212 @@ function Steps() {
 }
 
 /* ============================================================
- * Pricing — refined, less visual noise
+ * Pricing — asymmetrischer Magazin-Spread. Business als „Centerfold",
+ * Starter + Premium als kleinere flankierende Editorial-Mentions.
+ * Bewusst kein gleichmäßiges 3-Karten-Grid (das ist genau das
+ * AI-Template-Tell).
  * ============================================================ */
 function Pricing() {
+  const featured = PACKAGES.find((p) => p.highlight)!;
+  const others = PACKAGES.filter((p) => !p.highlight);
+
   return (
-    <section id="pakete" className="scroll-mt-20">
+    <section id="pakete" className="border-border/40 border-t scroll-mt-20">
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        {/* Header mit Hand-Underline auf der Italic-Akzentzeile */}
         <div className="max-w-2xl">
-          <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+            <span
+              aria-hidden="true"
+              className="bg-gold gold-pulse inline-block h-1 w-6"
+            />
+            Pakete & Preise
+          </p>
+          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
             Klare Preise.
             <br />
-            <span className="serif-italic text-muted-foreground font-normal">
+            <span className="serif-italic text-muted-foreground relative font-normal">
               Keine Überraschungen.
+              <HandUnderline className="text-gold/60 absolute -bottom-2 left-0 h-3 w-full" />
             </span>
           </h2>
           <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed">
             Einmal zahlen, dann ein fairer Monatsbeitrag für Hosting und
             Pflege. Was eine Hamburger Agentur für 5.000 € macht, gibt's
-            bei uns ab 499 € — weil wir keine Hochhaus-Miete bezahlen.
+            bei uns ab 499 € — weil wir kein Hochhaus mieten.
           </p>
         </div>
 
-        <ul className="mt-16 grid gap-4 lg:grid-cols-3 lg:gap-6">
-          {PACKAGES.map((p) => (
-            <li
-              key={p.slug}
-              className={
-                p.highlight
-                  ? "border-foreground/15 bg-foreground text-background ring-foreground/10 group relative flex flex-col overflow-hidden rounded-3xl border p-8 ring-1 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_40px_80px_-30px_rgb(0_0_0/0.5)] sm:p-10 lg:scale-[1.02] lg:hover:scale-[1.04]"
-                  : "border-border/60 bg-background ring-foreground/5 group relative flex flex-col overflow-hidden rounded-3xl border p-8 ring-1 transition-all duration-500 hover:-translate-y-1 hover:border-foreground/30 hover:shadow-[0_30px_60px_-30px_rgb(0_0_0/0.25)] sm:p-10"
-              }
-            >
-              {p.highlight ? (
-                <>
-                  <div
-                    aria-hidden="true"
-                    className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px] transition-opacity duration-500 group-hover:opacity-130"
-                  />
-                  <div
-                    aria-hidden="true"
-                    className="bg-gold/8 pointer-events-none absolute -bottom-32 -left-20 h-72 w-72 rounded-full blur-[80px]"
-                  />
-                </>
-              ) : null}
-              {p.badge ? (
-                <span className="bg-gold text-foreground relative z-10 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] shadow-[0_8px_20px_-8px_rgb(0_0_0/0.4)]">
-                  <span className="bg-foreground inline-block h-1 w-1 rounded-full" />
-                  {p.badge}
-                </span>
-              ) : null}
-              <p
-                className={
-                  p.highlight
-                    ? "text-background/55 relative z-10 mt-4 text-[11px] font-medium uppercase tracking-[0.25em]"
-                    : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]"
-                }
-              >
-                {p.name}
-              </p>
-              <p className="relative z-10 mt-6 text-4xl font-semibold tracking-[-0.025em] sm:text-5xl">
-                {p.setup}
-              </p>
-              <p
-                className={
-                  p.highlight
-                    ? "text-background/65 mt-2 text-sm"
-                    : "text-muted-foreground mt-2 text-sm"
-                }
-              >
-                einmalig · zzgl. {p.monthly}
-              </p>
-              <p
-                className={
-                  p.highlight
-                    ? "text-background/85 mt-6 max-w-sm text-[15px] leading-relaxed"
-                    : "text-foreground/75 mt-6 max-w-sm text-[15px] leading-relaxed"
-                }
-              >
-                {p.description}
-              </p>
-              <ul className="mt-8 space-y-3 text-sm">
-                {p.bullets.map((b) => (
-                  <li
-                    key={b}
-                    className={
-                      p.highlight
-                        ? "text-background/90 flex items-baseline gap-3"
-                        : "text-foreground/85 flex items-baseline gap-3"
-                    }
-                  >
-                    <span
-                      className={
-                        p.highlight
-                          ? "bg-background/40 mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
-                          : "bg-foreground/40 mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
-                      }
-                    />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-10 pt-2">
-                <Link
-                  href={`/anfrage?paket=${p.slug}`}
-                  className={
-                    p.highlight
-                      ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-11 items-center justify-center rounded-full px-6 text-[14px] font-medium tracking-tight"
-                      : "border-foreground text-foreground hover:bg-foreground hover:text-background group inline-flex h-11 items-center justify-center rounded-full border px-6 text-[14px] font-medium tracking-tight transition-colors"
-                  }
-                >
-                  {p.name} anfragen
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {/* Magazin-Spread: featured (Business) groß und dunkel zentral,
+            die zwei anderen flankieren als schlanke Editorial-Streifen.
+            Kein 3-gleicher-Karten-Reflex. */}
+        <div className="mt-16 grid gap-px sm:mt-20 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
+          {/* Linker Streifen: Starter */}
+          <div className="order-2 lg:order-1">
+            <PricingFlanke paket={others[0]} side="left" />
+          </div>
 
-        <p className="text-muted-foreground mt-12 max-w-2xl text-sm">
+          {/* Centerfold: Business */}
+          <div
+            className="order-1 lg:order-2"
+            id={featured.slug}
+          >
+            <PricingCenterfold paket={featured} />
+          </div>
+
+          {/* Rechter Streifen: Premium */}
+          <div className="order-3">
+            <PricingFlanke paket={others[1]} side="right" />
+          </div>
+        </div>
+
+        {/* Hand-gezeichneter Trenner statt CSS-Border vor dem Disclaimer */}
+        <div className="text-muted-foreground/40 mt-20 mx-auto max-w-md">
+          <DoubleWave className="w-full" />
+        </div>
+
+        <p className="text-muted-foreground mt-10 mx-auto max-w-2xl text-center text-sm text-pretty">
           Die finalen Kosten hängen vom Umfang, vorhandenen Inhalten und
           gewünschten Funktionen ab. Volle Details auf der{" "}
-          <Link href="/pakete" className="text-foreground underline underline-offset-4">
+          <Link
+            href="/pakete"
+            className="text-foreground underline underline-offset-4"
+          >
             Pakete-Seite
           </Link>
           .
         </p>
       </div>
     </section>
+  );
+}
+
+/* Sub-Komponenten für die asymmetrische Pricing-Sektion. */
+
+/** Schmaler flankierender Streifen für Starter / Premium —
+ *  bewusst nicht als „Karte" gestaltet, sondern als Editorial-
+ *  Spalte mit Hairline-Trennung. */
+function PricingFlanke({
+  paket,
+  side,
+}: {
+  paket: (typeof PACKAGES)[number];
+  side: "left" | "right";
+}) {
+  return (
+    <div
+      id={paket.slug}
+      className={
+        side === "left"
+          ? "border-border/60 lg:border-r flex h-full flex-col p-6 sm:p-8 lg:pr-10"
+          : "border-border/60 lg:border-l flex h-full flex-col p-6 sm:p-8 lg:pl-10"
+      }
+    >
+      <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">
+        {paket.name}
+      </p>
+      <p className="serif text-foreground mt-4 text-4xl font-normal leading-none tracking-[-0.025em] sm:text-5xl">
+        {paket.setup}
+      </p>
+      <p className="text-muted-foreground mt-2 text-[13px]">
+        einmalig · zzgl. {paket.monthly}
+      </p>
+      <p className="text-foreground/75 mt-6 max-w-xs text-pretty text-[14px] leading-relaxed">
+        {paket.description}
+      </p>
+      <ul className="mt-7 space-y-2.5 text-[13.5px]">
+        {paket.bullets.slice(0, 4).map((b) => (
+          <li
+            key={b}
+            className="text-foreground/80 flex items-baseline gap-2.5"
+          >
+            <span className="bg-ink-olive mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full" />
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-auto pt-8">
+        <Link
+          href={`/anfrage?paket=${paket.slug}`}
+          className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
+        >
+          {paket.name} anfragen
+          <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/** Centerfold für die empfohlene Variante (Business) — dunkel,
+ *  groß, magazin-aufmacher-style. Asymmetrisch gegen die zwei
+ *  schlanken Flanken gesetzt. */
+function PricingCenterfold({
+  paket,
+}: {
+  paket: (typeof PACKAGES)[number];
+}) {
+  return (
+    <div className="bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-8 sm:p-10 lg:p-12">
+      <div
+        aria-hidden="true"
+        className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
+      />
+      <div
+        aria-hidden="true"
+        className="bg-gold/8 pointer-events-none absolute -bottom-32 -left-20 h-72 w-72 rounded-full blur-[80px]"
+      />
+
+      <div className="relative flex items-center gap-3">
+        <EditorialStar className="text-gold h-4 w-4" />
+        <span className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em]">
+          {paket.badge ?? paket.name} · Aufmacher
+        </span>
+      </div>
+
+      <div className="relative mt-8 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-6">
+        <p className="serif text-background text-6xl font-normal leading-none tracking-[-0.03em] sm:text-7xl lg:text-[5.5rem]">
+          {paket.setup}
+        </p>
+        <p className="text-background/60 text-base">
+          einmalig
+          <br className="hidden sm:block" />
+          <span className="text-background/85"> + {paket.monthly}</span>
+        </p>
+      </div>
+
+      <p className="relative text-background/85 mt-8 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+        {paket.description}
+      </p>
+
+      <ul className="relative mt-8 grid gap-2.5 text-[14px] sm:grid-cols-2 sm:gap-x-6">
+        {paket.bullets.map((b) => (
+          <li
+            key={b}
+            className="text-background/90 flex items-baseline gap-2.5"
+          >
+            <span className="bg-gold/80 mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full" />
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="relative mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+        <Link
+          href={`/anfrage?paket=${paket.slug}`}
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+        >
+          {paket.name} anfragen
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
+        <Link
+          href={`/pakete/${paket.slug}`}
+          className="text-background/85 hover:text-background inline-flex h-12 items-center text-[14px] font-medium underline-offset-4 hover:underline"
+        >
+          {paket.name} im Detail
+        </Link>
+      </div>
+    </div>
   );
 }
 
@@ -706,6 +803,16 @@ function FinalCta() {
       id="kontakt"
       className="bg-foreground text-background relative overflow-hidden scroll-mt-20"
     >
+      {/* Espresso-Textur als bedruckt-Papier-Optik */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-soft-light"
+        style={{
+          backgroundImage: "url(/images/texture-espresso.png)",
+          backgroundSize: "640px auto",
+          backgroundRepeat: "repeat",
+        }}
+      />
       {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
           ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
       <CursorSpotlight />
