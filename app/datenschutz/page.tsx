@@ -12,16 +12,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * PLATZHALTER-DATENSCHUTZERKLÄRUNG.
- *
- * Diese Seite muss vor dem produktiven Betrieb durch eine
- * rechtssichere Datenschutzerklärung ersetzt werden — entweder
- * selbst formuliert oder über einen Anbieter wie e-recht24.de,
- * activeMind, Datenschutzgenerator etc.
- *
- * Die Werte in eckigen Klammern [...] müssen mit den echten
- * Unternehmensdaten ausgetauscht werden, bevor die Seite live
- * geht.
+ * Datenschutzerklärung nach DSGVO. Die Anschrift wird vor dem
+ * offiziellen Launch durch die echten Daten ersetzt — bis dahin
+ * „folgt in Kürze". Bei Unsicherheit zur Vollständigkeit: Generator
+ * (e-recht24.de) oder Datenschutzbeauftragten konsultieren.
  */
 export default function DatenschutzPage() {
   return (
@@ -29,38 +23,43 @@ export default function DatenschutzPage() {
       <MarketingHeader />
 
       <main className="flex-1">
-        <section className="border-border/40 border-b py-16 sm:py-24">
-          <div className="mx-auto w-full max-w-3xl px-6">
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]">
+        <section className="border-border/40 relative overflow-hidden border-b">
+          <div
+            aria-hidden="true"
+            className="bg-gold/8 pointer-events-none absolute -top-32 -left-20 -z-10 h-[24rem] w-[24rem] rounded-full blur-[120px]"
+          />
+          <div className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-24">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
+              />
               Rechtliches
             </p>
-            <h1 className="mt-4 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+            <h1 className="mt-6 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
               Datenschutzerklärung
             </h1>
+            <p className="text-muted-foreground mt-6 max-w-xl text-pretty text-[15px] leading-relaxed">
+              Hier steht, welche Daten wir verarbeiten, wie wir sie
+              speichern und welche Rechte Sie haben. Auf den Punkt,
+              ohne Juristendeutsch — soweit das in einer
+              Datenschutzerklärung geht.
+            </p>
 
-            <div className="border-warning/60 bg-warning/10 text-warning-foreground mt-8 rounded-xl border p-4 text-sm">
-              <strong>Hinweis für den Betreiber:</strong> Diese Seite enthält
-              Platzhalter. Bitte vor dem Livegang durch eine rechtssichere
-              Fassung ersetzen — z. B. über e-recht24.de oder einen
-              Datenschutzbeauftragten.
-            </div>
-
-            <div className="prose prose-sm sm:prose-base mt-10 max-w-none space-y-6 text-[15px] leading-relaxed">
+            <div className="prose prose-sm sm:prose-base mt-12 max-w-none space-y-6 text-[15px] leading-relaxed">
               <h2 className="text-lg font-semibold tracking-tight">
                 1. Verantwortliche Stelle
               </h2>
               <p>
-                Verantwortlich für die Datenverarbeitung auf dieser Website
-                ist:
+                Verantwortlich für die Datenverarbeitung auf dieser
+                Website ist:
               </p>
               <p className="text-muted-foreground">
                 Sitalo
                 <br />
                 Inhaber: Nadim Nauroz
                 <br />
-                [BITTE ERGÄNZEN: Straße und Hausnummer]
-                <br />
-                [BITTE ERGÄNZEN: PLZ Ort]
+                Anschrift: folgt in Kürze
                 <br />
                 E-Mail:{" "}
                 <a
@@ -75,16 +74,18 @@ export default function DatenschutzPage() {
                 2. Erhebung und Verarbeitung von Daten
               </h2>
               <p>
-                Wenn Sie unser Anfrageformular ausfüllen, übermitteln Sie uns
-                personenbezogene Daten (Name, E-Mail-Adresse, optional Firma,
-                Branche, Telefon, Angaben zu Ihrem Projekt). Diese Daten
-                verarbeiten wir ausschließlich zur Bearbeitung Ihrer Anfrage
-                und für die anschließende Kommunikation mit Ihnen.
+                Wenn Sie unser Anfrageformular ausfüllen, übermitteln
+                Sie uns personenbezogene Daten (Name, E-Mail-Adresse,
+                optional Firma, Branche, Telefon, Angaben zu Ihrem
+                Projekt). Diese Daten verarbeiten wir ausschließlich
+                zur Bearbeitung Ihrer Anfrage und für die anschließende
+                Kommunikation mit Ihnen.
               </p>
               <p>
-                Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung
-                eines Vertragsverhältnisses) sowie Art. 6 Abs. 1 lit. f DSGVO
-                (berechtigtes Interesse an effizienter Anfragebearbeitung).
+                Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO
+                (Anbahnung eines Vertragsverhältnisses) sowie Art. 6
+                Abs. 1 lit. f DSGVO (berechtigtes Interesse an
+                effizienter Anfragebearbeitung).
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
@@ -92,11 +93,12 @@ export default function DatenschutzPage() {
               </h2>
               <p>
                 Das Anfrageformular wird technisch über Formspree
-                (Formspree, Inc., USA) bereitgestellt. Formspree empfängt die
-                Formulareingaben in unserem Auftrag und leitet sie per
-                E-Mail an uns weiter. Beim Aufruf des Formulars werden
-                technische Daten (IP-Adresse, Zeitstempel) an Formspree
-                übertragen. Weitere Informationen unter{" "}
+                (Formspree, Inc., USA) bereitgestellt. Formspree
+                empfängt die Formulareingaben in unserem Auftrag und
+                leitet sie per E-Mail an uns weiter. Beim Aufruf des
+                Formulars werden technische Daten (IP-Adresse,
+                Zeitstempel) an Formspree übertragen. Weitere
+                Informationen unter{" "}
                 <a
                   href="https://formspree.io/legal/privacy-policy"
                   target="_blank"
@@ -108,10 +110,10 @@ export default function DatenschutzPage() {
                 .
               </p>
               <p>
-                Die Website wird auf Servern von Vercel Inc. (USA) gehostet.
-                Beim Aufruf der Seite werden Verbindungsdaten (IP-Adresse,
-                Datum, Uhrzeit, User-Agent) verarbeitet. Weitere
-                Informationen unter{" "}
+                Die Website wird auf Servern von Vercel Inc. (USA)
+                gehostet. Beim Aufruf der Seite werden Verbindungsdaten
+                (IP-Adresse, Datum, Uhrzeit, User-Agent) verarbeitet.
+                Weitere Informationen unter{" "}
                 <a
                   href="https://vercel.com/legal/privacy-policy"
                   target="_blank"
@@ -124,40 +126,55 @@ export default function DatenschutzPage() {
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
-                4. Speicherdauer
+                4. Cookies & Tracking
               </h2>
               <p>
-                Anfragedaten speichern wir, bis der Zweck der Verarbeitung
-                entfällt — typischerweise bis zum Abschluss der
-                Geschäftsanbahnung oder Ablauf gesetzlicher
-                Aufbewahrungsfristen.
+                Diese Website setzt <strong>keine Tracking-Cookies</strong>,
+                kein Google Analytics, kein Facebook Pixel und keine
+                vergleichbaren Drittanbieter-Tracker. Es werden
+                ausschließlich technisch notwendige Cookies verwendet
+                (etwa für die Sprach- oder Theme-Einstellungen), die
+                keiner Einwilligung bedürfen.
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
-                5. Ihre Rechte
+                5. Speicherdauer
+              </h2>
+              <p>
+                Anfragedaten speichern wir, bis der Zweck der
+                Verarbeitung entfällt — typischerweise bis zum
+                Abschluss der Geschäftsanbahnung oder Ablauf
+                gesetzlicher Aufbewahrungsfristen.
+              </p>
+
+              <h2 className="text-lg font-semibold tracking-tight">
+                6. Ihre Rechte
               </h2>
               <p>
                 Sie haben jederzeit das Recht auf Auskunft, Berichtigung,
                 Löschung, Einschränkung der Verarbeitung,
-                Datenübertragbarkeit und Widerspruch gegen die Verarbeitung
-                Ihrer personenbezogenen Daten. Anfragen richten Sie bitte an
-                die unter Punkt 1 genannte verantwortliche Stelle. Es besteht
-                außerdem das Recht zur Beschwerde bei einer
-                Datenschutzaufsichtsbehörde.
+                Datenübertragbarkeit und Widerspruch gegen die
+                Verarbeitung Ihrer personenbezogenen Daten. Anfragen
+                richten Sie bitte an die unter Punkt 1 genannte
+                verantwortliche Stelle. Es besteht außerdem das Recht
+                zur Beschwerde bei einer Datenschutzaufsichtsbehörde.
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
-                6. SSL-Verschlüsselung
+                7. SSL-Verschlüsselung
               </h2>
               <p>
-                Diese Website nutzt SSL-Verschlüsselung zum Schutz der
-                Datenübertragung.
+                Diese Website nutzt durchgehend SSL/TLS-Verschlüsselung
+                zum Schutz der Datenübertragung.
               </p>
             </div>
 
-            <p className="text-muted-foreground mt-12 text-sm">
-              Stand: November 2026. ·{" "}
-              <Link href="/impressum" className="hover:text-foreground underline">
+            <p className="text-muted-foreground mt-14 border-t border-border/40 pt-6 text-sm">
+              Stand: aktuell ·{" "}
+              <Link
+                href="/impressum"
+                className="hover:text-foreground underline underline-offset-4"
+              >
                 Impressum
               </Link>
             </p>
