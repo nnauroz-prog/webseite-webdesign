@@ -32,11 +32,19 @@ const GROUPS: Group[] = [
       },
       {
         q: "Was brauchen Sie von mir?",
-        a: "Ihr Logo (falls vorhanden), ein paar Bilder von Ihnen oder Ihrem Betrieb, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sagen wir Ihnen, was wir noch brauchen — und helfen bei Formulierungen oder Bildauswahl.",
+        a: "Drei Sachen: Ihr Logo (egal welches Format — sogar Schnappschuss vom Briefpapier reicht), 5–10 Bilder von Ihnen oder Ihrem Betrieb (Handy-Fotos sind ok), eine kurze Beschreibung Ihrer Leistungen plus Öffnungszeiten und Kontakt. Wenn etwas fehlt, sagen wir Bescheid — und empfehlen einen Hamburger Fotografen für 200–400 €, falls Bilder ein Problem sind.",
+      },
+      {
+        q: "Können wir uns persönlich in Hamburg treffen?",
+        a: "Gerne. Café in Eppendorf, auf einen Kaffee am Mühlenkamp, in der Schanze — wo Sie wollen. 15 Minuten reichen meistens, um zu klären, ob wir zusammen passen. Geht auch per Telefon oder Video, falls Ihnen das lieber ist.",
       },
       {
         q: "Was passiert nach meiner Anfrage?",
         a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Wir schauen uns Ihre Angaben in Ruhe an und melden uns innerhalb von 24 Stunden — meist deutlich schneller — persönlich bei Ihnen. Kein Vertrag, keine Kosten, kein Druck.",
+      },
+      {
+        q: "Was, wenn ich noch gar nichts vorbereitet habe?",
+        a: "Macht nichts. Schicken Sie uns einfach eine kurze Notiz, was Sie vorhaben — wir helfen beim Sortieren. Sie müssen nicht erst alles fertig haben, bevor wir reden können. Im Gegenteil: je früher wir mitdenken, desto besser passt das Ergebnis am Ende.",
       },
       {
         q: "Kann ich auch per E-Mail anfragen?",
@@ -62,6 +70,35 @@ const GROUPS: Group[] = [
       {
         q: "Kann ich bestimmte Inhalte selbst pflegen?",
         a: "Wenn Sie möchten, ja. Im Premium-Paket bauen wir Ihnen Bereiche ein, die Sie selbst aktualisieren können — Öffnungszeiten, Wochenangebot, Speisekarte, Bilder. Wenn Sie das nicht wollen, übernehmen wir das. Sie entscheiden.",
+      },
+      {
+        q: "Bin ich an einen langen Vertrag gebunden?",
+        a: "Nein. Die einmalige Erstellung ist einmalig, der Monatsbeitrag ist monatlich kündbar zum Monatsende. Kein Knebelvertrag, keine Mindestlaufzeit. Wir gewinnen Kunden, weil unsere Arbeit passt — nicht weil sie nicht weg können.",
+      },
+      {
+        q: "Was kostet eine spätere Erweiterung?",
+        a: "Kleine Erweiterungen sind in der monatlichen Pflege dabei. Größere Sachen (z. B. ein neuer Bereich, Online-Buchung, ein zweites Sprachset) bekommen Sie vorher als verbindliches Angebot. Typischer Rahmen: 150–500 €, je nach Aufwand.",
+      },
+    ],
+  },
+  {
+    label: "Sichtbarkeit & SEO",
+    items: [
+      {
+        q: "Werde ich für meinen Stadtteil gefunden?",
+        a: `Das ist genau unser Ansatz. Wir optimieren nicht nur auf „Webdesign Hamburg" (zu generisch), sondern auf konkrete Phrasen wie „Friseur Eimsbüttel", „Pflegedienst Wandsbek", „Café Ottensen". Wir haben eigene Stadtteil-Seiten für die wichtigsten Hamburger Lagen — schauen Sie sich /standorte an.`,
+      },
+      {
+        q: "Lohnt sich ein Google Business Profile?",
+        a: "Absolut. Das ist kostenlos und der größte Hebel für lokale Sichtbarkeit. Im Premium-Paket richten wir Ihnen das mit ein, beim Business-Paket auf Wunsch gegen kleinen Aufpreis (~ 80 €). Sie verwalten es danach selbst oder lassen es uns pflegen.",
+      },
+      {
+        q: "Was bringt mir SEO konkret?",
+        a: `Für lokale Anbieter sehr viel. 46 % aller Google-Suchen sind lokal, 76 % der lokalen Suchenden besuchen den Anbieter binnen 24 Stunden. Wer für „Friseur in [Ihrem Stadtteil]" auf Seite 1 steht, hat ein verlässliches Anfrage-Volumen — auch ohne Anzeigen.`,
+      },
+      {
+        q: "Schalten Sie auch Google-Ads für mich?",
+        a: "Nein. Wir bauen Websites, keine Werbe-Kampagnen — das ist eine eigene Disziplin. Wenn Sie Ads schalten wollen, empfehlen wir Ihnen gerne eine spezialisierte Hamburger Agentur. Ehrlich gesagt: für die meisten lokalen Anbieter ist gute SEO + Google Business Profile billiger und nachhaltiger als Ads.",
       },
     ],
   },
@@ -91,6 +128,14 @@ const GROUPS: Group[] = [
       {
         q: "Für welche Branchen arbeiten Sie?",
         a: "Vor allem für lokale Unternehmen in und um Hamburg: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios, Boutique-Hotels. Wenn Sie nicht sicher sind, ob Ihre Branche passt — fragen Sie einfach.",
+      },
+      {
+        q: "Was wenn ich meine Domain woanders habe?",
+        a: "Kein Problem. Wir übernehmen die Verbindung — Sie behalten die Domain in Ihrem Account (z. B. bei IONOS, Strato, GoDaddy), wir zeigen sie nur auf unseren Server. Falls Sie wollen, können wir auch die Domain komplett zu uns transferieren. Beides geht.",
+      },
+      {
+        q: "Was wenn ich später woanders hin will?",
+        a: "Dann übergeben wir sauber. Sie bekommen den vollständigen Quellcode Ihrer Seite, alle Inhalte und können bei einem anderen Anbieter weitermachen. Wir bauen keine Vendor-Lock-ins. Das ist ein Wettbewerbsvorteil, kein Risiko.",
       },
     ],
   },
