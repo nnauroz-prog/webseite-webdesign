@@ -151,7 +151,7 @@ export default async function BranchePage({
           {/* Dezenter Gold-Halo links oben — passt zum Brand-Hero. */}
           <div
             aria-hidden="true"
-            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
           />
           <div className="mx-auto w-full max-w-7xl px-6 pt-12 pb-16 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-32">
             {/* Breadcrumb bleibt für SEO + Accessibility, optisch ruhig. */}

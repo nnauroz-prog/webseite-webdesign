@@ -24,7 +24,7 @@ export function MarketingFooter() {
         {/* Atmosphärischer Gold-Halo links oben — passt zur Brand. */}
         <div
           aria-hidden="true"
-          className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+          className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
         />
         {/* Editorial-Mast oben */}
         <div className="border-background/10 mx-auto flex w-full max-w-7xl flex-col gap-4 border-b px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8">
