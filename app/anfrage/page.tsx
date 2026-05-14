@@ -92,12 +92,27 @@ export default async function AnfragePage({
                 <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
                   Lieber direkt
                 </p>
-                <a
-                  href="mailto:info@sitalo.de"
-                  className="text-foreground mt-3 inline-block text-lg underline underline-offset-4 hover:no-underline"
-                >
-                  info@sitalo.de
-                </a>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  <a
+                    href="tel:+4915224437370"
+                    className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                  >
+                    Anrufen
+                  </a>
+                  <a
+                    href="mailto:info@sitalo.de"
+                    className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                  >
+                    Schreiben
+                  </a>
+                  <a
+                    href="/sitalo-kontakt.vcf"
+                    download="Sitalo-Webdesign.vcf"
+                    className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                  >
+                    Speichern
+                  </a>
+                </div>
               </div>
             </div>
 

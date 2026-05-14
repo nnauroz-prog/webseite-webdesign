@@ -257,13 +257,28 @@ function MobileFullscreenMenu({
           Website anfragen
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </Link>
-        <div className="text-background/65 flex flex-col gap-1 text-sm">
-          <a
-            href="mailto:info@sitalo.de"
-            className="hover:text-background transition-colors"
-          >
-            info@sitalo.de
-          </a>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap gap-2.5">
+            <a
+              href="tel:+4915224437370"
+              className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+            >
+              Anrufen
+            </a>
+            <a
+              href="mailto:info@sitalo.de"
+              className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+            >
+              Schreiben
+            </a>
+            <a
+              href="/sitalo-kontakt.vcf"
+              download="Sitalo-Webdesign.vcf"
+              className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+            >
+              Speichern
+            </a>
+          </div>
           <span
             className="serif-italic text-background/50 text-base"
           >

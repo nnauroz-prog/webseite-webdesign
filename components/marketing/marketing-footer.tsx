@@ -37,21 +37,25 @@ export function MarketingFooter() {
               Sitalo · Hand-gemacht in Hamburg
             </p>
           </div>
-          <div className="text-background/65 flex flex-wrap items-center gap-x-5 gap-y-1 text-[13px]">
+          <div className="flex flex-wrap items-center gap-3 text-[13px]">
             <a
               href="tel:+4915224437370"
-              className="hover:text-background underline-offset-4 hover:underline"
+              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
             >
-              +49 152 24437370
+              Anrufen
             </a>
-            <span aria-hidden="true" className="text-background/30">
-              ·
-            </span>
             <a
               href="mailto:info@sitalo.de"
-              className="hover:text-background underline-offset-4 hover:underline"
+              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
             >
-              info@sitalo.de
+              Schreiben
+            </a>
+            <a
+              href="/sitalo-kontakt.vcf"
+              download="Sitalo-Webdesign.vcf"
+              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
+            >
+              In Kontakte speichern
             </a>
           </div>
         </div>

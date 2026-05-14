@@ -38,8 +38,11 @@ export default function KontaktPage() {
             </span>
           </p>
 
-          {/* Drei Kontaktwege — Formular, Telefon, E-Mail */}
-          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {/* Vier Kontaktwege — Formular, Telefon, E-Mail, vCard.
+              Nummer und E-Mail bewusst hinter Buttons versteckt;
+              der CTA löst den Anruf bzw. die Mail aus, ohne den
+              Wert vorher im Klartext anzuzeigen. */}
+          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
             <ContactMethod
               label="Per Formular"
               detail="Schritt-für-Schritt"
@@ -48,17 +51,24 @@ export default function KontaktPage() {
             />
             <ContactMethod
               label="Per Telefon"
-              detail="+49 152 24437370"
+              detail="Direkt zum Atelier"
               href="tel:+4915224437370"
               cta="Anrufen"
               external
             />
             <ContactMethod
               label="Per E-Mail"
-              detail="info@sitalo.de"
+              detail="Persönlich, < 24 h"
               href="mailto:info@sitalo.de"
               cta="Schreiben"
               external
+            />
+            <ContactMethod
+              label="Als Visitenkarte"
+              detail="Direkt im Telefonbuch"
+              href="/sitalo-kontakt.vcf"
+              cta="Speichern"
+              download
             />
           </div>
 
@@ -166,12 +176,15 @@ function ContactMethod({
   href,
   cta,
   external,
+  download,
 }: {
   label: string;
   detail: string;
   href: string;
   cta: string;
   external?: boolean;
+  /** Wenn true: Browser bietet das Ziel als Download an (.vcf etc.). */
+  download?: boolean;
 }) {
   const inner = (
     <div className="group flex h-full flex-col justify-between p-8 sm:p-10">
@@ -189,6 +202,13 @@ function ContactMethod({
       </div>
     </div>
   );
+  if (download) {
+    return (
+      <a href={href} download="Sitalo-Webdesign.vcf">
+        {inner}
+      </a>
+    );
+  }
   if (external) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer">
