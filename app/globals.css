@@ -174,6 +174,49 @@ html {
   }
 }
 
+/* Steps-Timeline: die goldene Verbindungslinie zwischen den drei
+   Step-Markern füllt sich von links nach rechts, sobald die
+   Steps-Sektion in den Viewport scrollt. Triggered via
+   `animation-timeline: view()` auf modernen Browsern; ältere
+   Browser zeigen die Linie sofort vollständig (graceful fallback). */
+.steps-progress {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .steps-timeline .steps-progress {
+      animation: steps-fill linear forwards;
+      animation-timeline: view();
+      animation-range: cover 0% cover 50%;
+    }
+    @keyframes steps-fill {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+  @supports not (animation-timeline: view()) {
+    /* Fallback ohne Scroll-Driven-Animation: einfach beim ersten
+       Erscheinen 800 ms-Loop füllen. */
+    .steps-timeline .steps-progress {
+      animation: steps-fill-fallback 1.2s 0.2s cubic-bezier(0.22, 1, 0.36, 1)
+        forwards;
+    }
+    @keyframes steps-fill-fallback {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
 /* Sanftes Aufklappen für die FAQ-Details auf /faq.
    Das Standard-<details>-Element animiert nicht — wir geben dem
    inneren Content-Container eine Fade+Slide-Animation, sobald
