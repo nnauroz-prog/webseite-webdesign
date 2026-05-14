@@ -99,7 +99,7 @@ export const BRANCHEN: Branche[] = [
     faq: [
       {
         q: "Können Pflege-Spezifika wie MDK-Prüfungen mit auf die Seite?",
-        a: "Ja — Transparenz-Berichte, Pflegenoten und Zertifikate gehören sichtbar auf die Seite. Ich strukturiere das so, dass es Vertrauen aufbaut, ohne überladen zu wirken.",
+        a: "Ja — Transparenz-Berichte, Pflegenoten und Zertifikate gehören sichtbar auf die Seite. Wir strukturieren das so, dass es Vertrauen aufbaut, ohne überladen zu wirken.",
       },
       {
         q: "Brauchen wir ein Bewerber-Portal mit Login?",
@@ -172,7 +172,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Was ist mit Heilmittelwerbegesetz (HWG)?",
-        a: "Ich kenne die Grundlagen und sorge dafür, dass Heilversprechen und vergleichende Werbung vermieden werden. Den finalen HWG-Check übernehmen aber Sie oder Ihre Standesvertretung.",
+        a: "Wir kennen die Grundlagen und sorgen dafür, dass Heilversprechen und vergleichende Werbung vermieden werden. Den finalen HWG-Check übernehmen aber Sie oder Ihre Standesvertretung.",
       },
       {
         q: "Können Patientenbewertungen eingebunden werden?",
@@ -240,7 +240,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Welche Online-Buchung passt zu mir?",
-        a: "Für kleine Studios reicht oft eine gute Termin-Anfrage. Bei größeren Salons mit Stylist-Auswahl und Kalender-Slots lohnt sich ein System wie Treatwell, Booksy oder Shore. Ich binde das passende nahtlos ein.",
+        a: "Für kleine Studios reicht oft eine gute Termin-Anfrage. Bei größeren Salons mit Stylist-Auswahl und Kalender-Slots lohnt sich ein System wie Treatwell, Booksy oder Shore. Wir binden das passende nahtlos ein.",
       },
       {
         q: "Wie werden meine Bilder professionell?",
@@ -508,7 +508,7 @@ export const BRANCHEN: Branche[] = [
     faq: [
       {
         q: "Was darf eine Kanzlei-Website werblich überhaupt?",
-        a: "Mehr als viele denken — sachliche Information ist erlaubt, nur reklamehafte und vergleichende Werbung ist tabu. Ich kenne BRAO § 43b und die typischen Stolperfallen.",
+        a: "Mehr als viele denken — sachliche Information ist erlaubt, nur reklamehafte und vergleichende Werbung ist tabu. Wir kennen BRAO § 43b und die typischen Stolperfallen.",
       },
       {
         q: "Können Mandantenbewertungen auf die Seite?",
@@ -580,7 +580,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Können Mitglieds-Karten / Check-in eingebunden werden?",
-        a: "Das macht in der Regel Ihr Studio-Verwaltungssystem (Magicline, Aidoo, …). Ich binde die Schnittstelle ein, falls vorhanden.",
+        a: "Das macht in der Regel Ihr Studio-Verwaltungssystem (Magicline, Aidoo, …). Wir binden die Schnittstelle ein, falls vorhanden.",
       },
       {
         q: "Wie wichtig sind Trainer-Bios?",
@@ -648,7 +648,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Lohnt sich ein Instagram-Feed auf der Seite?",
-        a: "Für Beauty-Studios ja — die Seite bleibt lebendig auch zwischen Updates. Ich integriere Ihren Feed datenschutzkonform (keine direkten Embeds von Instagram, sondern Bild-Caching).",
+        a: "Für Beauty-Studios ja — die Seite bleibt lebendig auch zwischen Updates. Wir integrieren Ihren Feed datenschutzkonform (keine direkten Embeds von Instagram, sondern Bild-Caching).",
       },
     ],
     recommendedPackage: "business",
