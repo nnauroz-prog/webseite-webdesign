@@ -42,7 +42,7 @@ Next.js 16, React 19, Tailwind CSS v4. Hosting auf Vercel (Server in der EU). DS
 ## Kontakt
 
 E-Mail: info@sitalo.de
-Telefon: +49 152 24437370
+Telefon: 0152 24437370 (international: +49 152 24437370)
 Standort: Hamburg, Deutschland
 Antwortzeit: innerhalb von 24 Stunden, meistens deutlich schneller.
 `;

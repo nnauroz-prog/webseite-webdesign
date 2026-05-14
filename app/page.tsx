@@ -5,6 +5,7 @@ import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
 import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
+import { DreiSachen } from "@/components/marketing/drei-sachen";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { FactsStrip } from "@/components/marketing/facts-strip";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
@@ -158,6 +159,11 @@ export default function HomePage() {
         </RevealOnScroll>
         <RevealOnScroll>
           <ExamplesGallery />
+        </RevealOnScroll>
+        {/* Konkretisiert das „Sie schicken drei Sachen"-Versprechen
+            visuell — Eingaben links, Ergebnis rechts. */}
+        <RevealOnScroll>
+          <DreiSachen />
         </RevealOnScroll>
         <RevealOnScroll>
           <Steps />
@@ -763,9 +769,9 @@ function FinalCta() {
               </MagneticButton>
               <a
                 href="tel:+4915224437370"
-                className="text-background/85 hover:text-background inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
               >
-                Oder kurz anrufen — +49 152 24437370
+                Anrufen
               </a>
             </div>
           </div>
@@ -781,33 +787,28 @@ function FinalCta() {
               <br />
               Hamburg.
             </p>
+            <div className="mt-8 flex flex-wrap gap-2.5">
+              <a
+                href="tel:+4915224437370"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+              >
+                Anrufen
+              </a>
+              <a
+                href="mailto:info@sitalo.de"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+              >
+                Schreiben
+              </a>
+              <a
+                href="/sitalo-kontakt.vcf"
+                download="Sitalo-Webdesign.vcf"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+              >
+                Speichern
+              </a>
+            </div>
             <dl className="text-background/65 mt-8 space-y-2 text-[13px]">
-              <div className="flex justify-between gap-4">
-                <dt className="text-background/45 uppercase tracking-[0.2em]">
-                  E-Mail
-                </dt>
-                <dd>
-                  <a
-                    href="mailto:info@sitalo.de"
-                    className="hover:text-background underline-offset-4 hover:underline"
-                  >
-                    info@sitalo.de
-                  </a>
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-background/45 uppercase tracking-[0.2em]">
-                  Telefon
-                </dt>
-                <dd>
-                  <a
-                    href="tel:+4915224437370"
-                    className="hover:text-background underline-offset-4 hover:underline"
-                  >
-                    +49 152 24437370
-                  </a>
-                </dd>
-              </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-background/45 uppercase tracking-[0.2em]">
                   Antwort

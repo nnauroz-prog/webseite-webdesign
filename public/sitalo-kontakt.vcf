@@ -1,0 +1,12 @@
+BEGIN:VCARD
+VERSION:3.0
+FN:Sitalo Webdesign
+N:Webdesign;Sitalo;;;
+ORG:Sitalo Webdesign
+TITLE:Webdesign aus Hamburg
+TEL;TYPE=CELL,VOICE:+4915224437370
+EMAIL;TYPE=WORK:info@sitalo.de
+URL:https://www.sitalo.de
+ADR;TYPE=WORK:;;;Hamburg;;;Deutschland
+NOTE:Hand-gebaute Websites für lokale Unternehmen. Persönlich gemacht, aus Hamburg.
+END:VCARD

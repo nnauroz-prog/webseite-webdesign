@@ -52,7 +52,7 @@ export default function ImpressumPage() {
                   href="tel:+4915224437370"
                   className="hover:text-foreground underline"
                 >
-                  +49 152 24437370
+                  0152 24437370
                 </a>
                 <br />
                 E-Mail:{" "}
