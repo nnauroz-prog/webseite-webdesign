@@ -24,6 +24,24 @@ export function WhyWebsite() {
         className="bg-gold/10 pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[32rem] w-[32rem] rounded-full blur-[120px]"
       />
 
+      {/* Marginalia — vertikaler Editorial-Anker am linken Rand,
+          nur auf Desktop sichtbar. Liest sich von unten nach oben,
+          wie eine Buchrücken-Schrift. Bricht das Standard-Layout. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 left-6 hidden -translate-y-1/2 lg:block"
+      >
+        <p
+          className="text-muted-foreground/45 font-mono text-[10px] tracking-[0.4em] uppercase"
+          style={{
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
+          }}
+        >
+          § 01 · Warum überhaupt
+        </p>
+      </div>
+
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
         <div className="max-w-3xl">
           <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">

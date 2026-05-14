@@ -17,6 +17,21 @@ export function Promises() {
         aria-hidden="true"
         className="bg-gold/8 pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
       />
+      {/* Marginalia rechts — wie ein redaktioneller Kapitel-Marker
+          am Rand einer Buchseite. Nur Desktop. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 right-6 hidden -translate-y-1/2 lg:block"
+      >
+        <p
+          className="text-muted-foreground/45 font-mono text-[10px] tracking-[0.4em] uppercase"
+          style={{
+            writingMode: "vertical-rl",
+          }}
+        >
+          § 04 · Die fünf Zusagen
+        </p>
+      </div>
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
         <div className="max-w-3xl">
           <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
