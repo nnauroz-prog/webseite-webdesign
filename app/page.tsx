@@ -410,10 +410,17 @@ function Steps() {
   return (
     <section
       id="ablauf"
-      className="border-border/40 border-t border-b scroll-mt-20"
+      className="border-border/40 relative overflow-hidden border-t border-b scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
-        <div className="max-w-2xl">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <span
+            aria-hidden="true"
+            className="bg-gold gold-pulse inline-block h-1 w-6"
+          />
+          In drei Schritten
+        </p>
+        <div className="mt-6 max-w-2xl">
           <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
             Vom „Hallo"
             <br />
@@ -422,12 +429,19 @@ function Steps() {
             </span>
           </h2>
         </div>
-        <ol className="relative mt-16 grid gap-x-10 gap-y-14 sm:mt-24 sm:grid-cols-3">
-          {/* Verbindungslinie zwischen den Schritten auf Desktop */}
+        <ol className="steps-timeline relative mt-16 grid gap-x-10 gap-y-14 sm:mt-24 sm:grid-cols-3">
+          {/* Statische Hintergrund-Linie als sanfter Anker.
+              Die animierte Gold-Linie liegt darüber und füllt sich
+              beim Scrollen. Beide nur auf Desktop sichtbar. */}
           <div
             aria-hidden="true"
-            className="border-border/60 absolute left-0 right-0 top-12 hidden border-t border-dashed sm:block"
+            className="border-border/60 absolute right-0 left-0 top-12 hidden border-t border-dashed sm:block"
             style={{ marginLeft: "12%", marginRight: "12%" }}
+          />
+          <div
+            aria-hidden="true"
+            className="steps-progress bg-gold absolute top-12 left-0 hidden h-px origin-left sm:block"
+            style={{ marginLeft: "12%", marginRight: "12%", right: 0 }}
           />
           {STEPS.map(({ n, icon: Icon, title, body }) => (
             <li key={n} className="relative flex flex-col">
@@ -670,34 +684,117 @@ function FinalCta() {
       id="kontakt"
       className="bg-foreground text-background relative overflow-hidden scroll-mt-20"
     >
+      {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
+          ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
+      <CursorSpotlight />
+      {/* Mehrere weiche Halos für editoriale Tiefe */}
       <div
         aria-hidden="true"
-        className="bg-gold/15 pointer-events-none absolute top-10 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-3xl"
+        className="bg-gold/18 pointer-events-none absolute top-0 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full blur-[140px]"
       />
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-28 text-center sm:py-40">
-        <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
-          Jeden Tag, den Sie warten,
-          <br />
-          <span className="serif-italic text-background/70 font-normal">
-            findet Sie ein Kunde weniger.
-          </span>
-        </h2>
-        <p className="text-background/65 mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-          Schreiben Sie uns kurz — drei Felder, zwei Minuten. Wir melden
-          uns innerhalb von 24 Stunden mit einem konkreten Vorschlag.
+      <div
+        aria-hidden="true"
+        className="bg-gold/8 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[120px]"
+      />
+      {/* Editorial-Mast oben — wie eine Magazin-Rückseite */}
+      <div className="border-background/10 relative mx-auto flex w-full max-w-5xl items-center justify-between gap-4 border-b px-6 py-5">
+        <p className="text-background/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+          <span
+            aria-hidden="true"
+            className="bg-gold gold-pulse inline-block h-1 w-6"
+          />
+          Schluss-Statement
         </p>
-        <div className="mt-12 flex justify-center">
-          <Link
-            href="/anfrage"
-            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-          >
-            Website anfragen
-            <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+        <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+          Sitalo · Hamburg
+        </p>
+      </div>
+
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
+        <div className="grid items-end gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
+          <div>
+            <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
+              <span className="serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
+                „
+              </span>
+              Jeden Tag, den{" "}
+              <span className="serif-italic text-background/70">
+                Sie warten,
+              </span>{" "}
+              findet Sie{" "}
+              <span className="serif-italic text-background/70">
+                ein Kunde weniger.
+              </span>
+            </h2>
+            <p className="text-background/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+              Drei Felder, zwei Minuten. Wir melden uns innerhalb von
+              24 Stunden — persönlich, mit einem konkreten Vorschlag.
+              Kein Vertrag, keine Kosten, kein Druck.
+            </p>
+            <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <MagneticButton
+                href="/anfrage"
+                className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+              >
+                Website anfragen
+                <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </MagneticButton>
+              <a
+                href="tel:+4915224437370"
+                className="text-background/85 hover:text-background inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
+              >
+                Oder kurz anrufen — +49 152 24437370
+              </a>
+            </div>
+          </div>
+
+          {/* Editorial-Schluss rechts: Signature + Adresse als
+              kleine Visitenkarte. */}
+          <div className="lg:pl-10">
+            <p className="text-background/45 text-[10px] font-medium uppercase tracking-[0.3em]">
+              Aus der Werkstatt
+            </p>
+            <p className="serif-italic text-background mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
+              — Sitalo,
+              <br />
+              Hamburg.
+            </p>
+            <dl className="text-background/65 mt-8 space-y-2 text-[13px]">
+              <div className="flex justify-between gap-4">
+                <dt className="text-background/45 uppercase tracking-[0.2em]">
+                  E-Mail
+                </dt>
+                <dd>
+                  <a
+                    href="mailto:info@sitalo.de"
+                    className="hover:text-background underline-offset-4 hover:underline"
+                  >
+                    info@sitalo.de
+                  </a>
+                </dd>
+              </div>
+              <div className="flex justify-between gap-4">
+                <dt className="text-background/45 uppercase tracking-[0.2em]">
+                  Telefon
+                </dt>
+                <dd>
+                  <a
+                    href="tel:+4915224437370"
+                    className="hover:text-background underline-offset-4 hover:underline"
+                  >
+                    +49 152 24437370
+                  </a>
+                </dd>
+              </div>
+              <div className="flex justify-between gap-4">
+                <dt className="text-background/45 uppercase tracking-[0.2em]">
+                  Antwort
+                </dt>
+                <dd>innerhalb 24 h</dd>
+              </div>
+            </dl>
+          </div>
         </div>
-        <p className="serif-italic text-background/80 mt-12 text-xl">
-          — Sitalo, Hamburg
-        </p>
       </div>
     </section>
   );
