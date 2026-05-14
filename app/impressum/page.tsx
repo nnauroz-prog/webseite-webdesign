@@ -12,12 +12,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * PLATZHALTER-IMPRESSUM.
- *
- * Die Werte in eckigen Klammern müssen mit den echten
- * Unternehmensdaten ersetzt werden, bevor die Seite live geht.
- * Pflichtangaben nach § 5 TMG bzw. § 18 MStV. Bei Unsicherheit
- * Impressums-Generator (e-recht24.de) oder Anwalt nutzen.
+ * Impressum nach § 5 TMG / § 18 MStV. Anschrift und Steuer-Angaben
+ * sind aktuell mit „folgt in Kürze" markiert und werden vor dem
+ * offiziellen Launch durch die echten Daten ersetzt.
  */
 export default function ImpressumPage() {
   return (
@@ -34,13 +31,6 @@ export default function ImpressumPage() {
               Impressum
             </h1>
 
-            <div className="border-warning/60 bg-warning/10 text-warning-foreground mt-8 rounded-xl border p-4 text-sm">
-              <strong>Hinweis für den Betreiber:</strong> Anschrift und
-              Steuer-Angaben müssen noch ergänzt werden (mit [BITTE ERGÄNZEN]
-              markiert). Vor dem öffentlichen Bewerben der Seite vollständig
-              ausfüllen, sonst bestehen Abmahnrisiken.
-            </div>
-
             <div className="prose prose-sm sm:prose-base mt-10 max-w-none space-y-6 text-[15px] leading-relaxed">
               <h2 className="text-lg font-semibold tracking-tight">
                 Angaben gemäß § 5 TMG
@@ -50,9 +40,7 @@ export default function ImpressumPage() {
                 <br />
                 Inhaber: Nadim Nauroz
                 <br />
-                [BITTE ERGÄNZEN: Straße und Hausnummer]
-                <br />
-                [BITTE ERGÄNZEN: PLZ Ort]
+                Anschrift: folgt in Kürze
                 <br />
                 Deutschland
               </p>
@@ -79,11 +67,7 @@ export default function ImpressumPage() {
               <h2 className="text-lg font-semibold tracking-tight">
                 Umsatzsteuer-ID
               </h2>
-              <p className="text-muted-foreground">
-                [BITTE ERGÄNZEN: Umsatzsteuer-Identifikationsnummer nach § 27 a
-                UStG — ODER falls Kleinunternehmer: „Gemäß § 19 UStG wird keine
-                Umsatzsteuer ausgewiesen."]
-              </p>
+              <p className="text-muted-foreground">folgt in Kürze</p>
 
               <h2 className="text-lg font-semibold tracking-tight">
                 Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
@@ -91,7 +75,7 @@ export default function ImpressumPage() {
               <p className="text-muted-foreground">
                 Nadim Nauroz
                 <br />
-                [Anschrift wie oben]
+                Anschrift: folgt in Kürze
               </p>
 
               <h2 className="text-lg font-semibold tracking-tight">
