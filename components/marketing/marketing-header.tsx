@@ -111,13 +111,14 @@ export function MarketingHeader({
           <SitaloLogo size="md" priority />
         </Link>
 
-        {/* Desktop nav */}
+        {/* Desktop nav — Gold-Underline-Animation auf Hover über das
+            ::after-Pseudo-Element via .nav-link-underline (globals.css). */}
         <nav className="hidden items-center gap-1 text-sm md:flex">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-muted-foreground hover:text-foreground rounded-full px-3 py-2 transition-colors"
+              className="nav-link-underline text-muted-foreground hover:text-foreground relative rounded-full px-3 py-2 transition-colors"
             >
               {item.label}
             </Link>

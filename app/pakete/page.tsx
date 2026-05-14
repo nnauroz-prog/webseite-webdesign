@@ -142,7 +142,11 @@ function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <span
+            aria-hidden="true"
+            className="bg-gold gold-pulse inline-block h-1 w-6"
+          />
           Pakete & Preise
         </p>
         <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[6rem]">
@@ -156,6 +160,22 @@ function Hero() {
           Einmalige Erstellung, dann ein fairer Monatsbeitrag. Was Sie
           nicht brauchen, zahlen Sie nicht.
         </p>
+        {/* Drei harte Fakten als Sub-Statement — gibt Vertrauen
+            direkt unter der Headline, bevor der Besucher scrollt. */}
+        <ul className="text-muted-foreground mx-auto mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
+          <li className="inline-flex items-center gap-2">
+            <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+            Live in 1–2 Werktagen
+          </li>
+          <li className="inline-flex items-center gap-2">
+            <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+            Hosting in der EU
+          </li>
+          <li className="inline-flex items-center gap-2">
+            <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+            Monatlich kündbar
+          </li>
+        </ul>
         {/* Anchor strip — quick jumps */}
         <nav className="mt-12 flex flex-wrap justify-center gap-2 sm:gap-3">
           {PACKAGES.map((p) => (

@@ -6,6 +6,7 @@ import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
+import { FactsStrip } from "@/components/marketing/facts-strip";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
@@ -138,6 +139,9 @@ export default function HomePage() {
       <MarketingHeader />
       <main id="main" className="flex-1">
         <Hero />
+        <RevealOnScroll>
+          <FactsStrip />
+        </RevealOnScroll>
         <RevealOnScroll>
           <PersonalNote />
         </RevealOnScroll>
