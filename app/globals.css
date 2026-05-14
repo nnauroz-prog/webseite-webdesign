@@ -174,6 +174,50 @@ html {
   }
 }
 
+/* Word-by-Word-Reveal für Headlines.
+   Jeder Span bekommt --word-delay über inline-style.
+   Bei prefers-reduced-motion erscheinen alle Wörter sofort. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-word {
+    opacity: 0;
+    transform: translateY(0.4em);
+    animation: word-reveal 720ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--word-delay, 0ms);
+  }
+  @keyframes word-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Sanftes Atmen der Gold-Akzent-Striche und -Punkte.
+   Klasse `.gold-pulse` an `<span class="bg-gold ...">` anhängen,
+   dann pulst die Opazität ganz leicht im Loop. */
+@media (prefers-reduced-motion: no-preference) {
+  .gold-pulse {
+    animation: gold-pulse 4.2s ease-in-out infinite;
+  }
+  @keyframes gold-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+}
+
+/* Marquee pausiert beim Hover über dem Marquee-Streifen.
+   `.marquee-pause-on-hover` auf den Container, dann stoppt der
+   Loop in den Kindern (`.marquee-track`), solange die Maus drüber
+   schwebt. */
+.marquee-pause-on-hover:hover .marquee-track {
+  animation-play-state: paused;
+}
+
 /* Parallax-Bewegung für Hero-Bilder via ParallaxImage-Komponente.
    Die Komponente schreibt --parallax-y in px. Das innere div wird
    leicht überskaliert, damit der Versatz keine Kanten zeigt. */

@@ -18,7 +18,7 @@ export function BranchenMarquee() {
   return (
     <div
       aria-hidden="true"
-      className="border-border/40 bg-foreground text-background relative overflow-hidden border-y"
+      className="marquee-pause-on-hover border-border/40 bg-foreground text-background relative overflow-hidden border-y"
     >
       {/* Sanftes Fade an den Rändern, damit die Laufschrift nicht
           abrupt am Viewport-Rand stoppt. */}

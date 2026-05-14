@@ -9,6 +9,7 @@ import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
+import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Promises } from "@/components/marketing/promises";
@@ -229,36 +230,29 @@ function Hero() {
             {/* Staggered Reveal: jede Zeile fadet leicht versetzt rein —
                 wirkt wie ein bewusst gesetztes Layout, nicht wie ein
                 pop-in. Delays kumulieren über die CSS-Variable. */}
-            <p
-              className="reveal text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
-              style={{ "--reveal-delay": "0ms" } as React.CSSProperties}
-            >
+            <p className="reveal text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
               <span
                 aria-hidden="true"
-                className="bg-gold inline-block h-1 w-6"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
               />
               Eine kleine Werkstatt in Hamburg
             </p>
-            <h1
-              className="reveal mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]"
-              style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
-            >
-              Wir bauen{" "}
-              <span className="serif-italic text-muted-foreground font-normal">
-                Websites
-              </span>
-              <br />
-              für Hamburger{" "}
-              <span className="serif-italic text-muted-foreground font-normal">
-                Unternehmen
-              </span>
-              <span className="serif-italic text-muted-foreground font-normal">
-                .
-              </span>
+            <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
+              <WordReveal step={75} delay={120}>
+                {"Wir bauen "}
+                <span className="serif-italic text-muted-foreground font-normal">
+                  Websites
+                </span>
+                <br />
+                {"für Hamburger "}
+                <span className="serif-italic text-muted-foreground font-normal">
+                  Unternehmen.
+                </span>
+              </WordReveal>
             </h1>
             <p
               className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
-              style={{ "--reveal-delay": "180ms" } as React.CSSProperties}
+              style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
               Kein Konzern, kein Callcenter, kein anonymer Vertrieb. Sie
               schicken uns drei Sachen — Logo, Bilder, ein paar Sätze —
@@ -267,7 +261,7 @@ function Hero() {
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
-              style={{ "--reveal-delay": "260ms" } as React.CSSProperties}
+              style={{ "--reveal-delay": "1100ms" } as React.CSSProperties}
             >
               <MagneticButton
                 href="/anfrage"
@@ -314,7 +308,7 @@ function Hero() {
                 <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
                   <span
                     aria-hidden="true"
-                    className="bg-gold inline-block h-1 w-5"
+                    className="bg-gold gold-pulse inline-block h-1 w-5"
                   />
                   Sitalo Werkstatt · Hamburg
                 </figcaption>
@@ -342,6 +336,10 @@ function PersonalNote() {
         aria-hidden="true"
         className="bg-gold/8 pointer-events-none absolute bottom-0 left-[-10%] h-[24rem] w-[24rem] rounded-full blur-[120px]"
       />
+      {/* Cursor-aware Gold-Halo — folgt der Maus über dem dunklen
+          Block. Setzt die Brand-Atmosphäre fort und gibt der
+          ansonsten ruhigen Quote-Sektion Leben auf Desktop. */}
+      <CursorSpotlight />
       {/* Dezente vertikale Linien als Editorial-Marker */}
       <div
         aria-hidden="true"
@@ -349,7 +347,10 @@ function PersonalNote() {
       />
       <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="flex items-center gap-3">
-          <span className="bg-gold/60 inline-block h-1 w-8" aria-hidden="true" />
+          <span
+            className="bg-gold/60 gold-pulse inline-block h-1 w-8"
+            aria-hidden="true"
+          />
           <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
             Aus Hamburg
           </p>
