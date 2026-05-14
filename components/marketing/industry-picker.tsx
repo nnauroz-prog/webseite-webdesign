@@ -271,59 +271,16 @@ export function IndustryPicker() {
           </div>
         </div>
 
-        {/* Detail-Karte — bei Tab-Wechsel komplett neu gemountet → Crossfade. */}
+        {/* Detail-Karte — bei Tab-Wechsel komplett neu gemountet → Crossfade.
+            Auf Mobile zeigt das Mockup ZUERST, damit der Besucher direkt
+            visuell sieht, was er für seine Branche bekommt; Text + Bullets
+            kommen darunter. Auf Desktop bleibt: Text links, Mockup rechts. */}
         <div
           key={selected.slug}
-          className="industry-fade mt-14 grid items-start gap-10 lg:grid-cols-[1fr_1.25fr] lg:gap-16"
+          className="industry-fade mt-12 grid items-start gap-10 sm:mt-14 lg:grid-cols-[1fr_1.25fr] lg:gap-16"
         >
-          {/* Linke Spalte: Text + Bullets + CTA */}
-          <div className="flex flex-col">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em]">
-              <span
-                aria-hidden="true"
-                className="bg-gold inline-block h-1 w-6"
-              />
-              {selected.label}
-            </p>
-            <h3 className="mt-5 text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
-              {selected.headline}
-            </h3>
-            <p className="text-muted-foreground mt-5 max-w-md text-pretty text-base leading-relaxed">
-              {selected.body}
-            </p>
-            <ul className="divide-border/60 mt-8 divide-y border-y">
-              {selected.bullets.map((bullet) => (
-                <li
-                  key={bullet}
-                  className="text-foreground/85 flex items-baseline gap-4 py-3.5 text-[15px] leading-relaxed"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="bg-foreground/40 mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
-                  />
-                  <span>{bullet}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-              <Link
-                href={`/anfrage?branche=${selected.slug}`}
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-              >
-                Diese Seite anfragen
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-              <Link
-                href="/branchen"
-                className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center text-[14px] font-medium underline-offset-4 hover:underline"
-              >
-                Branche im Detail
-              </Link>
-            </div>
-          </div>
-
-          {/* Rechte Spalte: Mockup mit Atmosphäre-Detail */}
-          <div className="relative">
+          {/* Mockup-Spalte — auf Mobile zuerst (order-1), auf Desktop rechts (lg:order-2). */}
+          <div className="relative order-1 lg:order-2">
             <div className="border-border/50 bg-card/60 ring-foreground/5 relative aspect-[4/3] overflow-hidden rounded-3xl border shadow-[0_30px_80px_-40px_rgb(0_0_0/0.4)] ring-1">
               <Image
                 src={selected.image.src}
@@ -357,6 +314,58 @@ export function IndustryPicker() {
             <p className="text-muted-foreground/80 mt-10 text-center text-[12px] tracking-[0.18em] uppercase sm:mt-12 sm:text-left">
               Beispiel-Layout · {selected.label}
             </p>
+          </div>
+
+          {/* Text-Spalte — auf Mobile unter dem Mockup (order-2),
+              auf Desktop links (lg:order-1). Bullets als nummerierte
+              Editorial-Kacheln statt Standard-Dot-Liste. */}
+          <div className="order-2 flex flex-col lg:order-1">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em]">
+              <span
+                aria-hidden="true"
+                className="bg-gold inline-block h-1 w-6"
+              />
+              {selected.label}
+            </p>
+            <h3 className="mt-5 text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-[2.75rem]">
+              {selected.headline}
+            </h3>
+            <p className="text-muted-foreground mt-5 max-w-md text-pretty text-base leading-relaxed">
+              {selected.body}
+            </p>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-1">
+              {selected.bullets.map((bullet, i) => (
+                <li
+                  key={bullet}
+                  className="border-border/60 bg-card/50 ring-foreground/5 flex items-start gap-4 rounded-2xl border px-4 py-3.5 ring-1 transition-shadow hover:shadow-[0_10px_24px_-16px_rgb(0_0_0/0.25)]"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="serif text-foreground/30 mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center text-[1.4rem] font-normal leading-none tracking-[-0.04em]"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-foreground/85 text-[15px] leading-relaxed">
+                    {bullet}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <Link
+                href={`/anfrage?branche=${selected.slug}`}
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
+              >
+                Diese Seite anfragen
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <Link
+                href="/branchen"
+                className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center text-[14px] font-medium underline-offset-4 hover:underline"
+              >
+                Branche im Detail
+              </Link>
+            </div>
           </div>
         </div>
 
