@@ -7,7 +7,6 @@ import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
-import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
 import { WordReveal } from "@/components/marketing/word-reveal";
@@ -153,9 +152,11 @@ export default function HomePage() {
           <PersonalNote />
         </RevealOnScroll>
         <BranchenMarquee />
-        <RevealOnScroll>
-          <IndustryPicker />
-        </RevealOnScroll>
+        {/* IndustryPicker raus — die ExamplesGallery zeigt jetzt
+            in asymmetrischer Magazin-Form alle 10 Branchen mit Bild
+            und Caption. Tab-Picker mit State wäre redundant und
+            wirkt wie eine Standard-„Select your industry"-Komponente
+            aus dem AI-Template-Baukasten. */}
         <RevealOnScroll>
           <ExamplesGallery />
         </RevealOnScroll>
@@ -444,7 +445,9 @@ function PersonalNote() {
 }
 
 /* ============================================================
- * Steps — three editorial cells, oversized numerals
+ * Steps — Editorial-Spread mit übergroßen Numeralen, jede Stufe
+ * als eigene Zeile mit alternierender Ausrichtung. Statt 3-Col-
+ * Timeline ein vertikaler Lesefluss, der Print-DNA hat.
  * ============================================================ */
 function Steps() {
   return (
@@ -452,57 +455,84 @@ function Steps() {
       id="ablauf"
       className="border-border/40 relative overflow-hidden border-t border-b scroll-mt-20"
     >
-      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          In drei Schritten
-        </p>
-        <div className="mt-6 max-w-2xl">
-          <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            Vom „Hallo"
-            <br />
-            <span className="serif-italic text-muted-foreground font-normal">
-              zur Live-Seite — in 48 Stunden.
-            </span>
-          </h2>
+      <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
+        <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
+              />
+              In drei Schritten
+            </p>
+            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+              Vom „Hallo"
+              <br />
+              <span className="serif-italic text-muted-foreground font-normal">
+                zur Live-Seite — in 48 Stunden.
+              </span>
+            </h2>
+          </div>
+          <p className="text-foreground/75 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+            Drei Etappen, jede für sich überschaubar. Sie bekommen nach
+            jeder Etappe ein konkretes Ergebnis in der Hand, kein
+            unsichtbares Status-Update aus einem Project-Tool.
+          </p>
         </div>
-        <ol className="steps-timeline relative mt-16 grid gap-x-10 gap-y-14 sm:mt-24 sm:grid-cols-3">
-          {/* Statische Hintergrund-Linie als sanfter Anker.
-              Die animierte Gold-Linie liegt darüber und füllt sich
-              beim Scrollen. Beide nur auf Desktop sichtbar. */}
-          <div
-            aria-hidden="true"
-            className="border-border/60 absolute right-0 left-0 top-12 hidden border-t border-dashed sm:block"
-            style={{ marginLeft: "12%", marginRight: "12%" }}
-          />
-          <div
-            aria-hidden="true"
-            className="steps-progress bg-gold absolute top-12 left-0 hidden h-px origin-left sm:block"
-            style={{ marginLeft: "12%", marginRight: "12%", right: 0 }}
-          />
-          {STEPS.map(({ n, icon: Icon, title, body }) => (
-            <li key={n} className="relative flex flex-col">
-              <div className="flex items-start justify-between">
-                <span className="serif text-foreground/15 text-[8rem] font-normal leading-none tracking-[-0.04em] sm:text-[10rem]">
-                  {n}
-                </span>
-                <span className="bg-foreground text-background ring-background relative z-10 mt-2 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-[0_8px_20px_-6px_rgb(0_0_0/0.3)] ring-4 sm:h-14 sm:w-14">
-                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
-                </span>
-              </div>
-              <h3 className="text-foreground mt-4 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
-                {title}
-              </h3>
-              <p className="text-muted-foreground mt-3 text-[15px] leading-relaxed sm:text-base">
-                {body}
-              </p>
-            </li>
-          ))}
+
+        {/* Drei Stufen als alternierende Magazin-Zeilen.
+            Bewusst kein 3-Spalten-Grid mit Timeline-Linie — das ist
+            die typische Standard-„Process"-Sektion auf AI-Templates.
+            Stattdessen vertikaler Lesefluss mit übergroßen Numeralen. */}
+        <ol className="mt-20 space-y-16 sm:mt-24 sm:space-y-20 lg:space-y-24">
+          {STEPS.map(({ n, icon: Icon, title, body }, i) => {
+            const flip = i === 1; // mittlere Stufe gespiegelt
+            return (
+              <li
+                key={n}
+                className="relative grid items-start gap-6 sm:grid-cols-[auto_1fr] sm:gap-10 lg:gap-14"
+              >
+                {/* Numeral-Spalte links — riesiges Serif, dezent */}
+                <div className={flip ? "sm:order-2 sm:text-right" : ""}>
+                  <span className="serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
+                    {n}
+                  </span>
+                </div>
+                {/* Text + Icon */}
+                <div
+                  className={
+                    flip
+                      ? "sm:order-1 sm:pr-6 sm:text-right"
+                      : "sm:pl-2"
+                  }
+                >
+                  <div
+                    className={
+                      flip
+                        ? "flex items-center gap-3 sm:justify-end"
+                        : "flex items-center gap-3"
+                    }
+                  >
+                    <span className="bg-foreground/[0.04] text-foreground/80 inline-flex h-10 w-10 items-center justify-center rounded-xl">
+                      <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+                    </span>
+                    <span className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">
+                      Etappe · {n}
+                    </span>
+                  </div>
+                  <h3 className="serif text-foreground mt-5 text-balance text-3xl font-normal leading-[1.15] tracking-[-0.02em] sm:text-4xl lg:text-[2.75rem]">
+                    {title}
+                  </h3>
+                  <p className="text-foreground/80 mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
+                    {body}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
         </ol>
-        <div className="mt-16 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+
+        <div className="mt-20 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           <Link
             href="/anfrage"
             className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
