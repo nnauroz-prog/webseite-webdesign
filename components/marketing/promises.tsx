@@ -29,94 +29,66 @@ export function Promises() {
             writingMode: "vertical-rl",
           }}
         >
-          § 04 · Die fünf Zusagen
+          § 04 · Was wir zusagen
         </p>
       </div>
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
+        {/* Bewusst keine Eyebrow-Zeile hier — bricht das gleiche
+            Header-Schema, das jede andere Sektion hat. */}
         <div className="max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
-            />
-            Worauf Sie sich verlassen können
-          </p>
-          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            Fünf Zusagen.
-            <br />
-            <span className="serif-italic text-muted-foreground font-normal">
-              Kein Kleingedrucktes.
-            </span>
+          <h2 className="text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02]">
+            Sie wissen, was Sie kriegen. Vor der ersten Rechnung.
           </h2>
         </div>
 
         <p className="text-foreground/85 mt-14 max-w-3xl text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
           <span className="serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
-            E
+            S
           </span>
-          rstens: Sie schreiben uns, und{" "}
-          <strong className="text-foreground font-semibold">
-            binnen 24 Stunden
-          </strong>{" "}
-          haben Sie eine Antwort von uns persönlich. Meistens
-          deutlich schneller — kein Ticket, kein Support-Chat,
-          niemand der „Ihre Anfrage wurde weitergeleitet" schreibt.
-          Sie reden direkt mit den Leuten, die Ihre Seite bauen.
+          ie schreiben uns. Eine Mail, ein Anruf, was Ihnen lieber
+          ist. Spätestens am nächsten Tag haben Sie eine Antwort —
+          von uns, nicht von einem Ticket-System. Wir reden mit
+          Ihnen, bevor wir irgendwas anfangen. Wenn es passt, gut.
+          Wenn nicht, sagen wir's auch.
         </p>
 
         <div className="mt-10 grid gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-6">
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              <strong className="text-ink-petrol font-semibold">
-                Zweitens:
-              </strong>{" "}
-              bevor wir loslegen, wissen Sie genau, was es kostet.
-              Festpreis vorab, schwarz auf weiß. Keine Nachträge,
-              keine bösen Überraschungen am Ende. Wenn sich der
-              Umfang während des Projekts ändert, sprechen wir
-              darüber — bevor wir etwas berechnen.
+              Vorher gibt's einen Festpreis. Schwarz auf weiß, keine
+              Nachträge am Ende. Wenn sich im Projekt was ändert,
+              reden wir vorher drüber — nicht hinterher auf der
+              Rechnung. So einfach soll's sein.
             </p>
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              <strong className="text-ink-petrol font-semibold">
-                Drittens:
-              </strong>{" "}
-              eine saubere Korrekturrunde, gesammelt. Sie gehen die
-              Seite in Ruhe durch, schicken uns alle Änderungswünsche
-              in einer Mail — nicht zwölf Stück über zwei Wochen
-              verteilt. Wir setzen das in einem Rutsch um. Erst dann
-              geht die Seite live.
+              Eine ordentliche Korrekturrunde, gesammelt. Sie gehen
+              die Seite in Ruhe durch und schicken uns alles auf
+              einmal. Nicht zwölf Mails über zwei Wochen. Wir setzen
+              das in einem Rutsch um, dann geht die Seite live.
             </p>
           </div>
           <div className="space-y-6">
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              <strong className="text-ink-petrol font-semibold">
-                Viertens:
-              </strong>{" "}
-              nach dem Launch bleiben wir Ihr Ansprechpartner. Für
-              Hosting, kleine Änderungen, Erweiterungen. Sie schreiben
-              uns eine Mail, wir kümmern uns. Kein Wechsel zwischen
-              drei Dienstleistern, kein „dafür sind wir nicht
-              zuständig".
+              Nach dem Launch sind wir nicht weg. Hosting, kleine
+              Änderungen, neue Texte, wenn sich was tut — Sie
+              schreiben uns eine Mail, wir kümmern uns. Kein
+              „dafür sind wir nicht zuständig", weil's nur uns gibt.
             </p>
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              <strong className="text-ink-petrol font-semibold">
-                Fünftens:
-              </strong>{" "}
-              wenn etwas nicht passt, sagen Sie es uns. Wir bessern
-              nach, bis es stimmt — innerhalb des Vereinbarten, ohne
-              kleingedruckte Wenns und Abers. Wir gewinnen Kunden,
-              weil unsere Arbeit passt, nicht weil sie nicht weg
-              können.
+              Und wenn was nicht passt, sagen Sie's. Wir bessern
+              nach, bis es stimmt. Wir gewinnen Kunden, weil die
+              Arbeit gut ist — nicht, weil im Kleingedruckten was
+              steht, das sie da hält.
             </p>
           </div>
         </div>
 
         <div className="border-ink-petrol/60 mt-16 max-w-4xl border-l-2 pl-6 sm:mt-20 sm:pl-10">
           <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.015em] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
-            Eine Website zu bauen ist Vertrauen,
+            Am Ende ist das hier kein Software-Projekt.
             <br />
             <span className="serif-italic text-muted-foreground">
-              keine Software-Lieferung.
+              Sondern Vertrauen, das wir nicht verlieren wollen.
             </span>
           </p>
         </div>
