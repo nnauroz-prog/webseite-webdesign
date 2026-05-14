@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -11,11 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   INQUIRY_NEEDS,
-  INQUIRY_SPECIAL_FEATURES,
   INQUIRY_TIMEFRAMES,
   type InquiryNeed,
   type InquiryPackage,
-  type InquirySpecialFeature,
 } from "@/lib/validations/inquiries";
 
 /* ---------- Static data: labels and pickable options ---------- */
@@ -30,116 +28,85 @@ const INDUSTRIES: IndustryOption[] = [
   {
     slug: "pflegedienst",
     label: "Pflegedienst",
-    body: "Leistungen, Vertrauen, Kontakt und Bewerbungen professionell darstellen.",
+    body: "Leistungen, Vertrauen, Kontakt, Bewerbungen.",
   },
   {
     slug: "arztpraxis",
     label: "Arztpraxis",
-    body: "Sprechzeiten, Leistungen und klare Patienteninformation.",
+    body: "Sprechzeiten, Leistungen, Patienteninfo.",
   },
   {
     slug: "zahnarzt",
     label: "Zahnarztpraxis",
-    body: "Behandlungen, Atmosphäre und Termin-Anfragen modern präsentiert.",
+    body: "Behandlungen, Atmosphäre, Termin-Anfragen.",
   },
   {
     slug: "friseur",
     label: "Friseur",
-    body: "Bilder, Preise und Termin-Anfragen hochwertig in Szene gesetzt.",
+    body: "Bilder, Preise, Termin-Anfragen.",
   },
   {
     slug: "kosmetik",
     label: "Kosmetikstudio",
-    body: "Behandlungen, Atmosphäre und Anfragen elegant darstellen.",
+    body: "Behandlungen, Atmosphäre, Anfragen.",
   },
   {
     slug: "cafe",
     label: "Café / Restaurant",
-    body: "Speisekarte, Öffnungszeiten und Reservierungs-Anfragen.",
+    body: "Speisekarte, Öffnungszeiten, Reservierung.",
   },
   {
     slug: "handwerker",
     label: "Handwerker",
-    body: "Leistungen, Einsatzgebiet und schnelle Kontaktmöglichkeiten.",
+    body: "Leistungen, Einsatzgebiet, Kontakt.",
   },
   {
     slug: "reinigung",
     label: "Reinigung",
-    body: "Service-Pakete, Angebotsanfrage und Erreichbarkeit klar dargestellt.",
+    body: "Service-Pakete, Angebot, Erreichbarkeit.",
   },
   {
     slug: "kanzlei",
     label: "Kanzlei",
-    body: "Rechtsgebiete, Team und vertrauliche Erstberatung.",
+    body: "Rechtsgebiete, Team, Erstberatung.",
   },
   {
     slug: "fitness",
     label: "Fitnessstudio",
-    body: "Kursplan, Probetraining und Mitgliedschafts-Anfragen ohne Hürden.",
+    body: "Kursplan, Probetraining, Mitgliedschaft.",
+  },
+  {
+    slug: "hotel",
+    label: "Boutique-Hotel",
+    body: "Zimmer, Atmosphäre, Buchungsanfrage.",
   },
   {
     slug: "sonstiges",
-    label: "Sonstiges",
-    body: "Wir bauen die Website individuell für Ihr Geschäft.",
+    label: "Andere Branche",
+    body: "Wir bauen die Seite individuell.",
   },
 ];
 
-const NEED_LABELS: Record<InquiryNeed, string> = {
-  "neue-website": "Neue Website",
-  redesign: "Redesign",
-  onepager: "Onepager",
-  mehrseitig: "Mehrseitige Website",
-  "verwaltbare-inhalte": "Verwaltbare Inhalte",
-  speisekarte: "Speisekarte / Wochenangebot",
-  bewerbungsformular: "Bewerbungsformular",
-  kontaktformular: "Kontaktformular",
-};
-
-const NEED_DETAIL: Partial<Record<InquiryNeed, string>> = {
-  "neue-website": "Komplett neuer Auftritt für Ihr Unternehmen.",
-  redesign: "Ihre bestehende Website wird modernisiert.",
-  onepager: "Alle wichtigen Infos auf einer starken Seite.",
-  mehrseitig: "Mehr Struktur für Leistungen, Team, Galerie und Kontakt.",
-};
-
-/** Subset of `INQUIRY_NEEDS` rendered as cards in step 3 — the
- *  "Website-Art"-question. The remaining slugs (Speisekarte, Bewerbungs-/
- *  Kontaktformular, Verwaltbare Inhalte) live in step 4 as features. */
-const WEBSITE_TYPE_KEYS: InquiryNeed[] = [
-  "neue-website",
-  "redesign",
-  "onepager",
-  "mehrseitig",
-];
-
-const SPECIAL_LABELS: Record<InquirySpecialFeature, string> = {
-  "verwaltbare-inhalte": "Verwaltbare Inhalte",
-  speisekarte: "Speisekarte / Wochenangebot",
-  bewerbungsformular: "Bewerbungsformular",
-  "google-maps": "Google Maps",
-  "online-reservierung": "Online-Reservierung",
-  "mehrere-unterseiten": "Mehrere Unterseiten",
-  "seo-erweiterung": "SEO-Erweiterung",
-  mehrsprachigkeit: "Mehrsprachigkeit",
-  unsicher: "Noch unsicher",
-};
-
-/** Functions card list — broader than just SPECIAL_FEATURES because
- *  the wizard step shows feature-level intent including the
- *  Kontakt/Maps basics. Each entry maps to a Formspree label. */
-const FEATURE_OPTIONS: Array<{ slug: string; label: string }> = [
-  { slug: "kontaktformular", label: "Kontaktformular" },
-  { slug: "google-maps", label: "Google Maps" },
-  { slug: "oeffnungszeiten", label: "Öffnungszeiten" },
-  { slug: "leistungen", label: "Leistungen" },
-  { slug: "galerie", label: "Galerie" },
-  { slug: "speisekarte", label: "Speisekarte / Wochenangebot" },
-  { slug: "bewerbungsformular", label: "Bewerbungsformular" },
-  { slug: "online-reservierung", label: "Online-Reservierung" },
-  { slug: "verwaltbare-inhalte", label: "Verwaltbare Inhalte" },
-  { slug: "seo-erweiterung", label: "SEO-Grundlagen" },
-  { slug: "mehrsprachigkeit", label: "Mehrsprachigkeit" },
-  { slug: "unsicher", label: "Noch unsicher" },
+const WEBSITE_TYPES: Array<{
+  slug: InquiryNeed | "unsicher";
+  title: string;
+  body: string;
+}> = [
+  {
+    slug: "neue-website",
+    title: "Neue Website",
+    body: "Ich starte komplett neu.",
+  },
+  {
+    slug: "redesign",
+    title: "Redesign",
+    body: "Meine bestehende Seite soll überarbeitet werden.",
+  },
+  {
+    slug: "unsicher",
+    title: "Noch unsicher",
+    body: "Bitte beraten Sie mich.",
+  },
 ];
 
 const TIMEFRAME_LABELS: Record<(typeof INQUIRY_TIMEFRAMES)[number], string> = {
@@ -154,60 +121,18 @@ const PACKAGE_LABELS: Record<InquiryPackage, string> = {
   starter: "Starter-Projekt",
   business: "Business-Auftritt",
   premium: "Premium-System",
-  unsicher: "Ich bin unsicher — bitte empfehlen",
+  unsicher: "Empfehlung gewünscht",
 };
-
-type PackageCard = {
-  value: InquiryPackage;
-  title: string;
-  priceLine: string;
-  description: string;
-  highlight?: boolean;
-};
-
-const PACKAGES: PackageCard[] = [
-  {
-    value: "starter",
-    title: "Starter-Projekt",
-    priceLine: "ab 499 € einmalig + ab 49 € / Monat",
-    description: "Für einfache professionelle Onepager.",
-  },
-  {
-    value: "business",
-    title: "Business-Auftritt",
-    priceLine: "ab 899 € einmalig + ab 79 € / Monat",
-    description:
-      "Für hochwertige Unternehmenswebseiten mit mehreren Bereichen.",
-    highlight: true,
-  },
-  {
-    value: "premium",
-    title: "Premium-System",
-    priceLine: "ab 1.499 € einmalig + ab 129 € / Monat",
-    description:
-      "Für individuelle Websites mit Formularsystem oder verwaltbaren Inhalten.",
-  },
-  {
-    value: "unsicher",
-    title: "Ich bin unsicher",
-    priceLine: "Bitte empfehlen",
-    description: "Wir prüfen Ihre Angaben und schlagen das passende Paket vor.",
-  },
-];
 
 /* ---------- Wizard state ---------- */
 
 type WizardData = {
   industry: string | null;
-  websiteTypes: string[];
-  features: string[];
-  selectedPackage: InquiryPackage | null;
+  websiteType: string | null;
   name: string;
   company: string;
   email: string;
   phone: string;
-  hasWebsite: boolean;
-  currentWebsite: string;
   timeframe: (typeof INQUIRY_TIMEFRAMES)[number] | "";
   message: string;
   consent: boolean;
@@ -221,17 +146,8 @@ type Status =
   | { kind: "success" }
   | { kind: "error"; message: string };
 
-const TOTAL_STEPS = 7;
-
-const STEP_TITLES = [
-  "Willkommen",
-  "Branche",
-  "Website-Art",
-  "Funktionen",
-  "Paket",
-  "Kontakt",
-  "Zusammenfassung",
-];
+const TOTAL_STEPS = 3;
+const STEP_TITLES = ["Vorhaben", "Kontakt", "Absenden"];
 
 /* ---------- Component ---------- */
 
@@ -246,28 +162,20 @@ export function InquiryForm({
   initialMessage?: string;
   formspreeId?: string;
 }) {
-  // Bekannten Industry-Slug vorvalidieren (sonst startet der Wizard
-  // mit garbage und der User merkts spät).
+  // Bekannten Industry-Slug vorvalidieren — sonst startet der Wizard
+  // mit garbage und der User merkts spät.
   const validIndustry =
-    initialIndustry &&
-    INDUSTRIES.some((i) => i.slug === initialIndustry)
+    initialIndustry && INDUSTRIES.some((i) => i.slug === initialIndustry)
       ? initialIndustry
       : null;
-  // Wenn Industrie schon vorausgewählt ist, springen wir auf
-  // Schritt 2 (Website-Art) — der User soll nicht nochmal seine
-  // Branche bestätigen.
-  const [step, setStep] = useState(validIndustry ? 2 : 0);
+  const [step, setStep] = useState(0);
   const [data, setData] = useState<WizardData>({
     industry: validIndustry,
-    websiteTypes: [],
-    features: [],
-    selectedPackage: initialPackage ?? null,
+    websiteType: null,
     name: "",
     company: "",
     email: "",
     phone: "",
-    hasWebsite: false,
-    currentWebsite: "",
     timeframe: "",
     message: initialMessage ?? "",
     consent: false,
@@ -278,32 +186,15 @@ export function InquiryForm({
   const update = <K extends keyof WizardData>(key: K, value: WizardData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
 
-  const toggleInArray = (key: "websiteTypes" | "features", value: string) =>
-    setData((d) => {
-      const list = d[key];
-      return {
-        ...d,
-        [key]: list.includes(value)
-          ? list.filter((v) => v !== value)
-          : [...list, value],
-      };
-    });
-
   const canAdvance = (() => {
     switch (step) {
       case 0:
-        return true;
+        return data.industry !== null && data.websiteType !== null;
       case 1:
-        return data.industry !== null;
+        return (
+          data.name.trim().length >= 2 && /\S+@\S+\.\S+/.test(data.email)
+        );
       case 2:
-        return data.websiteTypes.length > 0;
-      case 3:
-        return true; // features optional
-      case 4:
-        return data.selectedPackage !== null;
-      case 5:
-        return data.name.trim().length >= 2 && /\S+@\S+\.\S+/.test(data.email);
-      case 6:
         return data.consent;
       default:
         return false;
@@ -332,7 +223,7 @@ export function InquiryForm({
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(buildPayload(data)),
+        body: JSON.stringify(buildPayload(data, initialPackage)),
       });
       if (response.ok) {
         setStatus({ kind: "success" });
@@ -360,26 +251,24 @@ export function InquiryForm({
     return <SuccessScreen />;
   }
 
-  const prefillLabel = (() => {
-    const parts: string[] = [];
-    if (validIndustry) {
-      const ind = INDUSTRIES.find((i) => i.slug === validIndustry);
-      if (ind) parts.push(ind.label);
-    }
-    if (initialMessage) {
-      parts.push(`„${initialMessage.slice(0, 80)}${initialMessage.length > 80 ? "…" : ""}"`);
-    }
-    return parts.length > 0 ? parts.join(" · ") : null;
-  })();
+  // Wenn Branche oder Paket per URL gesetzt: kompaktes Prefill-Banner.
+  const prefillParts: string[] = [];
+  if (validIndustry) {
+    const ind = INDUSTRIES.find((i) => i.slug === validIndustry);
+    if (ind) prefillParts.push(`Branche: ${ind.label}`);
+  }
+  if (initialPackage) {
+    prefillParts.push(`Paket: ${PACKAGE_LABELS[initialPackage]}`);
+  }
 
   return (
     <div className="bg-card ring-border/50 rounded-3xl border p-6 shadow-xl ring-1 sm:p-8 lg:p-10">
-      {prefillLabel ? (
+      {prefillParts.length > 0 ? (
         <div className="bg-accent/40 text-foreground/85 border-border/60 mb-6 rounded-2xl border px-4 py-3 text-sm leading-relaxed">
           <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
             Übernommen
           </span>
-          <span className="ml-2">{prefillLabel}</span>
+          <span className="ml-2">{prefillParts.join(" · ")}</span>
         </div>
       ) : null}
 
@@ -418,40 +307,21 @@ export function InquiryForm({
         </Alert>
       )}
 
-      <div className="mt-8 min-h-[24rem]">
+      <div className="mt-8 min-h-[22rem]">
         {step === 0 && (
-          <StepWelcome onStart={() => setStep(1)} />
-        )}
-        {step === 1 && (
-          <StepIndustry
-            value={data.industry}
-            onChange={(v) => update("industry", v)}
+          <StepVorhaben
+            industry={data.industry}
+            websiteType={data.websiteType}
+            onIndustryChange={(v) => update("industry", v)}
+            onWebsiteTypeChange={(v) => update("websiteType", v)}
           />
         )}
-        {step === 2 && (
-          <StepWebsiteType
-            values={data.websiteTypes}
-            onToggle={(v) => toggleInArray("websiteTypes", v)}
-          />
-        )}
-        {step === 3 && (
-          <StepFeatures
-            values={data.features}
-            onToggle={(v) => toggleInArray("features", v)}
-          />
-        )}
-        {step === 4 && (
-          <StepPackage
-            value={data.selectedPackage}
-            onChange={(v) => update("selectedPackage", v)}
-          />
-        )}
-        {step === 5 && <StepContact data={data} onChange={update} />}
-        {step === 6 && <StepSummary data={data} onChange={update} />}
+        {step === 1 && <StepKontakt data={data} onChange={update} />}
+        {step === 2 && <StepAbsenden data={data} onChange={update} />}
       </div>
 
-      {step > 0 && (
-        <div className="border-border/60 mt-8 flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-border/60 mt-8 flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
+        {step > 0 ? (
           <Button
             type="button"
             variant="ghost"
@@ -461,30 +331,32 @@ export function InquiryForm({
             <ArrowLeft className="mr-1.5 h-4 w-4" />
             Zurück
           </Button>
-          {step < TOTAL_STEPS - 1 ? (
-            <Button
-              type="button"
-              disabled={!canAdvance}
-              onClick={() => setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1))}
-              className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
-            >
-              Weiter
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              disabled={!canAdvance || status.kind === "submitting"}
-              onClick={submit}
-              className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
-            >
-              {status.kind === "submitting"
-                ? "Wird gesendet …"
-                : "Anfrage verbindlich senden"}
-            </Button>
-          )}
-        </div>
-      )}
+        ) : (
+          <span />
+        )}
+        {step < TOTAL_STEPS - 1 ? (
+          <Button
+            type="button"
+            disabled={!canAdvance}
+            onClick={() => setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1))}
+            className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
+          >
+            Weiter
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            disabled={!canAdvance || status.kind === "submitting"}
+            onClick={submit}
+            className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
+          >
+            {status.kind === "submitting"
+              ? "Wird gesendet …"
+              : "Anfrage senden"}
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
@@ -519,252 +391,98 @@ function ProgressHeader({
   );
 }
 
-/* ---------- Step components ---------- */
+/* ---------- Steps ---------- */
 
-function StepWelcome({ onStart }: { onStart: () => void }) {
+function StepVorhaben({
+  industry,
+  websiteType,
+  onIndustryChange,
+  onWebsiteTypeChange,
+}: {
+  industry: string | null;
+  websiteType: string | null;
+  onIndustryChange: (v: string) => void;
+  onWebsiteTypeChange: (v: string) => void;
+}) {
   return (
-    <div className="text-center">
-      <div className="bg-primary/10 text-primary mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full">
-        <Sparkles className="h-5 w-5" />
+    <div className="space-y-10">
+      <div>
+        <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
+          Für welche Branche soll die Seite sein?
+        </h2>
+        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+          Wählen Sie das, was am nächsten passt.
+        </p>
+        <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {INDUSTRIES.map((opt) => {
+            const active = industry === opt.slug;
+            return (
+              <li key={opt.slug}>
+                <button
+                  type="button"
+                  onClick={() => onIndustryChange(opt.slug)}
+                  aria-pressed={active}
+                  className={`w-full rounded-2xl border-2 p-4 text-left transition-all ${
+                    active
+                      ? "border-foreground bg-foreground/5 shadow-sm"
+                      : "border-border bg-background hover:border-foreground/40 hover:bg-secondary/40"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-[15px] font-semibold tracking-tight">
+                      {opt.label}
+                    </h3>
+                    <Radio active={active} />
+                  </div>
+                  <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                    {opt.body}
+                  </p>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <h2 className="mt-5 text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
-        Lassen Sie uns Ihre Website planen.
-      </h2>
-      <p className="text-muted-foreground mx-auto mt-4 max-w-md text-pretty text-base sm:text-lg">
-        Beantworten Sie ein paar kurze Fragen. Danach erhalten Sie eine klare
-        Einschätzung für Ihre neue Website.
-      </p>
 
-      <ul className="text-muted-foreground mx-auto mt-6 inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-sm">
-        <li className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="bg-primary inline-block h-1 w-1 rounded-full" />
-          Dauer ca. 2 Minuten
-        </li>
-        <li className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="bg-primary inline-block h-1 w-1 rounded-full" />
-          Keine Registrierung
-        </li>
-        <li className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="bg-primary inline-block h-1 w-1 rounded-full" />
-          Persönliche Rückmeldung
-        </li>
-      </ul>
-
-      <div className="mt-9 flex justify-center">
-        <Button
-          type="button"
-          onClick={onStart}
-          className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-8 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg"
-        >
-          Konfigurator starten
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+      <div>
+        <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
+          Was soll erstellt werden?
+        </h2>
+        <ul className="mt-6 grid gap-2 sm:grid-cols-3">
+          {WEBSITE_TYPES.map((opt) => {
+            const active = websiteType === opt.slug;
+            return (
+              <li key={opt.slug}>
+                <button
+                  type="button"
+                  onClick={() => onWebsiteTypeChange(opt.slug)}
+                  aria-pressed={active}
+                  className={`w-full rounded-2xl border-2 p-4 text-left transition-all ${
+                    active
+                      ? "border-foreground bg-foreground/5 shadow-sm"
+                      : "border-border bg-background hover:border-foreground/40 hover:bg-secondary/40"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-[15px] font-semibold tracking-tight">
+                      {opt.title}
+                    </h3>
+                    <Radio active={active} />
+                  </div>
+                  <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                    {opt.body}
+                  </p>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
 }
 
-function StepIndustry({
-  value,
-  onChange,
-}: {
-  value: string | null;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <StepFrame
-      title="Für welche Branche soll die Website erstellt werden?"
-      subtitle="Wählen Sie das, was am besten passt — Sonstiges, falls Ihre Branche nicht dabei ist."
-    >
-      <ul className="grid gap-3 sm:grid-cols-2">
-        {INDUSTRIES.map((opt) => {
-          const active = value === opt.slug;
-          return (
-            <li key={opt.slug}>
-              <button
-                type="button"
-                onClick={() => onChange(opt.slug)}
-                aria-pressed={active}
-                className={`w-full rounded-2xl border-2 p-4 text-left transition-all sm:p-5 ${
-                  active
-                    ? "border-foreground bg-foreground/5 shadow-md"
-                    : "border-border bg-background hover:border-foreground/40 hover:bg-secondary/40"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-base font-semibold tracking-tight">
-                    {opt.label}
-                  </h3>
-                  <Radio active={active} />
-                </div>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                  {opt.body}
-                </p>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </StepFrame>
-  );
-}
-
-function StepWebsiteType({
-  values,
-  onToggle,
-}: {
-  values: string[];
-  onToggle: (v: string) => void;
-}) {
-  const options: Array<{ slug: string; title: string; body: string }> = [
-    ...WEBSITE_TYPE_KEYS.map((slug) => ({
-      slug,
-      title: NEED_LABELS[slug],
-      body: NEED_DETAIL[slug] ?? "",
-    })),
-    {
-      slug: "unsicher",
-      title: "Noch unsicher",
-      body: "Wir empfehlen Ihnen die passende Lösung.",
-    },
-  ];
-  return (
-    <StepFrame
-      title="Was soll erstellt werden?"
-      subtitle="Mehrfachauswahl möglich."
-    >
-      <ul className="grid gap-3 sm:grid-cols-2">
-        {options.map((opt) => {
-          const active = values.includes(opt.slug);
-          return (
-            <li key={opt.slug}>
-              <button
-                type="button"
-                onClick={() => onToggle(opt.slug)}
-                aria-pressed={active}
-                className={`w-full rounded-2xl border-2 p-4 text-left transition-all sm:p-5 ${
-                  active
-                    ? "border-foreground bg-foreground/5 shadow-md"
-                    : "border-border bg-background hover:border-foreground/40 hover:bg-secondary/40"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-base font-semibold tracking-tight">
-                    {opt.title}
-                  </h3>
-                  <Checkbox active={active} />
-                </div>
-                {opt.body ? (
-                  <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                    {opt.body}
-                  </p>
-                ) : null}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </StepFrame>
-  );
-}
-
-function StepFeatures({
-  values,
-  onToggle,
-}: {
-  values: string[];
-  onToggle: (v: string) => void;
-}) {
-  return (
-    <StepFrame
-      title="Welche Funktionen wünschen Sie?"
-      subtitle="Mehrfachauswahl möglich. Sie müssen nicht alles genau wissen — wir prüfen Ihre Auswahl und empfehlen die passende Umsetzung."
-    >
-      <div className="flex flex-wrap gap-2">
-        {FEATURE_OPTIONS.map((opt) => {
-          const active = values.includes(opt.slug);
-          return (
-            <button
-              key={opt.slug}
-              type="button"
-              onClick={() => onToggle(opt.slug)}
-              aria-pressed={active}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
-                active
-                  ? "border-foreground bg-foreground text-background shadow-md"
-                  : "border-border bg-card hover:border-foreground/40 hover:bg-secondary"
-              }`}
-            >
-              {active ? <Check className="h-3.5 w-3.5" /> : null}
-              {opt.label}
-            </button>
-          );
-        })}
-      </div>
-    </StepFrame>
-  );
-}
-
-function StepPackage({
-  value,
-  onChange,
-}: {
-  value: InquiryPackage | null;
-  onChange: (v: InquiryPackage) => void;
-}) {
-  return (
-    <StepFrame
-      title="Welches Paket passt am ehesten zu Ihrem Vorhaben?"
-      subtitle="Die genannten Preise sind Einstiegspreise. Der finale Preis hängt vom Umfang ab — Sie erhalten nach Ihrer Anfrage eine klare Einschätzung."
-    >
-      <ul className="grid gap-3 sm:grid-cols-2">
-        {PACKAGES.map((pkg) => {
-          const active = value === pkg.value;
-          return (
-            <li key={pkg.value}>
-              <button
-                type="button"
-                onClick={() => onChange(pkg.value)}
-                aria-pressed={active}
-                className={`relative w-full rounded-2xl border-2 p-5 text-left transition-all ${
-                  active
-                    ? "border-foreground bg-foreground/5 shadow-md"
-                    : "border-border bg-background hover:border-foreground/40 hover:bg-secondary/40"
-                }`}
-              >
-                {pkg.highlight ? (
-                  <span className="bg-primary text-primary-foreground absolute -top-2.5 right-4 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] shadow">
-                    Beliebt
-                  </span>
-                ) : null}
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="text-base font-semibold tracking-tight">
-                      {pkg.title}
-                    </h3>
-                    <p
-                      className={`mt-1 text-xs font-medium ${
-                        active ? "text-foreground" : "text-muted-foreground"
-                      }`}
-                    >
-                      {pkg.priceLine}
-                    </p>
-                  </div>
-                  <Radio active={active} />
-                </div>
-                <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-                  {pkg.description}
-                </p>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </StepFrame>
-  );
-}
-
-function StepContact({
+function StepKontakt({
   data,
   onChange,
 }: {
@@ -772,138 +490,88 @@ function StepContact({
   onChange: <K extends keyof WizardData>(key: K, value: WizardData[K]) => void;
 }) {
   return (
-    <StepFrame
-      title="Wie können wir Sie erreichen?"
-      subtitle="Name und E-Mail reichen — alles weitere ist optional."
-    >
-      <div className="space-y-5">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field
-            label="Name"
-            required
-            value={data.name}
-            onChange={(v) => onChange("name", v)}
-            autoComplete="name"
-          />
-          <Field
-            label="Firma"
-            value={data.company}
-            onChange={(v) => onChange("company", v)}
-            autoComplete="organization"
-          />
-          <Field
-            label="E-Mail"
-            required
-            type="email"
-            value={data.email}
-            onChange={(v) => onChange("email", v)}
-            autoComplete="email"
-          />
-          <Field
-            label="Telefon"
-            type="tel"
-            value={data.phone}
-            onChange={(v) => onChange("phone", v)}
-            autoComplete="tel"
+    <div>
+      <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
+        Wie können wir Sie erreichen?
+      </h2>
+      <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+        Name und E-Mail reichen — alles andere ist optional.
+      </p>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <Field
+          label="Name"
+          required
+          value={data.name}
+          onChange={(v) => onChange("name", v)}
+          autoComplete="name"
+        />
+        <Field
+          label="E-Mail"
+          required
+          type="email"
+          value={data.email}
+          onChange={(v) => onChange("email", v)}
+          autoComplete="email"
+        />
+        <Field
+          label="Telefon"
+          type="tel"
+          value={data.phone}
+          onChange={(v) => onChange("phone", v)}
+          autoComplete="tel"
+        />
+        <Field
+          label="Firma"
+          value={data.company}
+          onChange={(v) => onChange("company", v)}
+          autoComplete="organization"
+        />
+      </div>
+    </div>
+  );
+}
+
+function StepAbsenden({
+  data,
+  onChange,
+}: {
+  data: WizardData;
+  onChange: <K extends keyof WizardData>(key: K, value: WizardData[K]) => void;
+}) {
+  return (
+    <div>
+      <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
+        Möchten Sie uns noch etwas mitgeben?
+      </h2>
+      <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+        Alles freiwillig — Details klären wir gerne im Erstgespräch.
+      </p>
+
+      <div className="mt-6 space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="inq-message">
+            Nachricht
+            <span className="text-muted-foreground ml-2 text-xs font-normal">
+              (optional)
+            </span>
+          </Label>
+          <Textarea
+            id="inq-message"
+            rows={4}
+            maxLength={4000}
+            value={data.message}
+            onChange={(e) => onChange("message", e.target.value)}
+            placeholder="Was schwebt Ihnen vor? Bestehende Seite, Wunsch-Funktionen, Vorbilder, alles willkommen."
           />
         </div>
 
-        <fieldset>
-          <legend className="text-sm font-medium">Bestehende Website?</legend>
-          <div className="mt-3 flex gap-2">
-            {[
-              { value: false, label: "Nein" },
-              { value: true, label: "Ja" },
-            ].map((opt) => {
-              const active = data.hasWebsite === opt.value;
-              return (
-                <button
-                  key={opt.label}
-                  type="button"
-                  onClick={() => onChange("hasWebsite", opt.value)}
-                  aria-pressed={active}
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors ${
-                    active
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border bg-background hover:bg-secondary"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
-          {data.hasWebsite ? (
-            <div className="mt-4">
-              <Field
-                label="URL Ihrer aktuellen Website"
-                value={data.currentWebsite}
-                onChange={(v) => onChange("currentWebsite", v)}
-                placeholder="https://…"
-                autoCapitalize="none"
-                spellCheck={false}
-              />
-            </div>
-          ) : null}
-        </fieldset>
-      </div>
-    </StepFrame>
-  );
-}
-
-function StepSummary({
-  data,
-  onChange,
-}: {
-  data: WizardData;
-  onChange: <K extends keyof WizardData>(key: K, value: WizardData[K]) => void;
-}) {
-  const industryLabel =
-    INDUSTRIES.find((i) => i.slug === data.industry)?.label ?? "—";
-  const websiteTypeLabels = data.websiteTypes
-    .map((slug) =>
-      slug === "unsicher"
-        ? "Noch unsicher"
-        : NEED_LABELS[slug as InquiryNeed] ?? slug,
-    )
-    .join(", ");
-  const featureLabels = data.features
-    .map(
-      (slug) =>
-        FEATURE_OPTIONS.find((f) => f.slug === slug)?.label ?? slug,
-    )
-    .join(", ");
-  const packageLabel = data.selectedPackage
-    ? PACKAGE_LABELS[data.selectedPackage]
-    : "—";
-
-  return (
-    <StepFrame
-      title="Ihre Anfrage im Überblick"
-      subtitle="Bitte prüfen Sie die Angaben. Bei Bedarf können Sie über Zurück einzelne Schritte anpassen."
-    >
-      <dl className="border-border/60 grid grid-cols-1 gap-x-6 gap-y-3 rounded-2xl border bg-background/60 p-5 text-sm sm:grid-cols-[160px_1fr]">
-        <SummaryRow label="Branche" value={industryLabel} />
-        <SummaryRow label="Website-Art" value={websiteTypeLabels || "—"} />
-        <SummaryRow label="Funktionen" value={featureLabels || "—"} />
-        <SummaryRow label="Paket" value={packageLabel} />
-        <SummaryRow label="Name" value={data.name || "—"} />
-        {data.company ? <SummaryRow label="Firma" value={data.company} /> : null}
-        <SummaryRow label="E-Mail" value={data.email || "—"} />
-        {data.phone ? <SummaryRow label="Telefon" value={data.phone} /> : null}
-        <SummaryRow
-          label="Bestehende Website"
-          value={
-            data.hasWebsite
-              ? data.currentWebsite || "Ja"
-              : "Nein"
-          }
-        />
-      </dl>
-
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="inq-timeframe">Wunschzeitraum</Label>
+          <Label htmlFor="inq-timeframe">
+            Wunschzeitraum
+            <span className="text-muted-foreground ml-2 text-xs font-normal">
+              (optional)
+            </span>
+          </Label>
           <select
             id="inq-timeframe"
             value={data.timeframe}
@@ -925,24 +593,7 @@ function StepSummary({
         </div>
       </div>
 
-      <div className="mt-4 space-y-2">
-        <Label htmlFor="inq-message">
-          Nachricht
-          <span className="text-muted-foreground ml-2 text-xs font-normal">
-            (optional)
-          </span>
-        </Label>
-        <Textarea
-          id="inq-message"
-          rows={3}
-          maxLength={4000}
-          value={data.message}
-          onChange={(e) => onChange("message", e.target.value)}
-          placeholder="Gibt es noch etwas, das wir wissen sollten?"
-        />
-      </div>
-
-      <label className="mt-5 flex items-start gap-3 text-sm">
+      <label className="mt-7 flex items-start gap-3 text-sm">
         <input
           type="checkbox"
           checked={data.consent}
@@ -960,10 +611,10 @@ function StepSummary({
       </label>
 
       <p className="text-muted-foreground mt-4 text-xs leading-relaxed">
-        Sie erhalten keine automatische Rechnung. Wir melden uns zunächst mit
-        einer persönlichen Einschätzung.
+        Sie erhalten keine automatische Rechnung. Wir melden uns innerhalb
+        von 24 Stunden persönlich mit einer Einschätzung.
       </p>
-    </StepFrame>
+    </div>
   );
 }
 
@@ -979,11 +630,12 @@ function SuccessScreen() {
         Anfrage angekommen.
       </h2>
       <p className="text-muted-foreground mt-3 text-pretty">
-        Wir haben Ihre Nachricht erhalten und melden uns zeitnah.
+        Wir haben Ihre Nachricht erhalten und melden uns innerhalb von
+        24 Stunden persönlich.
       </p>
       <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
-        In der Zwischenzeit können Sie unsere{" "}
-        <Link href="/#branchen" className="hover:text-foreground underline">
+        In der Zwischenzeit gerne unsere{" "}
+        <Link href="/branchen" className="hover:text-foreground underline">
           Branchen-Beispiele
         </Link>{" "}
         ansehen.
@@ -993,30 +645,6 @@ function SuccessScreen() {
 }
 
 /* ---------- Small UI helpers ---------- */
-
-function StepFrame({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
-        {title}
-      </h2>
-      {subtitle ? (
-        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-          {subtitle}
-        </p>
-      ) : null}
-      <div className="mt-6">{children}</div>
-    </div>
-  );
-}
 
 function Radio({ active }: { active: boolean }) {
   return (
@@ -1031,19 +659,6 @@ function Radio({ active }: { active: boolean }) {
   );
 }
 
-function Checkbox({ active }: { active: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-        active ? "border-foreground bg-foreground" : "border-border"
-      }`}
-    >
-      {active ? <Check className="text-background h-3 w-3" /> : null}
-    </span>
-  );
-}
-
 function Field({
   label,
   value,
@@ -1052,8 +667,6 @@ function Field({
   required,
   placeholder,
   autoComplete,
-  autoCapitalize,
-  spellCheck,
 }: {
   label: string;
   value: string;
@@ -1062,8 +675,6 @@ function Field({
   required?: boolean;
   placeholder?: string;
   autoComplete?: string;
-  autoCapitalize?: "none" | "sentences" | "words";
-  spellCheck?: boolean;
 }) {
   const id = `inq-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   return (
@@ -1084,54 +695,37 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        autoCapitalize={autoCapitalize}
-        spellCheck={spellCheck}
       />
     </div>
   );
 }
 
-function SummaryRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <>
-      <dt className="text-muted-foreground text-xs font-medium uppercase tracking-[0.15em] sm:self-center">
-        {label}
-      </dt>
-      <dd className="text-foreground/90 break-words text-[14px]">{value}</dd>
-    </>
-  );
-}
-
 /* ---------- Payload helpers ---------- */
 
-function buildPayload(data: WizardData): Record<string, unknown> {
+const NEED_LABELS: Record<InquiryNeed | "unsicher", string> = {
+  "neue-website": "Neue Website",
+  redesign: "Redesign",
+  onepager: "Onepager",
+  mehrseitig: "Mehrseitige Website",
+  "verwaltbare-inhalte": "Verwaltbare Inhalte",
+  speisekarte: "Speisekarte / Wochenangebot",
+  bewerbungsformular: "Bewerbungsformular",
+  kontaktformular: "Kontaktformular",
+  unsicher: "Noch unsicher",
+};
+
+function buildPayload(
+  data: WizardData,
+  initialPackage: InquiryPackage | undefined,
+): Record<string, unknown> {
   const industryLabel =
     INDUSTRIES.find((i) => i.slug === data.industry)?.label ?? "";
-  const websiteTypeLabels = data.websiteTypes
-    .map((slug) =>
-      slug === "unsicher"
-        ? "Noch unsicher"
-        : NEED_LABELS[slug as InquiryNeed] ?? slug,
-    )
-    .join(", ");
-  const featureLabels = data.features
-    .map(
-      (slug) =>
-        FEATURE_OPTIONS.find((f) => f.slug === slug)?.label ?? slug,
-    )
-    .join(", ");
-  const packageLabel = data.selectedPackage
-    ? PACKAGE_LABELS[data.selectedPackage]
+  const websiteTypeLabel = data.websiteType
+    ? NEED_LABELS[data.websiteType as InquiryNeed | "unsicher"] ??
+      data.websiteType
     : "";
-  const timeframeLabel = data.timeframe
-    ? TIMEFRAME_LABELS[data.timeframe]
-    : "";
+  const packageLabel = initialPackage ? PACKAGE_LABELS[initialPackage] : "";
+  const timeframeLabel = data.timeframe ? TIMEFRAME_LABELS[data.timeframe] : "";
 
   const payload: Record<string, unknown> = {
     Name: data.name,
@@ -1144,14 +738,9 @@ function buildPayload(data: WizardData): Record<string, unknown> {
   if (data.company) payload.Firma = data.company;
   if (industryLabel) payload.Branche = industryLabel;
   if (data.phone) payload.Telefon = data.phone;
-  payload["Bestehende Website"] = data.hasWebsite ? "Ja" : "Nein";
-  if (data.hasWebsite && data.currentWebsite)
-    payload["Website-URL"] = data.currentWebsite;
-  if (websiteTypeLabels) payload["Website-Art"] = websiteTypeLabels;
-  if (featureLabels) payload.Funktionen = featureLabels;
+  if (websiteTypeLabel) payload["Website-Art"] = websiteTypeLabel;
   if (packageLabel) payload["Paket-Interesse"] = packageLabel;
   if (timeframeLabel) payload.Wunschzeitraum = timeframeLabel;
   if (data.message) payload.Nachricht = data.message;
   return payload;
 }
-
