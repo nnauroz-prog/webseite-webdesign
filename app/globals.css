@@ -237,6 +237,25 @@ html {
   }
 }
 
+/* Gold-Underline auf Marketing-Header-Nav-Links. Animation läuft
+   beim Hover von der Mitte aus nach außen. Bewusst sehr dezent —
+   2 px hoch, ~16 px breit am Ziel. */
+.nav-link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #c9a24f;
+  transform: translateX(-50%);
+  transition: width 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 2px;
+}
+.nav-link-underline:hover::after {
+  width: 20px;
+}
+
 /* Word-by-Word-Reveal für Headlines.
    Jeder Span bekommt --word-delay über inline-style.
    Bei prefers-reduced-motion erscheinen alle Wörter sofort. */

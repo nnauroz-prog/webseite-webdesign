@@ -97,9 +97,10 @@ export default function KontaktPage() {
               </p>
             </div>
 
-            {/* Zwei Hamburg-Aufnahmen übereinander — Speicherstadt
-                (Identität) + Eimsbüttel-Café (Alltag). Beide statisch,
-                keine externen Embeds. */}
+            {/* Drei Hamburg-Aufnahmen übereinander — Speicherstadt
+                (Identität), Eimsbüttel-Café (Alltag), Schreibtisch
+                mit Drucken (Atelier). Statisch, keine externen
+                Embeds. */}
             <div className="space-y-3 sm:space-y-4">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
                 <Image
@@ -130,6 +131,24 @@ export default function KontaktPage() {
                   sizes="(min-width: 1024px) 500px, 100vw"
                   className="object-cover"
                 />
+              </div>
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                <Image
+                  src="/images/workspace-prints.png"
+                  alt="Schreibtisch im Sitalo-Atelier mit gerahmten Design-Drucken — Hamburger Tageslicht, ruhige Arbeitsatmosphäre."
+                  fill
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                  className="object-cover"
+                />
+                <div
+                  aria-hidden="true"
+                  className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
+                />
+                <div className="absolute bottom-4 left-5 right-5 text-background">
+                  <p className="serif-italic text-base sm:text-lg">
+                    — Aus dem Atelier
+                  </p>
+                </div>
               </div>
             </div>
           </div>

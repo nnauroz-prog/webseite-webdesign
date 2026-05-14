@@ -37,8 +37,12 @@ function Hero() {
         <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32">
           <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
             <div>
-              <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-                Branchen
+              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+                <span
+                  aria-hidden="true"
+                  className="bg-gold gold-pulse inline-block h-1 w-6"
+                />
+                10 Branchen · 10 Layouts
               </p>
               <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
                 Layouts, die zu
@@ -48,11 +52,27 @@ function Hero() {
                 </span>
               </h1>
             </div>
-            <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
-              Eine Pflegedienst-Seite muss anders aussehen als ein Café —
-              und beide anders als eine Kanzlei. Pro Branche eine eigene
-              Detailseite mit echten Beispielen und passenden Bausteinen.
-            </p>
+            <div>
+              <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
+                Eine Pflegedienst-Seite muss anders aussehen als ein Café —
+                und beide anders als eine Kanzlei. Pro Branche eine eigene
+                Detailseite mit echten Beispielen und passenden Bausteinen.
+              </p>
+              <ul className="text-muted-foreground mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
+                <li className="inline-flex items-center gap-2">
+                  <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+                  Hand-gemacht
+                </li>
+                <li className="inline-flex items-center gap-2">
+                  <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+                  Branchen-spezifisch
+                </li>
+                <li className="inline-flex items-center gap-2">
+                  <span className="bg-gold inline-block h-1 w-1 rounded-full" />
+                  Keine Vorlagen
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
