@@ -235,7 +235,7 @@ function Hero() {
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
               />
-              Eine kleine Werkstatt in Hamburg
+              Ein kleines Atelier in Hamburg
             </p>
             <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
               <WordReveal step={75} delay={120}>
@@ -300,7 +300,7 @@ function Hero() {
                 aria-hidden="true"
                 className="from-foreground/60 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
               />
-              {/* Schwebendes Zitat — Stimme der Werkstatt, nicht aus Kundenmund. */}
+              {/* Schwebendes Zitat — Stimme des Ateliers, nicht aus Kundenmund. */}
               <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
                 <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
                   „Wir bauen jede Seite, als wäre es unsere eigene."
@@ -310,7 +310,7 @@ function Hero() {
                     aria-hidden="true"
                     className="bg-gold gold-pulse inline-block h-1 w-5"
                   />
-                  Sitalo Werkstatt · Hamburg
+                  Sitalo Atelier · Hamburg
                 </figcaption>
               </figure>
             </div>
@@ -752,7 +752,7 @@ function FinalCta() {
               kleine Visitenkarte. */}
           <div className="lg:pl-10">
             <p className="text-background/45 text-[10px] font-medium uppercase tracking-[0.3em]">
-              Aus der Werkstatt
+              Aus dem Atelier
             </p>
             <p className="serif-italic text-background mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
               — Sitalo,

@@ -33,7 +33,11 @@ export function BackToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Zurück nach oben"
       className={cn(
-        "fixed right-4 bottom-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full border shadow-lg transition-all duration-200 sm:right-6 sm:bottom-6",
+        // Auf Mobile sitzt darunter die MobileCtaBar (md:hidden) — die
+        // ist h-12 + ~14 px Padding-Bottom = ~62 px. BackToTop muss
+        // darüber liegen, also bottom-20 (80 px). Auf md+ kein
+        // CTA-Bar sichtbar → wieder kleineres bottom-6.
+        "fixed right-4 bottom-20 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full border shadow-lg transition-all duration-200 md:right-6 md:bottom-6",
         "bg-background/95 border-border text-foreground backdrop-blur-sm hover:bg-secondary hover:shadow-xl",
         visible
           ? "pointer-events-auto translate-y-0 opacity-100"

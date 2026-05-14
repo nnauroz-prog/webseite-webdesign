@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
+import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
@@ -79,6 +81,7 @@ export default async function PaketDetailPage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
+      <EditorialMasthead section={`Pakete · ${paket.name}`} />
 
       <main className="flex-1">
         {/* Breadcrumb + Hero */}
@@ -142,11 +145,19 @@ export default async function PaketDetailPage({
 
             <div className="mt-12 grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
               <div>
-                {paket.badge ? (
-                  <span className="bg-gold/90 text-foreground inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em]">
-                    {paket.badge}
-                  </span>
-                ) : null}
+                <p
+                  className={
+                    dark
+                      ? "text-background/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
+                      : "text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
+                  }
+                >
+                  <span
+                    aria-hidden="true"
+                    className="bg-gold gold-pulse inline-block h-1 w-6"
+                  />
+                  {paket.badge ? `Paket · ${paket.badge}` : "Paket"}
+                </p>
                 <h1 className="mt-6 text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-[6rem]">
                   {paket.name}
                   <br />
@@ -160,18 +171,27 @@ export default async function PaketDetailPage({
                     {paket.detailHeadline}
                   </span>
                 </h1>
-                <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                  <Link
+                <p
+                  className={
+                    dark
+                      ? "text-background/75 mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg"
+                      : "text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg"
+                  }
+                >
+                  {paket.description}
+                </p>
+                <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                  <MagneticButton
                     href={`/anfrage?paket=${paket.slug}`}
                     className={
                       dark
-                        ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-                        : "bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
+                        ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight"
+                        : "bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight"
                     }
                   >
                     {paket.name} anfragen
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  </Link>
+                  </MagneticButton>
                   <Link
                     href="/pakete"
                     className={
