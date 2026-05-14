@@ -3,9 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
+import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
+import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { HeroChat } from "@/components/marketing/hero-chat";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
+import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Promises } from "@/components/marketing/promises";
@@ -137,6 +140,7 @@ export default function HomePage() {
         <RevealOnScroll>
           <PersonalNote />
         </RevealOnScroll>
+        <BranchenMarquee />
         <RevealOnScroll>
           <IndustryPicker />
         </RevealOnScroll>
@@ -186,6 +190,10 @@ function Hero() {
         aria-hidden="true"
         className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[120px]"
       />
+      {/* Cursor-Spotlight — sanfter Gold-Halo folgt der Maus.
+          Nur auf Geräten mit feinem Pointer aktiv, respektiert
+          prefers-reduced-motion. */}
+      <CursorSpotlight />
       {/* Subtile Linien-Andeutung als Brand-Ornament */}
       <svg
         aria-hidden="true"
@@ -217,13 +225,13 @@ function Hero() {
               meistens schon übermorgen.
             </p>
             <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-              <Link
+              <MagneticButton
                 href="/anfrage"
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
               >
                 Website anfragen
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
+              </MagneticButton>
               <Link
                 href="#beispiele"
                 className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
