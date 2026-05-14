@@ -45,11 +45,7 @@ function Hero() {
           Nach Stadtteil
         </p>
         <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-[5.5rem]">
-          Websites für Ihren
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            Hamburger Stadtteil.
-          </span>
+          Websites für Ihren Hamburger Stadtteil.
         </h1>
         <p className="text-muted-foreground mt-8 max-w-2xl text-pretty text-lg leading-relaxed sm:text-xl">
           „Webdesign Hamburg" ist die falsche Suche. Ihre Kunden tippen

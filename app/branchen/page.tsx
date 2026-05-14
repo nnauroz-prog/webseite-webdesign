@@ -45,11 +45,7 @@ function Hero() {
                 10 Branchen · 10 Layouts
               </p>
               <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
-                Layouts, die zu
-                <br />
-                <span className="serif-italic text-muted-foreground font-normal">
-                  Ihrem Alltag passen.
-                </span>
+                Layouts, die zu Ihrem Alltag passen.
               </h1>
             </div>
             <div>
@@ -58,6 +54,10 @@ function Hero() {
                 und beide anders als eine Kanzlei. Pro Branche eine eigene
                 Detailseite mit echten Beispielen und passenden Bausteinen.
               </p>
+              {/* Bullet-Liste auf zwei Items reduziert — Drei-Beat
+                  „Hand-gemacht · Branchen-spezifisch · Keine Vorlagen"
+                  war der gleiche Triade-Reflex wie auf den anderen
+                  Seiten. */}
               <ul className="text-muted-foreground mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
                 <li className="inline-flex items-center gap-2">
                   <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
@@ -65,11 +65,7 @@ function Hero() {
                 </li>
                 <li className="inline-flex items-center gap-2">
                   <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-                  Branchen-spezifisch
-                </li>
-                <li className="inline-flex items-center gap-2">
-                  <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-                  Keine Vorlagen
+                  Keine Vorlagen, auch nicht heimlich
                 </li>
               </ul>
             </div>
