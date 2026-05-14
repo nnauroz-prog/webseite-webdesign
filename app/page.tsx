@@ -265,10 +265,10 @@ function Hero() {
               className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Kein Konzern, kein Callcenter, kein anonymer Vertrieb. Sie
-              schicken uns drei Sachen — Logo, Bilder, ein paar Sätze —
-              und sprechen mit uns persönlich. Meistens sind Sie
-              übermorgen online.
+              Die meisten Cafés in Eppendorf haben eine Speisekarte als
+              PDF von 2021. Pflegedienste in Altona stehen nicht mal bei
+              Google Maps. Wir bauen die Seiten der anderen — schnell,
+              sauber, persönlich gemacht.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -366,34 +366,45 @@ function PersonalNote() {
             Aus Hamburg
           </p>
         </div>
-        <blockquote className="mt-10 max-w-4xl">
+        <blockquote className="relative mt-10 max-w-4xl">
           <span
             aria-hidden="true"
-            className="serif text-gold/40 absolute -mt-12 -ml-6 text-[10rem] leading-none"
+            className="serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
           >
             „
           </span>
           <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
-            Jeden Tag verlieren Sie Kunden an die Konkurrenz —{" "}
+            Wir gehen viel zu Fuß durch Hamburg.{" "}
             <span className="serif-italic text-background/75">
-              nicht weil die besser ist, sondern weil sie online besser
-              gefunden wird.
+              Was wir dabei sehen:
+            </span>{" "}
+            jedes zweite Café hat keine ordentliche Website —{" "}
+            <span className="serif-italic text-background/75">
+              und es ist nie das beste.
             </span>
           </p>
         </blockquote>
         <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
-            <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
-              Eine Website zu bauen ist viele Wochen Arbeit. Vorlagen
-              durchsuchen, Texte schreiben, Bilder zuschneiden, Hosting
-              klären, am Ende sieht's trotzdem aus wie tausend andere.
-              Wir nehmen Ihnen das ab.
+            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+              Eppendorf, ein Mittwochmittag. Drei Cafés in zwei Straßen.
+              Das mit dem besten Espresso hat eine Speisekarte als PDF
+              von Februar 2021. Das daneben hat keine Öffnungszeiten bei
+              Google Maps. Das dritte, das wir auch nicht empfehlen
+              würden, hat als einziges eine moderne Website. Dreimal
+              raten, welches voll war.
             </p>
-            <p className="text-background/75 text-[15px] leading-relaxed sm:text-base">
-              Sie schicken uns drei Sachen — Logo, Bilder, ein paar
-              Sätze zu Ihrem Betrieb. Wir bauen daraus eine Seite, die
-              sich anfühlt wie Ihre, nicht wie eine Vorlage. Übermorgen
-              ist sie online.
+            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+              Wir sehen das in Altona bei Pflegediensten. In Eimsbüttel
+              bei Friseuren. In St.&nbsp;Pauli bei Bars. Online-Sichtbarkeit
+              ist kein Talent-Beweis — aber wenn Sie talentiert sind und
+              nicht sichtbar, gewinnt jemand anders. Jeden Tag.
+            </p>
+            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+              Wir bauen Seiten für die anderen. Für die, die wissen,
+              dass die eigene Arbeit erst zählt, wenn sie auch ankommt.
+              Logo, Bilder, ein paar Sätze reichen — übermorgen sind
+              Sie online.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo, aus Hamburg
