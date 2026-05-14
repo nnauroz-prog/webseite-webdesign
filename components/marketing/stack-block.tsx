@@ -1,5 +1,5 @@
 /**
- * "Womit ich arbeite" — Transparenz statt Verkauf.
+ * "Womit wir arbeiten" — Transparenz statt Verkauf.
  *
  * Listet die wichtigsten technischen Bausteine offen auf.
  * Schafft Vertrauen bei technik-affinen Kunden, und beruhigt
@@ -34,7 +34,7 @@ export function StackBlock() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
           <div>
             <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-              Womit ich arbeite
+              Womit wir arbeiten
             </p>
             <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
               Solide Technik,
@@ -45,7 +45,7 @@ export function StackBlock() {
             </h2>
             <p className="text-muted-foreground mt-6 max-w-md text-pretty text-[15px] leading-relaxed">
               Hier ist transparent, was unter der Haube läuft. Sie müssen
-              das nicht verstehen, ich kümmere mich darum — aber Sie
+              das nicht verstehen, wir kümmern uns darum — aber Sie
               sollen wissen, dass nichts gemauschelt wird.
             </p>
           </div>

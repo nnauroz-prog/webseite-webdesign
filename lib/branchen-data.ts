@@ -168,7 +168,7 @@ export const BRANCHEN: Branche[] = [
     faq: [
       {
         q: "Brauche ich ein Online-Buchungs-Tool?",
-        a: "Nicht zwingend. Eine gut gestaltete Termin-Anfrage per Formular reicht für die meisten Praxen. Wenn Sie ein Online-Buchungssystem wie Doctolib oder Jameda nutzen, integriere ich das nahtlos in Ihre Seite.",
+        a: "Nicht zwingend. Eine gut gestaltete Termin-Anfrage per Formular reicht für die meisten Praxen. Wenn Sie ein Online-Buchungssystem wie Doctolib oder Jameda nutzen, integrieren wir das nahtlos in Ihre Seite.",
       },
       {
         q: "Was ist mit Heilmittelwerbegesetz (HWG)?",
@@ -222,7 +222,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Transparente Preisliste",
-        body: "Klar strukturierte Preise nach Service. Können Sie selbst aktualisieren, ohne mich zu kontaktieren.",
+        body: "Klar strukturierte Preise nach Service. Können Sie selbst aktualisieren, ohne uns zu kontaktieren.",
       },
       {
         title: "Direkter Buchungsweg",
@@ -244,7 +244,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Wie werden meine Bilder professionell?",
-        a: "Wenn Sie eigene Fotos haben, bereite ich diese auf (Beschnitt, Farbe, Optimierung). Wenn keine vorhanden sind, empfehle ich einen lokalen Fotografen — das ist eine Investition, die sich um ein Vielfaches auszahlt.",
+        a: "Wenn Sie eigene Fotos haben, bereiten wir diese auf (Beschnitt, Farbe, Optimierung). Wenn keine vorhanden sind, empfehlen wir einen lokalen Fotografen — das ist eine Investition, die sich um ein Vielfaches auszahlt.",
       },
     ],
     recommendedPackage: "business",
@@ -273,7 +273,7 @@ export const BRANCHEN: Branche[] = [
     detailHeadline: "Speisekarte. Öffnungszeiten. Anfahrt. Direkt sichtbar.",
     detailIntro: [
       "Ein Gast, der am Handy nach Ihrem Café sucht, hat in den meisten Fällen genau drei Fragen: Was kostet's? Haben Sie heute auf? Wie komme ich hin? Wenn diese drei Antworten nicht innerhalb von Sekunden zu finden sind, geht er ins nächste Lokal.",
-      "Genauso wichtig: Ihre Speisekarte muss aktuell sein. Eine veraltete PDF vom letzten Jahr vermittelt sofort den Eindruck, dass die Küche genauso unkonzentriert läuft. Deshalb empfehle ich für Gastro-Seiten immer verwaltbare Inhalte — Sie aktualisieren Mittagskarte oder Wochenangebot selbst, ohne mich anzurufen.",
+      "Genauso wichtig: Ihre Speisekarte muss aktuell sein. Eine veraltete PDF vom letzten Jahr vermittelt sofort den Eindruck, dass die Küche genauso unkonzentriert läuft. Deshalb empfehlen wir für Gastro-Seiten immer verwaltbare Inhalte — Sie aktualisieren Mittagskarte oder Wochenangebot selbst, ohne uns anzurufen.",
     ],
     typicalPages: [
       "Startseite mit Tagesangebot",
@@ -286,11 +286,11 @@ export const BRANCHEN: Branche[] = [
     features: [
       {
         title: "Selbst-pflegbare Speisekarte",
-        body: "Sie ändern Mittagstisch oder Wochenangebot direkt auf der Seite — ohne mich anzurufen. Premium-Funktion, lohnt sich praktisch immer.",
+        body: "Sie ändern Mittagstisch oder Wochenangebot direkt auf der Seite — ohne uns anzurufen. Premium-Funktion, lohnt sich praktisch immer.",
       },
       {
         title: "Reservierungs-Anfrage",
-        body: "Schlankes Formular mit Datum, Uhrzeit, Personenzahl. Sie bestätigen per Mail oder Anruf. Bei größerem Bedarf binde ich Online-Reservierungs-Systeme an.",
+        body: "Schlankes Formular mit Datum, Uhrzeit, Personenzahl. Sie bestätigen per Mail oder Anruf. Bei größerem Bedarf binden wir Online-Reservierungs-Systeme an.",
       },
       {
         title: "Standort + Öffnungszeiten",
@@ -376,7 +376,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Wie viele Bilder brauche ich?",
-        a: "Mindestens 10–15 gute Referenzbilder. Wenn Sie weniger haben, machen wir sie in den nächsten Wochen — oder ich empfehle einen lokalen Fotografen, der für 200–400 € einen kompletten Foto-Tag macht.",
+        a: "Mindestens 10–15 gute Referenzbilder. Wenn Sie weniger haben, machen wir sie in den nächsten Wochen — oder wir empfehlen einen lokalen Fotografen, der für 200–400 € einen kompletten Foto-Tag macht.",
       },
       {
         q: "Können wir Werkstatt-Videos einbinden?",
@@ -502,7 +502,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "BRAO- und RDG-konform",
-        body: "Pflichtangaben, sachliche Tonalität, keine vergleichende Werbung. Die anwaltsrechtlichen Vorgaben kenne ich im Detail.",
+        body: "Pflichtangaben, sachliche Tonalität, keine vergleichende Werbung. Die anwaltsrechtlichen Vorgaben kennen wir im Detail.",
       },
     ],
     faq: [
@@ -512,7 +512,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Können Mandantenbewertungen auf die Seite?",
-        a: "Im Standesrecht heikel. Anonymisierte Falldarstellungen und sachliche Referenz-Hinweise sind möglich. Sterne-Bewertungen wie bei Restaurants empfehle ich nicht.",
+        a: "Im Standesrecht heikel. Anonymisierte Falldarstellungen und sachliche Referenz-Hinweise sind möglich. Sterne-Bewertungen wie bei Restaurants empfehlen wir nicht.",
       },
       {
         q: "Welcher Stil passt zu meiner Kanzlei?",
@@ -562,7 +562,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Kursplan dynamisch",
-        body: "Auf Wunsch selbst pflegbar. Sie ändern Kurs-Zeiten oder Trainer:in-Zuteilung ohne mich.",
+        body: "Auf Wunsch selbst pflegbar. Sie ändern Kurs-Zeiten oder Trainer:in-Zuteilung ohne uns.",
       },
       {
         title: "Mitgliedschafts-Pakete vergleichbar",
@@ -576,7 +576,7 @@ export const BRANCHEN: Branche[] = [
     faq: [
       {
         q: "Brauche ich eine Trainer-Buchung mit Kalender?",
-        a: "Für Personal-Training: ja, lohnt sich. Für Gruppenkurse: meistens nicht, ein Kursplan und Anwesenheit reichen. Bei Personal-Training binde ich z. B. Calendly oder ein vergleichbares System ein.",
+        a: "Für Personal-Training: ja, lohnt sich. Für Gruppenkurse: meistens nicht, ein Kursplan und Anwesenheit reichen. Bei Personal-Training binden wir z. B. Calendly oder ein vergleichbares System ein.",
       },
       {
         q: "Können Mitglieds-Karten / Check-in eingebunden werden?",
@@ -640,11 +640,11 @@ export const BRANCHEN: Branche[] = [
     faq: [
       {
         q: "Brauche ich Online-Buchung?",
-        a: "Für kleine Studios reicht meist eine gut gestaltete Termin-Anfrage. Bei Studios mit mehreren Behandlerinnen und vollem Kalender lohnt sich ein System wie Treatwell oder Shore — ich binde das passend ein.",
+        a: "Für kleine Studios reicht meist eine gut gestaltete Termin-Anfrage. Bei Studios mit mehreren Behandlerinnen und vollem Kalender lohnt sich ein System wie Treatwell oder Shore — wir binden das passend ein.",
       },
       {
         q: "Was mit Vorher/Nachher-Bildern und Datenschutz?",
-        a: "Bevor Bilder online gehen, brauchen Sie eine schriftliche Einwilligung der jeweiligen Kundin. Vorlagen kann ich Ihnen empfehlen. Anonymisierte Detail-Aufnahmen (z. B. nur Augenpartie) sind ebenfalls möglich.",
+        a: "Bevor Bilder online gehen, brauchen Sie eine schriftliche Einwilligung der jeweiligen Kundin. Vorlagen können wir Ihnen empfehlen. Anonymisierte Detail-Aufnahmen (z. B. nur Augenpartie) sind ebenfalls möglich.",
       },
       {
         q: "Lohnt sich ein Instagram-Feed auf der Seite?",
@@ -708,7 +708,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Brauche ich eine Verfügbarkeits-Anzeige in Echtzeit?",
-        a: "Nicht zwingend. Für kleine Hotels reicht oft die schlichte Anfrage. Wenn Sie Cloudbeds, Mews oder ein vergleichbares PMS nutzen, integriere ich die Live-Verfügbarkeit.",
+        a: "Nicht zwingend. Für kleine Hotels reicht oft die schlichte Anfrage. Wenn Sie Cloudbeds, Mews oder ein vergleichbares PMS nutzen, integrieren wir die Live-Verfügbarkeit.",
       },
       {
         q: "Wie wichtig ist die englische Version?",

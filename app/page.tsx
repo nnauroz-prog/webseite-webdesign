@@ -3,9 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
+import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
+import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
-import { HeroRotatingMockups } from "@/components/marketing/hero-rotating-mockups";
+import { HeroChat } from "@/components/marketing/hero-chat";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
+import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Promises } from "@/components/marketing/promises";
@@ -21,23 +24,16 @@ export const metadata: Metadata = {
     type: "website",
     title: "Sitalo — Webdesign aus Hamburg",
     description:
-      "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest. Aus Hamburg, persönlich gemacht.",
+      "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest. Aus Hamburg, persönlich gemacht.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
-    images: [
-      {
-        url: "/images/sitalo-laptop-hero.png",
-        width: 1536,
-        height: 1024,
-        alt: "Sitalo Webdesign — Laptop mit einer fertigen Kunden-Website.",
-      },
-    ],
+    // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
   },
   twitter: {
     card: "summary_large_image",
     title: "Sitalo — Webdesign aus Hamburg",
-    description: "Sie schicken mir Ihre Unterlagen, ich kümmere mich um den Rest.",
-    images: ["/images/sitalo-laptop-hero.png"],
+    description: "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest.",
+    // Bild wird automatisch aus app/opengraph-image.tsx (twitter-image-Variante) übernommen.
   },
 };
 
@@ -115,11 +111,11 @@ const PACKAGES = [
 const FAQ = [
   {
     q: "Wie schnell ist meine Seite fertig?",
-    a: "Wenn Sie mir alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
+    a: "Wenn Sie uns alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — wir versprechen nichts, was wir nicht halten können.",
   },
   {
     q: "Was brauchen Sie von mir?",
-    a: "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Bescheid und helfe bei Formulierungen.",
+    a: "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sagen wir Bescheid und helfen bei Formulierungen.",
   },
   {
     q: "Gibt es laufende Kosten?",
@@ -127,11 +123,11 @@ const FAQ = [
   },
   {
     q: "Kann ich später noch Sachen ändern lassen?",
-    a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben mir kurz, ich mache es. Auf Wunsch kann ich auch Bereiche einbauen, die Sie selbst pflegen.",
+    a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben uns kurz, wir setzen es um. Auf Wunsch bauen wir auch Bereiche ein, die Sie selbst pflegen.",
   },
   {
     q: "Was passiert nach dem Launch?",
-    a: "Sie bekommen einen Ansprechpartner — mich. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie mir, ich kümmere mich.",
+    a: "Sie bekommen einen festen Ansprechpartner bei uns. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie uns — wir kümmern uns.",
   },
 ];
 
@@ -144,6 +140,7 @@ export default function HomePage() {
         <RevealOnScroll>
           <PersonalNote />
         </RevealOnScroll>
+        <BranchenMarquee />
         <RevealOnScroll>
           <IndustryPicker />
         </RevealOnScroll>
@@ -193,6 +190,10 @@ function Hero() {
         aria-hidden="true"
         className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[120px]"
       />
+      {/* Cursor-Spotlight — sanfter Gold-Halo folgt der Maus.
+          Nur auf Geräten mit feinem Pointer aktiv, respektiert
+          prefers-reduced-motion. */}
+      <CursorSpotlight />
       {/* Subtile Linien-Andeutung als Brand-Ornament */}
       <svg
         aria-hidden="true"
@@ -224,13 +225,13 @@ function Hero() {
               meistens schon übermorgen.
             </p>
             <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-              <Link
+              <MagneticButton
                 href="/anfrage"
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
               >
                 Website anfragen
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
+              </MagneticButton>
               <Link
                 href="#beispiele"
                 className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
@@ -242,10 +243,10 @@ function Hero() {
           </div>
 
           <div
-            className="reveal -mx-2 lg:mx-0"
+            className="reveal -mx-1 lg:mx-0"
             style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
           >
-            <HeroRotatingMockups />
+            <HeroChat />
           </div>
         </div>
       </div>
@@ -415,21 +416,21 @@ function Pricing() {
           </p>
         </div>
 
-        <ul className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-border/60 bg-border/60 lg:grid-cols-3">
+        <ul className="mt-16 grid gap-4 lg:grid-cols-3 lg:gap-6">
           {PACKAGES.map((p) => (
             <li
               key={p.slug}
               className={
                 p.highlight
-                  ? "bg-foreground text-background relative flex flex-col overflow-hidden p-8 sm:p-10"
-                  : "bg-background relative flex flex-col p-8 sm:p-10"
+                  ? "border-foreground/15 bg-foreground text-background ring-foreground/10 group relative flex flex-col overflow-hidden rounded-3xl border p-8 ring-1 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_40px_80px_-30px_rgb(0_0_0/0.5)] sm:p-10 lg:scale-[1.02] lg:hover:scale-[1.04]"
+                  : "border-border/60 bg-background ring-foreground/5 group relative flex flex-col overflow-hidden rounded-3xl border p-8 ring-1 transition-all duration-500 hover:-translate-y-1 hover:border-foreground/30 hover:shadow-[0_30px_60px_-30px_rgb(0_0_0/0.25)] sm:p-10"
               }
             >
               {p.highlight ? (
                 <>
                   <div
                     aria-hidden="true"
-                    className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
+                    className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px] transition-opacity duration-500 group-hover:opacity-130"
                   />
                   <div
                     aria-hidden="true"
@@ -540,10 +541,10 @@ function Faq() {
               Häufige Fragen.
             </h2>
             <p className="text-muted-foreground mt-6 max-w-sm text-pretty text-lg leading-relaxed">
-              Was Kunden mich am häufigsten fragen. Ihre Frage ist nicht
+              Was Kunden uns am häufigsten fragen. Ihre Frage ist nicht
               dabei?{" "}
               <Link href="/kontakt" className="text-foreground underline underline-offset-4">
-                Schreiben Sie mir.
+                Schreiben Sie uns.
               </Link>
             </p>
           </div>

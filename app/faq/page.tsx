@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 export const metadata: Metadata = {
   title: "Häufige Fragen rund um Ihre neue Website | Sitalo",
   description:
-    "Antworten auf das, was Kunden mich am häufigsten fragen — Preise, Ablauf, Hosting, SEO, Betreuung.",
+    "Antworten auf das, was Kunden uns am häufigsten fragen — Preise, Ablauf, Hosting, SEO, Betreuung.",
   alternates: { canonical: "/faq" },
 };
 
@@ -27,15 +27,15 @@ const GROUPS: Group[] = [
       },
       {
         q: "Wie schnell ist meine Seite fertig?",
-        a: "Wenn Sie mir alle Unterlagen geschickt haben, dauert eine einfache Seite bei mir oft nur 1–2 Werktage. Größere Projekte besprechen wir vorher in Ruhe und ich nenne Ihnen einen verbindlichen Termin — ich verspreche nichts, was ich nicht halten kann.",
+        a: "Wenn Sie uns alle Unterlagen geschickt haben, dauert eine einfache Seite bei uns oft nur 1–2 Werktage. Größere Projekte besprechen wir vorher in Ruhe und nennen Ihnen einen verbindlichen Termin — wir versprechen nichts, was wir nicht halten können.",
       },
       {
         q: "Was brauchen Sie von mir?",
-        a: "Ihr Logo (falls vorhanden), ein paar Bilder von Ihnen oder Ihrem Betrieb, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sage ich Ihnen, was ich noch brauche — und helfe bei Formulierungen oder Bildauswahl.",
+        a: "Ihr Logo (falls vorhanden), ein paar Bilder von Ihnen oder Ihrem Betrieb, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sagen wir Ihnen, was wir noch brauchen — und helfen bei Formulierungen oder Bildauswahl.",
       },
       {
         q: "Was passiert nach meiner Anfrage?",
-        a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Ich schaue mir Ihre Angaben in Ruhe an und melde mich innerhalb von 24 Stunden — meist deutlich schneller — persönlich bei Ihnen. Kein Vertrag, keine Kosten, kein Druck.",
+        a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Wir schauen uns Ihre Angaben in Ruhe an und melden uns innerhalb von 24 Stunden — meist deutlich schneller — persönlich bei Ihnen. Kein Vertrag, keine Kosten, kein Druck.",
       },
       {
         q: "Kann ich auch per E-Mail anfragen?",
@@ -48,19 +48,19 @@ const GROUPS: Group[] = [
     items: [
       {
         q: "Was kostet das Ganze?",
-        a: "Ich arbeite mit drei Einstiegspreisen: Starter ab 499 €, Business ab 899 €, Premium ab 1.499 € — jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ab 49 € / 79 € / 129 € für Hosting, Pflege und kleine Änderungen. Den genauen Endpreis nenne ich Ihnen nach Ihrer Anfrage — verbindlich, kein böses Erwachen.",
+        a: "Wir arbeiten mit drei Einstiegspreisen: Starter ab 499 €, Business ab 899 €, Premium ab 1.499 € — jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ab 49 € / 79 € / 129 € für Hosting, Pflege und kleine Änderungen. Den genauen Endpreis nennen wir Ihnen nach Ihrer Anfrage — verbindlich, kein böses Erwachen.",
       },
       {
         q: "Warum gibt es nur Einstiegspreise?",
-        a: "Weil ehrlich gesagt jedes Projekt anders ist. Manche schicken mir komplette Unterlagen, andere brauchen mehr Hilfe. Manche wollen eine Seite, andere fünf. Die Einstiegspreise zeigen Ihnen, wo es losgeht — den endgültigen Preis vereinbaren wir vorher, schwarz auf weiß.",
+        a: "Weil ehrlich gesagt jedes Projekt anders ist. Manche schicken uns komplette Unterlagen, andere brauchen mehr Hilfe. Manche wollen eine Seite, andere fünf. Die Einstiegspreise zeigen Ihnen, wo es losgeht — den endgültigen Preis vereinbaren wir vorher, schwarz auf weiß.",
       },
       {
         q: "Kann ich später noch Sachen ändern lassen?",
-        a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei (1, 3 oder 6 pro Monat, je nach Paket). Sie schreiben mir kurz, was geändert werden soll — ich melde mich, mache es, und melde mich wieder, wenn es online ist.",
+        a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei (1, 3 oder 6 pro Monat, je nach Paket). Sie schreiben uns kurz, was geändert werden soll — wir melden uns, setzen es um und sagen Bescheid, sobald es online ist.",
       },
       {
         q: "Kann ich bestimmte Inhalte selbst pflegen?",
-        a: "Wenn Sie möchten, ja. Im Premium-Paket kann ich Ihnen Bereiche einbauen, die Sie selbst aktualisieren können — Öffnungszeiten, Wochenangebot, Speisekarte, Bilder. Wenn Sie das nicht wollen, übernehme ich das. Sie entscheiden.",
+        a: "Wenn Sie möchten, ja. Im Premium-Paket bauen wir Ihnen Bereiche ein, die Sie selbst aktualisieren können — Öffnungszeiten, Wochenangebot, Speisekarte, Bilder. Wenn Sie das nicht wollen, übernehmen wir das. Sie entscheiden.",
       },
     ],
   },
@@ -69,27 +69,27 @@ const GROUPS: Group[] = [
     items: [
       {
         q: "Ist Hosting dabei?",
-        a: "Ja, alles inklusive. Server stehen in der EU, SSL ist Pflicht, Backups laufen automatisch. Sie müssen sich um nichts kümmern — auch nicht um Updates oder Sicherheit. Das ist mein Job.",
+        a: "Ja, alles inklusive. Server stehen in der EU, SSL ist Pflicht, Backups laufen automatisch. Sie müssen sich um nichts kümmern — auch nicht um Updates oder Sicherheit. Das ist unser Job.",
       },
       {
         q: "Funktioniert die Seite auch auf dem Handy?",
-        a: "Ja, immer. Die meisten Ihrer Kunden schauen heute zuerst aufs Handy — also baue ich auch zuerst für das Handy. Vor dem Live-Gang teste ich auf echten Geräten, nicht nur im Simulator.",
+        a: "Ja, immer. Die meisten Ihrer Kunden schauen heute zuerst aufs Handy — also bauen wir auch zuerst für das Handy. Vor dem Live-Gang testen wir auf echten Geräten, nicht nur im Simulator.",
       },
       {
         q: "Wird man die Seite bei Google finden?",
-        a: "Ich lege die Basis sauber: Titel, Beschreibungen, klare Struktur, schnelle Ladezeiten, lokale Suchbegriffe, Sitemap. Garantieren kann Ihnen Platz 1 niemand seriös — aber das Fundament passt, und für lokale Suchen („Friseur Eimsbüttel\", „Pflegedienst Altona\") sind die Chancen sehr gut.",
+        a: "Wir legen die Basis sauber: Titel, Beschreibungen, klare Struktur, schnelle Ladezeiten, lokale Suchbegriffe, Sitemap. Garantieren kann Ihnen Platz 1 niemand seriös — aber das Fundament passt, und für lokale Suchen („Friseur Eimsbüttel\", „Pflegedienst Altona\") sind die Chancen sehr gut.",
       },
       {
         q: "Sind Impressum und Datenschutz dabei?",
-        a: "Die Seiten lege ich technisch an. Den juristisch sicheren Text dazu sollten Sie aber von einer geeigneten Quelle beziehen — Generator, Anwalt oder Verband. Ich empfehle Ihnen gerne, was zu Ihrem Fall passt.",
+        a: "Die Seiten legen wir technisch an. Den juristisch sicheren Text dazu sollten Sie aber von einer geeigneten Quelle beziehen — Generator, Anwalt oder Verband. Wir empfehlen Ihnen gerne, was zu Ihrem Fall passt.",
       },
       {
         q: "Ich habe schon eine Website — kann die modernisiert werden?",
-        a: 'Ja, schauen wir uns gerne an. Im Formular wählen Sie „Redesign" und schicken mir die URL. Ich melde mich nach einer ersten Sichtung mit ehrlicher Einschätzung — manchmal lohnt sich ein Update, manchmal ein Neuaufbau. Ich sage Ihnen, was sinnvoller ist.',
+        a: 'Ja, schauen wir uns gerne an. Im Formular wählen Sie „Redesign" und schicken uns die URL. Wir melden uns nach einer ersten Sichtung mit ehrlicher Einschätzung — manchmal lohnt sich ein Update, manchmal ein Neuaufbau. Wir sagen Ihnen, was sinnvoller ist.',
       },
       {
         q: "Für welche Branchen arbeiten Sie?",
-        a: "Vor allem für lokale Unternehmen in und um Hamburg: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios. Wenn Sie nicht sicher sind, ob Ihre Branche passt — fragen Sie einfach.",
+        a: "Vor allem für lokale Unternehmen in und um Hamburg: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios, Boutique-Hotels. Wenn Sie nicht sicher sind, ob Ihre Branche passt — fragen Sie einfach.",
       },
     ],
   },
@@ -137,9 +137,9 @@ function Hero() {
           <span className="serif-italic">Fragen.</span>
         </h1>
         <p className="text-muted-foreground mt-10 max-w-xl text-pretty text-lg leading-relaxed">
-          Was Kunden mich am häufigsten fragen. Eine Antwort fehlt?{" "}
+          Was Kunden uns am häufigsten fragen. Eine Antwort fehlt?{" "}
           <Link href="/kontakt" className="text-foreground underline underline-offset-4">
-            Schreiben Sie mir.
+            Schreiben Sie uns.
           </Link>
         </p>
       </div>
@@ -198,7 +198,7 @@ function Closer() {
           <p className="serif text-foreground max-w-xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
             Etwas fehlt?{" "}
             <span className="serif-italic text-muted-foreground">
-              Fragen Sie mich direkt.
+              Fragen Sie uns direkt.
             </span>
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">

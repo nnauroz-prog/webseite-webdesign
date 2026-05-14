@@ -35,10 +35,10 @@ export default function ImpressumPage() {
             </h1>
 
             <div className="border-warning/60 bg-warning/10 text-warning-foreground mt-8 rounded-xl border p-4 text-sm">
-              <strong>Hinweis für den Betreiber:</strong> Anschrift,
-              Telefonnummer und Steuer-Angaben müssen noch ergänzt werden
-              (mit [BITTE ERGÄNZEN] markiert). Vor dem öffentlichen Bewerben
-              der Seite vollständig ausfüllen, sonst bestehen Abmahnrisiken.
+              <strong>Hinweis für den Betreiber:</strong> Anschrift und
+              Steuer-Angaben müssen noch ergänzt werden (mit [BITTE ERGÄNZEN]
+              markiert). Vor dem öffentlichen Bewerben der Seite vollständig
+              ausfüllen, sonst bestehen Abmahnrisiken.
             </div>
 
             <div className="prose prose-sm sm:prose-base mt-10 max-w-none space-y-6 text-[15px] leading-relaxed">
@@ -59,7 +59,13 @@ export default function ImpressumPage() {
 
               <h2 className="text-lg font-semibold tracking-tight">Kontakt</h2>
               <p className="text-muted-foreground">
-                Telefon: [BITTE ERGÄNZEN: Telefonnummer]
+                Telefon:{" "}
+                <a
+                  href="tel:+4915224437370"
+                  className="hover:text-foreground underline"
+                >
+                  +49 152 24437370
+                </a>
                 <br />
                 E-Mail:{" "}
                 <a

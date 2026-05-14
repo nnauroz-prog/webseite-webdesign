@@ -22,6 +22,24 @@ export function MarketingFooter() {
               Websites für lokale Unternehmen. Persönlich gemacht, in
               Hamburg.
             </p>
+            <ul className="text-foreground/85 mt-6 space-y-1.5 text-[14px]">
+              <li>
+                <a
+                  href="tel:+4915224437370"
+                  className="hover:text-foreground underline-offset-4 hover:underline"
+                >
+                  +49 152 24437370
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:info@sitalo.de"
+                  className="hover:text-foreground underline-offset-4 hover:underline"
+                >
+                  info@sitalo.de
+                </a>
+              </li>
+            </ul>
             <p className="serif-italic text-foreground mt-6 text-lg">
               — Sitalo, Hamburg
             </p>

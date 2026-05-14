@@ -30,22 +30,22 @@ export default function NotFound() {
               <NotFoundLink
                 href="/"
                 label="Zurück zur Startseite"
-                detail="Was ich mache, für wen, zu welchem Preis."
+                detail="Was wir machen, für wen, zu welchem Preis."
               />
               <NotFoundLink
                 href="/branchen"
                 label="Branchen ansehen"
-                detail="Acht typische Layouts — vielleicht passt eins zu Ihnen."
+                detail="Zehn typische Layouts — vielleicht passt eins zu Ihnen."
               />
               <NotFoundLink
                 href="/anfrage"
                 label="Anfrage starten"
-                detail="Ein paar kurze Fragen — ich melde mich persönlich."
+                detail="Ein paar kurze Fragen — wir melden uns persönlich."
               />
               <NotFoundLink
                 href="/kontakt"
                 label="Kontakt"
-                detail="Per E-Mail oder Formular."
+                detail="Per E-Mail, Telefon oder Formular."
               />
             </ul>
 
@@ -57,9 +57,9 @@ export default function NotFound() {
                 href="mailto:info@sitalo.de"
                 className="text-foreground underline underline-offset-4"
               >
-                schreiben Sie mir kurz
+                schreiben Sie uns kurz
               </a>
-              , ich fixe es.
+              , wir fixen es.
             </p>
           </div>
         </section>

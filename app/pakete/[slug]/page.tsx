@@ -452,7 +452,7 @@ export default async function PaketDetailPage({
               <p className="serif text-foreground max-w-xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
                 Klingt nach {paket.name}?{" "}
                 <span className="serif-italic text-muted-foreground">
-                  Schreiben Sie mir kurz.
+                  Schreiben Sie uns kurz.
                 </span>
               </p>
               <Link

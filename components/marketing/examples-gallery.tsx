@@ -29,12 +29,12 @@ export function ExamplesGallery() {
               So sehen Ihre
               <br />
               <span className="serif-italic text-muted-foreground font-normal">
-                Seiten bei mir aus.
+                Seiten bei uns aus.
               </span>
             </h2>
           </div>
           <p className="text-foreground/75 max-w-md text-pretty text-lg leading-relaxed">
-            Acht Branchen — acht Layouts, die zum jeweiligen Alltag
+            Zehn Branchen — zehn Layouts, die zum jeweiligen Alltag
             passen. Tippen Sie auf eine Karte für mehr Details.
           </p>
         </div>

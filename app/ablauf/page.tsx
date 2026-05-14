@@ -9,48 +9,48 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 export const metadata: Metadata = {
   title: "So läuft Ihr Website-Projekt ab — Schritt für Schritt",
   description:
-    "So läuft es bei mir: Sie schreiben mir, wir sprechen kurz, ich baue, Sie schauen drüber, wir gehen live. Persönlich, ohne Papierkram.",
+    "So läuft es bei uns: Sie schreiben uns, wir sprechen kurz, wir bauen, Sie schauen drüber, wir gehen live. Persönlich, ohne Papierkram.",
   alternates: { canonical: "/ablauf" },
 };
 
 const STEPS = [
   {
     number: "01",
-    title: "Sie schreiben mir",
+    title: "Sie schreiben uns",
     body: "Schicken Sie uns das Anfrageformular oder eine kurze E-Mail an info@sitalo.de — egal was Sie bequemer finden. Wir melden uns innerhalb von 24 Stunden persönlich mit einer ersten Einschätzung: Umfang, Zeitplan, ehrlicher Preisrahmen.",
     bullets: [
       "Anfrage übers Formular oder per E-Mail",
       "Kurze Beschreibung, was Sie vorhaben",
-      "Antwort von mir innerhalb von 24 Stunden",
+      "Antwort von uns innerhalb von 24 Stunden",
       "Kostet nichts, verpflichtet zu nichts",
     ],
   },
   {
     number: "02",
     title: "Wir lernen uns kurz kennen",
-    body: "Kurzes Telefonat oder Treffen auf einen Kaffee in Hamburg — wie es Ihnen lieber ist. Sie erzählen mir, was Ihnen wichtig ist, ich frage nach, wir klären Erwartungen. Erst danach starten wir.",
+    body: "Kurzes Telefonat oder Treffen auf einen Kaffee in Hamburg — wie es Ihnen lieber ist. Sie erzählen uns, was Ihnen wichtig ist, wir fragen nach, klären gemeinsam die Erwartungen. Erst danach starten wir.",
     bullets: [
       "Telefon oder Treffen — Sie entscheiden",
-      "Ich höre zu, frage nach, mache mir Notizen",
+      "Wir hören zu, fragen nach, machen uns Notizen",
       "Ehrliche Einschätzung, was sinnvoll ist",
       "Verbindliches Angebot, schwarz auf weiß",
     ],
   },
   {
     number: "03",
-    title: "Sie schicken mir Ihre Unterlagen",
-    body: "Logo, Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten, Kontaktdaten. Wenn etwas fehlt, sage ich Bescheid — und helfe Ihnen bei Formulierungen oder Bildauswahl.",
+    title: "Sie schicken uns Ihre Unterlagen",
+    body: "Logo, Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten, Kontaktdaten. Wenn etwas fehlt, sagen wir Bescheid — und helfen Ihnen bei Formulierungen oder Bildauswahl.",
     bullets: [
       "Logo, Bilder, Texte",
       "Leistungen, Öffnungszeiten, Kontaktdaten",
       "Bestehende Seite (falls vorhanden) als Referenz",
-      "Bei fehlenden Inhalten: ich helfe",
+      "Bei fehlenden Inhalten: wir helfen",
     ],
   },
   {
     number: "04",
-    title: "Ich baue Ihre Seite",
-    body: "Ich ordne Ihre Inhalte, gestalte das Design passend zu Ihrer Branche und mache eine Vorschau. Während ich baue, melde ich mich bei Bedarf mit kurzen Rückfragen — sonst bekommen Sie das Ergebnis am Stück.",
+    title: "Wir bauen Ihre Seite",
+    body: "Wir ordnen Ihre Inhalte, gestalten das Design passend zu Ihrer Branche und legen eine Vorschau an. Während wir bauen, melden wir uns bei Bedarf mit kurzen Rückfragen — sonst bekommen Sie das Ergebnis am Stück.",
     bullets: [
       "Aufbau und Reihenfolge der Inhalte",
       "Design, das zur Branche und zu Ihnen passt",
@@ -60,19 +60,19 @@ const STEPS = [
   },
   {
     number: "05",
-    title: "Sie schauen drüber, ich passe an",
-    body: "Sie gehen die Seite in Ruhe durch, schicken mir Ihre Änderungswünsche gesammelt. Ich setze sie um — kein endloses Hin und Her, sondern eine saubere Korrekturrunde. Erst wenn Sie zufrieden sind, geht es weiter.",
+    title: "Sie schauen drüber, wir passen an",
+    body: "Sie gehen die Seite in Ruhe durch und schicken uns Ihre Änderungswünsche gesammelt. Wir setzen sie um — kein endloses Hin und Her, sondern eine saubere Korrekturrunde. Erst wenn Sie zufrieden sind, geht es weiter.",
     bullets: [
       "Vollständige Vorschau auf einem Test-Link",
       "Eine Runde gesammelter Änderungen inklusive",
-      "Ich setze Ihre Wünsche sauber um",
+      "Wir setzen Ihre Wünsche sauber um",
       "Freigabe erfolgt schriftlich, klar und eindeutig",
     ],
   },
   {
     number: "06",
     title: "Ihre Seite geht online",
-    body: "Nach Ihrer Freigabe übernehme ich Domain, Technik und die letzten Tests. Ab da bin ich weiter Ihr Ansprechpartner — für Hosting, kleine Änderungen, Erweiterungen. Sie schreiben mir, ich kümmere mich.",
+    body: "Nach Ihrer Freigabe übernehmen wir Domain, Technik und die letzten Tests. Ab da bleiben wir Ihr Ansprechpartner — für Hosting, kleine Änderungen, Erweiterungen. Sie schreiben uns, wir kümmern uns.",
     bullets: [
       "Domain, SSL, Hosting — alles eingerichtet",
       "Tests auf echten Geräten (Handy, Tablet, PC)",
@@ -115,8 +115,9 @@ function Hero() {
             </h1>
           </div>
           <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
-            Sie schreiben mir, wir sprechen, ich baue — und danach bleibe
-            ich da. Kein Papierkram dazwischen, kein verlorenes Ticket.
+            Sie schreiben uns, wir sprechen, wir bauen — und danach bleiben
+            wir Ihr Ansprechpartner. Kein Papierkram dazwischen, kein
+            verlorenes Ticket.
           </p>
         </div>
       </div>
@@ -253,11 +254,11 @@ function FinalCta() {
               Schritt 01.
               <br />
               <span className="serif-italic text-muted-foreground font-normal">
-                Sie schreiben mir.
+                Sie schreiben uns.
               </span>
             </h2>
             <p className="text-muted-foreground mt-6 max-w-md text-lg leading-relaxed">
-              Antwort innerhalb von 24 Stunden. Persönlich, von mir.
+              Antwort innerhalb von 24 Stunden. Persönlich, von uns.
             </p>
           </div>
           <Link
