@@ -40,7 +40,7 @@ export function StackBlock() {
       {/* Dezenter Gold-Halo rechts unten */}
       <div
         aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -bottom-32 right-[-10%] -z-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+        className="bg-gold/8 pointer-events-none absolute -bottom-32 right-[-10%] -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-20">

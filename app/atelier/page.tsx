@@ -44,7 +44,7 @@ function Hero() {
     <section className="border-border/40 relative overflow-hidden border-b">
       <div
         aria-hidden="true"
-        className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+        className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32 lg:pb-24">
         <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
@@ -287,7 +287,7 @@ function WarumHamburg() {
     <section className="bg-foreground text-background relative overflow-hidden">
       <div
         aria-hidden="true"
-        className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[120px]"
+        className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="flex items-center gap-3">

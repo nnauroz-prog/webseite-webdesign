@@ -21,7 +21,7 @@ export function WhyWebsite() {
     <section className="border-border/40 bg-secondary/40 relative overflow-hidden border-y">
       <div
         aria-hidden="true"
-        className="bg-gold/10 pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[32rem] w-[32rem] rounded-full blur-[120px]"
+        className="bg-gold/10 pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[32rem] w-[32rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
 
       {/* Marginalia — vertikaler Editorial-Anker am linken Rand,

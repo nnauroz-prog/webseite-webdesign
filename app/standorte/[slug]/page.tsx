@@ -115,7 +115,7 @@ export default async function StandortPage({
         <section className="border-border/40 relative overflow-hidden border-b">
           <div
             aria-hidden="true"
-            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
           />
           <div className="mx-auto w-full max-w-7xl px-6 pt-12 pb-16 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-32">
             <nav
@@ -233,7 +233,7 @@ export default async function StandortPage({
         <section className="bg-foreground text-background relative overflow-hidden">
           <div
             aria-hidden="true"
-            className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[120px]"
+            className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
           />
           <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28 lg:py-32">
             <div className="flex items-center gap-3">

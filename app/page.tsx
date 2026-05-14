@@ -225,7 +225,7 @@ function Hero() {
       {/* Dezentes Gold-Halo links oben */}
       <div
         aria-hidden="true"
-        className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[120px]"
+        className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       <CursorSpotlight />
 
@@ -371,11 +371,11 @@ function PersonalNote() {
       {/* Mehrere Halos für mehr atmosphärische Tiefe */}
       <div
         aria-hidden="true"
-        className="bg-gold/20 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[120px]"
+        className="bg-gold/20 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div
         aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute bottom-0 left-[-10%] h-[24rem] w-[24rem] rounded-full blur-[120px]"
+        className="bg-gold/8 pointer-events-none absolute bottom-0 left-[-10%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       {/* Cursor-aware Gold-Halo — folgt der Maus über dem dunklen
           Block. Setzt die Brand-Atmosphäre fort und gibt der
@@ -891,11 +891,11 @@ function FinalCta() {
       {/* Mehrere weiche Halos für editoriale Tiefe */}
       <div
         aria-hidden="true"
-        className="bg-gold/18 pointer-events-none absolute top-0 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full blur-[140px]"
+        className="bg-gold/18 pointer-events-none absolute top-0 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full blur-[70px] sm:blur-[140px]"
       />
       <div
         aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[120px]"
+        className="bg-gold/8 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       {/* Editorial-Mast oben — wie eine Magazin-Rückseite */}
       <div className="border-background/10 relative mx-auto flex w-full max-w-5xl items-center justify-between gap-4 border-b px-6 py-5">

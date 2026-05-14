@@ -220,7 +220,7 @@ export function IndustryPicker() {
       />
       <div
         aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -top-40 right-[-15%] -z-10 h-[28rem] w-[28rem] rounded-full blur-[120px]"
+        className="bg-gold/8 pointer-events-none absolute -top-40 right-[-15%] -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
 
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
