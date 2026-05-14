@@ -6,7 +6,7 @@ import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
-import { HeroChat } from "@/components/marketing/hero-chat";
+import { HeroFAQ } from "@/components/marketing/hero-faq";
 import { IndustryPicker } from "@/components/marketing/industry-picker";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -246,7 +246,7 @@ function Hero() {
             className="reveal -mx-1 lg:mx-0"
             style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
           >
-            <HeroChat />
+            <HeroFAQ />
           </div>
         </div>
       </div>
