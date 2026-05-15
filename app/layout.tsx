@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 
 import { CursorLabel } from "@/components/marketing/cursor-label";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
+import { PageCursorGlow } from "@/components/marketing/page-cursor-glow";
 import { ScrollProgress } from "@/components/marketing/scroll-progress";
 import "./globals.css";
 
@@ -84,6 +85,7 @@ export default function RootLayout({
         >
           Direkt zum Inhalt
         </a>
+        <PageCursorGlow />
         {children}
         <CursorLabel />
         <MobileCtaBar />

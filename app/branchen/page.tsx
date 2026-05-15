@@ -79,6 +79,7 @@ function Hero() {
               <li key={b.slug} className="shrink-0">
                 <Link
                   href={`/branchen/${b.slug}`}
+                  data-cursor-label={`${b.label} →`}
                   className="group block w-[200px] sm:w-[260px]"
                 >
                   {b.image ? (
@@ -126,6 +127,7 @@ function Sections() {
                 {b.image ? (
                   <Link
                     href={`/branchen/${b.slug}`}
+                    data-cursor-label={`${b.label} — Details →`}
                     className="group block"
                     aria-label={`${b.label} — Details ansehen`}
                   >
