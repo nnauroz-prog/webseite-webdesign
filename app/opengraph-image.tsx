@@ -26,7 +26,7 @@ const COLORS = {
   accent: "#EFE6D4",
 };
 
-const HEADLINE_BOLD = "Hand-gebaute Websites";
+const HEADLINE_BOLD = "Professionelle Websites";
 const HEADLINE_ITALIC = "für lokale Unternehmen.";
 const EYEBROW = "SITALO · AUS HAMBURG";
 const SUBLINE =

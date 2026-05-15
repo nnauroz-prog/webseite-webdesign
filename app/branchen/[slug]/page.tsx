@@ -244,7 +244,7 @@ export default async function BranchePage({
                     />
                     <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
                       <blockquote className="serif-italic text-background text-base leading-snug tracking-[-0.005em] sm:text-lg">
-                        „Aus Hamburg, hand-gemacht — für {branche.label}."
+                        „Aus Hamburg, individuell — für {branche.label}."
                       </blockquote>
                       <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
                         <span

@@ -65,7 +65,7 @@ export function StackBlock() {
               dass nichts gemauschelt wird.
             </p>
             <p className="serif-italic text-foreground/80 mt-8 max-w-md text-lg">
-              — Hand-gemacht, nicht zusammengeklickt.
+              — Individuell gebaut, nicht zusammengeklickt.
             </p>
           </div>
 
