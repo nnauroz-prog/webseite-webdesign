@@ -92,7 +92,7 @@ function Hero() {
               <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
                 „Eine Seite zu bauen ist Handwerk, nicht Software-Klick."
               </blockquote>
-              <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
+              <figcaption className="text-foreground/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
                 <span
                   aria-hidden="true"
                   className="bg-gold gold-pulse inline-block h-1 w-5"
@@ -161,7 +161,7 @@ function Glaubenssaetze() {
               key={s.n}
               className={
                 i === 0
-                  ? "border-foreground/15 bg-foreground text-background ring-foreground/10 relative overflow-hidden rounded-3xl border p-7 ring-1 sm:p-9 lg:col-span-2 lg:p-10"
+                  ? "border-gold/30 bg-card text-foreground ring-gold/10 relative overflow-hidden rounded-3xl border p-7 ring-1 sm:p-9 lg:col-span-2 lg:p-10"
                   : "border-border/60 bg-card/70 ring-foreground/5 group relative flex flex-col overflow-hidden rounded-3xl border p-7 ring-1 transition-shadow duration-500 hover:shadow-[0_24px_60px_-30px_rgb(0_0_0/0.25)] sm:p-8"
               }
             >
@@ -173,21 +173,21 @@ function Glaubenssaetze() {
                   />
                   <div className="relative">
                     <div className="flex items-center gap-3">
-                      <span className="serif text-background/30 text-[1.4rem] font-normal leading-none tracking-[-0.04em]">
+                      <span className="serif text-foreground/30 text-[1.4rem] font-normal leading-none tracking-[-0.04em]">
                         {s.n}
                       </span>
                       <span
                         aria-hidden="true"
                         className="bg-background/20 inline-block h-px w-8"
                       />
-                      <span className="text-background/55 text-[10px] font-medium uppercase tracking-[0.25em]">
+                      <span className="text-foreground/55 text-[10px] font-medium uppercase tracking-[0.25em]">
                         Glaubenssatz · 01
                       </span>
                     </div>
                     <h3 className="serif mt-4 text-3xl font-normal leading-[1.15] tracking-[-0.02em] sm:text-4xl">
                       {s.title}
                     </h3>
-                    <p className="text-background/75 mt-4 max-w-xl text-pretty text-[15px] leading-relaxed sm:text-base">
+                    <p className="text-foreground/75 mt-4 max-w-xl text-pretty text-[15px] leading-relaxed sm:text-base">
                       {s.body}
                     </p>
                   </div>
@@ -284,7 +284,7 @@ function WieWirArbeiten() {
 
 function WarumHamburg() {
   return (
-    <section className="bg-foreground text-background relative overflow-hidden">
+    <section className="bg-card text-foreground relative overflow-hidden">
       <div
         aria-hidden="true"
         className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
@@ -295,7 +295,7 @@ function WarumHamburg() {
             aria-hidden="true"
             className="bg-gold/60 gold-pulse inline-block h-1 w-8"
           />
-          <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <p className="text-foreground/55 text-[11px] font-medium uppercase tracking-[0.3em]">
             Warum Hamburg
           </p>
         </div>
@@ -308,22 +308,22 @@ function WarumHamburg() {
           </span>
           <p className="serif text-balance text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
             Hamburg hat Tausende kleine Betriebe.{" "}
-            <span className="serif-italic text-background/75">
+            <span className="serif-italic text-foreground/75">
               Die meisten verdienen eine bessere Website
             </span>{" "}
             als die, die sie haben.
           </p>
         </blockquote>
-        <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+        <div className="mt-12 grid gap-10 border-t border-foreground/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
               Wir sind in Hamburg. Wir kennen Eimsbüttel, Altona,
               Eppendorf, St. Pauli, Winterhude — die Cafés, die Praxen,
               die Friseure, die Werkstätten. Wir gehen durch die
               Straßen und sehen, wo eine gute Seite den Unterschied
               machen würde.
             </p>
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
               Hamburg ist groß genug, dass jede Branche dichte
               Konkurrenz hat. Und klein genug, dass eine ordentliche
               Online-Sichtbarkeit Sie binnen Wochen sichtbar nach
@@ -335,7 +335,7 @@ function WarumHamburg() {
               — Sitalo Atelier, Hamburg
             </p>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-foreground/10">
             <Image
               src="/images/hamburg-speicherstadt.webp"
               alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."

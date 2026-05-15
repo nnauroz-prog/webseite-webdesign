@@ -207,7 +207,7 @@ function Packages() {
             id={p.slug}
             className={
               dark
-                ? "bg-foreground text-background relative overflow-hidden scroll-mt-16"
+                ? "bg-card text-foreground relative overflow-hidden scroll-mt-16"
                 : tinted
                   ? "bg-accent/40 border-border/40 border-t scroll-mt-16"
                   : "border-border/40 border-t scroll-mt-16"
@@ -226,7 +226,7 @@ function Packages() {
                     <span
                       className={
                         dark
-                          ? "serif text-background/30 text-[5rem] font-normal leading-none tracking-[-0.04em]"
+                          ? "serif text-foreground/30 text-[5rem] font-normal leading-none tracking-[-0.04em]"
                           : "serif text-foreground/20 text-[5rem] font-normal leading-none tracking-[-0.04em]"
                       }
                     >
@@ -244,7 +244,7 @@ function Packages() {
                   <p
                     className={
                       dark
-                        ? "text-background/85 mt-8 max-w-xl text-pretty text-xl leading-relaxed"
+                        ? "text-foreground/85 mt-8 max-w-xl text-pretty text-xl leading-relaxed"
                         : "text-foreground/80 mt-8 max-w-xl text-pretty text-xl leading-relaxed"
                     }
                   >
@@ -254,7 +254,7 @@ function Packages() {
                   <div
                     className={
                       dark
-                        ? "border-background/20 mt-12 border-t pt-8"
+                        ? "border-foreground/20 mt-12 border-t pt-8"
                         : "border-border/60 mt-12 border-t pt-8"
                     }
                   >
@@ -264,7 +264,7 @@ function Packages() {
                     <p
                       className={
                         dark
-                          ? "text-background/65 mt-2 text-base"
+                          ? "text-foreground/65 mt-2 text-base"
                           : "text-muted-foreground mt-2 text-base"
                       }
                     >
@@ -275,7 +275,7 @@ function Packages() {
                         href={`/anfrage?paket=${p.slug}`}
                         className={
                           dark
-                            ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
+                            ? "bg-gold text-background hover:bg-gold/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
                             : "bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
                         }
                       >
@@ -286,7 +286,7 @@ function Packages() {
                         href={`/pakete/${p.slug}`}
                         className={
                           dark
-                            ? "text-background/80 hover:text-background inline-flex h-14 items-center text-base font-medium underline-offset-4 hover:underline"
+                            ? "text-foreground/80 hover:text-background inline-flex h-14 items-center text-base font-medium underline-offset-4 hover:underline"
                             : "text-foreground inline-flex h-14 items-center text-base font-medium underline-offset-4 hover:underline"
                         }
                       >
@@ -299,7 +299,7 @@ function Packages() {
                   <p
                     className={
                       dark
-                        ? "text-background/65 text-[11px] font-medium uppercase tracking-[0.25em]"
+                        ? "text-foreground/65 text-[11px] font-medium uppercase tracking-[0.25em]"
                         : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]"
                     }
                   >
@@ -308,7 +308,7 @@ function Packages() {
                   <p
                     className={
                       dark
-                        ? "text-background/90 mt-4 max-w-md text-[15px] leading-relaxed"
+                        ? "text-foreground/90 mt-4 max-w-md text-[15px] leading-relaxed"
                         : "text-foreground/80 mt-4 max-w-md text-[15px] leading-relaxed"
                     }
                   >
@@ -359,14 +359,14 @@ function PackageColumn({
   dark?: boolean;
 }) {
   const labelClass = dark
-    ? "text-background/55 text-[11px] font-medium uppercase tracking-[0.22em]"
+    ? "text-foreground/55 text-[11px] font-medium uppercase tracking-[0.22em]"
     : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]";
   const itemClass = muted
     ? dark
-      ? "text-background/55 flex items-baseline gap-3 py-2 text-[14px] leading-relaxed"
+      ? "text-foreground/55 flex items-baseline gap-3 py-2 text-[14px] leading-relaxed"
       : "text-muted-foreground flex items-baseline gap-3 py-2 text-[14px] leading-relaxed"
     : dark
-      ? "text-background/90 flex items-baseline gap-3 py-2 text-[15px] leading-relaxed"
+      ? "text-foreground/90 flex items-baseline gap-3 py-2 text-[15px] leading-relaxed"
       : "text-foreground/85 flex items-baseline gap-3 py-2 text-[15px] leading-relaxed";
   const dividerClass = dark ? "divide-background/15" : "divide-border/60";
   return (
@@ -378,7 +378,7 @@ function PackageColumn({
             <span
               className={
                 dark
-                  ? "text-background/50 font-mono text-xs"
+                  ? "text-foreground/50 font-mono text-xs"
                   : "text-muted-foreground/60 font-mono text-xs"
               }
             >
