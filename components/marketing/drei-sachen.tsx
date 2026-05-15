@@ -111,7 +111,7 @@ export function DreiSachen() {
             </p>
             <div className="border-border/50 ring-foreground/5 relative mt-5 aspect-[4/5] w-full overflow-hidden rounded-3xl border shadow-[0_30px_60px_-20px_rgb(0_0_0/0.3)] ring-1 sm:aspect-[5/6]">
               <Image
-                src="/images/sitalo-praxis-laptop.png"
+                src="/images/sitalo-praxis-laptop.webp"
                 alt="Fertige Sitalo-Website auf einem Laptop in einem warmen Atelier-Licht."
                 fill
                 sizes="(min-width: 1024px) 480px, 100vw"

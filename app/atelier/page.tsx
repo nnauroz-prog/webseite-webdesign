@@ -77,7 +77,7 @@ function Hero() {
           </div>
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 ring-foreground/5 sm:aspect-[5/6]">
             <Image
-              src="/images/workspace-prints.png"
+              src="/images/workspace-prints.webp"
               alt="Sitalo-Atelier in Hamburg — Schreibtisch mit gerahmten Design-Drucken und MacBook."
               fill
               priority
@@ -337,7 +337,7 @@ function WarumHamburg() {
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
             <Image
-              src="/images/hamburg-speicherstadt.png"
+              src="/images/hamburg-speicherstadt.webp"
               alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
               fill
               sizes="(min-width: 1024px) 360px, 100vw"

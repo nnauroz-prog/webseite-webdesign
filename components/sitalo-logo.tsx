@@ -38,7 +38,7 @@ export function SitaloLogo({
       aria-label="Sitalo Webdesign"
     >
       <Image
-        src="/sitalo-logo.png"
+        src="/sitalo-logo.webp"
         alt="Sitalo Webdesign"
         width={1672}
         height={941}
