@@ -12,16 +12,9 @@ import {
 export const metadata: Metadata = {
   title: "Website anfragen — Sitalo",
   description:
-    "Senden Sie uns kurz, was Sie brauchen — wir melden uns innerhalb von 24 Stunden mit einem persönlichen Angebot.",
+    "Drei Felder, fertig. Wir melden uns persönlich aus dem Hamburger Atelier — meist noch am selben Tag.",
   alternates: { canonical: "/anfrage" },
 };
-
-const TRUST = [
-  "Antwort innerhalb von 24 Stunden — meistens deutlich schneller",
-  "Persönlicher Ansprechpartner aus dem Hamburger Atelier",
-  "Unverbindlich & kostenlos — kein Vertrag, kein Druck",
-  "Erste Einschätzung mit ehrlichem Preisrahmen",
-];
 
 /**
  * Read the `?paket=` query parameter and clamp it to a valid
@@ -60,91 +53,69 @@ export default async function AnfragePage({
 
       <main className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
-          {/* Dezenter Gold-Halo links oben — konsistent mit Hero-
-              Sprache der restlichen Site. */}
+          {/* Dezenter Gold-Halo — konsistent mit Hero-Sprache. */}
           <div
             aria-hidden="true"
-            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
+            className="bg-gold/10 pointer-events-none absolute -top-32 left-1/2 -z-10 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-[60px] sm:blur-[120px]"
           />
-          <div className="mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-28 lg:grid-cols-[1fr_1.2fr] lg:gap-20 lg:py-32">
-            <div className="lg:sticky lg:top-24 lg:self-start">
+          {/* Single-Column statt 2-Column-Hero: das Formular ist der
+              Hauptakt, nicht ein Side-Show neben langem Marketing-Text.
+              Mobile wie Desktop: Form so weit oben wie möglich. */}
+          <div className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-24 lg:py-28">
+            <div className="text-center">
               <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
                 <span
                   aria-hidden="true"
                   className="bg-gold gold-pulse inline-block h-1 w-6"
                 />
-                Drei Schritte, zwei Minuten
+                Drei Felder · ein Klick
               </p>
-              <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
-                Erzählen Sie uns,
-                <br />
-                <span className="serif-italic text-muted-foreground font-normal">
-                  was Sie vorhaben.
-                </span>
+              <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+                Anfrage senden.
               </h1>
-              <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-lg leading-relaxed">
-                Branche, Art der Seite, ein paar Kontaktdaten. Mehr
-                brauchen wir jetzt nicht. Wir melden uns innerhalb von
-                24 Stunden persönlich aus dem Hamburger Atelier —
-                meist deutlich schneller — mit ehrlichem Preisrahmen
-                und konkretem nächstem Schritt.
+              <p className="text-muted-foreground mx-auto mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg">
+                Antwort meist noch am selben Tag — persönlich aus dem
+                Hamburger Atelier. Kein Vertrag, der gleich mitkommt.
               </p>
-
-              <ul className="divide-border/60 mt-10 divide-y border-y">
-                {TRUST.map((item) => (
-                  <li
-                    key={item}
-                    className="text-foreground/85 flex items-baseline gap-4 py-3.5 text-[15px]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="bg-ink-olive mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <p className="serif-italic text-foreground/75 mt-10 max-w-md text-pretty text-lg leading-snug">
-                — Sie schicken drei Sachen, wir liefern den Rest.
-                Übermorgen sind Sie online.
-              </p>
-
-              <div className="border-border/60 mt-10 border-t pt-8">
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
-                  Lieber direkt
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2.5">
-                  <a
-                    href="tel:+4915224437370"
-                    className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-                  >
-                    Anrufen
-                  </a>
-                  <a
-                    href="mailto:info@sitalo.de"
-                    className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-                  >
-                    Schreiben
-                  </a>
-                  <a
-                    href="/sitalo-kontakt.vcf"
-                    download="Sitalo-Webdesign.vcf"
-                    className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-                  >
-                    Speichern
-                  </a>
-                </div>
-              </div>
             </div>
 
-            <div>
+            {/* Form — Hauptakt, direkt nach Header. */}
+            <div className="mt-10 sm:mt-12">
               <InquiryForm
                 initialPackage={initialPackage}
                 initialIndustry={initialIndustry}
                 initialMessage={initialMessage}
                 formspreeId={formspreeId}
               />
+            </div>
+
+            {/* Lieber-direkt-Strip unterhalb — sekundärer Weg, nicht
+                den Hero blockierend. */}
+            <div className="border-border/60 mt-10 flex flex-col items-center gap-4 border-t pt-8 text-center sm:flex-row sm:justify-center sm:gap-3">
+              <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
+                Lieber direkt
+              </p>
+              <div className="flex flex-wrap justify-center gap-2.5">
+                <a
+                  href="tel:+4915224437370"
+                  className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                >
+                  Anrufen
+                </a>
+                <a
+                  href="mailto:info@sitalo.de"
+                  className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                >
+                  Schreiben
+                </a>
+                <a
+                  href="/sitalo-kontakt.vcf"
+                  download="Sitalo-Webdesign.vcf"
+                  className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                >
+                  Speichern
+                </a>
+              </div>
             </div>
           </div>
         </section>
