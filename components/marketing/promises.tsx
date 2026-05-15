@@ -2,111 +2,122 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 /**
- * „Worauf Sie sich verlassen können" — Editorial-Long-Form-Prosa
- * statt eines 5-Karten-Grids. Bewusst weniger AI-Template-Rhythmus.
+ * „Sie wissen, was Sie kriegen" — Bento-Spread mit fünf Zusagen
+ * als modulare Tiles. Vorher Editorial-Long-Form-Prosa, jetzt
+ * Linear-Style Bento-Grid passend zur Hero-Sektion.
  *
- * Fünf Zusagen werden als zusammenhängender Text mit eingebauten
- * Numeral-Akzenten formuliert, plus ein Pull-Quote in der Mitte
- * als visueller Bruch. Wirkt wie ein redaktioneller Artikel, nicht
- * wie ein Feature-Grid.
+ * 12-Spalten-Grid mit asymmetrischer Verteilung — eine große
+ * Hero-Tile mit Pull-Quote + Anfrage-CTA, vier kleine Zusagen-
+ * Tiles in zwei Reihen.
  */
+
+const ZUSAGEN = [
+  {
+    n: "01",
+    title: "Antwort am selben Tag",
+    body: "Spätestens am nächsten Werktag haben Sie uns — persönlich, nicht aus einem Ticket-System.",
+  },
+  {
+    n: "02",
+    title: "Festpreis vorab",
+    body: "Schwarz auf weiß, keine Nachträge am Ende. Wenn sich was ändert, reden wir vorher drüber.",
+  },
+  {
+    n: "03",
+    title: "Eine saubere Korrekturrunde",
+    body: "Alles auf einmal, nicht zwölf Mails über zwei Wochen. Wir setzen's in einem Rutsch um.",
+  },
+  {
+    n: "04",
+    title: "Nach dem Launch nicht weg",
+    body: "Hosting, kleine Änderungen, neue Texte — Sie schreiben uns, wir kümmern uns. Punkt.",
+  },
+];
+
 export function Promises() {
   return (
     <section className="border-border/40 relative overflow-hidden border-t">
+      {/* Atmosphärische Halos — Gold links oben, dezent */}
       <div
         aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
+        className="glow-orb -top-32 -left-32 h-[36rem] w-[36rem] -z-10"
+        style={{ background: "oklch(0.85 0.18 85 / 0.10)" }}
       />
-      {/* Marginalia rechts — wie ein redaktioneller Kapitel-Marker
-          am Rand einer Buchseite. Nur Desktop. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 right-6 hidden -translate-y-1/2 lg:block"
-      >
-        <p
-          className="text-muted-foreground/45 font-mono text-[10px] tracking-[0.4em] uppercase"
-          style={{
-            writingMode: "vertical-rl",
-          }}
-        >
-          § 04 · Was wir zusagen
-        </p>
-      </div>
+
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
-        {/* Bewusst keine Eyebrow-Zeile hier — bricht das gleiche
-            Header-Schema, das jede andere Sektion hat. */}
-        <div className="max-w-3xl">
-          <h2 className="text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02]">
-            Sie wissen, was Sie kriegen. Vor der ersten Rechnung.
+        {/* Header zentriert wie Hero-Sektion */}
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="status-badge">
+            <span className="status-badge-dot" aria-hidden="true" />
+            <span>Vier Zusagen · kein Kleingedrucktes</span>
+          </span>
+          <h2 className="mt-7 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02]">
+            Sie wissen, was Sie kriegen.{" "}
+            <span className="gradient-gold">Vor der ersten Rechnung.</span>
           </h2>
         </div>
 
-        <p className="text-foreground/85 mt-14 max-w-3xl text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
-          <span className="serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
-            S
-          </span>
-          ie schreiben uns. Eine Mail, ein Anruf, was Ihnen lieber
-          ist. Spätestens am nächsten Tag haben Sie eine Antwort —
-          von uns, nicht von einem Ticket-System. Wir reden mit
-          Ihnen, bevor wir irgendwas anfangen. Wenn es passt, gut.
-          Wenn nicht, sagen wir's auch.
-        </p>
+        {/* Bento-Grid: vier Zusagen-Tiles + große Quote-Tile mit CTA */}
+        <div className="mt-14 grid grid-cols-12 gap-3 sm:mt-16 sm:gap-4">
+          {ZUSAGEN.map((z, i) => (
+            <article
+              key={z.n}
+              className={
+                // i=0,3 nimmt 7 Spalten, i=1,2 nimmt 5 — schräge Asymmetrie
+                i === 0 || i === 3
+                  ? "bento col-span-12 p-6 sm:p-7 lg:col-span-7"
+                  : "bento col-span-12 p-6 sm:p-7 lg:col-span-5"
+              }
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                {z.n} — Zusage
+              </p>
+              <h3 className="text-foreground mt-3 text-xl font-semibold tracking-[-0.015em] sm:text-2xl">
+                {z.title}
+              </h3>
+              <p className="text-muted-foreground mt-3 text-pretty text-[14.5px] leading-relaxed">
+                {z.body}
+              </p>
+            </article>
+          ))}
 
-        <div className="mt-10 grid gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
-          <div className="space-y-6">
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Vorher gibt's einen Festpreis. Schwarz auf weiß, keine
-              Nachträge am Ende. Wenn sich im Projekt was ändert,
-              reden wir vorher drüber — nicht hinterher auf der
-              Rechnung. So einfach soll's sein.
-            </p>
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Eine ordentliche Korrekturrunde, gesammelt. Sie gehen
-              die Seite in Ruhe durch und schicken uns alles auf
-              einmal. Nicht zwölf Mails über zwei Wochen. Wir setzen
-              das in einem Rutsch um, dann geht die Seite live.
-            </p>
-          </div>
-          <div className="space-y-6">
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Nach dem Launch sind wir nicht weg. Hosting, kleine
-              Änderungen, neue Texte, wenn sich was tut — Sie
-              schreiben uns eine Mail, wir kümmern uns. Kein
-              „dafür sind wir nicht zuständig", weil's nur uns gibt.
-            </p>
-            <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Und wenn was nicht passt, sagen Sie's. Wir bessern
-              nach, bis es stimmt. Wir gewinnen Kunden, weil die
-              Arbeit gut ist — nicht, weil im Kleingedruckten was
-              steht, das sie da hält.
-            </p>
-          </div>
-        </div>
-
-        <div className="border-ink-petrol/60 mt-16 max-w-4xl border-l-2 pl-6 sm:mt-20 sm:pl-10">
-          <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.015em] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
-            Am Ende ist das hier kein Software-Projekt.
-            <br />
-            <span className="serif-italic text-muted-foreground">
-              Sondern Vertrauen, das wir nicht verlieren wollen.
-            </span>
-          </p>
-        </div>
-
-        <div className="mt-12 flex flex-col items-start gap-4 sm:mt-14 sm:flex-row sm:items-center">
-          <Link
-            href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-          >
-            Anfrage starten
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link
-            href="/atelier"
-            className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center text-[14px] font-medium underline-offset-4 hover:underline"
-          >
-            Mehr über das Atelier
-          </Link>
+          {/* Große Quote-Tile mit CTA — spannt die volle Breite, dunkler
+              akzentuiert als die anderen Tiles für visuelle Hierarchie. */}
+          <article className="bento relative col-span-12 overflow-hidden p-7 sm:p-9 lg:p-10">
+            <div
+              aria-hidden="true"
+              className="glow-orb -bottom-32 -right-32 h-[24rem] w-[24rem]"
+              style={{ background: "oklch(0.78 0.14 215 / 0.10)" }}
+            />
+            <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr] lg:gap-12">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                  05 — Bottom line
+                </p>
+                <p className="text-foreground mt-4 text-balance text-2xl font-semibold leading-[1.25] tracking-[-0.02em] sm:text-3xl lg:text-[2.25rem] lg:leading-[1.2]">
+                  Am Ende ist das hier kein Software-Projekt.{" "}
+                  <span className="gradient-gold">
+                    Sondern Vertrauen, das wir nicht verlieren wollen.
+                  </span>
+                </p>
+              </div>
+              <div className="flex flex-col items-start gap-3 sm:items-end">
+                <Link
+                  href="/anfrage"
+                  className="bg-gold text-background hover:bg-gold/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight shadow-[0_0_24px_-4px_oklch(0.85_0.18_85/0.4)] transition-all hover:shadow-[0_0_32px_-2px_oklch(0.85_0.18_85/0.6)]"
+                >
+                  Anfrage senden
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+                <Link
+                  href="/atelier"
+                  className="text-muted-foreground hover:text-foreground inline-flex h-10 items-center text-[14px] font-medium underline-offset-4 hover:underline"
+                >
+                  Mehr über das Atelier →
+                </Link>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
