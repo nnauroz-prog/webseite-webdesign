@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, ChevronDown } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -10,104 +10,45 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  INQUIRY_NEEDS,
   INQUIRY_TIMEFRAMES,
-  type InquiryNeed,
   type InquiryPackage,
 } from "@/lib/validations/inquiries";
 
-/* ---------- Static data: labels and pickable options ---------- */
+/**
+ * Anfrage-Formular — Single-Page, minimaler Klick-Pfad.
+ *
+ * Pflichtfelder reduziert auf das absolute Minimum: Name, E-Mail,
+ * Nachricht, DSGVO-Consent. Branche, Paket, Telefon und Zeitrahmen
+ * sind in einer aufklappbaren „Mehr verraten"-Sektion — komplett
+ * optional, sonst fragen wir in der Antwort.
+ *
+ * Vorgängerversion war ein 3-Schritt-Wizard mit 6 Pflicht-Klicks
+ * (Branche-Card, Website-Type-Card, Weiter, Weiter, Consent, Senden)
+ * + langes Scrollen durch das 12-Branchen-Card-Grid. Das war für
+ * einen Erstkontakt deutlich zu viel.
+ */
 
-type IndustryOption = {
-  slug: string;
-  label: string;
-  body: string;
+const INDUSTRY_OPTIONS = [
+  { slug: "pflegedienst", label: "Pflegedienst" },
+  { slug: "arztpraxis", label: "Arztpraxis" },
+  { slug: "zahnarzt", label: "Zahnarztpraxis" },
+  { slug: "friseur", label: "Friseur" },
+  { slug: "kosmetik", label: "Kosmetikstudio" },
+  { slug: "cafe", label: "Café / Restaurant" },
+  { slug: "handwerker", label: "Handwerker" },
+  { slug: "reinigung", label: "Reinigung" },
+  { slug: "kanzlei", label: "Kanzlei" },
+  { slug: "fitness", label: "Fitnessstudio" },
+  { slug: "hotel", label: "Boutique-Hotel" },
+  { slug: "sonstiges", label: "Andere Branche" },
+];
+
+const PACKAGE_LABELS: Record<InquiryPackage, string> = {
+  starter: "Starter-Projekt",
+  business: "Business-Auftritt",
+  premium: "Premium-System",
+  unsicher: "Empfehlung gewünscht",
 };
-
-const INDUSTRIES: IndustryOption[] = [
-  {
-    slug: "pflegedienst",
-    label: "Pflegedienst",
-    body: "Leistungen, Vertrauen, Kontakt, Bewerbungen.",
-  },
-  {
-    slug: "arztpraxis",
-    label: "Arztpraxis",
-    body: "Sprechzeiten, Leistungen, Patienteninfo.",
-  },
-  {
-    slug: "zahnarzt",
-    label: "Zahnarztpraxis",
-    body: "Behandlungen, Atmosphäre, Termin-Anfragen.",
-  },
-  {
-    slug: "friseur",
-    label: "Friseur",
-    body: "Bilder, Preise, Termin-Anfragen.",
-  },
-  {
-    slug: "kosmetik",
-    label: "Kosmetikstudio",
-    body: "Behandlungen, Atmosphäre, Anfragen.",
-  },
-  {
-    slug: "cafe",
-    label: "Café / Restaurant",
-    body: "Speisekarte, Öffnungszeiten, Reservierung.",
-  },
-  {
-    slug: "handwerker",
-    label: "Handwerker",
-    body: "Leistungen, Einsatzgebiet, Kontakt.",
-  },
-  {
-    slug: "reinigung",
-    label: "Reinigung",
-    body: "Service-Pakete, Angebot, Erreichbarkeit.",
-  },
-  {
-    slug: "kanzlei",
-    label: "Kanzlei",
-    body: "Rechtsgebiete, Team, Erstberatung.",
-  },
-  {
-    slug: "fitness",
-    label: "Fitnessstudio",
-    body: "Kursplan, Probetraining, Mitgliedschaft.",
-  },
-  {
-    slug: "hotel",
-    label: "Boutique-Hotel",
-    body: "Zimmer, Atmosphäre, Buchungsanfrage.",
-  },
-  {
-    slug: "sonstiges",
-    label: "Andere Branche",
-    body: "Wir bauen die Seite individuell.",
-  },
-];
-
-const WEBSITE_TYPES: Array<{
-  slug: InquiryNeed | "unsicher";
-  title: string;
-  body: string;
-}> = [
-  {
-    slug: "neue-website",
-    title: "Neue Website",
-    body: "Ich starte komplett neu.",
-  },
-  {
-    slug: "redesign",
-    title: "Redesign",
-    body: "Meine bestehende Seite soll überarbeitet werden.",
-  },
-  {
-    slug: "unsicher",
-    title: "Noch unsicher",
-    body: "Bitte beraten Sie mich.",
-  },
-];
 
 const TIMEFRAME_LABELS: Record<(typeof INQUIRY_TIMEFRAMES)[number], string> = {
   asap: "So schnell wie möglich",
@@ -117,27 +58,20 @@ const TIMEFRAME_LABELS: Record<(typeof INQUIRY_TIMEFRAMES)[number], string> = {
   offen: "Noch offen",
 };
 
-const PACKAGE_LABELS: Record<InquiryPackage, string> = {
-  starter: "Starter-Projekt",
-  business: "Business-Auftritt",
-  premium: "Premium-System",
-  unsicher: "Empfehlung gewünscht",
-};
-
-/* ---------- Wizard state ---------- */
-
-type WizardData = {
-  industry: string | null;
-  websiteType: string | null;
+type FormData = {
+  /** Pflicht */
   name: string;
-  company: string;
   email: string;
-  phone: string;
-  timeframe: (typeof INQUIRY_TIMEFRAMES)[number] | "";
   message: string;
   consent: boolean;
   /** Honeypot — bots fill it, humans don't. */
   websiteUrl: string;
+  /** Optional details */
+  phone: string;
+  company: string;
+  industry: string;
+  packagePref: InquiryPackage | "";
+  timeframe: (typeof INQUIRY_TIMEFRAMES)[number] | "";
 };
 
 type Status =
@@ -145,11 +79,6 @@ type Status =
   | { kind: "submitting" }
   | { kind: "success" }
   | { kind: "error"; message: string };
-
-const TOTAL_STEPS = 3;
-const STEP_TITLES = ["Vorhaben", "Kontakt", "Absenden"];
-
-/* ---------- Component ---------- */
 
 export function InquiryForm({
   initialPackage,
@@ -162,60 +91,83 @@ export function InquiryForm({
   initialMessage?: string;
   formspreeId?: string;
 }) {
-  // Bekannten Industry-Slug vorvalidieren — sonst startet der Wizard
-  // mit garbage und der User merkts spät.
   const validIndustry =
-    initialIndustry && INDUSTRIES.some((i) => i.slug === initialIndustry)
+    initialIndustry &&
+    INDUSTRY_OPTIONS.some((i) => i.slug === initialIndustry)
       ? initialIndustry
-      : null;
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState<WizardData>({
-    industry: validIndustry,
-    websiteType: null,
+      : "";
+
+  const [data, setData] = useState<FormData>({
     name: "",
-    company: "",
     email: "",
-    phone: "",
-    timeframe: "",
     message: initialMessage ?? "",
     consent: false,
     websiteUrl: "",
+    phone: "",
+    company: "",
+    industry: validIndustry,
+    packagePref: initialPackage ?? "",
+    timeframe: "",
   });
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  // Details-Akkordeon wird aufgeklappt, wenn was per URL prefilled
+  // wurde — dann sieht der User direkt, dass sein Branche/Paket
+  // schon übernommen wurde.
+  const hasPrefill = Boolean(validIndustry || initialPackage);
+  const [detailsOpen, setDetailsOpen] = useState(hasPrefill);
 
-  const update = <K extends keyof WizardData>(key: K, value: WizardData[K]) =>
-    setData((d) => ({ ...d, [key]: value }));
+  const canSubmit =
+    data.name.trim().length >= 2 &&
+    /\S+@\S+\.\S+/.test(data.email) &&
+    data.message.trim().length >= 5 &&
+    data.consent;
 
-  const canAdvance = (() => {
-    switch (step) {
-      case 0:
-        return data.industry !== null && data.websiteType !== null;
-      case 1:
-        return (
-          data.name.trim().length >= 2 && /\S+@\S+\.\S+/.test(data.email)
-        );
-      case 2:
-        return data.consent;
-      default:
-        return false;
-    }
-  })();
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!canSubmit) return;
 
-  async function submit() {
     if (!formspreeId) {
       setStatus({
         kind: "error",
         message:
-          "Anfrage-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder per E-Mail an info@sitalo.de schreiben.",
+          "Anfrage-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder direkt an info@sitalo.de schreiben.",
       });
       return;
     }
-    // Honeypot — silent success for bots.
+
+    // Honeypot — silent success für Bots.
     if (data.websiteUrl.trim() !== "") {
       setStatus({ kind: "success" });
       return;
     }
+
     setStatus({ kind: "submitting" });
+
+    const industryLabel = INDUSTRY_OPTIONS.find(
+      (i) => i.slug === data.industry,
+    )?.label;
+    const packageLabel = data.packagePref
+      ? PACKAGE_LABELS[data.packagePref]
+      : undefined;
+    const timeframeLabel = data.timeframe
+      ? TIMEFRAME_LABELS[data.timeframe]
+      : undefined;
+
+    const payload: Record<string, unknown> = {
+      Name: data.name,
+      "E-Mail": data.email,
+      Nachricht: data.message,
+      _subject: `Neue Anfrage von ${data.name}${
+        data.company ? ` (${data.company})` : ""
+      }`,
+      _replyto: data.email,
+    };
+    if (data.company) payload.Firma = data.company;
+    if (data.phone) payload.Telefon = data.phone;
+    if (industryLabel) payload.Branche = industryLabel;
+    if (packageLabel) payload["Paket-Wunsch"] = packageLabel;
+    if (timeframeLabel) payload.Wunschzeitraum = timeframeLabel;
+
     try {
       const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
         method: "POST",
@@ -223,7 +175,7 @@ export function InquiryForm({
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(buildPayload(data, initialPackage)),
+        body: JSON.stringify(payload),
       });
       if (response.ok) {
         setStatus({ kind: "success" });
@@ -251,30 +203,23 @@ export function InquiryForm({
     return <SuccessScreen />;
   }
 
-  // Wenn Branche oder Paket per URL gesetzt: kompaktes Prefill-Banner.
-  const prefillParts: string[] = [];
-  if (validIndustry) {
-    const ind = INDUSTRIES.find((i) => i.slug === validIndustry);
-    if (ind) prefillParts.push(`Branche: ${ind.label}`);
-  }
-  if (initialPackage) {
-    prefillParts.push(`Paket: ${PACKAGE_LABELS[initialPackage]}`);
-  }
+  const update = <K extends keyof FormData>(key: K, value: FormData[K]) =>
+    setData((d) => ({ ...d, [key]: value }));
 
   return (
-    <div className="bg-card ring-border/50 rounded-3xl border p-6 shadow-xl ring-1 sm:p-8 lg:p-10">
-      {prefillParts.length > 0 ? (
-        <div className="bg-accent/40 text-foreground/85 border-border/60 mb-6 rounded-2xl border px-4 py-3 text-sm leading-relaxed">
-          <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.2em]">
-            Übernommen
-          </span>
-          <span className="ml-2">{prefillParts.join(" · ")}</span>
-        </div>
-      ) : null}
+    <form
+      onSubmit={submit}
+      className="bg-card ring-border/50 rounded-3xl border p-6 shadow-xl ring-1 sm:p-8 lg:p-10"
+    >
+      <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
+        Anfrage senden
+      </h2>
+      <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
+        Drei Pflichtfelder. Antwort meist noch am selben Tag —
+        persönlich, kostenlos.
+      </p>
 
-      <ProgressHeader step={step} total={TOTAL_STEPS} title={STEP_TITLES[step]} />
-
-      {/* Honeypot field — visually hidden. */}
+      {/* Honeypot — visuell versteckt */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-[-9999px] h-0 w-0 overflow-hidden"
@@ -307,322 +252,184 @@ export function InquiryForm({
         </Alert>
       )}
 
-      <div className="mt-8 min-h-[22rem]">
-        {step === 0 && (
-          <StepVorhaben
-            industry={data.industry}
-            websiteType={data.websiteType}
-            onIndustryChange={(v) => update("industry", v)}
-            onWebsiteTypeChange={(v) => update("websiteType", v)}
-          />
-        )}
-        {step === 1 && <StepKontakt data={data} onChange={update} />}
-        {step === 2 && <StepAbsenden data={data} onChange={update} />}
-      </div>
-
-      <div className="border-border/60 mt-8 flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
-        {step > 0 ? (
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setStep((s) => Math.max(0, s - 1))}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="mr-1.5 h-4 w-4" />
-            Zurück
-          </Button>
-        ) : (
-          <span />
-        )}
-        {step < TOTAL_STEPS - 1 ? (
-          <Button
-            type="button"
-            disabled={!canAdvance}
-            onClick={() => setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1))}
-            className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
-          >
-            Weiter
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            disabled={!canAdvance || status.kind === "submitting"}
-            onClick={submit}
-            className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
-          >
-            {status.kind === "submitting"
-              ? "Wird gesendet …"
-              : "Anfrage senden"}
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Progress header ---------- */
-
-function ProgressHeader({
-  step,
-  total,
-  title,
-}: {
-  step: number;
-  total: number;
-  title: string;
-}) {
-  const percent = Math.round(((step + 1) / total) * 100);
-  return (
-    <div>
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.22em]">
-          Schritt {step + 1} von {total}
-        </p>
-        <p className="text-foreground text-xs font-medium">{title}</p>
-      </div>
-      <div className="bg-secondary/60 mt-3 h-1.5 overflow-hidden rounded-full">
-        <div
-          className="bg-foreground h-full rounded-full transition-[width] duration-300"
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Steps ---------- */
-
-function StepVorhaben({
-  industry,
-  websiteType,
-  onIndustryChange,
-  onWebsiteTypeChange,
-}: {
-  industry: string | null;
-  websiteType: string | null;
-  onIndustryChange: (v: string) => void;
-  onWebsiteTypeChange: (v: string) => void;
-}) {
-  return (
-    <div className="space-y-10">
-      <div>
-        <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
-          Für welche Branche soll die Seite sein?
-        </h2>
-        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-          Wählen Sie das, was am nächsten passt.
-        </p>
-        <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {INDUSTRIES.map((opt) => {
-            const active = industry === opt.slug;
-            return (
-              <li key={opt.slug}>
-                <button
-                  type="button"
-                  onClick={() => onIndustryChange(opt.slug)}
-                  aria-pressed={active}
-                  className={`w-full rounded-2xl border-2 p-4 text-left transition-all ${
-                    active
-                      ? "border-foreground bg-foreground/5 shadow-sm"
-                      : "border-border bg-background hover:border-foreground/40 hover:bg-secondary/40"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-[15px] font-semibold tracking-tight">
-                      {opt.label}
-                    </h3>
-                    <Radio active={active} />
-                  </div>
-                  <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
-                    {opt.body}
-                  </p>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div>
-        <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
-          Was soll erstellt werden?
-        </h2>
-        <ul className="mt-6 grid gap-2 sm:grid-cols-3">
-          {WEBSITE_TYPES.map((opt) => {
-            const active = websiteType === opt.slug;
-            return (
-              <li key={opt.slug}>
-                <button
-                  type="button"
-                  onClick={() => onWebsiteTypeChange(opt.slug)}
-                  aria-pressed={active}
-                  className={`w-full rounded-2xl border-2 p-4 text-left transition-all ${
-                    active
-                      ? "border-foreground bg-foreground/5 shadow-sm"
-                      : "border-border bg-background hover:border-foreground/40 hover:bg-secondary/40"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-[15px] font-semibold tracking-tight">
-                      {opt.title}
-                    </h3>
-                    <Radio active={active} />
-                  </div>
-                  <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
-                    {opt.body}
-                  </p>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
-function StepKontakt({
-  data,
-  onChange,
-}: {
-  data: WizardData;
-  onChange: <K extends keyof WizardData>(key: K, value: WizardData[K]) => void;
-}) {
-  return (
-    <div>
-      <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
-        Wie können wir Sie erreichen?
-      </h2>
-      <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-        Name und E-Mail reichen — alles andere ist optional.
-      </p>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
-        <Field
-          label="Name"
-          required
-          value={data.name}
-          onChange={(v) => onChange("name", v)}
-          autoComplete="name"
-        />
-        <Field
-          label="E-Mail"
-          required
-          type="email"
-          value={data.email}
-          onChange={(v) => onChange("email", v)}
-          autoComplete="email"
-        />
-        <Field
-          label="Telefon"
-          type="tel"
-          value={data.phone}
-          onChange={(v) => onChange("phone", v)}
-          autoComplete="tel"
-        />
-        <Field
-          label="Firma"
-          value={data.company}
-          onChange={(v) => onChange("company", v)}
-          autoComplete="organization"
-        />
-      </div>
-    </div>
-  );
-}
-
-function StepAbsenden({
-  data,
-  onChange,
-}: {
-  data: WizardData;
-  onChange: <K extends keyof WizardData>(key: K, value: WizardData[K]) => void;
-}) {
-  return (
-    <div>
-      <h2 className="text-balance text-2xl font-semibold leading-[1.15] tracking-[-0.015em] sm:text-3xl">
-        Möchten Sie uns noch etwas mitgeben?
-      </h2>
-      <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-        Alles freiwillig — Details klären wir gerne im Erstgespräch.
-      </p>
-
-      <div className="mt-6 space-y-5">
+      <div className="mt-7 grid gap-5 sm:grid-cols-2 sm:gap-6">
         <div className="space-y-2">
-          <Label htmlFor="inq-message">
-            Nachricht
-            <span className="text-muted-foreground ml-2 text-xs font-normal">
-              (optional)
-            </span>
-          </Label>
-          <Textarea
-            id="inq-message"
-            rows={4}
-            maxLength={4000}
-            value={data.message}
-            onChange={(e) => onChange("message", e.target.value)}
-            placeholder="Was schwebt Ihnen vor? Bestehende Seite, Wunsch-Funktionen, Vorbilder, alles willkommen."
+          <Label htmlFor="inq-name">Name</Label>
+          <Input
+            id="inq-name"
+            required
+            value={data.name}
+            onChange={(e) => update("name", e.target.value)}
+            autoComplete="name"
+            placeholder="Vor- und Nachname"
           />
         </div>
-
         <div className="space-y-2">
-          <Label htmlFor="inq-timeframe">
-            Wunschzeitraum
-            <span className="text-muted-foreground ml-2 text-xs font-normal">
-              (optional)
-            </span>
-          </Label>
-          <select
-            id="inq-timeframe"
-            value={data.timeframe}
-            onChange={(e) =>
-              onChange(
-                "timeframe",
-                e.target.value as (typeof INQUIRY_TIMEFRAMES)[number] | "",
-              )
-            }
-            className="border-input bg-background h-10 w-full rounded-md border px-3 py-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <option value="">Bitte wählen</option>
-            {INQUIRY_TIMEFRAMES.map((v) => (
-              <option key={v} value={v}>
-                {TIMEFRAME_LABELS[v]}
-              </option>
-            ))}
-          </select>
+          <Label htmlFor="inq-email">E-Mail</Label>
+          <Input
+            id="inq-email"
+            type="email"
+            required
+            value={data.email}
+            onChange={(e) => update("email", e.target.value)}
+            autoComplete="email"
+            placeholder="ihre@adresse.de"
+          />
         </div>
       </div>
 
-      <label className="mt-7 flex items-start gap-3 text-sm">
+      <div className="mt-5 space-y-2 sm:mt-6">
+        <Label htmlFor="inq-message">Was wir wissen sollten</Label>
+        <Textarea
+          id="inq-message"
+          required
+          rows={5}
+          value={data.message}
+          onChange={(e) => update("message", e.target.value)}
+          placeholder="Zwei, drei Sätze reichen. Was Sie machen, was Sie brauchen, was Sie noch nicht haben — wir fragen den Rest in der Antwort."
+        />
+      </div>
+
+      {/* Optionale Details — aufklappbar, kein Pflichtweg */}
+      <details
+        className="border-border/60 mt-6 rounded-2xl border bg-secondary/30 transition-colors sm:mt-7"
+        open={detailsOpen}
+        onToggle={(e) => setDetailsOpen((e.target as HTMLDetailsElement).open)}
+      >
+        <summary className="text-foreground/85 hover:text-foreground flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-[14.5px] font-medium tracking-tight">
+          <span className="inline-flex items-center gap-2.5">
+            <ChevronDown
+              aria-hidden="true"
+              className="h-4 w-4 transition-transform [details[open]_&]:rotate-180"
+            />
+            Mehr verraten {hasPrefill ? "(übernommen)" : "(optional)"}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            Branche · Paket · Zeitrahmen · Telefon
+          </span>
+        </summary>
+        <div className="border-border/60 grid gap-5 border-t px-5 py-5 sm:grid-cols-2 sm:gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="inq-industry">Branche</Label>
+            <Select
+              id="inq-industry"
+              value={data.industry}
+              onChange={(v) => update("industry", v)}
+              options={[
+                { value: "", label: "— bitte wählen —" },
+                ...INDUSTRY_OPTIONS.map((i) => ({
+                  value: i.slug,
+                  label: i.label,
+                })),
+              ]}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="inq-package">Paket-Wunsch</Label>
+            <Select
+              id="inq-package"
+              value={data.packagePref}
+              onChange={(v) => update("packagePref", v as FormData["packagePref"])}
+              options={[
+                { value: "", label: "— Empfehlung gewünscht —" },
+                { value: "starter", label: "Starter (ab 499 €)" },
+                { value: "business", label: "Business (ab 899 €)" },
+                { value: "premium", label: "Premium (ab 1.499 €)" },
+              ]}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="inq-phone">Telefon</Label>
+            <Input
+              id="inq-phone"
+              type="tel"
+              value={data.phone}
+              onChange={(e) => update("phone", e.target.value)}
+              autoComplete="tel"
+              placeholder="für schnellere Rückfragen"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="inq-timeframe">Zeitrahmen</Label>
+            <Select
+              id="inq-timeframe"
+              value={data.timeframe}
+              onChange={(v) =>
+                update("timeframe", v as FormData["timeframe"])
+              }
+              options={[
+                { value: "", label: "— wann soll es live sein? —" },
+                ...INQUIRY_TIMEFRAMES.map((t) => ({
+                  value: t,
+                  label: TIMEFRAME_LABELS[t],
+                })),
+              ]}
+            />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="inq-company">Firma / Geschäft</Label>
+            <Input
+              id="inq-company"
+              value={data.company}
+              onChange={(e) => update("company", e.target.value)}
+              autoComplete="organization"
+              placeholder="optional"
+            />
+          </div>
+        </div>
+      </details>
+
+      <div className="border-border/60 mt-7 flex items-start gap-3 border-t pt-6 sm:mt-8">
         <input
+          id="inq-consent"
           type="checkbox"
+          required
           checked={data.consent}
-          onChange={(e) => onChange("consent", e.target.checked)}
-          className="mt-1 h-4 w-4 shrink-0"
+          onChange={(e) => update("consent", e.target.checked)}
+          className="mt-1 h-4 w-4 cursor-pointer"
         />
-        <span className="text-muted-foreground leading-relaxed">
-          Ich habe die{" "}
-          <Link href="/datenschutz" className="hover:text-foreground underline">
+        <label
+          htmlFor="inq-consent"
+          className="text-foreground/80 text-[13.5px] leading-relaxed cursor-pointer"
+        >
+          Ich willige ein, dass Sitalo meine Angaben zur Beantwortung
+          dieser Anfrage verarbeitet. Mehr in der{" "}
+          <Link
+            href="/datenschutz"
+            className="text-foreground underline underline-offset-4"
+          >
             Datenschutzerklärung
-          </Link>{" "}
-          gelesen und bin mit der Verarbeitung meiner Angaben zur
-          Kontaktaufnahme einverstanden.
-        </span>
-      </label>
+          </Link>
+          .
+        </label>
+      </div>
 
-      <p className="text-muted-foreground mt-4 text-xs leading-relaxed">
-        Sie erhalten keine automatische Rechnung. Wir melden uns innerhalb
-        von 24 Stunden persönlich mit einer Einschätzung.
-      </p>
-    </div>
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-muted-foreground text-[13px]">
+          {canSubmit
+            ? "Bereit zum Senden."
+            : "Drei Felder + Häkchen ausfüllen, dann geht's."}
+        </p>
+        <Button
+          type="submit"
+          disabled={!canSubmit || status.kind === "submitting"}
+          className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
+        >
+          {status.kind === "submitting" ? "Wird gesendet …" : "Anfrage senden"}
+          {status.kind !== "submitting" && (
+            <ArrowRight className="ml-2 h-4 w-4" />
+          )}
+        </Button>
+      </div>
+    </form>
   );
 }
 
-/* ---------- Success ---------- */
+/* ---------- Success-Screen ---------- */
 
 function SuccessScreen() {
   return (
-    <div className="bg-card ring-border/50 rounded-3xl border p-10 shadow-xl ring-1 text-center">
+    <div className="bg-card ring-border/50 rounded-3xl border p-10 text-center shadow-xl ring-1">
       <div className="mx-auto mb-6 inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
         <Check className="h-7 w-7" />
       </div>
@@ -630,11 +437,11 @@ function SuccessScreen() {
         Anfrage angekommen.
       </h2>
       <p className="text-muted-foreground mt-3 text-pretty">
-        Wir haben Ihre Nachricht erhalten und melden uns innerhalb von
-        24 Stunden persönlich.
+        Wir haben Ihre Nachricht erhalten und melden uns persönlich —
+        meist noch am selben Tag.
       </p>
       <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
-        In der Zwischenzeit gerne unsere{" "}
+        Bis dahin gerne die{" "}
         <Link href="/branchen" className="hover:text-foreground underline">
           Branchen-Beispiele
         </Link>{" "}
@@ -644,103 +451,37 @@ function SuccessScreen() {
   );
 }
 
-/* ---------- Small UI helpers ---------- */
+/* ---------- Mini-Select (kein external Lib für 3 Felder) ---------- */
 
-function Radio({ active }: { active: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-        active ? "border-foreground bg-foreground" : "border-border"
-      }`}
-    >
-      {active ? <span className="bg-background h-2 w-2 rounded-full" /> : null}
-    </span>
-  );
-}
-
-function Field({
-  label,
+function Select({
+  id,
   value,
   onChange,
-  type = "text",
-  required,
-  placeholder,
-  autoComplete,
+  options,
 }: {
-  label: string;
+  id: string;
   value: string;
   onChange: (v: string) => void;
-  type?: string;
-  required?: boolean;
-  placeholder?: string;
-  autoComplete?: string;
+  options: { value: string; label: string }[];
 }) {
-  const id = `inq-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
   return (
-    <div className="space-y-2">
-      <Label htmlFor={id}>
-        {label}
-        {required ? null : (
-          <span className="text-muted-foreground ml-2 text-xs font-normal">
-            (optional)
-          </span>
-        )}
-      </Label>
-      <Input
+    <div className="relative">
+      <select
         id={id}
-        type={type}
-        required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
+        className="bg-background border-border/70 text-foreground focus:border-foreground focus:ring-foreground/20 h-10 w-full appearance-none rounded-md border px-3 py-2 pr-9 text-sm transition-colors focus:outline-none focus:ring-2"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        aria-hidden="true"
+        className="text-muted-foreground pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2"
       />
     </div>
   );
-}
-
-/* ---------- Payload helpers ---------- */
-
-const NEED_LABELS: Record<InquiryNeed | "unsicher", string> = {
-  "neue-website": "Neue Website",
-  redesign: "Redesign",
-  onepager: "Onepager",
-  mehrseitig: "Mehrseitige Website",
-  "verwaltbare-inhalte": "Verwaltbare Inhalte",
-  speisekarte: "Speisekarte / Wochenangebot",
-  bewerbungsformular: "Bewerbungsformular",
-  kontaktformular: "Kontaktformular",
-  unsicher: "Noch unsicher",
-};
-
-function buildPayload(
-  data: WizardData,
-  initialPackage: InquiryPackage | undefined,
-): Record<string, unknown> {
-  const industryLabel =
-    INDUSTRIES.find((i) => i.slug === data.industry)?.label ?? "";
-  const websiteTypeLabel = data.websiteType
-    ? NEED_LABELS[data.websiteType as InquiryNeed | "unsicher"] ??
-      data.websiteType
-    : "";
-  const packageLabel = initialPackage ? PACKAGE_LABELS[initialPackage] : "";
-  const timeframeLabel = data.timeframe ? TIMEFRAME_LABELS[data.timeframe] : "";
-
-  const payload: Record<string, unknown> = {
-    Name: data.name,
-    "E-Mail": data.email,
-    _subject: `Neue Anfrage von ${data.name}${
-      data.company ? ` (${data.company})` : ""
-    }`,
-    _replyto: data.email,
-  };
-  if (data.company) payload.Firma = data.company;
-  if (industryLabel) payload.Branche = industryLabel;
-  if (data.phone) payload.Telefon = data.phone;
-  if (websiteTypeLabel) payload["Website-Art"] = websiteTypeLabel;
-  if (packageLabel) payload["Paket-Interesse"] = packageLabel;
-  if (timeframeLabel) payload.Wunschzeitraum = timeframeLabel;
-  if (data.message) payload.Nachricht = data.message;
-  return payload;
 }
