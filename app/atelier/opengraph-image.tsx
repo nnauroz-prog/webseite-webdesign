@@ -31,7 +31,7 @@ const EYEBROW = "SITALO · DAS ATELIER";
 const HEADLINE_BOLD = "Eine kleine Werkstatt.";
 const HEADLINE_ITALIC = "In Hamburg.";
 const SUBLINE =
-  "Hand-gebaute Websites für lokale Unternehmen — kein Konzern, kein Callcenter, kein Verkaufsteam.";
+  "Professionelle Websites für lokale Unternehmen — kein Konzern, kein Callcenter, kein Verkaufsteam.";
 const URL_PILL = "sitalo.de/atelier";
 
 export default async function Image() {

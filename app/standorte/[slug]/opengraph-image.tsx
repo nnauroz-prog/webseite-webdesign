@@ -70,7 +70,7 @@ export default async function Image({
   const eyebrow = "SITALO · STADTTEIL";
   const headline = standort.name;
   const italicLine = standort.tagline;
-  const description = `Webdesign für Unternehmen aus ${standort.name} — hand-gebaut aus dem Hamburger Atelier.`;
+  const description = `Webdesign für Unternehmen aus ${standort.name} — individuell aus dem Hamburger Atelier.`;
   const url = `sitalo.de/standorte/${standort.slug}`;
 
   const allItalic = italicLine;

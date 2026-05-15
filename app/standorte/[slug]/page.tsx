@@ -27,7 +27,7 @@ export async function generateMetadata({
   if (!standort) return {};
 
   const title = `Webdesign ${standort.name} — aus dem Atelier nebenan | Sitalo`;
-  const description = `${standort.tagline} Hand-gebaute Websites für ${standort.name}er Unternehmen — schnell, persönlich, auf den Stadtteil zugeschnitten.`;
+  const description = `${standort.tagline} Professionelle Websites für ${standort.name}er Unternehmen — schnell, persönlich, auf den Stadtteil zugeschnitten.`;
   return {
     title,
     description,

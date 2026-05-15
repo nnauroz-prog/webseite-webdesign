@@ -34,7 +34,7 @@ export function MarketingFooter() {
               className="bg-gold gold-pulse inline-block h-1 w-6"
             />
             <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-              Sitalo · Hand-gemacht in Hamburg
+              Sitalo · Professionell aus Hamburg
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-[13px]">
@@ -70,7 +70,7 @@ export function MarketingFooter() {
               </span>
             </p>
             <p className="text-background/65 mt-5 max-w-xs text-[14px] leading-relaxed">
-              Hand-gebaute Websites für lokale Unternehmen. Persönlich
+              Professionelle Websites für lokale Unternehmen. Persönlich
               gemacht, aus einem kleinen Atelier in Hamburg.
             </p>
             <Link
