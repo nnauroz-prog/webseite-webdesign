@@ -314,7 +314,7 @@ function Hero() {
             className="reveal relative"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
-            <div className="ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]">
+            <div className="hero-image-reveal ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]">
               <ParallaxImage
                 src="/images/workspace-macbook.webp"
                 alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."

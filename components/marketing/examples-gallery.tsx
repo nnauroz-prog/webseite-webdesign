@@ -57,6 +57,7 @@ export function ExamplesGallery() {
                 <Link
                   href={`/branchen/${b.slug}`}
                   aria-label={`${b.label} — Beispiel ansehen`}
+                  data-cursor-label="Beispiel ansehen →"
                   className={
                     flip
                       ? "group relative block lg:order-2"
@@ -146,6 +147,7 @@ export function ExamplesGallery() {
               <li key={b.slug}>
                 <Link
                   href={`/branchen/${b.slug}`}
+                  data-cursor-label="Mehr →"
                   className="group flex h-full flex-col justify-between p-6 transition-colors hover:bg-secondary/40 sm:p-7"
                 >
                   <div>

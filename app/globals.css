@@ -340,6 +340,25 @@ html {
   }
 }
 
+/* Cinematic Clip-Path-Reveal für das Hero-Foto.
+   Statt eines simplen Fade-Ins wischt das Bild beim ersten Laden
+   von links nach rechts auf — einmalig, kein Loop. Anchored auf
+   der .hero-image-reveal-Klasse am direkten Bild-Wrapper.
+   200 ms Delay, damit das Foto NACH den staggered Hero-Texten
+   einsetzt — gibt der Reveal eine Lese-Reihenfolge. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-image-reveal {
+    clip-path: inset(0 100% 0 0);
+    animation: hero-image-reveal 1100ms cubic-bezier(0.65, 0, 0.35, 1)
+      200ms forwards;
+  }
+  @keyframes hero-image-reveal {
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+}
+
 /* Subtiler Gold-Schimmer auf der Hero-Headline.
    Ein sanfter Lichtreflex wandert in Endlosschleife durch den Text.
    Wirkt nur auf Elementen mit der .hero-shine-Klasse — die nutzen

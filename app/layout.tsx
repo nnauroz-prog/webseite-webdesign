@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 
+import { CursorLabel } from "@/components/marketing/cursor-label";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { ScrollProgress } from "@/components/marketing/scroll-progress";
 import "./globals.css";
@@ -84,6 +85,7 @@ export default function RootLayout({
           Direkt zum Inhalt
         </a>
         {children}
+        <CursorLabel />
         <MobileCtaBar />
         <script
           type="application/ld+json"
