@@ -20,40 +20,40 @@ export function MarketingFooter() {
     <>
       <BackToTop />
       <TrustBar />
-      <footer className="bg-foreground text-background relative overflow-hidden">
+      <footer className="bg-card text-foreground relative overflow-hidden">
         {/* Atmosphärischer Gold-Halo links oben — passt zur Brand. */}
         <div
           aria-hidden="true"
           className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
         />
         {/* Editorial-Mast oben */}
-        <div className="border-background/10 mx-auto flex w-full max-w-7xl flex-col gap-4 border-b px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8">
+        <div className="border-foreground/10 mx-auto flex w-full max-w-7xl flex-col gap-4 border-b px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8">
           <div className="flex items-center gap-3">
             <span
               aria-hidden="true"
               className="bg-gold gold-pulse inline-block h-1 w-6"
             />
-            <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            <p className="text-foreground/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
               Sitalo · Professionell aus Hamburg
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-[13px]">
             <a
               href="tel:+4915224437370"
-              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
+              className="border-foreground/20 text-foreground/85 hover:border-foreground hover:bg-foreground hover:text-background inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
             >
               Anrufen
             </a>
             <a
               href="mailto:info@sitalo.de"
-              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
+              className="border-foreground/20 text-foreground/85 hover:border-foreground hover:bg-foreground hover:text-background inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
             >
               Schreiben
             </a>
             <a
               href="/sitalo-kontakt.vcf"
               download="Sitalo-Webdesign.vcf"
-              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
+              className="border-foreground/20 text-foreground/85 hover:border-foreground hover:bg-foreground hover:text-background inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
             >
               In Kontakte speichern
             </a>
@@ -65,17 +65,17 @@ export function MarketingFooter() {
             <SitaloLogo size="md" />
             <p className="serif mt-8 text-balance text-2xl font-normal leading-[1.2] tracking-[-0.015em] sm:text-3xl">
               Drei Sachen reichen.{" "}
-              <span className="serif-italic text-background/65">
+              <span className="serif-italic text-foreground/65">
                 Den Rest bauen wir.
               </span>
             </p>
-            <p className="text-background/65 mt-5 max-w-xs text-[14px] leading-relaxed">
+            <p className="text-foreground/65 mt-5 max-w-xs text-[14px] leading-relaxed">
               Professionelle Websites für lokale Unternehmen. Persönlich
               gemacht, aus einem kleinen Atelier in Hamburg.
             </p>
             <Link
               href="/anfrage"
-              className="bg-background text-foreground hover:bg-background/90 group mt-8 inline-flex h-11 items-center rounded-full px-6 text-[14px] font-medium tracking-tight transition-all"
+              className="bg-gold text-background hover:bg-gold/90 group mt-8 inline-flex h-11 items-center rounded-full px-6 text-[14px] font-medium tracking-tight transition-all"
             >
               Anfrage starten
               <span
@@ -106,22 +106,22 @@ export function MarketingFooter() {
         </div>
 
         {/* Editorial-Schluss */}
-        <div className="border-background/10 border-t">
+        <div className="border-foreground/10 border-t">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-3 px-6 py-6 text-xs sm:flex-row sm:items-center">
-            <span className="text-background/55">
+            <span className="text-foreground/55">
               © {year} Sitalo Webdesign
             </span>
             {/* Hanseatic-ehrlich: keine festen Bürozeiten, aber
                 schnelle Antwort. Anstelle der „Mo–Fr 9–17"-Floskel,
                 die eh nicht stimmt. */}
-            <span className="text-background/55 inline-flex items-center gap-2">
+            <span className="text-foreground/55 inline-flex items-center gap-2">
               <span
                 aria-hidden="true"
                 className="bg-ink-olive inline-block h-1 w-1 rounded-full"
               />
               Erreichbar jederzeit · Antwort meist noch am selben Tag
             </span>
-            <span className="serif-italic text-background/60 text-sm">
+            <span className="serif-italic text-foreground/60 text-sm">
               53.5511° N · 9.9937° E — Hamburg
             </span>
           </div>
@@ -140,7 +140,7 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h3 className="text-background/55 mb-5 text-[11px] font-medium uppercase tracking-[0.22em]">
+      <h3 className="text-foreground/55 mb-5 text-[11px] font-medium uppercase tracking-[0.22em]">
         {title}
       </h3>
       <ul className="space-y-3 text-[15px]">{children}</ul>
@@ -159,7 +159,7 @@ function FooterLink({
     <li>
       <Link
         href={href}
-        className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
+        className="text-foreground/85 hover:text-foreground underline-offset-4 transition-colors hover:underline"
       >
         {children}
       </Link>

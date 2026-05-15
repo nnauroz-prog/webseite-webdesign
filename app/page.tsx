@@ -375,7 +375,7 @@ function Hero() {
  * ============================================================ */
 function PersonalNote() {
   return (
-    <section className="bg-foreground text-background relative overflow-hidden">
+    <section className="bg-card text-foreground relative overflow-hidden">
       {/* Subtile Espresso-Textur als Background-Overlay — minimal
           opacity, mixed mit Soft-Light. Lässt den dunklen Block
           nicht mehr wie eine Tailwind-Solid-Fläche aussehen,
@@ -405,7 +405,7 @@ function PersonalNote() {
       {/* Dezente vertikale Linien als Editorial-Marker */}
       <div
         aria-hidden="true"
-        className="bg-background/10 pointer-events-none absolute left-6 top-0 hidden h-full w-px sm:block"
+        className="bg-foreground/10 pointer-events-none absolute left-6 top-0 hidden h-full w-px sm:block"
       />
       <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="flex items-center gap-3">
@@ -413,7 +413,7 @@ function PersonalNote() {
             className="bg-gold/60 gold-pulse inline-block h-1 w-8"
             aria-hidden="true"
           />
-          <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <p className="text-foreground/55 text-[11px] font-medium uppercase tracking-[0.3em]">
             Aus Hamburg
           </p>
         </div>
@@ -426,18 +426,18 @@ function PersonalNote() {
           </span>
           <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
             Wir gehen viel zu Fuß durch Hamburg.{" "}
-            <span className="serif-italic text-background/75">
+            <span className="serif-italic text-foreground/75">
               Was wir dabei sehen:
             </span>{" "}
             jedes zweite Café hat keine ordentliche Website —{" "}
-            <span className="serif-italic text-background/75">
+            <span className="serif-italic text-foreground/75">
               und es ist nie das beste.
             </span>
           </p>
         </blockquote>
-        <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+        <div className="mt-12 grid gap-10 border-t border-foreground/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
               Eppendorf, ein Mittwochmittag. Drei Cafés in zwei Straßen.
               Das mit dem besten Espresso hat eine Speisekarte als PDF
               von Februar 2021. Das daneben hat keine Öffnungszeiten bei
@@ -445,7 +445,7 @@ function PersonalNote() {
               würden, hat als einziges eine moderne Website. Dreimal
               raten, welches voll war.
             </p>
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
               Sieht man überall. Der Friseur in Eimsbüttel, dessen
               Telefonnummer auf der Seite drei Jahre alt ist. Die Bar
               in St.&nbsp;Pauli, deren Instagram-Link auf einen
@@ -454,13 +454,13 @@ function PersonalNote() {
               talentiert sind und nicht sichtbar, gewinnt jemand
               anders. Auch wenn der schlechter ist.
             </p>
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
               Wir bauen Seiten für die anderen. Für die, die wissen,
               dass gute Arbeit erst zählt, wenn jemand davon weiß. Wir
               brauchen Ihr Logo, ein paar Bilder, was zu sagen. Den
               Rest machen wir.
             </p>
-            <p className="serif-italic text-background pt-4 text-2xl">
+            <p className="serif-italic text-foreground pt-4 text-2xl">
               — Sitalo, aus Hamburg
             </p>
           </div>
@@ -895,7 +895,7 @@ function FinalCta() {
   return (
     <section
       id="kontakt"
-      className="bg-foreground text-background relative overflow-hidden scroll-mt-20"
+      className="bg-card text-foreground relative overflow-hidden scroll-mt-20"
     >
       {/* Espresso-Textur als bedruckt-Papier-Optik */}
       <div
@@ -921,14 +921,14 @@ function FinalCta() {
       />
       {/* Editorial-Mast oben — wie eine Magazin-Rückseite */}
       <div className="border-background/10 relative mx-auto flex w-full max-w-5xl items-center justify-between gap-4 border-b px-6 py-5">
-        <p className="text-background/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+        <p className="text-foreground/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
           <span
             aria-hidden="true"
             className="bg-gold gold-pulse inline-block h-1 w-6"
           />
           Schluss-Statement
         </p>
-        <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+        <p className="text-foreground/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
           Sitalo · Hamburg
         </p>
       </div>
@@ -941,15 +941,15 @@ function FinalCta() {
                 „
               </span>
               Jeden Tag, den{" "}
-              <span className="serif-italic text-background/70">
+              <span className="serif-italic text-foreground/70">
                 Sie warten,
               </span>{" "}
               findet Sie{" "}
-              <span className="serif-italic text-background/70">
+              <span className="serif-italic text-foreground/70">
                 ein Kunde weniger.
               </span>
             </h2>
-            <p className="text-background/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+            <p className="text-foreground/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
               Drei Felder, zwei Minuten. Wir melden uns innerhalb von
               24 Stunden — persönlich, mit einem konkreten Vorschlag.
               Kein Vertrag, keine Kosten, kein Druck.
@@ -957,14 +957,14 @@ function FinalCta() {
             <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <MagneticButton
                 href="/anfrage"
-                className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+                className="bg-gold text-background hover:bg-gold/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
               >
                 Website anfragen
                 <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </MagneticButton>
               <a
                 href="tel:+4915224437370"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
+                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
               >
                 Anrufen
               </a>
@@ -974,10 +974,10 @@ function FinalCta() {
           {/* Editorial-Schluss rechts: Signature + Adresse als
               kleine Visitenkarte. */}
           <div className="lg:pl-10">
-            <p className="text-background/45 text-[10px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-foreground/45 text-[10px] font-medium uppercase tracking-[0.3em]">
               Aus dem Atelier
             </p>
-            <p className="serif-italic text-background mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
+            <p className="serif-italic text-foreground mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
               — Sitalo,
               <br />
               Hamburg.
@@ -985,27 +985,27 @@ function FinalCta() {
             <div className="mt-8 flex flex-wrap gap-2.5">
               <a
                 href="tel:+4915224437370"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
               >
                 Anrufen
               </a>
               <a
                 href="mailto:info@sitalo.de"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
               >
                 Schreiben
               </a>
               <a
                 href="/sitalo-kontakt.vcf"
                 download="Sitalo-Webdesign.vcf"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
               >
                 Speichern
               </a>
             </div>
-            <dl className="text-background/65 mt-8 space-y-2 text-[13px]">
+            <dl className="text-foreground/65 mt-8 space-y-2 text-[13px]">
               <div className="flex justify-between gap-4">
-                <dt className="text-background/45 uppercase tracking-[0.2em]">
+                <dt className="text-foreground/45 uppercase tracking-[0.2em]">
                   Antwort
                 </dt>
                 <dd>innerhalb 24 h</dd>
