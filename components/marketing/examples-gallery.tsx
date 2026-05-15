@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 import { BRANCHEN } from "@/lib/branchen-data";
 import { DoubleWave, DrawnArrow } from "@/components/marketing/ornaments";
+import { TiltCard } from "@/components/marketing/tilt-card";
 
 /**
  * Beispiel-Galerie als asymmetrische Magazin-Spread. Statt 4-Col-
@@ -54,15 +55,11 @@ export function ExamplesGallery() {
                 key={b.slug}
                 className="grid items-center gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16"
               >
-                <Link
+                <TiltCard
                   href={`/branchen/${b.slug}`}
-                  aria-label={`${b.label} — Beispiel ansehen`}
-                  data-cursor-label="Beispiel ansehen →"
-                  className={
-                    flip
-                      ? "group relative block lg:order-2"
-                      : "group relative block"
-                  }
+                  ariaLabel={`${b.label} — Beispiel ansehen`}
+                  cursorLabel="Beispiel ansehen →"
+                  className={flip ? "relative lg:order-2" : "relative"}
                 >
                   <div
                     className={
@@ -94,7 +91,7 @@ export function ExamplesGallery() {
                       className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                     />
                   </div>
-                </Link>
+                </TiltCard>
 
                 <div
                   className={

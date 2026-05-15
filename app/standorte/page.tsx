@@ -66,6 +66,7 @@ function Liste() {
             <li key={standort.slug}>
               <Link
                 href={`/standorte/${standort.slug}`}
+                data-cursor-label={`${standort.name} ansehen →`}
                 className="border-border/60 bg-card/60 ring-foreground/5 group relative flex h-full flex-col overflow-hidden rounded-3xl border p-7 ring-1 transition-shadow duration-500 hover:shadow-[0_24px_60px_-30px_rgb(0_0_0/0.25)] sm:p-9"
               >
                 <div className="flex items-start justify-between gap-4">

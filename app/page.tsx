@@ -257,12 +257,12 @@ function Hero() {
             <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
               <WordReveal step={75} delay={120}>
                 {"Wir bauen "}
-                <span className="serif-italic text-muted-foreground font-normal">
+                <span className="hero-shine serif-italic text-muted-foreground font-normal">
                   Websites
                 </span>
                 <br />
                 {"für Hamburger "}
-                <span className="serif-italic text-muted-foreground font-normal">
+                <span className="hero-shine serif-italic text-muted-foreground font-normal">
                   Unternehmen.
                 </span>
               </WordReveal>
@@ -795,6 +795,7 @@ function PricingCenterfold({
         </Link>
         <Link
           href={`/pakete/${paket.slug}`}
+          data-cursor-label={`${paket.name} im Detail →`}
           className="text-background/85 hover:text-background inline-flex h-12 items-center text-[14px] font-medium underline-offset-4 hover:underline"
         >
           {paket.name} im Detail
