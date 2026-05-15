@@ -49,11 +49,11 @@ export const BRANCHEN: Branche[] = [
     label: "Pflegedienste",
     inquirySlug: "pflege",
     image: {
-      src: "/images/sitalo-pflege-laptop.png",
+      src: "/images/sitalo-pflege-laptop.webp",
       alt: "Pflegedienst-Website von Sitalo auf einem Laptop, im warmen Tageslicht eines Büros mit Pflanzen und Notizbuch.",
     },
     atmosphere: {
-      src: "/images/atmosphere/pflege-eingang.png",
+      src: "/images/atmosphere/pflege-eingang.webp",
       alt: "Ruhiger Empfangsbereich eines Pflegedienstes — warmes Tageslicht, Holzkommode mit Pflanze, Wartezimmer im Hintergrund.",
     },
     shortBody:
@@ -117,11 +117,11 @@ export const BRANCHEN: Branche[] = [
     label: "Arzt- und Zahnarztpraxen",
     inquirySlug: "praxis",
     image: {
-      src: "/images/sitalo-praxis-laptop.png",
+      src: "/images/sitalo-praxis-laptop.webp",
       alt: 'Zahnarztpraxis-Website von Sitalo („Moderne Zahnmedizin für Ihr schönstes Lächeln.") auf einem Laptop im hellen Praxisempfang.',
     },
     atmosphere: {
-      src: "/images/atmosphere/praxis-raum.png",
+      src: "/images/atmosphere/praxis-raum.webp",
       alt: "Ruhiger, moderner Behandlungsraum mit Holzschreibtisch, Tablet und botanischem Wandbild — seriöse Atmosphäre.",
     },
     shortBody:
@@ -186,11 +186,11 @@ export const BRANCHEN: Branche[] = [
     label: "Friseure & Kosmetikstudios",
     inquirySlug: "friseur",
     image: {
-      src: "/images/sitalo-friseur-mobile.png",
+      src: "/images/sitalo-friseur-mobile.webp",
       alt: 'Friseur-Website von Sitalo auf einem iPhone, daneben gedruckte Visitenkarten und ein Flyer für „Friseur am Markt".',
     },
     atmosphere: {
-      src: "/images/atmosphere/friseur-stuhl.png",
+      src: "/images/atmosphere/friseur-stuhl.webp",
       alt: "Vintage Friseur-Stuhl vor einem großen runden Spiegel, warme Holztöne, Produkte auf einem Regal — hochwertige Salon-Atmosphäre.",
     },
     shortBody:
@@ -254,11 +254,11 @@ export const BRANCHEN: Branche[] = [
     label: "Cafés & Restaurants",
     inquirySlug: "gastro",
     image: {
-      src: "/images/sitalo-cafe-mobile.png",
+      src: "/images/sitalo-cafe-mobile.webp",
       alt: "Café-Website von Sitalo auf einem iPhone, vor einem Café im Hintergrund — daneben eine Sitalo-Webdesign-Visitenkarte.",
     },
     atmosphere: {
-      src: "/images/atmosphere/gastro-cafe.png",
+      src: "/images/atmosphere/gastro-cafe.webp",
       alt: "Stilvolles Café-Interieur vor Öffnung — Holztische, kupferne Espresso-Maschine, weiche Morgensonne durch die Fenster.",
     },
     shortBody:
@@ -322,11 +322,11 @@ export const BRANCHEN: Branche[] = [
     label: "Handwerker",
     inquirySlug: "handwerker",
     image: {
-      src: "/images/sitalo-handwerker-laptop.png",
+      src: "/images/sitalo-handwerker-laptop.webp",
       alt: 'Tischlerei-Website von Sitalo („Maßarbeit mit Tradition und Leidenschaft") auf einem Laptop auf einer Werkbank.',
     },
     atmosphere: {
-      src: "/images/atmosphere/handwerker-werkbank.png",
+      src: "/images/atmosphere/handwerker-werkbank.webp",
       alt: "Werkbank eines Tischlers mit Handhobel, Holzspänen und Kaffeebecher — warmes Sonnenlicht, ehrliche Handarbeit.",
     },
     shortBody:
@@ -390,11 +390,11 @@ export const BRANCHEN: Branche[] = [
     label: "Reinigungsfirmen",
     inquirySlug: "reinigung",
     image: {
-      src: "/images/sitalo-reinigung-laptop.png",
+      src: "/images/sitalo-reinigung-laptop.webp",
       alt: 'Reinigungs-Website von Sitalo („Saubere Räume. Besseres Arbeiten.") auf einem Laptop, daneben gefaltetes Mikrofasertuch und Sprühflasche.',
     },
     atmosphere: {
-      src: "/images/atmosphere/reinigung-flur.png",
+      src: "/images/atmosphere/reinigung-flur.webp",
       alt: "Gepflegter, sauberer Bürogang mit poliertem Boden und einem Reinigungswagen — Eindruck professioneller Sauberkeit.",
     },
     shortBody:
@@ -458,11 +458,11 @@ export const BRANCHEN: Branche[] = [
     label: "Kanzleien",
     inquirySlug: "kanzlei",
     image: {
-      src: "/images/sitalo-kanzlei-laptop.png",
+      src: "/images/sitalo-kanzlei-laptop.webp",
       alt: 'Kanzlei-Website von Sitalo („Recht, das Klarheit schafft.") auf einem Laptop mit Messing-Schreibtischlampe und Lederbüchern.',
     },
     atmosphere: {
-      src: "/images/atmosphere/kanzlei-buecher.png",
+      src: "/images/atmosphere/kanzlei-buecher.webp",
       alt: "Detail aus einer Kanzlei-Bücherwand: Reihen Leder-gebundener Rechtsbücher in Dunkelgrün, Messing-Schreibtischlampe, warmes Glühlampenlicht.",
     },
     shortBody:
@@ -526,11 +526,11 @@ export const BRANCHEN: Branche[] = [
     label: "Fitnessstudios",
     inquirySlug: "fitness",
     image: {
-      src: "/images/sitalo-fitness-laptop.png",
+      src: "/images/sitalo-fitness-laptop.webp",
       alt: 'Fitnessstudio-Website von Sitalo („Stronger Every Day. Premium Training.") auf einem Laptop im Studio.',
     },
     atmosphere: {
-      src: "/images/atmosphere/fitness-studio.png",
+      src: "/images/atmosphere/fitness-studio.webp",
       alt: "Ruhiges Studio mit Reihe von Kettlebells, hohen Fenstern und sanftem Morgenlicht — minimalistische Premium-Atmosphäre.",
     },
     shortBody:
@@ -594,7 +594,7 @@ export const BRANCHEN: Branche[] = [
     label: "Kosmetik- & Beautystudios",
     inquirySlug: "kosmetik",
     image: {
-      src: "/images/sitalo-kosmetik-laptop.png",
+      src: "/images/sitalo-kosmetik-laptop.webp",
       alt: 'Kosmetikstudio-Website von Sitalo („Pflege, die berührt.") auf einem Laptop, daneben getrocknetes Pampasgras und kleine Pflegeprodukte.',
     },
     shortBody:
@@ -658,7 +658,7 @@ export const BRANCHEN: Branche[] = [
     label: "Hotels & Pensionen",
     inquirySlug: "hotel",
     image: {
-      src: "/images/sitalo-hotel-laptop.png",
+      src: "/images/sitalo-hotel-laptop.webp",
       alt: 'Boutique-Hotel-Website von Sitalo („Hamburg, neu erlebt") auf einem Laptop, Messing-Klingel und Blumenstrauß auf einem polierten Empfangstresen.',
     },
     shortBody:

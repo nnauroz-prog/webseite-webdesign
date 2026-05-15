@@ -316,7 +316,7 @@ function Hero() {
           >
             <div className="ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]">
               <ParallaxImage
-                src="/images/workspace-macbook.png"
+                src="/images/workspace-macbook.webp"
                 alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
                 priority
                 sizes="(min-width: 1024px) 480px, 100vw"
@@ -363,7 +363,7 @@ function PersonalNote() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-soft-light"
         style={{
-          backgroundImage: "url(/images/texture-espresso.png)",
+          backgroundImage: "url(/images/texture-espresso.webp)",
           backgroundSize: "640px auto",
           backgroundRepeat: "repeat",
         }}
@@ -445,7 +445,7 @@ function PersonalNote() {
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
             <Image
-              src="/images/workspace-macbook.png"
+              src="/images/workspace-macbook.webp"
               alt="Arbeitsplatz mit MacBook, Notizbuch und Espresso — warmes Schreibtischlicht."
               fill
               sizes="(min-width: 1024px) 480px, 100vw"
@@ -880,7 +880,7 @@ function FinalCta() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-soft-light"
         style={{
-          backgroundImage: "url(/images/texture-espresso.png)",
+          backgroundImage: "url(/images/texture-espresso.webp)",
           backgroundSize: "640px auto",
           backgroundRepeat: "repeat",
         }}

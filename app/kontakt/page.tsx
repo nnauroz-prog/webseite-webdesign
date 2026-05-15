@@ -114,7 +114,7 @@ export default function KontaktPage() {
             <div className="space-y-3 sm:space-y-4">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
                 <Image
-                  src="/images/hamburg-speicherstadt.png"
+                  src="/images/hamburg-speicherstadt.webp"
                   alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
                   fill
                   sizes="(min-width: 1024px) 500px, 100vw"
@@ -135,7 +135,7 @@ export default function KontaktPage() {
               </div>
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
                 <Image
-                  src="/images/cafe-eimsbuettel.png"
+                  src="/images/cafe-eimsbuettel.webp"
                   alt="Ruhige Straße in Hamburg-Eimsbüttel am Morgen — Café-Terrasse, Altbau-Fassaden, weicher Nebel."
                   fill
                   sizes="(min-width: 1024px) 500px, 100vw"
@@ -144,7 +144,7 @@ export default function KontaktPage() {
               </div>
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
                 <Image
-                  src="/images/workspace-prints.png"
+                  src="/images/workspace-prints.webp"
                   alt="Schreibtisch im Sitalo-Atelier mit gerahmten Design-Drucken — Hamburger Tageslicht, ruhige Arbeitsatmosphäre."
                   fill
                   sizes="(min-width: 1024px) 500px, 100vw"

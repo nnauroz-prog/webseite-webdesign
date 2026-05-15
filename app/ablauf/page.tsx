@@ -233,7 +233,7 @@ function Tempo() {
         <div className="mx-auto mt-16 max-w-3xl">
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
             <Image
-              src="/images/workspace-typing.png"
+              src="/images/workspace-typing.webp"
               alt="Hände auf einem Laptop, warmes Licht — fokussiertes Arbeiten."
               fill
               sizes="(min-width: 1024px) 768px, 100vw"

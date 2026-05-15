@@ -32,11 +32,11 @@ const INDUSTRIES: Industry[] = [
       "Notfall- & Direktkontakt prominent",
     ],
     image: {
-      src: "/images/sitalo-pflege-laptop.png",
+      src: "/images/sitalo-pflege-laptop.webp",
       alt: "Beispiel-Layout für einen Pflegedienst auf einem Laptop — warmes Tageslicht, Notizbuch daneben.",
     },
     atmosphere: {
-      src: "/images/atmosphere/pflege-eingang.png",
+      src: "/images/atmosphere/pflege-eingang.webp",
       alt: "Empfangsbereich eines Pflegedienstes — Holzkommode, Pflanze.",
     },
   },
@@ -51,11 +51,11 @@ const INDUSTRIES: Industry[] = [
       "Online-Termin-Anfrage",
     ],
     image: {
-      src: "/images/sitalo-praxis-laptop.png",
+      src: "/images/sitalo-praxis-laptop.webp",
       alt: "Beispiel-Layout für eine Arztpraxis auf einem Laptop — heller Schreibtisch.",
     },
     atmosphere: {
-      src: "/images/atmosphere/praxis-raum.png",
+      src: "/images/atmosphere/praxis-raum.webp",
       alt: "Ruhiges Wartezimmer einer Arztpraxis — Tageslicht, Pflanzen.",
     },
   },
@@ -70,11 +70,11 @@ const INDUSTRIES: Industry[] = [
       "Online-Termin + Rückruf",
     ],
     image: {
-      src: "/images/sitalo-praxis-laptop.png",
+      src: "/images/sitalo-praxis-laptop.webp",
       alt: "Beispiel-Layout für eine Zahnarztpraxis auf einem Laptop.",
     },
     atmosphere: {
-      src: "/images/atmosphere/praxis-raum.png",
+      src: "/images/atmosphere/praxis-raum.webp",
       alt: "Helle Praxisräume mit warmem Holzboden.",
     },
   },
@@ -89,11 +89,11 @@ const INDUSTRIES: Industry[] = [
       "Termin-Anfrage per Formular",
     ],
     image: {
-      src: "/images/sitalo-friseur-mobile.png",
+      src: "/images/sitalo-friseur-mobile.webp",
       alt: "Beispiel-Layout für einen Friseur-Salon auf einem Smartphone — warmes Tageslicht.",
     },
     atmosphere: {
-      src: "/images/atmosphere/friseur-stuhl.png",
+      src: "/images/atmosphere/friseur-stuhl.webp",
       alt: "Friseurstuhl im warmen Licht eines Salons.",
     },
   },
@@ -108,7 +108,7 @@ const INDUSTRIES: Industry[] = [
       "Termin-Anfrage",
     ],
     image: {
-      src: "/images/sitalo-kosmetik-laptop.png",
+      src: "/images/sitalo-kosmetik-laptop.webp",
       alt: "Beispiel-Layout für ein Kosmetik-Studio auf einem Laptop.",
     },
   },
@@ -123,11 +123,11 @@ const INDUSTRIES: Industry[] = [
       "Reservierungs-Anfrage",
     ],
     image: {
-      src: "/images/sitalo-cafe-mobile.png",
+      src: "/images/sitalo-cafe-mobile.webp",
       alt: "Beispiel-Layout für ein Café auf einem Smartphone — Espressotasse daneben.",
     },
     atmosphere: {
-      src: "/images/atmosphere/gastro-cafe.png",
+      src: "/images/atmosphere/gastro-cafe.webp",
       alt: "Café-Interieur mit Tresen und Espressomaschine.",
     },
   },
@@ -142,11 +142,11 @@ const INDUSTRIES: Industry[] = [
       "Rückruf-Anfrage",
     ],
     image: {
-      src: "/images/sitalo-handwerker-laptop.png",
+      src: "/images/sitalo-handwerker-laptop.webp",
       alt: "Beispiel-Layout für einen Handwerker-Betrieb auf einem Laptop.",
     },
     atmosphere: {
-      src: "/images/atmosphere/handwerker-werkbank.png",
+      src: "/images/atmosphere/handwerker-werkbank.webp",
       alt: "Werkbank mit Werkzeug im warmen Licht einer Werkstatt.",
     },
   },
@@ -161,11 +161,11 @@ const INDUSTRIES: Industry[] = [
       "Notdienst + Direktkontakt",
     ],
     image: {
-      src: "/images/sitalo-reinigung-laptop.png",
+      src: "/images/sitalo-reinigung-laptop.webp",
       alt: "Beispiel-Layout für eine Reinigungsfirma auf einem Laptop.",
     },
     atmosphere: {
-      src: "/images/atmosphere/reinigung-flur.png",
+      src: "/images/atmosphere/reinigung-flur.webp",
       alt: "Sauberer Bürogang im Tageslicht.",
     },
   },
@@ -180,11 +180,11 @@ const INDUSTRIES: Industry[] = [
       "Vertrauliche Erstberatungs-Anfrage",
     ],
     image: {
-      src: "/images/sitalo-kanzlei-laptop.png",
+      src: "/images/sitalo-kanzlei-laptop.webp",
       alt: "Beispiel-Layout für eine Kanzlei auf einem Laptop.",
     },
     atmosphere: {
-      src: "/images/atmosphere/kanzlei-buecher.png",
+      src: "/images/atmosphere/kanzlei-buecher.webp",
       alt: "Bücherregal mit juristischer Fachliteratur in einer Kanzlei.",
     },
   },
@@ -199,7 +199,7 @@ const INDUSTRIES: Industry[] = [
       "Auf Wunsch verwaltbare Inhalte",
     ],
     image: {
-      src: "/images/workspace-laptop.png",
+      src: "/images/workspace-laptop.webp",
       alt: "Arbeitsplatz mit Laptop und Notizbuch — Platzhalter für individuelle Branchen.",
     },
   },

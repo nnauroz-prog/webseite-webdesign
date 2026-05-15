@@ -176,7 +176,7 @@ function Hero() {
           </div>
           <div className="relative hidden aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10 lg:block">
             <Image
-              src="/images/workspace-laptop.png"
+              src="/images/workspace-laptop.webp"
               alt="Laptop auf einem warmen Holzschreibtisch, Notizbuch und Tasse — ruhige Arbeitsatmosphäre."
               fill
               priority
