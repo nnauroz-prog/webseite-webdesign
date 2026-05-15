@@ -89,6 +89,19 @@ export default function KontaktPage() {
               </div>
               <div>
                 <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                  Sprechzeiten
+                </p>
+                <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
+                  <span className="serif-italic">Jederzeit.</span>
+                </p>
+                <p className="text-muted-foreground mt-2 text-sm">
+                  Keine festen Bürozeiten — wir antworten, wenn wir
+                  können, was meistens schnell ist. Treffen vor Ort
+                  oder per Video gerne nach kurzer Absprache.
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
                   Standort
                 </p>
                 <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">

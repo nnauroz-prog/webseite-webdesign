@@ -54,6 +54,24 @@ const LOCAL_BUSINESS_LD = {
     addressCountry: "DE",
   },
   areaServed: { "@type": "Country", name: "Deutschland" },
+  // Keine festen Bürozeiten — „jederzeit erreichbar" wird in
+  // schema.org als 24/7 abgebildet. Google zeigt das im Knowledge
+  // Panel als „Open 24 hours" → signalisiert hohe Verfügbarkeit
+  // für lokale Suchen.
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ],
+    opens: "00:00",
+    closes: "23:59",
+  },
   priceRange: "€€",
   knowsAbout: [
     "Webdesign",
