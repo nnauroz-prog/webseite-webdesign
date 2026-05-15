@@ -7,6 +7,7 @@ import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
+import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
 import { WordReveal } from "@/components/marketing/word-reveal";
@@ -176,6 +177,12 @@ export default function HomePage() {
             steht im Footer („Hosting in Deutschland" etc.). */}
         <RevealOnScroll>
           <Pricing />
+        </RevealOnScroll>
+        {/* „Aus dem Atelier" — kleine Aktivitäts-Signal-Sektion direkt
+            vor FAQ. Letzte Bestätigung „hier ist Leben" vor den
+            Closing-Sektionen. */}
+        <RevealOnScroll>
+          <ImAtelier />
         </RevealOnScroll>
         <RevealOnScroll>
           <Faq />
