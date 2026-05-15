@@ -20,11 +20,15 @@ export function TiltCard({
   children,
   className,
   ariaLabel,
+  cursorLabel,
 }: {
   href: string;
   children: React.ReactNode;
   className?: string;
   ariaLabel?: string;
+  /** Optional Cursor-Label-Text — zeigt sich am Cursor beim Hover,
+   *  wenn CursorLabel im Layout gemountet ist. */
+  cursorLabel?: string;
 }) {
   const ref = useRef<HTMLAnchorElement | null>(null);
 
@@ -55,6 +59,7 @@ export function TiltCard({
       ref={ref}
       href={href}
       aria-label={ariaLabel}
+      data-cursor-label={cursorLabel}
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       className={cn("tilt-card group block", className)}
