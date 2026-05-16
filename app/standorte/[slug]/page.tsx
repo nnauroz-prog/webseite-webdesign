@@ -207,7 +207,7 @@ export default async function StandortPage({
                     {standort.anker.map((ank) => (
                       <li
                         key={ank}
-                        className="border-foreground/15 bg-foreground/10 text-foreground/80 inline-flex items-center rounded-full border px-3 py-1.5 text-[13px]"
+                        className="border-border/60 bg-background text-foreground/80 inline-flex items-center rounded-full border px-3 py-1.5 text-[13px]"
                       >
                         {ank}
                       </li>
@@ -230,7 +230,7 @@ export default async function StandortPage({
         </section>
 
         {/* Pull-Quote */}
-        <section className="bg-card text-foreground relative overflow-hidden">
+        <section className="bg-foreground text-background relative overflow-hidden">
           <div
             aria-hidden="true"
             className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
@@ -241,7 +241,7 @@ export default async function StandortPage({
                 aria-hidden="true"
                 className="bg-gold/60 gold-pulse inline-block h-1 w-8"
               />
-              <p className="text-foreground/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+              <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
                 Beobachtung
               </p>
             </div>

@@ -809,7 +809,7 @@ function PricingCenterfold({
       <div className="relative mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
         <Link
           href={`/anfrage?paket=${paket.slug}`}
-          className="bg-gold text-background hover:bg-gold/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
         >
           {paket.name} anfragen
           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
