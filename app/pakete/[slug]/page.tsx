@@ -135,7 +135,7 @@ export default async function PaketDetailPage({
         <section
           className={
             dark
-              ? "bg-card text-foreground relative overflow-hidden"
+              ? "bg-foreground text-background relative overflow-hidden"
               : "border-border/40 border-b"
           }
         >
@@ -150,7 +150,7 @@ export default async function PaketDetailPage({
               aria-label="Breadcrumb"
               className={
                 dark
-                  ? "text-foreground/55 text-sm"
+                  ? "text-background/55 text-sm"
                   : "text-muted-foreground text-sm"
               }
             >
@@ -195,7 +195,7 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-foreground/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
+                      ? "text-background/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
                       : "text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
                   }
                 >
@@ -211,7 +211,7 @@ export default async function PaketDetailPage({
                   <span
                     className={
                       dark
-                        ? "serif-italic text-foreground/65 font-normal"
+                        ? "serif-italic text-background/65 font-normal"
                         : "serif-italic text-muted-foreground font-normal"
                     }
                   >
@@ -221,7 +221,7 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-foreground/75 mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg"
+                      ? "text-background/75 mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg"
                       : "text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg"
                   }
                 >
@@ -232,7 +232,7 @@ export default async function PaketDetailPage({
                     href={`/anfrage?paket=${paket.slug}`}
                     className={
                       dark
-                        ? "bg-gold text-background hover:bg-gold/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight"
+                        ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight"
                         : "bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight"
                     }
                   >
@@ -255,7 +255,7 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-foreground/65 text-[11px] font-medium uppercase tracking-[0.25em]"
+                      ? "text-background/65 text-[11px] font-medium uppercase tracking-[0.25em]"
                       : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]"
                   }
                 >
@@ -267,7 +267,7 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-foreground/65 mt-2 text-base"
+                      ? "text-background/65 mt-2 text-base"
                       : "text-muted-foreground mt-2 text-base"
                   }
                 >
@@ -276,7 +276,7 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-foreground/85 mt-6 text-xl"
+                      ? "text-background/85 mt-6 text-xl"
                       : "text-foreground/85 mt-6 text-xl"
                   }
                 >
@@ -285,7 +285,7 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-foreground/65 mt-1 text-sm"
+                      ? "text-background/65 mt-1 text-sm"
                       : "text-muted-foreground mt-1 text-sm"
                   }
                 >
