@@ -197,172 +197,158 @@ export default function HomePage() {
 }
 
 /* ============================================================
- * Hero — Linear-/Vercel-Modern: dark, sharp sans, Bento-Layout,
- * Gradient-Glow. Centered layout statt zwei-Spalten, Visual unten
- * als Bento-Spread.
+ * Hero — editorial, oversized typography, image as canvas
  * ============================================================ */
 function Hero() {
-  // Aktueller Monat für den Status-Badge — Server-rendered.
+  // Editorial-Eyebrow mit aktuellem Monat ("MAI 2026 · HAMBURG").
+  // Wird zur Render-Zeit (Server) berechnet — kein Hydration-Mismatch.
   const monthLabels = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
+    "JANUAR",
+    "FEBRUAR",
+    "MÄRZ",
+    "APRIL",
+    "MAI",
+    "JUNI",
+    "JULI",
+    "AUGUST",
+    "SEPTEMBER",
+    "OKTOBER",
+    "NOVEMBER",
+    "DEZEMBER",
   ];
   const now = new Date();
-  const currentMonth = `${monthLabels[now.getMonth()]} ${now.getFullYear()}`;
+  const issueDate = `${monthLabels[now.getMonth()]} ${now.getFullYear()}`;
 
   return (
     <section
       id="start"
       className="relative overflow-hidden scroll-mt-20"
     >
-      {/* Glow-Orbs als atmosphärisches Light — Gold links oben, Cyan
-          rechts unten. Geben dem dunklen Background Tiefe ohne dass
-          es nach „nochmal-eine-Halo-Section" aussieht. */}
+      {/* Warmer Gradient-Backdrop für mehr Atmosphäre */}
       <div
         aria-hidden="true"
-        className="glow-orb -top-32 -left-32 h-[42rem] w-[42rem] -z-10"
-        style={{ background: "oklch(0.85 0.18 85 / 0.18)" }}
+        className="from-accent/30 via-background to-background pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br"
       />
+      {/* Dezentes Gold-Halo links oben */}
       <div
         aria-hidden="true"
-        className="glow-orb -bottom-40 -right-32 h-[36rem] w-[36rem] -z-10"
-        style={{ background: "oklch(0.78 0.14 215 / 0.12)" }}
+        className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
+      <CursorSpotlight />
 
-      <div className="relative mx-auto w-full max-w-6xl px-5 pt-20 pb-20 sm:px-6 sm:pt-28 sm:pb-28 lg:pt-32 lg:pb-32">
-        {/* Status-Badge oben zentriert — Linear-/Vercel-Style mit
-            pulsierendem Gold-Punkt. Ersetzt den Editorial-Mast-Header. */}
-        <div className="reveal flex justify-center">
-          <span className="status-badge">
-            <span className="status-badge-dot" aria-hidden="true" />
-            <span>Sitalo Atelier · {currentMonth}</span>
-          </span>
+      <div className="mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
+        {/* Editorial-Kopfzeile: dünne Linie + Sperrsatz wie eine
+            Zeitschriften-Mastline. Setzt einen anderen Ton als ein
+            klassischer SaaS-Hero. */}
+        <div className="reveal flex items-center justify-between gap-4 border-b border-border/40 pb-5 sm:pb-6">
+          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            Sitalo · Webdesign
+          </p>
+          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            {issueDate} · Hamburg
+          </p>
         </div>
 
-        {/* H1 — riesiger sans-serif, Gradient-Gold-Akzent auf einem Wort.
-            WordReveal animiert word-by-word während Page-Load. */}
-        <h1 className="mt-9 text-balance text-center text-[2.75rem] font-semibold leading-[0.98] tracking-[-0.04em] sm:mt-12 sm:text-[4.5rem] sm:leading-[0.95] lg:text-[6rem] lg:tracking-[-0.045em]">
-          <WordReveal step={75} delay={120}>
-            {"Websites, die "}
-            <span className="gradient-gold">ankommen.</span>
-          </WordReveal>
-        </h1>
-
-        <p
-          className="reveal text-muted-foreground mx-auto mt-7 max-w-xl text-center text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
-          style={{ "--reveal-delay": "800ms" } as React.CSSProperties}
-        >
-          Für Hamburger Unternehmen — schnell gebaut, ehrlich
-          gerechnet, persönlich betreut. Drei Sachen reichen.
-        </p>
-
-        <div
-          className="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
-          style={{ "--reveal-delay": "1000ms" } as React.CSSProperties}
-        >
-          <MagneticButton
-            href="/anfrage"
-            className="group inline-flex h-12 items-center justify-center rounded-full bg-gold px-7 text-[15px] font-medium tracking-tight text-background shadow-[0_0_24px_-4px_oklch(0.85_0.18_85/0.5)] transition-all hover:shadow-[0_0_32px_-2px_oklch(0.85_0.18_85/0.7)]"
-          >
-            Anfrage senden
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </MagneticButton>
-          <Link
-            href="#beispiele"
-            className="border-border text-foreground hover:bg-card inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
-          >
-            Beispiele ansehen
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </div>
-
-        <p
-          className="reveal text-muted-foreground mx-auto mt-6 inline-flex w-full items-center justify-center gap-2 text-[13px]"
-          style={{ "--reveal-delay": "1200ms" } as React.CSSProperties}
-        >
-          <span
-            aria-hidden="true"
-            className="bg-ink-olive inline-block h-1 w-1 rounded-full"
-          />
-          Antwort meist noch am selben Tag — kostenlos, persönlich.
-        </p>
-
-        {/* Bento-Spread unter dem Hero — visualisiert „was wir
-            machen" als ein Bild plus drei Stat-Tiles. 12-Spalten-
-            Grid, Tile 1 nimmt 7 Spalten, die anderen drei je 5. */}
-        <div
-          className="reveal mt-16 grid grid-cols-12 gap-3 sm:mt-20 sm:gap-4"
-          style={{ "--reveal-delay": "1400ms" } as React.CSSProperties}
-        >
-          {/* Großes Bild-Tile */}
-          <div className="bento hero-image-reveal relative col-span-12 aspect-[16/10] overflow-hidden lg:col-span-7 lg:aspect-auto lg:row-span-2">
-            <ParallaxImage
-              src="/images/workspace-macbook.webp"
-              alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
-              priority
-              sizes="(min-width: 1024px) 720px, 100vw"
-              className="object-cover"
-              intensityPx={28}
-            />
-            {/* Vignette + gradient overlay für dark vibe */}
+        <div className="mt-10 grid items-end gap-10 sm:mt-14 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
+          <div>
+            {/* Staggered Reveal: jede Zeile fadet leicht versetzt rein —
+                wirkt wie ein bewusst gesetztes Layout, nicht wie ein
+                pop-in. Delays kumulieren über die CSS-Variable. */}
+            <p className="reveal text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
+              />
+              Ein kleines Atelier in Hamburg
+            </p>
+            <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
+              <WordReveal step={75} delay={120}>
+                {"Wir bauen "}
+                <span className="hero-shine serif-italic text-muted-foreground font-normal">
+                  Websites
+                </span>
+                <br />
+                {"für Hamburger "}
+                <span className="hero-shine serif-italic text-muted-foreground font-normal">
+                  Unternehmen.
+                </span>
+              </WordReveal>
+            </h1>
+            <p
+              className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
+              style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
+            >
+              Die meisten Cafés in Eppendorf haben eine Speisekarte als
+              PDF von 2021. Pflegedienste in Altona stehen nicht mal bei
+              Google Maps. Wir bauen die Seiten der anderen.
+            </p>
             <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-background/40 via-transparent to-transparent"
-            />
-            <div className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
-              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-foreground/55">
-                01 — Sitalo Atelier · Hamburg
-              </p>
-              <p className="text-foreground mt-2 text-pretty text-base leading-snug sm:text-lg">
-                Jede Seite gebaut, als wäre es unsere eigene.
-              </p>
+              className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
+              style={{ "--reveal-delay": "1100ms" } as React.CSSProperties}
+            >
+              <MagneticButton
+                href="/anfrage"
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+              >
+                Website anfragen
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </MagneticButton>
+              <Link
+                href="#beispiele"
+                className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
+              >
+                Beispiele ansehen
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </div>
-          </div>
-
-          {/* Tile: Speed */}
-          <div className="bento col-span-12 p-5 sm:col-span-6 sm:p-6 lg:col-span-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              02 — Tempo
-            </p>
-            <p className="text-foreground mt-3 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
-              <span className="gradient-gold">1–2 Werktage</span>
-              <span className="text-muted-foreground/80">
-                {" "}
-                von Anfrage bis live.
-              </span>
-            </p>
-            <p className="text-muted-foreground mt-2 text-[13px]">
-              Drei Sachen schicken — Logo, Bilder, ein paar Sätze.
-              Den Rest bauen wir.
+            {/* Quiet Trust-Hint unter den CTAs — reduziert die
+                Hürde, ohne das Hero zu beladen. */}
+            <p
+              className="reveal text-muted-foreground/85 mt-5 inline-flex items-center gap-2 text-[13px]"
+              style={{ "--reveal-delay": "1300ms" } as React.CSSProperties}
+            >
+              <span
+                aria-hidden="true"
+                className="bg-ink-olive inline-block h-1 w-1 rounded-full"
+              />
+              Antwort meist noch am selben Tag — kostenlos, persönlich.
             </p>
           </div>
 
-          {/* Tile: Price + Promise */}
-          <div className="bento col-span-12 p-5 sm:col-span-6 sm:p-6 lg:col-span-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              03 — Preis
-            </p>
-            <p className="text-foreground mt-3 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
-              <span className="gradient-gold">ab 499 €</span>
-              <span className="text-muted-foreground/80">
-                {" "}
-                Festpreis, schwarz auf weiß.
-              </span>
-            </p>
-            <p className="text-muted-foreground mt-2 text-[13px]">
-              Keine Nachträge am Ende, keine Stunden­abrechnung,
-              kein Vertrag der gleich mitkommt.
-            </p>
+          {/* Rechte Spalte: Workspace-Foto mit Parallax und schwebendem
+              Magazin-Zitat — direkt von uns, nicht aus Kundensicht. */}
+          <div
+            className="reveal relative"
+            style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
+          >
+            <div className="hero-image-reveal ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]">
+              <ParallaxImage
+                src="/images/workspace-macbook.webp"
+                alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
+                priority
+                sizes="(min-width: 1024px) 480px, 100vw"
+                className="object-cover"
+                intensityPx={28}
+              />
+              {/* Vignette für Kontrast unter dem Zitat */}
+              <div
+                aria-hidden="true"
+                className="from-foreground/60 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
+              />
+              {/* Schwebendes Zitat — Stimme des Ateliers, nicht aus Kundenmund. */}
+              <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
+                <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
+                  „Wir bauen jede Seite, als wäre es unsere eigene."
+                </blockquote>
+                <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
+                  <span
+                    aria-hidden="true"
+                    className="bg-gold gold-pulse inline-block h-1 w-5"
+                  />
+                  Sitalo Atelier · Hamburg
+                </figcaption>
+              </figure>
+            </div>
           </div>
         </div>
       </div>
@@ -375,7 +361,7 @@ function Hero() {
  * ============================================================ */
 function PersonalNote() {
   return (
-    <section className="bg-card text-foreground relative overflow-hidden">
+    <section className="bg-foreground text-background relative overflow-hidden">
       {/* Subtile Espresso-Textur als Background-Overlay — minimal
           opacity, mixed mit Soft-Light. Lässt den dunklen Block
           nicht mehr wie eine Tailwind-Solid-Fläche aussehen,
@@ -405,7 +391,7 @@ function PersonalNote() {
       {/* Dezente vertikale Linien als Editorial-Marker */}
       <div
         aria-hidden="true"
-        className="bg-foreground/10 pointer-events-none absolute left-6 top-0 hidden h-full w-px sm:block"
+        className="bg-background/10 pointer-events-none absolute left-6 top-0 hidden h-full w-px sm:block"
       />
       <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
         <div className="flex items-center gap-3">
@@ -413,7 +399,7 @@ function PersonalNote() {
             className="bg-gold/60 gold-pulse inline-block h-1 w-8"
             aria-hidden="true"
           />
-          <p className="text-foreground/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
             Aus Hamburg
           </p>
         </div>
@@ -426,18 +412,18 @@ function PersonalNote() {
           </span>
           <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
             Wir gehen viel zu Fuß durch Hamburg.{" "}
-            <span className="serif-italic text-foreground/75">
+            <span className="serif-italic text-background/75">
               Was wir dabei sehen:
             </span>{" "}
             jedes zweite Café hat keine ordentliche Website —{" "}
-            <span className="serif-italic text-foreground/75">
+            <span className="serif-italic text-background/75">
               und es ist nie das beste.
             </span>
           </p>
         </blockquote>
-        <div className="mt-12 grid gap-10 border-t border-foreground/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+        <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
-            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Eppendorf, ein Mittwochmittag. Drei Cafés in zwei Straßen.
               Das mit dem besten Espresso hat eine Speisekarte als PDF
               von Februar 2021. Das daneben hat keine Öffnungszeiten bei
@@ -445,7 +431,7 @@ function PersonalNote() {
               würden, hat als einziges eine moderne Website. Dreimal
               raten, welches voll war.
             </p>
-            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Sieht man überall. Der Friseur in Eimsbüttel, dessen
               Telefonnummer auf der Seite drei Jahre alt ist. Die Bar
               in St.&nbsp;Pauli, deren Instagram-Link auf einen
@@ -454,13 +440,13 @@ function PersonalNote() {
               talentiert sind und nicht sichtbar, gewinnt jemand
               anders. Auch wenn der schlechter ist.
             </p>
-            <p className="text-foreground/85 text-[15px] leading-relaxed sm:text-[17px]">
+            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Wir bauen Seiten für die anderen. Für die, die wissen,
               dass gute Arbeit erst zählt, wenn jemand davon weiß. Wir
               brauchen Ihr Logo, ein paar Bilder, was zu sagen. Den
               Rest machen wir.
             </p>
-            <p className="serif-italic text-foreground pt-4 text-2xl">
+            <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo, aus Hamburg
             </p>
           </div>
@@ -895,7 +881,7 @@ function FinalCta() {
   return (
     <section
       id="kontakt"
-      className="bg-card text-foreground relative overflow-hidden scroll-mt-20"
+      className="bg-foreground text-background relative overflow-hidden scroll-mt-20"
     >
       {/* Espresso-Textur als bedruckt-Papier-Optik */}
       <div
@@ -921,14 +907,14 @@ function FinalCta() {
       />
       {/* Editorial-Mast oben — wie eine Magazin-Rückseite */}
       <div className="border-background/10 relative mx-auto flex w-full max-w-5xl items-center justify-between gap-4 border-b px-6 py-5">
-        <p className="text-foreground/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+        <p className="text-background/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
           <span
             aria-hidden="true"
             className="bg-gold gold-pulse inline-block h-1 w-6"
           />
           Schluss-Statement
         </p>
-        <p className="text-foreground/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+        <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
           Sitalo · Hamburg
         </p>
       </div>
@@ -941,15 +927,15 @@ function FinalCta() {
                 „
               </span>
               Jeden Tag, den{" "}
-              <span className="serif-italic text-foreground/70">
+              <span className="serif-italic text-background/70">
                 Sie warten,
               </span>{" "}
               findet Sie{" "}
-              <span className="serif-italic text-foreground/70">
+              <span className="serif-italic text-background/70">
                 ein Kunde weniger.
               </span>
             </h2>
-            <p className="text-foreground/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+            <p className="text-background/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
               Drei Felder, zwei Minuten. Wir melden uns innerhalb von
               24 Stunden — persönlich, mit einem konkreten Vorschlag.
               Kein Vertrag, keine Kosten, kein Druck.
@@ -957,14 +943,14 @@ function FinalCta() {
             <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <MagneticButton
                 href="/anfrage"
-                className="bg-gold text-background hover:bg-gold/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+                className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
               >
                 Website anfragen
                 <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </MagneticButton>
               <a
                 href="tel:+4915224437370"
-                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
               >
                 Anrufen
               </a>
@@ -974,10 +960,10 @@ function FinalCta() {
           {/* Editorial-Schluss rechts: Signature + Adresse als
               kleine Visitenkarte. */}
           <div className="lg:pl-10">
-            <p className="text-foreground/45 text-[10px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-background/45 text-[10px] font-medium uppercase tracking-[0.3em]">
               Aus dem Atelier
             </p>
-            <p className="serif-italic text-foreground mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
+            <p className="serif-italic text-background mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
               — Sitalo,
               <br />
               Hamburg.
@@ -985,27 +971,27 @@ function FinalCta() {
             <div className="mt-8 flex flex-wrap gap-2.5">
               <a
                 href="tel:+4915224437370"
-                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
               >
                 Anrufen
               </a>
               <a
                 href="mailto:info@sitalo.de"
-                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
               >
                 Schreiben
               </a>
               <a
                 href="/sitalo-kontakt.vcf"
                 download="Sitalo-Webdesign.vcf"
-                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
               >
                 Speichern
               </a>
             </div>
-            <dl className="text-foreground/65 mt-8 space-y-2 text-[13px]">
+            <dl className="text-background/65 mt-8 space-y-2 text-[13px]">
               <div className="flex justify-between gap-4">
-                <dt className="text-foreground/45 uppercase tracking-[0.2em]">
+                <dt className="text-background/45 uppercase tracking-[0.2em]">
                   Antwort
                 </dt>
                 <dd>innerhalb 24 h</dd>
