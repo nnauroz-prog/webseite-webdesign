@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
@@ -36,22 +37,33 @@ function Hero() {
         aria-hidden="true"
         className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
-      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Nach Stadtteil
-        </p>
-        <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-[5.5rem]">
-          Websites für Ihren Hamburger Stadtteil.
-        </h1>
-        <p className="text-muted-foreground mt-8 max-w-2xl text-pretty text-lg leading-relaxed sm:text-xl">
-          „Webdesign Hamburg" ist die falsche Suche. Ihre Kunden tippen
-          „Friseur Eimsbüttel" oder „Café Ottensen". Genau für diese
-          lokalen Phrasen bauen wir — Stadtteil für Stadtteil.
-        </p>
+      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-16 sm:pt-24 sm:pb-24 lg:pt-32 lg:pb-32">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+          {/* Linke Spalte: Headline + Subtext */}
+          <div>
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
+              />
+              Nach Stadtteil
+            </p>
+            <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-[4.5rem]">
+              Websites für Ihren Hamburger Stadtteil.
+            </h1>
+            <p className="text-muted-foreground mt-8 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
+              „Webdesign Hamburg" ist die falsche Suche. Ihre Kunden
+              tippen „Friseur Eimsbüttel" oder „Café Ottensen". Genau
+              für diese lokalen Phrasen bauen wir — Stadtteil für
+              Stadtteil.
+            </p>
+          </div>
+
+          {/* Rechte Spalte: Hamburg-Karte mit klickbaren Stadtteilen */}
+          <div className="relative">
+            <HamburgMap />
+          </div>
+        </div>
       </div>
     </section>
   );
