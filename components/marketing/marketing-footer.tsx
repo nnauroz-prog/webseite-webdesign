@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BackToTop } from "@/components/marketing/back-to-top";
 import { TrustBar } from "@/components/marketing/trust-bar";
 import { SitaloLogo } from "@/components/sitalo-logo";
+import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
 
 /**
  * Marketing-Footer im Editorial-Stil. Aufgebaut wie eine
@@ -103,6 +104,13 @@ export function MarketingFooter() {
             <FooterLink href="/impressum">Impressum</FooterLink>
             <FooterLink href="/datenschutz">Datenschutz</FooterLink>
           </FooterCol>
+        </div>
+
+        {/* Sitalo-Stempel — Brand-Signatur als wiederkehrendes
+            Identitäts-Element. Wie ein altes Manufaktur-Siegel auf
+            der Rückseite eines Briefs. */}
+        <div className="border-background/10 flex justify-center border-t px-6 py-10 text-background/50">
+          <SitaloStempel size="md" />
         </div>
 
         {/* Editorial-Schluss */}

@@ -452,3 +452,16 @@ html {
 .serif {
   font-family: var(--font-serif), ui-serif, Georgia, serif;
 }
+
+/* Sitalo-Wachssiegel — sehr langsame Rotation für lebendigen Brand-
+   Akzent. 40 Sekunden pro Umdrehung — nicht ablenkend, aber gibt
+   dem Siegel Atem. */
+@media (prefers-reduced-motion: no-preference) {
+  .stempel svg {
+    animation: stempel-rotate 40s linear infinite;
+  }
+  @keyframes stempel-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+}
