@@ -7,6 +7,7 @@ import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
+import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
@@ -239,13 +240,14 @@ function Hero() {
       <div className="mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
         {/* Editorial-Kopfzeile: dünne Linie + Sperrsatz wie eine
             Zeitschriften-Mastline. Setzt einen anderen Ton als ein
-            klassischer SaaS-Hero. */}
+            klassischer SaaS-Hero. Rechts: zeit-bewusste Begrüßung,
+            die nach Mount auf Hamburg-Lokalzeit umschwenkt. */}
         <div className="reveal flex items-center justify-between gap-4 border-b border-border/40 pb-5 sm:pb-6">
           <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-            Sitalo · Webdesign
+            Sitalo · Webdesign · {issueDate}
           </p>
           <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-            {issueDate} · Hamburg
+            <HamburgGreeting />
           </p>
         </div>
 

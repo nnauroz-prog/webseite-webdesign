@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 
+import { AtelierStatus } from "@/components/marketing/atelier-status";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
@@ -127,6 +128,11 @@ export function MarketingHeader({
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Atelier-Status — pulsierender Punkt + Live-Text. Sagt,
+              ob wir gerade am Schreibtisch sitzen (06–23) oder
+              schlafen (23–06). Nur lg+. */}
+          <AtelierStatus className="mr-1 hidden lg:inline-flex" />
+
           {/* Cmd+K Command-Palette-Hint — nur Desktop, sehr dezent.
               Klick dispatcht ein synthetisches Cmd+K-Event an window,
               damit der globale Listener in CommandPalette greift. */}
