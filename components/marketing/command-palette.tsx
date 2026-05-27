@@ -1,0 +1,406 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  ArrowRight,
+  FileText,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Package,
+  Phone,
+  Sparkles,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import { BRANCHEN } from "@/lib/branchen-data";
+import { STANDORTE } from "@/lib/standorte-data";
+
+/**
+ * Command-Palette — Linear-/Vercel-Style Cmd+K Modal.
+ *
+ * Tastenkürzel: Cmd+K (Mac) / Ctrl+K (Win/Linux). Öffnet eine
+ * schnelle Navigations-Liste mit Filter-Input. Power-User können
+ * von überall auf jede wichtige Seite navigieren oder direkt
+ * anrufen/schreiben, ohne mit der Maus zu navigieren.
+ *
+ * Strukturierte Sektionen: Aktionen (Anfrage, Anrufen, …), Seiten
+ * (Pakete, Branchen, Standorte, FAQ, …), Branchen (10 dynamisch
+ * geladen), Standorte (8 dynamisch).
+ *
+ * Klassisches Keyboard-UX: ↑/↓ navigieren, Enter öffnet, Esc
+ * schließt. Filter live während Tippen.
+ */
+
+type Action =
+  | { kind: "link"; label: string; description: string; href: string; icon: React.ComponentType<{ className?: string }> }
+  | { kind: "external"; label: string; description: string; href: string; icon: React.ComponentType<{ className?: string }> };
+
+type Group = {
+  label: string;
+  items: Action[];
+};
+
+export function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
+
+  // Globaler Cmd+K / Ctrl+K Listener — öffnet die Palette von überall
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const isToggle =
+        (e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey);
+      if (isToggle) {
+        e.preventDefault();
+        setOpen((o) => !o);
+        return;
+      }
+      if (e.key === "Escape" && open) {
+        e.preventDefault();
+        setOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  // Beim Öffnen: Input fokussieren, Query + Index resetten
+  useEffect(() => {
+    if (open) {
+      setQuery("");
+      setActiveIndex(0);
+      // Kurze Verzögerung — Modal muss erst im DOM sein
+      setTimeout(() => inputRef.current?.focus(), 20);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const groups: Group[] = useMemo(() => {
+    const direct: Action[] = [
+      {
+        kind: "link",
+        label: "Anfrage starten",
+        description: "Drei Felder, Antwort meist am selben Tag",
+        href: "/anfrage",
+        icon: Sparkles,
+      },
+      {
+        kind: "external",
+        label: "Anrufen",
+        description: "0152 24437370",
+        href: "tel:+4915224437370",
+        icon: Phone,
+      },
+      {
+        kind: "external",
+        label: "Schreiben",
+        description: "info@sitalo.de",
+        href: "mailto:info@sitalo.de",
+        icon: Mail,
+      },
+    ];
+
+    const pages: Action[] = [
+      {
+        kind: "link",
+        label: "Pakete & Preise",
+        description: "Drei Pakete, ab 499 €",
+        href: "/pakete",
+        icon: Package,
+      },
+      {
+        kind: "link",
+        label: "Branchen",
+        description: "10 Branchen, 10 Layouts",
+        href: "/branchen",
+        icon: FileText,
+      },
+      {
+        kind: "link",
+        label: "Standorte",
+        description: "8 Hamburger Stadtteile",
+        href: "/standorte",
+        icon: MapPin,
+      },
+      {
+        kind: "link",
+        label: "Das Atelier",
+        description: "Wer wir sind, was wir glauben",
+        href: "/atelier",
+        icon: FileText,
+      },
+      {
+        kind: "link",
+        label: "Ablauf",
+        description: "Sechs Schritte zur Live-Seite",
+        href: "/ablauf",
+        icon: FileText,
+      },
+      {
+        kind: "link",
+        label: "FAQ",
+        description: "Häufige Fragen",
+        href: "/faq",
+        icon: MessageCircle,
+      },
+      {
+        kind: "link",
+        label: "Kontakt",
+        description: "Alle Wege auf einer Seite",
+        href: "/kontakt",
+        icon: Mail,
+      },
+    ];
+
+    const branchen: Action[] = BRANCHEN.map((b) => ({
+      kind: "link" as const,
+      label: b.label,
+      description: b.shortBody.split(".")[0] + ".",
+      href: `/branchen/${b.slug}`,
+      icon: FileText,
+    }));
+
+    const standorte: Action[] = STANDORTE.map((s) => ({
+      kind: "link" as const,
+      label: s.name,
+      description: s.tagline,
+      href: `/standorte/${s.slug}`,
+      icon: MapPin,
+    }));
+
+    if (!query.trim()) {
+      return [
+        { label: "Sofort", items: direct },
+        { label: "Seiten", items: pages },
+        { label: "Branchen", items: branchen.slice(0, 5) },
+        { label: "Stadtteile", items: standorte.slice(0, 4) },
+      ];
+    }
+
+    // Filter alle Items über Query — case-insensitive auf label + description
+    const q = query.toLowerCase();
+    const match = (a: Action) =>
+      a.label.toLowerCase().includes(q) ||
+      a.description.toLowerCase().includes(q);
+
+    return [
+      { label: "Sofort", items: direct.filter(match) },
+      { label: "Seiten", items: pages.filter(match) },
+      { label: "Branchen", items: branchen.filter(match) },
+      { label: "Stadtteile", items: standorte.filter(match) },
+    ].filter((g) => g.items.length > 0);
+  }, [query]);
+
+  // Flatten für Keyboard-Navigation
+  const flat = useMemo(() => groups.flatMap((g) => g.items), [groups]);
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, flat.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const item = flat[activeIndex];
+      if (!item) return;
+      if (item.kind === "external") {
+        window.location.href = item.href;
+      } else {
+        router.push(item.href);
+      }
+      setOpen(false);
+    }
+  }
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-start justify-center px-4 pt-[15vh]"
+      onClick={() => setOpen(false)}
+      aria-modal="true"
+      role="dialog"
+      aria-label="Schnellnavigation"
+    >
+      {/* Backdrop */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+      />
+
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-card border-border/60 ring-foreground/5 relative w-full max-w-xl overflow-hidden rounded-2xl border shadow-[0_30px_80px_-20px_rgb(0_0_0/0.3)] ring-1"
+      >
+        {/* Input + Hinweis-Kürzel */}
+        <div className="border-border/60 flex items-center gap-3 border-b px-4 py-3">
+          <Sparkles className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActiveIndex(0);
+            }}
+            onKeyDown={onKeyDown}
+            placeholder="Suchen oder springen… (Branche, Stadtteil, Anfrage …)"
+            className="text-foreground placeholder:text-muted-foreground/70 flex-1 bg-transparent text-[15px] outline-none"
+          />
+          <kbd className="border-border/70 text-muted-foreground hidden rounded-md border px-1.5 py-0.5 font-mono text-[10px] sm:inline-block">
+            Esc
+          </kbd>
+        </div>
+
+        {/* Results */}
+        <div className="max-h-[60vh] overflow-y-auto py-2">
+          {flat.length === 0 ? (
+            <div className="text-muted-foreground px-4 py-8 text-center text-sm">
+              Nichts gefunden — vielleicht direkt{" "}
+              <Link
+                href="/anfrage"
+                className="text-foreground underline underline-offset-4"
+                onClick={() => setOpen(false)}
+              >
+                anfragen
+              </Link>
+              ?
+            </div>
+          ) : (
+            (() => {
+              let idx = -1;
+              return groups.map((g) => (
+                <div key={g.label} className="mb-2">
+                  <p className="text-muted-foreground/80 px-4 pt-3 pb-1 font-mono text-[10px] uppercase tracking-[0.18em]">
+                    {g.label}
+                  </p>
+                  <ul>
+                    {g.items.map((item) => {
+                      idx += 1;
+                      const active = idx === activeIndex;
+                      const Icon = item.icon;
+                      const itemIndex = idx;
+                      return (
+                        <li key={item.href}>
+                          <CommandItem
+                            item={item}
+                            active={active}
+                            icon={Icon}
+                            onHover={() => setActiveIndex(itemIndex)}
+                            onSelect={() => setOpen(false)}
+                          />
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ));
+            })()
+          )}
+        </div>
+
+        {/* Footer Hint */}
+        <div className="border-border/60 text-muted-foreground/80 flex items-center justify-between gap-2 border-t px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.15em]">
+          <span className="inline-flex items-center gap-2">
+            <kbd className="border-border/70 rounded-md border px-1.5 py-0.5 normal-case">
+              ↑↓
+            </kbd>
+            navigieren
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <kbd className="border-border/70 rounded-md border px-1.5 py-0.5 normal-case">
+              ↵
+            </kbd>
+            öffnen
+          </span>
+          <span className="hidden sm:inline-flex items-center gap-2">
+            <kbd className="border-border/70 rounded-md border px-1.5 py-0.5 normal-case">
+              ⌘K
+            </kbd>
+            schließen
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CommandItem({
+  item,
+  active,
+  icon: Icon,
+  onHover,
+  onSelect,
+}: {
+  item: Action;
+  active: boolean;
+  icon: React.ComponentType<{ className?: string }>;
+  onHover: () => void;
+  onSelect: () => void;
+}) {
+  const className = `flex items-center gap-3 px-4 py-2.5 transition-colors ${
+    active
+      ? "bg-accent/60 text-foreground"
+      : "text-foreground/85 hover:bg-accent/40"
+  }`;
+
+  const content = (
+    <>
+      <Icon
+        className={`h-4 w-4 shrink-0 transition-colors ${
+          active ? "text-gold" : "text-muted-foreground"
+        }`}
+        aria-hidden="true"
+      />
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[14.5px] font-medium tracking-tight">
+          {item.label}
+        </p>
+        <p className="text-muted-foreground truncate text-[12.5px]">
+          {item.description}
+        </p>
+      </div>
+      <ArrowRight
+        className={`h-3.5 w-3.5 shrink-0 transition-opacity ${
+          active ? "opacity-100" : "opacity-0"
+        }`}
+        aria-hidden="true"
+      />
+    </>
+  );
+
+  if (item.kind === "external") {
+    return (
+      <a
+        href={item.href}
+        onClick={onSelect}
+        onMouseEnter={onHover}
+        className={className}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      href={item.href}
+      onClick={onSelect}
+      onMouseEnter={onHover}
+      className={className}
+    >
+      {content}
+    </Link>
+  );
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 
+import { CommandPalette } from "@/components/marketing/command-palette";
 import { CursorLabel } from "@/components/marketing/cursor-label";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PageCursorGlow } from "@/components/marketing/page-cursor-glow";
@@ -106,6 +107,7 @@ export default function RootLayout({
         <PageCursorGlow />
         {children}
         <CursorLabel />
+        <CommandPalette />
         <MobileCtaBar />
         <script
           type="application/ld+json"
