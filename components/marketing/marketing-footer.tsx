@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
+import { HamburgClock } from "@/components/marketing/hamburg-clock";
 import { TrustBar } from "@/components/marketing/trust-bar";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
@@ -119,16 +120,10 @@ export function MarketingFooter() {
             <span className="text-background/55">
               © {year} Sitalo Webdesign
             </span>
-            {/* Hanseatic-ehrlich: keine festen Bürozeiten, aber
-                schnelle Antwort. Anstelle der „Mo–Fr 9–17"-Floskel,
-                die eh nicht stimmt. */}
-            <span className="text-background/55 inline-flex items-center gap-2">
-              <span
-                aria-hidden="true"
-                className="bg-ink-olive inline-block h-1 w-1 rounded-full"
-              />
-              Erreichbar jederzeit · Antwort meist noch am selben Tag
-            </span>
+            {/* Echtzeit-Hamburg-Uhr — tick-tack mit Sekunden. Ersetzt
+                den statischen „Erreichbar jederzeit"-Spruch und gibt
+                dem Footer das Gefühl, dass die Seite gerade lebt. */}
+            <HamburgClock />
             <span className="serif-italic text-background/60 text-sm">
               53.5511° N · 9.9937° E — Hamburg
             </span>
