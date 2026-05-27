@@ -4,9 +4,11 @@ import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import { CommandPalette } from "@/components/marketing/command-palette";
 import { CursorLabel } from "@/components/marketing/cursor-label";
 import { KeyboardChords } from "@/components/marketing/keyboard-chords";
+import { KonamiEgg } from "@/components/marketing/konami-egg";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PageCursorGlow } from "@/components/marketing/page-cursor-glow";
 import { ScrollProgress } from "@/components/marketing/scroll-progress";
+import { ShortcutHelp } from "@/components/marketing/shortcut-help";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -110,6 +112,8 @@ export default function RootLayout({
         <CursorLabel />
         <CommandPalette />
         <KeyboardChords />
+        <ShortcutHelp />
+        <KonamiEgg />
         <MobileCtaBar />
         <script
           type="application/ld+json"
