@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
 import { HamburgClock } from "@/components/marketing/hamburg-clock";
+import { ScrambleText } from "@/components/marketing/scramble-text";
 import { TrustBar } from "@/components/marketing/trust-bar";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
@@ -65,10 +66,13 @@ export function MarketingFooter() {
         <div className="relative mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-24 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div className="max-w-sm">
             <SitaloLogo size="md" />
+            {/* Scramble-On-Hover für die italic Schluss-Phrase —
+                kleine Linear-Style-Anspielung, die nur entdeckt wird
+                wenn jemand mit dem Cursor drüberfährt. */}
             <p className="serif mt-8 text-balance text-2xl font-normal leading-[1.2] tracking-[-0.015em] sm:text-3xl">
               Drei Sachen reichen.{" "}
               <span className="serif-italic text-background/65">
-                Den Rest bauen wir.
+                <ScrambleText>Den Rest bauen wir.</ScrambleText>
               </span>
             </p>
             <p className="text-background/65 mt-5 max-w-xs text-[14px] leading-relaxed">
