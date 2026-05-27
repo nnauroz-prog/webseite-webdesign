@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 
 import { CommandPalette } from "@/components/marketing/command-palette";
 import { CursorLabel } from "@/components/marketing/cursor-label";
+import { KeyboardChords } from "@/components/marketing/keyboard-chords";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PageCursorGlow } from "@/components/marketing/page-cursor-glow";
 import { ScrollProgress } from "@/components/marketing/scroll-progress";
@@ -108,6 +109,7 @@ export default function RootLayout({
         {children}
         <CursorLabel />
         <CommandPalette />
+        <KeyboardChords />
         <MobileCtaBar />
         <script
           type="application/ld+json"

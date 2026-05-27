@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 
+import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
 
@@ -149,13 +150,15 @@ export function MarketingHeader({
             </kbd>
           </button>
 
-          {/* Desktop CTA */}
-          <Link
+          {/* Desktop CTA — magnetisches Verhalten via MagneticButton.
+              Cursor in der Nähe → Button zieht sich leicht ran.
+              Nur Desktop / fine pointer, kein Effekt auf Touch. */}
+          <MagneticButton
             href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 hidden h-10 items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-all hover:shadow md:inline-flex"
+            className="bg-foreground text-background hover:bg-foreground/90 hidden h-10 items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight shadow-sm hover:shadow md:inline-flex"
           >
             Website anfragen
-          </Link>
+          </MagneticButton>
 
           {/* Mobile compact CTA + burger */}
           <Link
