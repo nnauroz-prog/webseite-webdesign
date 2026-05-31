@@ -21,6 +21,7 @@ import {
 } from "@/components/marketing/ornaments";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
+import { WhatWeDontDo } from "@/components/marketing/what-we-dont-do";
 import { WhyWebsite } from "@/components/marketing/why-website";
 
 export const metadata: Metadata = {
@@ -172,6 +173,12 @@ export default function HomePage() {
         </RevealOnScroll>
         <RevealOnScroll>
           <Promises />
+        </RevealOnScroll>
+        {/* „Was wir NICHT machen" — hanseatische Anti-Versprechen-
+            Sektion. Baut Vertrauen, indem sie Grenzen offenlegt,
+            statt eine weitere „wir können alles"-Liste zu sein. */}
+        <RevealOnScroll>
+          <WhatWeDontDo />
         </RevealOnScroll>
         {/* StackBlock raus — 4 tech-stack-Karten interessieren
             keinen Kunden. Erwähnung der wichtigsten Bausteine
