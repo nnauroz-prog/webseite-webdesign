@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { AvailabilitySlot } from "@/components/marketing/availability-slot";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -130,6 +131,7 @@ export default function PaketePage() {
       <main className="flex-1">
         <Hero />
         <Packages />
+        <PflegeHosting />
         <PricingDisclaimer />
         <FinalCta />
       </main>
@@ -176,6 +178,11 @@ function Hero() {
             Monatlich kündbar
           </li>
         </ul>
+        {/* Verfügbarkeit — ehrlich gepflegt, gibt einen leichten
+            Knappheits-Anker direkt unter den Fakten. */}
+        <div className="mt-6 flex justify-center">
+          <AvailabilitySlot variant="inline" />
+        </div>
         {/* Anchor strip — quick jumps */}
         <nav className="mt-12 flex flex-wrap justify-center gap-2 sm:gap-3">
           {PACKAGES.map((p) => (
@@ -384,6 +391,100 @@ function PackageColumn({
             >
               ·
             </span>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/**
+ * Pflege & Hosting — erklärt was im monatlichen Beitrag drin ist
+ * und wie Wartung skaliert, wenn jemand mehr braucht als das
+ * jeweilige Paket vorsieht. Steht direkt unter den drei Tieren,
+ * damit das wiederkehrende „und was kommt nach dem Launch?" gleich
+ * mit beantwortet ist.
+ */
+function PflegeHosting() {
+  return (
+    <section className="border-border/40 border-t">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
+        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
+          <div className="lg:sticky lg:top-24">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
+              />
+              Pflege & Hosting
+            </p>
+            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
+              Was nach dem Launch
+              <br />
+              <span className="serif-italic text-muted-foreground font-normal">
+                dazugehört.
+              </span>
+            </h2>
+            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-[15.5px] leading-relaxed">
+              Der monatliche Betrag in jedem Paket ist kein
+              versteckter Vertrag — er ist die Antwort auf die Frage
+              „wer kümmert sich, wenn ich morgen eine neue
+              Telefonnummer habe?".
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            <PflegeRow
+              title="Im Monatlichen drin"
+              items={[
+                "Hosting in Deutschland (DSGVO-konform, kein US-Daten-Detour)",
+                "SSL-Zertifikat, automatisch verlängert",
+                "Sicherheits- und Performance-Updates",
+                "Tägliche Backups, 30 Tage zurückrollbar",
+                "Kleine Inhalts-Änderungen (je nach Paket: 1–3 pro Monat)",
+                "Domain-Anfragen und E-Mail-Setup auf Wunsch",
+              ]}
+            />
+            <PflegeRow
+              title="Wenn mehr nötig ist"
+              items={[
+                "Größere Erweiterungen (neue Seite, neuer Bereich) — auf Stundenbasis, transparent vorab beziffert",
+                "Mehr Änderungsrunden pro Monat — Pflege-Aufstockung im Halbjahres-Turnus möglich",
+                "Saisonale Aktionen, Eventseiten, Kampagnen — projektbezogen, kein Aufschlag aufs Monatliche",
+              ]}
+            />
+            <PflegeRow
+              title="Was nicht drin ist"
+              items={[
+                "Neue Logos, Foto-Shootings, Texterstellung von Grund auf",
+                "Bezahlte Anzeigen (Google Ads, Meta) — Empfehlung auf Wunsch",
+                "Online-Shop-Erweiterungen über 30 Artikel hinaus",
+              ]}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PflegeRow({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div>
+      <p className="text-muted-foreground/80 mb-4 font-mono text-[10px] uppercase tracking-[0.22em]">
+        {title}
+      </p>
+      <ul className="divide-border/40 divide-y">
+        {items.map((item) => (
+          <li
+            key={item}
+            className="text-foreground/85 flex items-start gap-3 py-3 text-[15px] leading-relaxed"
+          >
+            <span
+              aria-hidden="true"
+              className="bg-ink-olive mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
+            />
             <span>{item}</span>
           </li>
         ))}

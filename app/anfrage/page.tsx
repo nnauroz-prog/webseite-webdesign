@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AvailabilitySlot } from "@/components/marketing/availability-slot";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -77,6 +78,11 @@ export default async function AnfragePage({
                 Antwort meist noch am selben Tag — persönlich aus dem
                 Hamburger Atelier. Kein Vertrag, der gleich mitkommt.
               </p>
+              {/* Ehrliche Verfügbarkeits-Anzeige, manuell gepflegt.
+                  Gibt einen leichten Knappheits-Anstoß ohne Fake-Live. */}
+              <div className="mt-7 flex justify-center">
+                <AvailabilitySlot variant="card" />
+              </div>
             </div>
 
             {/* Form — Hauptakt, direkt nach Header. */}
