@@ -98,6 +98,7 @@ export function MarketingFooter() {
             <FooterLink href="/branchen">Branchen</FooterLink>
             <FooterLink href="/standorte">Standorte</FooterLink>
             <FooterLink href="/pakete">Pakete</FooterLink>
+            <FooterLink href="/audit">Kostenloser Audit</FooterLink>
           </FooterCol>
           <FooterCol title="Sitalo">
             <FooterLink href="/atelier">Das Atelier</FooterLink>

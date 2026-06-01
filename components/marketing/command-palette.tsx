@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
+  Eye,
   FileText,
   Mail,
   MapPin,
@@ -92,6 +93,13 @@ export function CommandPalette() {
         description: "Drei Felder, Antwort meist am selben Tag",
         href: "/anfrage",
         icon: Sparkles,
+      },
+      {
+        kind: "link",
+        label: "Kostenlosen Audit anfordern",
+        description: "Drei Punkte zu Ihrer Seite, in 48 h",
+        href: "/audit",
+        icon: Eye,
       },
       {
         kind: "external",
