@@ -11,6 +11,7 @@ import {
   Package,
   Phone,
   Sparkles,
+  Wrench,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -158,6 +159,13 @@ export function CommandPalette() {
         description: "Alle Wege auf einer Seite",
         href: "/kontakt",
         icon: Mail,
+      },
+      {
+        kind: "link",
+        label: "Wartung & Pflege",
+        description: "Auch für Sites, die wir nicht gebaut haben",
+        href: "/wartung",
+        icon: Wrench,
       },
     ];
 
