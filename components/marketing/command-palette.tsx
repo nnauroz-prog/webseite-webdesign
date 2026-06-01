@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Package,
   Phone,
+  Scale,
   Sparkles,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -158,6 +159,13 @@ export function CommandPalette() {
         description: "Alle Wege auf einer Seite",
         href: "/kontakt",
         icon: Mail,
+      },
+      {
+        kind: "link",
+        label: "Vergleich",
+        description: "Sitalo, Wix, Squarespace, Jimdo, KI-Eigenbau",
+        href: "/vergleich",
+        icon: Scale,
       },
     ];
 
