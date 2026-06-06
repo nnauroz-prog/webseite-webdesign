@@ -111,7 +111,7 @@ export default function AuditPage() {
                 <AuditItem
                   icon={Mail}
                   title="Persönlich, nicht automatisch"
-                  body="Sie bekommen die Mail von Nadim. Wenn Sie zurück schreiben, antwortet auch Nadim. Kein Funnel, kein Drip, kein Auto-Responder."
+                  body="Sie bekommen die Mail direkt aus dem Atelier — von einem Menschen geschrieben, nicht von einem Tool. Wenn Sie zurück schreiben, antwortet auch ein Mensch. Kein Funnel, kein Drip, kein Auto-Responder."
                 />
               </ul>
             </div>
