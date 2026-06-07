@@ -94,6 +94,13 @@ export function CommandPalette() {
         icon: Sparkles,
       },
       {
+        kind: "link",
+        label: "Termin buchen",
+        description: "30 Min Erstgespräch, Bestätigung in 15 Min",
+        href: "/termin",
+        icon: Sparkles,
+      },
+      {
         kind: "external",
         label: "Anrufen",
         description: "0152 24437370",
