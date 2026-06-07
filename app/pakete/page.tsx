@@ -197,6 +197,18 @@ function Hero() {
             </a>
           ))}
         </nav>
+        {/* Quiz-Hinweis — alternativer Weg für unsichere Besucher.
+            Fünf-Fragen-Quiz statt selbst durch alle Tabs scrollen. */}
+        <p className="text-muted-foreground mt-8 text-center text-[13.5px]">
+          Unsicher?{" "}
+          <a
+            href="/empfehlung"
+            className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+          >
+            Fünf Fragen beantworten und Empfehlung bekommen
+          </a>
+          .
+        </p>
       </div>
     </section>
   );
