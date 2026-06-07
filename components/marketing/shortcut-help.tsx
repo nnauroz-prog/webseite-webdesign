@@ -39,6 +39,7 @@ const SHORTCUTS: { group: string; items: Shortcut[] }[] = [
       { keys: ["G", "W"], label: "Wartung & Pflege" },
       { keys: ["G", "V"], label: "Vergleich" },
       { keys: ["G", "C"], label: "Speed-Check" },
+      { keys: ["G", "J"], label: "Journal" },
     ],
   },
 ];
