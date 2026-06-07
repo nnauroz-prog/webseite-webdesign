@@ -94,6 +94,13 @@ export function CommandPalette() {
         icon: Sparkles,
       },
       {
+        kind: "link",
+        label: "Welches Paket passt? — Quiz",
+        description: "Fünf Fragen, eine ehrliche Empfehlung",
+        href: "/empfehlung",
+        icon: Sparkles,
+      },
+      {
         kind: "external",
         label: "Anrufen",
         description: "0152 24437370",
