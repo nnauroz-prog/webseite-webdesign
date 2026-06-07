@@ -98,11 +98,16 @@ export function MarketingFooter() {
             <FooterLink href="/branchen">Branchen</FooterLink>
             <FooterLink href="/standorte">Standorte</FooterLink>
             <FooterLink href="/pakete">Pakete</FooterLink>
+            <FooterLink href="/wartung">Wartung & Pflege</FooterLink>
+            <FooterLink href="/rechner">3-Jahres-Rechner</FooterLink>
             <FooterLink href="/audit">Kostenloser Audit</FooterLink>
           </FooterCol>
           <FooterCol title="Sitalo">
             <FooterLink href="/atelier">Das Atelier</FooterLink>
             <FooterLink href="/anfrage">Website anfragen</FooterLink>
+            <FooterLink href="/termin">Termin buchen</FooterLink>
+            <FooterLink href="/empfehlung">Welches Paket passt?</FooterLink>
+            <FooterLink href="/vergleich">Vergleich</FooterLink>
             <FooterLink href="/faq">FAQ</FooterLink>
             <FooterLink href="/kontakt">Kontakt</FooterLink>
           </FooterCol>

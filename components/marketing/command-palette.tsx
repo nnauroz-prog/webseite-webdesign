@@ -11,7 +11,9 @@ import {
   MessageCircle,
   Package,
   Phone,
+  Scale,
   Sparkles,
+  Wrench,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -96,6 +98,20 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Termin buchen",
+        description: "30 Min Erstgespräch, Bestätigung in 15 Min",
+        href: "/termin",
+        icon: Sparkles,
+      },
+      {
+        kind: "link",
+        label: "Welches Paket passt? — Quiz",
+        description: "Fünf Fragen, eine ehrliche Empfehlung",
+        href: "/empfehlung",
+        icon: Sparkles,
+      },
+      {
+        kind: "link",
         label: "Kostenlosen Audit anfordern",
         description: "Drei Punkte zu Ihrer Seite, in 48 h",
         href: "/audit",
@@ -124,6 +140,27 @@ export function CommandPalette() {
         description: "Drei Pakete, ab 499 €",
         href: "/pakete",
         icon: Package,
+      },
+      {
+        kind: "link",
+        label: "3-Jahres-Rechner",
+        description: "Was kostet's wirklich? Mit Eigenzeit.",
+        href: "/rechner",
+        icon: Package,
+      },
+      {
+        kind: "link",
+        label: "Wartung & Pflege",
+        description: "Auch für Sites, die wir nicht gebaut haben",
+        href: "/wartung",
+        icon: Wrench,
+      },
+      {
+        kind: "link",
+        label: "Vergleich",
+        description: "Sitalo, Wix, Squarespace, Jimdo, KI-Eigenbau",
+        href: "/vergleich",
+        icon: Scale,
       },
       {
         kind: "link",
