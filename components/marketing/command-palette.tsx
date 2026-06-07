@@ -208,6 +208,13 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Auswahl",
+        description: "Wer zu uns kommt — und wer nicht.",
+        href: "/auswahl",
+        icon: BookOpen,
+      },
+      {
+        kind: "link",
         label: "Journal",
         description: "Beobachtungen aus dem Atelier",
         href: "/journal",
