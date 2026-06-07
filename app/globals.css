@@ -318,6 +318,21 @@ html {
       }
     }
   }
+
+  /* Klassische Drop-Cap für editoriale Lead-Absätze auf Journal-
+     Detailseiten. Der erste Buchstabe wird im Cormorant Garamond
+     gesetzt, fällt drei Zeilen tief, leicht in Gold getönt. */
+  .journal-lead::first-letter {
+    font-family: var(--font-serif), Cormorant, serif;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--gold);
+    font-size: 4.5em;
+    line-height: 0.88;
+    float: left;
+    margin: 0.1em 0.12em 0 -0.04em;
+    padding-top: 0.05em;
+  }
 }
 
 /* Marquee pausiert beim Hover über dem Marquee-Streifen.

@@ -13,6 +13,7 @@ import {
   JOURNAL_POSTS,
   type JournalPost,
   type Paragraph,
+  toRoman,
 } from "@/lib/journal-data";
 
 const SITE_URL =
@@ -215,12 +216,33 @@ export default async function JournalPostPage({
 }
 
 function PostBody({ post }: { post: JournalPost }) {
+  // Pre-pass: numerieren h2-Sektionen (I, II, III, …) und den
+  // ersten echten Absatz markieren (er bekommt die Drop-Cap).
+  let h2Counter = 0;
+  let firstPTagged = false;
+  const enriched = post.body.map((p) => {
+    if (p.kind === "h2") {
+      h2Counter += 1;
+      return { paragraph: p, sectionNum: h2Counter, isLead: false };
+    }
+    if (p.kind === "p" && !firstPTagged) {
+      firstPTagged = true;
+      return { paragraph: p, sectionNum: null, isLead: true };
+    }
+    return { paragraph: p, sectionNum: null, isLead: false };
+  });
+
   return (
     <div className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-12 sm:py-16">
         <div className="space-y-6">
-          {post.body.map((p, i) => (
-            <ParagraphView key={i} paragraph={p} />
+          {enriched.map((e, i) => (
+            <ParagraphView
+              key={i}
+              paragraph={e.paragraph}
+              sectionNum={e.sectionNum}
+              isLead={e.isLead}
+            />
           ))}
         </div>
       </div>
@@ -228,17 +250,33 @@ function PostBody({ post }: { post: JournalPost }) {
   );
 }
 
-function ParagraphView({ paragraph }: { paragraph: Paragraph }) {
+function ParagraphView({
+  paragraph,
+  sectionNum,
+  isLead,
+}: {
+  paragraph: Paragraph;
+  sectionNum: number | null;
+  isLead: boolean;
+}) {
   if (paragraph.kind === "h2") {
     return (
-      <h2 className="text-foreground mt-12 text-balance text-2xl font-semibold leading-snug tracking-[-0.02em] sm:text-3xl">
-        {paragraph.text}
+      <h2 className="mt-14 flex items-baseline gap-5 text-balance text-2xl font-semibold leading-snug tracking-[-0.02em] sm:text-3xl">
+        {sectionNum != null && (
+          <span
+            aria-hidden="true"
+            className="serif-italic text-muted-foreground/70 shrink-0 text-2xl font-normal tracking-tight sm:text-3xl"
+          >
+            {toRoman(sectionNum)}.
+          </span>
+        )}
+        <span className="text-foreground">{paragraph.text}</span>
       </h2>
     );
   }
   if (paragraph.kind === "quote") {
     return (
-      <blockquote className="border-foreground/15 my-8 border-l-2 pl-6">
+      <blockquote className="border-foreground/15 my-10 border-l-2 pl-6">
         <p className="serif-italic text-foreground text-balance text-xl leading-snug sm:text-2xl">
           {paragraph.text}
         </p>
@@ -257,7 +295,11 @@ function ParagraphView({ paragraph }: { paragraph: Paragraph }) {
     );
   }
   return (
-    <p className="text-foreground/85 text-pretty text-[16.5px] leading-[1.65]">
+    <p
+      className={`text-foreground/85 text-pretty text-[16.5px] leading-[1.65] ${
+        isLead ? "journal-lead" : ""
+      }`}
+    >
       {paragraph.text}
     </p>
   );

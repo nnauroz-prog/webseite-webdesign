@@ -201,6 +201,13 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Manifest",
+        description: "Acht Sätze. Was wir tun, was wir nicht tun.",
+        href: "/manifest",
+        icon: BookOpen,
+      },
+      {
+        kind: "link",
         label: "Journal",
         description: "Beobachtungen aus dem Atelier",
         href: "/journal",
