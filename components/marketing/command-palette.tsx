@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
+  BookOpen,
   Eye,
   FileText,
   Mail,
@@ -197,6 +198,13 @@ export function CommandPalette() {
         description: "Sechs Schritte zur Live-Seite",
         href: "/ablauf",
         icon: FileText,
+      },
+      {
+        kind: "link",
+        label: "Journal",
+        description: "Beobachtungen aus dem Atelier",
+        href: "/journal",
+        icon: BookOpen,
       },
       {
         kind: "link",

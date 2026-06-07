@@ -39,6 +39,7 @@ const ROUTES: Record<string, { path: string; label: string }> = {
   w: { path: "/wartung", label: "Wartung" },
   v: { path: "/vergleich", label: "Vergleich" },
   c: { path: "/check", label: "Speed-Check" },
+  j: { path: "/journal", label: "Journal" },
 };
 
 export function KeyboardChords() {
