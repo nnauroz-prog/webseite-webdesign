@@ -14,6 +14,7 @@ import {
   Scale,
   Sparkles,
   Wrench,
+  Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -116,6 +117,13 @@ export function CommandPalette() {
         description: "Drei Punkte zu Ihrer Seite, in 48 h",
         href: "/audit",
         icon: Eye,
+      },
+      {
+        kind: "link",
+        label: "Speed-Check live",
+        description: "Lighthouse-Scores in 30 Sekunden",
+        href: "/check",
+        icon: Zap,
       },
       {
         kind: "external",

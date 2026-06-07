@@ -38,6 +38,7 @@ const SHORTCUTS: { group: string; items: Shortcut[] }[] = [
       { keys: ["G", "U"], label: "Audit anfordern" },
       { keys: ["G", "W"], label: "Wartung & Pflege" },
       { keys: ["G", "V"], label: "Vergleich" },
+      { keys: ["G", "C"], label: "Speed-Check" },
     ],
   },
 ];

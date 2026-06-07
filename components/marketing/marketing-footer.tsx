@@ -101,6 +101,7 @@ export function MarketingFooter() {
             <FooterLink href="/wartung">Wartung & Pflege</FooterLink>
             <FooterLink href="/rechner">3-Jahres-Rechner</FooterLink>
             <FooterLink href="/audit">Kostenloser Audit</FooterLink>
+            <FooterLink href="/check">Speed-Check</FooterLink>
           </FooterCol>
           <FooterCol title="Sitalo">
             <FooterLink href="/atelier">Das Atelier</FooterLink>
