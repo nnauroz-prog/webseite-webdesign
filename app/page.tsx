@@ -7,6 +7,7 @@ import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
+import { AtelierSuite } from "@/components/marketing/atelier-suite";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
@@ -162,6 +163,13 @@ export default function HomePage() {
             aus dem AI-Template-Baukasten. */}
         <RevealOnScroll>
           <ExamplesGallery />
+        </RevealOnScroll>
+        {/* Atelier-Suite — fünf interaktive Werkzeuge im Magazin-
+            Spread. Macht sichtbar, dass die ganze Tool-Familie
+            (Speed-Check, Quiz, Rechner, Audit, Termin) existiert,
+            statt sie hinter der Navigation zu vergraben. */}
+        <RevealOnScroll>
+          <AtelierSuite />
         </RevealOnScroll>
         {/* Konkretisiert das „Sie schicken drei Sachen"-Versprechen
             visuell — Eingaben links, Ergebnis rechts. */}
