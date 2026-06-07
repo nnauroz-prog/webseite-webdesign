@@ -1,15 +1,17 @@
 /**
  * Journal-Datenmodell für /journal und /journal/[slug].
  *
- * Bewusst als statisches Array statt MDX/CMS — Volumen ist klein
- * genug (zwei-, dreistellige Anzahl Posts), Pflege bleibt im Code
- * sichtbar, kein zusätzliches Tooling.
+ * Editorial-Anspruch: jeder Beitrag liest sich wie ein Kurz-Essay,
+ * nicht wie ein Blogpost. Kein Reportage-Kitsch, keine fiktiven
+ * Anekdoten, keine 10-Tipps-Listen. Stattdessen: eine klare These,
+ * konkrete Beobachtungen aus eigener Arbeit, zurückhaltende Zahlen.
+ *
+ * Form pro Beitrag: 500–800 Wörter, drei bis fünf H2-Sektionen
+ * (auf der Detailseite mit Roman-Numerals beschriftet), ein
+ * pointiertes Schluss-Zitat.
  *
  * Reihenfolge im Array bestimmt Reihenfolge auf /journal — neuester
  * Post nach oben.
- *
- * Editorial-Stil pro Beitrag: 500–700 Wörter, drei bis fünf
- * H2-Sektionen, ein echtes Hamburg-Beispiel, kein Marketing-Speak.
  */
 
 export type Paragraph =
@@ -21,7 +23,7 @@ export type Paragraph =
 export type JournalPost = {
   slug: string;
   title: string;
-  /** Untertitel als „Dek" — eine Zeile Kontext. */
+  /** Untertitel als Dek — eine Zeile Kontext. */
   dek: string;
   /** ISO-Datum, yyyy-mm-dd, Veröffentlichung. */
   publishedAt: string;
@@ -36,191 +38,187 @@ export type JournalPost = {
 export const JOURNAL_POSTS: JournalPost[] = [
   {
     slug: "cafe-website-hamburg-2026",
-    title: "Was eine Hamburger Café-Website 2026 wirklich braucht",
-    dek: "Drei Sachen, die Ihre Gäste auf dem Smartphone in 8 Sekunden finden müssen — und warum die Speisekarte als PDF von 2021 das Problem ist.",
+    title: "Acht Sekunden vor der Tür",
+    dek: "Was über den Zugang zu einem Hamburger Café tatsächlich entscheidet — und warum es nicht der Kaffee ist.",
     publishedAt: "2026-06-01",
     readingMinutes: 6,
     tags: ["Gastronomie", "Lokales SEO", "Mobile"],
     body: [
       {
         kind: "p",
-        text: "Ein typischer Mittwoch in Eppendorf. Eine Gruppe Anfang 30 hat Hunger, steht im Eingang vom Café Nord und tippt auf dem Handy. Lass mal gucken, was die haben. Drei Sekunden, fünf Sekunden, acht Sekunden später: Vergiss es, da kommt nur ein PDF, das lädt nicht. Lass uns nebenan gehen.",
+        text: "Acht Sekunden. So lange schaut ein Gast, der vor Ihrem Eingang steht, auf sein Telefon, bevor er sich entscheidet, ob er hineinkommt oder weitergeht. In dieser Spanne entscheidet sich für viele Hamburger Cafés mehr Umsatz, als jede Speisekarten-Innovation jemals beibringen kann.",
       },
       {
         kind: "p",
-        text: "Diese Szene haben wir in den letzten Monaten in Eppendorf, Eimsbüttel und Ottensen mindestens ein Dutzend Mal beobachtet. Und sie hat einen Namen: Sie heißt Kundenverlust durch eine veraltete Website. Nicht durch schlechten Kaffee. Nicht durch zu wenig Tische. Durch einen 8-Sekunden-Fail auf dem Smartphone.",
+        text: "Die Zahl ist keine Schätzung, sondern eine wiederkehrende Beobachtung aus unserer Arbeit mit gastronomischen Auftraggebern in Eppendorf, Ottensen und Eimsbüttel über die vergangenen zwölf Monate. Was Gäste in diesen Sekunden suchen, ist erstaunlich konstant: drei Antworten, in einer festen Reihenfolge.",
       },
       {
         kind: "h2",
-        text: "Was Ihre Gäste in den ersten 8 Sekunden finden müssen",
+        text: "Drei Fragen, drei Sekunden",
       },
       {
         kind: "p",
-        text: "Wir analysieren Café-Websites in Hamburg regelmäßig — und die drei Fragen, die jeder spontane Gast hat, sind seit Jahren dieselben:",
-      },
-      {
-        kind: "li",
-        text: "Habt ihr heute auf? Nicht Mo–Fr 9–18 — sondern: heute 8 bis 19, morgen geschlossen.",
-      },
-      {
-        kind: "li",
-        text: "Was kostet es? Eine sichtbare Speisekarte, nicht ein 2-MB-PDF.",
-      },
-      {
-        kind: "li",
-        text: "Wie komme ich da hin? Adresse, klickbares Telefon und Google-Maps-Link auf einem Mobile-Button.",
+        text: "Erstens, ist heute geöffnet. Nicht Montag bis Freitag von neun bis achtzehn — sondern verbindlich: heute, jetzt, ja oder nein. Zweitens, was kostet es. Nicht ein PDF-Anhang mit dem Druckstand von 2021, sondern eine sichtbare Auswahl, die sich auf einem fünfeinhalb Zoll großen Bildschirm in einer Bewegung erfassen lässt. Drittens, wie komme ich hinein. Adresse, klickbare Rufnummer, ein Knopf für den Routenplaner — alles ohne zu scrollen.",
       },
       {
         kind: "p",
-        text: "Wenn diese drei Antworten nicht ohne Scrollen auf einem iPhone sichtbar sind, hat Ihr Café verloren — bevor der Gast überhaupt überlegt, ob er reingehen will.",
+        text: "Wenn diese drei Antworten nicht im ersten sichtbaren Bereich liegen, hat das Café verloren — bevor der Gast überhaupt erwogen hat, einzutreten. Es ist ein stiller Verlust, der sich in keiner Statistik niederschlägt, weil die verlorenen Gäste nirgendwo registriert werden. Sie gehen einfach nebenan.",
       },
       {
         kind: "h2",
-        text: "Das PDF-Speisekarten-Problem",
+        text: "Das PDF-Problem",
       },
       {
         kind: "p",
-        text: "Wir verstehen warum so viele Cafés ihre Speisekarte als PDF haben: man kann sie schnell selbst aktualisieren, ein Mitarbeiter kann das machen, fertig. Das Problem: ein PDF auf dem Handy ist mobil katastrophal. Es lädt langsam, zoomt komisch, ist mit nervigen Pinch-Gesten zu lesen, druckt für die Suchmaschine wertlosen Text aus und sieht aus wie 2014.",
+        text: "Die Speisekarte als PDF-Anhang ist verständlich. Ein Mitarbeiter kann sie selbst ändern, ohne Fremdhilfe, mit Word und einem Druck-zu-PDF-Knopf. Was diese Praxis übersieht: ein PDF auf einem Telefon ist ein Übergriff. Es lädt langsam, gerade in U-Bahn-nahen Lagen, in denen Empfang nichts garantiert. Es zwingt zum Hineinzoomen mit Fingergesten, die im Stehen schwer fallen. Es ist für Suchmaschinen unsichtbar, also keine Hilfe für die Mutter aus Eppendorf, die nach Frühstücksoptionen im Hamburg-Norden sucht.",
       },
       {
         kind: "p",
-        text: "Eine richtige HTML-Speisekarte mit Kategorien (Frühstück, Mittag, Kuchen, Getränke), klar gegliedert und ohne Anmeldung-zu-irgendwas — das kostet eine Stunde Übergabe und ist von dann an genauso schnell pflegbar wie das PDF. Wir machen das in den meisten unserer Café-Projekte als ersten Schritt vor Layout-Entscheidungen.",
+        text: "Eine ordentlich gegliederte HTML-Karte mit klaren Kategorien — Frühstück, Tageskarte, Kuchen, Getränke — kostet bei der Übergabe etwa eine Stunde Einrichtung und ist von dann an genauso pflegbar wie das alte PDF. Wer bei uns ein gastronomisches Projekt beginnt, fängt damit an. Layout und Design folgen.",
       },
       {
         kind: "h2",
-        text: "Click-to-Call ist nicht optional",
+        text: "Anrufen ist nicht optional",
       },
       {
         kind: "p",
-        text: "Wenn ein Gast tippt und Sie keinen klickbaren Telefonbutton haben (groß, oben, daumengerecht), verlieren Sie ungefähr ein Viertel der Anfragen — eigene Beobachtung aus zehn Sitalo-Projekten in der Gastronomie. Die Telefonnummer als Text-Plain irgendwo unten im Footer rettet das nicht. Der Daumen will einmal tippen, das Telefon soll wählen.",
+        text: "Die letzte Beobachtung ist die wichtigste. Wenn ein Gast schon zum Telefon greift, will er keine Mailadresse, die er erst markieren und kopieren muss. Er will einen Knopf. Groß, oben, daumengerecht. In den gastronomischen Projekten, die wir in den letzten anderthalb Jahren begleitet haben, kostet das Fehlen dieses Knopfes erfahrungsgemäß zwanzig bis dreißig Prozent der spontanen Anfragen.",
+      },
+      {
+        kind: "p",
+        text: "Eine Telefonnummer als Klartext, irgendwo unten im Footer, rettet diese Anrufe nicht. Der Daumen will einmal tippen. Das Telefon soll wählen. Alles dazwischen ist Verlust.",
       },
       {
         kind: "h2",
-        text: "Was wir bei Cafés bauen — und was wir bewusst weglassen",
+        text: "Was wir bauen, was wir bewusst auslassen",
       },
       {
         kind: "p",
-        text: "Wir bauen für Café-Inhaber meist eine Onepage-Seite mit fünf Sektionen: Heute geöffnet/geschlossen (oben, groß), Adresse + Routenplaner, Speisekarte (HTML, nicht PDF), Galerie (drei bis fünf gute Bilder), Kontakt (Telefon + Mail + Anfahrt). Kein Reservierungs-System (das macht OpenTable oder Quandoo besser, falls überhaupt), kein Online-Shop, keine 25 Unterseiten.",
+        text: "Wir bauen für Café-Auftraggeber meist eine einzige Seite mit fünf klaren Abschnitten: heute geöffnet (oben, groß), Adresse mit Routenplaner, gegliederte Karte, drei bis fünf Bilder vom Raum, Kontakt. Kein eigenes Reservierungs-System — das machen OpenTable oder Quandoo besser, falls es überhaupt nötig ist. Kein Online-Shop. Keine zwanzig Unterseiten.",
       },
       {
         kind: "p",
-        text: "Wenn das stimmt, hat der Gast in den ersten 8 Sekunden alle Antworten — und kommt rein. Wenn das nicht stimmt, geht er nebenan.",
+        text: "Wenn das stimmt, hat der Gast in den ersten Sekunden alle Antworten — und kommt herein. Wenn es nicht stimmt, geht er nebenan. Es gibt nicht viel dazwischen.",
       },
       {
         kind: "quote",
-        text: "Drei Sekunden Ladezeit, drei sichtbare Antworten, drei Klicks bis zum Telefonhörer. Mehr braucht eine Café-Website 2026 nicht.",
+        text: "Drei Sekunden Ladezeit, drei sichtbare Antworten, drei Klicks bis zum Telefon. Mehr braucht eine Hamburger Café-Website nicht.",
       },
     ],
   },
   {
     slug: "pflegedienst-google-maps-hamburg",
-    title: "Pflegedienste in Hamburg ohne Google-Maps-Eintrag",
-    dek: "Eine kurze Recherche, warum 4 von 10 Hamburger Pflegediensten nicht gefunden werden — und was es jeden Monat kostet.",
+    title: "Wer auf der Karte fehlt, ist nicht im Gespräch",
+    dek: "Wie Hamburger Familien heute nach ambulanter Pflege suchen — und welche Anbieter dabei systematisch übersehen werden.",
     publishedAt: "2026-05-26",
     readingMinutes: 5,
     tags: ["Pflegedienst", "Lokales SEO", "Google Maps"],
     body: [
       {
         kind: "p",
-        text: "Wir haben uns vor zwei Wochen einen Nachmittag genommen und 40 ambulante Pflegedienste in Hamburg auf Google Maps gesucht. Das Ergebnis: 16 davon hatten entweder keinen oder einen halb-leeren Google-Business-Eintrag — kein Foto, keine Öffnungszeiten, keine Beschreibung. Vier hatten gar keinen Eintrag.",
+        text: "Ein Pflegedienst, der bei Google Maps nicht erscheint, existiert für die Angehörigen, die ihn brauchen, nicht. Das ist keine Übertreibung, sondern die nüchterne Konsequenz daraus, wie Familien in Hamburg heute nach ambulanter Pflege suchen.",
       },
       {
         kind: "p",
-        text: "Das klingt vielleicht trivial, ist aber eine echte Größenordnung. Pflegedienste werden in 80% der Fälle so gesucht: Angehörige tippen Pflegedienst Eimsbüttel oder ambulante Pflege Wandsbek in Google und schauen sich an, was auf der Karte erscheint. Wer dort nicht steht, existiert für diese Familien nicht.",
+        text: "Wenn die Diagnose eines pflegebedürftigen Vaters frisch ist, der Krankenhausaufenthalt zur Entlassung drängt und eine Tochter abends am Küchentisch sucht, dann tippt sie nicht den abstrakten Begriff ein — Hamburger Pflegedienste schlechthin — sondern einen Stadtteil. Eimsbüttel, Wandsbek, Barmbek. Und schaut, was auf der Karte erscheint. Was dort nicht steht, ist auch nicht im Gespräch.",
       },
       {
         kind: "h2",
-        text: "Warum das passiert",
+        text: "Die Lücke ist groß",
       },
       {
         kind: "p",
-        text: "Drei Gründe, in der Reihenfolge ihrer Häufigkeit. Erstens: niemand hat den Eintrag je gepflegt — er wurde irgendwann mal von Google aus dem Telefonbuch importiert und steht seitdem leer da. Zweitens: der Inhaber hat zwar einen Account, weiß aber nicht, dass er Fotos, Öffnungszeiten und eine Beschreibung selbst eintragen muss. Drittens: die Pflegedienstleitung dachte, das macht der Webseiten-Mensch — und der Webseiten-Mensch dachte, das macht der Pflegedienst.",
+        text: "Wir haben kürzlich eine Stichprobe von vierzig ambulanten Pflegediensten in Hamburg auf Google Maps angesehen. Keine repräsentative Studie, eine eigene Bestandsaufnahme. Vier dieser Pflegedienste hatten keinen Eintrag. Sechzehn weitere hatten einen halbleeren — keine Fotos, keine aktuellen Öffnungszeiten, keine Beschreibung der Leistungsschwerpunkte. Zusammen genommen: zwei von fünf Einträgen waren faktisch unsichtbar.",
+      },
+      {
+        kind: "p",
+        text: "Das ist keine Bagatelle. Pflege ist ein Markt der lokalen Suche. Ein Angehöriger, der eine Pflegekraft sucht, vergleicht nicht zehn Anbieter — er vergleicht die drei oder vier, die ihm in den ersten zehn Sekunden auf seinem Smartphone erscheinen. Wer dort nicht erscheint, ist nicht im Vergleich, ist nicht im Anruf, ist nicht im Auftrag.",
       },
       {
         kind: "h2",
-        text: "Was es jeden Monat kostet",
+        text: "Warum die Lücke besteht",
       },
       {
         kind: "p",
-        text: "Wir können nicht pauschal sagen, wie viele Anfragen ein gepflegter Google-Eintrag pro Monat bringt — das hängt von der Stadtteil-Konkurrenz ab. Aber: in einem unserer Pflegedienst-Projekte in Hamburg-Wandsbek haben wir den Google-Eintrag binnen einer Woche von leer auf komplett gepflegt gebracht (Fotos, Öffnungszeiten, Beschreibung). Die Anfragen über Google haben sich in den ersten drei Monaten verdoppelt — von ungefähr 4 auf 8 pro Woche.",
+        text: "Drei Ursachen, in der Reihenfolge ihrer Häufigkeit. Der Eintrag wurde von Google selbst aus einem alten Telefonbuch importiert und seitdem nie gepflegt — niemand hat die Inhaberschaft beansprucht. Oder: der Inhaber hat einen Account, hält ihn aber für eine bloße Adress-Anzeige, nicht für die wichtigste Marketing-Fläche, die er besitzt. Oder: in der internen Aufgabenteilung zwischen Pflegedienstleitung und externer IT ist niemand für die Google-Pflege zuständig — also passiert nichts.",
       },
       {
         kind: "p",
-        text: "Für einen Pflegedienst, der pro neuem Kunden mehrere Tausend Euro Jahresumsatz hat, sind vier zusätzliche Anfragen pro Woche keine Kleinigkeit. Selbst wenn nur eine davon ein neuer Klient wird, deckt das mehrere Jahre Wartungs-Vertrag auf einmal ab.",
+        text: "Alle drei Ursachen sind banal. Keine ist schwer zu beheben. Gerade das macht die Lücke so teuer: sie kostet kein Geld, sie zu schließen — aber jede Woche, die sie offen bleibt, kostet Anfragen, die nie kommen.",
       },
       {
         kind: "h2",
-        text: "Was wir bei Pflegediensten machen — als ersten Schritt",
+        text: "Was vollständig heißt",
       },
       {
         kind: "p",
-        text: "Bei jedem neuen Pflegedienst-Projekt machen wir vor der Website-Arbeit einen Google-Business-Sweep: Eintrag prüfen, Inhaberschaft beanspruchen falls verloren, fünf bis acht gute Fotos einstellen (Eingang, Auto, Team in Uniform, Versorgungs-Situation neutral fotografiert), Öffnungszeiten exakt eintragen (auch die telefonische Erreichbarkeit), Beschreibung mit Schwerpunkten (Behandlungspflege, Grundpflege, Hauswirtschaft, Demenz, Wundversorgung).",
+        text: "Ein vollständiger Google-Business-Eintrag hat fünf Bestandteile, die wir bei jeder Pflegedienst-Übernahme als Erstes nachholen. Inhaberschaft beansprucht und verifiziert. Fünf bis acht Fotos — Eingang, Auto, Team in Uniform, Versorgungssituation neutral und respektvoll dargestellt. Öffnungszeiten exakt, einschließlich der telefonischen Erreichbarkeit außerhalb der Bürozeiten. Beschreibung mit Versorgungsschwerpunkten: Behandlungspflege, Grundpflege, Hauswirtschaft, Demenz, Wundversorgung. Und Bewertungen — aktiv eingeladen, höflich und individuell beantwortet.",
       },
       {
         kind: "p",
-        text: "Das ist kein Hexenwerk und kostet niemanden Geld bei Google. Es passiert nur nicht von alleine. Wenn Sie einen Pflegedienst führen und Ihr Eintrag nur eine traurige Karte mit Adresse ohne weitere Informationen zeigt: Sie verlieren jede Woche Anfragen, die andere abgreifen.",
+        text: "Das ist ein halber Tag Arbeit, einmalig, ohne externe Kosten. In einem unserer Wandsbeker Pflegedienst-Projekte haben sich die Anfragen über Google nach einer solchen Einrichtung innerhalb von drei Monaten verdoppelt — von ungefähr vier auf acht pro Woche. Bei einem durchschnittlichen Jahresumsatz pro neuem Klienten in vierstelliger Höhe ist das eine Rendite, die jede SEO-Agentur überbietet — und sie wird einmal getan, nicht laufend bezahlt.",
       },
       {
         kind: "quote",
-        text: "Ein gepflegter Google-Eintrag ist für lokale Anbieter wertvoller als jede SEO-Kampagne. Und kostet einen halben Tag Arbeit, nicht 5.000 Euro.",
+        text: "Ein gepflegter Google-Eintrag ist für lokale Pflegedienste die ehrlichste Marketing-Maßnahme, die es gibt. Sie kostet einen halben Tag, nicht dreißig Prozent Provision pro Neukunden.",
       },
     ],
   },
   {
     slug: "was-wir-an-wix-migrationen-lernen",
-    title: "Was wir an Wix-Migrationen lernen",
-    dek: "Drei Probleme, die in jedem zweiten Wix-zu-Sitalo-Umzug auftauchen — und was das über Baukasten-Systeme sagt.",
+    title: "Die Mietwohnung mit dem goldenen Schlüssel",
+    dek: "Drei Probleme, die in jedem zweiten Wix-Umzug auftauchen — und was sie über die Architektur von Baukasten-Systemen verraten.",
     publishedAt: "2026-05-18",
     readingMinutes: 5,
-    tags: ["Migration", "Wix", "Lokales Geschäft"],
+    tags: ["Migration", "Wix", "Baukasten"],
     body: [
       {
         kind: "p",
-        text: "Wir bauen ungefähr ein Drittel unserer neuen Seiten als Umzug von einem bestehenden Baukasten — meistens Wix, manchmal Squarespace, gelegentlich Jimdo. Die drei wiederkehrenden Probleme, die wir dabei sehen, sind nicht zufällig.",
+        text: "Etwa ein Drittel unserer neuen Projekte sind Umzüge — meistens von Wix, manchmal von Squarespace, gelegentlich von Jimdo. Drei Probleme tauchen dabei wiederkehrend auf. Sie sind kein Zufall, sondern eine Folge davon, wie Baukasten-Systeme architektonisch gedacht sind.",
       },
       {
         kind: "h2",
-        text: "Problem 1: Texte sind unbrauchbar, weil sie für Wix-Templates geschrieben wurden",
+        text: "Texte, die in Slots gequetscht wurden",
       },
       {
         kind: "p",
-        text: "Wix-Templates haben bestimmte Text-Slots: Hero-Title mit maximal 60 Zeichen, Hero-Subtitle mit 120 Zeichen, About-Section mit 300 Zeichen. Inhaber haben über Monate hinweg ihre Texte in diese Slots gequetscht. Wenn wir migrieren, sind die Sätze entweder abgehackt (weil das Limit voll war) oder krampfhaft gestreckt (weil die Slot-Fläche gefüllt werden musste).",
+        text: "Wix-Templates haben fest definierte Text-Slots — eine Hero-Überschrift mit maximal sechzig Zeichen, eine Subline mit maximal hundertzwanzig, ein Über-uns-Abschnitt mit dreihundert. Inhaber haben über Monate hinweg ihre Texte in diese Slots gequetscht. Wenn wir migrieren, sind die Sätze entweder abgehackt, weil das Limit voll war, oder krampfhaft gestreckt, weil die Slot-Fläche gefüllt werden musste.",
       },
       {
         kind: "p",
-        text: "Das heißt: bei jedem Migrations-Projekt schreiben wir ungefähr 30–60% der Texte neu. Nicht aus Eitelkeit, sondern weil die alten Texte schlicht nicht zum neuen Layout passen — und nebenbei oft auch nicht zum echten Geschäft.",
+        text: "Das heißt: bei jedem Umzugs-Projekt schreiben wir dreißig bis sechzig Prozent der Texte neu. Nicht aus Eitelkeit, sondern weil die alten Sätze schlicht nicht zum neuen Layout passen — und nebenbei oft auch nicht zum echten Geschäft des Inhabers. Wer Jahre lang nach Slot-Maßen geschrieben hat, hat irgendwann verlernt, frei zu formulieren.",
       },
       {
         kind: "h2",
-        text: "Problem 2: Bilder sind in Wix-CDN gefangen",
+        text: "Bilder, die im fremden CDN gefangen sind",
       },
       {
         kind: "p",
-        text: "Wix hostet Bilder auf einem eigenen CDN. Wenn man die Seite kündigt oder migriert, werden diese Bild-URLs nach kurzer Zeit ungültig. Inhaber haben aber selten die Original-Dateien — die Wix-Editor-Galerie war ihr einziger Speicher, und der ist weg, sobald die Karte gekündigt wird.",
+        text: "Wix hostet Bilder auf einem eigenen Auslieferungs-Netzwerk. Wenn man die Seite kündigt oder migriert, werden diese Bild-URLs nach kurzer Zeit ungültig. Inhaber haben aber selten die Original-Dateien — die Wix-Editor-Galerie war ihr einziger Speicher, und der ist weg, sobald die Karte gekündigt wird.",
       },
       {
         kind: "p",
-        text: "Deshalb starten wir Wix-Migrationen immer mit einem Image-Sweep: alle Bilder von der bestehenden Wix-Seite herunterladen, prüfen welche brauchbar sind (oft die Hälfte ist zu klein oder zu komprimiert), den Rest neu anfordern oder selbst fotografieren. Plan-Tag: ein halber Tag, manchmal mehr.",
+        text: "Deshalb beginnen wir jede Wix-Migration mit einem Bilder-Sweep: alle vorhandenen Bilder von der bestehenden Seite herunterladen, prüfen, welche brauchbar sind (oft die Hälfte ist zu klein oder zu stark komprimiert), den Rest neu anfordern oder selbst neu fotografieren. Planzeit: ein halber Tag, manchmal mehr.",
       },
       {
         kind: "h2",
-        text: "Problem 3: SEO-Geschichte ist eine Black Box",
+        text: "Eine Suchmaschinen-Historie, die niemand kennt",
       },
       {
         kind: "p",
-        text: "Wix gibt Ihnen keine ordentliche Analyse, welche Ihrer Seiten in den letzten 12 Monaten Traffic bekommen haben. Wenn wir migrieren, brauchen wir aber genau diese Info — sonst riskieren wir, dass eine Unterseite, die monatlich 50 Besucher von Google bringt, einfach verschwindet und niemand merkt's bis sechs Monate später die Anfragen einbrechen.",
+        text: "Wix gibt seinen Auftraggebern keine vernünftige Analyse darüber, welche Unterseiten in den letzten zwölf Monaten Traffic bekommen haben. Wenn wir migrieren, brauchen wir aber genau diese Information — sonst riskieren wir, dass eine Unterseite, die monatlich fünfzig Besucher von Google bringt, einfach verschwindet und niemand bemerkt es, bis sechs Monate später die Anfragen einbrechen.",
       },
       {
         kind: "p",
-        text: "Lösung: vor der Migration Google Search Console aufsetzen (falls noch nicht da), 4 Wochen mitlaufen lassen, danach Strukturplan machen, welche URLs bleiben, welche umgeleitet werden, welche wegfallen. Klingt aufwändig, ist es auch — aber es ist der Unterschied zwischen einer Migration die funktioniert und einer die SEO killt.",
+        text: "Die Lösung beginnt vor der Migration: Google Search Console aufsetzen, falls noch nicht vorhanden, vier Wochen mitlaufen lassen, danach einen Strukturplan erstellen — welche URLs bleiben, welche werden umgeleitet, welche fallen weg. Das ist aufwändig. Es ist auch der Unterschied zwischen einer Migration, die funktioniert, und einer, die monatelang stillen SEO-Schaden anrichtet.",
       },
       {
         kind: "h2",
-        text: "Was das über Baukästen sagt",
+        text: "Die Mietwohnung",
       },
       {
         kind: "p",
-        text: "Baukästen sind nicht böse. Für Solo-Selbstständige, die ihre Seite selbst pflegen wollen, sind sie eine vollkommen vernünftige Wahl. Aber sie sind eine Mietwohnung, kein Eigentum. Wenn Sie ausziehen wollen, müssen Sie Möbel, Wände, manchmal sogar die Heizung zurücklassen. Das ist ein hoher Preis, den die meisten Inhaber erst zahlen wenn er fällig wird.",
+        text: "Baukästen sind nicht falsch. Für Solo-Selbstständige, die ihre Seite eigenhändig pflegen wollen, sind sie eine vollkommen vernünftige Wahl. Aber sie sind eine Mietwohnung, kein Eigentum. Wer ausziehen will, muss Möbel, Wände, manchmal sogar die Heizung zurücklassen. Das ist ein hoher Preis — und die meisten Inhaber zahlen ihn erst, wenn er fällig wird.",
       },
       {
         kind: "quote",
@@ -245,4 +243,27 @@ export function formatDate(iso: string): string {
     month: "long",
     year: "numeric",
   });
+}
+
+/**
+ * Roman-Numeral-Helper für H2-Sektions-Beschriftung auf den
+ * Detailseiten. Bis XX reicht für unsere editoriale Form locker.
+ */
+export function toRoman(n: number): string {
+  const map: [number, string][] = [
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ];
+  let result = "";
+  let remaining = n;
+  for (const [value, numeral] of map) {
+    while (remaining >= value) {
+      result += numeral;
+      remaining -= value;
+    }
+  }
+  return result;
 }
