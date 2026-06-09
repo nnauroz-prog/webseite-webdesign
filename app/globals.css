@@ -499,4 +499,41 @@ html {
   }
 }
 
-/* Vercel deploy trigger — 2026-06-07 19:49 */
+
+/* Druck-Stil — Essays und Manifest sollen gedruckt wie gesetzt
+   aussehen. Navigation, Footer und alle fixierten Interaktions-
+   Elemente verschwinden; übrig bleibt die reine Textspalte mit
+   sauberen Rändern. Linkziele aus dem Journal werden nicht
+   ausgeschrieben — die Texte stehen für sich. */
+@media print {
+  header,
+  footer,
+  nav,
+  [role="dialog"],
+  .stempel {
+    display: none !important;
+  }
+  /* Fixierte Helfer (MobileCtaBar, BackToTop, ScrollProgress,
+     Chord-Pill, Cursor-Effekte) — alles was fixed positioniert
+     ist, gehört nicht aufs Papier. */
+  body > div[class*="fixed"],
+  [class*="fixed"] {
+    position: static !important;
+  }
+  a[href^="tel:"],
+  a[href^="mailto:"],
+  button {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  main {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  @page {
+    margin: 2.2cm 2cm;
+  }
+}
