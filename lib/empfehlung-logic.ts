@@ -114,10 +114,12 @@ export type Empfehlung = {
   zusatzHinweis: string | null;
 };
 
+// Preise müssen mit lib/pakete-data.ts (kanonische Quelle)
+// übereinstimmen — bei Preisänderung beide Stellen anfassen.
 const PAKET_META: Record<EmpfehlungSlug, { label: string; preis: string }> = {
   starter: { label: "Starter", preis: "ab 499 € einmalig · ab 49 € / Monat" },
-  business: { label: "Business", preis: "ab 1.490 € einmalig · ab 89 € / Monat" },
-  premium: { label: "Premium", preis: "ab 2.990 € einmalig · ab 149 € / Monat" },
+  business: { label: "Business", preis: "ab 899 € einmalig · ab 79 € / Monat" },
+  premium: { label: "Premium", preis: "ab 1.499 € einmalig · ab 129 € / Monat" },
 };
 
 /**

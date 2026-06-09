@@ -33,7 +33,28 @@ Lokale Unternehmen in Deutschland mit Fokus auf Hamburg und Umland: Pflegedienst
 - [Ablauf](https://www.sitalo.de/ablauf): Sechs Schritte vom ersten Hallo zur Live-Schaltung.
 - [FAQ](https://www.sitalo.de/faq): Häufige Fragen zu Preisen, Hosting, Ablauf, SEO.
 - [Kontakt](https://www.sitalo.de/kontakt): E-Mail an info@sitalo.de oder Anfrage-Formular.
-- [Anfrage](https://www.sitalo.de/anfrage): Konfigurator-Wizard für eine erste Einschätzung.
+- [Anfrage](https://www.sitalo.de/anfrage): Drei Felder, Antwort meist am selben Tag.
+
+## Kostenlose Werkzeuge (ohne Anmeldung)
+
+- [Speed-Check](https://www.sitalo.de/check): Live-Lighthouse-Test jeder Website in 30 Sekunden — Performance, SEO, Accessibility, Best Practices plus Core Web Vitals.
+- [Paket-Quiz](https://www.sitalo.de/empfehlung): Fünf Fragen, eine begründete Paket-Empfehlung.
+- [3-Jahres-Rechner](https://www.sitalo.de/rechner): Gesamtkosten-Vergleich Sitalo vs Wix, Squarespace, Jimdo, KI-Selbstbau — inklusive Eigenzeit als Geld.
+- [Kostenloser Audit](https://www.sitalo.de/audit): Persönliche Mini-Auswertung der eigenen Website per Mail innerhalb 48 Stunden.
+- [Termin-Buchung](https://www.sitalo.de/termin): 30-Minuten-Erstgespräch direkt buchen, Bestätigung in 15 Minuten.
+
+## Weitere Angebote
+
+- [Wartung & Pflege](https://www.sitalo.de/wartung): Hosting, Updates, kleine Änderungen — auch für Websites, die nicht von Sitalo gebaut wurden. Basis ab 49 €/Monat, Plus ab 99 €/Monat.
+- [Vergleich](https://www.sitalo.de/vergleich): Ehrlicher Tiefenvergleich Sitalo vs Wix, Squarespace, Jimdo und ChatGPT/Cursor-Selbstbau.
+
+## Editorial & Identität
+
+- [Journal](https://www.sitalo.de/journal): Essays aus dem Atelier — Beobachtungen aus echten Hamburger Projekten (Gastronomie, Pflege, Migrationen).
+- [Manifest](https://www.sitalo.de/manifest): Acht Sätze darüber, was Sitalo tut und was nicht.
+- [Auswahl](https://www.sitalo.de/auswahl): Aufnahmekriterien — Sitalo nimmt höchstens drei neue Aufträge pro Monat an.
+- [Inventar](https://www.sitalo.de/inventar): Offene Werkstatt-Liste — verwendete Werkzeuge, Hosting, Empfehlungen, und was bewusst nicht eingesetzt wird.
+- [Lexikon](https://www.sitalo.de/lexikon): Zwölf Webbegriffe (Hosting, SSL, CMS, SEO, DSGVO …) in Klartext erklärt.
 
 ## Stack
 

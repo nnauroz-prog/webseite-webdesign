@@ -4,7 +4,7 @@
  * „Total Cost of Ownership" über 36 Monate, inklusive Eigenzeit-
  * Äquivalent. Vergleicht fünf Optionen ehrlich:
  *
- *   Sitalo Business (1.490 € einmalig + 89 €/Mo)
+ *   Sitalo Business (899 € einmalig + 79 €/Mo)
  *   Wix (Business-Tarif ~25 €/Mo + Eigenzeit)
  *   Squarespace (~22 €/Mo + Eigenzeit)
  *   Jimdo (~15 €/Mo + Eigenzeit)
@@ -41,10 +41,12 @@ export type Option = {
 
 const OPTIONS: Option[] = [
   {
+    // Preise müssen mit lib/pakete-data.ts (kanonische Quelle)
+    // übereinstimmen — bei Preisänderung beide Stellen anfassen.
     slug: "sitalo",
     label: "Sitalo Business",
-    einmaligEUR: 1490,
-    monatlichEUR: 89,
+    einmaligEUR: 899,
+    monatlichEUR: 79,
     aufbauHours: 0,
     pflegeHoursPerUpdate: 0,
     baseDescription:
