@@ -26,7 +26,9 @@ import { WhatWeDontDo } from "@/components/marketing/what-we-dont-do";
 import { WhyWebsite } from "@/components/marketing/why-website";
 
 export const metadata: Metadata = {
-  title: "Sitalo — Webdesign aus Hamburg",
+  // Absoluter Titel — sonst hängt das Layout-Template noch ein
+  // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
+  title: { absolute: "Sitalo — Webdesign aus Hamburg" },
   description:
     "Websites für lokale Unternehmen aus Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
   alternates: { canonical: "/" },

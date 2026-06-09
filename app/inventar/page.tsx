@@ -13,7 +13,7 @@ import {
 } from "@/lib/inventar-data";
 
 export const metadata: Metadata = {
-  title: "Inventar — Was wir verwenden · Sitalo",
+  title: "Inventar — Was wir verwenden",
   description:
     "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was wir empfehlen und was wir bewusst auslassen.",
   alternates: { canonical: "/inventar" },

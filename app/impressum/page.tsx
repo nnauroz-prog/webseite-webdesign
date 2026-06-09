@@ -5,7 +5,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Impressum — Sitalo Webdesign",
+  title: "Impressum",
   description: "Anbieterkennzeichnung gemäß § 5 TMG.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/impressum" },

@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { LEXIKON } from "@/lib/lexikon-data";
 
 export const metadata: Metadata = {
-  title: "Lexikon — Webbegriffe in Klartext · Sitalo",
+  title: "Lexikon — Webbegriffe in Klartext",
   description:
     "Hosting, SSL, CMS, SEO, DSGVO — die Begriffe, mit denen Agenturen einschüchtern, in ehrlichem Deutsch erklärt. Mit dem einen Satz, der für Ihre Entscheidung zählt.",
   alternates: { canonical: "/lexikon" },

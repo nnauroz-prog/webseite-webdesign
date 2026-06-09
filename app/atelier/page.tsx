@@ -9,7 +9,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Das Sitalo Atelier — Wer wir sind und warum wir das machen",
+  title: "Das Atelier — wer wir sind und warum wir das machen",
   description:
     "Eine kleine Hamburger Werkstatt für Websites. Was wir glauben, wie wir arbeiten, warum „drei Sachen reichen\" mehr ist als ein Slogan.",
   alternates: { canonical: "/atelier" },

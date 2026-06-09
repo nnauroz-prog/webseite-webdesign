@@ -26,7 +26,7 @@ export async function generateMetadata({
   const paket = getPaketBySlug(slug);
   if (!paket) return {};
 
-  const title = `${paket.name}-Paket — Website ${paket.setup} | Sitalo Hamburg`;
+  const title = `${paket.name}-Paket — Website ${paket.setup}`;
   const description = paket.description;
   return {
     title,

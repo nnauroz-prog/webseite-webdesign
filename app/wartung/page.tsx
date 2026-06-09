@@ -7,7 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Wartung & Pflege — Sitalo",
+  title: "Wartung & Pflege",
   description:
     "Hosting, Updates, kleine Änderungen — auch für Websites, die wir nicht selbst gebaut haben. Klare monatliche Konditionen, monatlich kündbar.",
   alternates: { canonical: "/wartung" },

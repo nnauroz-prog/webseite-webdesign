@@ -11,7 +11,7 @@ import {
 } from "@/lib/validations/inquiries";
 
 export const metadata: Metadata = {
-  title: "Website anfragen — Sitalo",
+  title: "Website anfragen",
   description:
     "Drei Felder, fertig. Wir melden uns persönlich aus dem Hamburger Atelier — meist noch am selben Tag.",
   alternates: { canonical: "/anfrage" },

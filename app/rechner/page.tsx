@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { TcoRechner } from "@/components/marketing/tco-rechner";
 
 export const metadata: Metadata = {
-  title: "3-Jahres-Kostenrechner — Sitalo",
+  title: "3-Jahres-Kostenrechner",
   description:
     "Was kostet Ihre Website über 3 Jahre? Sitalo vs Wix, Squarespace, Jimdo, ChatGPT-Selbstbau. Inkl. Eigenzeit als echtes Geld.",
   alternates: { canonical: "/rechner" },

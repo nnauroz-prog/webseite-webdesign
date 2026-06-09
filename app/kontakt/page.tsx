@@ -9,7 +9,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Kontakt — schreiben Sie uns direkt | Sitalo Hamburg",
+  title: "Kontakt — schreiben Sie uns direkt",
   description:
     "Schreiben Sie uns über Formular oder E-Mail. Wir melden uns persönlich, meist noch am selben Tag.",
   alternates: { canonical: "/kontakt" },

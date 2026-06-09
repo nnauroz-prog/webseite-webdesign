@@ -6,7 +6,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
 
 export const metadata: Metadata = {
-  title: "Manifest — Sitalo",
+  title: "Manifest",
   description:
     "Acht Sätze. Was Sitalo macht, was Sitalo nicht macht, woran sich Inhaber wie Kunden verlassen können.",
   alternates: { canonical: "/manifest" },

@@ -9,7 +9,7 @@ import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
-  title: "Webdesign nach Hamburger Stadtteil — Sitalo aus dem Atelier nebenan",
+  title: "Webdesign nach Hamburger Stadtteil — aus dem Atelier nebenan",
   description:
     "Websites für Hamburger Unternehmen, sortiert nach Stadtteil: Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude. Lokale Stichwörter, konkrete Beispiele, persönliche Beratung.",
   alternates: { canonical: "/standorte" },

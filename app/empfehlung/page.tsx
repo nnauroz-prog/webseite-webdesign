@@ -8,7 +8,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Welches Paket passt? — Sitalo",
+  title: "Welches Paket passt?",
   description:
     "Fünf Fragen, eine ehrliche Empfehlung. Unser Quiz schaut sich Branche, Größe, vorhandene Materialien, Timing und Ihre aktuelle Seite an — und gibt eine begründete Paket-Empfehlung.",
   alternates: { canonical: "/empfehlung" },

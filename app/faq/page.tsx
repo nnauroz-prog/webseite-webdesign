@@ -7,7 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Häufige Fragen rund um Ihre neue Website | Sitalo",
+  title: "Häufige Fragen rund um Ihre neue Website",
   description:
     "Antworten auf das, was Kunden uns am häufigsten fragen — Preise, Ablauf, Hosting, SEO, Betreuung.",
   alternates: { canonical: "/faq" },

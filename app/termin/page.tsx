@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { TerminBooking } from "@/components/marketing/termin-booking";
 
 export const metadata: Metadata = {
-  title: "Termin buchen — Sitalo",
+  title: "Termin buchen",
   description:
     "30-Minuten-Erstgespräch direkt aus dem Hamburger Atelier. Tag und Uhrzeit wählen, Bestätigung per E-Mail innerhalb 15 Minuten.",
   alternates: { canonical: "/termin" },

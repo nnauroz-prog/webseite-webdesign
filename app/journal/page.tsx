@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { JOURNAL_POSTS, formatDate } from "@/lib/journal-data";
 
 export const metadata: Metadata = {
-  title: "Journal — Sitalo",
+  title: "Journal",
   description:
     "Essays aus dem Hamburger Atelier — Preis-Transparenz, Arbeitsweise, Lokales SEO, Gastronomie, Pflege, Migrationen.",
   alternates: {

@@ -5,7 +5,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Datenschutz — Sitalo Webdesign",
+  title: "Datenschutz",
   description: "Datenschutzerklärung von Sitalo Webdesign.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/datenschutz" },

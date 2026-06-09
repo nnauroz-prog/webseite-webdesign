@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SpeedCheck } from "@/components/marketing/speed-check";
 
 export const metadata: Metadata = {
-  title: "Geschwindigkeits-Test — Sitalo",
+  title: "Geschwindigkeits-Test",
   description:
     "Live PageSpeed-Insights-Test für Ihre Website. Performance, Accessibility, Best Practices, SEO — in 30 Sekunden, kostenlos, automatisch.",
   alternates: { canonical: "/check" },

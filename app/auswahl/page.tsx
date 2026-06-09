@@ -7,7 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Wer zu uns kommt — Auswahl · Sitalo",
+  title: "Wer zu uns kommt — Auswahl",
   description:
     "Wir nehmen pro Monat höchstens drei neue Aufträge an. Hier steht, wen wir bewusst nehmen und wen nicht — und wie wir entscheiden.",
   alternates: { canonical: "/auswahl" },

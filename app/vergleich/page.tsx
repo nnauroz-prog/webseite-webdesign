@@ -7,7 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Vergleich — Sitalo, Wix, Squarespace, Jimdo, Eigenbau mit KI",
+  title: "Vergleich — Wix, Squarespace, Jimdo, Eigenbau mit KI",
   description:
     "Ehrlicher Vergleich: Wann lohnt sich ein Baukasten, wann KI-Eigenbau, wann ein Atelier wie Sitalo. Für lokale Unternehmen in Deutschland.",
   alternates: { canonical: "/vergleich" },

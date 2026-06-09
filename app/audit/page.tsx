@@ -8,7 +8,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Kostenloser Website-Audit — Sitalo",
+  title: "Kostenloser Website-Audit",
   description:
     "Drei bis fünf konkrete Punkte zu Ihrer aktuellen Seite, persönlich aus Hamburg. Keine generische SEO-Score-Karte, kein Vertriebs-Anruf danach.",
   alternates: { canonical: "/audit" },
