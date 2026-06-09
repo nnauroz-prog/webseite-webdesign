@@ -215,6 +215,13 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Lexikon",
+        description: "Webbegriffe in Klartext, ohne Einschüchterung",
+        href: "/lexikon",
+        icon: BookOpen,
+      },
+      {
+        kind: "link",
         label: "Auswahl",
         description: "Wer zu uns kommt — und wer nicht.",
         href: "/auswahl",

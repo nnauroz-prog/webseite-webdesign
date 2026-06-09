@@ -108,6 +108,7 @@ export function MarketingFooter() {
             <FooterLink href="/manifest">Manifest</FooterLink>
             <FooterLink href="/auswahl">Auswahl</FooterLink>
             <FooterLink href="/inventar">Inventar</FooterLink>
+            <FooterLink href="/lexikon">Lexikon</FooterLink>
             <FooterLink href="/journal">Journal</FooterLink>
             <FooterLink href="/anfrage">Website anfragen</FooterLink>
             <FooterLink href="/termin">Termin buchen</FooterLink>
