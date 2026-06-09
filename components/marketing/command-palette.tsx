@@ -208,6 +208,13 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Inventar",
+        description: "Was wir verwenden — und bewusst nicht.",
+        href: "/inventar",
+        icon: BookOpen,
+      },
+      {
+        kind: "link",
         label: "Auswahl",
         description: "Wer zu uns kommt — und wer nicht.",
         href: "/auswahl",
