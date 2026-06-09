@@ -15,10 +15,8 @@ import {
   type Paragraph,
   toRoman,
 } from "@/lib/journal-data";
+import { SITE_URL } from "@/lib/site";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 type RouteParams = { slug: string };
 

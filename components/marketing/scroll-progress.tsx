@@ -53,7 +53,7 @@ export function ScrollProgress() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed top-0 left-0 right-0 z-50 h-[2px] origin-left bg-gradient-to-r from-[#C9A24F] via-[#D9B670] to-[#C9A24F] transition-transform duration-75 ease-out"
+      className="print:hidden pointer-events-none fixed top-0 left-0 right-0 z-50 h-[2px] origin-left bg-gradient-to-r from-[#C9A24F] via-[#D9B670] to-[#C9A24F] transition-transform duration-75 ease-out"
       ref={ref}
       style={{ transform: "scaleX(0)" }}
     />

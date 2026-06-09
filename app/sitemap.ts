@@ -4,10 +4,8 @@ import { getAllBrancheSlugs } from "@/lib/branchen-data";
 import { JOURNAL_POSTS } from "@/lib/journal-data";
 import { getAllPaketSlugs } from "@/lib/pakete-data";
 import { getAllStandortSlugs } from "@/lib/standorte-data";
+import { SITE_URL } from "@/lib/site";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 const STATIC_ROUTES = [
   "",

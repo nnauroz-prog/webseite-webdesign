@@ -6,6 +6,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { LEXIKON } from "@/lib/lexikon-data";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Lexikon — Webbegriffe in Klartext",
@@ -14,9 +15,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/lexikon" },
 };
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 /**
  * `/lexikon` — Klartext-Glossar.

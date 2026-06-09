@@ -175,7 +175,7 @@ function Hero() {
           </li>
           <li className="inline-flex items-center gap-2">
             <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Monatlich kündbar
+            Nach 6 Monaten monatlich kündbar
           </li>
         </ul>
         {/* Verfügbarkeit — ehrlich gepflegt, gibt einen leichten

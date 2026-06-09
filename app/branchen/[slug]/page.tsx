@@ -14,16 +14,11 @@ import {
   getAllBrancheSlugs,
   getBrancheBySlug,
 } from "@/lib/branchen-data";
-import { formatDate, getPost } from "@/lib/journal-data";
-
-/**
- * Branche → passender Journal-Essay. Nur gepflegt, wo wirklich
- * ein Essay existiert — kein Zwang, jede Branche zu bespielen.
- */
-const JOURNAL_BY_BRANCHE: Record<string, string> = {
-  gastro: "cafe-website-hamburg-2026",
-  pflege: "pflegedienst-google-maps-hamburg",
-};
+import {
+  formatDate,
+  getPost,
+  JOURNAL_BY_BRANCHE,
+} from "@/lib/journal-data";
 
 function JournalHinweis({ brancheSlug }: { brancheSlug: string }) {
   const postSlug = JOURNAL_BY_BRANCHE[brancheSlug];

@@ -23,7 +23,7 @@ export function MarketingFooter() {
     <>
       <BackToTop />
       <TrustBar />
-      <footer className="bg-foreground text-background relative overflow-hidden">
+      <footer className="bg-foreground text-background relative overflow-hidden print:hidden">
         {/* Atmosphärischer Gold-Halo links oben — passt zur Brand. */}
         <div
           aria-hidden="true"

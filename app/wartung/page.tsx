@@ -9,7 +9,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 export const metadata: Metadata = {
   title: "Wartung & Pflege",
   description:
-    "Hosting, Updates, kleine Änderungen — auch für Websites, die wir nicht selbst gebaut haben. Klare monatliche Konditionen, monatlich kündbar.",
+    "Hosting, Updates, kleine Änderungen — auch für Websites, die wir nicht selbst gebaut haben. Klare Konditionen, nach 6 Monaten monatlich kündbar.",
   alternates: { canonical: "/wartung" },
 };
 
@@ -121,7 +121,7 @@ function Hero() {
         <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
           Hosting, Updates, kleine Änderungen — auch wenn wir die
           Seite nicht selbst gebaut haben. Klare monatliche
-          Konditionen, monatlich kündbar.
+          Konditionen, nach sechs Monaten monatlich kündbar.
         </p>
         <ul className="text-muted-foreground mx-auto mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
           <li className="inline-flex items-center gap-2">

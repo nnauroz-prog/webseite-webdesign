@@ -35,7 +35,7 @@ export type JournalPost = {
   body: Paragraph[];
 };
 
-export const JOURNAL_POSTS: JournalPost[] = [
+const POSTS: JournalPost[] = [
   {
     slug: "der-preis-einer-website",
     title: "Der Preis, einmal offen hingelegt",
@@ -335,6 +335,27 @@ export const JOURNAL_POSTS: JournalPost[] = [
     ],
   },
 ];
+
+/**
+ * Öffentliche Liste, garantiert neuester Beitrag zuerst — egal an
+ * welcher Stelle im Array oben ein neuer Post eingefügt wird.
+ * Konsumenten (Index-Aufmacher, Homepage-Karte, Prev/Next, Feed)
+ * verlassen sich auf diese Ordnung.
+ */
+export const JOURNAL_POSTS: JournalPost[] = [...POSTS].sort((a, b) =>
+  b.publishedAt.localeCompare(a.publishedAt),
+);
+
+/**
+ * Branche-Slug → Journal-Slug für die „Aus dem Journal"-Sektion
+ * auf den Branchen-Detailseiten. Hier in der Datenschicht gepflegt,
+ * damit beim Anlegen eines Essays die Verdrahtung sichtbar daneben
+ * liegt — nicht in einer Page-Datei vergraben.
+ */
+export const JOURNAL_BY_BRANCHE: Record<string, string> = {
+  gastro: "cafe-website-hamburg-2026",
+  pflege: "pflegedienst-google-maps-hamburg",
+};
 
 export function getPost(slug: string): JournalPost | undefined {
   return JOURNAL_POSTS.find((p) => p.slug === slug);

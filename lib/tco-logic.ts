@@ -4,7 +4,7 @@
  * „Total Cost of Ownership" über 36 Monate, inklusive Eigenzeit-
  * Äquivalent. Vergleicht fünf Optionen ehrlich:
  *
- *   Sitalo Business (899 € einmalig + 79 €/Mo)
+ *   Sitalo Business (Preis aus lib/pakete-data.ts abgeleitet)
  *   Wix (Business-Tarif ~25 €/Mo + Eigenzeit)
  *   Squarespace (~22 €/Mo + Eigenzeit)
  *   Jimdo (~15 €/Mo + Eigenzeit)
@@ -19,6 +19,8 @@
  * setzt, gewinnt der billigste Baukasten — das gehört zum
  * ehrlichen Bild.
  */
+
+import { getPaketBySlug } from "@/lib/pakete-data";
 
 export type Profile = "neu" | "umzug" | "eigenbau";
 
@@ -39,14 +41,25 @@ export type Option = {
   highlight?: boolean;
 };
 
+/**
+ * Zieht den ersten Zahlenwert aus einem Preis-String der
+ * kanonischen Quelle ("ab 899 €" → 899, "ab 79 € / Monat" → 79).
+ * So schlagen Preisänderungen in pakete-data.ts automatisch hier
+ * durch, ohne Hand-Sync.
+ */
+function eurFrom(priceLabel: string): number {
+  const digits = priceLabel.replace(/[^\d]/g, "");
+  return digits ? parseInt(digits, 10) : 0;
+}
+
+const sitaloBusiness = getPaketBySlug("business");
+
 const OPTIONS: Option[] = [
   {
-    // Preise müssen mit lib/pakete-data.ts (kanonische Quelle)
-    // übereinstimmen — bei Preisänderung beide Stellen anfassen.
     slug: "sitalo",
     label: "Sitalo Business",
-    einmaligEUR: 899,
-    monatlichEUR: 79,
+    einmaligEUR: sitaloBusiness ? eurFrom(sitaloBusiness.setup) : 899,
+    monatlichEUR: sitaloBusiness ? eurFrom(sitaloBusiness.monthly) : 79,
     aufbauHours: 0,
     pflegeHoursPerUpdate: 0,
     baseDescription:

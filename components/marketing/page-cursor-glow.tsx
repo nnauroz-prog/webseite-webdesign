@@ -69,7 +69,7 @@ export function PageCursorGlow() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[1] hidden opacity-0 transition-opacity duration-700 md:block"
+      className="print:hidden pointer-events-none fixed inset-0 z-[1] hidden opacity-0 transition-opacity duration-700 md:block"
       style={{
         background:
           "radial-gradient(700px circle at var(--cursor-x, 50%) var(--cursor-y, 50%), oklch(0.66 0.13 80 / 0.08), transparent 60%)",

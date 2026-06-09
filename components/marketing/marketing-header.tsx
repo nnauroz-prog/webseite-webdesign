@@ -31,16 +31,14 @@ const DEFAULT_NAV: NavItem[] = [
 // erstem Eintrag — das Logo oben ist im Vollbild-Menü versteckt,
 // also brauchts den expliziten Home-Link. FAQ ist aus der
 // Desktop-Nav gewichen (Journal trägt dort mehr Profil), bleibt
-// aber im Mobile-Menü, das mehr Platz hat.
+// aber im Mobile-Menü, das mehr Platz hat. Abgeleitet aus
+// DEFAULT_NAV, damit Desktop und Mobile nicht auseinanderdriften:
+// FAQ wird vor dem letzten Eintrag (Kontakt) eingeschoben.
 const MOBILE_NAV: NavItem[] = [
   { href: "/", label: "Startseite" },
-  { href: "/leistungen", label: "Leistungen" },
-  { href: "/branchen", label: "Branchen" },
-  { href: "/ablauf", label: "Ablauf" },
-  { href: "/pakete", label: "Pakete" },
-  { href: "/journal", label: "Journal" },
+  ...DEFAULT_NAV.slice(0, -1),
   { href: "/faq", label: "FAQ" },
-  { href: "/kontakt", label: "Kontakt" },
+  ...DEFAULT_NAV.slice(-1),
 ];
 
 /**
@@ -104,7 +102,7 @@ export function MarketingHeader({
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 backdrop-blur-xl transition-[background-color,border-color] duration-500",
+          "sticky top-0 z-40 backdrop-blur-xl transition-[background-color,border-color] duration-500 print:hidden",
           scrolled
             ? "border-border/40 border-b bg-background/85"
             : "border-transparent border-b bg-background/0",
@@ -233,7 +231,7 @@ function MobileFullscreenMenu({
       aria-label="Hauptmenü"
       aria-hidden={!open}
       className={cn(
-        "bg-foreground text-background fixed inset-0 z-[60] flex flex-col transition-all duration-300 ease-out md:hidden",
+        "bg-foreground text-background fixed inset-0 z-[60] flex flex-col transition-all duration-300 ease-out md:hidden print:hidden",
         open
           ? "pointer-events-auto opacity-100"
           : "pointer-events-none opacity-0",

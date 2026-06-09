@@ -47,7 +47,7 @@ export function MobileCtaBar() {
   return (
     <div
       aria-hidden={!visible}
-      className={`pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-3 transition-all duration-200 md:hidden ${
+      className={`print:hidden pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-3 transition-all duration-200 md:hidden ${
         visible
           ? "pointer-events-auto translate-y-0 opacity-100"
           : "pointer-events-none translate-y-3 opacity-0"

@@ -78,7 +78,7 @@ export function CursorLabel() {
     <div
       ref={ref}
       aria-hidden="true"
-      className={`pointer-events-none fixed top-0 left-0 z-[60] hidden whitespace-nowrap rounded-full px-3.5 py-1.5 text-[11.5px] font-medium tracking-tight backdrop-blur-md transition-opacity duration-200 md:inline-flex ${
+      className={`print:hidden pointer-events-none fixed top-0 left-0 z-[60] hidden whitespace-nowrap rounded-full px-3.5 py-1.5 text-[11.5px] font-medium tracking-tight backdrop-blur-md transition-opacity duration-200 md:inline-flex ${
         label
           ? "bg-foreground/95 text-background opacity-100"
           : "opacity-0"

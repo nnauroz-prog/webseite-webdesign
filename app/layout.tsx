@@ -10,6 +10,7 @@ import { PageCursorGlow } from "@/components/marketing/page-cursor-glow";
 import { ScrollProgress } from "@/components/marketing/scroll-progress";
 import { ShortcutHelp } from "@/components/marketing/shortcut-help";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,9 +29,6 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
 });
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

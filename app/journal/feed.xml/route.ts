@@ -1,4 +1,5 @@
 import { JOURNAL_POSTS } from "@/lib/journal-data";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * RSS-2.0-Feed für das Journal.
@@ -9,9 +10,6 @@ import { JOURNAL_POSTS } from "@/lib/journal-data";
  * bekommen einen sauberen Kanal.
  */
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 export const dynamic = "force-static";
 
