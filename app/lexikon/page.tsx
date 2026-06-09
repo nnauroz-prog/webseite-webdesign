@@ -54,7 +54,7 @@ export default function LexikonPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Lexikon" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28">
             <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">

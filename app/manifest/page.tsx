@@ -71,7 +71,7 @@ export default function ManifestPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section>
           <div className="mx-auto w-full max-w-2xl px-6 pt-20 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
             <p className="text-muted-foreground inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.32em]">

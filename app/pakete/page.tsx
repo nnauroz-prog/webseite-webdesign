@@ -128,7 +128,7 @@ export default function PaketePage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Pakete" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         <Packages />
         <PflegeHosting />

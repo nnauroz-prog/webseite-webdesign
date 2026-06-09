@@ -130,7 +130,7 @@ export default async function PaketDetailPage({
       <MarketingHeader />
       <EditorialMasthead section={`Pakete · ${paket.name}`} />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         {/* Breadcrumb + Hero */}
         <section
           className={

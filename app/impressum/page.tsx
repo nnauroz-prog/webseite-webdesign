@@ -21,7 +21,7 @@ export default function ImpressumPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 border-b py-16 sm:py-24">
           <div className="mx-auto w-full max-w-3xl px-6">
             <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]">
