@@ -263,7 +263,7 @@ function PlanCard({ plan }: { plan: Plan }) {
       </div>
 
       <Link
-        href={`/anfrage?vorhaben=Wartung+${plan.name}&branche=wartung`}
+        href={`/anfrage?vorhaben=Wartung+${plan.name}`}
         className={`mt-auto inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[14.5px] font-medium tracking-tight transition-all ${
           plan.highlight
             ? "bg-background text-foreground hover:bg-background/90"

@@ -14,6 +14,49 @@ import {
   getAllBrancheSlugs,
   getBrancheBySlug,
 } from "@/lib/branchen-data";
+import { formatDate, getPost } from "@/lib/journal-data";
+
+/**
+ * Branche → passender Journal-Essay. Nur gepflegt, wo wirklich
+ * ein Essay existiert — kein Zwang, jede Branche zu bespielen.
+ */
+const JOURNAL_BY_BRANCHE: Record<string, string> = {
+  gastro: "cafe-website-hamburg-2026",
+  pflege: "pflegedienst-google-maps-hamburg",
+};
+
+function JournalHinweis({ brancheSlug }: { brancheSlug: string }) {
+  const postSlug = JOURNAL_BY_BRANCHE[brancheSlug];
+  if (!postSlug) return null;
+  const post = getPost(postSlug);
+  if (!post) return null;
+
+  return (
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-20">
+        <Link href={`/journal/${post.slug}`} className="group block">
+          <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+            <span
+              aria-hidden="true"
+              className="bg-gold inline-block h-px w-10"
+            />
+            Aus dem Journal · {formatDate(post.publishedAt)}
+          </p>
+          <h2 className="serif text-foreground mt-5 max-w-3xl text-balance text-3xl font-normal leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+            {post.title}
+          </h2>
+          <p className="text-muted-foreground mt-4 max-w-2xl text-pretty text-[15.5px] leading-relaxed">
+            {post.dek}
+          </p>
+          <span className="text-foreground mt-6 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] group-hover:underline">
+            Essay lesen · {post.readingMinutes} Min
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+      </div>
+    </section>
+  );
+}
 
 /**
  * Pre-render every branche page statically. Adding a new branche to
@@ -417,6 +460,11 @@ export default async function BranchePage({
             </div>
           </div>
         </section>
+
+        {/* Passender Journal-Essay — nur bei Branchen, zu denen
+            wirklich ein Essay existiert. Beobachtung aus dem
+            Atelier statt weiterer Sales-Sektion. */}
+        <JournalHinweis brancheSlug={branche.slug} />
 
         {/* Related branches */}
         <section className="border-border/40 border-b">
