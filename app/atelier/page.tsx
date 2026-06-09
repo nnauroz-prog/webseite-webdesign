@@ -380,7 +380,7 @@ const SCHRIFTEN: { href: string; title: string; line: string }[] = [
   {
     href: "/lexikon",
     title: "Lexikon",
-    line: "Zwölf Webbegriffe in Klartext, ohne Einschüchterung.",
+    line: "Sechzehn Webbegriffe in Klartext, ohne Einschüchterung.",
   },
   {
     href: "/journal",

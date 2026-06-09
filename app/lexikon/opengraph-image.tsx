@@ -8,7 +8,7 @@ export const contentType = "image/png";
 export default async function Image() {
   return editorialOgImage({
     variant: "cream",
-    eyebrow: "SITALO · LEXIKON · ZWÖLF BEGRIFFE",
+    eyebrow: "SITALO · LEXIKON · SECHZEHN BEGRIFFE",
     headlineBold: "Webbegriffe,",
     headlineItalic: "ohne Einschüchterung.",
     subline:

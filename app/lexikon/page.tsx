@@ -21,7 +21,7 @@ const SITE_URL =
 /**
  * `/lexikon` — Klartext-Glossar.
  *
- * Service-Geste + Long-Tail-SEO: zwölf Begriffe, mit denen
+ * Service-Geste + Long-Tail-SEO: sechzehn Begriffe, mit denen
  * Agenturen lokale Inhaber regelmäßig einschüchtern, ehrlich
  * erklärt. Pro Begriff eine „Entscheidend ist"-Zeile — der eine
  * Satz, der für die Kaufentscheidung zählt.
@@ -62,7 +62,7 @@ export default function LexikonPage() {
                 aria-hidden="true"
                 className="bg-gold inline-block h-px w-10"
               />
-              Zwölf Begriffe · Klartext
+              Sechzehn Begriffe · Klartext
             </p>
             <h1 className="serif text-foreground mt-8 text-balance text-5xl font-normal leading-[0.98] tracking-[-0.02em] sm:text-6xl lg:text-7xl">
               Lexikon.

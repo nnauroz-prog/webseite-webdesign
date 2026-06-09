@@ -118,4 +118,36 @@ export const LEXIKON: LexikonEntry[] = [
     bottomLine:
       "Gute Kontraste, klare Schrift, beschriftete Knöpfe — das meiste ist Handwerk, kein Hexenwerk.",
   },
+  {
+    term: "Google-Business-Profil",
+    slug: "google-business-profil",
+    plain:
+      "Der Eintrag, der erscheint, wenn jemand Ihren Betrieb oder Ihre Branche plus Stadtteil bei Google sucht — mit Karte, Öffnungszeiten, Fotos und Bewertungen. Für lokale Unternehmen oft wichtiger als die Website selbst, weil die Entscheidung vieler Kunden direkt auf der Karte fällt.",
+    bottomLine:
+      "Kostenlos, ein halber Tag Pflege-Aufwand, und in der Wirkung jeder bezahlten Kampagne überlegen. Wer hier leer steht, verschenkt jede Woche Anfragen.",
+  },
+  {
+    term: "Google Ads",
+    slug: "google-ads",
+    plain:
+      "Bezahlte Anzeigen über und neben den normalen Suchergebnissen. Sie zahlen pro Klick — bei umkämpften lokalen Begriffen schnell drei bis zehn Euro. Anzeigen wirken sofort, hören aber auch sofort auf zu wirken, wenn das Budget endet.",
+    bottomLine:
+      "Erst die Grundlagen (Seite, Google-Profil), dann Anzeigen — sonst bezahlen Sie Klicks auf eine Seite, die nicht überzeugt. Geliehene Sichtbarkeit ersetzt keine eigene.",
+  },
+  {
+    term: "Conversion",
+    slug: "conversion",
+    plain:
+      "Der Moment, in dem aus einem Besucher ein Kunde wird — ein Anruf, eine Anfrage, eine Reservierung. Die Conversion-Rate sagt, wie viele von hundert Besuchern diesen Schritt gehen. Eine schöne Seite ohne Conversions ist Dekoration.",
+    bottomLine:
+      "Eine sichtbare Telefonnummer und ein kurzes Formular schlagen jede Design-Auszeichnung. Messen Sie Anrufe, nicht Besucher.",
+  },
+  {
+    term: "Cache",
+    slug: "cache",
+    plain:
+      "Ein Zwischenspeicher, der fertige Seitenteile bereithält, statt sie bei jedem Aufruf neu zu bauen. Gut eingerichtet macht er Seiten spürbar schneller. Sein bekanntester Nebeneffekt: man sieht nach einer Änderung noch kurz die alte Version.",
+    bottomLine:
+      "Wenn Ihre Änderung nicht erscheint, ist es fast immer der Cache — einmal hart neu laden, bevor Sie jemanden anrufen.",
+  },
 ];
