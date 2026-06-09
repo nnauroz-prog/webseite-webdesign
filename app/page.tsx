@@ -129,7 +129,7 @@ const FAQ = [
   },
   {
     q: "Gibt es laufende Kosten?",
-    a: "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Jederzeit zum Monatsende kündbar, kein Kleingedrucktes.",
+    a: "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Nach sechs Monaten Mindestlaufzeit jederzeit zum Monatsende kündbar — beim Ausstieg übergeben wir den kompletten Bestand.",
   },
   {
     q: "Kann ich später noch Sachen ändern lassen?",

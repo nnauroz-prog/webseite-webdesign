@@ -72,6 +72,20 @@ export default function KontaktPage() {
             />
           </div>
 
+          {/* Termin-Hinweis — der fünfte Weg, bewusst nicht als
+              fünfte Grid-Zelle (würde das Vier-Wege-Raster brechen),
+              sondern als ruhige Zeile darunter. */}
+          <p className="text-muted-foreground mt-6 text-[14px] leading-relaxed">
+            Oder Sie überspringen das Hin-und-Her:{" "}
+            <Link
+              href="/termin"
+              className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+            >
+              30-Minuten-Termin direkt buchen
+            </Link>{" "}
+            — Tag und Uhrzeit selbst wählen, Bestätigung in 15 Minuten.
+          </p>
+
           <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
             <div className="space-y-12">
               <div>
