@@ -37,6 +37,114 @@ export type JournalPost = {
 
 export const JOURNAL_POSTS: JournalPost[] = [
   {
+    slug: "der-preis-einer-website",
+    title: "Der Preis, einmal offen hingelegt",
+    dek: "Was eine Website in Deutschland tatsächlich kostet, wo unsere Zahlen herkommen — und welche Posten in den meisten Angeboten unsichtbar bleiben.",
+    publishedAt: "2026-06-08",
+    readingMinutes: 7,
+    tags: ["Preise", "Transparenz", "Entscheidung"],
+    body: [
+      {
+        kind: "p",
+        text: "Preise für Websites sind in unserer Branche eine merkwürdige Geheimwissenschaft. Agenturen schreiben auf Anfrage, Freelancer rechnen nach Bauchgefühl, Baukästen werben mit Null Euro und meinen etwas anderes. Wir legen unsere Zahlen seit dem ersten Tag offen auf die Seite — und wollen hier einmal erklären, wie sie zustande kommen.",
+      },
+      {
+        kind: "h2",
+        text: "Die Spannweite des Marktes",
+      },
+      {
+        kind: "p",
+        text: "Eine mehrseitige Unternehmens-Website kostet bei einer klassischen deutschen Agentur zwischen dreitausend und zwölftausend Euro, je nach Stadt, Selbstbild und Anzahl der Workshops, die man vorher absitzt. Freelancer liegen meist zwischen achthundert und dreitausend. Baukästen kosten nominal fünfzehn bis dreißig Euro im Monat — plus dreißig bis sechzig Stunden der eigenen Zeit, die in keiner Rechnung auftaucht, aber bezahlt wird wie jede andere Arbeitszeit auch: mit Abenden und Wochenenden.",
+      },
+      {
+        kind: "p",
+        text: "Unsere Pakete beginnen bei vierhundertneunundneunzig Euro für eine Onepage und gehen bis vierzehnhundertneunundneunzig für ein individuelles System mit pflegbaren Inhalten. Das ist im Marktvergleich die untere Mitte. Es ist kein Kampfpreis und keine Premium-Geste — es ist das Ergebnis einer einfachen Rechnung.",
+      },
+      {
+        kind: "h2",
+        text: "Wie unsere Zahl entsteht",
+      },
+      {
+        kind: "p",
+        text: "Eine Starter-Seite kostet uns netto etwa zwei Arbeitstage: ein halber Tag Struktur und Inhalts-Sichtung, ein Tag Bau, ein halber Tag Tests auf echten Geräten und Feinschliff. Dazu der Anteil an Werkzeugen, Lizenzen und dem Hosting-Setup. Wer deutlich weniger verlangt, spart an einer dieser Stellen — meist am Testen, was der Kunde erst Monate später merkt. Wer deutlich mehr verlangt, bezahlt damit in der Regel Büroflächen und Hierarchie-Ebenen, nicht bessere Arbeit.",
+      },
+      {
+        kind: "h2",
+        text: "Der unsichtbare Posten",
+      },
+      {
+        kind: "p",
+        text: "Der eigentliche Unterschied zwischen Angeboten liegt selten im Einmalpreis, sondern in dem, was danach kommt. Eine Website ist kein Möbelstück, sondern eher ein Schaufenster: es muss geputzt werden. Sicherheits-Updates, Backups, das SSL-Zertifikat, die kleine Änderung im November, wenn sich die Öffnungszeiten ändern. Bei vielen Angeboten ist dieser Posten schlicht nicht vorgesehen — die Seite veraltet ab Tag eins, und nach drei Jahren beginnt das Spiel von vorn.",
+      },
+      {
+        kind: "p",
+        text: "Unser monatlicher Beitrag — ab neunundvierzig Euro — ist genau dieser Posten, offen ausgewiesen. Er ist kein verstecktes Abo und keine Marge-Maschine. Er ist die ehrliche Antwort auf die Frage, wer sich kümmert, wenn morgen etwas ist.",
+      },
+      {
+        kind: "h2",
+        text: "Was Sie mit dieser Information tun können",
+      },
+      {
+        kind: "p",
+        text: "Vergleichen Sie Angebote nicht am Einmalpreis, sondern an drei Fragen. Erstens: was kostet das dritte Jahr, alles eingerechnet? Zweitens: wem gehört am Ende die Seite — Ihnen oder dem System des Anbieters? Drittens: wer geht ans Telefon, wenn das Kontaktformular an einem Freitagnachmittag streikt? Wer diese drei Fragen stellt, sortiert neunzig Prozent der schlechten Angebote aus, bevor Geld fließt.",
+      },
+      {
+        kind: "quote",
+        text: "Ein Preis, der erklärt werden kann, ist ein Preis. Ein Preis, der verteidigt werden muss, ist ein Verdachtsmoment.",
+      },
+    ],
+  },
+  {
+    slug: "warum-wir-keine-mockups-zeigen",
+    title: "Das Echte zuerst",
+    dek: "Warum bei uns kein Photoshop-Entwurf den Anfang macht, sondern eine lauffähige Seite — und was das mit Vertrauen zu tun hat.",
+    publishedAt: "2026-06-05",
+    readingMinutes: 5,
+    tags: ["Arbeitsweise", "Design", "Transparenz"],
+    body: [
+      {
+        kind: "p",
+        text: "In den meisten Webprojekten beginnt die Zusammenarbeit mit einer Inszenierung: ein Entwurfsbild, sorgfältig komponiert, mit idealem Beispieltext und Fotografien, die später niemand liefert. Der Kunde sagt begeistert zu. Wochen später geht eine Seite live, die dem Bild ähnelt wie ein Passfoto dem Urlaub. Wir haben uns gegen dieses Ritual entschieden — bei uns gibt es keine Mockups.",
+      },
+      {
+        kind: "h2",
+        text: "Was ein Mockup verschweigt",
+      },
+      {
+        kind: "p",
+        text: "Ein statisches Entwurfsbild zeigt den besten denkbaren Moment einer Seite: perfekte Bildausschnitte, Text in genau passender Länge, ein Bildschirm in genau einer Breite. Es verschweigt alles, was eine Website tatsächlich ausmacht — wie sie lädt, wie sie auf einem drei Jahre alten Android-Gerät umbricht, was passiert, wenn die Überschrift zwei Wörter länger ist, wie sich der Menüpunkt unter dem Daumen anfühlt.",
+      },
+      {
+        kind: "p",
+        text: "Genau in diesen verschwiegenen Details entscheidet sich, ob eine Seite arbeitet oder nur aussieht. Ein Mockup zu genehmigen heißt, ein Versprechen zu genehmigen — nicht ein Produkt.",
+      },
+      {
+        kind: "h2",
+        text: "Wie es bei uns läuft",
+      },
+      {
+        kind: "p",
+        text: "Wir bauen vom ersten Tag an das Echte. Nach wenigen Tagen bekommen Sie keinen Bildanhang, sondern einen Link: eine lauffähige Vorschau-Seite mit Ihren echten Inhalten, auf Ihrem eigenen Telefon zu öffnen, an Ihre Frau, Ihren Steuerberater oder Ihre Stammkundin weiterzuleiten. Was Sie dort sehen, ist nicht eine Idee der Seite. Es ist die Seite.",
+      },
+      {
+        kind: "p",
+        text: "Änderungswünsche besprechen wir an diesem lebenden Objekt. Den Knopf größer, die Reihenfolge anders, das Bild gegen ein anderes — jede Korrektur ist am nächsten Tag sichtbar, im echten Kontext, auf echten Geräten. Es gibt keinen Moment der Enthüllung, an dem das Bild der Wirklichkeit weichen muss, weil es nie ein Bild gab.",
+      },
+      {
+        kind: "h2",
+        text: "Der ehrliche Nachteil",
+      },
+      {
+        kind: "p",
+        text: "Diese Arbeitsweise hat eine Voraussetzung, die wir offen benennen: sie funktioniert nur mit Inhalten. Ein Mockup kann man mit Blindtext füllen, eine echte Seite nicht sinnvoll. Deshalb beginnt jedes Projekt bei uns mit den drei Sachen — Logo, Texte, Bilder — und deshalb helfen wir beim Beschaffen, wenn etwas fehlt, statt mit Platzhaltern zu bauen. Das verlangt vom Kunden in der ersten Woche etwas mehr als eine Unterschrift. Es erspart ihm dafür die Enttäuschung in der letzten.",
+      },
+      {
+        kind: "quote",
+        text: "Wir zeigen nichts, was wir nicht gebaut haben. Was Sie freigeben, ist das, was live geht — Pixel für Pixel.",
+      },
+    ],
+  },
+  {
     slug: "cafe-website-hamburg-2026",
     title: "Acht Sekunden vor der Tür",
     dek: "Was über den Zugang zu einem Hamburger Café tatsächlich entscheidet — und warum es nicht der Kaffee ist.",

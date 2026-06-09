@@ -23,16 +23,24 @@ const DEFAULT_NAV: NavItem[] = [
   { href: "/branchen", label: "Branchen" },
   { href: "/ablauf", label: "Ablauf" },
   { href: "/pakete", label: "Pakete" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/journal", label: "Journal" },
   { href: "/kontakt", label: "Kontakt" },
 ];
 
 // Auf Mobile zeigen wir das Vollbild-Menü mit "Startseite" als
 // erstem Eintrag — das Logo oben ist im Vollbild-Menü versteckt,
-// also brauchts den expliziten Home-Link.
+// also brauchts den expliziten Home-Link. FAQ ist aus der
+// Desktop-Nav gewichen (Journal trägt dort mehr Profil), bleibt
+// aber im Mobile-Menü, das mehr Platz hat.
 const MOBILE_NAV: NavItem[] = [
   { href: "/", label: "Startseite" },
-  ...DEFAULT_NAV,
+  { href: "/leistungen", label: "Leistungen" },
+  { href: "/branchen", label: "Branchen" },
+  { href: "/ablauf", label: "Ablauf" },
+  { href: "/pakete", label: "Pakete" },
+  { href: "/journal", label: "Journal" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/kontakt", label: "Kontakt" },
 ];
 
 /**
