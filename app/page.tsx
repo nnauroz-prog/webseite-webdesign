@@ -15,6 +15,7 @@ import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
+import { SwingTag } from "@/components/marketing/swing-tag";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -971,10 +972,15 @@ function FinalCta() {
             </div>
           </div>
 
-          {/* Editorial-Schluss rechts: Signature + Adresse als
-              kleine Visitenkarte. */}
+          {/* Editorial-Schluss rechts: Atelier-Etikett auf Schnur,
+              das pendelt — Premium-Markenzeichen statt flacher
+              Visitenkarte. Darunter Signatur + die drei
+              Kontakt-Buttons als Aktionsschicht. */}
           <div className="lg:pl-10">
-            <p className="text-background/45 text-[10px] font-medium uppercase tracking-[0.3em]">
+            <div className="flex justify-start lg:justify-center">
+              <SwingTag />
+            </div>
+            <p className="text-background/45 mt-10 text-[10px] font-medium uppercase tracking-[0.3em]">
               Aus dem Atelier
             </p>
             <p className="serif-italic text-background mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
