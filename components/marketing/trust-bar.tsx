@@ -31,7 +31,7 @@ export function TrustBar() {
   return (
     <section
       aria-label="Was Sie bei Sitalo bekommen"
-      className="bg-secondary/40 border-border/40 border-t"
+      className="bg-secondary/40 border-border/40 border-t print:hidden"
     >
       <div className="mx-auto w-full max-w-7xl px-6 py-12 sm:py-16">
         <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">

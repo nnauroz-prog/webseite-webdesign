@@ -8,7 +8,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Welches Paket passt? — Sitalo",
+  title: "Welches Paket passt?",
   description:
     "Fünf Fragen, eine ehrliche Empfehlung. Unser Quiz schaut sich Branche, Größe, vorhandene Materialien, Timing und Ihre aktuelle Seite an — und gibt eine begründete Paket-Empfehlung.",
   alternates: { canonical: "/empfehlung" },
@@ -30,7 +30,7 @@ export default function EmpfehlungPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Paket-Empfehlung" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
           <div
             aria-hidden="true"

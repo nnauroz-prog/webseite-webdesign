@@ -7,7 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Häufige Fragen rund um Ihre neue Website | Sitalo",
+  title: "Häufige Fragen rund um Ihre neue Website",
   description:
     "Antworten auf das, was Kunden uns am häufigsten fragen — Preise, Ablauf, Hosting, SEO, Betreuung.",
   alternates: { canonical: "/faq" },
@@ -36,7 +36,11 @@ const GROUPS: Group[] = [
       },
       {
         q: "Können wir uns persönlich in Hamburg treffen?",
-        a: "Gerne. Café in Eppendorf, auf einen Kaffee am Mühlenkamp, in der Schanze — wo Sie wollen. 15 Minuten reichen meistens, um zu klären, ob wir zusammen passen. Geht auch per Telefon oder Video, falls Ihnen das lieber ist.",
+        a: "Gerne. Café in Eppendorf, auf einen Kaffee am Mühlenkamp, in der Schanze — wo Sie wollen. 15 Minuten reichen meistens, um zu klären, ob wir zusammen passen. Geht auch per Telefon oder Video — am schnellsten über die Termin-Seite: Tag und Uhrzeit selbst wählen, Bestätigung in 15 Minuten.",
+      },
+      {
+        q: "Kann ich erstmal eine ehrliche Einschätzung meiner aktuellen Seite bekommen?",
+        a: "Ja, kostenlos und ohne Vertriebs-Anruf danach. Über die Audit-Seite schicken Sie uns Ihre URL, wir gucken mit der Hand drauf und schreiben Ihnen innerhalb von 48 Stunden drei bis fünf konkrete Punkte. Wer es eilig hat: der Speed-Check liefert die technischen Werte automatisch in 30 Sekunden.",
       },
       {
         q: "Was passiert nach meiner Anfrage?",
@@ -73,11 +77,15 @@ const GROUPS: Group[] = [
       },
       {
         q: "Bin ich an einen langen Vertrag gebunden?",
-        a: "Nein. Die einmalige Erstellung ist einmalig, der Monatsbeitrag ist monatlich kündbar zum Monatsende. Kein Knebelvertrag, keine Mindestlaufzeit. Wir gewinnen Kunden, weil unsere Arbeit passt — nicht weil sie nicht weg können.",
+        a: "Die einmalige Erstellung ist einmalig. Die monatliche Betreuung hat eine Mindestlaufzeit von sechs Monaten und ist danach jederzeit zum Monatsende kündbar. Beim Ausstieg bekommen Sie den kompletten Bestand (Seite, Inhalte, Domain-Zugang) sauber übergeben — wir halten niemanden als Geisel.",
       },
       {
         q: "Was kostet eine spätere Erweiterung?",
         a: "Kleine Erweiterungen sind in der monatlichen Pflege dabei. Größere Sachen (z. B. ein neuer Bereich, Online-Buchung, ein zweites Sprachset) bekommen Sie vorher als verbindliches Angebot. Typischer Rahmen: 150–500 €, je nach Aufwand.",
+      },
+      {
+        q: "Meine Seite wurde woanders gebaut — übernehmen Sie die Pflege?",
+        a: "Ja. Hosting, Updates, Backups und kleine Änderungen machen wir auch für Seiten, die nicht von uns stammen — sogar für Wix- und Squarespace-Seiten. Details und Konditionen stehen offen auf der Wartungs-Seite (ab 49 € im Monat, einmaliges Onboarding ab 199 €).",
       },
     ],
   },
@@ -157,7 +165,7 @@ export default function FaqPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Häufige Fragen" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         {GROUPS.map((g) => (
           <Group key={g.label} group={g} />

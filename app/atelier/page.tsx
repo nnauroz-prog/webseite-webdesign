@@ -9,7 +9,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Das Sitalo Atelier — Wer wir sind und warum wir das machen",
+  title: "Das Atelier — wer wir sind und warum wir das machen",
   description:
     "Eine kleine Hamburger Werkstatt für Websites. Was wir glauben, wie wir arbeiten, warum „drei Sachen reichen\" mehr ist als ein Slogan.",
   alternates: { canonical: "/atelier" },
@@ -27,11 +27,12 @@ export default function AtelierPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Das Atelier" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         <Glaubenssaetze />
         <WieWirArbeiten />
         <WarumHamburg />
+        <Schriften />
         <FinalCta />
       </main>
       <MarketingFooter />
@@ -349,6 +350,81 @@ function WarumHamburg() {
             />
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Schriften des Ateliers — Quersteg zur Identitäts-Familie.
+ * Manifest, Auswahl, Inventar, Lexikon, Journal: fünf Seiten,
+ * die zusammen das Selbstverständnis tragen. Hier als ruhiges
+ * Register, wie ein Schriftenverzeichnis am Ende eines Katalogs.
+ */
+const SCHRIFTEN: { href: string; title: string; line: string }[] = [
+  {
+    href: "/manifest",
+    title: "Manifest",
+    line: "Acht Sätze. Was wir tun, was wir nicht tun.",
+  },
+  {
+    href: "/auswahl",
+    title: "Auswahl",
+    line: "Wer zu uns kommt — und wer nicht. Sechs Kriterien.",
+  },
+  {
+    href: "/inventar",
+    title: "Inventar",
+    line: "Werkzeuge, Hosting, Lieferanten. Offen gelistet, begründet.",
+  },
+  {
+    href: "/lexikon",
+    title: "Lexikon",
+    line: "Sechzehn Webbegriffe in Klartext, ohne Einschüchterung.",
+  },
+  {
+    href: "/journal",
+    title: "Journal",
+    line: "Essays aus echten Projekten. Beobachtung statt Ratgeber.",
+  },
+];
+
+function Schriften() {
+  return (
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-24">
+        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+          <span aria-hidden="true" className="bg-gold inline-block h-px w-10" />
+          Schriften des Ateliers
+        </p>
+        <h2 className="serif text-foreground mt-6 text-balance text-3xl font-normal leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+          Fünf Seiten, die unser Selbstverständnis tragen.
+        </h2>
+        <ol className="divide-border/40 mt-10 divide-y">
+          {SCHRIFTEN.map((s, i) => (
+            <li key={s.href}>
+              <Link
+                href={s.href}
+                className="group flex flex-col gap-1.5 py-6 sm:flex-row sm:items-baseline sm:justify-between sm:gap-10 sm:py-7"
+              >
+                <span className="flex items-baseline gap-5">
+                  <span
+                    aria-hidden="true"
+                    className="serif-italic text-gold text-xl font-normal leading-none tabular-nums"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-foreground text-xl font-medium tracking-[-0.01em] sm:text-2xl">
+                    {s.title}
+                  </span>
+                </span>
+                <span className="text-muted-foreground pl-10 text-[14.5px] leading-relaxed group-hover:text-foreground sm:pl-0 sm:text-right transition-colors">
+                  {s.line}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

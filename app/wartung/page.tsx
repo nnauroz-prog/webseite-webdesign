@@ -7,9 +7,9 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Wartung & Pflege — Sitalo",
+  title: "Wartung & Pflege",
   description:
-    "Hosting, Updates, kleine Änderungen — auch für Websites, die wir nicht selbst gebaut haben. Klare monatliche Konditionen, monatlich kündbar.",
+    "Hosting, Updates, kleine Änderungen — auch für Websites, die wir nicht selbst gebaut haben. Klare Konditionen, nach 6 Monaten monatlich kündbar.",
   alternates: { canonical: "/wartung" },
 };
 
@@ -84,7 +84,7 @@ export default function WartungPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Wartung & Pflege" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         <Plans />
         <ForWhom />
@@ -121,7 +121,7 @@ function Hero() {
         <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
           Hosting, Updates, kleine Änderungen — auch wenn wir die
           Seite nicht selbst gebaut haben. Klare monatliche
-          Konditionen, monatlich kündbar.
+          Konditionen, nach sechs Monaten monatlich kündbar.
         </p>
         <ul className="text-muted-foreground mx-auto mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
           <li className="inline-flex items-center gap-2">
@@ -263,7 +263,7 @@ function PlanCard({ plan }: { plan: Plan }) {
       </div>
 
       <Link
-        href={`/anfrage?vorhaben=Wartung+${plan.name}&branche=wartung`}
+        href={`/anfrage?vorhaben=Wartung+${plan.name}`}
         className={`mt-auto inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[14.5px] font-medium tracking-tight transition-all ${
           plan.highlight
             ? "bg-background text-foreground hover:bg-background/90"

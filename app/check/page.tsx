@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SpeedCheck } from "@/components/marketing/speed-check";
 
 export const metadata: Metadata = {
-  title: "Geschwindigkeits-Test — Sitalo",
+  title: "Geschwindigkeits-Test",
   description:
     "Live PageSpeed-Insights-Test für Ihre Website. Performance, Accessibility, Best Practices, SEO — in 30 Sekunden, kostenlos, automatisch.",
   alternates: { canonical: "/check" },
@@ -33,7 +33,7 @@ export default function CheckPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Speed-Check" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
           <div
             aria-hidden="true"

@@ -11,7 +11,7 @@ import {
 } from "@/lib/validations/inquiries";
 
 export const metadata: Metadata = {
-  title: "Website anfragen — Sitalo",
+  title: "Website anfragen",
   description:
     "Drei Felder, fertig. Wir melden uns persönlich aus dem Hamburger Atelier — meist noch am selben Tag.",
   alternates: { canonical: "/anfrage" },
@@ -52,7 +52,7 @@ export default async function AnfragePage({
       <MarketingHeader />
       <EditorialMasthead section="Anfrage" />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
           {/* Dezenter Gold-Halo — konsistent mit Hero-Sprache. */}
           <div

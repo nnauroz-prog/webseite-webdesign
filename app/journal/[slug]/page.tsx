@@ -15,10 +15,8 @@ import {
   type Paragraph,
   toRoman,
 } from "@/lib/journal-data";
+import { SITE_URL } from "@/lib/site";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 type RouteParams = { slug: string };
 
@@ -81,6 +79,33 @@ export default async function JournalPostPage({
     keywords: post.tags.join(", "),
   };
 
+  // BreadcrumbList — Sitalo → Journal → Essay. Gibt Google die
+  // hierarchische Position für Rich-Result-Breadcrumbs.
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: `${SITE_URL}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Journal",
+        item: `${SITE_URL}/journal`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `${SITE_URL}/journal/${post.slug}`,
+      },
+    ],
+  };
+
   // Vorherigen / nächsten Beitrag berechnen für Navigation am Ende
   const index = JOURNAL_POSTS.findIndex((p) => p.slug === post.slug);
   const prev = index > 0 ? JOURNAL_POSTS[index - 1] : null;
@@ -93,7 +118,7 @@ export default async function JournalPostPage({
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Journal" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <article>
           <header className="border-border/40 border-b">
             <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:py-20">
@@ -209,7 +234,9 @@ export default async function JournalPostPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([articleLd, breadcrumbLd]),
+        }}
       />
     </div>
   );

@@ -15,7 +15,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center">
+    <main id="main" className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center">
       <p className="text-muted-foreground text-sm tracking-wide uppercase">
         Fehler
       </p>

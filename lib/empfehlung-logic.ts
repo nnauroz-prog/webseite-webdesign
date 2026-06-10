@@ -10,6 +10,8 @@
  * nicht aus einer Template-Bibliothek — fühlt sich konkret an.
  */
 
+import { getPaketBySlug } from "@/lib/pakete-data";
+
 export type Branche =
   | "pflegedienst"
   | "arztpraxis"
@@ -114,11 +116,14 @@ export type Empfehlung = {
   zusatzHinweis: string | null;
 };
 
-const PAKET_META: Record<EmpfehlungSlug, { label: string; preis: string }> = {
-  starter: { label: "Starter", preis: "ab 499 € einmalig · ab 49 € / Monat" },
-  business: { label: "Business", preis: "ab 1.490 € einmalig · ab 89 € / Monat" },
-  premium: { label: "Premium", preis: "ab 2.990 € einmalig · ab 149 € / Monat" },
-};
+// Label und Preis kommen direkt aus der kanonischen Quelle
+// lib/pakete-data.ts — Preisänderungen dort schlagen automatisch
+// hier durch, kein Hand-Sync mehr nötig.
+function paketMeta(slug: EmpfehlungSlug): { label: string; preis: string } {
+  const p = getPaketBySlug(slug);
+  if (!p) return { label: slug, preis: "" };
+  return { label: p.name, preis: `${p.setup} einmalig · ${p.monthly}` };
+}
 
 /**
  * Hauptlogik: nimmt Antworten, gibt Empfehlung zurück.
@@ -224,10 +229,11 @@ export function empfehle(a: Answers): Empfehlung {
     zusatzHinweis = `Hinweis: Ihre bestehende Seite kann währenddessen auf unserem Wartung-Tarif laufen — sicher, schnell, mit kleinen Verbesserungen. Sie ist nicht alleingelassen, bis das Neue steht.`;
   }
 
+  const meta = paketMeta(winner);
   return {
     paket: winner,
-    paketLabel: PAKET_META[winner].label,
-    preisLabel: PAKET_META[winner].preis,
+    paketLabel: meta.label,
+    preisLabel: meta.preis,
     begruendung: reasons.length > 0 ? reasons : ["Unsere typische Empfehlung für diesen Profil-Mix."],
     zusatzHinweis,
   };

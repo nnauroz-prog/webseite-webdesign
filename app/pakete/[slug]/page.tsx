@@ -26,7 +26,7 @@ export async function generateMetadata({
   const paket = getPaketBySlug(slug);
   if (!paket) return {};
 
-  const title = `${paket.name}-Paket — Website ${paket.setup} | Sitalo Hamburg`;
+  const title = `${paket.name}-Paket — Website ${paket.setup}`;
   const description = paket.description;
   return {
     title,
@@ -130,7 +130,7 @@ export default async function PaketDetailPage({
       <MarketingHeader />
       <EditorialMasthead section={`Pakete · ${paket.name}`} />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         {/* Breadcrumb + Hero */}
         <section
           className={

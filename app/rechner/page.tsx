@@ -8,7 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { TcoRechner } from "@/components/marketing/tco-rechner";
 
 export const metadata: Metadata = {
-  title: "3-Jahres-Kostenrechner — Sitalo",
+  title: "3-Jahres-Kostenrechner",
   description:
     "Was kostet Ihre Website über 3 Jahre? Sitalo vs Wix, Squarespace, Jimdo, ChatGPT-Selbstbau. Inkl. Eigenzeit als echtes Geld.",
   alternates: { canonical: "/rechner" },
@@ -30,7 +30,7 @@ export default function RechnerPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="3-Jahres-Rechner" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
           <div
             aria-hidden="true"

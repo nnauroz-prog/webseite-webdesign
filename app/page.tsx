@@ -26,7 +26,9 @@ import { WhatWeDontDo } from "@/components/marketing/what-we-dont-do";
 import { WhyWebsite } from "@/components/marketing/why-website";
 
 export const metadata: Metadata = {
-  title: "Sitalo — Webdesign aus Hamburg",
+  // Absoluter Titel — sonst hängt das Layout-Template noch ein
+  // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
+  title: { absolute: "Sitalo — Webdesign aus Hamburg" },
   description:
     "Websites für lokale Unternehmen aus Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
   alternates: { canonical: "/" },
@@ -129,7 +131,7 @@ const FAQ = [
   },
   {
     q: "Gibt es laufende Kosten?",
-    a: "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Jederzeit zum Monatsende kündbar, kein Kleingedrucktes.",
+    a: "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Nach sechs Monaten Mindestlaufzeit jederzeit zum Monatsende kündbar — beim Ausstieg übergeben wir den kompletten Bestand.",
   },
   {
     q: "Kann ich später noch Sachen ändern lassen?",

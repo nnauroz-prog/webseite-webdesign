@@ -22,9 +22,9 @@
  */
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 import { DrawnArrow } from "@/components/marketing/ornaments";
+import { formatDate, JOURNAL_POSTS } from "@/lib/journal-data";
 
 type AtelierNote = {
   /** Relative Zeit-Anker, z. B. „Diese Woche", „Mittwoch", „KW 20". */
@@ -67,6 +67,10 @@ export function ImAtelier() {
   // dass die Seite nach „verwaister Werkstatt" aussieht, falls wir
   // die Liste mal leeren.
   if (ATELIER_NOTES.length === 0) return null;
+
+  // Neuester Essay — Array-Reihenfolge in JOURNAL_POSTS ist
+  // neuester zuerst.
+  const latestPost = JOURNAL_POSTS[0];
 
   // Aktueller Monat als Eyebrow-Anker — Server-rendered (parallel
   // zur Pricing-Kapazitäts-Zeile, gleiche Logik).
@@ -123,24 +127,45 @@ export function ImAtelier() {
             </Link>
           </div>
 
-          {/* Rechte Spalte: Notes als Log-Liste mit Hairline-Dividers */}
-          <ol className="divide-border/60 -mt-4 divide-y">
-            {ATELIER_NOTES.map((note) => (
-              <li
-                key={note.when + note.text}
-                className="flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:gap-6 sm:py-6"
+          {/* Rechte Spalte: Notes als Log-Liste mit Hairline-Dividers,
+              darunter der neueste Journal-Essay — speist sich
+              automatisch aus JOURNAL_POSTS, bleibt also frisch ohne
+              dass jemand diese Sektion anfasst. */}
+          <div className="-mt-4">
+            <ol className="divide-border/60 divide-y">
+              {ATELIER_NOTES.map((note) => (
+                <li
+                  key={note.when + note.text}
+                  className="flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:gap-6 sm:py-6"
+                >
+                  {/* Zeit-Anker in Mono-Font, klein und gedimmt —
+                      wie ein Tagebuch-Datum am Zeilenanfang */}
+                  <span className="text-muted-foreground/85 font-mono text-[11px] uppercase tracking-[0.15em] shrink-0 sm:w-[8.5rem]">
+                    {note.when}
+                  </span>
+                  <span className="text-foreground/85 text-pretty text-[15px] leading-relaxed sm:text-[16px]">
+                    {note.text}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            {latestPost && (
+              <Link
+                href={`/journal/${latestPost.slug}`}
+                className="group border-foreground/15 bg-foreground/[0.03] hover:bg-foreground/[0.06] mt-6 block rounded-2xl border p-5 transition-colors sm:p-6"
               >
-                {/* Zeit-Anker in Mono-Font, klein und gedimmt —
-                    wie ein Tagebuch-Datum am Zeilenanfang */}
-                <span className="text-muted-foreground/85 font-mono text-[11px] uppercase tracking-[0.15em] shrink-0 sm:w-[8.5rem]">
-                  {note.when}
+                <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                  Neu im Journal · {formatDate(latestPost.publishedAt)}
+                </p>
+                <p className="serif text-foreground mt-2 text-balance text-xl leading-snug tracking-[-0.01em] sm:text-2xl">
+                  {latestPost.title}
+                </p>
+                <span className="text-foreground mt-3 inline-flex items-center gap-2 text-[13.5px] font-medium underline-offset-4 group-hover:underline">
+                  Essay lesen · {latestPost.readingMinutes} Min
                 </span>
-                <span className="text-foreground/85 text-pretty text-[15px] leading-relaxed sm:text-[16px]">
-                  {note.text}
-                </span>
-              </li>
-            ))}
-          </ol>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </section>

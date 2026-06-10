@@ -5,7 +5,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Datenschutz — Sitalo Webdesign",
+  title: "Datenschutz",
   description: "Datenschutzerklärung von Sitalo Webdesign.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/datenschutz" },
@@ -22,7 +22,7 @@ export default function DatenschutzPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
           <div
             aria-hidden="true"

@@ -26,7 +26,7 @@ export async function generateMetadata({
   const standort = getStandortBySlug(slug);
   if (!standort) return {};
 
-  const title = `Webdesign ${standort.name} — aus dem Atelier nebenan | Sitalo`;
+  const title = `Webdesign ${standort.name} — aus dem Atelier nebenan`;
   const description = `${standort.tagline} Professionelle Websites für ${standort.name}er Unternehmen — schnell, persönlich, auf den Stadtteil zugeschnitten.`;
   return {
     title,
@@ -110,7 +110,7 @@ export default async function StandortPage({
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section={`Standorte · ${standort.name}`} />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         {/* Hero */}
         <section className="border-border/40 relative overflow-hidden border-b">
           <div

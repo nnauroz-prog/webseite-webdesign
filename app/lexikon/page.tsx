@@ -6,22 +6,20 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { LEXIKON } from "@/lib/lexikon-data";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Lexikon — Webbegriffe in Klartext · Sitalo",
+  title: "Lexikon — Webbegriffe in Klartext",
   description:
     "Hosting, SSL, CMS, SEO, DSGVO — die Begriffe, mit denen Agenturen einschüchtern, in ehrlichem Deutsch erklärt. Mit dem einen Satz, der für Ihre Entscheidung zählt.",
   alternates: { canonical: "/lexikon" },
 };
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 /**
  * `/lexikon` — Klartext-Glossar.
  *
- * Service-Geste + Long-Tail-SEO: zwölf Begriffe, mit denen
+ * Service-Geste + Long-Tail-SEO: sechzehn Begriffe, mit denen
  * Agenturen lokale Inhaber regelmäßig einschüchtern, ehrlich
  * erklärt. Pro Begriff eine „Entscheidend ist"-Zeile — der eine
  * Satz, der für die Kaufentscheidung zählt.
@@ -54,7 +52,7 @@ export default function LexikonPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Lexikon" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28">
             <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
@@ -62,7 +60,7 @@ export default function LexikonPage() {
                 aria-hidden="true"
                 className="bg-gold inline-block h-px w-10"
               />
-              Zwölf Begriffe · Klartext
+              Sechzehn Begriffe · Klartext
             </p>
             <h1 className="serif text-foreground mt-8 text-balance text-5xl font-normal leading-[0.98] tracking-[-0.02em] sm:text-6xl lg:text-7xl">
               Lexikon.

@@ -9,7 +9,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { BRANCHEN } from "@/lib/branchen-data";
 
 export const metadata: Metadata = {
-  title: "Branchen — passende Layouts für Ihren Betrieb | Sitalo",
+  title: "Branchen — passende Layouts für Ihren Betrieb",
   description:
     "Websites für Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien und Fitnessstudios — pro Branche eigene Layouts.",
   alternates: { canonical: "/branchen" },
@@ -20,7 +20,7 @@ export default function BranchenPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Branchen" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         <Sections />
         <FinalCta />

@@ -8,10 +8,13 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { JOURNAL_POSTS, formatDate } from "@/lib/journal-data";
 
 export const metadata: Metadata = {
-  title: "Journal — Sitalo",
+  title: "Journal",
   description:
-    "Beobachtungen aus dem Hamburger Atelier zu Lokalem SEO, Café-Websites, Pflegedienst-Marketing und Wix-Migrationen.",
-  alternates: { canonical: "/journal" },
+    "Essays aus dem Hamburger Atelier — Preis-Transparenz, Arbeitsweise, Lokales SEO, Gastronomie, Pflege, Migrationen.",
+  alternates: {
+    canonical: "/journal",
+    types: { "application/rss+xml": "/journal/feed.xml" },
+  },
 };
 
 /**
@@ -28,7 +31,7 @@ export default function JournalPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Journal" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-5xl px-6 py-14 sm:py-20 lg:py-24">
             <div className="text-center">
@@ -85,9 +88,17 @@ export default function JournalPage() {
         {rest.length > 0 && (
           <section className="border-border/40 border-b">
             <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
-              <p className="text-muted-foreground mb-10 font-mono text-[10px] uppercase tracking-[0.22em]">
-                Weitere Beiträge
-              </p>
+              <div className="mb-10 flex items-baseline justify-between gap-4">
+                <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                  Weitere Beiträge
+                </p>
+                <a
+                  href="/journal/feed.xml"
+                  className="text-muted-foreground hover:text-foreground font-mono text-[10px] uppercase tracking-[0.22em] underline-offset-4 transition-colors hover:underline"
+                >
+                  RSS
+                </a>
+              </div>
               <ul className="divide-border/40 divide-y">
                 {rest.map((post) => (
                   <li key={post.slug}>

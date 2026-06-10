@@ -1,12 +1,11 @@
 import type { MetadataRoute } from "next";
 
 import { getAllBrancheSlugs } from "@/lib/branchen-data";
+import { JOURNAL_POSTS } from "@/lib/journal-data";
 import { getAllPaketSlugs } from "@/lib/pakete-data";
 import { getAllStandortSlugs } from "@/lib/standorte-data";
+import { SITE_URL } from "@/lib/site";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
-  "https://www.sitalo.de";
 
 const STATIC_ROUTES = [
   "",
@@ -19,6 +18,21 @@ const STATIC_ROUTES = [
   "/faq",
   "/kontakt",
   "/anfrage",
+  // Werkzeuge / Lead-Magnete
+  "/audit",
+  "/check",
+  "/empfehlung",
+  "/termin",
+  "/rechner",
+  // Produkte / Vergleich
+  "/wartung",
+  "/vergleich",
+  // Editorial / Identität
+  "/journal",
+  "/manifest",
+  "/auswahl",
+  "/inventar",
+  "/lexikon",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -58,10 +72,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
+  // Journal-Posts mit echtem Publikations-Datum als lastModified —
+  // ehrlicher für Crawler als ein pauschales "now".
+  const journalEntries: MetadataRoute.Sitemap = JOURNAL_POSTS.map((post) => ({
+    url: `${SITE_URL}/journal/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: "yearly",
+    priority: 0.6,
+  }));
+
   return [
     ...staticEntries,
     ...brancheEntries,
     ...paketEntries,
     ...standortEntries,
+    ...journalEntries,
   ];
 }

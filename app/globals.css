@@ -499,4 +499,27 @@ html {
   }
 }
 
-/* Vercel deploy trigger — 2026-06-07 19:49 */
+
+/* Druck-Stil — Essays und Manifest sollen gedruckt wie gesetzt
+   aussehen. Das Site-Chrome (Header, Footer, fixierte Helfer)
+   trägt direkt Tailwinds print:hidden — hier stehen nur die
+   Regeln, die kein einzelnes Element betreffen. Bewusst keine
+   Element-Selektoren wie `header` oder `button`: die treffen
+   auch Artikel-Header und Kontaktdaten (tel:/mailto:), die auf
+   Papier gerade gebraucht werden. */
+@media print {
+  [role="dialog"] {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  main {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  @page {
+    margin: 2.2cm 2cm;
+  }
+}

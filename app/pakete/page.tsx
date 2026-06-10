@@ -8,7 +8,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Pakete & Preise — Websites ab 499 € | Sitalo Hamburg",
+  title: "Pakete & Preise — Websites ab 499 €",
   description:
     "Drei Wege, Ihre Seite zu bekommen. Einmalige Erstellung plus fairer Monatsbeitrag — keine versteckten Kosten.",
   alternates: { canonical: "/pakete" },
@@ -128,7 +128,7 @@ export default function PaketePage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Pakete" />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         <Packages />
         <PflegeHosting />
@@ -175,7 +175,7 @@ function Hero() {
           </li>
           <li className="inline-flex items-center gap-2">
             <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Monatlich kündbar
+            Nach 6 Monaten monatlich kündbar
           </li>
         </ul>
         {/* Verfügbarkeit — ehrlich gepflegt, gibt einen leichten

@@ -4,11 +4,12 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Kontakt — schreiben Sie uns direkt | Sitalo Hamburg",
+  title: "Kontakt — schreiben Sie uns direkt",
   description:
     "Schreiben Sie uns über Formular oder E-Mail. Wir melden uns persönlich, meist noch am selben Tag.",
   alternates: { canonical: "/kontakt" },
@@ -20,7 +21,7 @@ export default function KontaktPage() {
       <MarketingHeader />
       <EditorialMasthead section="Kontakt" />
 
-      <main className="bg-secondary/40 flex-1">
+      <main id="main" className="bg-secondary/40 flex-1">
         <section className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
           {/* Editorial letter-style layout */}
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
@@ -71,6 +72,20 @@ export default function KontaktPage() {
               download
             />
           </div>
+
+          {/* Termin-Hinweis — der fünfte Weg, bewusst nicht als
+              fünfte Grid-Zelle (würde das Vier-Wege-Raster brechen),
+              sondern als ruhige Zeile darunter. */}
+          <p className="text-muted-foreground mt-6 text-[14px] leading-relaxed">
+            Oder Sie überspringen das Hin-und-Her:{" "}
+            <Link
+              href="/termin"
+              className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+            >
+              30-Minuten-Termin direkt buchen
+            </Link>{" "}
+            — Tag und Uhrzeit selbst wählen, Bestätigung in 15 Minuten.
+          </p>
 
           <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
             <div className="space-y-12">
@@ -173,6 +188,31 @@ export default function KontaktPage() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Hamburg-Karte — die acht Stadtteile, in denen wir am
+              meisten unterwegs sind, klickbar. Verlängert das
+              „Treffen vor Ort"-Versprechen visuell. */}
+          <div className="border-border/60 mt-20 border-t pt-16 sm:mt-24 sm:pt-20">
+            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+              Wo wir unterwegs sind
+            </p>
+            <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
+              <div>
+                <p className="serif text-foreground text-balance text-3xl font-normal leading-[1.15] tracking-[-0.02em] sm:text-4xl">
+                  Acht Stadtteile,{" "}
+                  <span className="serif-italic text-muted-foreground">
+                    in denen wir regelmäßig sitzen.
+                  </span>
+                </p>
+                <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[15px] leading-relaxed">
+                  Jeder Pin führt zur Stadtteil-Seite — mit den
+                  Branchen, die dort am häufigsten zu uns kommen, und
+                  den Suchbegriffen, für die wir dort bauen.
+                </p>
+              </div>
+              <HamburgMap />
             </div>
           </div>
         </section>
