@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, CalendarPlus, Phone } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -245,6 +245,16 @@ function NaechsteTermine({
             </li>
           ))}
         </ol>
+        {/* ICS-Download — alle drei Termine mit einem Klick im
+            eigenen Kalender. Apple/Google/Outlook lesen das nativ. */}
+        <a
+          href="/sprechstunde/termine.ics"
+          download="sitalo-sprechstunde.ics"
+          className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background mt-8 inline-flex h-11 items-center gap-2 rounded-full border px-5 text-[14px] font-medium tracking-tight transition-all"
+        >
+          <CalendarPlus className="h-4 w-4" aria-hidden="true" />
+          Alle drei in den Kalender
+        </a>
       </div>
     </section>
   );

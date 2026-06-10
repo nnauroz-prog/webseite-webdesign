@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 
 import { CommandPalette } from "@/components/marketing/command-palette";
+import { buildSearchIndex } from "@/lib/search-index";
 import { CursorLabel } from "@/components/marketing/cursor-label";
 import { KeyboardChords } from "@/components/marketing/keyboard-chords";
 import { KonamiEgg } from "@/components/marketing/konami-egg";
@@ -108,7 +109,7 @@ export default function RootLayout({
         <PageCursorGlow />
         {children}
         <CursorLabel />
-        <CommandPalette />
+        <CommandPalette searchIndex={buildSearchIndex()} />
         <KeyboardChords />
         <ShortcutHelp />
         <KonamiEgg />

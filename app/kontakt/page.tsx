@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { Depth3D } from "@/components/marketing/depth-3d";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -212,7 +213,7 @@ export default function KontaktPage() {
                   den Suchbegriffen, für die wir dort bauen.
                 </p>
               </div>
-              <HamburgMap />
+              <Depth3D><HamburgMap /></Depth3D>
             </div>
           </div>
         </section>

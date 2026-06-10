@@ -383,6 +383,11 @@ const SCHRIFTEN: { href: string; title: string; line: string }[] = [
     line: "Sechzehn Webbegriffe in Klartext, ohne Einschüchterung.",
   },
   {
+    href: "/honorar",
+    title: "Honorar",
+    line: "Stundensatz, Aufwand pro Paket, was wir nicht abrechnen.",
+  },
+  {
     href: "/journal",
     title: "Journal",
     line: "Essays aus echten Projekten. Beobachtung statt Ratgeber.",

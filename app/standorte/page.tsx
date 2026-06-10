@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Depth3D } from "@/components/marketing/depth-3d";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { STANDORTE } from "@/lib/standorte-data";
 
@@ -61,7 +62,7 @@ function Hero() {
 
           {/* Rechte Spalte: Hamburg-Karte mit klickbaren Stadtteilen */}
           <div className="relative">
-            <HamburgMap />
+            <Depth3D><HamburgMap /></Depth3D>
           </div>
         </div>
       </div>

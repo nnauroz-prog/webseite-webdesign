@@ -53,7 +53,7 @@ export function ExamplesGallery() {
             return (
               <article
                 key={b.slug}
-                className="grid items-center gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16"
+                className="unfold-3d grid items-center gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16"
               >
                 <TiltCard
                   href={`/branchen/${b.slug}`}
