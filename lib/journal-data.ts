@@ -37,6 +37,72 @@ export type JournalPost = {
 
 const POSTS: JournalPost[] = [
   {
+    slug: "die-zweite-frage",
+    title: "Die zweite Frage",
+    dek: "Was Inhaber am Telefon eigentlich wissen wollen — und warum sie die erste Frage stellen, statt die zweite.",
+    publishedAt: "2026-06-15",
+    readingMinutes: 6,
+    tags: ["Beratung", "Sprechstunde", "Vertrauen"],
+    body: [
+      {
+        kind: "p",
+        text: "Bei den meisten Erstgesprächen kommt zuerst eine Frage, die keine Frage ist. Was kostet eine Website. Wie lange dauert das. Können Sie auch SEO. Das sind Hülsen, die der Anrufer benutzt, weil er glaubt, sie seien angemessen für ein erstes Telefonat — so wie man im Hotel zuerst nach dem WLAN fragt, obwohl einen das eigentlich nicht interessiert.",
+      },
+      {
+        kind: "p",
+        text: "Die echte Frage kommt etwa drei Minuten später, manchmal erst nach zehn. Sie ist meistens kleiner und gleichzeitig wichtiger als die erste.",
+      },
+      {
+        kind: "h2",
+        text: "Was wir tatsächlich hören",
+      },
+      {
+        kind: "p",
+        text: "Eine Inhaberin einer kleinen Schneiderei in Eppendorf fragt nach den Kosten einer neuen Website. Drei Sätze später kommt heraus: ihr Sohn hat ihr vor zwei Jahren eine Wix-Seite gemacht, der Sohn ist jetzt in Berlin und antwortet nicht mehr, das Passwort ist weg, die Seite zeigt seit Monaten die Sommerkollektion, und nächste Woche kommt ein Reporter vom Hamburger Wochenblatt zum Interview. Die eigentliche Frage war nie der Preis. Die eigentliche Frage war: bekomme ich diese Seite bis Mittwoch wieder unter Kontrolle.",
+      },
+      {
+        kind: "p",
+        text: "Ein Pflegedienstleiter aus Wandsbek fragt, ob wir auch SEO machen. Vier Sätze später: seine Kassiererin hat letzte Woche eine schlechte Google-Bewertung von jemandem bekommen, der niemals Kunde war, er weiß nicht, wie er reagieren soll, das beschäftigt ihn nachts. Die eigentliche Frage war nie SEO. Die eigentliche Frage war: wie gehe ich mit einer ungerechten Bewertung um, ohne mich strafbar zu machen.",
+      },
+      {
+        kind: "h2",
+        text: "Warum die erste Frage gestellt wird",
+      },
+      {
+        kind: "p",
+        text: "Sie ist eine Eintrittskarte. Wer einen Anbieter anruft und sofort mit der eigentlichen Frage einsteigt, fühlt sich nackt — als gäbe es kein Skript für dieses Gespräch, das ihm Sicherheit gibt. Also fragt er, was man halt fragt: Preise, Dauer, Leistungen. Das funktioniert wie das WLAN-Passwort im Hotel: man wollte es nicht wirklich wissen, aber jetzt hat man eine Position eingenommen, von der aus weiterzureden möglich ist.",
+      },
+      {
+        kind: "p",
+        text: "Unsere Aufgabe ist es nicht, die erste Frage besonders gründlich zu beantworten. Unsere Aufgabe ist es, in den ersten zwei Minuten so glaubwürdig zu antworten, dass die zweite Frage hörbar werden darf. Das geht nicht über Sales-Skripte. Das geht nur, wenn der Anrufer spürt, dass wir zuhören wollen, nicht verkaufen.",
+      },
+      {
+        kind: "h2",
+        text: "Wie das praktisch aussieht",
+      },
+      {
+        kind: "p",
+        text: "Wir antworten auf Preisfragen in einem Satz, nicht in fünf. Starter ab vierhundertneunundneunzig, Business ab achthundertneunundneunzig, Premium ab vierzehnhundertneunundneunzig — Endpreis je nach Umfang. Punkt. Dann eine Pause. In dieser Pause kommt die zweite Frage.",
+      },
+      {
+        kind: "p",
+        text: "Wir versuchen nicht, die erste Frage zu instrumentalisieren — keine Rückfragen vom Typ was-Ihnen-denn-wichtiger-sei-Geschwindigkeit-oder-Preis, die der Anrufer als Verkaufstaktik erkennt, weil er sie schon hundertmal gehört hat. Wir sagen, was wir nehmen, schweigen kurz, und warten. Das verlangt mehr Selbstvertrauen als jede Argumentationskette.",
+      },
+      {
+        kind: "h2",
+        text: "Warum wir das beschreiben",
+      },
+      {
+        kind: "p",
+        text: "Weil wir seit ein paar Wochen eine monatliche Sprechstunde anbieten, in der es ausschließlich um zweite Fragen geht. Niemand muss sich für ein Erstgespräch melden, niemand muss ein Vorhaben skizzieren, niemand muss seine Branche und sein Budget nennen, um eingelassen zu werden. Die Schwelle ist absichtlich auf Null. Das ist die einzige Bauart, in der zweite Fragen früh genug kommen, um nicht unbeantwortet zu bleiben.",
+      },
+      {
+        kind: "quote",
+        text: "Die erste Frage ist Höflichkeit. Die zweite Frage ist Vertrauen. Eine Werkstatt, die die erste richtig stellt, hört die zweite oft nie.",
+      },
+    ],
+  },
+  {
     slug: "der-preis-einer-website",
     title: "Der Preis, einmal offen hingelegt",
     dek: "Was eine Website in Deutschland tatsächlich kostet, wo unsere Zahlen herkommen — und welche Posten in den meisten Angeboten unsichtbar bleiben.",

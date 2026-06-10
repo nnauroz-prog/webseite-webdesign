@@ -107,6 +107,13 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Sprechstunde",
+        description: "Jeden ersten Donnerstag, 17–18:30 Uhr · Telefon",
+        href: "/sprechstunde",
+        icon: Phone,
+      },
+      {
+        kind: "link",
         label: "Welches Paket passt? — Quiz",
         description: "Fünf Fragen, eine ehrliche Empfehlung",
         href: "/empfehlung",
