@@ -207,7 +207,14 @@ function Hero() {
           >
             Fünf Fragen beantworten und Empfehlung bekommen
           </a>
-          .
+          . Oder die{" "}
+          <a
+            href="/honorar"
+            className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+          >
+            offene Honorar-Rechnung lesen
+          </a>
+          , falls Sie wissen wollen, wie die Preise zustande kommen.
         </p>
       </div>
     </section>

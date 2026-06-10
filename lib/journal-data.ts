@@ -37,6 +37,68 @@ export type JournalPost = {
 
 const POSTS: JournalPost[] = [
   {
+    slug: "wann-eine-website-warten-kann",
+    title: "Wann eine Website warten kann",
+    dek: "Drei Lagen, in denen es ehrlicher ist, nicht zu bauen — und was wir denen sagen, die uns trotzdem fragen.",
+    publishedAt: "2026-06-12",
+    readingMinutes: 6,
+    tags: ["Beratung", "Entscheidung", "Lokales Geschäft"],
+    body: [
+      {
+        kind: "p",
+        text: "Es ist nicht das, was eine Webdesign-Werkstatt naheliegend schreibt: dass es Momente gibt, in denen eine eigene Website nicht das Erste sein sollte. Aber wir haben in den vergangenen anderthalb Jahren mit dreien gesessen, denen wir am Schluss von einem Auftrag abgeraten haben — und in allen drei Fällen war es die richtige Empfehlung. Hier ist, warum.",
+      },
+      {
+        kind: "h2",
+        text: "Wenn das Geschäft selbst noch nicht steht",
+      },
+      {
+        kind: "p",
+        text: "Ein Inhaber kommt mit einer guten Geschäftsidee, aber ohne ersten Kunden. Er glaubt, die Website sei der erste Schritt. Wir glauben, sie ist der dritte. Erst kommt die Frage, was genau verkauft wird und an wen. Dann das erste, zweite, dritte Gespräch mit echten Interessenten, bei denen sich Begriffe schärfen und Versprechen zurechtschleifen lassen. Erst danach eine Website, die diese geschärften Begriffe trägt.",
+      },
+      {
+        kind: "p",
+        text: "Wer es umgekehrt macht, baut eine Seite für eine Vorstellung des Geschäfts, nicht für das Geschäft selbst. Nach sechs Monaten ist klar, dass die ersten zehn Kunden anders sind, als sie auf der Website erscheinen — und die Seite muss neu gebaut werden, bevor sie irgendetwas verdient hat. Das ist Zeit und Geld zweimal.",
+      },
+      {
+        kind: "h2",
+        text: "Wenn Instagram der Vertriebskanal ist",
+      },
+      {
+        kind: "p",
+        text: "Für manche lokale Geschäfte ist die Wahrheit unbequem: ihr eigentlicher Markt findet auf Instagram statt. Eine kleine Konditorei in Eppendorf, deren Stammkundschaft den nächsten Sonntagskuchen am Donnerstagabend aus der Story erfährt. Ein Boutique-Tattoostudio in Sternschanze, dessen verfügbare Termine über DM laufen.",
+      },
+      {
+        kind: "p",
+        text: "In solchen Fällen verlangt eine Website Aufmerksamkeit, die der Inhaberin am Vertriebskanal fehlt. Wenn die Wahl heißt zwischen einer mittelmäßig gepflegten Website plus mittelmäßig gepflegtem Instagram und einem hervorragend gepflegten Instagram allein, ist die Antwort offensichtlich. Wir empfehlen dann ein leichtes Visitenkarten-Setup: eine einzelne Linktree-ähnliche Landung mit den drei wichtigsten Antworten, und alle Energie zurück in den Kanal, der die Anfragen bringt. Das kostet weniger als ein Wochenendbrunch.",
+      },
+      {
+        kind: "h2",
+        text: "Wenn die Saison gerade läuft",
+      },
+      {
+        kind: "p",
+        text: "Eine Eisdiele im April, ein Weihnachtsmarkt-Stand im November, ein Skiverleih im Januar — wer mitten in der Saison fragt, hat keine Zeit, neben dem Tagesgeschäft drei bis sechs Wochen Aufbau zu begleiten. Saubere Texte schreiben, Bilder sortieren, Korrekturrunden abnehmen, all das verlangt Konzentration, die in der heißen Phase nicht da ist.",
+      },
+      {
+        kind: "p",
+        text: "Unsere Empfehlung lautet in solchen Fällen ohne Ausnahme: warten Sie auf die Nachsaison. Drei Wochen im Februar bringen mehr als drei Monate parallel zum Hochbetrieb. Wer trotzdem im Juli starten will, weil im August die Saison kommt, baut eine Seite, die ungetestet live geht — und stellt im Hochbetrieb fest, dass das Kontaktformular streikt.",
+      },
+      {
+        kind: "h2",
+        text: "Warum wir das schreiben",
+      },
+      {
+        kind: "p",
+        text: "Eine Werkstatt, die nur baut, wenn gebaut werden soll, gewinnt mit jedem dieser Absagen vermutlich kein Auftrag und durchaus etwas Achtung. Wir glauben, das ist der bessere Tausch. Eine Empfehlung gegen den eigenen Umsatz ist das stärkste Vertrauenssignal, das eine Dienstleistung geben kann — und es ist auch der seltenste Moment, in dem ein Kunde später zurückkommt, mit dem Auftrag, den er beim ersten Mal nicht hatte.",
+      },
+      {
+        kind: "quote",
+        text: "Das beste Webdesign-Atelier ist nicht das, das jeden Auftrag annimmt. Es ist das, das weiß, wann es nein sagt — und es ehrlich begründet.",
+      },
+    ],
+  },
+  {
     slug: "der-preis-einer-website",
     title: "Der Preis, einmal offen hingelegt",
     dek: "Was eine Website in Deutschland tatsächlich kostet, wo unsere Zahlen herkommen — und welche Posten in den meisten Angeboten unsichtbar bleiben.",

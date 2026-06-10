@@ -152,6 +152,13 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Honorar",
+        description: "Open-Book — Stundensatz, Aufwand pro Paket.",
+        href: "/honorar",
+        icon: Package,
+      },
+      {
+        kind: "link",
         label: "3-Jahres-Rechner",
         description: "Was kostet's wirklich? Mit Eigenzeit.",
         href: "/rechner",

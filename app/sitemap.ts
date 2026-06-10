@@ -13,6 +13,7 @@ const STATIC_ROUTES = [
   "/branchen",
   "/ablauf",
   "/pakete",
+  "/honorar",
   "/standorte",
   "/atelier",
   "/faq",
