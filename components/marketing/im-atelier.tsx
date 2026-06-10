@@ -24,43 +24,8 @@
 import Link from "next/link";
 
 import { DrawnArrow } from "@/components/marketing/ornaments";
+import { ATELIER_NOTES } from "@/lib/atelier-notes";
 import { formatDate, JOURNAL_POSTS } from "@/lib/journal-data";
-
-type AtelierNote = {
-  /** Relative Zeit-Anker, z. B. „Diese Woche", „Mittwoch", „KW 20". */
-  when: string;
-  /** Ein-Satz-Beschreibung der Tätigkeit. Anonymisiert (Branche +
-   *  Stadtteil, kein Name). Möglichst konkret, was wirklich gemacht
-   *  wurde. */
-  text: string;
-};
-
-/**
- * Platzhalter-Einträge. ERSETZEN durch echte Aktivität:
- *   - jeden Eintrag mit dem, was wirklich diese Woche / letzten Woche
- *     im Atelier passiert ist
- *   - Branche + Stadtteil ok, Klar-Namen nur mit Kundenfreigabe
- *   - bei lange keine Aktivität: 2 Einträge auf „Diesen Monat: Anfragen
- *     in Konkretisierung" reduzieren — lieber knapp als erfunden
- */
-const ATELIER_NOTES: AtelierNote[] = [
-  {
-    when: "Diese Woche",
-    text: "Pflegedienst aus Wandsbek — Bewerbungsformular und Team-Bereich aufgebaut.",
-  },
-  {
-    when: "Letzte Woche",
-    text: "Café in Eppendorf — Speisekarte selbst pflegbar übergeben.",
-  },
-  {
-    when: "Vor zwei Wochen",
-    text: "Friseur Eimsbüttel — Online-Termin-Buchung live geschaltet.",
-  },
-  {
-    when: "Diesen Monat",
-    text: "Drei Erstgespräche aus Hamburg-Nord, zwei in Konkretisierung.",
-  },
-];
 
 export function ImAtelier() {
   // Graceful Fallback: keine Notes = keine Sektion. Verhindert
