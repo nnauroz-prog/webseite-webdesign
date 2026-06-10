@@ -39,8 +39,8 @@ export function TiltCard({
     const rect = el.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width; // 0..1
     const y = (event.clientY - rect.top) / rect.height; // 0..1
-    const rotateY = (x - 0.5) * 6; // max ~3° pro Seite
-    const rotateX = (0.5 - y) * 6;
+    const rotateY = (x - 0.5) * 18; // max ~9° pro Seite — sichtbar
+    const rotateX = (0.5 - y) * 18;
     el.style.setProperty("--tilt-x", `${rotateX}deg`);
     el.style.setProperty("--tilt-y", `${rotateY}deg`);
     el.style.setProperty("--tilt-shine-x", `${x * 100}%`);

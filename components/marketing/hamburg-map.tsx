@@ -190,6 +190,17 @@ function Pin({
         {/* Hit-Area — größer als sichtbar, damit Hover/Touch leichter trifft */}
         <circle cx={x} cy={y} r="22" fill="transparent" />
 
+        {/* Boden-Schatten unter dem Pin — wandert beim Hover, gibt
+            dem Pin gefühlte Höhe über der Karte. */}
+        <ellipse
+          cx={x}
+          cy={y + 1}
+          rx="6"
+          ry="2"
+          className="fill-foreground/30 blur-[2px] transition-all duration-300 group-hover:translate-y-[3px] group-hover:opacity-100"
+          style={{ transformOrigin: `${x}px ${y}px` }}
+        />
+
         {/* Pulse-Ring beim Hover */}
         <circle
           cx={x}
@@ -199,12 +210,23 @@ function Pin({
           strokeWidth="1"
         />
 
-        {/* Hauptpunkt — Gold, gefüllt */}
+        {/* Pin-Stiel — wird nur beim Hover sichtbar, suggeriert
+            dass der Pin auf der Karte steht statt aufgemalt zu sein. */}
+        <line
+          x1={x}
+          y1={y}
+          x2={x}
+          y2={y + 4}
+          className="stroke-gold/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          strokeWidth="1.2"
+        />
+
+        {/* Hauptpunkt — Gold, gefüllt, hebt beim Hover ab */}
         <circle
           cx={x}
           cy={y}
           r="4.5"
-          className="fill-gold transition-transform duration-300 group-hover:scale-125"
+          className="fill-gold transition-transform duration-300 group-hover:translate-y-[-5px] group-hover:scale-125"
           style={{ transformOrigin: `${x}px ${y}px` }}
         />
 

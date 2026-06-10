@@ -11,6 +11,7 @@ import { AtelierSuite } from "@/components/marketing/atelier-suite";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
+import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -334,40 +335,20 @@ function Hero() {
             </p>
           </div>
 
-          {/* Rechte Spalte: Workspace-Foto mit Parallax und schwebendem
-              Magazin-Zitat — direkt von uns, nicht aus Kundensicht. */}
+          {/* Rechte Spalte: Workspace-Foto im echten 3D-Tiefenrahmen.
+              Atelier-Plakette und Notiz-Zettel schweben vor dem Bild,
+              kippen mit der Maus eigenständig — das ist die räumliche
+              Visitenkarte des Ateliers. */}
           <div
             className="reveal relative"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
-            <div className="hero-image-reveal ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]">
-              <ParallaxImage
-                src="/images/workspace-macbook.webp"
-                alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
-                priority
-                sizes="(min-width: 1024px) 480px, 100vw"
-                className="object-cover"
-                intensityPx={28}
-              />
-              {/* Vignette für Kontrast unter dem Zitat */}
-              <div
-                aria-hidden="true"
-                className="from-foreground/60 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
-              />
-              {/* Schwebendes Zitat — Stimme des Ateliers, nicht aus Kundenmund. */}
-              <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
-                <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
-                  „Wir bauen jede Seite, als wäre es unsere eigene."
-                </blockquote>
-                <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
-                  <span
-                    aria-hidden="true"
-                    className="bg-gold gold-pulse inline-block h-1 w-5"
-                  />
-                  Sitalo Atelier · Hamburg
-                </figcaption>
-              </figure>
-            </div>
+            <ParallaxHeroFrame
+              src="/images/workspace-macbook.webp"
+              alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
+              quote={`„Wir bauen jede Seite, als wäre es unsere eigene."`}
+              caption="Sitalo Atelier · Hamburg"
+            />
           </div>
         </div>
       </div>
