@@ -51,6 +51,7 @@ Lokale Unternehmen in Deutschland mit Fokus auf Hamburg und Umland: Pflegedienst
 
 ## Editorial & Identität
 
+- [Jetzt](https://www.sitalo.de/jetzt): Now-Page — was im Atelier gerade passiert: Werkbank, freie Bauplätze, nächste Sprechstunde, zuletzt geschrieben. Monatlich erneuert.
 - [Journal](https://www.sitalo.de/journal): Essays aus dem Atelier — Beobachtungen aus echten Hamburger Projekten (Gastronomie, Pflege, Migrationen).
 - [Manifest](https://www.sitalo.de/manifest): Acht Sätze darüber, was Sitalo tut und was nicht.
 - [Auswahl](https://www.sitalo.de/auswahl): Aufnahmekriterien — Sitalo nimmt höchstens drei neue Aufträge pro Monat an.

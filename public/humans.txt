@@ -1,0 +1,19 @@
+/* TEAM */
+Werkstatt: Sitalo Webdesign
+Ort: Hamburg, Deutschland
+Kontakt: info [at] sitalo.de
+
+/* THANKS */
+Den Hamburger Cafés, Pflegediensten, Friseuren und Handwerkern,
+die uns erklären, wie ihre Kundschaft wirklich sucht.
+
+/* SITE */
+Stand: Juni 2026
+Sprache: Deutsch
+Stack: Next.js, React, TypeScript, Tailwind CSS
+Schriften: Cormorant Garamond, Geist Sans, Geist Mono
+Hosting: Vercel (EU) + Hetzner-Backups
+Tracking: keins. Deshalb auch kein Cookie-Banner.
+
+/* KOORDINATEN */
+53.5511° N, 9.9937° E

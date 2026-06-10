@@ -106,6 +106,7 @@ export function MarketingFooter() {
           </FooterCol>
           <FooterCol title="Sitalo">
             <FooterLink href="/atelier">Das Atelier</FooterLink>
+            <FooterLink href="/jetzt">Jetzt</FooterLink>
             <FooterLink href="/manifest">Manifest</FooterLink>
             <FooterLink href="/auswahl">Auswahl</FooterLink>
             <FooterLink href="/inventar">Inventar</FooterLink>

@@ -208,6 +208,13 @@ export function CommandPalette() {
       },
       {
         kind: "link",
+        label: "Jetzt",
+        description: "Was im Atelier gerade passiert — Now-Page",
+        href: "/jetzt",
+        icon: BookOpen,
+      },
+      {
+        kind: "link",
         label: "Ablauf",
         description: "Sechs Schritte zur Live-Seite",
         href: "/ablauf",

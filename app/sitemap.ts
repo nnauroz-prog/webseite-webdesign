@@ -16,6 +16,7 @@ const STATIC_ROUTES = [
   "/honorar",
   "/standorte",
   "/atelier",
+  "/jetzt",
   "/faq",
   "/kontakt",
   "/anfrage",

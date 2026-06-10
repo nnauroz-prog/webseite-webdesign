@@ -485,6 +485,17 @@ export const JOURNAL_BY_BRANCHE: Record<string, string> = {
   pflege: "pflegedienst-google-maps-hamburg",
 };
 
+/**
+ * Stadtteil-Slug → Journal-Slug, gleiche Logik für die Standort-
+ * Detailseiten. Nur gepflegt, wo der Essay den Stadtteil wirklich
+ * berührt — kein Zwang, alle acht zu bespielen.
+ */
+export const JOURNAL_BY_STANDORT: Record<string, string> = {
+  eppendorf: "cafe-website-hamburg-2026",
+  eimsbuettel: "cafe-website-hamburg-2026",
+  wandsbek: "pflegedienst-google-maps-hamburg",
+};
+
 export function getPost(slug: string): JournalPost | undefined {
   return JOURNAL_POSTS.find((p) => p.slug === slug);
 }
