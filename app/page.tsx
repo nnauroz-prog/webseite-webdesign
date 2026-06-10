@@ -5,7 +5,9 @@ import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
 import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
+import { Depth3D } from "@/components/marketing/depth-3d";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
+import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
@@ -450,15 +452,17 @@ function PersonalNote() {
               — Sitalo, aus Hamburg
             </p>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
-            <Image
-              src="/images/workspace-macbook.webp"
-              alt="Arbeitsplatz mit MacBook, Notizbuch und Espresso — warmes Schreibtischlicht."
-              fill
-              sizes="(min-width: 1024px) 480px, 100vw"
-              className="object-cover"
-            />
-          </div>
+          <Depth3D className="relative aspect-[4/3]" maxTilt={10}>
+            <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-white/10">
+              <Image
+                src="/images/workspace-macbook.webp"
+                alt="Arbeitsplatz mit MacBook, Notizbuch und Espresso — warmes Schreibtischlicht."
+                fill
+                sizes="(min-width: 1024px) 480px, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </Depth3D>
         </div>
       </div>
     </section>
@@ -478,8 +482,10 @@ function Steps() {
     >
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
         {/* Bewusst keine Eyebrow-Zeile — Steps soll ohne den gleichen
-            Auftakt-Beat starten, den jede andere Sektion hat. */}
-        <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
+            Auftakt-Beat starten, den jede andere Sektion hat. Rechts
+            der 3D-Karteikartenstapel als räumliche Eröffnung der
+            Etappen: drei Schichten, die beim Hover auffächern. */}
+        <div className="grid items-center gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div>
             <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
               Vom „Hallo"
@@ -488,12 +494,18 @@ function Steps() {
                 zur Live-Seite — in 48 Stunden.
               </span>
             </h2>
+            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+              Nach jedem Schritt haben Sie was in der Hand. Kein
+              PowerPoint-Status, kein Project-Tool-Ticket, das irgendwo
+              im System steht. Sie sehen's einfach.
+            </p>
           </div>
-          <p className="text-foreground/75 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-            Nach jedem Schritt haben Sie was in der Hand. Kein
-            PowerPoint-Status, kein Project-Tool-Ticket, das irgendwo
-            im System steht. Sie sehen's einfach.
-          </p>
+          <div className="relative">
+            <LayeredStack />
+            <p className="text-muted-foreground mt-6 text-center font-mono text-[10px] uppercase tracking-[0.28em]">
+              Drei Schichten · zeigen mit der Maus
+            </p>
+          </div>
         </div>
 
         {/* Drei Stufen als alternierende Magazin-Zeilen.
@@ -648,12 +660,14 @@ function Pricing() {
           </div>
 
           {/* Centerfold: Business */}
-          <div
+          <Depth3D
             className="order-1 lg:order-2"
-            id={featured.slug}
+            maxTilt={6}
           >
-            <PricingCenterfold paket={featured} />
-          </div>
+            <div id={featured.slug} className="h-full">
+              <PricingCenterfold paket={featured} />
+            </div>
+          </Depth3D>
 
           {/* Rechter Streifen: Premium */}
           <div className="order-3">
