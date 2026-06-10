@@ -42,6 +42,7 @@ Lokale Unternehmen in Deutschland mit Fokus auf Hamburg und Umland: Pflegedienst
 - [3-Jahres-Rechner](https://www.sitalo.de/rechner): Gesamtkosten-Vergleich Sitalo vs Wix, Squarespace, Jimdo, KI-Selbstbau — inklusive Eigenzeit als Geld.
 - [Kostenloser Audit](https://www.sitalo.de/audit): Persönliche Mini-Auswertung der eigenen Website per Mail innerhalb 48 Stunden.
 - [Termin-Buchung](https://www.sitalo.de/termin): 30-Minuten-Erstgespräch direkt buchen, Bestätigung in 15 Minuten.
+- [Sprechstunde](https://www.sitalo.de/sprechstunde): Jeden ersten Donnerstag im Monat von 17:00 bis 18:30 Uhr offene Telefon-Sprechstunde. Auch für Nicht-Kunden, ohne Anmeldung, ohne Verkauf.
 
 ## Weitere Angebote
 

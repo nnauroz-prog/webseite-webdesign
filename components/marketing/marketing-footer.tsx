@@ -112,6 +112,7 @@ export function MarketingFooter() {
             <FooterLink href="/journal">Journal</FooterLink>
             <FooterLink href="/anfrage">Website anfragen</FooterLink>
             <FooterLink href="/termin">Termin buchen</FooterLink>
+            <FooterLink href="/sprechstunde">Sprechstunde</FooterLink>
             <FooterLink href="/empfehlung">Welches Paket passt?</FooterLink>
             <FooterLink href="/vergleich">Vergleich</FooterLink>
             <FooterLink href="/faq">FAQ</FooterLink>
