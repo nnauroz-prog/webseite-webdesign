@@ -47,7 +47,20 @@ type Group = {
   items: Action[];
 };
 
-export function CommandPalette() {
+/** Vom Server gebauter Inhalts-Index (Essays + Lexikon-Begriffe) —
+ *  siehe lib/search-index.ts für das Warum der Prop-Übergabe. */
+export type PaletteSearchDoc = {
+  kind: "essay" | "begriff";
+  label: string;
+  description: string;
+  href: string;
+};
+
+export function CommandPalette({
+  searchIndex = [],
+}: {
+  searchIndex?: PaletteSearchDoc[];
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -302,13 +315,42 @@ export function CommandPalette() {
       a.label.toLowerCase().includes(q) ||
       a.description.toLowerCase().includes(q);
 
+    // Inhalts-Suche über den Server-Index: Essays und Lexikon-
+    // Begriffe tauchen erst auf, wenn getippt wird — die Default-
+    // Ansicht bleibt Navigation, die Suche wird zur Volltext-Hilfe.
+    const essays: Action[] = searchIndex
+      .filter((d) => d.kind === "essay")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label,
+        description: d.description,
+        href: d.href,
+        icon: BookOpen,
+      }))
+      .filter(match)
+      .slice(0, 5);
+
+    const begriffe: Action[] = searchIndex
+      .filter((d) => d.kind === "begriff")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label,
+        description: d.description,
+        href: d.href,
+        icon: BookOpen,
+      }))
+      .filter(match)
+      .slice(0, 5);
+
     return [
       { label: "Sofort", items: direct.filter(match) },
       { label: "Seiten", items: pages.filter(match) },
       { label: "Branchen", items: branchen.filter(match) },
       { label: "Stadtteile", items: standorte.filter(match) },
+      { label: "Essays", items: essays },
+      { label: "Lexikon", items: begriffe },
     ].filter((g) => g.items.length > 0);
-  }, [query]);
+  }, [query, searchIndex]);
 
   // Flatten für Keyboard-Navigation
   const flat = useMemo(() => groups.flatMap((g) => g.items), [groups]);
