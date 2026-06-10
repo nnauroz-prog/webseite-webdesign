@@ -104,8 +104,9 @@ export function AtelierSuite() {
         </div>
 
         {/* Magazin-Grid: 1 großer Aufmacher links, 4 kleinere rechts.
-            Auf Mobile alles gestapelt. */}
-        <div className="mt-14 grid gap-5 sm:mt-16 lg:grid-cols-12">
+            Auf Mobile alles gestapelt. Klappt beim Hereinscrollen
+            aus leichter Rückneigung auf (.unfold-3d, scroll-driven). */}
+        <div className="unfold-3d mt-14 grid gap-5 sm:mt-16 lg:grid-cols-12">
           <HeroCard tool={HERO_TOOL} />
           <div className="grid gap-5 sm:grid-cols-2 lg:col-span-6">
             {SIDE_TOOLS.map((t) => (
