@@ -98,6 +98,7 @@ export function MarketingFooter() {
             <FooterLink href="/branchen">Branchen</FooterLink>
             <FooterLink href="/standorte">Standorte</FooterLink>
             <FooterLink href="/pakete">Pakete</FooterLink>
+            <FooterLink href="/honorar">Honorar</FooterLink>
             <FooterLink href="/wartung">Wartung & Pflege</FooterLink>
             <FooterLink href="/rechner">3-Jahres-Rechner</FooterLink>
             <FooterLink href="/audit">Kostenloser Audit</FooterLink>
