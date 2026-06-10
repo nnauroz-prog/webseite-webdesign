@@ -509,6 +509,61 @@ html {
   }
 }
 
+/* LayeredStack — drei Karteikarten-Schichten, die im 3D-Raum
+   gestapelt sind und beim Hover nach oben auffächern. Pure CSS,
+   kein State. Touch-Geräte ohne Hover sehen den geschlossenen
+   Stapel — die Etiketten bleiben jeweils oben sichtbar lesbar. */
+.layered-stack-wrapper {
+  perspective: 1300px;
+}
+.layered-stack {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+}
+.layered-stack-card {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+/* Geschlossener Stapel: jede Karte rückt minimal nach unten und
+   liegt einen Hauch tiefer in Z, damit die obere die untere
+   überdeckt. Eine Spur Rotation gibt natürliche Unregelmäßigkeit. */
+.layered-stack-card[data-layer="0"] {
+  transform: translateZ(40px) translateY(-6px) rotate(-1.5deg);
+  z-index: 3;
+}
+.layered-stack-card[data-layer="1"] {
+  transform: translateZ(20px) translateY(8px) rotate(0.8deg);
+  z-index: 2;
+}
+.layered-stack-card[data-layer="2"] {
+  transform: translateZ(0px) translateY(22px) rotate(-0.4deg);
+  z-index: 1;
+}
+.layered-stack-card > div {
+  box-shadow:
+    0 2px 6px -2px rgb(35 31 27 / 0.18),
+    0 14px 30px -10px rgb(35 31 27 / 0.22);
+}
+/* Hover (nur echte Hover-Geräte): die drei Karten fächern auf,
+   jede mit eigener Vertikalverschiebung, Z-Tiefe und Mikro-Tilt.
+   Wirkt wie eine Mappe, die jemand aufgeklappt hat. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .layered-stack-wrapper:hover .layered-stack-card[data-layer="0"] {
+    transform: translateZ(110px) translateY(-110px) rotate(-3.5deg);
+  }
+  .layered-stack-wrapper:hover .layered-stack-card[data-layer="1"] {
+    transform: translateZ(70px) translateY(-30px) rotate(1.5deg);
+  }
+  .layered-stack-wrapper:hover .layered-stack-card[data-layer="2"] {
+    transform: translateZ(30px) translateY(55px) rotate(-1deg);
+  }
+}
+
 /* Stempel-Siegelpresse — beim Hover kippt das Wachssiegel nach
    hinten und drückt sich ins Papier, der Schatten vertieft sich.
    Die langsame Dauerrotation läuft auf .stempel svg und bleibt
