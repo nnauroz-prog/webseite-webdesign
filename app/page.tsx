@@ -513,17 +513,19 @@ function Steps() {
             Bewusst kein 3-Spalten-Grid mit Timeline-Linie — das ist
             die typische Standard-„Process"-Sektion auf AI-Templates.
             Stattdessen vertikaler Lesefluss mit übergroßen Numeralen. */}
-        <ol className="mt-20 space-y-16 sm:mt-24 sm:space-y-20 lg:space-y-24">
+        <ol className="etappen-stage mt-20 space-y-16 sm:mt-24 sm:space-y-20 lg:space-y-24">
           {STEPS.map(({ n, icon: Icon, title, body }, i) => {
             const flip = i === 1; // mittlere Stufe gespiegelt
             return (
               <li
                 key={n}
-                className="relative grid items-start gap-6 sm:grid-cols-[auto_1fr] sm:gap-10 lg:gap-14"
+                className="etappe-row group relative grid items-start gap-6 sm:grid-cols-[auto_1fr] sm:gap-10 lg:gap-14"
               >
-                {/* Numeral-Spalte links — riesiges Serif, dezent */}
+                {/* Numeral-Spalte links — riesiges Serif, dezent.
+                    Beim Row-Hover hebt sich das Numeral um translateZ
+                    nach vorn, der Tinten-Schatten vertieft sich. */}
                 <div className={flip ? "sm:order-2 sm:text-right" : ""}>
-                  <span className="drop-cap-3d serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
+                  <span className="etappe-numeral drop-cap-3d serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
                     {n}
                   </span>
                 </div>
@@ -542,7 +544,7 @@ function Steps() {
                         : "flex items-center gap-3"
                     }
                   >
-                    <span className="bg-foreground/[0.04] text-foreground/80 inline-flex h-10 w-10 items-center justify-center rounded-xl">
+                    <span className="etappe-icon bg-foreground/[0.04] text-foreground/80 inline-flex h-10 w-10 items-center justify-center rounded-xl">
                       <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
                     </span>
                     <span className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">

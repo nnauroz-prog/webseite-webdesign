@@ -705,6 +705,32 @@ html {
   }
 }
 
+/* Etappen-Hover — beim Row-Hover hebt sich das Riesen-Numeral
+   und das Icon-Pill räumlich nach vorn (translateZ), während die
+   Tinten-Schatten weicher und tiefer werden. Nur auf echten
+   Hover-Geräten — Touch behält den editorialen Lesefluss. */
+.etappen-stage {
+  perspective: 1400px;
+}
+.etappe-numeral,
+.etappe-icon {
+  transition:
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .etappe-row:hover .etappe-numeral {
+    transform: perspective(1100px) translateZ(40px) rotateY(-3deg);
+    color: oklch(0.38 0.04 220 / 0.62);
+    filter: drop-shadow(0 12px 22px rgb(35 31 27 / 0.18));
+  }
+  .etappe-row:hover .etappe-icon {
+    transform: perspective(1100px) translateZ(20px);
+  }
+}
+
 /* Drop-Cap-3D — editoriale Großbuchstaben kriegen geschichteten
    Tiefen-Schatten wie Holzschnitt-Lettern. Mehrere versetzte
    Textkopien in abnehmender Deckkraft erzeugen die räumliche
