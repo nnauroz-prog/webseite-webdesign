@@ -656,9 +656,9 @@ function Pricing() {
             Kein 3-gleicher-Karten-Reflex. */}
         <div className="mt-16 grid gap-px sm:mt-20 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
           {/* Linker Streifen: Starter */}
-          <div className="order-2 lg:order-1">
+          <Depth3D className="order-2 lg:order-1" maxTilt={4}>
             <PricingFlanke paket={others[0]} side="left" />
-          </div>
+          </Depth3D>
 
           {/* Centerfold: Business */}
           <Depth3D
@@ -671,9 +671,9 @@ function Pricing() {
           </Depth3D>
 
           {/* Rechter Streifen: Premium */}
-          <div className="order-3">
+          <Depth3D className="order-3" maxTilt={4}>
             <PricingFlanke paket={others[1]} side="right" />
-          </div>
+          </Depth3D>
         </div>
 
         {/* Hand-gezeichneter Trenner statt CSS-Border vor dem Disclaimer */}
