@@ -141,54 +141,60 @@ export default function KontaktPage() {
                 mit Drucken (Atelier). Statisch, keine externen
                 Embeds. */}
             <div className="space-y-3 sm:space-y-4">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-                <Image
-                  src="/images/hamburg-speicherstadt.webp"
-                  alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
-                  fill
-                  sizes="(min-width: 1024px) 500px, 100vw"
-                  className="object-cover"
-                />
-                <div
-                  aria-hidden="true"
-                  className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
-                />
-                <div className="absolute bottom-4 left-5 right-5 text-background">
-                  <p className="font-mono text-[10px] tracking-[0.25em] uppercase opacity-80">
-                    53.5511° N · 9.9937° E
-                  </p>
-                  <p className="serif mt-1 text-2xl font-normal tracking-[-0.01em]">
-                    Hamburg
-                  </p>
+              <Depth3D className="relative aspect-[4/3] w-full" maxTilt={8}>
+                <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                  <Image
+                    src="/images/hamburg-speicherstadt.webp"
+                    alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
+                    fill
+                    sizes="(min-width: 1024px) 500px, 100vw"
+                    className="object-cover"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
+                  />
+                  <div className="absolute bottom-4 left-5 right-5 text-background">
+                    <p className="font-mono text-[10px] tracking-[0.25em] uppercase opacity-80">
+                      53.5511° N · 9.9937° E
+                    </p>
+                    <p className="serif mt-1 text-2xl font-normal tracking-[-0.01em]">
+                      Hamburg
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-                <Image
-                  src="/images/cafe-eimsbuettel.webp"
-                  alt="Ruhige Straße in Hamburg-Eimsbüttel am Morgen — Café-Terrasse, Altbau-Fassaden, weicher Nebel."
-                  fill
-                  sizes="(min-width: 1024px) 500px, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-                <Image
-                  src="/images/workspace-prints.webp"
-                  alt="Schreibtisch im Sitalo-Atelier mit gerahmten Design-Drucken — Hamburger Tageslicht, ruhige Arbeitsatmosphäre."
-                  fill
-                  sizes="(min-width: 1024px) 500px, 100vw"
-                  className="object-cover"
-                />
-                <div
-                  aria-hidden="true"
-                  className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
-                />
-                <div className="absolute bottom-4 left-5 right-5 text-background">
-                  <p className="serif-italic text-base sm:text-lg">
-                    — Aus dem Atelier
-                  </p>
+              </Depth3D>
+              <Depth3D className="relative aspect-[4/3] w-full" maxTilt={8}>
+                <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                  <Image
+                    src="/images/cafe-eimsbuettel.webp"
+                    alt="Ruhige Straße in Hamburg-Eimsbüttel am Morgen — Café-Terrasse, Altbau-Fassaden, weicher Nebel."
+                    fill
+                    sizes="(min-width: 1024px) 500px, 100vw"
+                    className="object-cover"
+                  />
                 </div>
-              </div>
+              </Depth3D>
+              <Depth3D className="relative aspect-[4/3] w-full" maxTilt={8}>
+                <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
+                  <Image
+                    src="/images/workspace-prints.webp"
+                    alt="Schreibtisch im Sitalo-Atelier mit gerahmten Design-Drucken — Hamburger Tageslicht, ruhige Arbeitsatmosphäre."
+                    fill
+                    sizes="(min-width: 1024px) 500px, 100vw"
+                    className="object-cover"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
+                  />
+                  <div className="absolute bottom-4 left-5 right-5 text-background">
+                    <p className="serif-italic text-base sm:text-lg">
+                      — Aus dem Atelier
+                    </p>
+                  </div>
+                </div>
+              </Depth3D>
             </div>
           </div>
 
