@@ -286,7 +286,7 @@ export default async function StandortPage({
             <blockquote className="relative mt-8 max-w-4xl">
               <span
                 aria-hidden="true"
-                className="serif text-gold/40 absolute -top-10 -left-4 text-[8rem] leading-none"
+                className="drop-cap-3d drop-cap-3d-gold serif text-gold/40 absolute -top-10 -left-4 text-[8rem] leading-none"
               >
                 „
               </span>
