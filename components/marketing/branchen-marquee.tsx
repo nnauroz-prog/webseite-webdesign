@@ -11,6 +11,10 @@ import { BRANCHEN } from "@/lib/branchen-data";
  * Implementiert in reinem CSS (translate3d in einer Keyframe-
  * Animation), kein JS, kein Layout-Shift. Die Liste wird doppelt
  * gerendert, damit der Loop nahtlos wirkt.
+ *
+ * Räumlich gestapelt: hinter der Hauptspur läuft eine zweite,
+ * blassere und größere Geist-Spur in 60 % der Geschwindigkeit —
+ * erzeugt zwei Tiefen-Ebenen statt einer flachen Laufschrift.
  */
 const ITEMS = BRANCHEN.map((b) => b.label);
 
@@ -24,7 +28,27 @@ export function BranchenMarquee() {
           abrupt am Viewport-Rand stoppt. */}
       <div className="from-foreground pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r to-transparent" />
       <div className="from-foreground pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l to-transparent" />
-      <div className="flex py-6 sm:py-8">
+
+      {/* Geist-Spur dahinter: größer, blasser, langsamer.
+          Liegt absolut hinter der Hauptspur und erzeugt eine
+          zweite Tiefen-Ebene. */}
+      <div className="pointer-events-none absolute inset-0 flex items-center">
+        <ul className="marquee-track-ghost flex shrink-0 items-center gap-16 pr-16 sm:gap-24 sm:pr-24">
+          {ITEMS.map((label) => (
+            <GhostItem key={`g-a-${label}`} label={label} />
+          ))}
+        </ul>
+        <ul
+          className="marquee-track-ghost flex shrink-0 items-center gap-16 pr-16 sm:gap-24 sm:pr-24"
+          aria-hidden="true"
+        >
+          {ITEMS.map((label) => (
+            <GhostItem key={`g-b-${label}`} label={label} />
+          ))}
+        </ul>
+      </div>
+
+      <div className="relative flex py-6 sm:py-8">
         <ul className="marquee-track flex shrink-0 items-center gap-12 pr-12 sm:gap-16 sm:pr-16">
           {ITEMS.map((label) => (
             <MarqueeItem key={`a-${label}`} label={label} />
@@ -54,6 +78,16 @@ function MarqueeItem({ label }: { label: string }) {
         aria-hidden="true"
         className="bg-gold inline-block h-1.5 w-1.5 shrink-0 rounded-full"
       />
+    </li>
+  );
+}
+
+function GhostItem({ label }: { label: string }) {
+  return (
+    <li className="flex items-center gap-16 sm:gap-24">
+      <span className="serif-italic text-background/10 text-5xl tracking-[-0.015em] whitespace-nowrap sm:text-6xl lg:text-7xl">
+        {label}
+      </span>
     </li>
   );
 }
