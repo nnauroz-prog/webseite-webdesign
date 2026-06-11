@@ -19,6 +19,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// PSI braucht in der Praxis 15–30 s, manchmal 50+. Wir setzen die
+// Vercel-Function-Dauer explizit auf 60 s, damit die Function nicht
+// vor PSI stirbt (Pro-Tier-Default ist 60 s, aber explizit ist sicherer).
+export const maxDuration = 60;
 
 type Strategy = "mobile" | "desktop";
 
@@ -63,40 +67,130 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.PAGESPEED_API_KEY?.trim();
   if (apiKey) params.append("key", apiKey);
 
-  let raw: unknown;
-  try {
-    const upstream = await fetch(`${PSI_ENDPOINT}?${params.toString()}`, {
-      // PSI braucht oft 10–25 s
-      signal: AbortSignal.timeout(45_000),
-    });
-    if (!upstream.ok) {
-      const text = await upstream.text().catch(() => "");
-      return NextResponse.json(
-        {
-          error: `PageSpeed Insights konnte die Seite nicht analysieren (HTTP ${upstream.status}). ${text.slice(0, 200)}`,
-        },
-        { status: 502 },
-      );
+  // Ein Retry mit kurzem Backoff bei transienten Fehlern (429, 5xx,
+  // sowie Netzwerk-Abort/Timeout). PSI ist gelegentlich instabil —
+  // ein zweiter Versuch erspart dem User „bitte nochmal klicken".
+  let lastError: { status: number; userMessage: string } | null = null;
+  let raw: unknown = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const result = await callPsi(`${PSI_ENDPOINT}?${params.toString()}`);
+    if (result.kind === "success") {
+      raw = result.data;
+      lastError = null;
+      break;
     }
-    raw = await upstream.json();
-  } catch (err) {
-    const msg =
-      err instanceof Error ? err.message : "Unbekannter Netzwerk-Fehler.";
+    lastError = { status: result.httpStatus, userMessage: result.userMessage };
+    if (!result.retryable) break;
+    await new Promise((r) => setTimeout(r, 1800));
+  }
+
+  if (lastError || raw === null) {
     return NextResponse.json(
-      { error: `Konnte PageSpeed Insights nicht erreichen: ${msg}` },
-      { status: 502 },
+      {
+        error:
+          lastError?.userMessage ??
+          "PageSpeed Insights antwortet gerade nicht. Bitte in einer Minute erneut versuchen.",
+      },
+      { status: lastError?.status ?? 502 },
     );
   }
 
   const normalized = normalize(raw);
   if (!normalized) {
     return NextResponse.json(
-      { error: "PageSpeed-Antwort konnte nicht ausgewertet werden." },
+      {
+        error:
+          "PageSpeed Insights hat geantwortet, aber wir konnten die Werte nicht auslesen. Bitte erneut versuchen.",
+      },
       { status: 502 },
     );
   }
 
   return NextResponse.json({ analyzedUrl: targetUrl, strategy, ...normalized });
+}
+
+type CallResult =
+  | { kind: "success"; data: unknown }
+  | {
+      kind: "error";
+      httpStatus: number;
+      userMessage: string;
+      retryable: boolean;
+    };
+
+async function callPsi(url: string): Promise<CallResult> {
+  try {
+    const upstream = await fetch(url, {
+      // Etwas unter der maxDuration-Grenze, damit ein Retry noch reinpasst.
+      signal: AbortSignal.timeout(50_000),
+    });
+    if (upstream.ok) {
+      const data = await upstream.json();
+      return { kind: "success", data };
+    }
+    // Nicht-OK: Status auswerten, freundliche Nachricht, ggf. retryable.
+    const text = await upstream.text().catch(() => "");
+    console.error(
+      `[speed-check] PSI upstream ${upstream.status}: ${text.slice(0, 400)}`,
+    );
+    if (upstream.status === 429) {
+      return {
+        kind: "error",
+        httpStatus: 429,
+        userMessage:
+          "Der Google-Test ist gerade ausgelastet. Bitte in einer Minute erneut versuchen.",
+        retryable: true,
+      };
+    }
+    if (upstream.status >= 500) {
+      return {
+        kind: "error",
+        httpStatus: 502,
+        userMessage:
+          "Der Google-Test hatte gerade einen Aussetzer. Wir versuchen es gleich nochmal.",
+        retryable: true,
+      };
+    }
+    if (upstream.status === 400) {
+      return {
+        kind: "error",
+        httpStatus: 400,
+        userMessage:
+          "Die Seite konnte nicht analysiert werden. Bitte prüfen Sie die URL — manche Seiten blockieren automatische Tests.",
+        retryable: false,
+      };
+    }
+    return {
+      kind: "error",
+      httpStatus: 502,
+      userMessage:
+        "PageSpeed Insights konnte die Seite gerade nicht testen. Bitte später erneut versuchen.",
+      retryable: false,
+    };
+  } catch (err) {
+    const isAbort =
+      err instanceof Error &&
+      (err.name === "AbortError" || err.name === "TimeoutError");
+    console.error(
+      `[speed-check] fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    if (isAbort) {
+      return {
+        kind: "error",
+        httpStatus: 504,
+        userMessage:
+          "Der Test hat zu lange gedauert. Das passiert bei langsamen Servern — bitte später erneut versuchen.",
+        retryable: true,
+      };
+    }
+    return {
+      kind: "error",
+      httpStatus: 502,
+      userMessage:
+        "Wir konnten Google PageSpeed gerade nicht erreichen. Bitte später erneut versuchen.",
+      retryable: true,
+    };
+  }
 }
 
 function normalizeUrl(input: string): string | null {
