@@ -329,7 +329,9 @@ html {
 
   /* Klassische Drop-Cap für editoriale Lead-Absätze auf Journal-
      Detailseiten. Der erste Buchstabe wird im Cormorant Garamond
-     gesetzt, fällt drei Zeilen tief, leicht in Gold getönt. */
+     gesetzt, fällt drei Zeilen tief, leicht in Gold getönt.
+     Geschichteter Text-Shadow ergibt Holzschnitt-Tiefe wie bei
+     den anderen Drop-Caps der Seite. */
   .journal-lead::first-letter {
     font-family: var(--font-serif), Cormorant, serif;
     font-style: italic;
@@ -340,6 +342,13 @@ html {
     float: left;
     margin: 0.1em 0.12em 0 -0.04em;
     padding-top: 0.05em;
+    text-shadow:
+      1px 1px 0 rgb(201 162 79 / 0.18),
+      2px 2px 0 rgb(201 162 79 / 0.14),
+      3px 3px 0 rgb(201 162 79 / 0.11),
+      4px 4px 0 rgb(201 162 79 / 0.08),
+      5px 5px 0 rgb(201 162 79 / 0.06),
+      6px 6px 0 rgb(201 162 79 / 0.04);
   }
 }
 
@@ -701,6 +710,38 @@ html {
     to {
       transform: perspective(900px) rotateX(0deg) translateY(0);
       opacity: 1;
+    }
+  }
+}
+
+/* Hero-Dolly — die Hero-Szene weicht beim Scrollen nach Z zurück,
+   wird leicht kleiner und blasser. Wirkt wie eine Kamera, die
+   zurückgleitet, während der nächste Inhalt nach vorn rückt. Pure
+   CSS, scroll-getrieben via animation-timeline: view(). Browser
+   ohne Support zeigen die Szene statisch. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .hero-dolly {
+      perspective: 1400px;
+    }
+    .hero-dolly-inner {
+      transform-style: preserve-3d;
+      transform-origin: center top;
+      animation: hero-dolly linear both;
+      animation-timeline: view();
+      /* Effekt setzt erst ab dem zweiten Drittel des Hero-Exits ein,
+         damit beim normalen Lesen nichts wackelt. */
+      animation-range: exit 25% exit 100%;
+    }
+    @keyframes hero-dolly {
+      from {
+        opacity: 1;
+        transform: perspective(1400px) translateZ(0px) scale(1);
+      }
+      to {
+        opacity: 0.72;
+        transform: perspective(1400px) translateZ(-60px) scale(0.965);
+      }
     }
   }
 }

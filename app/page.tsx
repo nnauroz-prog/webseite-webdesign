@@ -244,7 +244,7 @@ function Hero() {
   return (
     <section
       id="start"
-      className="relative overflow-hidden scroll-mt-20"
+      className="hero-dolly relative overflow-hidden scroll-mt-20"
     >
       {/* Warmer Gradient-Backdrop für mehr Atmosphäre */}
       <div
@@ -258,7 +258,7 @@ function Hero() {
       />
       <CursorSpotlight />
 
-      <div className="mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
+      <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
         {/* Editorial-Kopfzeile: dünne Linie + Sperrsatz wie eine
             Zeitschriften-Mastline. Setzt einen anderen Ton als ein
             klassischer SaaS-Hero. Rechts: zeit-bewusste Begrüßung,
