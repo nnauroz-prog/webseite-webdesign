@@ -409,7 +409,7 @@ function PersonalNote() {
         <blockquote className="relative mt-10 max-w-4xl">
           <span
             aria-hidden="true"
-            className="serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
+            className="drop-cap-3d drop-cap-3d-gold serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
           >
             „
           </span>
@@ -523,7 +523,7 @@ function Steps() {
               >
                 {/* Numeral-Spalte links — riesiges Serif, dezent */}
                 <div className={flip ? "sm:order-2 sm:text-right" : ""}>
-                  <span className="serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
+                  <span className="drop-cap-3d serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
                     {n}
                   </span>
                 </div>
@@ -938,7 +938,7 @@ function FinalCta() {
         <div className="grid items-end gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
-              <span className="serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
+              <span className="drop-cap-3d drop-cap-3d-gold serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
                 „
               </span>
               Jeden Tag, den{" "}

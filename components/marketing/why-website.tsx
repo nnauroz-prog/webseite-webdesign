@@ -64,7 +64,7 @@ export function WhyWebsite() {
             damit der Leser sofort spürt: hier geht es um etwas, das
             ich verliere, nicht um etwas, das mir verkauft wird. */}
         <p className="text-foreground/85 mt-14 max-w-3xl text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
-          <span className="serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
+          <span className="drop-cap-3d serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
             N
           </span>
           eun von zehn Menschen, die heute zu Ihnen kommen könnten,
