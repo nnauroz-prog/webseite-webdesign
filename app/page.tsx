@@ -5,13 +5,17 @@ import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
 
 import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
+import { Depth3D } from "@/components/marketing/depth-3d";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
+import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
+import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
+import { SwingTag } from "@/components/marketing/swing-tag";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -334,40 +338,20 @@ function Hero() {
             </p>
           </div>
 
-          {/* Rechte Spalte: Workspace-Foto mit Parallax und schwebendem
-              Magazin-Zitat — direkt von uns, nicht aus Kundensicht. */}
+          {/* Rechte Spalte: Workspace-Foto im echten 3D-Tiefenrahmen.
+              Atelier-Plakette und Notiz-Zettel schweben vor dem Bild,
+              kippen mit der Maus eigenständig — das ist die räumliche
+              Visitenkarte des Ateliers. */}
           <div
             className="reveal relative"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
-            <div className="hero-image-reveal ring-foreground/5 relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 sm:aspect-[5/6]">
-              <ParallaxImage
-                src="/images/workspace-macbook.webp"
-                alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
-                priority
-                sizes="(min-width: 1024px) 480px, 100vw"
-                className="object-cover"
-                intensityPx={28}
-              />
-              {/* Vignette für Kontrast unter dem Zitat */}
-              <div
-                aria-hidden="true"
-                className="from-foreground/60 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
-              />
-              {/* Schwebendes Zitat — Stimme des Ateliers, nicht aus Kundenmund. */}
-              <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
-                <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
-                  „Wir bauen jede Seite, als wäre es unsere eigene."
-                </blockquote>
-                <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
-                  <span
-                    aria-hidden="true"
-                    className="bg-gold gold-pulse inline-block h-1 w-5"
-                  />
-                  Sitalo Atelier · Hamburg
-                </figcaption>
-              </figure>
-            </div>
+            <ParallaxHeroFrame
+              src="/images/workspace-macbook.webp"
+              alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
+              quote={`„Wir bauen jede Seite, als wäre es unsere eigene."`}
+              caption="Sitalo Atelier · Hamburg"
+            />
           </div>
         </div>
       </div>
@@ -469,15 +453,17 @@ function PersonalNote() {
               — Sitalo, aus Hamburg
             </p>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
-            <Image
-              src="/images/workspace-macbook.webp"
-              alt="Arbeitsplatz mit MacBook, Notizbuch und Espresso — warmes Schreibtischlicht."
-              fill
-              sizes="(min-width: 1024px) 480px, 100vw"
-              className="object-cover"
-            />
-          </div>
+          <Depth3D className="relative aspect-[4/3]" maxTilt={10}>
+            <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-white/10">
+              <Image
+                src="/images/workspace-macbook.webp"
+                alt="Arbeitsplatz mit MacBook, Notizbuch und Espresso — warmes Schreibtischlicht."
+                fill
+                sizes="(min-width: 1024px) 480px, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </Depth3D>
         </div>
       </div>
     </section>
@@ -497,8 +483,10 @@ function Steps() {
     >
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
         {/* Bewusst keine Eyebrow-Zeile — Steps soll ohne den gleichen
-            Auftakt-Beat starten, den jede andere Sektion hat. */}
-        <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
+            Auftakt-Beat starten, den jede andere Sektion hat. Rechts
+            der 3D-Karteikartenstapel als räumliche Eröffnung der
+            Etappen: drei Schichten, die beim Hover auffächern. */}
+        <div className="grid items-center gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div>
             <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
               Vom „Hallo"
@@ -507,12 +495,18 @@ function Steps() {
                 zur Live-Seite — in 48 Stunden.
               </span>
             </h2>
+            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+              Nach jedem Schritt haben Sie was in der Hand. Kein
+              PowerPoint-Status, kein Project-Tool-Ticket, das irgendwo
+              im System steht. Sie sehen's einfach.
+            </p>
           </div>
-          <p className="text-foreground/75 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-            Nach jedem Schritt haben Sie was in der Hand. Kein
-            PowerPoint-Status, kein Project-Tool-Ticket, das irgendwo
-            im System steht. Sie sehen's einfach.
-          </p>
+          <div className="relative">
+            <LayeredStack />
+            <p className="text-muted-foreground mt-6 text-center font-mono text-[10px] uppercase tracking-[0.28em]">
+              Drei Schichten · zeigen mit der Maus
+            </p>
+          </div>
         </div>
 
         {/* Drei Stufen als alternierende Magazin-Zeilen.
@@ -667,12 +661,14 @@ function Pricing() {
           </div>
 
           {/* Centerfold: Business */}
-          <div
+          <Depth3D
             className="order-1 lg:order-2"
-            id={featured.slug}
+            maxTilt={6}
           >
-            <PricingCenterfold paket={featured} />
-          </div>
+            <div id={featured.slug} className="h-full">
+              <PricingCenterfold paket={featured} />
+            </div>
+          </Depth3D>
 
           {/* Rechter Streifen: Premium */}
           <div className="order-3">
@@ -976,10 +972,15 @@ function FinalCta() {
             </div>
           </div>
 
-          {/* Editorial-Schluss rechts: Signature + Adresse als
-              kleine Visitenkarte. */}
+          {/* Editorial-Schluss rechts: Atelier-Etikett auf Schnur,
+              das pendelt — Premium-Markenzeichen statt flacher
+              Visitenkarte. Darunter Signatur + die drei
+              Kontakt-Buttons als Aktionsschicht. */}
           <div className="lg:pl-10">
-            <p className="text-background/45 text-[10px] font-medium uppercase tracking-[0.3em]">
+            <div className="flex justify-start lg:justify-center">
+              <SwingTag />
+            </div>
+            <p className="text-background/45 mt-10 text-[10px] font-medium uppercase tracking-[0.3em]">
               Aus dem Atelier
             </p>
             <p className="serif-italic text-background mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">

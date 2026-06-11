@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, Calendar, Eye, Package, Sparkles, Zap } from "lucide-react";
 
+import { FlipCard } from "@/components/marketing/flip-card";
+
 /**
  * Atelier-Suite — Magazin-Spread der interaktiven Werkzeuge auf
  * der Homepage. Macht sichtbar, dass es nicht nur drei Pakete
@@ -20,6 +22,9 @@ type Tool = {
   eyebrow: string;
   title: string;
   body: string;
+  /** Rückseite der FlipCard: ein Versprechen oder die konkrete
+   *  Verdichtung des Tools — was der Klick wirklich liefert. */
+  back: string;
   icon: React.ComponentType<{ className?: string }>;
   /** Optional badge wie „Live" oder „Neu". */
   badge?: string;
@@ -30,6 +35,7 @@ const HERO_TOOL: Tool = {
   eyebrow: "I — Speed-Check",
   title: "Wie schnell ist Ihre Seite?",
   body: "Live-Lighthouse-Test in 30 Sekunden. Performance, SEO, Accessibility, Best Practices als vier Ringe — plus Core Web Vitals. Ohne Kontaktdaten, ohne PDF, ohne Vertriebs-Anruf danach.",
+  back: "Vier Lighthouse-Werte plus Core Web Vitals. Sofort, ohne Anmeldung.",
   icon: Zap,
   badge: "Live",
 };
@@ -40,6 +46,7 @@ const SIDE_TOOLS: Tool[] = [
     eyebrow: "II — Paket-Quiz",
     title: "Welches Paket passt?",
     body: "Fünf Fragen, eine ehrliche Empfehlung mit ausformulierter Begründung. Wir geben Ihnen Starter, Business oder Premium — und sagen warum.",
+    back: "Fünf Fragen, eine begründete Empfehlung. Kein Lockruf, keine E-Mail-Pflicht.",
     icon: Sparkles,
   },
   {
@@ -47,6 +54,7 @@ const SIDE_TOOLS: Tool[] = [
     eyebrow: "III — 3-Jahres-Rechner",
     title: "Was kostet es über 3 Jahre?",
     body: "Drei Slider, fünf Balken. Sitalo gegen Wix, Squarespace, Jimdo, ChatGPT-Selbstbau. Eigenzeit als echtes Geld eingerechnet.",
+    back: "Eigenzeit wird zu echtem Geld. Drei Slider, fünf Balken, eine ehrliche Zahl.",
     icon: Package,
   },
   {
@@ -54,6 +62,7 @@ const SIDE_TOOLS: Tool[] = [
     eyebrow: "IV — Persönlicher Audit",
     title: "Drei Punkte zu Ihrer Seite.",
     body: "Wir gucken einmal mit der Hand drauf, schreiben Ihnen eine ehrliche Mail innerhalb 48 Stunden. Kein Funnel, kein Auto-Responder.",
+    back: "Persönliche Mail innerhalb 48 Stunden, kein Vertriebs-Anruf danach.",
     icon: Eye,
   },
   {
@@ -61,6 +70,7 @@ const SIDE_TOOLS: Tool[] = [
     eyebrow: "V — Termin-Buchung",
     title: "30 Minuten, direkt buchen.",
     body: "Tag und Uhrzeit selbst wählen. Bestätigung per Mail mit Kalender-Anhang in 15 Minuten. Kein E-Mail-Pingpong vorab.",
+    back: "Sie wählen Tag und Uhrzeit. Bestätigung in 15 Minuten — kein Pingpong.",
     icon: Calendar,
   },
 ];
@@ -152,67 +162,118 @@ export function AtelierSuite() {
 function HeroCard({ tool }: { tool: Tool }) {
   const Icon = tool.icon;
   return (
-    <Link
+    <FlipCard
       href={tool.href}
-      className="group bg-foreground text-background ring-foreground/10 relative col-span-12 flex flex-col gap-6 overflow-hidden rounded-3xl p-8 ring-1 transition-shadow hover:shadow-[0_24px_60px_-20px_rgb(0_0_0/0.4)] sm:p-10 lg:col-span-6"
-    >
-      {/* Schwacher Gold-Glow innerhalb der Karte. */}
-      <div
-        aria-hidden="true"
-        className="bg-gold/20 pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full blur-[80px]"
-      />
-      <div className="relative flex items-start justify-between gap-4">
-        <span className="border-background/25 inline-flex h-12 w-12 items-center justify-center rounded-full border">
-          <Icon className="h-5 w-5" aria-hidden="true" />
-        </span>
-        {tool.badge && (
-          <span className="bg-gold text-foreground inline-flex h-6 items-center rounded-full px-2.5 font-mono text-[10px] uppercase tracking-[0.18em]">
-            {tool.badge}
+      ariaLabel={tool.title}
+      className="col-span-12 min-h-[520px] rounded-3xl sm:min-h-[560px] lg:col-span-6"
+      front={
+        <div className="bg-foreground text-background ring-foreground/10 relative flex h-full flex-col gap-6 overflow-hidden rounded-3xl p-8 ring-1 sm:p-10">
+          {/* Schwacher Gold-Glow innerhalb der Karte. */}
+          <div
+            aria-hidden="true"
+            className="bg-gold/20 pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full blur-[80px]"
+          />
+          <div className="relative flex items-start justify-between gap-4">
+            <span className="border-background/25 inline-flex h-12 w-12 items-center justify-center rounded-full border">
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </span>
+            {tool.badge && (
+              <span className="bg-gold text-foreground inline-flex h-6 items-center rounded-full px-2.5 font-mono text-[10px] uppercase tracking-[0.18em]">
+                {tool.badge}
+              </span>
+            )}
+          </div>
+          <p className="text-background/65 relative font-mono text-[10px] uppercase tracking-[0.22em]">
+            {tool.eyebrow}
+          </p>
+          <h3 className="serif relative text-balance text-3xl font-normal leading-[1.1] tracking-[-0.02em] sm:text-4xl lg:text-[2.75rem]">
+            {tool.title}
+          </h3>
+          <p className="text-background/80 relative text-pretty text-[15.5px] leading-relaxed">
+            {tool.body}
+          </p>
+          <span className="text-background relative mt-auto inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px]">
+            Tool öffnen
+            <ArrowRight className="h-4 w-4" />
           </span>
-        )}
-      </div>
-      <p className="text-background/65 relative font-mono text-[10px] uppercase tracking-[0.22em]">
-        {tool.eyebrow}
-      </p>
-      <h3 className="serif relative text-balance text-3xl font-normal leading-[1.1] tracking-[-0.02em] sm:text-4xl lg:text-[2.75rem]">
-        {tool.title}
-      </h3>
-      <p className="text-background/80 relative text-pretty text-[15.5px] leading-relaxed">
-        {tool.body}
-      </p>
-      <span className="text-background relative mt-auto inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] group-hover:underline">
-        Tool öffnen
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </span>
-    </Link>
+        </div>
+      }
+      back={
+        <div className="bg-foreground text-background ring-gold/30 relative flex h-full flex-col justify-between gap-8 overflow-hidden rounded-3xl p-8 ring-1 sm:p-10">
+          {/* Stärkerer Gold-Glow auf der Rückseite — Versprechen-Modus. */}
+          <div
+            aria-hidden="true"
+            className="bg-gold/30 pointer-events-none absolute -top-24 -right-16 h-80 w-80 rounded-full blur-[90px]"
+          />
+          <div className="relative flex items-start justify-between gap-4">
+            <span className="bg-gold/15 border-gold/40 text-gold inline-flex h-12 w-12 items-center justify-center rounded-full border">
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span className="text-background/55 font-mono text-[10px] uppercase tracking-[0.22em]">
+              {tool.eyebrow}
+            </span>
+          </div>
+          <p className="serif-italic text-background relative text-balance text-[1.6rem] font-normal leading-[1.18] tracking-[-0.015em] sm:text-[1.85rem] lg:text-[2.1rem]">
+            {tool.back}
+          </p>
+          <span className="text-gold relative inline-flex items-center gap-2 text-[15.5px] font-medium">
+            Tool öffnen
+            <ArrowRight className="h-4 w-4" />
+          </span>
+        </div>
+      }
+    />
   );
 }
 
 function SideCard({ tool }: { tool: Tool }) {
   const Icon = tool.icon;
   return (
-    <Link
+    <FlipCard
       href={tool.href}
-      className="group border-border/60 bg-card/50 ring-foreground/5 hover:border-foreground/30 hover:bg-card/70 flex flex-col gap-4 rounded-3xl border p-6 ring-1 transition-all sm:p-7"
-    >
-      <div className="flex items-center justify-between gap-3">
-        <span className="border-border/60 text-foreground/75 inline-flex h-10 w-10 items-center justify-center rounded-full border">
-          <Icon className="h-4 w-4" aria-hidden="true" />
-        </span>
-      </div>
-      <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
-        {tool.eyebrow}
-      </p>
-      <h3 className="serif text-foreground text-balance text-2xl font-normal leading-[1.15] tracking-[-0.015em]">
-        {tool.title}
-      </h3>
-      <p className="text-foreground/75 text-pretty text-[14.5px] leading-relaxed">
-        {tool.body}
-      </p>
-      <span className="text-foreground mt-auto inline-flex items-center gap-2 text-[13.5px] font-medium underline-offset-[5px] group-hover:underline">
-        Öffnen
-        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-      </span>
-    </Link>
+      ariaLabel={tool.title}
+      className="min-h-[320px] rounded-3xl sm:min-h-[340px]"
+      front={
+        <div className="border-border/60 bg-card/50 ring-foreground/5 flex h-full flex-col gap-4 rounded-3xl border p-6 ring-1 sm:p-7">
+          <div className="flex items-center justify-between gap-3">
+            <span className="border-border/60 text-foreground/75 inline-flex h-10 w-10 items-center justify-center rounded-full border">
+              <Icon className="h-4 w-4" aria-hidden="true" />
+            </span>
+          </div>
+          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+            {tool.eyebrow}
+          </p>
+          <h3 className="serif text-foreground text-balance text-2xl font-normal leading-[1.15] tracking-[-0.015em]">
+            {tool.title}
+          </h3>
+          <p className="text-foreground/75 text-pretty text-[14.5px] leading-relaxed">
+            {tool.body}
+          </p>
+          <span className="text-foreground mt-auto inline-flex items-center gap-2 text-[13.5px] font-medium underline-offset-[5px]">
+            Öffnen
+            <ArrowRight className="h-3.5 w-3.5" />
+          </span>
+        </div>
+      }
+      back={
+        <div className="bg-foreground text-background ring-gold/25 flex h-full flex-col justify-between gap-5 overflow-hidden rounded-3xl p-6 ring-1 sm:p-7">
+          <div className="flex items-center justify-between gap-3">
+            <span className="border-gold/40 bg-gold/10 text-gold inline-flex h-10 w-10 items-center justify-center rounded-full border">
+              <Icon className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <span className="text-background/55 font-mono text-[10px] uppercase tracking-[0.22em]">
+              {tool.eyebrow}
+            </span>
+          </div>
+          <p className="serif-italic text-background text-balance text-[1.15rem] font-normal leading-[1.25] tracking-[-0.01em] sm:text-[1.25rem]">
+            {tool.back}
+          </p>
+          <span className="text-gold inline-flex items-center gap-2 text-[13.5px] font-medium">
+            Tool öffnen
+            <ArrowRight className="h-3.5 w-3.5" />
+          </span>
+        </div>
+      }
+    />
   );
 }

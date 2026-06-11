@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { FileText, ImageIcon, Type } from "lucide-react";
 
+import { Depth3D } from "@/components/marketing/depth-3d";
+
 /**
  * "Sie schicken drei Sachen" — visualisiert das Kern-Versprechen,
  * das vorher nur als Halbsatz im Hero und PersonalNote vorkam.
@@ -109,32 +111,37 @@ export function DreiSachen() {
               />
               Was Sie bekommen
             </p>
-            <div className="border-border/50 ring-foreground/5 relative mt-5 aspect-[4/5] w-full overflow-hidden rounded-3xl border shadow-[0_30px_60px_-20px_rgb(0_0_0/0.3)] ring-1 sm:aspect-[5/6]">
-              <Image
-                src="/images/sitalo-praxis-laptop.webp"
-                alt="Fertige Sitalo-Website auf einem Laptop in einem warmen Atelier-Licht."
-                fill
-                sizes="(min-width: 1024px) 480px, 100vw"
-                className="object-cover"
-              />
-              {/* Vignette für Caption-Kontrast */}
-              <div
-                aria-hidden="true"
-                className="from-foreground/55 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
-              />
-              <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
-                <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
-                  Übermorgen online — fertig getestet auf echten Geräten.
-                </blockquote>
-                <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
-                  <span
-                    aria-hidden="true"
-                    className="bg-gold gold-pulse inline-block h-1 w-5"
-                  />
-                  Sitalo Atelier · Hamburg
-                </figcaption>
-              </figure>
-            </div>
+            <Depth3D
+              className="mt-5 aspect-[4/5] w-full sm:aspect-[5/6]"
+              maxTilt={9}
+            >
+              <div className="border-border/50 ring-foreground/5 relative h-full w-full overflow-hidden rounded-3xl border shadow-[0_30px_60px_-20px_rgb(0_0_0/0.3)] ring-1">
+                <Image
+                  src="/images/sitalo-praxis-laptop.webp"
+                  alt="Fertige Sitalo-Website auf einem Laptop in einem warmen Atelier-Licht."
+                  fill
+                  sizes="(min-width: 1024px) 480px, 100vw"
+                  className="object-cover"
+                />
+                {/* Vignette für Caption-Kontrast */}
+                <div
+                  aria-hidden="true"
+                  className="from-foreground/55 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
+                />
+                <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
+                  <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
+                    Übermorgen online — fertig getestet auf echten Geräten.
+                  </blockquote>
+                  <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
+                    <span
+                      aria-hidden="true"
+                      className="bg-gold gold-pulse inline-block h-1 w-5"
+                    />
+                    Sitalo Atelier · Hamburg
+                  </figcaption>
+                </figure>
+              </div>
+            </Depth3D>
 
             <p className="serif-italic text-foreground/75 mt-8 max-w-md text-pretty text-lg leading-snug">
               Mehr ist nicht nötig. Wirklich. Wir formulieren um,
