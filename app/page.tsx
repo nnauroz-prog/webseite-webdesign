@@ -495,7 +495,10 @@ function Steps() {
           <div className="relative">
             <LayeredStack />
             <p className="text-muted-foreground mt-6 text-center font-mono text-[10px] uppercase tracking-[0.28em]">
-              Drei Schichten · zeigen mit der Maus
+              <span className="hidden sm:inline">
+                Drei Schichten · auffächern mit der Maus
+              </span>
+              <span className="sm:hidden">Drei Schichten · Brief, Skizze, Live</span>
             </p>
           </div>
         </div>
