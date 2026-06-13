@@ -299,10 +299,10 @@ function Hero() {
               className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Eine ordentliche Website in 1–2 Werktagen — ohne
-              Discovery-Workshop, ohne Brand-Marathon, ohne „wir
-              melden uns nächste Woche". Wir bauen sie für Sie,
-              Sie führen Ihren Betrieb.
+              Ihre Website in 1–2 Werktagen online. Sie schicken uns
+              Logo, ein paar Bilder, ein paar Sätze — den Rest
+              übernehmen wir. Persönlich, schnell, ohne Workshop-
+              Theater.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -402,7 +402,7 @@ function PersonalNote() {
             aria-hidden="true"
           />
           <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
-            Aus Hamburg
+            Im Klartext
           </p>
         </div>
         <blockquote className="relative mt-10 max-w-4xl">
@@ -442,9 +442,6 @@ function PersonalNote() {
               1–2 Werktagen ist die Seite online — und sieht aus
               wie etwas, das eine Agentur Ihnen für 5.000 € verkauft
               hätte.
-            </p>
-            <p className="serif-italic text-background pt-4 text-2xl">
-              — Sitalo, aus Hamburg
             </p>
           </div>
           <Depth3D className="relative aspect-[4/3]" maxTilt={10}>
@@ -1001,13 +998,13 @@ function FinalCta() {
               <span className="drop-cap-3d drop-cap-3d-gold serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
                 „
               </span>
-              Jeden Tag, den{" "}
+              Schreiben Sie uns.{" "}
               <span className="serif-italic text-background/70">
-                Sie warten,
+                Übermorgen
               </span>{" "}
-              findet Sie{" "}
+              kann Ihre Seite{" "}
               <span className="serif-italic text-background/70">
-                ein Kunde weniger.
+                schon online sein.
               </span>
             </h2>
             <p className="text-background/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
