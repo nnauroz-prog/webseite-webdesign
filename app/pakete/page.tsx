@@ -284,7 +284,7 @@ function Packages() {
                         : "border-border/60 mt-12 border-t pt-8"
                     }
                   >
-                    <p className="text-5xl font-semibold tracking-[-0.025em] sm:text-6xl">
+                    <p className="drop-cap-3d text-5xl font-semibold tracking-[-0.025em] sm:text-6xl">
                       {p.setup}
                     </p>
                     <p

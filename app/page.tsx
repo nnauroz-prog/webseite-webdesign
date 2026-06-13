@@ -8,6 +8,7 @@ import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { Depth3D } from "@/components/marketing/depth-3d";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
+import { HamburgWetter } from "@/components/marketing/hamburg-wetter";
 import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
@@ -889,6 +890,12 @@ function HamburgKarte() {
               Alle Stadtteile ansehen
               <ArrowRight className="h-4 w-4" />
             </Link>
+            {/* Live-Wetter-Karte als Locality-Beweis — Open-Meteo,
+                kein API-Key, 1 Stunde server-gecacht. Bei Netzwerk-
+                Fehlern rendert eine ruhige Fallback-Karte ohne Daten. */}
+            <div className="mt-10 max-w-sm">
+              <HamburgWetter />
+            </div>
           </div>
           <Depth3D maxTilt={9}>
             <HamburgMap />
