@@ -596,6 +596,36 @@ html {
     transform: translateZ(30px) translateY(55px) rotate(-1deg);
   }
 }
+/* Touch-Geräte: kein Hover möglich, also die drei Karten
+   untereinander auflegen, damit alle Schichten lesbar sind.
+   Absolute Positionierung raus, Aspect-Ratio raus, statische
+   leichte Rotation für den Manufaktur-Look behalten. */
+@media not all and (hover: hover) and (pointer: fine) {
+  .layered-stack-wrapper {
+    aspect-ratio: auto !important;
+    perspective: none;
+  }
+  .layered-stack {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+  .layered-stack-card {
+    position: relative;
+    inset: auto;
+    transform: rotate(var(--touch-rot, 0deg));
+  }
+  .layered-stack-card[data-layer="0"] {
+    --touch-rot: -1deg;
+  }
+  .layered-stack-card[data-layer="1"] {
+    --touch-rot: 0.6deg;
+  }
+  .layered-stack-card[data-layer="2"] {
+    --touch-rot: -0.4deg;
+  }
+}
 
 /* SwingTag — Atelier-Etikett pendelt an einer Schnur. Die Idle-
    Animation läuft sehr langsam (~9s), Maus-Pointer übersteuert
