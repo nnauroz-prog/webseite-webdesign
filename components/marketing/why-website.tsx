@@ -60,21 +60,20 @@ export function WhyWebsite() {
           </h2>
         </div>
 
-        {/* Lead mit Drop-Cap — Verlust-Framing in der ersten Zeile,
-            damit der Leser sofort spürt: hier geht es um etwas, das
-            ich verliere, nicht um etwas, das mir verkauft wird. */}
+        {/* Lead mit Drop-Cap — direkte Aussage in der ersten Zeile,
+            ohne langen Erklär-Wurm dahinter. */}
         <p className="text-foreground/85 mt-14 max-w-3xl text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
-          <span className="drop-cap-3d serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
+          <span className="drop-cap-3d serif text-ink-petrol float-left mr-3 text-[3.75rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[5.5rem] lg:text-[6.5rem]">
             N
           </span>
           eun von zehn potenziellen Kunden googeln Sie, bevor sie
-          überhaupt anrufen.{" "}
+          anrufen.{" "}
           <span className="text-ink-petrol font-semibold">91 %</span>{" "}
-          checken Sie online, bevor sie kaufen, einen Termin machen
-          oder Kontakt aufnehmen. Ist da nichts oder nur was
-          Veraltetes, sind sie weg, bevor Ihr Telefon je klingelt.{" "}
+          checken Sie online — bevor sie kaufen, einen Termin machen,
+          überhaupt Kontakt aufnehmen. Ist da nichts oder was
+          Veraltetes, sind sie weg.{" "}
           <span className="text-muted-foreground text-[13px] tracking-[0.02em]">
-            (BITKOM, Trends in der digitalen Konsumwelt)
+            (BITKOM)
           </span>
         </p>
 
@@ -82,48 +81,44 @@ export function WhyWebsite() {
         <div className="mt-14 grid gap-10 sm:mt-16 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-6">
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Und das nicht irgendwann, sondern sofort.{" "}
+              Und das nicht irgendwann, sondern sofort:{" "}
               <span className="text-ink-petrol font-semibold">
-                Drei von vier
+                drei von vier
               </span>{" "}
-              Leuten, die online nach einem lokalen Anbieter suchen,
-              gehen binnen 24 Stunden vorbei — beim erstbesten, den
-              sie finden. Wenn das nicht Sie sind, ist es eben jemand
-              anders.{" "}
+              Leuten gehen binnen 24 Stunden beim erstbesten vorbei,
+              den sie online finden. Sind Sie das nicht, ist's eben
+              jemand anders.{" "}
               <span className="text-muted-foreground text-[12px] tracking-[0.02em]">
-                (Google, Local Search Behavior)
+                (Google)
               </span>
             </p>
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Ihre Kunden sind da. Sie suchen Sie sogar. Nur:
-              zwischen ihrer Suche und Ihrer Tür steht eine
-              schlechte Website — oder gar keine. Und da bleiben
-              sie dann auch.
+              Ihre Kunden sind da. Sie suchen sogar nach Ihnen. Nur
+              zwischen ihrer Suche und Ihrer Tür liegt eine alte oder
+              fehlende Website. Da bleibt's dann.
             </p>
           </div>
           <div className="space-y-6">
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Und das geht schneller als man denkt:{" "}
+              Dazu kommt:{" "}
               <span className="text-ink-petrol font-semibold">
                 drei Viertel
               </span>{" "}
-              entscheiden über einen Anbieter rein nach dem
-              Website-Design. Sieht die Seite nach 2018 aus, denken
-              sie automatisch: der Rest ist auch nicht auf dem
-              neuesten Stand. Ist nicht fair, aber so läuft's nun mal.{" "}
+              entscheiden allein nach dem Website-Design. Sieht's nach
+              2018 aus, denken sie automatisch — der Rest ist auch
+              nicht auf dem Stand.{" "}
               <span className="text-muted-foreground text-[12px] tracking-[0.02em]">
-                (Stanford, Web Credibility Research)
+                (Stanford)
               </span>
             </p>
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Hier die gute Nachricht:{" "}
+              Die gute Nachricht:{" "}
               <span className="text-ink-petrol font-semibold">
                 fast die Hälfte
               </span>{" "}
-              aller Google-Suchen ist lokal — Stadtteil, Branche, „in
-              meiner Nähe". Heißt: Wer für seinen Stadtteil online
-              gut dasteht, gewinnt. Auch wenn zwei Straßen weiter
-              jemand sitzt, der eigentlich besser ist.{" "}
+              aller Google-Suchen ist lokal. Wer für seinen Stadtteil
+              sichtbar ist, gewinnt — auch wenn der bessere Anbieter
+              zwei Straßen weiter sitzt.{" "}
               <span className="text-muted-foreground text-[12px] tracking-[0.02em]">
                 (Google)
               </span>
