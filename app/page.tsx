@@ -16,7 +16,6 @@ import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
-import { ParallaxImage } from "@/components/marketing/parallax-image";
 import { SwingTag } from "@/components/marketing/swing-tag";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -155,8 +154,6 @@ export default function HomePage() {
       <MarketingHeader />
       <main id="main" className="flex-1">
         <Hero />
-        {/* WhyWebsite trägt den ganzen WARUM-Block — FactsStrip ist
-            redundant, deshalb raus. Weniger Karten-Grid-Rhythmus. */}
         <RevealOnScroll>
           <WhyWebsite />
         </RevealOnScroll>
@@ -164,11 +161,6 @@ export default function HomePage() {
           <PersonalNote />
         </RevealOnScroll>
         <BranchenMarquee />
-        {/* IndustryPicker raus — die ExamplesGallery zeigt jetzt
-            in asymmetrischer Magazin-Form alle 10 Branchen mit Bild
-            und Caption. Tab-Picker mit State wäre redundant und
-            wirkt wie eine Standard-„Select your industry"-Komponente
-            aus dem AI-Template-Baukasten. */}
         <RevealOnScroll>
           <ExamplesGallery />
         </RevealOnScroll>
@@ -196,9 +188,6 @@ export default function HomePage() {
         <RevealOnScroll>
           <WhatWeDontDo />
         </RevealOnScroll>
-        {/* StackBlock raus — 4 tech-stack-Karten interessieren
-            keinen Kunden. Erwähnung der wichtigsten Bausteine
-            steht im Footer („Hosting in Deutschland" etc.). */}
         <RevealOnScroll>
           <Pricing />
         </RevealOnScroll>

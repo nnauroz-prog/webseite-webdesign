@@ -34,9 +34,6 @@ const SUBLINE =
 const PRICE_PILL = "ab 499 € · sitalo.de";
 
 export default async function Image() {
-  // Charset auf das beschränken, was wir wirklich zeichnen — spart
-  // Bytes und macht den Build robust gegen Netz-Hiccups.
-  const allText = `${HEADLINE_BOLD}${HEADLINE_ITALIC}${EYEBROW}${SUBLINE}${PRICE_PILL}`;
   const [serifItalic, sansBold, sansRegular] = await Promise.all([
     loadGoogleFont({
       family: "Cormorant Garamond",
