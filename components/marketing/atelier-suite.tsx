@@ -95,7 +95,7 @@ export function AtelierSuite() {
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
               />
-              Werkzeugkasten · V Stück, alle nutzbar
+              Werkzeugkasten · Fünf Stück, frei
             </p>
             <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
               Fünf Werkzeuge,
@@ -106,10 +106,10 @@ export function AtelierSuite() {
             </h2>
           </div>
           <p className="text-foreground/75 max-w-md text-pretty text-[15.5px] leading-relaxed">
-            Wir haben sie für uns gebaut, weil wir sie ständig
-            gebraucht haben. Sie sind hier offen für jeden — kein
-            Login, kein Newsletter, kein Trichter. Wenn etwas davon
-            Sinn ergibt, ergibt es Sinn.
+            Ursprünglich für uns selbst gebaut, weil wir sie ständig
+            gebraucht haben. Sind jetzt offen für alle — kein Login,
+            kein Newsletter, kein Trichter. Wenn was davon hilft,
+            freut uns das.
           </p>
         </div>
 

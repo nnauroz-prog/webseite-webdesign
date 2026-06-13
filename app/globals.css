@@ -505,6 +505,21 @@ html {
     transform: rotateY(180deg);
   }
 }
+/* Touch-Geräte: kein Flip möglich, daher Vorderseite normal
+   fließen lassen statt absolut positioniert. So passt sich die
+   Karte an den Inhalt an, statt Text am Rand abzuschneiden. */
+@media not all and (hover: hover) and (pointer: fine) {
+  .flip-card-inner {
+    height: auto;
+  }
+  .flip-card-front {
+    position: relative;
+    inset: auto;
+  }
+  .flip-card-back {
+    display: none;
+  }
+}
 
 /* Depth3D — Tisch-Perspektive für Flächen (Hamburg-Karte etc.).
    Die Komponente schreibt --d3-rx/--d3-ry (Neigung) und
