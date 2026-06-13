@@ -62,7 +62,7 @@ const STEPS = [
   {
     number: "05",
     title: "Sie schauen drüber, wir passen an",
-    body: "Sie gehen die Seite in Ruhe durch — auf dem Handy in der Bahn, am Schreibtisch, mit Ihrer Partnerin am Esstisch. Schicken uns Ihre Änderungswünsche gesammelt zurück. Wir setzen sie um — eine saubere Runde, kein endloses Hin und Her. Erst wenn Sie zufrieden sind, geht es weiter.",
+    body: "Sie gehen die Seite in Ruhe durch — auf dem Handy in der Bahn, am Schreibtisch, abends auf dem Sofa. Schicken uns Ihre Änderungswünsche gesammelt zurück. Wir setzen sie um — eine saubere Runde, kein endloses Hin und Her. Erst wenn Sie zufrieden sind, geht es weiter.",
     bullets: [
       "Vollständige Vorschau auf einem Test-Link",
       "Eine Runde gesammelter Änderungen inklusive",

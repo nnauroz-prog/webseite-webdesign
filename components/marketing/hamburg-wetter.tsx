@@ -105,8 +105,7 @@ function FallbackBody() {
         </span>
       </p>
       <p className="text-muted-foreground mt-3 text-[13.5px] leading-relaxed">
-        Wetterdaten sind gerade nicht erreichbar — wir sitzen
-        trotzdem hier am Rathausmarkt.
+        Wetterdaten gerade nicht erreichbar — wir sind aber da.
       </p>
     </div>
   );
