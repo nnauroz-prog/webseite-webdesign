@@ -85,10 +85,10 @@ export function Promises() {
 
         <div className="border-ink-petrol/60 mt-16 max-w-4xl border-l-2 pl-6 sm:mt-20 sm:pl-10">
           <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.015em] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
-            Am Ende ist das hier kein Software-Projekt.
+            Wenn Sie anrufen,
             <br />
             <span className="serif-italic text-muted-foreground">
-              Sondern Vertrauen, das wir nicht verlieren wollen.
+              gehen wir ans Telefon. Auch in zwei Jahren noch.
             </span>
           </p>
         </div>

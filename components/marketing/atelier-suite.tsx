@@ -34,7 +34,7 @@ const HERO_TOOL: Tool = {
   href: "/check",
   eyebrow: "I — Speed-Check",
   title: "Wie schnell ist Ihre Seite?",
-  body: "Live-Lighthouse-Test in 30 Sekunden. Performance, SEO, Accessibility, Best Practices als vier Ringe — plus Core Web Vitals. Ohne Kontaktdaten, ohne PDF, ohne Vertriebs-Anruf danach.",
+  body: "Live-Lighthouse-Test in 30 Sekunden. Performance, SEO, Accessibility, Best Practices als vier Ringe — plus Core Web Vitals. Keine Anmeldung, keine Mail, kein Anruf danach.",
   back: "Vier Lighthouse-Werte plus Core Web Vitals. Sofort, ohne Anmeldung.",
   icon: Zap,
   badge: "Live",
