@@ -870,14 +870,13 @@ function HamburgKarte() {
               </span>
             </h2>
             <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-              Wir wohnen und arbeiten in Hamburg. Wir kennen
-              Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude
-              — die Cafés, die Praxen, die Friseure, die Werkstätten.
+              Wir wohnen und arbeiten hier. Acht Stadtteile, in
+              denen wir regelmäßig sind — und für die wir wissen,
+              was online funktioniert und was nicht.
             </p>
             <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[14.5px] leading-relaxed">
-              Jeder Pin führt zur Stadtteil-Seite — mit den Branchen,
-              die dort am häufigsten zu uns kommen, und den Suchen,
-              für die wir dort bauen.
+              Jeder Pin führt zur Stadtteil-Seite mit den
+              Suchbegriffen und Branchen, für die wir dort bauen.
             </p>
             <Link
               href="/standorte"
