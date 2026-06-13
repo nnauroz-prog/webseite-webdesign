@@ -324,19 +324,17 @@ function WarumHamburg() {
         <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Wir sind in Hamburg. Wir kennen Eimsbüttel, Altona,
-              Eppendorf, St. Pauli, Winterhude — die Cafés, die Praxen,
-              die Friseure, die Werkstätten. Wir gehen durch die
-              Straßen und sehen, wo eine gute Seite den Unterschied
-              machen würde.
+              Wir wohnen und arbeiten hier. Eimsbüttel, Altona,
+              Eppendorf, St. Pauli, Winterhude — die Stadtteile, in
+              denen unsere Kunden ihre Geschäfte haben, kennen wir
+              nicht aus dem Lehrbuch. Wir sind dort regelmäßig.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Hamburg ist groß genug, dass jede Branche dichte
-              Konkurrenz hat. Und klein genug, dass eine ordentliche
-              Online-Sichtbarkeit Sie binnen Wochen sichtbar nach
-              vorne bringt. Das ist der ideale Markt für gutes lokales
-              Webdesign — und wir haben uns entschieden, genau hier
-              zu bleiben.
+              Das hilft, wenn wir Ihre Seite bauen. Wir wissen, mit
+              welchen Begriffen Ihre Nachbarn nach Ihnen googeln, was
+              in welcher Branche schief läuft, und wer in Ihrem
+              Viertel sonst noch sichtbar ist — und wer nicht. Dafür
+              müssen Sie uns nichts erklären.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo Atelier, Hamburg
