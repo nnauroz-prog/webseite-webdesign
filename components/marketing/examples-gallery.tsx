@@ -41,8 +41,8 @@ export function ExamplesGallery() {
             </h2>
           </div>
           <p className="text-foreground/75 max-w-md text-pretty text-lg leading-relaxed">
-            Zehn Branchen, zehn Layouts. Wir wiederholen uns nicht —
-            auch dann nicht, wenn keiner zuguckt.
+            Zehn Branchen, zehn Layouts. Wir wiederholen uns nicht
+            — Sie kriegen kein Template mit anderem Logo.
           </p>
         </div>
 
