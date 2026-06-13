@@ -487,9 +487,9 @@ function Steps() {
               </span>
             </h2>
             <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-              Nach jedem Schritt haben Sie was in der Hand. Kein
-              PowerPoint-Status, kein Project-Tool-Ticket, das irgendwo
-              im System steht. Sie sehen's einfach.
+              Nach jedem Schritt sehen Sie was. Kein PowerPoint-
+              Status, kein Jira-Ticket. Einfach die Seite, wie sie
+              wird.
             </p>
           </div>
           <div className="relative">

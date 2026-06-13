@@ -80,9 +80,9 @@ export function ImAtelier() {
             </h2>
             <p className="text-muted-foreground mt-6 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
               Wir nehmen wenige Projekte gleichzeitig an, damit wir
-              jedem persönlich nachgehen können. Hier ein paar Sachen,
-              die diese Wochen anliegen — anonymisiert, weil Klar-Namen
-              ohne Freigabe nicht hierher gehören.
+              bei jedem wirklich dabei sein können. Hier ein paar
+              Sachen, die diese Tage anstehen — Namen anonymisiert,
+              weil wir niemanden ohne Erlaubnis nennen.
             </p>
             <Link
               href="/anfrage"
