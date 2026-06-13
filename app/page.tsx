@@ -7,6 +7,7 @@ import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { Depth3D } from "@/components/marketing/depth-3d";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
+import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
@@ -199,6 +200,13 @@ export default function HomePage() {
             steht im Footer („Hosting in Deutschland" etc.). */}
         <RevealOnScroll>
           <Pricing />
+        </RevealOnScroll>
+        {/* Hamburg-Karte — die acht Stadtteile als räumlicher
+            Identitätsanker vor den Closing-Sektionen. Echte
+            Tisch-Karte (Depth3D), die mit der Maus kippt. Macht
+            das „aus Hamburg" greifbar statt rhetorisch. */}
+        <RevealOnScroll>
+          <HamburgKarte />
         </RevealOnScroll>
         {/* „Aus dem Atelier" — kleine Aktivitäts-Signal-Sektion direkt
             vor FAQ. Letzte Bestätigung „hier ist Leben" vor den
@@ -832,6 +840,65 @@ function PricingCenterfold({
 /* ============================================================
  * FAQ — quiet accordion, hairlines instead of cards
  * ============================================================ */
+/* ============================================================
+ * HamburgKarte — räumlicher Identitätsanker direkt vor den
+ * Closing-Sektionen. Acht Stadtteile als Tisch-Karte (Depth3D),
+ * klickbare Pins führen zur jeweiligen Standort-Seite.
+ * ============================================================ */
+function HamburgKarte() {
+  return (
+    <section
+      id="hamburg"
+      className="border-border/40 relative overflow-hidden border-t scroll-mt-20"
+    >
+      <div
+        aria-hidden="true"
+        className="bg-gold/8 pointer-events-none absolute -top-32 -right-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
+      />
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        <div className="grid items-center gap-16 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+          <div>
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
+              />
+              Wo wir sitzen
+            </p>
+            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+              Acht Stadtteile,
+              <br />
+              <span className="serif-italic text-muted-foreground font-normal">
+                eine Stadt, die wir kennen.
+              </span>
+            </h2>
+            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+              Wir wohnen und arbeiten in Hamburg. Wir kennen
+              Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude
+              — die Cafés, die Praxen, die Friseure, die Werkstätten.
+            </p>
+            <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[14.5px] leading-relaxed">
+              Jeder Pin führt zur Stadtteil-Seite — mit den Branchen,
+              die dort am häufigsten zu uns kommen, und den Suchen,
+              für die wir dort bauen.
+            </p>
+            <Link
+              href="/standorte"
+              className="text-foreground mt-8 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] hover:underline"
+            >
+              Alle Stadtteile ansehen
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <Depth3D maxTilt={9}>
+            <HamburgMap />
+          </Depth3D>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Faq() {
   return (
     <section
