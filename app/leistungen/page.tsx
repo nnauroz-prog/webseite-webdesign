@@ -207,7 +207,7 @@ function Sections() {
             <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28 lg:py-36">
               <div className="grid items-start gap-12 lg:grid-cols-[0.85fr_1.4fr] lg:gap-24">
                 <div className={i % 2 === 1 ? "lg:order-2" : ""}>
-                  <span className="serif text-foreground/15 block text-[8rem] font-normal leading-none tracking-[-0.04em] sm:text-[10rem]">
+                  <span className="drop-cap-3d serif text-foreground/15 block text-[8rem] font-normal leading-none tracking-[-0.04em] sm:text-[10rem]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="bg-foreground text-background mt-6 inline-flex h-12 w-12 items-center justify-center rounded-full">

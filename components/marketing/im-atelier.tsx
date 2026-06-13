@@ -24,6 +24,7 @@
 import Link from "next/link";
 
 import { DrawnArrow } from "@/components/marketing/ornaments";
+import { TiltCard } from "@/components/marketing/tilt-card";
 import { ATELIER_NOTES } from "@/lib/atelier-notes";
 import { formatDate, JOURNAL_POSTS } from "@/lib/journal-data";
 
@@ -115,9 +116,10 @@ export function ImAtelier() {
               ))}
             </ol>
             {latestPost && (
-              <Link
+              <TiltCard
                 href={`/journal/${latestPost.slug}`}
-                className="group border-foreground/15 bg-foreground/[0.03] hover:bg-foreground/[0.06] mt-6 block rounded-2xl border p-5 transition-colors sm:p-6"
+                className="border-foreground/15 bg-foreground/[0.03] mt-6 rounded-2xl border p-5 sm:p-6"
+                cursorLabel="Essay lesen →"
               >
                 <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
                   Neu im Journal · {formatDate(latestPost.publishedAt)}
@@ -128,7 +130,7 @@ export function ImAtelier() {
                 <span className="text-foreground mt-3 inline-flex items-center gap-2 text-[13.5px] font-medium underline-offset-4 group-hover:underline">
                   Essay lesen · {latestPost.readingMinutes} Min
                 </span>
-              </Link>
+              </TiltCard>
             )}
           </div>
         </div>

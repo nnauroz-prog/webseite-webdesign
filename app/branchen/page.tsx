@@ -143,7 +143,7 @@ function Sections() {
                   </Link>
                 ) : (
                   <div className="bg-secondary/30 flex aspect-[16/10] w-full items-center justify-center rounded-2xl">
-                    <span className="serif text-foreground/20 text-[8rem] font-normal leading-none">
+                    <span className="drop-cap-3d serif text-foreground/20 text-[8rem] font-normal leading-none">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                   </div>

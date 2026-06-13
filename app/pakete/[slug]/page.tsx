@@ -261,7 +261,7 @@ export default async function PaketDetailPage({
                 >
                   Preis
                 </p>
-                <p className="mt-4 text-6xl font-semibold tracking-[-0.03em] sm:text-7xl">
+                <p className="drop-cap-3d mt-4 text-6xl font-semibold tracking-[-0.03em] sm:text-7xl">
                   {paket.setup}
                 </p>
                 <p

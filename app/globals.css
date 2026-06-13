@@ -174,6 +174,14 @@ html {
   .marquee-track {
     animation: marquee-scroll 38s linear infinite;
   }
+  /* Geist-Spur — gleiche Choreografie, 60 % langsamer. Gemeinsam
+     mit der größeren, blasseren Typografie ergibt sich eine
+     zweite, weiter „weg" wirkende Tiefen-Ebene hinter der
+     Hauptspur. Bleibt bei reduced-motion stehen. */
+  .marquee-track-ghost {
+    animation: marquee-scroll 62s linear infinite;
+    filter: blur(1.5px);
+  }
   @keyframes marquee-scroll {
     from {
       transform: translate3d(0, 0, 0);
@@ -321,7 +329,9 @@ html {
 
   /* Klassische Drop-Cap für editoriale Lead-Absätze auf Journal-
      Detailseiten. Der erste Buchstabe wird im Cormorant Garamond
-     gesetzt, fällt drei Zeilen tief, leicht in Gold getönt. */
+     gesetzt, fällt drei Zeilen tief, leicht in Gold getönt.
+     Geschichteter Text-Shadow ergibt Holzschnitt-Tiefe wie bei
+     den anderen Drop-Caps der Seite. */
   .journal-lead::first-letter {
     font-family: var(--font-serif), Cormorant, serif;
     font-style: italic;
@@ -332,6 +342,13 @@ html {
     float: left;
     margin: 0.1em 0.12em 0 -0.04em;
     padding-top: 0.05em;
+    text-shadow:
+      1px 1px 0 rgb(201 162 79 / 0.18),
+      2px 2px 0 rgb(201 162 79 / 0.14),
+      3px 3px 0 rgb(201 162 79 / 0.11),
+      4px 4px 0 rgb(201 162 79 / 0.08),
+      5px 5px 0 rgb(201 162 79 / 0.06),
+      6px 6px 0 rgb(201 162 79 / 0.04);
   }
 }
 
@@ -339,7 +356,8 @@ html {
    `.marquee-pause-on-hover` auf den Container, dann stoppt der
    Loop in den Kindern (`.marquee-track`), solange die Maus drüber
    schwebt. */
-.marquee-pause-on-hover:hover .marquee-track {
+.marquee-pause-on-hover:hover .marquee-track,
+.marquee-pause-on-hover:hover .marquee-track-ghost {
   animation-play-state: paused;
 }
 
@@ -673,12 +691,218 @@ html {
   }
 }
 
+/* FAQ-Antworten klappen beim Öffnen aus einer 3D-Rückneigung auf,
+   wie Karteikarten, die jemand nach vorne kippt. Die Animation
+   läuft nur einmal beim Öffnen, nicht in einer Schleife. Die
+   <details>-Eigenheit, dass das Inneren-Element nur beim Öffnen
+   matched, sorgt dafür, dass die Animation genau einmal pro
+   Öffnen abgespielt wird. */
+@media (prefers-reduced-motion: no-preference) {
+  details[open] > p {
+    animation: faq-unfold 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform-origin: top center;
+  }
+  @keyframes faq-unfold {
+    from {
+      transform: perspective(900px) rotateX(-58deg) translateY(-8px);
+      opacity: 0;
+    }
+    to {
+      transform: perspective(900px) rotateX(0deg) translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* BriefSiegel — versiegelter Briefumschlag, dessen Klappe beim
+   Hover nach hinten umkippt und das Wachssiegel mitnimmt. Drei
+   Z-Ebenen (Brief-Rumpf, Notizpapier, Klappe mit Siegel) in
+   echtem 3D-Raum gestapelt. Drehursprung der Klappe liegt am
+   oberen Rand, damit die Bewegung wie eine echte Brief-Öffnung
+   wirkt. Pure CSS — Touch + reduced-motion zeigen den Brief
+   geschlossen, statisch. */
+.brief-siegel-stage {
+  perspective: 1200px;
+  width: 14rem;
+  margin-inline: auto;
+}
+.brief-siegel {
+  position: relative;
+  height: 10rem;
+  width: 100%;
+  transform-style: preserve-3d;
+}
+.brief-siegel-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(
+      180deg,
+      oklch(0.94 0.018 80) 0%,
+      oklch(0.9 0.022 75) 100%
+    );
+  border: 1px solid oklch(0.85 0.02 70 / 0.5);
+  box-shadow:
+    0 10px 24px -10px rgb(35 31 27 / 0.25),
+    inset 0 0 0 1px oklch(0.95 0.015 75 / 0.4);
+  overflow: hidden;
+}
+.brief-siegel-letter {
+  position: absolute;
+  inset: 0;
+  transition: transform 540ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.brief-siegel-flap {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 0%;
+  transform: rotateX(0deg);
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  pointer-events: none;
+}
+.brief-siegel-flap-shape {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(
+      180deg,
+      oklch(0.92 0.022 80) 0%,
+      oklch(0.86 0.026 75) 100%
+    );
+  border: 1px solid oklch(0.82 0.024 70 / 0.45);
+  /* Klappen-Dreieck: zwei obere Ecken oben, Spitze in der Mitte
+     unten. Lässt die Klappe sichtbar als „Brief-V" erscheinen. */
+  clip-path: polygon(0 0, 100% 0, 50% 75%);
+  box-shadow:
+    inset 0 -8px 12px -8px rgb(35 31 27 / 0.18);
+}
+.brief-siegel-seal {
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  filter: drop-shadow(0 6px 8px rgb(35 31 27 / 0.35));
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .brief-siegel-stage:hover .brief-siegel-flap {
+    transform: rotateX(-128deg) translateZ(2px);
+  }
+  .brief-siegel-stage:hover .brief-siegel-letter {
+    transform: translateY(-12px);
+  }
+}
+
+/* Hero-Dolly — die Hero-Szene weicht beim Scrollen nach Z zurück,
+   wird leicht kleiner und blasser. Wirkt wie eine Kamera, die
+   zurückgleitet, während der nächste Inhalt nach vorn rückt. Pure
+   CSS, scroll-getrieben via animation-timeline: view(). Browser
+   ohne Support zeigen die Szene statisch. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .hero-dolly {
+      perspective: 1400px;
+    }
+    .hero-dolly-inner {
+      transform-style: preserve-3d;
+      transform-origin: center top;
+      animation: hero-dolly linear both;
+      animation-timeline: view();
+      /* Effekt setzt erst ab dem zweiten Drittel des Hero-Exits ein,
+         damit beim normalen Lesen nichts wackelt. */
+      animation-range: exit 25% exit 100%;
+    }
+    @keyframes hero-dolly {
+      from {
+        opacity: 1;
+        transform: perspective(1400px) translateZ(0px) scale(1);
+      }
+      to {
+        opacity: 0.72;
+        transform: perspective(1400px) translateZ(-60px) scale(0.965);
+      }
+    }
+  }
+}
+
+/* Etappen-Hover — beim Row-Hover hebt sich das Riesen-Numeral
+   und das Icon-Pill räumlich nach vorn (translateZ), während die
+   Tinten-Schatten weicher und tiefer werden. Nur auf echten
+   Hover-Geräten — Touch behält den editorialen Lesefluss. */
+.etappen-stage {
+  perspective: 1400px;
+}
+.etappe-numeral,
+.etappe-icon {
+  transition:
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .etappe-row:hover .etappe-numeral {
+    transform: perspective(1100px) translateZ(40px) rotateY(-3deg);
+    color: oklch(0.38 0.04 220 / 0.62);
+    filter: drop-shadow(0 12px 22px rgb(35 31 27 / 0.18));
+  }
+  .etappe-row:hover .etappe-icon {
+    transform: perspective(1100px) translateZ(20px);
+  }
+}
+
+/* Drop-Cap-3D — editoriale Großbuchstaben kriegen geschichteten
+   Tiefen-Schatten wie Holzschnitt-Lettern. Mehrere versetzte
+   Textkopien in abnehmender Deckkraft erzeugen die räumliche
+   Lage; eine weiche Drop-Shadow setzt sie auf die Seite. Auf
+   Hover-Geräten kippen sie minimal mit dem Cursor.
+   Für die großen Anführungszeichen, Drop-Caps und Steps-Numerale. */
+.drop-cap-3d {
+  display: inline-block;
+  text-shadow:
+    1px 1px 0 rgb(35 31 27 / 0.06),
+    2px 2px 0 rgb(35 31 27 / 0.05),
+    3px 3px 0 rgb(35 31 27 / 0.04),
+    4px 4px 0 rgb(35 31 27 / 0.035),
+    5px 5px 0 rgb(35 31 27 / 0.03),
+    6px 6px 0 rgb(35 31 27 / 0.025),
+    7px 7px 0 rgb(35 31 27 / 0.02),
+    8px 8px 0 rgb(35 31 27 / 0.018);
+  transform-origin: 30% 70%;
+  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+/* Variante für Gold-Akzente (Anführungszeichen im FinalCta und
+   PersonalNote): hellerer, wärmerer Tiefenschatten. */
+.drop-cap-3d-gold {
+  text-shadow:
+    1px 1px 0 rgb(201 162 79 / 0.18),
+    2px 2px 0 rgb(201 162 79 / 0.14),
+    3px 3px 0 rgb(201 162 79 / 0.11),
+    4px 4px 0 rgb(201 162 79 / 0.08),
+    5px 5px 0 rgb(201 162 79 / 0.06),
+    6px 6px 0 rgb(201 162 79 / 0.04);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .drop-cap-3d:hover {
+    transform: perspective(820px) rotateX(8deg) rotateY(-5deg)
+      translateZ(6px);
+  }
+}
+
 /* Subtiler Gold-Schimmer auf der Hero-Headline.
    Ein sanfter Lichtreflex wandert in Endlosschleife durch den Text.
    Wirkt nur auf Elementen mit der .hero-shine-Klasse — die nutzen
    wir nur auf dem Italic-Akzent in der Hero-Headline. */
 @media (prefers-reduced-motion: no-preference) {
   .hero-shine {
+    /* inline-block ist Voraussetzung dafür, dass der Hover-Lift
+       weiter unten wirkt — inline-Spans kippen normalerweise nicht. */
+    display: inline-block;
     background-image: linear-gradient(
       110deg,
       currentColor 0%,
@@ -695,7 +919,24 @@ html {
     -webkit-text-fill-color: transparent;
     color: transparent;
     animation: hero-shine 6s ease-in-out infinite;
+    transition:
+      transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
   }
+  /* Beim Hover heben die Italic-Akzentwörter spürbar ab — kleine
+     Z-Translation plus winzige Schräge, damit sie aus der Zeile
+     herauspoppen. Nur auf echten Hover-Geräten — Touch behält den
+     Lesefluss. */
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero-shine:hover {
+    transform: perspective(720px) translateZ(20px) rotateX(4deg)
+      rotateY(-3deg);
+    filter: drop-shadow(0 14px 18px rgb(35 31 27 / 0.18));
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
   @keyframes hero-shine {
     0%,
     25% {

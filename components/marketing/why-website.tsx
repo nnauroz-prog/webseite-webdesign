@@ -64,15 +64,15 @@ export function WhyWebsite() {
             damit der Leser sofort spürt: hier geht es um etwas, das
             ich verliere, nicht um etwas, das mir verkauft wird. */}
         <p className="text-foreground/85 mt-14 max-w-3xl text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
-          <span className="serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
+          <span className="drop-cap-3d serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
             N
           </span>
-          eun von zehn Menschen, die heute zu Ihnen kommen könnten,
-          googeln Sie vorher.{" "}
+          eun von zehn potenziellen Kunden googeln Sie, bevor sie
+          überhaupt anrufen.{" "}
           <span className="text-ink-petrol font-semibold">91 %</span>{" "}
-          informieren sich online, bevor sie kaufen, einen Termin
-          machen oder anrufen. Wenn da nichts ist — oder nichts
-          Vernünftiges — sind sie weg, bevor das Telefon je klingelt.{" "}
+          checken Sie online, bevor sie kaufen, einen Termin machen
+          oder Kontakt aufnehmen. Ist da nichts oder nur was
+          Veraltetes, sind sie weg, bevor Ihr Telefon je klingelt.{" "}
           <span className="text-muted-foreground text-[13px] tracking-[0.02em]">
             (BITKOM, Trends in der digitalen Konsumwelt)
           </span>
@@ -82,47 +82,48 @@ export function WhyWebsite() {
         <div className="mt-14 grid gap-10 sm:mt-16 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-6">
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Sie denken vielleicht, das ist Zukunftsmusik. Es ist
-              Gegenwart.{" "}
+              Und das nicht irgendwann, sondern sofort.{" "}
               <span className="text-ink-petrol font-semibold">
                 Drei von vier
               </span>{" "}
-              Menschen, die nach einem lokalen Anbieter suchen, gehen
-              binnen 24 Stunden hin — zum erstbesten, den sie finden.
-              Wenn Sie das nicht sind, ist es jemand anders.{" "}
+              Leuten, die online nach einem lokalen Anbieter suchen,
+              gehen binnen 24 Stunden vorbei — beim erstbesten, den
+              sie finden. Wenn das nicht Sie sind, ist es eben jemand
+              anders.{" "}
               <span className="text-muted-foreground text-[12px] tracking-[0.02em]">
                 (Google, Local Search Behavior)
               </span>
             </p>
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Das Problem ist nicht, dass es Ihre Kunden nicht gäbe.
-              Das Problem ist, dass sie an Ihrer Tür vorbeigehen, weil
-              zwischen ihrer Suche und Ihrem Eingang eine schlechte
-              Website steht — oder gar keine.
+              Ihre Kunden sind da. Sie suchen Sie sogar. Nur:
+              zwischen ihrer Suche und Ihrer Tür steht eine
+              schlechte Website — oder gar keine. Und da bleiben
+              sie dann auch.
             </p>
           </div>
           <div className="space-y-6">
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Und der erste Eindruck zählt schneller, als Sie denken:{" "}
+              Und das geht schneller als man denkt:{" "}
               <span className="text-ink-petrol font-semibold">
                 drei Viertel
               </span>{" "}
-              beurteilen einen Anbieter nach dem Website-Design allein.
-              Eine 2018er-Seite signalisiert: hier ist auch sonst nichts
-              auf der Höhe. Unfair, aber unverhandelbar.{" "}
+              entscheiden über einen Anbieter rein nach dem
+              Website-Design. Sieht die Seite nach 2018 aus, denken
+              sie automatisch: der Rest ist auch nicht auf dem
+              neuesten Stand. Ist nicht fair, aber so läuft's nun mal.{" "}
               <span className="text-muted-foreground text-[12px] tracking-[0.02em]">
                 (Stanford, Web Credibility Research)
               </span>
             </p>
             <p className="text-foreground/80 text-pretty text-[16px] leading-[1.7]">
-              Die gute Nachricht für lokale Anbieter:{" "}
+              Hier die gute Nachricht:{" "}
               <span className="text-ink-petrol font-semibold">
                 fast die Hälfte
               </span>{" "}
-              aller Google-Suchen sind lokal — Stadtteil, Branche,
-              „in meiner Nähe". Wer für Eimsbüttel sichtbar ist, gewinnt
-              Eimsbüttel. Auch wenn der bessere Anbieter zwei Straßen
-              weiter sitzt.{" "}
+              aller Google-Suchen ist lokal — Stadtteil, Branche, „in
+              meiner Nähe". Heißt: Wer für seinen Stadtteil online
+              gut dasteht, gewinnt. Auch wenn zwei Straßen weiter
+              jemand sitzt, der eigentlich besser ist.{" "}
               <span className="text-muted-foreground text-[12px] tracking-[0.02em]">
                 (Google)
               </span>
@@ -145,10 +146,10 @@ export function WhyWebsite() {
 
         {/* Closer — kein Pep-Talk, einfach was Lösbares. */}
         <p className="text-foreground/70 mt-12 max-w-2xl text-pretty text-[15px] leading-relaxed">
-          Die gute Seite an der Sache: lokal ist die Konkurrenz
-          übersichtlich. Eine schnelle, ordentliche Seite mit den
-          richtigen Wörtern für Ihren Stadtteil reicht in den meisten
-          Fällen, um vorne zu stehen. Mehr braucht's selten.
+          Vorteil lokal: die Konkurrenz ist überschaubar. Eine
+          schnelle, saubere Seite mit den richtigen Wörtern für Ihren
+          Stadtteil reicht meistens schon, um vorne zu stehen. Mehr
+          ist es ehrlich gesagt nicht.
         </p>
       </div>
     </section>

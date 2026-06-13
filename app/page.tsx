@@ -7,6 +7,8 @@ import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { Depth3D } from "@/components/marketing/depth-3d";
 import { DreiSachen } from "@/components/marketing/drei-sachen";
+import { HamburgMap } from "@/components/marketing/hamburg-map";
+import { HamburgWetter } from "@/components/marketing/hamburg-wetter";
 import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
@@ -14,7 +16,6 @@ import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
-import { ParallaxImage } from "@/components/marketing/parallax-image";
 import { SwingTag } from "@/components/marketing/swing-tag";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -153,8 +154,6 @@ export default function HomePage() {
       <MarketingHeader />
       <main id="main" className="flex-1">
         <Hero />
-        {/* WhyWebsite trägt den ganzen WARUM-Block — FactsStrip ist
-            redundant, deshalb raus. Weniger Karten-Grid-Rhythmus. */}
         <RevealOnScroll>
           <WhyWebsite />
         </RevealOnScroll>
@@ -162,11 +161,6 @@ export default function HomePage() {
           <PersonalNote />
         </RevealOnScroll>
         <BranchenMarquee />
-        {/* IndustryPicker raus — die ExamplesGallery zeigt jetzt
-            in asymmetrischer Magazin-Form alle 10 Branchen mit Bild
-            und Caption. Tab-Picker mit State wäre redundant und
-            wirkt wie eine Standard-„Select your industry"-Komponente
-            aus dem AI-Template-Baukasten. */}
         <RevealOnScroll>
           <ExamplesGallery />
         </RevealOnScroll>
@@ -194,11 +188,15 @@ export default function HomePage() {
         <RevealOnScroll>
           <WhatWeDontDo />
         </RevealOnScroll>
-        {/* StackBlock raus — 4 tech-stack-Karten interessieren
-            keinen Kunden. Erwähnung der wichtigsten Bausteine
-            steht im Footer („Hosting in Deutschland" etc.). */}
         <RevealOnScroll>
           <Pricing />
+        </RevealOnScroll>
+        {/* Hamburg-Karte — die acht Stadtteile als räumlicher
+            Identitätsanker vor den Closing-Sektionen. Echte
+            Tisch-Karte (Depth3D), die mit der Maus kippt. Macht
+            das „aus Hamburg" greifbar statt rhetorisch. */}
+        <RevealOnScroll>
+          <HamburgKarte />
         </RevealOnScroll>
         {/* „Aus dem Atelier" — kleine Aktivitäts-Signal-Sektion direkt
             vor FAQ. Letzte Bestätigung „hier ist Leben" vor den
@@ -244,7 +242,7 @@ function Hero() {
   return (
     <section
       id="start"
-      className="relative overflow-hidden scroll-mt-20"
+      className="hero-dolly relative overflow-hidden scroll-mt-20"
     >
       {/* Warmer Gradient-Backdrop für mehr Atmosphäre */}
       <div
@@ -258,7 +256,7 @@ function Hero() {
       />
       <CursorSpotlight />
 
-      <div className="mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
+      <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
         {/* Editorial-Kopfzeile: dünne Linie + Sperrsatz wie eine
             Zeitschriften-Mastline. Setzt einen anderen Ton als ein
             klassischer SaaS-Hero. Rechts: zeit-bewusste Begrüßung,
@@ -301,9 +299,10 @@ function Hero() {
               className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Die meisten Cafés in Eppendorf haben eine Speisekarte als
-              PDF von 2021. Pflegedienste in Altona stehen nicht mal bei
-              Google Maps. Wir bauen die Seiten der anderen.
+              Eine ordentliche Website in 1–2 Werktagen — ohne
+              Discovery-Workshop, ohne Brand-Marathon, ohne „wir
+              melden uns nächste Woche". Wir bauen sie für Sie,
+              Sie führen Ihren Betrieb.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -409,45 +408,40 @@ function PersonalNote() {
         <blockquote className="relative mt-10 max-w-4xl">
           <span
             aria-hidden="true"
-            className="serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
+            className="drop-cap-3d drop-cap-3d-gold serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
           >
             „
           </span>
           <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
-            Wir gehen viel zu Fuß durch Hamburg.{" "}
+            Sie machen Ihren Job gut.{" "}
             <span className="serif-italic text-background/75">
-              Was wir dabei sehen:
+              Ihre Website sagt das nur
             </span>{" "}
-            jedes zweite Café hat keine ordentliche Website —{" "}
-            <span className="serif-italic text-background/75">
-              und es ist nie das beste.
-            </span>
+            leider niemandem.
           </p>
         </blockquote>
         <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Eppendorf, ein Mittwochmittag. Drei Cafés in zwei Straßen.
-              Das mit dem besten Espresso hat eine Speisekarte als PDF
-              von Februar 2021. Das daneben hat keine Öffnungszeiten bei
-              Google Maps. Das dritte, das wir auch nicht empfehlen
-              würden, hat als einziges eine moderne Website. Dreimal
-              raten, welches voll war.
+              Das ist heute der Normalfall: Jemand sucht „Friseur
+              um die Ecke" oder „Pflegedienst in der Nähe", vergleicht
+              zwei Sekunden auf dem Handy und entscheidet sich für
+              das mit der besseren Seite. Nicht für das mit der
+              besseren Arbeit.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Sieht man überall. Der Friseur in Eimsbüttel, dessen
-              Telefonnummer auf der Seite drei Jahre alt ist. Die Bar
-              in St.&nbsp;Pauli, deren Instagram-Link auf einen
-              Lieferdienst-Account zeigt, den's nicht mehr gibt.
-              Online-Sichtbarkeit ist kein Talent-Beweis. Aber wenn Sie
-              talentiert sind und nicht sichtbar, gewinnt jemand
-              anders. Auch wenn der schlechter ist.
+              Sie müssen dafür nicht zum Marketing-Profi werden, nicht
+              alle zwei Wochen einen Workshop besuchen und nicht
+              30 % an irgendeine Agentur abdrücken. Sie brauchen eine
+              Seite, die zeigt, was Sie machen — schnell, klar,
+              mobil. Mehr ist es ehrlich nicht.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Wir bauen Seiten für die anderen. Für die, die wissen,
-              dass gute Arbeit erst zählt, wenn jemand davon weiß. Wir
-              brauchen Ihr Logo, ein paar Bilder, was zu sagen. Den
-              Rest machen wir.
+              Genau das bauen wir. Sie schicken uns Logo, ein paar
+              Bilder, ein paar Sätze. Den Rest übernehmen wir. In
+              1–2 Werktagen ist die Seite online — und sieht aus
+              wie etwas, das eine Agentur Ihnen für 5.000 € verkauft
+              hätte.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo, aus Hamburg
@@ -513,17 +507,19 @@ function Steps() {
             Bewusst kein 3-Spalten-Grid mit Timeline-Linie — das ist
             die typische Standard-„Process"-Sektion auf AI-Templates.
             Stattdessen vertikaler Lesefluss mit übergroßen Numeralen. */}
-        <ol className="mt-20 space-y-16 sm:mt-24 sm:space-y-20 lg:space-y-24">
+        <ol className="etappen-stage mt-20 space-y-16 sm:mt-24 sm:space-y-20 lg:space-y-24">
           {STEPS.map(({ n, icon: Icon, title, body }, i) => {
             const flip = i === 1; // mittlere Stufe gespiegelt
             return (
               <li
                 key={n}
-                className="relative grid items-start gap-6 sm:grid-cols-[auto_1fr] sm:gap-10 lg:gap-14"
+                className="etappe-row group relative grid items-start gap-6 sm:grid-cols-[auto_1fr] sm:gap-10 lg:gap-14"
               >
-                {/* Numeral-Spalte links — riesiges Serif, dezent */}
+                {/* Numeral-Spalte links — riesiges Serif, dezent.
+                    Beim Row-Hover hebt sich das Numeral um translateZ
+                    nach vorn, der Tinten-Schatten vertieft sich. */}
                 <div className={flip ? "sm:order-2 sm:text-right" : ""}>
-                  <span className="serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
+                  <span className="etappe-numeral drop-cap-3d serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
                     {n}
                   </span>
                 </div>
@@ -542,7 +538,7 @@ function Steps() {
                         : "flex items-center gap-3"
                     }
                   >
-                    <span className="bg-foreground/[0.04] text-foreground/80 inline-flex h-10 w-10 items-center justify-center rounded-xl">
+                    <span className="etappe-icon bg-foreground/[0.04] text-foreground/80 inline-flex h-10 w-10 items-center justify-center rounded-xl">
                       <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
                     </span>
                     <span className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">
@@ -656,9 +652,9 @@ function Pricing() {
             Kein 3-gleicher-Karten-Reflex. */}
         <div className="mt-16 grid gap-px sm:mt-20 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
           {/* Linker Streifen: Starter */}
-          <div className="order-2 lg:order-1">
+          <Depth3D className="order-2 lg:order-1" maxTilt={4}>
             <PricingFlanke paket={others[0]} side="left" />
-          </div>
+          </Depth3D>
 
           {/* Centerfold: Business */}
           <Depth3D
@@ -671,9 +667,9 @@ function Pricing() {
           </Depth3D>
 
           {/* Rechter Streifen: Premium */}
-          <div className="order-3">
+          <Depth3D className="order-3" maxTilt={4}>
             <PricingFlanke paket={others[1]} side="right" />
-          </div>
+          </Depth3D>
         </div>
 
         {/* Hand-gezeichneter Trenner statt CSS-Border vor dem Disclaimer */}
@@ -830,6 +826,70 @@ function PricingCenterfold({
 /* ============================================================
  * FAQ — quiet accordion, hairlines instead of cards
  * ============================================================ */
+/* ============================================================
+ * HamburgKarte — räumlicher Identitätsanker direkt vor den
+ * Closing-Sektionen. Acht Stadtteile als Tisch-Karte (Depth3D),
+ * klickbare Pins führen zur jeweiligen Standort-Seite.
+ * ============================================================ */
+function HamburgKarte() {
+  return (
+    <section
+      id="hamburg"
+      className="border-border/40 relative overflow-hidden border-t scroll-mt-20"
+    >
+      <div
+        aria-hidden="true"
+        className="bg-gold/8 pointer-events-none absolute -top-32 -right-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
+      />
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+        <div className="grid items-center gap-16 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+          <div>
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1 w-6"
+              />
+              Wo wir sitzen
+            </p>
+            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+              Acht Stadtteile,
+              <br />
+              <span className="serif-italic text-muted-foreground font-normal">
+                eine Stadt, die wir kennen.
+              </span>
+            </h2>
+            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
+              Wir wohnen und arbeiten hier. Acht Stadtteile, in
+              denen wir regelmäßig sind — und für die wir wissen,
+              was online funktioniert und was nicht.
+            </p>
+            <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[14.5px] leading-relaxed">
+              Jeder Pin führt zur Stadtteil-Seite mit den
+              Suchbegriffen und Branchen, für die wir dort bauen.
+            </p>
+            <Link
+              href="/standorte"
+              className="text-foreground mt-8 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] hover:underline"
+            >
+              Alle Stadtteile ansehen
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            {/* Live-Wetter-Karte als Locality-Beweis — Open-Meteo,
+                kein API-Key, 1 Stunde server-gecacht. Bei Netzwerk-
+                Fehlern rendert eine ruhige Fallback-Karte ohne Daten. */}
+            <div className="mt-10 max-w-sm">
+              <HamburgWetter />
+            </div>
+          </div>
+          <Depth3D maxTilt={9}>
+            <HamburgMap />
+          </Depth3D>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Faq() {
   return (
     <section
@@ -938,7 +998,7 @@ function FinalCta() {
         <div className="grid items-end gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
-              <span className="serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
+              <span className="drop-cap-3d drop-cap-3d-gold serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
                 „
               </span>
               Jeden Tag, den{" "}

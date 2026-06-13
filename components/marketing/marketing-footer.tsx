@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
+import { BriefSiegel } from "@/components/marketing/brief-siegel";
 import { HamburgClock } from "@/components/marketing/hamburg-clock";
 import { ScrambleText } from "@/components/marketing/scramble-text";
 import { TrustBar } from "@/components/marketing/trust-bar";
 import { SitaloLogo } from "@/components/sitalo-logo";
-import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
 
 /**
  * Marketing-Footer im Editorial-Stil. Aufgebaut wie eine
@@ -126,11 +126,13 @@ export function MarketingFooter() {
           </FooterCol>
         </div>
 
-        {/* Sitalo-Stempel — Brand-Signatur als wiederkehrendes
-            Identitäts-Element. Wie ein altes Manufaktur-Siegel auf
-            der Rückseite eines Briefs. */}
-        <div className="border-background/10 flex justify-center border-t px-6 py-10 text-background/50">
-          <SitaloStempel size="md" />
+        {/* Brief-Siegel — versiegelter Umschlag mit dem Wachssiegel
+            auf der Klappe. Hover öffnet die Klappe und das Notiz-
+            papier („Drei Sachen reichen.") schiebt sich heraus.
+            Brand-Signatur als wiederkehrendes Identitäts-Element,
+            jetzt räumlich statt flach. */}
+        <div className="border-background/10 flex justify-center border-t px-6 py-12">
+          <BriefSiegel />
         </div>
 
         {/* Editorial-Schluss */}

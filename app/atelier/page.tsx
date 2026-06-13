@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Send } from "lucide-react";
 
+import { Depth3D } from "@/components/marketing/depth-3d";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -76,32 +77,37 @@ function Hero() {
               Den Rest bauen wir.
             </p>
           </div>
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl ring-1 ring-foreground/5 sm:aspect-[5/6]">
-            <Image
-              src="/images/workspace-prints.webp"
-              alt="Sitalo-Atelier in Hamburg — Schreibtisch mit gerahmten Design-Drucken und MacBook."
-              fill
-              priority
-              sizes="(min-width: 1024px) 480px, 100vw"
-              className="object-cover"
-            />
-            <div
-              aria-hidden="true"
-              className="from-foreground/55 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
-            />
-            <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
-              <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
-                „Eine Seite zu bauen ist Handwerk, nicht Software-Klick."
-              </blockquote>
-              <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
-                <span
-                  aria-hidden="true"
-                  className="bg-gold gold-pulse inline-block h-1 w-5"
-                />
-                Sitalo Atelier · Hamburg
-              </figcaption>
-            </figure>
-          </div>
+          <Depth3D
+            className="relative aspect-[4/5] w-full sm:aspect-[5/6]"
+            maxTilt={9}
+          >
+            <div className="relative h-full w-full overflow-hidden rounded-3xl ring-1 ring-foreground/5">
+              <Image
+                src="/images/workspace-prints.webp"
+                alt="Sitalo-Atelier in Hamburg — Schreibtisch mit gerahmten Design-Drucken und MacBook."
+                fill
+                priority
+                sizes="(min-width: 1024px) 480px, 100vw"
+                className="object-cover"
+              />
+              <div
+                aria-hidden="true"
+                className="from-foreground/55 pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t to-transparent"
+              />
+              <figure className="absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
+                <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
+                  „Eine Seite zu bauen ist Handwerk, nicht Software-Klick."
+                </blockquote>
+                <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
+                  <span
+                    aria-hidden="true"
+                    className="bg-gold gold-pulse inline-block h-1 w-5"
+                  />
+                  Sitalo Atelier · Hamburg
+                </figcaption>
+              </figure>
+            </div>
+          </Depth3D>
         </div>
       </div>
     </section>
@@ -196,7 +202,7 @@ function Glaubenssaetze() {
               ) : (
                 <>
                   <div className="flex items-start justify-between gap-3">
-                    <span className="serif text-ink-petrol/60 text-[2.5rem] font-normal leading-none tracking-[-0.04em] sm:text-[3rem]">
+                    <span className="drop-cap-3d serif text-ink-petrol/60 text-[2.5rem] font-normal leading-none tracking-[-0.04em] sm:text-[3rem]">
                       {s.n}
                     </span>
                   </div>
@@ -237,7 +243,7 @@ function WieWirArbeiten() {
         </div>
 
         <p className="text-foreground/85 mt-14 max-w-3xl text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
-          <span className="serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
+          <span className="drop-cap-3d serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
             W
           </span>
           ir nehmen wenige Projekte gleichzeitig an. Genug, um mit
@@ -303,7 +309,7 @@ function WarumHamburg() {
         <blockquote className="relative mt-10 max-w-4xl">
           <span
             aria-hidden="true"
-            className="serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
+            className="drop-cap-3d drop-cap-3d-gold serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
           >
             „
           </span>
@@ -318,37 +324,37 @@ function WarumHamburg() {
         <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Wir sind in Hamburg. Wir kennen Eimsbüttel, Altona,
-              Eppendorf, St. Pauli, Winterhude — die Cafés, die Praxen,
-              die Friseure, die Werkstätten. Wir gehen durch die
-              Straßen und sehen, wo eine gute Seite den Unterschied
-              machen würde.
+              Wir wohnen und arbeiten hier. Eimsbüttel, Altona,
+              Eppendorf, St. Pauli, Winterhude — die Stadtteile, in
+              denen unsere Kunden ihre Geschäfte haben, kennen wir
+              nicht aus dem Lehrbuch. Wir sind dort regelmäßig.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Hamburg ist groß genug, dass jede Branche dichte
-              Konkurrenz hat. Und klein genug, dass eine ordentliche
-              Online-Sichtbarkeit Sie binnen Wochen sichtbar nach
-              vorne bringt. Das ist der ideale Markt für gutes lokales
-              Webdesign — und wir haben uns entschieden, genau hier
-              zu bleiben.
+              Das hilft, wenn wir Ihre Seite bauen. Wir wissen, mit
+              welchen Begriffen Ihre Nachbarn nach Ihnen googeln, was
+              in welcher Branche schief läuft, und wer in Ihrem
+              Viertel sonst noch sichtbar ist — und wer nicht. Dafür
+              müssen Sie uns nichts erklären.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo Atelier, Hamburg
             </p>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/10">
-            <Image
-              src="/images/hamburg-speicherstadt.webp"
-              alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
-              fill
-              sizes="(min-width: 1024px) 360px, 100vw"
-              className="object-cover"
-            />
-            <div
-              aria-hidden="true"
-              className="from-foreground/30 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent"
-            />
-          </div>
+          <Depth3D className="relative aspect-[4/3]" maxTilt={9}>
+            <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-white/10">
+              <Image
+                src="/images/hamburg-speicherstadt.webp"
+                alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
+                fill
+                sizes="(min-width: 1024px) 360px, 100vw"
+                className="object-cover"
+              />
+              <div
+                aria-hidden="true"
+                className="from-foreground/30 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent"
+              />
+            </div>
+          </Depth3D>
         </div>
       </div>
     </section>
