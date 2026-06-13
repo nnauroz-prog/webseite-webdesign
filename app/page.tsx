@@ -310,9 +310,10 @@ function Hero() {
               className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Die meisten Cafés in Eppendorf haben eine Speisekarte als
-              PDF von 2021. Pflegedienste in Altona stehen nicht mal bei
-              Google Maps. Wir bauen die Seiten der anderen.
+              Eine ordentliche Website in 1–2 Werktagen — ohne
+              Discovery-Workshop, ohne Brand-Marathon, ohne „wir
+              melden uns nächste Woche". Wir bauen sie für Sie,
+              Sie führen Ihren Betrieb.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -423,40 +424,35 @@ function PersonalNote() {
             „
           </span>
           <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
-            Wir gehen viel zu Fuß durch Hamburg.{" "}
+            Sie machen Ihren Job gut.{" "}
             <span className="serif-italic text-background/75">
-              Was wir dabei sehen:
+              Ihre Website sagt das nur
             </span>{" "}
-            jedes zweite Café hat keine ordentliche Website —{" "}
-            <span className="serif-italic text-background/75">
-              und es ist nie das beste.
-            </span>
+            leider niemandem.
           </p>
         </blockquote>
         <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Eppendorf, ein Mittwochmittag. Drei Cafés in zwei Straßen.
-              Das mit dem besten Espresso hat eine Speisekarte als PDF
-              von Februar 2021. Das daneben hat keine Öffnungszeiten bei
-              Google Maps. Das dritte, das wir auch nicht empfehlen
-              würden, hat als einziges eine moderne Website. Dreimal
-              raten, welches voll war.
+              Das ist heute der Normalfall: Jemand sucht „Friseur
+              um die Ecke" oder „Pflegedienst in der Nähe", vergleicht
+              zwei Sekunden auf dem Handy und entscheidet sich für
+              das mit der besseren Seite. Nicht für das mit der
+              besseren Arbeit.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Sieht man überall. Der Friseur in Eimsbüttel, dessen
-              Telefonnummer auf der Seite drei Jahre alt ist. Die Bar
-              in St.&nbsp;Pauli, deren Instagram-Link auf einen
-              Lieferdienst-Account zeigt, den's nicht mehr gibt.
-              Online-Sichtbarkeit ist kein Talent-Beweis. Aber wenn Sie
-              talentiert sind und nicht sichtbar, gewinnt jemand
-              anders. Auch wenn der schlechter ist.
+              Sie müssen dafür nicht zum Marketing-Profi werden, nicht
+              alle zwei Wochen einen Workshop besuchen und nicht
+              30 % an irgendeine Agentur abdrücken. Sie brauchen eine
+              Seite, die zeigt, was Sie machen — schnell, klar,
+              mobil. Mehr ist es ehrlich nicht.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Wir bauen Seiten für die anderen. Für die, die wissen,
-              dass gute Arbeit erst zählt, wenn jemand davon weiß. Wir
-              brauchen Ihr Logo, ein paar Bilder, was zu sagen. Den
-              Rest machen wir.
+              Genau das bauen wir. Sie schicken uns Logo, ein paar
+              Bilder, ein paar Sätze. Den Rest übernehmen wir. In
+              1–2 Werktagen ist die Seite online — und sieht aus
+              wie etwas, das eine Agentur Ihnen für 5.000 € verkauft
+              hätte.
             </p>
             <p className="serif-italic text-background pt-4 text-2xl">
               — Sitalo, aus Hamburg
