@@ -13,6 +13,7 @@ import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AtelierBrief } from "@/components/marketing/atelier-brief";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
+import { SitaloSignatur } from "@/components/marketing/sitalo-signatur";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
@@ -213,6 +214,15 @@ export default function HomePage() {
         <RevealOnScroll>
           <FinalCta />
         </RevealOnScroll>
+        {/* Handgezeichnete Signatur am Ende des Lese-Wegs — wie
+            die Unterschrift unter einem Brief. Zeichnet sich beim
+            Hereinscrollen Strich für Strich. */}
+        <section
+          aria-label="Sitalo-Signatur"
+          className="bg-background border-border/40 border-t py-16 sm:py-20"
+        >
+          <SitaloSignatur caption="— Aus dem Atelier · Hamburg" />
+        </section>
       </main>
       <AtelierBrief />
       <MarketingFooter />
