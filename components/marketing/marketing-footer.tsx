@@ -146,7 +146,7 @@ export function MarketingFooter() {
                 dem Footer das Gefühl, dass die Seite gerade lebt. */}
             <HamburgClock />
             <span className="serif-italic text-background/60 text-sm">
-              53.5511° N · 9.9937° E — Hamburg
+              53.5511° N · 9.9937° E
             </span>
           </div>
         </div>
