@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { track } from "@/lib/track";
 
 /**
  * AuditForm — eigene, schlanke Form für die Mini-Audit-Lead-Generation.
@@ -112,6 +113,7 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
       });
       if (response.ok) {
         setStatus({ kind: "success" });
+        track("Audit");
       } else {
         // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
         // und auf 200 Zeichen kürzen.
