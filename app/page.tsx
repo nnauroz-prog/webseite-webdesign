@@ -16,6 +16,7 @@ import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
+import { SiegelIntro } from "@/components/marketing/siegel-intro";
 import { SwingTag } from "@/components/marketing/swing-tag";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -151,6 +152,7 @@ const FAQ = [
 export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
+      <SiegelIntro />
       <MarketingHeader />
       <main id="main" className="flex-1">
         <Hero />
@@ -282,7 +284,7 @@ function Hero() {
               />
               Ein kleines Atelier in Hamburg
             </p>
-            <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
+            <h1 className="letterpress mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
               <WordReveal step={75} delay={120}>
                 {"Wir bauen "}
                 <span className="hero-shine serif-italic text-muted-foreground font-normal">
@@ -299,10 +301,9 @@ function Hero() {
               className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Ihre Website in 1–2 Werktagen online. Sie schicken uns
-              Logo, ein paar Bilder, ein paar Sätze — den Rest
-              übernehmen wir. Persönlich, schnell, ohne Workshop-
-              Theater.
+              Logo, ein paar Bilder, ein paar Sätze — Rest machen
+              wir. Übermorgen ist die Seite online. Wir reden vorher
+              kurz, das ist alles.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -413,33 +414,31 @@ function PersonalNote() {
             „
           </span>
           <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
-            Sie machen Ihren Job gut.{" "}
+            Sie arbeiten gut.{" "}
             <span className="serif-italic text-background/75">
-              Ihre Website sagt das nur
+              Ihre Website
             </span>{" "}
-            leider niemandem.
+            verschweigt das.
           </p>
         </blockquote>
         <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <div className="space-y-6">
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Das ist heute der Normalfall: Jemand sucht „Friseur
-              um die Ecke" oder „Pflegedienst in der Nähe", vergleicht
-              zwei Sekunden auf dem Handy und entscheidet sich für
-              das mit der besseren Seite. Nicht für das mit der
-              besseren Arbeit.
+              So läuft das heute. Jemand googelt „Friseur um die
+              Ecke", vergleicht zwei Sekunden auf dem Handy, geht
+              zum nächsten mit der besseren Seite. Nicht zum
+              nächsten mit der besseren Arbeit. Ärgert uns mehr
+              als Sie.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Sie müssen dafür nicht zum Marketing-Profi werden.
-              Sie brauchen eine Seite, die zeigt, was Sie machen —
-              schnell, klar, mobil. Mehr ist es ehrlich nicht.
+              Sie müssen kein Marketing-Mensch werden. Sie brauchen
+              eine Seite, die zeigt, was Sie machen. Schnell, klar,
+              auf dem Handy lesbar. Mehr ist es nicht.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Genau das bauen wir. Sie schicken uns Logo, ein paar
-              Bilder, ein paar Sätze. Den Rest übernehmen wir. In
-              1–2 Werktagen ist die Seite online — und sieht aus
-              wie etwas, das eine Agentur Ihnen für 5.000 € verkauft
-              hätte.
+              Genau das bauen wir. Logo, ein paar Bilder, ein paar
+              Sätze — schicken Sie uns. Übermorgen ist die Seite
+              online. Sieht aus wie etwas, das woanders 5.000 € kostet.
             </p>
           </div>
           <Depth3D className="relative aspect-[4/3]" maxTilt={10}>
