@@ -183,7 +183,7 @@ export default async function BranchePage({
       <MarketingHeader />
       <EditorialMasthead section={`Branchen · ${branche.label}`} />
 
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         {/* Breadcrumb + Hero */}
         <section className="border-border/40 relative overflow-hidden border-b">
           {/* Dezenter Gold-Halo links oben — passt zum Brand-Hero. */}

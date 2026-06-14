@@ -32,7 +32,7 @@ export function Promises() {
           § 04 · Was wir zusagen
         </p>
       </div>
-      <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
         {/* Bewusst keine Eyebrow-Zeile hier — bricht das gleiche
             Header-Schema, das jede andere Sektion hat. */}
         <div className="max-w-3xl">

@@ -118,7 +118,7 @@ export default async function JournalPostPage({
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Journal" />
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         <article>
           <header className="border-border/40 border-b">
             <div className="mx-auto w-full max-w-3xl px-6 py-14 sm:py-20">

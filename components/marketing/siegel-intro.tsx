@@ -69,7 +69,9 @@ export function SiegelIntro() {
 
   return (
     <div
-      aria-hidden="true"
+      role="status"
+      aria-live="polite"
+      aria-label="Sitalo-Siegel wird geprägt"
       data-phase={phase}
       className="siegel-intro"
     >
