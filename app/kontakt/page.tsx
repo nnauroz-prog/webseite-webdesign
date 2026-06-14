@@ -49,7 +49,7 @@ export default function KontaktPage() {
               label="Per Formular"
               detail="Schritt-für-Schritt"
               href="/anfrage"
-              cta="Anfrage starten"
+              cta="Website anfragen"
             />
             <ContactMethod
               label="Per Telefon"

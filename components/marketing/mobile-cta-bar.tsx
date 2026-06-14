@@ -58,7 +58,7 @@ export function MobileCtaBar() {
         href="/anfrage"
         className="bg-foreground/95 text-background hover:bg-foreground/90 group inline-flex h-12 w-full max-w-md items-center justify-center gap-2 rounded-full px-6 text-sm font-medium tracking-tight shadow-[0_20px_40px_-12px_rgb(0_0_0/0.35)] backdrop-blur-md transition-all"
       >
-        Anfrage starten
+        Website anfragen
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </Link>
     </div>

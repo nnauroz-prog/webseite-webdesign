@@ -136,7 +136,7 @@ function FinalNote() {
             href="/anfrage"
             className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
           >
-            Anfrage starten
+            Website anfragen
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link

@@ -106,7 +106,7 @@ export function CommandPalette({
     const direct: Action[] = [
       {
         kind: "link",
-        label: "Anfrage starten",
+        label: "Website anfragen",
         description: "Drei Felder, Antwort meist am selben Tag",
         href: "/anfrage",
         icon: Sparkles,

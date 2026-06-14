@@ -141,7 +141,7 @@ export default function ManifestPage() {
                 href="/anfrage"
                 className="text-foreground inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] hover:underline"
               >
-                Anfrage starten
+                Website anfragen
               </Link>
             </div>
           </div>
