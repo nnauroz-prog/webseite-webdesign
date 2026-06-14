@@ -48,6 +48,7 @@ const PACKAGE_LABELS: Record<InquiryPackage, string> = {
   starter: "Starter-Projekt",
   business: "Business-Auftritt",
   premium: "Premium-System",
+  studio: "Sitalo Studio",
   unsicher: "Empfehlung gewünscht",
 };
 
@@ -347,7 +348,8 @@ export function InquiryForm({
                 { value: "", label: "— Empfehlung gewünscht —" },
                 { value: "starter", label: "Starter (ab 499 €)" },
                 { value: "business", label: "Business (ab 899 €)" },
-                { value: "premium", label: "Premium (ab 1.499 €)" },
+                { value: "premium", label: "Premium (ab 2.499 €)" },
+                { value: "studio", label: "Sitalo Studio (ab 3.490 €)" },
               ]}
             />
           </div>

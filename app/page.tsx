@@ -117,8 +117,8 @@ const PACKAGES = [
   {
     slug: "premium",
     name: "Premium",
-    setup: "ab 1.499 €",
-    monthly: "ab 129 € / Monat",
+    setup: "ab 2.499 €",
+    monthly: "ab 179 € / Monat",
     description:
       "Individuelle Struktur mit Bereichen, die Sie selbst pflegen können. Speisekarte, Angebote, Termine.",
     bullets: [
@@ -720,6 +720,36 @@ function Pricing() {
             <PricingFlanke paket={others[1]} side="right" />
           </Depth3D>
         </div>
+
+        {/* Sitalo-Studio-Anker: kein vierter Karten-Strang, sondern
+            eine ruhige Editorial-Zeile unter den drei Paketen.
+            Wer mehr will, klickt. Wer sich für Business/Premium
+            entscheidet, wird nicht gestört. */}
+        <Link
+          href="/pakete/studio"
+          data-cursor-label="Sitalo Studio ansehen →"
+          className="border-foreground/15 bg-foreground/[0.025] hover:bg-foreground/[0.05] group mt-12 flex flex-col items-start gap-4 rounded-2xl border px-6 py-6 transition-colors sm:mt-14 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:px-8"
+        >
+          <div className="flex-1">
+            <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.3em]">
+              Atelier-Stufe · ab 3.490 €
+            </p>
+            <p className="serif text-foreground mt-2 text-balance text-xl leading-snug tracking-[-0.01em] sm:text-2xl">
+              Sitalo Studio —{" "}
+              <span className="serif-italic text-muted-foreground">
+                eine Marke, nicht eine Website.
+              </span>
+            </p>
+            <p className="text-foreground/70 mt-2 max-w-2xl text-pretty text-[14.5px] leading-relaxed">
+              Eigenständige Design-Sprache, Atelier-Besuch, drei
+              Korrekturrunden. Für Inhaber:innen, die sich aktiv vom
+              Branchen-Durchschnitt absetzen.
+            </p>
+          </div>
+          <span className="text-foreground inline-flex items-center gap-2 self-end text-[14px] font-medium underline-offset-4 group-hover:underline sm:self-auto">
+            Mehr erfahren →
+          </span>
+        </Link>
 
         {/* Hand-gezeichneter Trenner statt CSS-Border vor dem Disclaimer */}
         <div className="text-muted-foreground/40 mt-20 mx-auto max-w-md">

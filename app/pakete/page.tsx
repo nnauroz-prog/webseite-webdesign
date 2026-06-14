@@ -11,12 +11,12 @@ import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 export const metadata: Metadata = {
   title: "Pakete & Preise — Websites ab 499 €",
   description:
-    "Drei Wege, Ihre Seite zu bekommen. Einmalige Erstellung plus fairer Monatsbeitrag — keine versteckten Kosten.",
+    "Vier Stufen, Ihre Seite zu bekommen. Einmalige Erstellung plus fairer Monatsbeitrag — keine versteckten Kosten.",
   alternates: { canonical: "/pakete" },
 };
 
 type Package = {
-  slug: "starter" | "business" | "premium";
+  slug: "starter" | "business" | "premium" | "studio";
   name: string;
   setup: string;
   monthly: string;
@@ -96,8 +96,8 @@ const PACKAGES: Package[] = [
   {
     slug: "premium",
     name: "Premium",
-    setup: "ab 1.499 €",
-    monthly: "ab 129 € / Monat",
+    setup: "ab 2.499 €",
+    monthly: "ab 179 € / Monat",
     description:
       "Individuelle Struktur mit Bereichen, die Sie selbst pflegen — Speisekarte, Wochenangebot, Termine.",
     whoFor:
@@ -120,6 +120,37 @@ const PACKAGES: Package[] = [
     ],
     limits: [
       "Eigene Apps oder Shop-Systeme werden im Einzelfall besprochen",
+    ],
+  },
+  {
+    slug: "studio",
+    name: "Sitalo Studio",
+    badge: "Atelier-Stufe",
+    setup: "ab 3.490 €",
+    monthly: "ab 249 € / Monat",
+    description:
+      "Eigenständige Design-Sprache, Atelier-Besuch, drei Korrekturrunden. Für Inhaber, die eine Marke aufbauen.",
+    whoFor:
+      "Für Inhaber:innen mit Anspruch — Praxen, Architekten, Beratungen, Restaurants mit Konzept, die sich vom Branchen-Durchschnitt absetzen wollen.",
+    contents: [
+      "Eigenständige Design-Sprache, kein Template-Anstrich",
+      "Persönlicher Atelier-Besuch in Hamburg oder bei Ihnen",
+      "Bis zu 3 Korrekturrunden, gesammelt und in Ruhe",
+      "Individuelle Typografie- und Farbentscheidungen",
+      "Bis zu 12 verwaltbare Bereiche oder Seiten",
+      "Mehrsprachigkeit auf Wunsch (Deutsch + eine weitere)",
+      "Bis zu 10 kleine Änderungen pro Monat",
+      "Direktdraht zur Person, die Ihre Seite gebaut hat",
+    ],
+    examples: [
+      "Privatpraxis mit eigener Bild- und Tonalitäts-Sprache",
+      "Architekturbüro mit Portfolio und ruhiger Typografie",
+      "Restaurant mit Konzept-Website und mehrsprachiger Karte",
+      "Beratung oder Atelier-nahes Gewerk mit eigener Marke",
+    ],
+    limits: [
+      "Eigene Shop-Systeme werden separat angeboten",
+      "Eigene App-Entwicklung gehört nicht in dieses Paket",
     ],
   },
 ];

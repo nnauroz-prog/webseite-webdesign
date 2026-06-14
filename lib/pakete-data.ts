@@ -8,9 +8,9 @@
  */
 
 export type Paket = {
-  slug: "starter" | "business" | "premium";
+  slug: "starter" | "business" | "premium" | "studio";
   name: string;
-  /** Optional badge (z. B. "Empfohlen"). */
+  /** Optional badge (z. B. "Empfohlen", "Neu"). */
   badge?: string;
   /** Setzt im Pricing-Block das dunkle Highlight-Layout. */
   highlight?: boolean;
@@ -170,8 +170,8 @@ export const PAKETE: Paket[] = [
   {
     slug: "premium",
     name: "Premium",
-    setup: "ab 1.499 €",
-    monthly: "ab 129 € / Monat",
+    setup: "ab 2.499 €",
+    monthly: "ab 179 € / Monat",
     description:
       "Individuelle Struktur mit Bereichen, die Sie selbst pflegen — Speisekarte, Wochenangebot, Termine.",
     whoFor:
@@ -229,6 +229,74 @@ export const PAKETE: Paket[] = [
       {
         q: "Was kostet eine zusätzliche Anpassung außer der Reihe?",
         a: "Kleine Sachen meist gar nichts — wir rechnen nicht jede E-Mail ab. Größere Sachen (z. B. neuer Bereich, Funktionserweiterung) bekommen Sie vorher als verbindliches Angebot.",
+      },
+    ],
+  },
+  {
+    slug: "studio",
+    name: "Sitalo Studio",
+    badge: "Atelier-Stufe",
+    setup: "ab 3.490 €",
+    monthly: "ab 249 € / Monat",
+    description:
+      "Eigenständige Design-Sprache, mehrere Korrekturrunden, Atelier-Besuch vor Ort. Für Inhaber, die eine Marke aufbauen, nicht nur eine Website.",
+    whoFor:
+      "Für Inhaber:innen mit Anspruch — Marken, die sich vom Branchen-Durchschnitt absetzen müssen. Etablierte Praxen, Architekten, Beratungen, Restaurants mit Konzept, Atelier-nahe Gewerke.",
+    contents: [
+      "Eigenständige Design-Sprache, kein Template-Anstrich",
+      "Persönlicher Atelier-Besuch in Hamburg oder bei Ihnen",
+      "Bis zu 3 Korrekturrunden, gesammelt und in Ruhe",
+      "Individuelle Typografie- und Farbentscheidungen",
+      "Bis zu 12 verwaltbare Bereiche oder Seiten",
+      "Mehrsprachigkeit auf Wunsch (Deutsch + eine weitere)",
+      "Bis zu 10 kleine Änderungen pro Monat",
+      "Direktdraht: dieselbe Person, die Ihre Seite gebaut hat",
+    ],
+    examples: [
+      "Privatpraxis mit eigener Bild- und Tonalitäts-Sprache",
+      "Architekturbüro mit Portfolio und ruhiger Typografie",
+      "Restaurant mit Konzept-Website und mehrsprachiger Karte",
+      "Beratung oder Atelier-nahes Gewerk mit eigener Marke",
+    ],
+    limits: [
+      "Eigene Shop-Systeme werden separat angeboten",
+      "Eigene App-Entwicklung gehört nicht in dieses Paket",
+    ],
+    detailHeadline: "Eine Marke, nicht eine Website.",
+    detailIntro: [
+      "Sitalo Studio ist die Atelier-Stufe. Wir bauen nicht nur eine Seite, sondern denken Ihren Auftritt vom Briefkopf bis zur OG-Image-Vorschau mit. Eigene Design-Sprache statt Branchenraster — Farben, Typografie, Bildwelt, Ton.",
+      "Der Prozess ist langsamer und persönlicher: ein erster Atelier-Besuch vor Ort, mehrere Korrekturrunden statt einer, individuelle Entscheidungen statt Voreinstellungen. Sie bekommen nicht das, was wir letzte Woche schon gebaut haben, sondern etwas, das nur zu Ihnen passt.",
+      "Nach dem Launch bleibt der persönliche Direktdraht: dieselbe Person, die das Atelier-Konzept gezeichnet hat, kümmert sich auch um die zehn kleinen Änderungen pro Monat. Kein Wechsel von Design zu Support, kein neuer Ansprechpartner nach drei Wochen.",
+    ],
+    afterLaunch: [
+      "Verwaltbare Bereiche (bis zu 12), individuell zugeschnitten",
+      "Zehn kleine Änderungen pro Monat",
+      "Quartalsweise Sprechstunde — wir gucken gemeinsam drauf, was sich verändert hat",
+      "Vorrang bei kurzfristigen Anfragen, meist Antwort am selben Tag",
+      "Direktdraht zur Person, die Ihre Seite gebaut hat — kein Ticket-System",
+      "Hosting + SSL + Backups in der EU, Performance-Monitoring",
+    ],
+    recommendedFor: [
+      { slug: "praxis", label: "Privatpraxen mit Anspruch" },
+      { slug: "kanzlei", label: "Kanzleien mit eigener Note" },
+      { slug: "gastro", label: "Restaurants mit Konzept" },
+    ],
+    faq: [
+      {
+        q: "Wo liegt der Unterschied zu Premium?",
+        a: "Premium nimmt unsere bewährte Struktur und passt sie auf Ihren Bedarf an. Studio fängt mit einem leeren Blatt an: eigene Typografie, eigene Bildsprache, eigene Tonalität. Premium ist solide; Studio hat eine Note. Wenn Sie einen Branchen-Durchschnitt ablösen wollen, ist Studio richtig.",
+      },
+      {
+        q: "Lohnt sich das wirklich?",
+        a: "Für die meisten lokalen Unternehmen reicht Business oder Premium völlig — Studio empfehlen wir nur, wenn Sie sich aktiv vom Durchschnitt Ihrer Branche absetzen wollen oder einen Auftritt brauchen, der Patient:innen, Mandant:innen oder Gäste vor dem ersten Kontakt überzeugt. Im Erstgespräch sagen wir ehrlich, ob's bei Ihnen passt.",
+      },
+      {
+        q: "Wie lange dauert der Bau?",
+        a: "Drei bis fünf Wochen, je nach Umfang. Schneller wollten wir hier nicht — das wären verschenkte Korrekturrunden. Wenn's eilig ist, machen Sie Business mit späterem Upgrade.",
+      },
+      {
+        q: "Was, wenn ich später wechseln will?",
+        a: "Sie können jederzeit zwischen Monatsbeitrag pausieren oder kündigen. Die Seite gehört Ihnen, der Quellcode ebenso. Wir übergeben sauber.",
       },
     ],
   },

@@ -95,8 +95,8 @@ Format: am Ende einen Link auf einer eigenen Zeile, z. B.:
 "Mehr dazu: /branchen/pflege"
 
 Hier die Übersicht aller wichtigen Seiten:
-- /pakete — alle 3 Pakete im Vergleich
-- /pakete/starter, /pakete/business, /pakete/premium — Detail je Paket
+- /pakete — alle 4 Pakete im Vergleich
+- /pakete/starter, /pakete/business, /pakete/premium, /pakete/studio — Detail je Paket
 - /branchen — alle 10 Branchen
 - /branchen/[slug] — je Branche eine Detailseite (siehe Daten unten)
 - /ablauf — wie ein Projekt abläuft

@@ -75,14 +75,14 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
       ],
     },
     premium: {
-      stundenSetup: 15,
+      stundenSetup: 25,
       setupPosten: [
-        { label: "Strukturplan, Inhalts-Architektur, lokale SEO", stunden: 2 },
-        { label: "Bau mehrseitiger Struktur mit eigener Note", stunden: 6 },
-        { label: "Verwaltbare Inhalte (Speisekarte, Termine, Aktuelles)", stunden: 3 },
-        { label: "Bildbearbeitung, Galerie, Mobile-Tests, Tonalität", stunden: 2 },
-        { label: "Google-Business-Profil, lokale SEO-Basis", stunden: 1 },
-        { label: "Hosting-Setup, Domain, SSL, persönliche Übergabe", stunden: 1 },
+        { label: "Strukturplan, Inhalts-Architektur, lokale SEO", stunden: 3 },
+        { label: "Bau mehrseitiger Struktur mit eigener Note", stunden: 10 },
+        { label: "Verwaltbare Inhalte (Speisekarte, Termine, Aktuelles)", stunden: 5 },
+        { label: "Bildbearbeitung, Galerie, Mobile-Tests, Tonalität", stunden: 3 },
+        { label: "Google-Business-Profil, lokale SEO-Basis", stunden: 2 },
+        { label: "Hosting-Setup, Domain, SSL, persönliche Übergabe", stunden: 2 },
       ],
       monatlichPosten: [
         "Hosting in der EU, SSL, Backups, Monitoring",
@@ -91,6 +91,25 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
         "Wöchentlicher Performance-Check",
         "Vorrangige Antwort, meist innerhalb von 4 Stunden",
         "Telefonischer Direktdraht bei Notfällen",
+      ],
+    },
+    studio: {
+      stundenSetup: 35,
+      setupPosten: [
+        { label: "Atelier-Besuch, Briefing, Marken-Verständnis", stunden: 3 },
+        { label: "Konzept und eigenständige Design-Sprache", stunden: 6 },
+        { label: "Bau der individuellen Struktur (bis 12 Bereiche)", stunden: 14 },
+        { label: "Verwaltbare Inhalte, individuelle Bedienung", stunden: 5 },
+        { label: "Bildwelt, Typografie, Tonalität, Korrekturrunden", stunden: 4 },
+        { label: "Google-Business-Profil, lokale SEO, Übergabe", stunden: 3 },
+      ],
+      monatlichPosten: [
+        "Hosting in der EU, SSL, Backups, Monitoring",
+        "Sicherheits- und Plattform-Updates",
+        "Zehn kleine Änderungen pro Monat",
+        "Quartalsweise Sprechstunde (60 Min, persönlich)",
+        "Vorrang bei kurzfristigen Anfragen — meist Antwort am selben Tag",
+        "Direktdraht zur Person, die das Atelier-Konzept gezeichnet hat",
       ],
     },
   };
