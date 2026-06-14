@@ -29,6 +29,41 @@ type Strategy = "mobile" | "desktop";
 const PSI_ENDPOINT = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
 
 export async function POST(req: NextRequest) {
+  // Origin-Check: nur Anfragen von der eigenen Seite zulassen. Verhindert,
+  // dass ein fremder Frontend-Caller den Speed-Check als Open-Proxy auf
+  // unsere Google-Quota nutzt. SITE_URL kommt aus dem Env; lokal ohne
+  // Origin-Header (z. B. curl-Tests) lassen wir durch.
+  const allowedHost = new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  ).hostname;
+  const originRaw = req.headers.get("origin") ?? req.headers.get("referer");
+  if (originRaw) {
+    try {
+      const originHost = new URL(originRaw).hostname;
+      if (originHost !== allowedHost && originHost !== "localhost") {
+        return NextResponse.json(
+          { error: "Nicht erlaubt." },
+          { status: 403 },
+        );
+      }
+    } catch {
+      return NextResponse.json({ error: "Nicht erlaubt." }, { status: 403 });
+    }
+  }
+
+  // Rate-Limit pro IP — 30 Anfragen/Stunde reichen für Marketing-Lead-Gen,
+  // bremsen aber automatisiertes Scraping aus.
+  const clientIp = extractClientIp(req);
+  if (!checkRateLimit(clientIp)) {
+    return NextResponse.json(
+      {
+        error:
+          "Sie haben in der letzten Stunde viele Anfragen gesendet. Bitte später erneut versuchen — oder mailen Sie uns die URL an info@sitalo.de.",
+      },
+      { status: 429 },
+    );
+  }
+
   let body: { url?: string; strategy?: Strategy };
   try {
     body = await req.json();
@@ -200,11 +235,65 @@ function normalizeUrl(input: string): string | null {
     : `https://${trimmed}`;
   try {
     const u = new URL(withProtocol);
-    if (!u.hostname.includes(".")) return null;
+    // Nur http(s) — file://, data://, javascript: usw. abblocken.
+    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    const hostname = u.hostname.toLowerCase();
+    // SSRF-Schutz: private IP-Ranges und link-local-Adressen ablehnen,
+    // damit der Speed-Check nicht als Open-Proxy für interne Scans
+    // (AWS Metadata 169.254.169.254, Intranet-Ressourcen, localhost)
+    // missbraucht werden kann.
+    if (
+      hostname === "localhost" ||
+      hostname.startsWith("127.") ||
+      hostname.startsWith("10.") ||
+      hostname.startsWith("192.168.") ||
+      hostname.startsWith("169.254.") ||
+      /^172\.(1[6-9]|2[0-9]|3[01])\./.test(hostname) ||
+      hostname === "::1" ||
+      hostname.startsWith("fc") ||
+      hostname.startsWith("fd")
+    ) {
+      return null;
+    }
+    // Spezielle TLDs ausschließen, die nicht öffentlich aufrufbar sind.
+    if (/\.(local|localdomain|internal|corp|home|lan)$/i.test(hostname)) {
+      return null;
+    }
+    // Muss einen gültigen Punkt-Aufbau mit echter TLD haben.
+    const parts = hostname.split(".");
+    if (parts.length < 2 || parts.some((p) => !p || p.length > 63)) {
+      return null;
+    }
     return u.toString();
   } catch {
     return null;
   }
+}
+
+/** In-Memory-Rate-Limit pro IP, 30 Anfragen pro Stunde. Vercel
+ *  scaled die Function horizontal — der Memory-State ist also
+ *  pro Instanz, nicht global. Für die Lead-Gen-Frequenz auf einer
+ *  Marketing-Seite reicht das; für mehr braucht es Upstash Redis o. ä. */
+const RATE_LIMIT_MAX = 30;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+  if (!record || now > record.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (record.count >= RATE_LIMIT_MAX) return false;
+  record.count++;
+  return true;
+}
+
+function extractClientIp(req: NextRequest): string {
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
+  return req.headers.get("x-real-ip") ?? "unknown";
 }
 
 type Scores = {

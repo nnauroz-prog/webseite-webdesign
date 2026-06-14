@@ -83,7 +83,7 @@ export function MarketingFooter() {
               href="/anfrage"
               className="bg-background text-foreground hover:bg-background/90 group mt-8 inline-flex h-11 items-center rounded-full px-6 text-[14px] font-medium tracking-tight transition-all"
             >
-              Anfrage starten
+              Website anfragen
               <span
                 aria-hidden="true"
                 className="ml-2 transition-transform group-hover:translate-x-0.5"

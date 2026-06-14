@@ -42,8 +42,12 @@ const ENDPOINT =
 
 export async function getHamburgWeather(): Promise<HamburgWeather | null> {
   try {
+    // 5-Sekunden-Timeout — Open-Meteo antwortet normalerweise in
+    // 100–300 ms. Wenn der Endpoint hängt, blockieren wir nicht den
+    // ganzen Page-Render auf Vercel (das Edge-Limit liegt bei 25 s).
     const res = await fetch(ENDPOINT, {
       next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(5_000),
     });
     if (!res.ok) return null;
     const data = (await res.json()) as {
