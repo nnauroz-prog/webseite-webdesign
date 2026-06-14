@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 
 import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
+import { useModal } from "@/lib/use-modal";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,6 +25,9 @@ import { cn } from "@/lib/utils";
  *   - Esc-Taste, Klick auf Overlay und der X-Button schließen.
  *   - Body wird beim Öffnen scroll-gesperrt.
  *   - Reduced-Motion: kein Slide-Up, sofortiges Erscheinen.
+ *
+ * Modal-Logik (Focus-Trap, Body-Scroll-Lock, Esc-Handler) liegt
+ * in lib/use-modal, geteilt mit AtelierTagebuch.
  *
  * Datum wird zur Render-Zeit berechnet (Europe/Berlin), bleibt
  * also pro Build stabil — wer den Brief am nächsten Tag öffnet,
@@ -50,47 +54,7 @@ export function AtelierBrief() {
   const [date] = useState<string>(() =>
     typeof window === "undefined" ? "" : todayLabel(),
   );
-  const dialogRef = useRef<HTMLDivElement | null>(null);
-
-  // Body-Scroll lock + Esc + Focus-Trap (Tab läuft innerhalb des
-  // Dialogs im Kreis), damit Tastatur-Nutzer den Modal nicht versehent-
-  // lich verlassen, solange er offen ist.
-  useEffect(() => {
-    if (!open) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const dialog = dialogRef.current;
-    const focusables = () =>
-      Array.from(
-        dialog?.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        ) ?? [],
-      );
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const list = focusables();
-      if (list.length === 0) return;
-      const first = list[0];
-      const last = list[list.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        last.focus();
-        e.preventDefault();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    dialog?.focus();
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  const { dialogRef } = useModal(open, () => setOpen(false));
 
   return (
     <>

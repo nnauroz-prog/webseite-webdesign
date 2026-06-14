@@ -78,8 +78,17 @@ function WeatherBody({
   return (
     <div className="relative mt-5 flex items-end justify-between gap-4">
       <div>
+        {/* Temperatur in serif, Grad-Symbol bewusst in derselben
+            Glyph-Höhe wie die Ziffern statt als Tiefen-Sup —
+            Cormorant Garamond rendert ° als winziges Hochzeichen,
+            das auf Mobile aussieht wie eine kaputte „0". Mit
+            inline-block + align-baseline + relative em-Größe
+            sitzt es jetzt sauber auf der Grundlinie. */}
         <p className="serif text-foreground text-5xl font-normal leading-none tracking-[-0.03em] sm:text-6xl">
-          {weather.temperatureC}°
+          {weather.temperatureC}
+          <span className="ml-0.5 font-sans text-[0.55em] align-top font-light">
+            °C
+          </span>
         </p>
         <p className="text-foreground/85 mt-3 text-[14px] leading-snug">
           {weather.conditionLabel}

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { BookOpen, X } from "lucide-react";
 
 import { ATELIER_NOTES } from "@/lib/atelier-notes";
+import { useModal } from "@/lib/use-modal";
 import { cn } from "@/lib/utils";
 
 /**
@@ -31,44 +32,10 @@ import { cn } from "@/lib/utils";
  */
 export function AtelierTagebuch() {
   const [open, setOpen] = useState(false);
-  const dialogRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const dialog = dialogRef.current;
-    const focusables = () =>
-      Array.from(
-        dialog?.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        ) ?? [],
-      );
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const list = focusables();
-      if (list.length === 0) return;
-      const first = list[0];
-      const last = list[list.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        last.focus();
-        e.preventDefault();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    dialog?.focus();
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  // Geteilte Modal-Logik (Focus-Trap, Body-Scroll-Lock, Esc-Handler)
+  // in lib/use-modal, gemeinsam mit AtelierBrief. Vorher dreimal
+  // dupliziert; jetzt einmalig.
+  const { dialogRef } = useModal(open, () => setOpen(false));
 
   return (
     <>
