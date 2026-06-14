@@ -58,7 +58,7 @@ export function WhatWeDontDo() {
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
               />
-              Hanseatische Ehrlichkeit
+              Bevor Sie fragen
             </p>
             <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
               Was wir
@@ -68,9 +68,9 @@ export function WhatWeDontDo() {
               </span>
             </h2>
             <p className="text-foreground/75 mt-7 max-w-md text-pretty text-[15.5px] leading-relaxed">
-              Jede Done-for-You-Agentur sagt Ihnen, was sie alles kann.
-              Wir sagen Ihnen, was wir bewusst auslassen — damit Sie
-              nicht enttäuscht werden, wenn Sie es brauchen.
+              Die meisten Agenturen erzählen Ihnen, was sie alles
+              können. Wir sagen, was wir nicht machen — damit's
+              später keine Überraschung gibt.
             </p>
           </div>
 

@@ -37,7 +37,7 @@ export const ATELIER_NOTES: AtelierNote[] = [
   },
   {
     when: "Diesen Monat",
-    text: "Drei Erstgespräche aus Hamburg-Nord, zwei in Konkretisierung.",
+    text: "Drei Erstgespräche aus Hamburg-Nord, zwei laufen weiter.",
   },
 ];
 
