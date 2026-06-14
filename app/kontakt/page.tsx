@@ -22,7 +22,7 @@ export default function KontaktPage() {
       <MarketingHeader />
       <EditorialMasthead section="Kontakt" />
 
-      <main id="main" className="bg-secondary/40 flex-1">
+      <main id="main" tabIndex={-1} className="bg-secondary/40 flex-1">
         <section className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
           {/* Editorial letter-style layout */}
           <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">

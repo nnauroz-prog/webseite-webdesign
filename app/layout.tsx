@@ -13,21 +13,29 @@ import { ShortcutHelp } from "@/components/marketing/shortcut-help";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 
+// Display: "swap" auf allen Fonts — der Browser nimmt sofort den
+// Fallback und tauscht aus, sobald die Web-Font geladen ist. Vermeidet
+// FOIT (Flash of Invisible Text), wo Text bis zu 3 s unsichtbar bleibt,
+// und damit eine LCP-Verzögerung. Cormorant-Weight 600 raus — wir nutzen
+// nur 400 (Headline-Serif) und 400-italic (Akzent-Italic).
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
 

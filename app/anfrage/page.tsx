@@ -52,7 +52,7 @@ export default async function AnfragePage({
       <MarketingHeader />
       <EditorialMasthead section="Anfrage" />
 
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
           {/* Dezenter Gold-Halo — konsistent mit Hero-Sprache. */}
           <div

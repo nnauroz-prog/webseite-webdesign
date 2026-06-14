@@ -64,7 +64,7 @@ export function ImAtelier() {
         aria-hidden="true"
         className="bg-gold/6 pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
-      <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
           {/* Linke Spalte: Eyebrow + Headline + Blurb + CTA */}
           <div>

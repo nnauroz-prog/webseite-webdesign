@@ -71,11 +71,11 @@ export function MarketingFooter() {
                 wenn jemand mit dem Cursor drüberfährt. */}
             <p className="serif mt-8 text-balance text-2xl font-normal leading-[1.2] tracking-[-0.015em] sm:text-3xl">
               Drei Sachen reichen.{" "}
-              <span className="serif-italic text-background/65">
+              <span className="serif-italic text-background/75">
                 <ScrambleText>Den Rest bauen wir.</ScrambleText>
               </span>
             </p>
-            <p className="text-background/65 mt-5 max-w-xs text-[14px] leading-relaxed">
+            <p className="text-background/75 mt-5 max-w-xs text-[14px] leading-relaxed">
               Professionelle Websites für lokale Unternehmen. Persönlich
               gemacht, aus einem kleinen Atelier in Hamburg.
             </p>

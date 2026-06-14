@@ -153,13 +153,34 @@ const FAQ = [
   },
 ];
 
+// FAQPage-Strukturierte Daten für die fünf Homepage-FAQs.
+// Schema.org-FAQPage qualifiziert für Rich-Snippets in Google
+// Search Results (Frage + Antwort ausklappbar direkt im SERP).
+const FAQ_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
+
 export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
+      />
       <AmbientTint />
       <SiegelIntro />
       <MarketingHeader />
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         <Hero />
         <RevealOnScroll>
           <WhyWebsite />

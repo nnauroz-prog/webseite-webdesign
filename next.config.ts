@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     // View Transitions API für sanfte Crossfades zwischen Seiten —
     // browser-native, ohne Animation-Library.
     viewTransition: true,
+    // Tree-Shaking für Icon-Libraries: Lucide importiert sonst die
+    // gesamte ~80 KB große Bibliothek pro Use. Mit optimizePackage-
+    // Imports werden nur die tatsächlich genutzten Icons gebündelt.
+    optimizePackageImports: ["lucide-react"],
   },
 
   // Next.js Image-Optimization: AVIF zuerst, WebP als Fallback.

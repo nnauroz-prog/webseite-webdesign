@@ -52,17 +52,40 @@ export function AtelierBrief() {
   );
   const dialogRef = useRef<HTMLDivElement | null>(null);
 
-  // Body-Scroll lock + Esc-Handler beim Öffnen.
+  // Body-Scroll lock + Esc + Focus-Trap (Tab läuft innerhalb des
+  // Dialogs im Kreis), damit Tastatur-Nutzer den Modal nicht versehent-
+  // lich verlassen, solange er offen ist.
   useEffect(() => {
     if (!open) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const dialog = dialogRef.current;
+    const focusables = () =>
+      Array.from(
+        dialog?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const list = focusables();
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        last.focus();
+        e.preventDefault();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        first.focus();
+        e.preventDefault();
+      }
     };
     window.addEventListener("keydown", onKey);
-    // Focus ins Dialog beim Öffnen, damit Esc sofort greift.
-    dialogRef.current?.focus();
+    dialog?.focus();
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
@@ -71,19 +94,22 @@ export function AtelierBrief() {
 
   return (
     <>
-      {/* Floating-Trigger — unten links, leise. */}
+      {/* Floating-Trigger — auf Desktop unten links. Mobile bewusst
+          versteckt (md:flex), weil dort die MobileCtaBar den unteren
+          Bereich belegt; Discovery-Element bleibt Hover-Erlebnis. */}
       <button
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Brief vom Atelier öffnen"
         className={cn(
-          "atelier-brief-trigger fixed bottom-5 left-5 z-[60] hidden h-12 w-12",
+          "atelier-brief-trigger fixed bottom-6 left-6 z-[60] hidden h-12 w-12",
           "items-center justify-center rounded-full",
           "border border-foreground/15 bg-card/90 text-foreground/80",
           "shadow-[0_6px_20px_-6px_rgb(35_31_27_/_0.18)]",
           "backdrop-blur-sm transition-all duration-300",
           "hover:border-foreground/35 hover:text-foreground hover:shadow-[0_10px_28px_-8px_rgb(35_31_27_/_0.28)]",
-          "sm:bottom-6 sm:left-6 sm:flex print:hidden",
+          "focus-visible:ring-2 focus-visible:ring-foreground/30 focus:outline-none",
+          "md:flex print:hidden",
         )}
         data-cursor-label="Brief vom Atelier"
       >
@@ -136,17 +162,17 @@ export function AtelierBrief() {
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
-            aria-label="Brief vom Atelier"
+            aria-labelledby="atelier-brief-titel"
             tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
-            className="atelier-brief-card relative w-full max-w-lg overflow-hidden rounded-2xl bg-card shadow-[0_30px_60px_-20px_rgb(0_0_0/0.45)] focus:outline-none sm:rounded-3xl"
+            className="atelier-brief-card relative w-full max-w-lg overflow-hidden rounded-2xl bg-card shadow-[0_30px_60px_-20px_rgb(0_0_0/0.45)] focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus:outline-none sm:rounded-3xl"
           >
-            {/* Schließen-Button */}
+            {/* Schließen-Button — 44 × 44 px, WCAG 2.5.5 Target Size */}
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Brief schließen"
-              className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-foreground/15 bg-card/90 text-foreground/70 backdrop-blur-sm transition-colors hover:border-foreground/35 hover:text-foreground"
+              className="absolute right-3 top-3 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-foreground/15 bg-card/90 text-foreground/70 backdrop-blur-sm transition-colors hover:border-foreground/35 hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground/30 focus:outline-none"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -161,9 +187,16 @@ export function AtelierBrief() {
                 />
               </div>
 
-              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+              {/* Sichtbarer Editorial-Header; gleichzeitig ARIA-Titel
+                  für aria-labelledby des dialog-Elements (Screen-Reader
+                  hört „Brief vom Atelier" beim Öffnen). */}
+              <h2
+                id="atelier-brief-titel"
+                className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground"
+              >
+                <span className="sr-only">Brief vom Atelier — </span>
                 Sitalo Atelier · Hamburg
-              </p>
+              </h2>
               <p
                 suppressHydrationWarning
                 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/70 mt-1"

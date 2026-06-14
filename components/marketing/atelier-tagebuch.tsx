@@ -37,11 +37,33 @@ export function AtelierTagebuch() {
     if (!open) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const dialog = dialogRef.current;
+    const focusables = () =>
+      Array.from(
+        dialog?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const list = focusables();
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        last.focus();
+        e.preventDefault();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        first.focus();
+        e.preventDefault();
+      }
     };
     window.addEventListener("keydown", onKey);
-    dialogRef.current?.focus();
+    dialog?.focus();
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
@@ -50,20 +72,22 @@ export function AtelierTagebuch() {
 
   return (
     <>
-      {/* Trigger — neben AtelierBrief, ein bisschen versetzt damit
-          beide sichtbar sind. */}
+      {/* Trigger — neben AtelierBrief auf Desktop, 4 rem rechts versetzt
+          (3 rem Button + 1 rem Abstand). md:flex damit Mobile-Bottom
+          frei bleibt für die MobileCtaBar. */}
       <button
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Werkstatt-Tagebuch öffnen"
         className={cn(
-          "atelier-tagebuch-trigger fixed bottom-5 left-[4.75rem] z-[60] hidden h-12 w-12",
+          "atelier-tagebuch-trigger fixed bottom-6 left-[5.25rem] z-[60] hidden h-12 w-12",
           "items-center justify-center rounded-full",
           "border border-foreground/15 bg-card/90 text-foreground/80",
           "shadow-[0_6px_20px_-6px_rgb(35_31_27_/_0.18)]",
           "backdrop-blur-sm transition-all duration-300",
           "hover:border-foreground/35 hover:text-foreground hover:shadow-[0_10px_28px_-8px_rgb(35_31_27_/_0.28)]",
-          "sm:bottom-6 sm:left-[5.25rem] sm:flex print:hidden",
+          "focus-visible:ring-2 focus-visible:ring-foreground/30 focus:outline-none",
+          "md:flex print:hidden",
         )}
         data-cursor-label="Werkstatt-Tagebuch"
       >
@@ -83,16 +107,17 @@ export function AtelierTagebuch() {
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
-            aria-label="Werkstatt-Tagebuch"
+            aria-labelledby="atelier-tagebuch-titel"
             tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
-            className="atelier-tagebuch-card relative w-full max-w-xl overflow-hidden rounded-2xl bg-card shadow-[0_30px_60px_-20px_rgb(0_0_0/0.45)] focus:outline-none sm:rounded-3xl"
+            className="atelier-tagebuch-card relative w-full max-w-xl overflow-hidden rounded-2xl bg-card shadow-[0_30px_60px_-20px_rgb(0_0_0/0.45)] focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus:outline-none sm:rounded-3xl"
           >
+            {/* Schließen-Button — 44 × 44 px, WCAG 2.5.5 Target Size */}
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Tagebuch schließen"
-              className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-foreground/15 bg-card/90 text-foreground/70 backdrop-blur-sm transition-colors hover:border-foreground/35 hover:text-foreground"
+              className="absolute right-3 top-3 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-foreground/15 bg-card/90 text-foreground/70 backdrop-blur-sm transition-colors hover:border-foreground/35 hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground/30 focus:outline-none"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -105,9 +130,13 @@ export function AtelierTagebuch() {
             />
 
             <div className="relative px-7 pt-12 pb-8 sm:px-10 sm:pt-14 sm:pb-10">
-              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-                Werkstatt-Tagebuch · Sitalo
-              </p>
+              <h2
+                id="atelier-tagebuch-titel"
+                className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground"
+              >
+                <span className="sr-only">Werkstatt-Tagebuch — </span>
+                Sitalo
+              </h2>
               <p className="serif-italic text-foreground mt-3 text-balance text-2xl leading-snug tracking-[-0.01em] sm:text-[1.7rem]">
                 Was hier zuletzt passiert ist.
               </p>

@@ -76,10 +76,15 @@ export function SitaloSignatur({
       <svg
         viewBox="0 0 320 130"
         fill="none"
-        aria-label="Sitalo Atelier Signatur"
         role="img"
+        aria-labelledby="sitalo-signatur-titel sitalo-signatur-desc"
         className="text-foreground mx-auto block h-auto w-full max-w-[260px] sm:max-w-[320px]"
       >
+        <title id="sitalo-signatur-titel">Sitalo Atelier — Signatur</title>
+        <desc id="sitalo-signatur-desc">
+          Handgezeichneter Schriftzug Sitalo mit Schwung-Unterstrich und
+          goldenem Tüpfelchen am Ende.
+        </desc>
         {/* Sitalo-Schriftzug, handgezeichnet als zusammenhängende
             italic Bewegung. Path-Länge ca. 480 — passend zur
             stroke-dasharray Steuerung. */}

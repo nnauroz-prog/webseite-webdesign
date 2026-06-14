@@ -32,7 +32,7 @@ export default function AuswahlPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Auswahl" />
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         <Hero />
         <CriteriaList />
         <Process />

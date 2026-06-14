@@ -25,7 +25,10 @@ html {
   --secondary: oklch(0.94 0.018 80);
   --secondary-foreground: oklch(0.22 0.03 50);
   --muted: oklch(0.95 0.014 80);
-  --muted-foreground: oklch(0.45 0.025 60);
+  /* Muted-Foreground dunkler für besseren Kontrast: oklch(0.45) liegt
+     knapp über WCAG-AA-Schwelle (4.5:1), oklch(0.40) bringt auf ~5.5:1.
+     Für längere Body-Texte deutlich angenehmer. */
+  --muted-foreground: oklch(0.4 0.025 60);
 
   --accent: oklch(0.92 0.05 85);
   --accent-foreground: oklch(0.28 0.06 60);

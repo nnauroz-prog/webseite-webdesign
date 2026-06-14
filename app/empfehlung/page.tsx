@@ -30,7 +30,7 @@ export default function EmpfehlungPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Paket-Empfehlung" />
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
           <div
             aria-hidden="true"
