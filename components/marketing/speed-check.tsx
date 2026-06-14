@@ -55,15 +55,23 @@ export function SpeedCheck() {
 
   async function check(e: React.FormEvent) {
     e.preventDefault();
+    // Doppel-Submit-Schutz: solange „loading", kein zweiter Lauf.
+    if (status.kind === "loading") return;
     const trimmed = url.trim();
     if (trimmed.length < 4) return;
 
     setStatus({ kind: "loading", url: trimmed });
+    // 60-Sekunden-Client-Timeout, leicht über dem Server-maxDuration
+    // von 60 s. AbortController bricht den Fetch sauber ab, statt die
+    // UI auf „lädt" stehen zu lassen, wenn der Tab im Hintergrund war.
+    const abort = new AbortController();
+    const timeoutId = window.setTimeout(() => abort.abort(), 60_000);
     try {
       const res = await fetch("/api/speed-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: trimmed, strategy }),
+        signal: abort.signal,
       });
       const data = await res.json();
       if (!res.ok) {
@@ -75,13 +83,19 @@ export function SpeedCheck() {
       }
       setStatus({ kind: "success", data });
     } catch (err) {
+      const isAbort =
+        err instanceof Error &&
+        (err.name === "AbortError" || err.name === "TimeoutError");
       setStatus({
         kind: "error",
-        message:
-          err instanceof Error
+        message: isAbort
+          ? "Analyse abgebrochen oder zu langsam — bitte erneut versuchen."
+          : err instanceof Error
             ? err.message
             : "Netzwerkfehler — bitte erneut versuchen.",
       });
+    } finally {
+      window.clearTimeout(timeoutId);
     }
   }
 

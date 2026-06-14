@@ -30,16 +30,20 @@ type Tone = "active" | "dimmed" | "rest" | "loading";
 type Phase = { label: string; tone: Tone };
 
 function currentPhase(now: Date): Phase {
-  const dayHourStr = new Intl.DateTimeFormat("de-DE", {
+  // formatToParts robuster als String-Split — gibt strukturierte
+  // Tokens zurück, unabhängig vom Locale-Trennzeichen (de-DE: „Di., 14",
+  // de-AT: „Di., 14:00 Uhr", andere Varianten).
+  const parts = new Intl.DateTimeFormat("de-DE", {
     timeZone: "Europe/Berlin",
     weekday: "short",
     hour: "2-digit",
     hour12: false,
-  }).format(now);
-  // Format ist „Di., 14"; daraus Hour als zweiten Teil extrahieren.
-  const parts = dayHourStr.split(",");
-  const weekdayShort = parts[0]?.trim() ?? "";
-  const hour = parseInt(parts[1]?.trim() ?? "0", 10);
+  }).formatToParts(now);
+  const weekdayShort = parts.find((p) => p.type === "weekday")?.value ?? "";
+  const hour = parseInt(
+    parts.find((p) => p.type === "hour")?.value ?? "0",
+    10,
+  );
   const isWeekend = weekdayShort.startsWith("Sa") || weekdayShort.startsWith("So");
 
   // Nachtruhe gilt unabhängig vom Wochentag.

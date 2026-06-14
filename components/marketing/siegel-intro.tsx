@@ -42,12 +42,20 @@ export function SiegelIntro() {
       return;
     }
     // Schon mal gesehen in dieser Session — kein zweites Mal.
+    // sessionStorage kann in Safari-Private-Mode blockiert sein.
+    // Wir merken uns das und fallen dort auf eine reine In-Memory-
+    // Variante über window.name zurück (überlebt Page-Reloads im
+    // selben Tab, was für eine „Session" reicht).
     let seen = false;
+    let canStorageWrite = true;
     try {
       seen = sessionStorage.getItem(STORAGE_KEY) === "1";
     } catch {
-      // sessionStorage kann in Private-Mode/Safari blockiert sein —
-      // dann spielen wir lieber einmal extra als gar nicht.
+      canStorageWrite = false;
+    }
+    // Fallback: window.name als sessionStorage-Ersatz im Private-Mode.
+    if (!seen && !canStorageWrite && typeof window !== "undefined") {
+      seen = window.name === STORAGE_KEY;
     }
     if (seen) {
       setPhase("done");
@@ -56,10 +64,15 @@ export function SiegelIntro() {
     setPhase("playing");
     const t = setTimeout(() => {
       setPhase("done");
-      try {
-        sessionStorage.setItem(STORAGE_KEY, "1");
-      } catch {
-        // ignoriert — Animation hat trotzdem gespielt.
+      if (canStorageWrite) {
+        try {
+          sessionStorage.setItem(STORAGE_KEY, "1");
+        } catch {
+          // ignoriert — Animation hat trotzdem gespielt.
+        }
+      } else if (typeof window !== "undefined") {
+        // Private-Mode-Fallback.
+        window.name = STORAGE_KEY;
       }
     }, PLAY_DURATION_MS);
     return () => clearTimeout(t);

@@ -72,9 +72,16 @@ function applyTint() {
 
 export function AmbientTint() {
   useEffect(() => {
-    applyTint();
-    const id = window.setInterval(applyTint, 10 * 60 * 1000);
-    return () => window.clearInterval(id);
+    let mounted = true;
+    const tick = () => {
+      if (mounted) applyTint();
+    };
+    tick();
+    const id = window.setInterval(tick, 10 * 60 * 1000);
+    return () => {
+      mounted = false;
+      window.clearInterval(id);
+    };
   }, []);
   return null;
 }
