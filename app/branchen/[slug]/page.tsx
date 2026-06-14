@@ -497,7 +497,7 @@ export default async function BranchePage({
                 href={`/anfrage?branche=${branche.inquirySlug}&paket=${branche.recommendedPackage}`}
                 className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 shrink-0 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
               >
-                Anfrage starten
+                Website anfragen
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>

@@ -14,6 +14,7 @@ import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { AtelierBrief } from "@/components/marketing/atelier-brief";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
+import { Beispiele } from "@/components/marketing/beispiele";
 import { AtelierTagebuch } from "@/components/marketing/atelier-tagebuch";
 import { SitaloSignatur } from "@/components/marketing/sitalo-signatur";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
@@ -192,6 +193,12 @@ export default function HomePage() {
         <RevealOnScroll>
           <ExamplesGallery />
         </RevealOnScroll>
+        {/* Beispiele aus echten Projekten — konkrete Resultate
+            (Branche + Stadtteil + Zahl) als Brücke zwischen
+            „wir sagen es ist gut" und „echtem Case Study mit Namen". */}
+        <RevealOnScroll>
+          <Beispiele />
+        </RevealOnScroll>
         {/* Atelier-Suite — fünf interaktive Werkzeuge im Magazin-
             Spread. Macht sichtbar, dass die ganze Tool-Familie
             (Speed-Check, Quiz, Rechner, Audit, Termin) existiert,
@@ -339,8 +346,15 @@ function Hero() {
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
               Logo, ein paar Bilder, ein paar Sätze — Rest machen
-              wir. Übermorgen ist die Seite online. Wir reden vorher
-              kurz, das ist alles.
+              wir. Übermorgen ist die Seite online. Preise und
+              Stundensatz stehen auf der{" "}
+              <Link
+                href="/honorar"
+                className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+              >
+                Honorar-Seite
+              </Link>{" "}
+              offen vorgerechnet.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -596,7 +610,7 @@ function Steps() {
             href="/anfrage"
             className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
           >
-            Jetzt Anfrage senden
+            Jetzt Website anfragen
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link

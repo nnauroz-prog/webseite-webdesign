@@ -88,7 +88,7 @@ export function ImAtelier() {
               href="/anfrage"
               className="text-foreground group mt-8 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-4 hover:underline"
             >
-              Anfrage starten
+              Website anfragen
               <DrawnArrow className="h-3 w-5 transition-transform duration-300 group-hover:translate-x-0.5" />
             </Link>
           </div>

@@ -129,7 +129,7 @@ export default function JetztPage() {
                 href="/anfrage"
                 className="text-foreground mt-5 inline-flex items-center gap-2 text-[14px] font-medium underline-offset-[6px] hover:underline"
               >
-                Anfrage starten
+                Website anfragen
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

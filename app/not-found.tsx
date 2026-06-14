@@ -60,7 +60,7 @@ export default function NotFound() {
               />
               <NotFoundLink
                 href="/anfrage"
-                label="Anfrage starten"
+                label="Website anfragen"
                 detail="Drei Felder, zwei Minuten — wir melden uns persönlich."
               />
             </ul>

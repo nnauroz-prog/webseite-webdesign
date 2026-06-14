@@ -25,15 +25,25 @@ export function AvailabilitySlot({
   variant?: "inline" | "card";
   className?: string;
 }) {
-  const { availableSlots, slotMonth, nextMonth } = AVAILABILITY;
+  const { availableSlots, slotMonth, nextMonth, nextSlots } = AVAILABILITY;
   const open = availableSlots > 0;
 
+  // Konkrete Termine statt „ein paar Slots" — zeit-konkrete Scarcity
+  // konvertiert messbar besser, weil sie aus dem Rhetorischen ins
+  // Planbare wechselt. Wenn die nextSlots-Liste leer ist, fallen wir
+  // auf den Monats-Anker zurück (etwa wenn der Monat voll ist).
+  const slotsList = open && nextSlots.length > 0 ? nextSlots.join(" und ") : "";
+
   const headline = open
-    ? `Aktuell ${availableSlots} ${availableSlots === 1 ? "Bauplatz" : "Bauplätze"} frei`
+    ? slotsList
+      ? `Nächste freie Bauplätze: ${slotsList}`
+      : `Aktuell ${availableSlots} ${availableSlots === 1 ? "Bauplatz" : "Bauplätze"} frei`
     : `${cap(slotMonth)} ist voll`;
 
   const detail = open
-    ? `Letzte Plätze ${slotMonth}. Wer jetzt anfragt, ist noch dabei.`
+    ? slotsList
+      ? "Wer jetzt anfragt, sucht sich den Termin aus."
+      : `Letzte Plätze ${slotMonth}. Wer jetzt anfragt, ist noch dabei.`
     : `Wir nehmen Anfragen für ${nextMonth} entgegen — gleiche Konditionen.`;
 
   if (variant === "card") {
