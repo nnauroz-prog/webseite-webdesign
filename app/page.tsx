@@ -11,6 +11,7 @@ import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { HamburgWetter } from "@/components/marketing/hamburg-wetter";
 import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
+import { AtelierBrief } from "@/components/marketing/atelier-brief";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
@@ -211,6 +212,7 @@ export default function HomePage() {
           <FinalCta />
         </RevealOnScroll>
       </main>
+      <AtelierBrief />
       <MarketingFooter />
     </div>
   );

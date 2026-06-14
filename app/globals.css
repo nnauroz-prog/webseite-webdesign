@@ -78,6 +78,64 @@ html {
     font-family: var(--font-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Film-Grain — SVG-Noise als feste Überlagerung gibt dem
+       ganzen Cream-Hintergrund einen analogen, papier-artigen Ton.
+       Sehr subtil (3 % Opacity), aber wahrnehmbar. Auf Print
+       weggelassen. */
+    position: relative;
+  }
+  @media print {
+    body::after {
+      display: none !important;
+    }
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.14 0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+  }
+
+  /* Custom Selection: Gold-Tönung statt Browser-Default. Auf
+     beiden Hintergründen (Cream und Dunkel-Sektionen) lesbar. */
+  ::selection {
+    background-color: oklch(0.66 0.13 80 / 0.32);
+    color: var(--foreground);
+  }
+  .bg-foreground ::selection,
+  [class*="bg-foreground"] ::selection {
+    background-color: oklch(0.66 0.13 80 / 0.45);
+    color: var(--background);
+  }
+
+  /* Custom Scrollbar — schmal, Gold-akzentuiert beim Hover.
+     Nur Webkit/Blink (Firefox hat eigene Scrollbar-API mit
+     scrollbar-color, die wir parallel setzen). */
+  html {
+    scrollbar-color: oklch(0.66 0.13 80 / 0.5) transparent;
+    scrollbar-width: thin;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: oklch(0.66 0.13 80 / 0.35);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background-color 200ms;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: oklch(0.66 0.13 80 / 0.7);
   }
 
   /* Editorial display defaults — tighter tracking, refined hierarchy. */
@@ -1114,5 +1172,59 @@ html {
   }
   @page {
     margin: 2.2cm 2cm;
+  }
+}
+
+/* AtelierBrief — Trigger und Modal-Karte. */
+.atelier-brief-trigger {
+  /* Sanfter Idle-Float, kein Springen. */
+  animation: atelier-brief-float 6s ease-in-out infinite;
+}
+@keyframes atelier-brief-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.atelier-brief-pulse {
+  animation: atelier-brief-pulse 2.4s ease-out 3;
+  transform-origin: center;
+}
+@keyframes atelier-brief-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 oklch(0.66 0.13 80 / 0.45); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px oklch(0.66 0.13 80 / 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 oklch(0.66 0.13 80 / 0); }
+}
+/* Nach 14,4 s (3 Pulse à 2,4 s) verstummt der Dot, bleibt aber
+   als ruhiger Akzent sichtbar. */
+.atelier-brief-pulse {
+  animation-fill-mode: forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier-brief-trigger,
+  .atelier-brief-pulse {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .atelier-brief-overlay {
+    animation: atelier-brief-fade-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .atelier-brief-card {
+    animation: atelier-brief-card-in 420ms cubic-bezier(0.18, 0.85, 0.32, 1.12);
+    transform-origin: bottom center;
+  }
+}
+@keyframes atelier-brief-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes atelier-brief-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
