@@ -11,8 +11,10 @@ import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { HamburgWetter } from "@/components/marketing/hamburg-wetter";
 import { LayeredStack } from "@/components/marketing/layered-stack";
 import { ExamplesGallery } from "@/components/marketing/examples-gallery";
+import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { AtelierBrief } from "@/components/marketing/atelier-brief";
 import { AtelierSuite } from "@/components/marketing/atelier-suite";
+import { AtelierTagebuch } from "@/components/marketing/atelier-tagebuch";
 import { SitaloSignatur } from "@/components/marketing/sitalo-signatur";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { ImAtelier } from "@/components/marketing/im-atelier";
@@ -154,6 +156,7 @@ const FAQ = [
 export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
+      <AmbientTint />
       <SiegelIntro />
       <MarketingHeader />
       <main id="main" className="flex-1">
@@ -225,6 +228,7 @@ export default function HomePage() {
         </section>
       </main>
       <AtelierBrief />
+      <AtelierTagebuch />
       <MarketingFooter />
     </div>
   );
