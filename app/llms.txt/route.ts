@@ -23,7 +23,8 @@ Lokale Unternehmen in Deutschland mit Fokus auf Hamburg und Umland: Pflegedienst
 
 - **Starter** (ab 499 € + 49 €/Monat): Onepage-Website, Kontaktformular, mobil optimiert, Hosting in der EU.
 - **Business** (ab 899 € + 79 €/Monat): Mehrseitige Website, Team, Galerie, SEO-Grundlagen.
-- **Premium** (ab 1.499 € + 129 €/Monat): Individuelle Struktur, verwaltbare Inhalte (z. B. Speisekarte selbst pflegen).
+- **Premium** (ab 2.499 € + 179 €/Monat): Individuelle Struktur, verwaltbare Inhalte (z. B. Speisekarte selbst pflegen).
+- **Sitalo Studio** (ab 3.490 € + 249 €/Monat): Atelier-Stufe mit eigenständiger Design-Sprache, Atelier-Besuch, drei Korrekturrunden. Für Marken, die sich vom Branchen-Durchschnitt absetzen.
 
 ## Wichtige Seiten
 

@@ -166,7 +166,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Pakete & Preise",
-        description: "Drei Pakete, ab 499 €",
+        description: "Vier Stufen, ab 499 €",
         href: "/pakete",
         icon: Package,
       },

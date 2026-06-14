@@ -24,6 +24,7 @@ export const INQUIRY_PACKAGES = [
   "starter",
   "business",
   "premium",
+  "studio",
   "unsicher",
 ] as const;
 export type InquiryPackage = (typeof INQUIRY_PACKAGES)[number];

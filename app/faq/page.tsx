@@ -62,7 +62,7 @@ const GROUPS: Group[] = [
     items: [
       {
         q: "Was kostet das Ganze?",
-        a: "Wir arbeiten mit drei Einstiegspreisen: Starter ab 499 €, Business ab 899 €, Premium ab 1.499 € — jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ab 49 € / 79 € / 129 € für Hosting, Pflege und kleine Änderungen. Den genauen Endpreis nennen wir Ihnen nach Ihrer Anfrage — verbindlich, kein böses Erwachen.",
+        a: "Wir arbeiten mit vier Stufen: Starter ab 499 €, Business ab 899 €, Premium ab 2.499 € und Sitalo Studio ab 3.490 € — jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag von 49 € / 79 € / 179 € / 249 € für Hosting, Pflege und kleine Änderungen. Den genauen Endpreis nennen wir Ihnen nach Ihrer Anfrage — verbindlich, kein böses Erwachen.",
       },
       {
         q: "Warum gibt es nur Einstiegspreise?",
