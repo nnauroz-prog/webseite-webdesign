@@ -50,11 +50,17 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const normalizedUrl = data.websiteUrl.trim();
+  // Strenge Hostname-Validierung: erlaubt nur RFC-konforme Domain-
+  // Komponenten (Buchstabe oder Ziffer am Anfang/Ende, Bindestriche
+  // dazwischen) und verlangt eine echte TLD ≥ 2 Buchstaben. Verhindert
+  // Müll-Submits wie „..de", „test-.de" oder „.test.de".
+  const hostnamePart = normalizedUrl
+    .replace(/^https?:\/\//, "")
+    .replace(/\/.*$/, "")
+    .toLowerCase();
   const urlOk =
-    normalizedUrl.length > 3 &&
-    /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(
-      normalizedUrl.replace(/^https?:\/\//, "").replace(/\/.*$/, ""),
-    );
+    hostnamePart.length > 3 &&
+    /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/.test(hostnamePart);
   const emailOk = /\S+@\S+\.\S+/.test(data.email);
   const nameOk = data.name.trim().length >= 2;
   const canSubmit =
@@ -62,6 +68,8 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
+    // Doppel-Submit-Schutz analog zu InquiryForm.
+    if (status.kind === "submitting" || status.kind === "success") return;
     if (!canSubmit) return;
 
     if (!formspreeId) {
@@ -105,12 +113,15 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
       if (response.ok) {
         setStatus({ kind: "success" });
       } else {
+        // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
+        // und auf 200 Zeichen kürzen.
         const text = await response.text().catch(() => "");
+        const safeText = text.replace(/<[^>]*>/g, "").trim().slice(0, 200);
         setStatus({
           kind: "error",
           message:
-            text ||
-            `Audit konnte gerade nicht gesendet werden (HTTP ${response.status}).`,
+            safeText ||
+            "Audit-Anfrage fehlgeschlagen. Bitte erneut versuchen oder direkt an info@sitalo.de schreiben.",
         });
       }
     } catch (err) {
@@ -183,6 +194,7 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
             id="audit-name"
             type="text"
             autoComplete="name"
+            placeholder="Max Mustermann"
             value={data.name}
             onChange={(e) => setData({ ...data, name: e.target.value })}
             className="mt-2"
@@ -197,6 +209,7 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
             id="audit-email"
             type="email"
             autoComplete="email"
+            placeholder="max@cafe-nordlicht.de"
             value={data.email}
             onChange={(e) => setData({ ...data, email: e.target.value })}
             className="mt-2"
@@ -249,7 +262,7 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
             href="/datenschutz"
             className="text-foreground underline underline-offset-4"
           >
-            Datenschutz-Erklärung
+            Datenschutzerklärung
           </a>
           .
         </span>

@@ -124,6 +124,9 @@ export function InquiryForm({
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
+    // Doppel-Submit-Schutz: Status-Race verhindern, wenn Enter
+    // mehrfach gedrückt oder Button gleichzeitig geklickt wird.
+    if (status.kind === "submitting" || status.kind === "success") return;
     if (!canSubmit) return;
 
     if (!formspreeId) {
@@ -180,12 +183,16 @@ export function InquiryForm({
       if (response.ok) {
         setStatus({ kind: "success" });
       } else {
+        // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
+        // und auf 200 Zeichen kürzen, damit reflektierter XSS oder
+        // ellenlange Fehler-Texte nicht ins UI laufen können.
         const text = await response.text().catch(() => "");
+        const safeText = text.replace(/<[^>]*>/g, "").trim().slice(0, 200);
         setStatus({
           kind: "error",
           message:
-            text ||
-            `Die Anfrage konnte gerade nicht gesendet werden (HTTP ${response.status}).`,
+            safeText ||
+            "Anfrage konnte nicht gesendet werden. Bitte erneut versuchen — oder schreiben Sie uns direkt an info@sitalo.de.",
         });
       }
     } catch (err) {
@@ -415,7 +422,7 @@ export function InquiryForm({
           disabled={!canSubmit || status.kind === "submitting"}
           className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
         >
-          {status.kind === "submitting" ? "Wird gesendet …" : "Anfrage senden"}
+          {status.kind === "submitting" ? "Wird gesendet…" : "Anfrage senden"}
           {status.kind !== "submitting" && (
             <ArrowRight className="ml-2 h-4 w-4" />
           )}

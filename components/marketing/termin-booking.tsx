@@ -64,6 +64,8 @@ export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
+    // Doppel-Submit-Schutz.
+    if (status.kind === "submitting" || status.kind === "success") return;
     if (!canSubmit || !selectedDate || !selectedSlot) return;
 
     if (!formspreeId) {
@@ -116,12 +118,15 @@ export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
           iso: selectedDate,
         });
       } else {
+        // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
+        // und auf 200 Zeichen kürzen (XSS-Schutz).
         const text = await response.text().catch(() => "");
+        const safeText = text.replace(/<[^>]*>/g, "").trim().slice(0, 200);
         setStatus({
           kind: "error",
           message:
-            text ||
-            `Buchung konnte gerade nicht gesendet werden (HTTP ${response.status}).`,
+            safeText ||
+            "Termin-Buchung fehlgeschlagen. Bitte direkt anrufen: 0152 24437370.",
         });
       }
     } catch (err) {
@@ -313,7 +318,7 @@ export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
               href="/datenschutz"
               className="text-foreground underline underline-offset-4"
             >
-              Datenschutz-Erklärung
+              Datenschutzerklärung
             </a>
             .
           </span>
