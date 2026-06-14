@@ -58,7 +58,7 @@ export function WhatWeDontDo() {
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
               />
-              Bevor Sie fragen
+              Grenzen, offen gesagt
             </p>
             <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
               Was wir

@@ -245,19 +245,26 @@ export default async function JournalPostPage({
 function PostBody({ post }: { post: JournalPost }) {
   // Pre-pass: numerieren h2-Sektionen (I, II, III, …) und den
   // ersten echten Absatz markieren (er bekommt die Drop-Cap).
-  let h2Counter = 0;
-  let firstPTagged = false;
-  const enriched = post.body.map((p) => {
+  // Bewusst über reduce statt mit-mutierter-Vars im map, damit der
+  // React-Compiler keinen Reactive-Side-Effect-Warner wirft.
+  const enriched = post.body.reduce<
+    Array<{
+      paragraph: Paragraph;
+      sectionNum: number | null;
+      isLead: boolean;
+    }>
+  >((acc, p) => {
+    const prevH2s = acc.filter((e) => e.paragraph.kind === "h2").length;
+    const prevLeadDone = acc.some((e) => e.isLead);
     if (p.kind === "h2") {
-      h2Counter += 1;
-      return { paragraph: p, sectionNum: h2Counter, isLead: false };
+      acc.push({ paragraph: p, sectionNum: prevH2s + 1, isLead: false });
+    } else if (p.kind === "p" && !prevLeadDone) {
+      acc.push({ paragraph: p, sectionNum: null, isLead: true });
+    } else {
+      acc.push({ paragraph: p, sectionNum: null, isLead: false });
     }
-    if (p.kind === "p" && !firstPTagged) {
-      firstPTagged = true;
-      return { paragraph: p, sectionNum: null, isLead: true };
-    }
-    return { paragraph: p, sectionNum: null, isLead: false };
-  });
+    return acc;
+  }, []);
 
   return (
     <div className="border-border/40 border-b">
