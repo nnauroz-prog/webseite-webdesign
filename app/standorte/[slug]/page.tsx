@@ -7,6 +7,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import {
   STANDORTE,
   getAllStandortSlugs,
@@ -186,13 +187,7 @@ export default async function StandortPage({
             </nav>
 
             <div className="mt-10 max-w-4xl">
-              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-                <span
-                  aria-hidden="true"
-                  className="bg-gold gold-pulse inline-block h-1 w-6"
-                />
-                Webdesign in Hamburg-{standort.name}
-              </p>
+              <EditorialEyebrow>Webdesign in Hamburg-{standort.name}</EditorialEyebrow>
               <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[1.0] tracking-[-0.035em] sm:text-5xl lg:text-[5.25rem] lg:tracking-[-0.04em]">
                 Websites für{" "}
                 <span className="serif-italic text-muted-foreground font-normal">
@@ -301,13 +296,7 @@ export default async function StandortPage({
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
             <div className="max-w-3xl">
-              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-                <span
-                  aria-hidden="true"
-                  className="bg-gold gold-pulse inline-block h-1 w-6"
-                />
-                Was für {standort.name} besonders passt
-              </p>
+              <EditorialEyebrow>Was für {standort.name} besonders passt</EditorialEyebrow>
               <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
                 Drei Branchen, die wir
                 <br />
@@ -356,13 +345,7 @@ export default async function StandortPage({
         {/* Weitere Stadtteile */}
         <section className="bg-secondary/40 border-border/40 border-b">
           <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-20">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Weitere Stadtteile
-            </p>
+            <EditorialEyebrow>Weitere Stadtteile</EditorialEyebrow>
             <ul className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {otherStandorte.map((other) => (
                 <li key={other.slug}>

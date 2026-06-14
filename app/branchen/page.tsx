@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { BRANCHEN } from "@/lib/branchen-data";
 
 export const metadata: Metadata = {
@@ -37,13 +38,7 @@ function Hero() {
         <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32">
           <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
             <div>
-              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-                <span
-                  aria-hidden="true"
-                  className="bg-gold gold-pulse inline-block h-1 w-6"
-                />
-                10 Branchen · 10 Layouts
-              </p>
+              <EditorialEyebrow>10 Branchen · 10 Layouts</EditorialEyebrow>
               <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
                 Layouts, die zu Ihrem Alltag passen.
               </h1>

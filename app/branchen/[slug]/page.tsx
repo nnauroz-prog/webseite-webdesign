@@ -9,6 +9,7 @@ import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { ParallaxImage } from "@/components/marketing/parallax-image";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import {
   BRANCHEN,
   getAllBrancheSlugs,
@@ -224,13 +225,7 @@ export default async function BranchePage({
 
             <div className="mt-10 grid items-end gap-10 sm:mt-14 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
               <div>
-                <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-                  <span
-                    aria-hidden="true"
-                    className="bg-gold gold-pulse inline-block h-1 w-6"
-                  />
-                  Branche · {branche.label}
-                </p>
+                <EditorialEyebrow>Branche · {branche.label}</EditorialEyebrow>
                 <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[1.0] tracking-[-0.035em] sm:text-5xl lg:text-[5.25rem] lg:tracking-[-0.04em]">
                   Website für{" "}
                   <span className="serif-italic text-muted-foreground font-normal">
