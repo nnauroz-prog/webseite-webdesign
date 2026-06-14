@@ -5,6 +5,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import {
   INQUIRY_PACKAGES,
   type InquiryPackage,
@@ -64,13 +65,7 @@ export default async function AnfragePage({
               Mobile wie Desktop: Form so weit oben wie möglich. */}
           <div className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-24 lg:py-28">
             <div className="text-center">
-              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-                <span
-                  aria-hidden="true"
-                  className="bg-gold gold-pulse inline-block h-1 w-6"
-                />
-                Drei Felder · ein Klick
-              </p>
+              <EditorialEyebrow>Drei Felder · ein Klick</EditorialEyebrow>
               <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
                 Anfrage senden.
               </h1>

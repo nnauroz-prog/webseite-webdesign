@@ -6,6 +6,7 @@ import { AvailabilitySlot } from "@/components/marketing/availability-slot";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 
 export const metadata: Metadata = {
   title: "Pakete & Preise — Websites ab 499 €",
@@ -144,13 +145,7 @@ function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Pakete & Preise
-        </p>
+        <EditorialEyebrow>Pakete & Preise</EditorialEyebrow>
         <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[6rem]">
           Drei Wege.
           <br />

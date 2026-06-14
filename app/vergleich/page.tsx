@@ -5,6 +5,7 @@ import { ArrowRight, Check, Minus, X } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 
 export const metadata: Metadata = {
   title: "Vergleich — Wix, Squarespace, Jimdo, Eigenbau mit KI",
@@ -50,13 +51,7 @@ function Hero() {
         className="bg-gold/10 pointer-events-none absolute -top-32 left-1/2 -z-10 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Ehrlicher Vergleich
-        </p>
+        <EditorialEyebrow>Ehrlicher Vergleich</EditorialEyebrow>
         <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[5.5rem]">
           Was passt zu Ihnen,
           <br />

@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 
 export const metadata: Metadata = {
   title: "Häufige Fragen rund um Ihre neue Website",
@@ -206,13 +207,7 @@ function Group({ group }: { group: Group }) {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          {group.label}
-        </p>
+        <EditorialEyebrow>{group.label}</EditorialEyebrow>
         <dl className="divide-border/60 mt-10 divide-y">
           {group.items.map((item) => (
             <details

@@ -8,6 +8,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 
 export const metadata: Metadata = {
   title: "Das Atelier — wer wir sind und warum wir das machen",
@@ -49,13 +50,7 @@ function Hero() {
         className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32 lg:pb-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Wer wir sind
-        </p>
+        <EditorialEyebrow>Wer wir sind</EditorialEyebrow>
         <div className="mt-10 grid gap-12 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
           <div>
             <h1 className="text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-[5.5rem]">
@@ -147,13 +142,7 @@ function Glaubenssaetze() {
     <section className="bg-secondary/40 border-border/40 border-b">
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
-            />
-            Was wir glauben
-          </p>
+          <EditorialEyebrow>Was wir glauben</EditorialEyebrow>
           <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
             Fünf Sätze,
             <br />
@@ -227,13 +216,7 @@ function WieWirArbeiten() {
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
-            />
-            Wie wir arbeiten
-          </p>
+          <EditorialEyebrow>Wie wir arbeiten</EditorialEyebrow>
           <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
             Klein. Persönlich.{" "}
             <span className="serif-italic text-muted-foreground font-normal">

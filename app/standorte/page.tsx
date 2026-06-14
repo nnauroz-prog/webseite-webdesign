@@ -7,6 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Depth3D } from "@/components/marketing/depth-3d";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
@@ -42,13 +43,7 @@ function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
           {/* Linke Spalte: Headline + Subtext */}
           <div>
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Nach Stadtteil
-            </p>
+            <EditorialEyebrow>Nach Stadtteil</EditorialEyebrow>
             <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-[4.5rem]">
               Websites für Ihren Hamburger Stadtteil.
             </h1>

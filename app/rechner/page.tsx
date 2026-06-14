@@ -6,6 +6,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { TcoRechner } from "@/components/marketing/tco-rechner";
+import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 
 export const metadata: Metadata = {
   title: "3-Jahres-Kostenrechner",
@@ -38,13 +39,7 @@ export default function RechnerPage() {
           />
           <div className="mx-auto w-full max-w-5xl px-6 py-14 sm:py-20 lg:py-24">
             <div className="text-center">
-              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-                <span
-                  aria-hidden="true"
-                  className="bg-gold gold-pulse inline-block h-1 w-6"
-                />
-                Eigenzeit als echtes Geld
-              </p>
+              <EditorialEyebrow>Eigenzeit als echtes Geld</EditorialEyebrow>
               <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
                 Was kostet's
                 <br />
