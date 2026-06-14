@@ -8,6 +8,7 @@ import { KeyboardChords } from "@/components/marketing/keyboard-chords";
 import { KonamiEgg } from "@/components/marketing/konami-egg";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PageCursorGlow } from "@/components/marketing/page-cursor-glow";
+import { PlausibleScript } from "@/components/marketing/plausible-script";
 import { ScrollProgress } from "@/components/marketing/scroll-progress";
 import { ShortcutHelp } from "@/components/marketing/shortcut-help";
 import "./globals.css";
@@ -122,6 +123,7 @@ export default function RootLayout({
         <ShortcutHelp />
         <KonamiEgg />
         <MobileCtaBar />
+        <PlausibleScript />
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger

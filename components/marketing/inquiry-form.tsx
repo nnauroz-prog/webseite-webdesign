@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { track } from "@/lib/track";
 import {
   INQUIRY_TIMEFRAMES,
   type InquiryPackage,
@@ -182,6 +183,11 @@ export function InquiryForm({
       });
       if (response.ok) {
         setStatus({ kind: "success" });
+        track("Anfrage", {
+          branche: industryLabel ?? "(keine)",
+          paket: packageLabel ?? "(keins)",
+          zeitrahmen: timeframeLabel ?? "(offen)",
+        });
       } else {
         // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
         // und auf 200 Zeichen kürzen, damit reflektierter XSS oder

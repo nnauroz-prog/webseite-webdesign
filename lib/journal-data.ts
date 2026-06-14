@@ -496,6 +496,97 @@ export const JOURNAL_BY_STANDORT: Record<string, string> = {
   wandsbek: "pflegedienst-google-maps-hamburg",
 };
 
+/**
+ * Kontextueller Schluss-CTA pro Essay. Ohne diese Map kriegt die
+ * Essay-Seite den Default-CTA (Audit + Termin). Mit Eintrag wird der
+ * Hook und das Ziel auf das Thema des Essays geschärft — z. B. ein
+ * Preis-Essay leitet auf /pakete, ein Gastro-Essay auf /branchen/gastro.
+ *
+ * Strukturell bewusst flach: `eyebrow` ist der gold-pulse-Eyebrow,
+ * `hook` die seriöse Zwei-Satz-Frage, dann ein primärer + optionaler
+ * sekundärer Link. Auf der Seite wird das Schluss-Modul aus diesem
+ * Satz gebaut — fällt zurück, wenn kein Eintrag vorhanden ist.
+ */
+export type JournalCta = {
+  eyebrow: string;
+  hook: string;
+  hookItalic?: string;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+};
+
+export const JOURNAL_CTAS: Record<string, JournalCta> = {
+  "die-zweite-frage": {
+    eyebrow: "Anrufen reicht",
+    hook: "Sie haben auch so eine zweite Frage?",
+    hookItalic: "Sagen Sie's einfach ins Telefon.",
+    primaryHref: "/sprechstunde",
+    primaryLabel: "Sprechstunde buchen",
+    secondaryHref: "/anfrage",
+    secondaryLabel: "Schriftlich anfragen",
+  },
+  "wann-eine-website-warten-kann": {
+    eyebrow: "Lage einschätzen",
+    hook: "Unsicher, ob jetzt der richtige Moment ist?",
+    hookItalic: "Wir gucken uns das ehrlich an.",
+    primaryHref: "/audit",
+    primaryLabel: "Kostenlosen Audit anfordern",
+    secondaryHref: "/sprechstunde",
+    secondaryLabel: "Kurz telefonieren",
+  },
+  "der-preis-einer-website": {
+    eyebrow: "Preise offen",
+    hook: "Welches Paket passt zu Ihnen?",
+    hookItalic: "Drei Stufen, alle mit Endpreis.",
+    primaryHref: "/pakete",
+    primaryLabel: "Pakete ansehen",
+    secondaryHref: "/honorar",
+    secondaryLabel: "Honorar im Detail",
+  },
+  "warum-wir-keine-mockups-zeigen": {
+    eyebrow: "Atelier statt Pitch",
+    hook: "Lieber direkt sehen, wie wir arbeiten?",
+    hookItalic: "Im Atelier liegt alles offen.",
+    primaryHref: "/atelier",
+    primaryLabel: "Atelier besuchen",
+    secondaryHref: "/anfrage",
+    secondaryLabel: "Website anfragen",
+  },
+  "cafe-website-hamburg-2026": {
+    eyebrow: "Für Gastronomie",
+    hook: "Café, Bar, Bistro?",
+    hookItalic: "Da haben wir ein eigenes Layout für.",
+    primaryHref: "/branchen/gastro",
+    primaryLabel: "Gastronomie-Layouts ansehen",
+    secondaryHref: "/audit",
+    secondaryLabel: "Audit für Ihre Seite",
+  },
+  "pflegedienst-google-maps-hamburg": {
+    eyebrow: "Für Pflegedienste",
+    hook: "Ihre Pflegestation steht nicht auf der Karte?",
+    hookItalic: "Wir bringen Sie drauf.",
+    primaryHref: "/branchen/pflege",
+    primaryLabel: "Pflegedienst-Layouts ansehen",
+    secondaryHref: "/audit",
+    secondaryLabel: "Audit für Ihre Seite",
+  },
+  "was-wir-an-wix-migrationen-lernen": {
+    eyebrow: "Raus aus dem Baukasten",
+    hook: "Sitzen Sie auch in einer Mietwohnung?",
+    hookItalic: "Wir holen Sie da raus.",
+    primaryHref: "/anfrage",
+    primaryLabel: "Migration anfragen",
+    secondaryHref: "/vergleich",
+    secondaryLabel: "Vergleich Baukasten vs. Sitalo",
+  },
+};
+
+export function getCtaForPost(slug: string): JournalCta | undefined {
+  return JOURNAL_CTAS[slug];
+}
+
 export function getPost(slug: string): JournalPost | undefined {
   return JOURNAL_POSTS.find((p) => p.slug === slug);
 }

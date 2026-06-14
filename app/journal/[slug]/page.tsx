@@ -9,6 +9,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
   formatDate,
   getAllPostSlugs,
+  getCtaForPost,
   getPost,
   JOURNAL_POSTS,
   type JournalPost,
@@ -114,6 +115,18 @@ export default async function JournalPostPage({
       ? JOURNAL_POSTS[index + 1]
       : null;
 
+  // Kontextueller Schluss-CTA pro Essay (fällt zurück auf den
+  // generischen Audit-+-Termin-Block, falls kein Eintrag in der Map).
+  const cta = getCtaForPost(post.slug) ?? {
+    eyebrow: "Was nun",
+    hook: "Klingt das nach Ihrer Situation?",
+    hookItalic: "Wir gucken uns das gerne an.",
+    primaryHref: "/audit",
+    primaryLabel: "Kostenlosen Audit anfordern",
+    secondaryHref: "/termin",
+    secondaryLabel: "30-Min-Termin",
+  };
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -204,27 +217,34 @@ export default async function JournalPostPage({
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
               />
-              Was nun
+              {cta.eyebrow}
             </p>
             <p className="serif text-foreground mt-6 text-balance text-2xl leading-snug sm:text-3xl">
-              Klingt das nach Ihrer Situation?{" "}
-              <span className="serif-italic text-muted-foreground">
-                Wir gucken uns das gerne an.
-              </span>
+              {cta.hook}
+              {cta.hookItalic && (
+                <>
+                  {" "}
+                  <span className="serif-italic text-muted-foreground">
+                    {cta.hookItalic}
+                  </span>
+                </>
+              )}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
-                href="/audit"
+                href={cta.primaryHref}
                 className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight"
               >
-                Kostenlosen Audit anfordern
+                {cta.primaryLabel}
               </Link>
-              <Link
-                href="/termin"
-                className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-11 items-center rounded-full border px-5 text-[14px] font-medium tracking-tight transition-all"
-              >
-                30-Min-Termin
-              </Link>
+              {cta.secondaryHref && cta.secondaryLabel && (
+                <Link
+                  href={cta.secondaryHref}
+                  className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-11 items-center rounded-full border px-5 text-[14px] font-medium tracking-tight transition-all"
+                >
+                  {cta.secondaryLabel}
+                </Link>
+              )}
             </div>
           </div>
         </section>
