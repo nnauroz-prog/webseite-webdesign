@@ -430,11 +430,9 @@ function PersonalNote() {
               besseren Arbeit.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Sie müssen dafür nicht zum Marketing-Profi werden, nicht
-              alle zwei Wochen einen Workshop besuchen und nicht
-              30 % an irgendeine Agentur abdrücken. Sie brauchen eine
-              Seite, die zeigt, was Sie machen — schnell, klar,
-              mobil. Mehr ist es ehrlich nicht.
+              Sie müssen dafür nicht zum Marketing-Profi werden.
+              Sie brauchen eine Seite, die zeigt, was Sie machen —
+              schnell, klar, mobil. Mehr ist es ehrlich nicht.
             </p>
             <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
               Genau das bauen wir. Sie schicken uns Logo, ein paar
