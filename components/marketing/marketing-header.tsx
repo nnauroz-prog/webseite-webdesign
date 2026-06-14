@@ -135,9 +135,15 @@ export function MarketingHeader({
 
         <div className="flex items-center gap-2">
           {/* Atelier-Status — pulsierender Punkt + Live-Text. Sagt,
-              ob wir gerade am Schreibtisch sitzen (06–23) oder
-              schlafen (23–06). Nur lg+. */}
-          <AtelierStatus className="mr-1 hidden lg:inline-flex" />
+              ob wir gerade am Schreibtisch sitzen oder schlafen.
+              Wrapper-Div regelt Sichtbarkeit, weil die Komponente
+              intern inline-flex setzt — hidden auf dem Wrapper
+              überschreibt das zuverlässig (sonst Cascade-Konflikt
+              zwischen "inline-flex" der Komponente und "hidden" am
+              gleichen Element). */}
+          <div className="mr-1 hidden lg:inline-block">
+            <AtelierStatus />
+          </div>
 
           {/* Cmd+K Command-Palette-Hint — nur Desktop, sehr dezent.
               Klick dispatcht ein synthetisches Cmd+K-Event an window,

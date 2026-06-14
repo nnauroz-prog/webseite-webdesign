@@ -141,7 +141,7 @@ export function HamburgMap() {
         </g>
 
         {/* Stadtteil-Punkte als klickbare Anker */}
-        {STANDORTE.map((s, i) => {
+        {STANDORTE.map((s) => {
           const pin = PINS[s.slug];
           if (!pin) return null;
           return (
@@ -149,7 +149,6 @@ export function HamburgMap() {
               key={s.slug}
               slug={s.slug}
               name={s.name}
-              number={i + 1}
               x={pin.x}
               y={pin.y}
               align={pin.align}
@@ -164,21 +163,18 @@ export function HamburgMap() {
 function Pin({
   slug,
   name,
-  number,
   x,
   y,
   align,
 }: {
   slug: string;
   name: string;
-  number: number;
   x: number;
   y: number;
   align: "left" | "right";
 }) {
   // Label-Position: links oder rechts vom Punkt, je nach Karten-Quadrant
   const labelX = align === "right" ? x + 14 : x - 14;
-  const numberX = align === "right" ? x + 14 : x - 14;
   const textAnchor = align === "right" ? "start" : "end";
 
   return (
@@ -230,21 +226,13 @@ function Pin({
           style={{ transformOrigin: `${x}px ${y}px` }}
         />
 
-        {/* Numeral oberhalb des Labels — Mono-Font, dezent */}
-        <text
-          x={numberX}
-          y={y - 4}
-          fontSize="8"
-          textAnchor={textAnchor}
-          className="fill-muted-foreground font-mono uppercase tracking-[0.15em]"
-        >
-          {String(number).padStart(2, "0")}
-        </text>
-
-        {/* Label — Stadtteilname */}
+        {/* Label — Stadtteilname. Numeral-Hochzahlen wurden raus-
+            genommen — auf Mobile wirkten die „01", „02" als
+            Tipp-Fehler vor dem Stadtteilnamen. Die Reihenfolge
+            ergibt sich ohnehin aus dem STANDORTE-Array. */}
         <text
           x={labelX}
-          y={y + 9}
+          y={y + 4}
           fontSize="13"
           textAnchor={textAnchor}
           className="fill-foreground font-medium tracking-tight transition-colors group-hover:fill-foreground"
