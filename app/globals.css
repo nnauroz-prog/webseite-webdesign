@@ -509,12 +509,18 @@ html {
    fließen lassen statt absolut positioniert. So passt sich die
    Karte an den Inhalt an, statt Text am Rand abzuschneiden. */
 @media not all and (hover: hover) and (pointer: fine) {
+  .flip-card {
+    display: block;
+    width: 100%;
+  }
   .flip-card-inner {
     height: auto;
+    width: 100%;
   }
   .flip-card-front {
     position: relative;
     inset: auto;
+    width: 100%;
   }
   .flip-card-back {
     display: none;

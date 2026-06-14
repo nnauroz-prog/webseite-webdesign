@@ -116,9 +116,9 @@ export function AtelierSuite() {
         {/* Magazin-Grid: 1 großer Aufmacher links, 4 kleinere rechts.
             Auf Mobile alles gestapelt. Klappt beim Hereinscrollen
             aus leichter Rückneigung auf (.unfold-3d, scroll-driven). */}
-        <div className="unfold-3d mt-14 grid gap-5 sm:mt-16 lg:grid-cols-12">
+        <div className="unfold-3d mt-14 grid grid-cols-1 gap-5 sm:mt-16 lg:grid-cols-12">
           <HeroCard tool={HERO_TOOL} />
-          <div className="grid gap-5 sm:grid-cols-2 lg:col-span-6">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:col-span-6">
             {SIDE_TOOLS.map((t) => (
               <SideCard key={t.href} tool={t} />
             ))}
@@ -165,7 +165,7 @@ function HeroCard({ tool }: { tool: Tool }) {
     <FlipCard
       href={tool.href}
       ariaLabel={tool.title}
-      className="col-span-12 min-h-[520px] rounded-3xl sm:min-h-[560px] lg:col-span-6"
+      className="col-span-1 w-full min-h-[520px] rounded-3xl sm:min-h-[560px] lg:col-span-6"
       front={
         <div className="bg-foreground text-background ring-foreground/10 relative flex h-full flex-col gap-6 overflow-hidden rounded-3xl p-8 ring-1 sm:p-10">
           {/* Schwacher Gold-Glow innerhalb der Karte. */}
@@ -232,7 +232,7 @@ function SideCard({ tool }: { tool: Tool }) {
     <FlipCard
       href={tool.href}
       ariaLabel={tool.title}
-      className="min-h-[320px] rounded-3xl sm:min-h-[340px]"
+      className="w-full min-h-[320px] rounded-3xl sm:min-h-[340px]"
       front={
         <div className="border-border/60 bg-card/50 ring-foreground/5 flex h-full flex-col gap-4 rounded-3xl border p-6 ring-1 sm:p-7">
           <div className="flex items-center justify-between gap-3">
