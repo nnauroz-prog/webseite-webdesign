@@ -30,6 +30,9 @@ const STATIC_ROUTES = [
   // Produkte / Vergleich
   "/wartung",
   "/vergleich",
+  // Vertikal-Landings — conversion-optimierte Single-Vertical-Seiten
+  "/pflege",
+  "/praxen",
   // Editorial / Identität
   "/journal",
   "/manifest",
