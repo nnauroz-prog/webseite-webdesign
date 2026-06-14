@@ -848,6 +848,115 @@ html {
   }
 }
 
+/* SiegelIntro — beim ersten Besuch presst sich das Sitalo-Siegel
+   zentral aus dem Off ins Papier und löst sich dann auf. Pure
+   CSS-Choreografie, getrieben vom Mount-State der Komponente.
+   Reduced-Motion / wiederholte Sessions: Komponente rendert nicht,
+   diese Styles greifen also gar nicht erst. */
+.siegel-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  pointer-events: none;
+  /* Die ganze Bühne fadet am Ende sanft aus, gibt die Seite frei. */
+  animation: siegel-intro-curtain 1500ms cubic-bezier(0.4, 0, 0.2, 1)
+    forwards;
+}
+.siegel-intro-paper {
+  position: absolute;
+  inset: 0;
+  background: var(--background);
+  /* Sehr leichte Papier-Textur überlagert, damit der Cream-Ton
+     nicht wie flacher CSS-Background wirkt. */
+  background-image: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgb(35 31 27 / 0.04) 100%
+  );
+}
+.siegel-intro-stage {
+  position: relative;
+  /* Wachs-Press-Choreografie: aus -120 % Y nach 0, dabei aus
+     scale(1.35) und rotateX(-22°) auf 1/0 — kommt von oben rein,
+     presst sich ins Bild und zittert kurz im Moment des Aufdrucks. */
+  animation: siegel-intro-stamp 1300ms cubic-bezier(0.18, 0.85, 0.32, 1.18)
+    forwards;
+  transform-origin: 50% 60%;
+  filter: drop-shadow(0 30px 40px rgb(35 31 27 / 0.25));
+}
+.siegel-intro-eyebrow {
+  position: relative;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: oklch(0.5 0.04 60 / 0.55);
+  animation: siegel-intro-line 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+@keyframes siegel-intro-stamp {
+  0% {
+    transform: translateY(-120%) scale(1.35) rotateX(-22deg);
+    opacity: 0;
+  }
+  55% {
+    transform: translateY(8px) scale(1.05) rotateX(2deg);
+    opacity: 1;
+  }
+  72% {
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+  76% {
+    /* Kurzes Zittern beim Aufdruck — Stempel sitzt im Wachs */
+    transform: translateY(2px) scale(0.99) rotateX(0deg);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotateX(0deg);
+    opacity: 1;
+  }
+}
+@keyframes siegel-intro-line {
+  0%, 60% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  80% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+}
+@keyframes siegel-intro-curtain {
+  0%, 85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Letterpress-Effekt für die Hero-H1: doppelter Text-Shadow (heller
+   Highlight nach oben, dunkler Schatten nach unten) erzeugt den
+   Eindruck, der Buchstabe sei ins Papier gepresst. Nur auf großen
+   Screens, weil der Effekt feine Pixel braucht, um zu lesen. */
+@media (min-width: 1024px) {
+  .letterpress {
+    text-shadow:
+      0 1px 0 rgb(255 255 255 / 0.6),
+      0 -1px 0 rgb(35 31 27 / 0.18),
+      0 0 1px rgb(35 31 27 / 0.08);
+  }
+}
+
 /* Hero-Dolly — die Hero-Szene weicht beim Scrollen nach Z zurück,
    wird leicht kleiner und blasser. Wirkt wie eine Kamera, die
    zurückgleitet, während der nächste Inhalt nach vorn rückt. Pure
