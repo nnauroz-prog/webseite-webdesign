@@ -138,7 +138,7 @@ async function callPsi(url: string): Promise<CallResult> {
         kind: "error",
         httpStatus: 429,
         userMessage:
-          "Der Google-Test ist gerade ausgelastet. Bitte in einer Minute erneut versuchen.",
+          "Der Google-Test ist gerade ausgelastet. Bitte in 1–2 Minuten erneut versuchen — oder mailen Sie uns die URL an info@sitalo.de, wir testen die Seite dann persönlich.",
         retryable: true,
       };
     }
