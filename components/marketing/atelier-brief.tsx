@@ -42,14 +42,15 @@ function todayLabel(): string {
 
 export function AtelierBrief() {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<string>("");
+  // Lazy initializer: erstmaliger Zugriff auf todayLabel() läuft
+  // ein Mal beim Mount, ohne synchronen setState im Effect (würde
+  // sonst eine zweite Render-Pass triggern). Server-Render erhält
+  // ein leeres Datum — suppressHydrationWarning lässt den Wechsel
+  // auf Client-Datum nach Hydration zu, ohne Mismatch-Error.
+  const [date] = useState<string>(() =>
+    typeof window === "undefined" ? "" : todayLabel(),
+  );
   const dialogRef = useRef<HTMLDivElement | null>(null);
-
-  // Datum erst nach Hydration setzen — vermeidet
-  // Server/Client-Mismatch über die Datumsgrenze.
-  useEffect(() => {
-    setDate(todayLabel());
-  }, []);
 
   // Body-Scroll lock + Esc-Handler beim Öffnen.
   useEffect(() => {

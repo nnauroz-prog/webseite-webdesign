@@ -43,7 +43,7 @@ const STEPS = [
     body: "Logo (oder ein Schnappschuss vom alten Briefpapier), 5–10 Bilder (Handy-Fotos sind ok), ein paar Sätze über sich und Ihre Leistungen. Wenn etwas fehlt, sagen wir Bescheid — und empfehlen einen Hamburger Fotografen für 200–400 €, falls Bilder fehlen.",
     bullets: [
       "Logo — egal welches Format",
-      "Bilder — Handy reicht, Stock vermeiden wir",
+      "Bilder — Handy reicht. Wir schneiden zu, gleichen Farben an. Stock-Fotos vermeiden wir.",
       "Texte — Stichpunkte reichen, wir formulieren um",
       "Bei fehlenden Inhalten: wir helfen oder empfehlen",
     ],
@@ -62,7 +62,7 @@ const STEPS = [
   {
     number: "05",
     title: "Sie schauen drüber, wir passen an",
-    body: "Sie gehen die Seite in Ruhe durch — auf dem Handy in der Bahn, am Schreibtisch, abends auf dem Sofa. Schicken uns Ihre Änderungswünsche gesammelt zurück. Wir setzen sie um — eine saubere Runde, kein endloses Hin und Her. Erst wenn Sie zufrieden sind, geht es weiter.",
+    body: "Sie gehen die Seite in Ruhe durch — auf dem Handy in der Bahn, am Schreibtisch, abends auf dem Sofa. Schicken uns Ihre Änderungswünsche gesammelt zurück. Wir besprechen sie einmal, nicht einzeln, und setzen sie in einem Rutsch um. Erst wenn Sie zufrieden sind, geht es weiter.",
     bullets: [
       "Vollständige Vorschau auf einem Test-Link",
       "Eine Runde gesammelter Änderungen inklusive",
@@ -117,9 +117,9 @@ function Hero() {
             </h1>
           </div>
           <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
-            Sie schreiben uns, wir sprechen, wir bauen — und danach bleiben
-            wir Ihr Ansprechpartner. Kein Papierkram dazwischen, kein
-            verlorenes Ticket.
+            Sie schreiben uns, wir sprechen, wir bauen — danach bleiben
+            wir Ihr Ansprechpartner. Kein Angebots-Pingpong, kein
+            Ticket-System, keine Hotline.
           </p>
         </div>
       </div>

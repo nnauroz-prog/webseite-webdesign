@@ -640,9 +640,10 @@ function Pricing() {
             </span>
           </h2>
           <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-            Einmal zahlen, dann ein fairer Monatsbeitrag für Hosting und
-            Pflege. Was eine Hamburger Agentur für 5.000 € macht, gibt's
-            bei uns ab 499 € — weil wir kein Hochhaus mieten.
+            Einmal zahlen, dann ein fairer Monatsbeitrag für Hosting
+            und Pflege. Was eine Agentur in Hamburg für 5.000 € macht,
+            gibt's bei uns ab 499 € — weil wir allein arbeiten und
+            kein teures Büro tragen müssen.
           </p>
           {/* Kapazitäts-Anker — kleiner Hanseatischer Scarcity-Hinweis
               ohne erfundene Zahlen. „Ein paar" statt „X Slots" lässt
