@@ -100,7 +100,14 @@ export default function KontaktPage() {
                 </p>
                 <p className="text-muted-foreground mt-2 text-sm">
                   Meist deutlich schneller. Persönlich, von uns, ohne
-                  Ticket-System.
+                  Ticket-System.{" "}
+                  <Link
+                    href="/erreichbarkeit"
+                    className="text-foreground underline-offset-4 hover:underline"
+                  >
+                    Genaue Fenster
+                  </Link>
+                  .
                 </p>
               </div>
               <div>

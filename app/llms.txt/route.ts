@@ -48,6 +48,7 @@ Lokale Unternehmen in Deutschland mit Fokus auf Hamburg und Umland: Pflegedienst
 ## Weitere Angebote
 
 - [Wartung & Werkbank](https://www.sitalo.de/wartung): Hosting, Updates, kleine Änderungen — auch für Websites, die nicht von Sitalo gebaut wurden. Basis ab 49 €/Monat, Plus ab 99 €/Monat, Werkbank On-Demand ab 299 €/Monat (zwei Atelier-Stunden pro Monat für Design, Dev, Strategie — frei einsetzbar).
+- [Erreichbarkeit](https://www.sitalo.de/erreichbarkeit): Wann Sitalo antwortet — Werktags meist in vier Stunden, Wochenende Montag, drei Wochen Urlaub im Jahr mit Vertretung für Akutfälle. Was bewusst nicht versprochen wird.
 - [Vergleich](https://www.sitalo.de/vergleich): Ehrlicher Tiefenvergleich Sitalo vs Wix, Squarespace, Jimdo und ChatGPT/Cursor-Selbstbau.
 
 ## Editorial & Identität
