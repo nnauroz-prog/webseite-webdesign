@@ -86,7 +86,7 @@ const GROUPS: Group[] = [
       },
       {
         q: "Meine Seite wurde woanders gebaut — übernehmen Sie die Pflege?",
-        a: "Ja. Hosting, Updates, Backups und kleine Änderungen machen wir auch für Seiten, die nicht von uns stammen — sogar für Wix- und Squarespace-Seiten. Details und Konditionen stehen offen auf der Wartungs-Seite (ab 49 € im Monat, einmaliges Onboarding ab 199 €).",
+        a: "Ja. Hosting, Updates, Backups und kleine Änderungen machen wir auch für Seiten, die nicht von uns stammen — sogar für Wix- und Squarespace-Seiten. Drei Stufen offen auf der Wartungs-Seite: Basis ab 49 €/Monat, Plus ab 99 €/Monat, Werkbank On-Demand ab 299 €/Monat (mit zwei freien Atelier-Stunden pro Monat). Einmaliges Onboarding ab 199 €.",
       },
     ],
   },
