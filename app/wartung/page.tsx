@@ -8,22 +8,24 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 
 export const metadata: Metadata = {
-  title: "Wartung & Pflege",
+  title: "Wartung & Werkbank",
   description:
-    "Hosting, Updates, kleine Änderungen — auch für Websites, die wir nicht selbst gebaut haben. Klare Konditionen, nach 6 Monaten monatlich kündbar.",
+    "Hosting, Updates, kleine Änderungen — und auf Wunsch echte Werkbank-Stunden für Design, Dev und Strategie. Auch für Websites, die wir nicht selbst gebaut haben.",
   alternates: { canonical: "/wartung" },
 };
 
 /**
- * `/wartung` — eigenständige Produkt-Seite für laufende Pflege.
+ * `/wartung` — eigenständige Produkt-Seite für laufende Pflege und
+ * On-Demand-Werkbank-Stunden.
  *
  * Zielgruppe: Inhaber existierender Websites (nicht von uns gebaut),
  * die einen verlässlichen Wartungs-Partner suchen, statt jedes Mal
- * jemand neuen zu beauftragen.
+ * jemand neuen zu beauftragen. Bei Bedarf mit echten Atelier-Stunden
+ * für Design/Dev/Strategie als Werkbank On-Demand (dritter Plan).
  *
  * Ausdrücklich kein Re-Launch-Pitch — wer den Anlass für einen
  * Neubau sucht, landet auf /anfrage. Hier geht es um den ruhigen
- * Hintergrund-Dienst.
+ * Hintergrund-Dienst plus optional die Werkbank.
  */
 
 type Plan = {
@@ -78,6 +80,27 @@ const PLANS: Plan[] = [
       "Neue Bereiche (eigene Seite) auf Stundenbasis dazu",
     ],
   },
+  {
+    slug: "werkbank",
+    name: "Werkbank On-Demand",
+    monthly: "ab 299 € / Monat",
+    description:
+      "Wartung plus echte Atelier-Stunden für Design, Dev, Strategie — nutzbar wofür Sie wollen, ohne neues Projekt aufzusetzen.",
+    contents: [
+      "Alles aus Plus",
+      "Zwei Werkbank-Stunden pro Monat, frei einsetzbar",
+      "Übertragbar in den Folgemonat (bis maximal vier Stunden Speicher)",
+      "Stunden nutzbar für Design, Dev, Content, Strategie-Sparring",
+      "Auch für neuen Bereich, A/B-Test, Performance-Tuning, Re-Strukturierung",
+      "Quartalsweise Sprechstunde — wir gucken gemeinsam drauf",
+      "Vorrang bei kurzfristigen Anfragen",
+    ],
+    limits: [
+      "Größere Neubauten (komplette Seite, Shop ab 30 Artikeln) brauchen ein eigenes Projekt",
+      "Nicht-genutzte Stunden verfallen nach zwei Monaten",
+      "Stunden nicht in Geld auszahlbar",
+    ],
+  },
 ];
 
 export default function WartungPage() {
@@ -105,7 +128,7 @@ function Hero() {
         className="bg-gold/10 pointer-events-none absolute -top-32 left-1/2 -z-10 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
-        <EditorialEyebrow>Wartung & Pflege</EditorialEyebrow>
+        <EditorialEyebrow>Wartung & Werkbank</EditorialEyebrow>
         <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[6rem]">
           Für die Seite,
           <br />
@@ -115,8 +138,9 @@ function Hero() {
         </h1>
         <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
           Hosting, Updates, kleine Änderungen — auch wenn wir die
-          Seite nicht selbst gebaut haben. Klare monatliche
-          Konditionen, nach sechs Monaten monatlich kündbar.
+          Seite nicht selbst gebaut haben. Wenn Sie mehr Hände
+          brauchen, gibt's die Werkbank On-Demand obendrauf.
+          Monatlich kündbar nach sechs Monaten.
         </p>
         <ul className="text-muted-foreground mx-auto mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
           <li className="inline-flex items-center gap-2">
@@ -141,7 +165,7 @@ function Plans() {
   return (
     <section className="border-border/40 border-t">
       <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
-        <div className="grid gap-8 md:grid-cols-2 lg:gap-10">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {PLANS.map((plan) => (
             <PlanCard key={plan.slug} plan={plan} />
           ))}
@@ -306,6 +330,10 @@ function ForWhom() {
               title="Sie wollen jemanden, der einfach ans Telefon geht"
               body="Wenn am Freitagnachmittag das Kontaktformular streikt, brauchen Sie keine Ticket-Nummer. Sie brauchen jemanden, der ranngeht und es macht."
             />
+            <CaseItem
+              title="Sie brauchen Hände, kein neues Projekt"
+              body="Die Seite läuft, aber jeden Monat kommt was Kleines: ein neuer Bereich, ein A/B-Test, eine Konversion-Optimierung, eine Strategie-Frage. Mit der Werkbank On-Demand haben Sie zwei Stunden im Monat zur freien Verfügung — ohne jedes Mal ein Angebot zu schreiben."
+            />
           </ul>
         </div>
       </div>
@@ -347,6 +375,14 @@ function Faq() {
     {
       q: "Übernehmen Sie auch Sites mit Online-Shop?",
       a: "Bis ungefähr 30 Artikel ja. Größere Shops mit Lagerverwaltung, Versand-APIs oder ähnlichem empfehlen wir lieber an spezialisierte Shop-Wartungs-Partner weiter.",
+    },
+    {
+      q: "Wofür kann ich die Werkbank-Stunden nutzen?",
+      a: "Für alles, was im Atelier sonst auch passiert — Design-Anpassungen, neuer Bereich, Performance-Tuning, Texte feilen, A/B-Test einrichten, Schema-Markup nachbessern, Strategie-Sparring zur Conversion-Rate. Keine eigene Layout-Welt, kein neuer Shop, kein App-Bau — dafür braucht's ein Projekt.",
+    },
+    {
+      q: "Was passiert mit nicht genutzten Werkbank-Stunden?",
+      a: "Sie verfallen nicht sofort: bis zu vier Stunden Speicher übertragen sich in den Folgemonat. Was darüber liegt oder zwei Monate lang nicht genutzt wurde, verfällt — sonst sammeln sich Reste, die wir nie aufholen.",
     },
   ];
   return (

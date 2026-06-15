@@ -186,8 +186,8 @@ export function CommandPalette({
       },
       {
         kind: "link",
-        label: "Wartung & Pflege",
-        description: "Auch für Sites, die wir nicht gebaut haben",
+        label: "Wartung & Werkbank",
+        description: "Pflege ab 49 €, Werkbank On-Demand ab 299 €",
         href: "/wartung",
         icon: Wrench,
       },
