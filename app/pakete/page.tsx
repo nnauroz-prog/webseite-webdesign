@@ -7,6 +7,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { PAKETE } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
   title: "Pakete & Preise — Websites ab 499 €",
@@ -14,146 +15,6 @@ export const metadata: Metadata = {
     "Vier Stufen, Ihre Seite zu bekommen. Einmalige Erstellung plus fairer Monatsbeitrag — keine versteckten Kosten.",
   alternates: { canonical: "/pakete" },
 };
-
-type Package = {
-  slug: "starter" | "business" | "premium" | "studio";
-  name: string;
-  setup: string;
-  monthly: string;
-  description: string;
-  highlight?: boolean;
-  badge?: string;
-  whoFor: string;
-  contents: string[];
-  examples: string[];
-  limits: string[];
-};
-
-const PACKAGES: Package[] = [
-  {
-    slug: "starter",
-    name: "Starter",
-    setup: "ab 499 €",
-    monthly: "ab 49 € / Monat",
-    description:
-      "Eine moderne Seite, alles Wichtige auf einen Blick. Perfekt für Einzelunternehmer und kleine Betriebe.",
-    whoFor:
-      "Für Selbstständige und kleine Betriebe, die schnell professionell auftreten wollen — ohne mehrseitige Struktur, ohne komplexe Funktionen.",
-    contents: [
-      "Moderne Onepage-Website",
-      "Mobil optimiert",
-      "Kontaktformular mit Spam-Schutz",
-      "Direktwahl & E-Mail",
-      "Google Maps & Öffnungszeiten",
-      "Impressum & Datenschutz-Bereich",
-      "Hosting in der EU",
-      "Bis zu 1 kleine Änderung pro Monat",
-    ],
-    examples: [
-      "Selbstständiger Handwerker mit Einsatzgebiet",
-      "Kleines Café mit Öffnungszeiten",
-      "Coach oder Berater mit Leistungen und Kontakt",
-      "Friseur:in mit Galerie und Termin-Anfrage",
-    ],
-    limits: [
-      "Keine mehrseitige Struktur",
-      "Keine verwaltbaren Inhalte",
-      "Maximal 1 Änderungsrunde pro Monat",
-    ],
-  },
-  {
-    slug: "business",
-    name: "Business",
-    badge: "Empfohlen",
-    highlight: true,
-    setup: "ab 899 €",
-    monthly: "ab 79 € / Monat",
-    description:
-      "Mehrere Sektionen, Team, Leistungen, Galerie. Für lokale Unternehmen, die professionell auftreten wollen.",
-    whoFor:
-      "Für etablierte lokale Unternehmen mit mehreren Leistungen, einem Team und dem Bedarf, sich seriös zu präsentieren.",
-    contents: [
-      "Hochwertige Mehrseiten-Website",
-      "Bis zu 5 Sektionen / Unterseiten",
-      "Team-Bereich mit Fotos",
-      "Leistungen mit detaillierter Beschreibung",
-      "Galerie mit Lightbox",
-      "SEO-Grundlagen + Sitemap",
-      "Bilderaufbereitung inklusive",
-      "Bis zu 3 kleine Änderungen pro Monat",
-    ],
-    examples: [
-      "Pflegedienst mit Leistungen, Team und Bewerbungsformular",
-      "Arztpraxis mit Sprechzeiten und Termin-Anfrage",
-      "Handwerksbetrieb mit Referenz-Galerie",
-      "Kanzlei mit Rechtsgebieten und Team",
-    ],
-    limits: [
-      "Verwaltbare Inhalte gehören in Premium",
-      "Online-Buchung gehört in Premium",
-    ],
-  },
-  {
-    slug: "premium",
-    name: "Premium",
-    setup: "ab 2.499 €",
-    monthly: "ab 179 € / Monat",
-    description:
-      "Individuelle Struktur mit Bereichen, die Sie selbst pflegen — Speisekarte, Wochenangebot, Termine.",
-    whoFor:
-      "Für Unternehmen mit häufig wechselnden Inhalten oder besonderen Anforderungen — Gastro, Studios, Beratungen mit Online-Buchung.",
-    contents: [
-      "Premium-Design",
-      "Individuelle Website-Struktur",
-      "Verwaltbare Inhalte auf Wunsch",
-      "Speisekarte / Wochenangebot selbst änderbar",
-      "Formularsystem (Kontakt, Bewerbung, Buchung)",
-      "Stärkere SEO-Basis",
-      "Erweiterte Wartung",
-      "Bis zu 6 kleine Änderungen pro Monat",
-    ],
-    examples: [
-      "Café mit täglich wechselndem Mittagstisch",
-      "Friseur mit Online-Termin-Buchung",
-      "Pflegedienst mit Bewerbungsformular und News",
-      "Restaurant mit Speisekarte und Wochenangebot",
-    ],
-    limits: [
-      "Eigene Apps oder Shop-Systeme werden im Einzelfall besprochen",
-    ],
-  },
-  {
-    slug: "studio",
-    name: "Sitalo Studio",
-    badge: "Atelier-Stufe",
-    setup: "ab 3.490 €",
-    monthly: "ab 249 € / Monat",
-    description:
-      "Eigenständige Design-Sprache, Atelier-Besuch, drei Korrekturrunden. Für Inhaber, die eine Marke aufbauen.",
-    whoFor:
-      "Für Inhaber:innen mit Anspruch — Praxen, Architekten, Beratungen, Restaurants mit Konzept, die sich vom Branchen-Durchschnitt absetzen wollen.",
-    contents: [
-      "Eigenständige Design-Sprache, kein Template-Anstrich",
-      "Persönlicher Atelier-Besuch in Hamburg oder bei Ihnen",
-      "Bis zu 3 Korrekturrunden, gesammelt und in Ruhe",
-      "Individuelle Typografie- und Farbentscheidungen",
-      "Bis zu 12 verwaltbare Bereiche oder Seiten",
-      "Mehrsprachigkeit auf Wunsch (Deutsch + eine weitere)",
-      "Bis zu 10 kleine Änderungen pro Monat",
-      "Direktdraht zur Person, die Ihre Seite gebaut hat",
-    ],
-    examples: [
-      "Privatpraxis mit eigener Bild- und Tonalitäts-Sprache",
-      "Architekturbüro mit Portfolio und ruhiger Typografie",
-      "Restaurant mit Konzept-Website und mehrsprachiger Karte",
-      "Beratung oder Atelier-nahes Gewerk mit eigener Marke",
-    ],
-    limits: [
-      "Eigene Shop-Systeme werden separat angeboten",
-      "Eigene App-Entwicklung gehört nicht in dieses Paket",
-    ],
-  },
-];
 
 export default function PaketePage() {
   return (
@@ -211,7 +72,7 @@ function Hero() {
         </div>
         {/* Anchor strip — quick jumps */}
         <nav className="mt-12 flex flex-wrap justify-center gap-2 sm:gap-3">
-          {PACKAGES.map((p) => (
+          {PAKETE.map((p) => (
             <a
               key={p.slug}
               href={`#${p.slug}`}
@@ -250,9 +111,14 @@ function Hero() {
 function Packages() {
   return (
     <>
-      {PACKAGES.map((p, i) => {
+      {PAKETE.map((p, i) => {
         const dark = p.highlight;
-        const tinted = i === 2; // Premium — cream-warm tint
+        // Slug-basiert statt index-basiert, damit eine spätere
+        // Umordnung der PAKETE-Liste den Look nicht durcheinander
+        // bringt. Premium kriegt warmen Accent-Tint, Studio einen
+        // ruhigen Secondary-Cream als visuelle Vier-Tier-Hierarchie.
+        const tinted = p.slug === "premium";
+        const atelierTinted = p.slug === "studio";
         return (
           <section
             key={p.slug}
@@ -262,7 +128,9 @@ function Packages() {
                 ? "bg-foreground text-background relative overflow-hidden scroll-mt-16"
                 : tinted
                   ? "bg-accent/40 border-border/40 border-t scroll-mt-16"
-                  : "border-border/40 border-t scroll-mt-16"
+                  : atelierTinted
+                    ? "bg-secondary/50 border-border/40 border-t scroll-mt-16"
+                    : "border-border/40 border-t scroll-mt-16"
             }
           >
             {dark ? (
