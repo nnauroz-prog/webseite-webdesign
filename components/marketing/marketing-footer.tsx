@@ -100,6 +100,7 @@ export function MarketingFooter() {
             <FooterLink href="/pakete">Pakete</FooterLink>
             <FooterLink href="/honorar">Honorar</FooterLink>
             <FooterLink href="/wartung">Wartung & Werkbank</FooterLink>
+            <FooterLink href="/erreichbarkeit">Erreichbarkeit</FooterLink>
             <FooterLink href="/rechner">3-Jahres-Rechner</FooterLink>
             <FooterLink href="/audit">Kostenloser Audit</FooterLink>
             <FooterLink href="/check">Speed-Check</FooterLink>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   BookOpen,
+  Clock,
   Eye,
   FileText,
   Mail,
@@ -190,6 +191,13 @@ export function CommandPalette({
         description: "Pflege ab 49 €, Werkbank On-Demand ab 299 €",
         href: "/wartung",
         icon: Wrench,
+      },
+      {
+        kind: "link",
+        label: "Erreichbarkeit",
+        description: "Wann wir antworten — offen, mit Grenzen",
+        href: "/erreichbarkeit",
+        icon: Clock,
       },
       {
         kind: "link",

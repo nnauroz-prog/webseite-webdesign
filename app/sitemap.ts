@@ -27,6 +27,8 @@ const STATIC_ROUTES = [
   "/termin",
   "/sprechstunde",
   "/rechner",
+  // Transparenz
+  "/erreichbarkeit",
   // Produkte / Vergleich
   "/wartung",
   "/vergleich",
