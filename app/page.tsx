@@ -33,6 +33,7 @@ import {
 } from "@/components/marketing/ornaments";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
+import { getPaketBySlug } from "@/lib/pakete-data";
 import { WhatWeDontDo } from "@/components/marketing/what-we-dont-do";
 import { WhyWebsite } from "@/components/marketing/why-website";
 
@@ -81,55 +82,58 @@ const STEPS = [
   },
 ];
 
-const PACKAGES = [
-  {
-    slug: "starter",
-    name: "Starter",
-    setup: "ab 499 €",
-    monthly: "ab 49 € / Monat",
+/**
+ * Homepage-Pakete: bewusst KURATIERTE Variante (kurze description,
+ * 5-Bullet-Liste statt voller contents), aber Preis und Monatsbeitrag
+ * werden aus der kanonischen Quelle (lib/pakete-data.ts) gezogen.
+ * So gibt's nur eine Stelle, an der Preise geändert werden müssen.
+ *
+ * Sitalo Studio steht hier bewusst nicht — die vierte Stufe wird
+ * als ruhige Editorial-Zeile unter dem 3-Karten-Spread angeteasert,
+ * statt den Magazin-Rhythmus auf 4 Karten zu brechen.
+ */
+const PACKAGES = (["starter", "business", "premium"] as const).map((slug) => {
+  const p = getPaketBySlug(slug);
+  if (!p) throw new Error(`Paket "${slug}" fehlt in lib/pakete-data.ts`);
+  return {
+    slug,
+    name: p.name,
+    setup: p.setup,
+    monthly: p.monthly,
+    badge: p.badge,
+    highlight: p.highlight,
     description:
-      "Eine Seite. Alles Wichtige auf einen Blick. Für Einzelunternehmer und kleine Betriebe.",
-    bullets: [
-      "Onepage-Website",
-      "Mobil optimiert",
-      "Kontaktformular",
-      "Google Maps & Direktwahl",
-      "Hosting inklusive",
-    ],
-  },
-  {
-    slug: "business",
-    name: "Business",
-    badge: "Empfohlen",
-    highlight: true,
-    setup: "ab 899 €",
-    monthly: "ab 79 € / Monat",
-    description:
-      "Mehrere Sektionen, Team, Leistungen, Galerie. Für lokale Unternehmen, die professionell auftreten wollen.",
-    bullets: [
-      "Mehrseitige Website",
-      "Eigene Bereiche & Galerie",
-      "SEO-Grundlagen",
-      "Bilder­bearbeitung",
-      "Laufende Betreuung",
-    ],
-  },
-  {
-    slug: "premium",
-    name: "Premium",
-    setup: "ab 2.499 €",
-    monthly: "ab 179 € / Monat",
-    description:
-      "Individuelle Struktur mit Bereichen, die Sie selbst pflegen können. Speisekarte, Angebote, Termine.",
-    bullets: [
-      "Premium-Design",
-      "Selbst pflegbare Inhalte",
-      "Formularsystem",
-      "Erweiterte SEO-Basis",
-      "Bevorzugter Support",
-    ],
-  },
-];
+      slug === "starter"
+        ? "Eine Seite. Alles Wichtige auf einen Blick. Für Einzelunternehmer und kleine Betriebe."
+        : slug === "business"
+          ? "Mehrere Sektionen, Team, Leistungen, Galerie. Für lokale Unternehmen, die professionell auftreten wollen."
+          : "Individuelle Struktur mit Bereichen, die Sie selbst pflegen können. Speisekarte, Angebote, Termine.",
+    bullets:
+      slug === "starter"
+        ? [
+            "Onepage-Website",
+            "Mobil optimiert",
+            "Kontaktformular",
+            "Google Maps & Direktwahl",
+            "Hosting inklusive",
+          ]
+        : slug === "business"
+          ? [
+              "Mehrseitige Website",
+              "Eigene Bereiche & Galerie",
+              "SEO-Grundlagen",
+              "Bilder­bearbeitung",
+              "Laufende Betreuung",
+            ]
+          : [
+              "Premium-Design",
+              "Selbst pflegbare Inhalte",
+              "Formularsystem",
+              "Erweiterte SEO-Basis",
+              "Bevorzugter Support",
+            ],
+  };
+});
 
 const FAQ = [
   {

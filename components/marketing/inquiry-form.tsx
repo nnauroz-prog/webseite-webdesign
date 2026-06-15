@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PAKETE } from "@/lib/pakete-data";
 import { track } from "@/lib/track";
 import {
   INQUIRY_TIMEFRAMES,
@@ -346,10 +347,12 @@ export function InquiryForm({
               onChange={(v) => update("packagePref", v as FormData["packagePref"])}
               options={[
                 { value: "", label: "— Empfehlung gewünscht —" },
-                { value: "starter", label: "Starter (ab 499 €)" },
-                { value: "business", label: "Business (ab 899 €)" },
-                { value: "premium", label: "Premium (ab 2.499 €)" },
-                { value: "studio", label: "Sitalo Studio (ab 3.490 €)" },
+                // Pakete-Optionen aus der kanonischen Quelle, damit
+                // Preisänderungen automatisch durchschlagen.
+                ...PAKETE.map((p) => ({
+                  value: p.slug,
+                  label: `${p.name} (${p.setup})`,
+                })),
               ]}
             />
           </div>
