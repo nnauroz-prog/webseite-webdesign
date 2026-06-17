@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 
@@ -139,24 +140,58 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
 
   if (status.kind === "success") {
     return (
-      <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-8 text-center ring-1">
-        <span
-          aria-hidden="true"
-          className="bg-gold/15 text-foreground mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full"
-        >
-          <Check className="h-5 w-5" />
-        </span>
-        <p className="serif text-foreground mt-5 text-balance text-2xl leading-snug tracking-[-0.01em]">
-          Wir gucken uns das an.
-        </p>
-        <p className="text-muted-foreground mx-auto mt-3 max-w-md text-pretty text-[14.5px] leading-relaxed">
-          Sie bekommen innerhalb von 48 Stunden eine persönliche E-Mail —
-          drei bis fünf konkrete Punkte, was an Ihrer Seite gut läuft
-          und was wir an Ihrer Stelle als Erstes anfassen würden.
-        </p>
-        <p className="text-muted-foreground/70 mt-6 font-mono text-[10px] uppercase tracking-[0.2em]">
-          Aus Hamburg · meist schneller als 48 h
-        </p>
+      <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-8 ring-1 sm:p-10">
+        <div className="flex items-start gap-4">
+          <span
+            aria-hidden="true"
+            className="bg-gold/15 text-foreground inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+          >
+            <Check className="h-5 w-5" />
+          </span>
+          <div>
+            <p className="serif text-foreground text-balance text-2xl leading-snug tracking-[-0.01em] sm:text-3xl">
+              Wir gucken uns das an.
+            </p>
+            <p className="text-muted-foreground mt-3 max-w-xl text-pretty text-[15px] leading-relaxed">
+              Innerhalb von 48 Stunden bekommen Sie eine persönliche
+              E-Mail — drei bis fünf konkrete Punkte, was an Ihrer
+              Seite gut läuft und was wir an Ihrer Stelle als Erstes
+              anfassen würden. Meist schneller.{" "}
+              <Link
+                href="/erreichbarkeit"
+                className="text-foreground underline-offset-4 hover:underline"
+              >
+                Antwortzeit-Fenster
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
+        <div className="border-border/40 mt-8 border-t pt-6">
+          <p className="text-muted-foreground text-[13px] font-medium uppercase tracking-[0.22em]">
+            Während Sie warten
+          </p>
+          <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[14.5px] leading-relaxed">
+            Sie können sich darauf einstellen — oder das Honorar-Notizbuch
+            lesen, falls Sie wissen wollen, wie unsere Preise zustande
+            kommen.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link
+              href="/termin"
+              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight transition-all"
+            >
+              30-Min-Termin vereinbaren
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="/honorar"
+              className="text-foreground inline-flex h-11 items-center text-[14px] font-medium underline-offset-[6px] hover:underline"
+            >
+              Honorar offen lesen
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
