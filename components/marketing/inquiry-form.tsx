@@ -447,24 +447,54 @@ export function InquiryForm({
 
 function SuccessScreen() {
   return (
-    <div className="bg-card ring-border/50 rounded-3xl border p-10 text-center shadow-xl ring-1">
-      <div className="mx-auto mb-6 inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
-        <Check className="h-7 w-7" />
+    <div className="bg-card ring-border/50 rounded-3xl border p-8 shadow-xl ring-1 sm:p-10">
+      <div className="flex items-start gap-4">
+        <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
+          <Check className="h-7 w-7" />
+        </div>
+        <div>
+          <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
+            Angekommen.
+          </h2>
+          <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[15.5px] leading-relaxed">
+            Wir lesen es jetzt. Im Werktagsfenster zwischen 9 und 18
+            Uhr antworten wir meist innerhalb von vier Stunden — sonst
+            spätestens am nächsten Werktag bis Mittag.{" "}
+            <Link
+              href="/erreichbarkeit"
+              className="text-foreground underline-offset-4 hover:underline"
+            >
+              Antwortzeit-Fenster
+            </Link>
+            .
+          </p>
+        </div>
       </div>
-      <h2 className="text-2xl font-semibold tracking-tight">
-        Anfrage angekommen.
-      </h2>
-      <p className="text-muted-foreground mt-3 text-pretty">
-        Wir haben Ihre Nachricht erhalten und melden uns persönlich —
-        meist noch am selben Tag.
-      </p>
-      <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm">
-        Bis dahin gerne die{" "}
-        <Link href="/branchen" className="hover:text-foreground underline">
-          Branchen-Beispiele
-        </Link>{" "}
-        ansehen.
-      </p>
+      <div className="border-border/40 mt-8 border-t pt-6">
+        <p className="text-muted-foreground text-[13px] font-medium uppercase tracking-[0.22em]">
+          Während Sie warten
+        </p>
+        <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[14.5px] leading-relaxed">
+          Wenn Sie lieber direkt sprechen, geht das in der offenen
+          Sprechstunde ohne Anmeldung — oder Sie buchen einen
+          30-Minuten-Termin, der zu Ihnen passt.
+        </p>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <Link
+            href="/termin"
+            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight transition-all"
+          >
+            30-Min-Termin vereinbaren
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <Link
+            href="/sprechstunde"
+            className="text-foreground inline-flex h-11 items-center text-[14px] font-medium underline-offset-[6px] hover:underline"
+          >
+            Zur Sprechstunde
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

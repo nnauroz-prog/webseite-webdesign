@@ -6,6 +6,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Wartung & Werkbank",
@@ -104,6 +105,91 @@ const PLANS: Plan[] = [
 ];
 
 export default function WartungPage() {
+  // Service + Breadcrumb + FAQPage als JSON-LD-Trio — gleicher
+  // SEO-Footprint wie auf /branchen/[slug] und den Vertikal-Landings.
+  // Macht /wartung als eigenständiges Service-Angebot indexierbar
+  // („Website-Wartung Hamburg" als separater Suchpfad neben
+  // „Webdesign Hamburg").
+  const serviceLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Website-Wartung & Werkbank On-Demand",
+    description:
+      "Hosting, Updates, kleine Änderungen und auf Wunsch echte Atelier-Stunden für Design, Dev und Strategie — auch für Websites, die wir nicht selbst gebaut haben.",
+    provider: {
+      "@type": "LocalBusiness",
+      "@id": `${SITE_URL}/#business`,
+      name: "Sitalo Webdesign",
+    },
+    areaServed: { "@type": "Country", name: "Deutschland" },
+    serviceType: "Website-Wartung",
+    url: `${SITE_URL}/wartung`,
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Wartung Basis",
+        price: "49",
+        priceCurrency: "EUR",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: 49,
+          priceCurrency: "EUR",
+          unitText: "MONTH",
+        },
+      },
+      {
+        "@type": "Offer",
+        name: "Wartung Plus",
+        price: "99",
+        priceCurrency: "EUR",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: 99,
+          priceCurrency: "EUR",
+          unitText: "MONTH",
+        },
+      },
+      {
+        "@type": "Offer",
+        name: "Werkbank On-Demand",
+        price: "299",
+        priceCurrency: "EUR",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: 299,
+          priceCurrency: "EUR",
+          unitText: "MONTH",
+        },
+      },
+    ],
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Wartung & Werkbank",
+        item: `${SITE_URL}/wartung`,
+      },
+    ],
+  };
+
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+
+  const jsonLd = [serviceLd, breadcrumbLd, faqLd];
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -116,6 +202,11 @@ export default function WartungPage() {
         <FinalCta />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </div>
   );
 }
@@ -354,37 +445,41 @@ function CaseItem({ title, body }: { title: string; body: string }) {
   );
 }
 
+// FAQ-Items modul-level gehoben, damit JSON-LD und Render aus
+// derselben Quelle ziehen können.
+const FAQ_ITEMS: { q: string; a: string }[] = [
+  {
+    q: "Können Sie auch Wix oder Squarespace warten?",
+    a: "Ja. Wir machen Inhalts-Pflege, Backups (per Export), Performance-Checks und kleinere Layout-Anpassungen auch auf den Baukasten-Systemen. Den Hosting-Teil bezahlt in dem Fall weiterhin Wix bzw. Squarespace direkt.",
+  },
+  {
+    q: "Was passiert mit meiner Domain?",
+    a: "Die Domain bleibt auf Ihren Namen registriert — wir verwalten nur die DNS-Einträge auf Wunsch. Sie behalten jederzeit die volle Kontrolle.",
+  },
+  {
+    q: "Kann ich kündigen, wenn ich nicht zufrieden bin?",
+    a: "Ja, zum Ende eines jeden Monats nach den ersten sechs Monaten. Wir liefern Ihnen den kompletten Bestand (Seite, Datenbank, Inhalte) als Export für einen sauberen Übergang.",
+  },
+  {
+    q: "Was kostet die Aufstockung von Basis auf Plus?",
+    a: "Differenz monatlich, anteilig. Sie können jederzeit hoch oder runter wechseln — ohne neue Mindestlaufzeit.",
+  },
+  {
+    q: "Übernehmen Sie auch Sites mit Online-Shop?",
+    a: "Bis ungefähr 30 Artikel ja. Größere Shops mit Lagerverwaltung, Versand-APIs oder ähnlichem empfehlen wir lieber an spezialisierte Shop-Wartungs-Partner weiter.",
+  },
+  {
+    q: "Wofür kann ich die Werkbank-Stunden nutzen?",
+    a: "Für alles, was im Atelier sonst auch passiert — Design-Anpassungen, neuer Bereich, Performance-Tuning, Texte feilen, A/B-Test einrichten, Schema-Markup nachbessern, Strategie-Sparring zur Conversion-Rate. Keine eigene Layout-Welt, kein neuer Shop, kein App-Bau — dafür braucht's ein Projekt.",
+  },
+  {
+    q: "Was passiert mit nicht genutzten Werkbank-Stunden?",
+    a: "Sie verfallen nicht sofort: bis zu vier Stunden Speicher übertragen sich in den Folgemonat. Was darüber liegt oder zwei Monate lang nicht genutzt wurde, verfällt — sonst sammeln sich Reste, die wir nie aufholen.",
+  },
+];
+
 function Faq() {
-  const items = [
-    {
-      q: "Können Sie auch Wix oder Squarespace warten?",
-      a: "Ja. Wir machen Inhalts-Pflege, Backups (per Export), Performance-Checks und kleinere Layout-Anpassungen auch auf den Baukasten-Systemen. Den Hosting-Teil bezahlt in dem Fall weiterhin Wix bzw. Squarespace direkt.",
-    },
-    {
-      q: "Was passiert mit meiner Domain?",
-      a: "Die Domain bleibt auf Ihren Namen registriert — wir verwalten nur die DNS-Einträge auf Wunsch. Sie behalten jederzeit die volle Kontrolle.",
-    },
-    {
-      q: "Kann ich kündigen, wenn ich nicht zufrieden bin?",
-      a: "Ja, zum Ende eines jeden Monats nach den ersten sechs Monaten. Wir liefern Ihnen den kompletten Bestand (Seite, Datenbank, Inhalte) als Export für einen sauberen Übergang.",
-    },
-    {
-      q: "Was kostet die Aufstockung von Basis auf Plus?",
-      a: "Differenz monatlich, anteilig. Sie können jederzeit hoch oder runter wechseln — ohne neue Mindestlaufzeit.",
-    },
-    {
-      q: "Übernehmen Sie auch Sites mit Online-Shop?",
-      a: "Bis ungefähr 30 Artikel ja. Größere Shops mit Lagerverwaltung, Versand-APIs oder ähnlichem empfehlen wir lieber an spezialisierte Shop-Wartungs-Partner weiter.",
-    },
-    {
-      q: "Wofür kann ich die Werkbank-Stunden nutzen?",
-      a: "Für alles, was im Atelier sonst auch passiert — Design-Anpassungen, neuer Bereich, Performance-Tuning, Texte feilen, A/B-Test einrichten, Schema-Markup nachbessern, Strategie-Sparring zur Conversion-Rate. Keine eigene Layout-Welt, kein neuer Shop, kein App-Bau — dafür braucht's ein Projekt.",
-    },
-    {
-      q: "Was passiert mit nicht genutzten Werkbank-Stunden?",
-      a: "Sie verfallen nicht sofort: bis zu vier Stunden Speicher übertragen sich in den Folgemonat. Was darüber liegt oder zwei Monate lang nicht genutzt wurde, verfällt — sonst sammeln sich Reste, die wir nie aufholen.",
-    },
-  ];
+  const items = FAQ_ITEMS;
   return (
     <section className="border-border/40 border-t">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">

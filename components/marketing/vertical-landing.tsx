@@ -20,7 +20,17 @@ import type { VertikalLanding } from "@/lib/vertikal-landings";
  * Branchen — das gehört aufs /branchen-Archiv. Hier zählt: in 90
  * Sekunden klar, dann CTA.
  */
-export function VerticalLanding({ data }: { data: VertikalLanding }) {
+export function VerticalLanding({
+  data,
+  faq,
+}: {
+  data: VertikalLanding;
+  /** Optional FAQ aus den Branchen-Daten — wenn vorhanden, wird
+   *  zwischen Stadtteilen und Closer eine FAQ-Sektion gerendert.
+   *  Quelle: branchen-data.ts via brancheSlug, damit die FAQ-
+   *  Antworten einmal gepflegt und mehrfach genutzt werden. */
+  faq?: { q: string; a: string }[];
+}) {
   const inquiryHref = `/anfrage?branche=${data.inquirySlug}&paket=${data.recommendedPackage}`;
 
   return (
@@ -30,6 +40,7 @@ export function VerticalLanding({ data }: { data: VertikalLanding }) {
       <Bauteile data={data} />
       <Process data={data} />
       <Stadtteile data={data} />
+      {faq && faq.length > 0 ? <Faq faq={faq} /> : null}
       <Closer data={data} inquiryHref={inquiryHref} />
     </>
   );
@@ -206,6 +217,45 @@ function Stadtteile({ data }: { data: VertikalLanding }) {
             </li>
           ))}
         </ul>
+      </div>
+    </section>
+  );
+}
+
+function Faq({ faq }: { faq: { q: string; a: string }[] }) {
+  return (
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+          Häufige Fragen
+        </p>
+        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
+          Was Inhaber typischerweise fragen.
+        </h2>
+        <dl className="divide-border/60 mt-12 divide-y">
+          {faq.map((item) => (
+            <details key={item.q} className="group py-6">
+              <summary className="text-foreground flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
+                {item.q}
+                <span className="text-muted-foreground transition-transform group-open:rotate-45">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                  </svg>
+                </span>
+              </summary>
+              <p className="text-muted-foreground mt-4 max-w-2xl text-pretty text-[15px] leading-relaxed">
+                {item.a}
+              </p>
+            </details>
+          ))}
+        </dl>
       </div>
     </section>
   );
