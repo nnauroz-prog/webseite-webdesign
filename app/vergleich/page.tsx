@@ -6,6 +6,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Vergleich — Wix, Squarespace, Jimdo, Eigenbau mit KI",
@@ -27,6 +28,46 @@ export const metadata: Metadata = {
  * das Sitalo ist nicht ist.
  */
 export default function VergleichPage() {
+  // Article-Schema für die Vergleichs-Page + Breadcrumb. Article
+  // statt ComparisonTable, weil das die Editorial-Substanz besser
+  // abbildet — Tabelle ist nur ein Element davon, der größere Teil
+  // ist Pro/Contra-Prosa pro Anbieter.
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Wix, Squarespace, Jimdo, KI-Eigenbau oder Atelier?",
+    description:
+      "Ehrlicher Vergleich für lokale Unternehmen in Deutschland: wann lohnt sich ein Baukasten, wann KI-Eigenbau, wann ein Atelier wie Sitalo.",
+    author: {
+      "@type": "Organization",
+      name: "Sitalo Webdesign",
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Sitalo Webdesign",
+      url: SITE_URL,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/vergleich`,
+    },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Vergleich",
+        item: `${SITE_URL}/vergleich`,
+      },
+    ],
+  };
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -39,6 +80,13 @@ export default function VergleichPage() {
         <FinalCta />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([articleLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }

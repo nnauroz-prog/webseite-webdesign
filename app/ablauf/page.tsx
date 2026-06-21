@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "So läuft Ihr Website-Projekt ab — Schritt für Schritt",
@@ -84,6 +85,39 @@ const STEPS = [
 ];
 
 export default function AblaufPage() {
+  // HowTo-Schema mit den 6 Schritten — Google rendert das auf
+  // mobile SERPs als nummerierte Carousel-Steps direkt im Treffer.
+  // Plus BreadcrumbList für die Hierarchie.
+  const howToLd = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "So läuft Ihr Website-Projekt mit Sitalo ab",
+    description:
+      "Sechs Schritte vom ersten Hallo zur Live-Schaltung — persönlich, ohne Papierkram, mit verbindlichem Termin.",
+    totalTime: "P14D",
+    step: STEPS.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.title,
+      text: s.body,
+      url: `${SITE_URL}/ablauf#step-${s.number}`,
+    })),
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Ablauf",
+        item: `${SITE_URL}/ablauf`,
+      },
+    ],
+  };
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -95,6 +129,13 @@ export default function AblaufPage() {
         <FinalCta />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([howToLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }
