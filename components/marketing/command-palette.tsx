@@ -85,21 +85,43 @@ export function CommandPalette({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Beim Öffnen: Input fokussieren, Query + Index resetten
+  // Beim Öffnen: Input fokussieren, Index resetten. Query NICHT
+  // resetten wenn vom URL-Param vorbefüllt (siehe SearchAction-
+  // Effect unten) — sonst kollidiert das mit dem Initial-Query.
   useEffect(() => {
     if (open) {
-      setQuery("");
       setActiveIndex(0);
       // Kurze Verzögerung — Modal muss erst im DOM sein
       setTimeout(() => inputRef.current?.focus(), 20);
       document.body.style.overflow = "hidden";
     } else {
+      setQuery("");
       document.body.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  // Google-Sitelinks-SearchAction: Eingang über ?q=… auf der Seite.
+  // Wenn der User aus dem SERP-Suchfeld kommt, öffnen wir die Palette
+  // automatisch mit vorbefülltem Query — und entfernen den Param
+  // wieder aus der URL, damit er nicht beim Reload nochmal triggert.
+  //
+  // Direkter window.location.search-Read statt useSearchParams-Hook,
+  // damit das Prerender (z. B. von /_not-found) nicht in Suspense
+  // gewickelt werden muss.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q")?.trim();
+    if (!q) return;
+    setQuery(q);
+    setOpen(true);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("q");
+    window.history.replaceState({}, "", url.toString());
+  }, []);
 
   const groups: Group[] = useMemo(() => {
     const direct: Action[] = [

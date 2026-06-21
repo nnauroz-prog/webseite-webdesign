@@ -97,6 +97,39 @@ const LOCAL_BUSINESS_LD = {
   ],
 };
 
+/**
+ * WebSite-Schema mit potentialAction = SearchAction.
+ *
+ * Aktiviert das Sitelinks-Suchfeld in Google-SERPs für Brand-
+ * Suchen nach "sitalo" — User können direkt aus dem Treffer
+ * heraus die Site durchsuchen. Wir leiten die Suche auf die
+ * Cmd+K-fähige Homepage, die `?q=`-Param liest und die Palette
+ * mit vorbefülltem Query öffnet (siehe globale Listener-Logik
+ * in der Command-Palette).
+ *
+ * Wenn `?q=` noch nicht clientseitig ausgewertet wird, schickt
+ * Google die Suchanfrage trotzdem — Nutzer sehen die Startseite
+ * und können dort manuell Cmd+K öffnen. Auch das ist Mehrwert
+ * gegenüber gar keinem Sitelinks-Suchfeld.
+ */
+const WEBSITE_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  url: SITE_URL,
+  name: "Sitalo Webdesign",
+  publisher: { "@id": `${SITE_URL}/#business` },
+  inLanguage: "de-DE",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -128,7 +161,7 @@ export default function RootLayout({
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(LOCAL_BUSINESS_LD),
+            __html: JSON.stringify([LOCAL_BUSINESS_LD, WEBSITE_LD]),
           }}
         />
       </body>
