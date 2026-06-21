@@ -206,6 +206,27 @@ html {
     transform: scale(0.985);
   }
 
+  /* Globales Keyboard-Focus-Ring für alle interaktiven Elemente.
+     Verwendet :focus-visible (statt :focus), damit Maus-Klicks
+     keinen Ring ziehen — nur Tab-Navigation. Gold-Tönung statt
+     Browser-Default-Blau passt zur Brand und ist auf cream und
+     dunklen Hintergründen lesbar.
+
+     Bewusst hier zentral statt per Tailwind-Utility an jedem
+     Element — A11y-Default für die ganze Site, statt 80
+     Stellen mit `focus-visible:ring-...` zu pflegen. Komponenten,
+     die spezielle Ring-Behandlung brauchen (Form-Inputs, Modal-
+     Close-Buttons), überschreiben weiterhin lokal. */
+  button:not(:disabled):focus-visible,
+  [role="button"]:focus-visible,
+  a[href]:focus-visible,
+  [tabindex="0"]:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid oklch(0.66 0.13 80);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
   /* Bild-Fade-In — wenn Bilder fertig geladen sind (next/image
      setzt data-loaded="true" intern nicht, also nutzen wir den
      img-Selektor in einer Next-Image-Hülle). Sanfter Übergang
