@@ -6,6 +6,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { JOURNAL_POSTS, formatDate } from "@/lib/journal-data";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -26,6 +27,40 @@ export const metadata: Metadata = {
  */
 export default function JournalPage() {
   const [hero, ...rest] = JOURNAL_POSTS;
+
+  // Blog-Schema mit den ersten 10 BlogPosting-Einträgen als
+  // blogPosts-Array. Plus Breadcrumb.
+  const blogLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Sitalo Journal",
+    description:
+      "Essays aus dem Hamburger Atelier — Preis-Transparenz, Arbeitsweise, lokales SEO.",
+    url: `${SITE_URL}/journal`,
+    publisher: { "@id": `${SITE_URL}/#business` },
+    inLanguage: "de-DE",
+    blogPost: JOURNAL_POSTS.slice(0, 10).map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      description: p.dek,
+      datePublished: p.publishedAt,
+      url: `${SITE_URL}/journal/${p.slug}`,
+    })),
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Journal",
+        item: `${SITE_URL}/journal`,
+      },
+    ],
+  };
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -155,6 +190,13 @@ export default function JournalPage() {
         </section>
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([blogLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }

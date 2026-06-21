@@ -9,6 +9,7 @@ import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Das Atelier — wer wir sind und warum wir das machen",
@@ -25,6 +26,30 @@ export const metadata: Metadata = {
  * bevor sie eine Anfrage abschicken.
  * ============================================================ */
 export default function AtelierPage() {
+  const aboutPageLd = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "Das Atelier — Sitalo Webdesign",
+    description:
+      "Über das Sitalo-Atelier in Hamburg — Glaubenssätze, Arbeitsweise, warum Hamburg, welche Schriften und Werkzeuge.",
+    url: `${SITE_URL}/atelier`,
+    mainEntity: { "@id": `${SITE_URL}/#business` },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Atelier",
+        item: `${SITE_URL}/atelier`,
+      },
+    ],
+  };
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -38,6 +63,13 @@ export default function AtelierPage() {
         <FinalCta />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([aboutPageLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }
