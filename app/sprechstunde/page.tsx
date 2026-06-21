@@ -5,6 +5,7 @@ import { ArrowRight, CalendarPlus, Phone } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SITE_URL } from "@/lib/site";
 import {
   nextSprechstunden,
   SPRECHSTUNDE_BEGINN_HHMM,
@@ -34,6 +35,56 @@ export default function SprechstundePage() {
   const termine = nextSprechstunden(3);
   const next = termine[0];
 
+  // Event-Schema pro Sprechstunde-Termin (kommende drei) + Service-
+  // Wrapper. Event-LD gibt Google die Termine als Rich-Result-Events
+  // — auch ohne Anmeldung sind das echte termingebundene Angebote.
+  const eventLds = termine.map((t) => ({
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: "Offene Telefon-Sprechstunde bei Sitalo Webdesign",
+    description:
+      "Anderthalb Stunden offene Telefon-Sprechstunde. Auch für Nicht-Kunden, ohne Anmeldung, ohne Verkauf. Wir antworten auf alles, was Sie zu Webdesign, Hosting, lokaler Sichtbarkeit oder dem eigenen Website-Projekt fragen.",
+    startDate: `${t.iso}T${SPRECHSTUNDE_BEGINN_HHMM}:00+01:00`,
+    endDate: `${t.iso}T${SPRECHSTUNDE_ENDE_HHMM}:00+01:00`,
+    eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+    eventStatus: "https://schema.org/EventScheduled",
+    location: {
+      "@type": "VirtualLocation",
+      url: `tel:+4915224437370`,
+    },
+    organizer: {
+      "@type": "LocalBusiness",
+      "@id": `${SITE_URL}/#business`,
+      name: "Sitalo Webdesign",
+      url: SITE_URL,
+    },
+    isAccessibleForFree: true,
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/sprechstunde`,
+      price: "0",
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      validFrom: t.iso,
+    },
+  }));
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Sprechstunde",
+        item: `${SITE_URL}/sprechstunde`,
+      },
+    ],
+  };
+
+  const jsonLd = [...eventLds, breadcrumbLd];
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -46,6 +97,11 @@ export default function SprechstundePage() {
         <ClosingNote />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Kostenloser Website-Audit",
@@ -28,6 +29,45 @@ export const metadata: Metadata = {
  */
 export default function AuditPage() {
   const formspreeId = process.env.FORMSPREE_FORM_ID?.trim() || undefined;
+
+  // Service + BreadcrumbList JSON-LD — der kostenlose Mini-Audit ist
+  // ein eigenständiger Service (free Lead-Magnet mit konkretem
+  // Deliverable: 3-5 Punkte per Mail in 48 h).
+  const serviceLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Kostenloser Website-Audit",
+    description:
+      "Persönlicher Audit-Report Ihrer aktuellen Website. Drei bis fünf konkrete Verbesserungspunkte per Mail innerhalb 48 Stunden — kein Lighthouse-Score, kein Vertriebs-Anruf.",
+    provider: {
+      "@type": "LocalBusiness",
+      "@id": `${SITE_URL}/#business`,
+      name: "Sitalo Webdesign",
+    },
+    areaServed: { "@type": "Country", name: "Deutschland" },
+    serviceType: "Website-Audit",
+    url: `${SITE_URL}/audit`,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+    },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Mini-Audit",
+        item: `${SITE_URL}/audit`,
+      },
+    ],
+  };
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -146,6 +186,13 @@ export default function AuditPage() {
       </main>
 
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([serviceLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }
