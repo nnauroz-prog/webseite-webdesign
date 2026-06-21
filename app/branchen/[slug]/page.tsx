@@ -20,6 +20,7 @@ import {
   getPost,
   JOURNAL_BY_BRANCHE,
 } from "@/lib/journal-data";
+import { getStandorteForBranche } from "@/lib/standorte-data";
 
 function JournalHinweis({ brancheSlug }: { brancheSlug: string }) {
   const postSlug = JOURNAL_BY_BRANCHE[brancheSlug];
@@ -49,6 +50,65 @@ function JournalHinweis({ brancheSlug }: { brancheSlug: string }) {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </span>
         </Link>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Stadtteil-Hinweise: zeigt Hamburger Standorte, in denen diese
+ * Branche zu den `empfohleneBranchen` gehört. Bidirektionales
+ * Cross-Linking — Standort-Seiten zeigen ihre Top-Branchen, hier
+ * laufen die Branchen-Seiten zurück auf passende Stadtteile.
+ *
+ * Wird nicht gerendert, wenn keine Standorte diese Branche im
+ * `empfohleneBranchen`-Feld haben. So bleiben Branchen ohne
+ * lokale Konzentration sauber.
+ */
+function StandortHinweise({ brancheSlug }: { brancheSlug: string }) {
+  const standorte = getStandorteForBranche(brancheSlug);
+  if (standorte.length === 0) return null;
+
+  return (
+    <section className="border-border/40 border-b">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+          Wo wir das in Hamburg besonders sehen
+        </p>
+        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
+          {standorte.length === 1 ? "Ein" : standorte.length} Hamburger Stadtteil
+          {standorte.length === 1 ? "" : "e"} mit Bezug.
+        </h2>
+        <ul className="mt-12 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {standorte.map((s) => {
+            const reason = s.empfohleneBranchen.find(
+              (b) => b.slug === brancheSlug,
+            )?.warum;
+            return (
+              <li key={s.slug}>
+                <Link
+                  href={`/standorte/${s.slug}`}
+                  className="border-border/60 hover:border-foreground/40 hover:bg-secondary/40 group flex h-full flex-col justify-between gap-3 rounded-2xl border p-5 transition-all"
+                >
+                  <div>
+                    <span className="text-foreground text-lg font-medium tracking-tight">
+                      {s.name}
+                    </span>
+                    {reason ? (
+                      <p className="text-muted-foreground mt-2 text-pretty text-[13.5px] leading-relaxed">
+                        {reason}
+                      </p>
+                    ) : null}
+                  </div>
+                  <span className="text-muted-foreground group-hover:text-foreground inline-flex items-center gap-1.5 text-[12.5px] font-medium">
+                    Stadtteil ansehen
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );
@@ -455,6 +515,12 @@ export default async function BranchePage({
             wirklich ein Essay existiert. Beobachtung aus dem
             Atelier statt weiterer Sales-Sektion. */}
         <JournalHinweis brancheSlug={branche.slug} />
+
+        {/* Wo in Hamburg — bidirektionales Cross-Linking auf passende
+            Stadtteile. Zieht aus der STANDORTE-empfohleneBranchen-
+            Matrix, rendert nur wenn es echte Matches gibt (Branchen
+            ohne lokale Konzentration kriegen den Block nicht). */}
+        <StandortHinweise brancheSlug={branche.slug} />
 
         {/* Related branches */}
         <section className="border-border/40 border-b">
