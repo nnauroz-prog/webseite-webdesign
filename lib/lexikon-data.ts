@@ -150,4 +150,40 @@ export const LEXIKON: LexikonEntry[] = [
     bottomLine:
       "Wenn Ihre Änderung nicht erscheint, ist es fast immer der Cache — einmal hart neu laden, bevor Sie jemanden anrufen.",
   },
+  {
+    term: "Open Graph",
+    slug: "open-graph",
+    plain: `Ein Mini-Datensatz, den jede Seite mitschickt, damit Vorschau-Bilder und Texte beim Teilen auf WhatsApp, Facebook oder LinkedIn richtig aussehen. Ohne Open Graph kriegen Sie eine kahle URL ohne Bild — der geteilte Link wirkt halbfertig.`,
+    bottomLine: `Wenn Ihr Link beim Teilen kein Bild zeigt, fehlt das Open-Graph-Bild. Standard-Hygiene, keine Magie.`,
+  },
+  {
+    term: "Strukturierte Daten (Schema.org)",
+    slug: "schema-org",
+    plain: `Ein technisches Format, das Google direkt sagt, was auf einer Seite steht: hier ist ein Unternehmen, hier sind Öffnungszeiten, hier ist eine FAQ. Google rendert das oft als Rich-Snippet — Sterne, ausklappbare Antworten, Veranstaltungs-Karten direkt im Treffer.`,
+    bottomLine: `Strukturierte Daten machen Ihre Such-Treffer größer und klickbarer, ohne dass Sie für besseres Ranking zahlen müssen.`,
+  },
+  {
+    term: "Redirect (301 vs 302)",
+    slug: "redirect",
+    plain: `Eine Weiterleitung von einer alten Adresse zu einer neuen. 301 heißt „dauerhaft umgezogen", 302 „nur vorübergehend". Beim Website-Relaunch ist 301 fast immer die richtige Wahl — Google überträgt den Suchmaschinen-Wert von der alten auf die neue Adresse.`,
+    bottomLine: `Wer bei einem Relaunch keine 301-Redirects setzt, verliert oft 30–60 % seines Google-Traffics in den ersten Wochen.`,
+  },
+  {
+    term: "Long-Tail-Keywords",
+    slug: "long-tail",
+    plain: `Längere, spezifischere Suchphrasen — „Friseur Eimsbüttel Osterstraße" statt nur „Friseur Hamburg". Long-Tail-Suchen haben weniger Volumen, aber viel geringere Konkurrenz und deutlich höhere Conversion-Rate, weil die Suchabsicht klarer ist.`,
+    bottomLine: `Für lokale Anbieter lohnen sich Long-Tail-Keywords mehr als der Generalbegriff — Sie ranken einfacher und gewinnen Kunden, die schon entschieden sind.`,
+  },
+  {
+    term: "Alt-Text",
+    slug: "alt-text",
+    plain: `Eine kurze Bildbeschreibung im Code, die Screenreader vorlesen und die angezeigt wird, wenn ein Bild nicht lädt. Auch Google nutzt Alt-Texte, um zu verstehen, was auf einem Bild zu sehen ist.`,
+    bottomLine: `Alt-Texte gehören zu Barrierefreiheit-Pflicht UND lokalem SEO — beschreiben Sie konkret („Schaufenster der Bäckerei Müller in der Osterstraße"), nicht generisch („Bild eines Ladens").`,
+  },
+  {
+    term: "Sitemap",
+    slug: "sitemap",
+    plain: `Eine maschinenlesbare Liste aller Ihrer Seiten, die Sie Suchmaschinen vorlegen. Sie sagt Google: hier sind meine Seiten, hier sind sie wichtig, hier sind sie unwichtig — bitte indexieren.`,
+    bottomLine: `Ohne Sitemap findet Google viele Unterseiten gar nicht oder erst nach Wochen. Eine sitemap.xml gehört zu jeder Seite, automatisch generiert.`,
+  },
 ];
