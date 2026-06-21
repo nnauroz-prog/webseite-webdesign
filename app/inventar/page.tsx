@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SITE_URL } from "@/lib/site";
 import {
   INVENTAR_NOT_USED,
   INVENTAR_USED,
@@ -31,6 +32,31 @@ export const metadata: Metadata = {
  * — bewusst optisch abgesetzt, fast als Zweitseite der Doppel-
  * seite gedacht.
  */
+const ARTICLE_LD = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Sitalo Inventar — was wir verwenden",
+  description:
+    "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was wir empfehlen und was wir bewusst auslassen.",
+  author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
+  publisher: { "@id": `${SITE_URL}/#business` },
+  mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/inventar` },
+};
+
+const BREADCRUMB_LD = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Inventar",
+      item: `${SITE_URL}/inventar`,
+    },
+  ],
+};
+
 export default function InventarPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -45,6 +71,13 @@ export default function InventarPage() {
         <ClosingNote />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([ARTICLE_LD, BREADCRUMB_LD]),
+        }}
+      />
     </div>
   );
 }
