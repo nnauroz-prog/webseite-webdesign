@@ -523,3 +523,16 @@ export function getStandortBySlug(slug: string): Standort | undefined {
 export function getAllStandortSlugs(): string[] {
   return STANDORTE.map((s) => s.slug);
 }
+
+/**
+ * Stadtteile finden, in denen die übergebene Branche zu den
+ * `empfohleneBranchen` zählt. Wird für die bidirektionale
+ * Branche-↔-Standort-Verlinkung auf /branchen/[slug] genutzt —
+ * eine Pflege-Detailseite zeigt z. B. die Hamburger Stadtteile,
+ * in denen wir Pflegedienste typischerweise sehen.
+ */
+export function getStandorteForBranche(brancheSlug: string): Standort[] {
+  return STANDORTE.filter((s) =>
+    s.empfohleneBranchen.some((b) => b.slug === brancheSlug),
+  );
+}
