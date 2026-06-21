@@ -3,7 +3,7 @@ import Link from "next/link";
 import { STANDORTE } from "@/lib/standorte-data";
 
 /**
- * Hand-gezeichnete Hamburg-Karte mit den 8 Sitalo-Stadtteilen.
+ * Hand-gezeichnete Hamburg-Karte mit den Sitalo-Stadtteilen.
  *
  * Bewusst keine geografisch exakte Karte (das wäre Tourismus-
  * Broschüre), sondern eine STYLISIERTE Sketch-Abstraktion. Die
@@ -20,17 +20,23 @@ import { STANDORTE } from "@/lib/standorte-data";
  * Konkurrent kopiert hat.
  */
 
-// Stadtteil-Position auf der 600×400-Karte. Reihenfolge spiegelt
-// grob die Hamburg-Geografie wider — Eimsbüttel NW, Wandsbek NO,
-// Harburg unten südlich der Elbe.
+// Stadtteil-Position auf der 600×400-Karte. Grob-orientierend an der
+// Hamburg-Geografie — Eimsbüttel NW, Wandsbek NO, Harburg südlich der
+// Elbe, HafenCity am Hafenrand. Neue Stadtteile (Barmbek, Bramfeld,
+// Niendorf, HafenCity) eingefügt; Pin-Positionen leicht verschoben,
+// damit die Labels sich nicht überlappen.
 const PINS: Record<string, { x: number; y: number; align: "left" | "right" }> = {
-  eppendorf: { x: 290, y: 110, align: "right" },
+  niendorf: { x: 175, y: 105, align: "left" },
+  eppendorf: { x: 285, y: 115, align: "right" },
   winterhude: { x: 360, y: 95, align: "right" },
-  eimsbuettel: { x: 220, y: 145, align: "left" },
-  wandsbek: { x: 440, y: 160, align: "right" },
-  altona: { x: 145, y: 200, align: "left" },
+  eimsbuettel: { x: 230, y: 150, align: "left" },
+  barmbek: { x: 405, y: 130, align: "right" },
+  bramfeld: { x: 470, y: 105, align: "right" },
+  wandsbek: { x: 460, y: 165, align: "right" },
+  altona: { x: 145, y: 205, align: "left" },
   "st-pauli": { x: 245, y: 235, align: "left" },
-  bergedorf: { x: 510, y: 250, align: "right" },
+  hafencity: { x: 310, y: 245, align: "right" },
+  bergedorf: { x: 525, y: 245, align: "right" },
   harburg: { x: 280, y: 340, align: "left" },
 };
 

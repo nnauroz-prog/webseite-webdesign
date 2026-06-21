@@ -13,7 +13,7 @@ import { STANDORTE } from "@/lib/standorte-data";
 export const metadata: Metadata = {
   title: "Webdesign nach Hamburger Stadtteil — aus dem Atelier nebenan",
   description:
-    "Websites für Hamburger Unternehmen, sortiert nach Stadtteil: Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude. Lokale Stichwörter, konkrete Beispiele, persönliche Beratung.",
+    "Websites für Hamburger Unternehmen, sortiert nach Stadtteil: Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude, Bergedorf, Harburg, Wandsbek, Barmbek, Bramfeld, Niendorf, HafenCity. Lokale Suchphrasen statt Generisch-Hamburg.",
   alternates: { canonical: "/standorte" },
 };
 
