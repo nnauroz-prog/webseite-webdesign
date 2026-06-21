@@ -4,6 +4,32 @@ import Link from "next/link";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
+import { SITE_URL } from "@/lib/site";
+
+const ARTICLE_LD = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Sitalo Manifest — acht Sätze",
+  description:
+    "Was Sitalo macht, was Sitalo nicht macht, woran sich Inhaber wie Kunden verlassen können.",
+  author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
+  publisher: { "@id": `${SITE_URL}/#business` },
+  mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/manifest` },
+};
+
+const BREADCRUMB_LD = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Manifest",
+      item: `${SITE_URL}/manifest`,
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "Manifest",
@@ -148,6 +174,13 @@ export default function ManifestPage() {
         </section>
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([ARTICLE_LD, BREADCRUMB_LD]),
+        }}
+      />
     </div>
   );
 }

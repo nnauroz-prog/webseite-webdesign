@@ -5,6 +5,32 @@ import { ArrowRight, Check, X } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SITE_URL } from "@/lib/site";
+
+const ARTICLE_LD = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Wer zu uns kommt — Auswahl",
+  description:
+    "Wir nehmen pro Monat höchstens drei neue Aufträge an. Wen wir bewusst nehmen und wen nicht — und wie wir entscheiden.",
+  author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
+  publisher: { "@id": `${SITE_URL}/#business` },
+  mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/auswahl` },
+};
+
+const BREADCRUMB_LD = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Auswahl",
+      item: `${SITE_URL}/auswahl`,
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "Wer zu uns kommt — Auswahl",
@@ -39,6 +65,13 @@ export default function AuswahlPage() {
         <ClosingNote />
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([ARTICLE_LD, BREADCRUMB_LD]),
+        }}
+      />
     </div>
   );
 }

@@ -7,6 +7,34 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SpeedCheck } from "@/components/marketing/speed-check";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
+
+const WEBAPP_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Sitalo Geschwindigkeits-Test",
+  description:
+    "Live PageSpeed-Insights-Test für jede Website. Performance, Accessibility, Best Practices, SEO — in 30 Sekunden, kostenlos.",
+  url: `${SITE_URL}/check`,
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any",
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+};
+
+const BREADCRUMB_LD = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Speed-Check",
+      item: `${SITE_URL}/check`,
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "Geschwindigkeits-Test",
@@ -137,6 +165,13 @@ export default function CheckPage() {
         </section>
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([WEBAPP_LD, BREADCRUMB_LD]),
+        }}
+      />
     </div>
   );
 }
