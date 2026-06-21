@@ -96,6 +96,8 @@ export function MarketingFooter() {
             <FooterLink href="/leistungen">Leistungen</FooterLink>
             <FooterLink href="/ablauf">Ablauf</FooterLink>
             <FooterLink href="/branchen">Branchen</FooterLink>
+            <FooterLink href="/pflege">Pflegedienste</FooterLink>
+            <FooterLink href="/praxen">Praxen</FooterLink>
             <FooterLink href="/standorte">Standorte</FooterLink>
             <FooterLink href="/pakete">Pakete</FooterLink>
             <FooterLink href="/honorar">Honorar</FooterLink>
