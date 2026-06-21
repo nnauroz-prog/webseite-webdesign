@@ -7,6 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { TerminBooking } from "@/components/marketing/termin-booking";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Termin buchen",
@@ -28,6 +29,45 @@ export const metadata: Metadata = {
  */
 export default function TerminPage() {
   const formspreeId = process.env.FORMSPREE_FORM_ID?.trim() || undefined;
+
+  // Service-Schema für das 30-Min-Erstgespräch + Breadcrumb.
+  // ReservationService statt Reservation — wir bieten die Möglichkeit
+  // zur Terminvereinbarung als Service an, kein konkretes Datum.
+  const serviceLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "30-Minuten-Erstgespräch",
+    description:
+      "Persönliches 30-Minuten-Erstgespräch per Video-Call, Telefon oder vor Ort in Hamburg. Direkte Termin-Auswahl, Bestätigung innerhalb 15 Minuten per Mail.",
+    provider: {
+      "@type": "LocalBusiness",
+      "@id": `${SITE_URL}/#business`,
+      name: "Sitalo Webdesign",
+    },
+    areaServed: { "@type": "Country", name: "Deutschland" },
+    serviceType: "Beratungstermin",
+    url: `${SITE_URL}/termin`,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+    },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Termin",
+        item: `${SITE_URL}/termin`,
+      },
+    ],
+  };
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -110,6 +150,13 @@ export default function TerminPage() {
         </section>
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([serviceLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }

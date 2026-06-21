@@ -8,6 +8,7 @@ import { Depth3D } from "@/components/marketing/depth-3d";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Kontakt — schreiben Sie uns direkt",
@@ -17,6 +18,34 @@ export const metadata: Metadata = {
 };
 
 export default function KontaktPage() {
+  // ContactPage-Schema + Breadcrumb. ContactPage signalisiert
+  // Google explizit, dass das die kanonische Kontakt-Seite ist
+  // (statt /impressum oder Footer als Kontakt-Surrogat). Verlinkt
+  // auf die LocalBusiness-Entity aus app/layout.tsx via @id.
+  const contactPageLd = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Kontakt — Sitalo Webdesign",
+    description:
+      "Schreiben oder anrufen — wir antworten persönlich aus dem Hamburger Atelier, meist noch am selben Tag.",
+    url: `${SITE_URL}/kontakt`,
+    mainEntity: { "@id": `${SITE_URL}/#business` },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Kontakt",
+        item: `${SITE_URL}/kontakt`,
+      },
+    ],
+  };
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
@@ -233,6 +262,13 @@ export default function KontaktPage() {
       </main>
 
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([contactPageLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }
