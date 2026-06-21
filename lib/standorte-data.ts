@@ -351,6 +351,169 @@ export const STANDORTE: Standort[] = [
     ],
     pullQuote: `Wandsbek ist nicht „ein Markt", sondern zwanzig kleine. Wer das versteht, gewinnt sie einzeln.`,
   },
+  {
+    slug: "barmbek",
+    name: "Barmbek",
+    tagline:
+      "Dichte Familien-Wohngegend zwischen Stadtpark und U-Bahn Habichtstraße — Bäcker, Friseure, Praxen, sehr lokale Suchmuster.",
+    intro:
+      "Barmbek-Nord und Barmbek-Süd zusammen sind eines der dichtbesiedeltsten Wohngebiete Hamburgs. Hamburger Straße als Einkaufsachse, Hartzloh-Quartier mit alteingesessenen Familienbetrieben, Dehnhaide mit jüngerem Gastro-Mix. Die typische Anfrage ist hyperlokal: man sucht den Friseur in der eigenen Straße, nicht in der Stadt.",
+    body: [
+      `Barmbeker Betriebe leiden besonders unter „Wir-haben-keine-Website"-Realität — viele Stamm-Familien-Betriebe (Bäcker, Schuster, kleine Praxen) verlassen sich noch auf Schaufenster und Mund-zu-Mund. Wer hier eine moderne Seite hat, gewinnt nicht nur Online-Suchen, sondern wird auch von den Nachbar-Empfehlern leichter weitergeleitet.`,
+      "Wir bauen Barmbeker Seiten ohne Hipster-Filter: klare Öffnungszeiten, sichtbare Telefonnummer, klare Leistungen. Die Klientel ist preisbewusst und schätzt Klarheit mehr als Coolness — was perfekt zum Sitalo-Stil passt.",
+    ],
+    anker: [
+      "Hamburger Straße",
+      "Habichtstraße",
+      "Dehnhaide",
+      "Hartzloh-Quartier",
+      "Mundsburger Damm",
+    ],
+    empfohleneBranchen: [
+      {
+        slug: "friseur",
+        label: "Friseure & Salons",
+        warum:
+          "Sehr hohe Dichte, viele Stamm-Kunden. Eine Seite mit Online-Termin macht den Unterschied bei Neukunden, die spontan einen Termin suchen.",
+      },
+      {
+        slug: "praxis",
+        label: "Hausärzte & Zahnarztpraxen",
+        warum:
+          "Familien-Klientel sucht ortsnah. Klare Sprechzeiten, Anfahrt, Spezialisierung — mehr braucht es nicht, aber das fehlt bei vielen Konkurrenz-Praxen.",
+      },
+      {
+        slug: "gastro",
+        label: "Bäcker, Cafés & Imbisse",
+        warum: `Lokale Suchanfragen nach „Bäcker Barmbek" oder „Café Habichtstraße" sind real und schwach besetzt. Ein einfacher Onepager genügt für die Top-3-Position.`,
+      },
+    ],
+    pullQuote:
+      "In Barmbek gewinnt nicht das beste Marketing, sondern die ehrlichste Seite — weil die Nachbarn das merken.",
+  },
+  {
+    slug: "bramfeld",
+    name: "Bramfeld",
+    tagline:
+      "Hamburger Nordosten — Wohngegend mit eigener Geschäftsachse, viel Handwerk, etablierte Familienpraxen.",
+    intro:
+      "Bramfeld ist klassisches Hamburger Wohngebiet im Nordosten, mit Bramfelder Chaussee als Lebensader. Hartzlohplatz, Steilshooper Straße, Fabriciusstraße — entlang dieser Straßen sitzen Handwerker, kleine Werkstätten, Friseure und etablierte Praxen. Die Klientel ist mittelständisch, eher älter, sehr loyal — und googelt zunehmend, gerade beim Generationswechsel.",
+    body: [
+      `Bramfelder Suchverhalten ist pragmatisch: „Schlosser Bramfeld", „Praxis Bramfelder Chaussee", „Friseur Hartzlohplatz". Die Konkurrenz im Suchergebnis ist überschaubar — meistens Branchenbuch-Einträge oder zwei Jahre alte Wix-Seiten. Eine moderne, klare Seite landet hier verlässlich auf Platz 1-3.`,
+      "Wir bauen für Bramfelder Betriebe eher zurückhaltend: solide Typografie, klare Strukturen, sichtbare Erreichbarkeit. Keine ausufernden Animationen — das wirkt hier eher fremd als hochwertig. Substance statt Show, und genau das hebt die Seite ab.",
+    ],
+    anker: [
+      "Bramfelder Chaussee",
+      "Hartzlohplatz",
+      "Fabriciusstraße",
+      "Steilshooper Straße",
+      "Bramfelder Dorfplatz",
+    ],
+    empfohleneBranchen: [
+      {
+        slug: "handwerker",
+        label: "Handwerker & Werkstätten",
+        warum:
+          "Hohe Dichte, oft seit Jahrzehnten am Ort. Eine Seite mit Einsatzgebiet, Notfall-Erreichbarkeit und Referenz-Galerie gewinnt Neukunden, die googeln statt zu fragen.",
+      },
+      {
+        slug: "praxis",
+        label: "Familien- und Zahnarztpraxen",
+        warum:
+          "Stammpatienten sind treu, aber Neupatienten googeln. Klare Sprechzeiten, Notdienst-Vertretung und Anfahrt-Info reichen, um die richtigen anzuziehen.",
+      },
+      {
+        slug: "friseur",
+        label: "Friseure & Kosmetik",
+        warum:
+          "Hier zählt Verlässlichkeit. Eine Seite mit Online-Termin, Galerie und ehrlicher Beschreibung gewinnt gegen die unklare Konkurrenz-Wix-Seite.",
+      },
+    ],
+    pullQuote:
+      "Bramfelder Kunden vergeben Aufträge nach Vertrauen, nicht nach Hype. Die Website darf das nicht kaputtmachen.",
+  },
+  {
+    slug: "niendorf",
+    name: "Niendorf",
+    tagline:
+      "Hamburgs Nordwesten — Tibarg, Niendorfer Markt, gehobenes Wohngebiet mit Kaufkraft und gründlichem Vergleichsverhalten.",
+    intro:
+      "Niendorf ist Hamburgs gehobene Vorstadt-Ecke mit Tibarg als Einkaufsachse und Niendorfer Markt als Wochenend-Anker. Familien, viele Selbstständige, eine bemerkenswerte Dichte an Praxen, Kosmetik-Studios und kleinen Anwaltskanzleien. Die Klientel ist anspruchsvoll, kaufkraftstark und vergleicht intensiv vor jeder Buchung.",
+    body: [
+      `Niendorfer Suchverhalten ist langsam und gründlich: drei Anbieter werden auf der Website verglichen, Bewertungen gelesen, „Über uns" gecheckt. Eine bilderfreie Seite oder eine offensichtliche Vorlage scheidet hier sofort aus — auch wenn der Anbieter eigentlich gut wäre.`,
+      `Wir bauen für Niendorfer Betriebe bewusst ruhig und detailreich: ordentliche Team-Seiten, lokale Anker (Tibarg, Niendorfer Markt, Garstedter Weg) in den Texten, klare Anfahrt mit Parkplatz-Hinweis. Hier zahlen die Kunden für Substanz — die Seite muss das signalisieren.`,
+    ],
+    anker: [
+      "Tibarg",
+      "Niendorfer Markt",
+      "Garstedter Weg",
+      "Niendorfer Wochenmarkt",
+      "Sootbörn",
+    ],
+    empfohleneBranchen: [
+      {
+        slug: "praxis",
+        label: "Privatpraxen & Spezialisten",
+        warum:
+          "Niendorfer Patienten suchen Spezialisten und vergleichen Qualifikationen. Eine klare Seite mit Schwerpunkten, Team-Fotos und Anfahrt gewinnt Privat- und Kassen-Patienten.",
+      },
+      {
+        slug: "kosmetik",
+        label: "Kosmetik & Beauty-Studios",
+        warum:
+          "Hohe Beauty-Affinität, gute Zahlungsbereitschaft. Wir bauen ruhige Galerien mit Vorher/Nachher, klare Behandlungs-Beschreibungen und einfache Termin-Anfrage.",
+      },
+      {
+        slug: "kanzlei",
+        label: "Steuer- & Anwaltskanzleien",
+        warum:
+          "Viele Selbstständige und Erbschafts-Themen brauchen Beratung vor Ort. Eine seriöse Seite mit klarer Rechtsgebiets-Spezialisierung sticht im Wettbewerb hervor.",
+      },
+    ],
+    pullQuote:
+      "In Niendorf entscheidet die Website über den ersten Termin — bevor irgendjemand miteinander gesprochen hat.",
+  },
+  {
+    slug: "hafencity",
+    name: "HafenCity",
+    tagline:
+      "Hamburgs jüngster Stadtteil — Beratungen, Architekturbüros, Restaurants mit Hafenblick. Klein, premium, sichtbar.",
+    intro:
+      "HafenCity ist anders als der Rest Hamburgs: neu gebaut, dicht, mit klarer Premium-Identität. Magellan-Terrassen, Marco-Polo-Tower, Überseequartier, Elbphilharmonie. Die hier ansässigen Betriebe sind oft Beratungen, Architekten, Spezialärzte, gehobene Gastronomie und einige Boutique-Hotels. Der Markt ist klein, aber jeder Auftrag ist substanziell.",
+    body: [
+      `HafenCity-Suchverhalten ist B2B-getrieben und qualitäts-sensibel: „Architekt HafenCity", „Steuerberater Speicherstadt", „Restaurant Hafenkante". Die Konkurrenz im Suchergebnis ist überschaubar (der Stadtteil ist neu), aber die Erwartung an die Website ist überdurchschnittlich hoch — die Klientel ist gewohnt, mit Hochglanz-Material zu arbeiten.`,
+      `Wir bauen für HafenCity-Betriebe Seiten mit klarer Premium-Anmutung: ruhige Typografie, hochwertige Bildwelt (gerne mit Hafenmotiven), präzise Sprache. Mehr Sitalo Studio als Standard-Business — das passt zum Stadtteil und zur Klientel.`,
+    ],
+    anker: [
+      "Magellan-Terrassen",
+      "Marco-Polo-Tower",
+      "Überseequartier",
+      "Speicherstadt",
+      "Sandtorhafen",
+    ],
+    empfohleneBranchen: [
+      {
+        slug: "kanzlei",
+        label: "Kanzleien & Beratungen",
+        warum:
+          "Viele Wirtschaftskanzleien und Beratungen sitzen hier. Ein klares Profil mit Spezialisierungen und Team-Vorstellung gewinnt Mandate, die per Web-Empfehlung kommen.",
+      },
+      {
+        slug: "gastro",
+        label: "Restaurants & Bars mit Hafenblick",
+        warum:
+          "Premium-Gastronomie mit Direktbuchungs-Bedarf. Hier zählt die Bildwelt mehr als jeder Speisekarten-Text — wir bauen entsprechend.",
+      },
+      {
+        slug: "hotel",
+        label: "Boutique-Hotels & Apartments",
+        warum:
+          "Direktbuchung statt Booking.com spart 15-18 % Provision. Eine schnelle, klare Seite mit gutem Bildmaterial macht das technisch und visuell möglich.",
+      },
+    ],
+    pullQuote:
+      "In der HafenCity erwartet die Klientel Premium — die Website muss das schon signalisieren, bevor jemand reinkommt.",
+  },
 ];
 
 export function getStandortBySlug(slug: string): Standort | undefined {
