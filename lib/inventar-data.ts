@@ -119,6 +119,11 @@ export const INVENTAR_USED: InventarSection[] = [
         what: "KI-unterstütztes Schreiben bei klar abgegrenzten Aufgaben.",
         why: "Nützlich für repetitive Refactors und Boilerplate. Nicht nützlich für Entscheidungen über Architektur — die bleiben menschlich.",
       },
+      {
+        name: "Plausible Analytics",
+        what: "Privacy-First-Web-Analytics ohne Cookies, ohne Tracking-Pixel.",
+        why: "Wir messen Conversion-Funnel und Outbound-Klicks — ohne Cookie-Banner, ohne IP-Speicherung, ohne Third-Party-Pixel. DSGVO-konform aus dem Box, weil keine personenbezogenen Daten erhoben werden. Für Kunden-Seiten ebenfalls empfehlbar, wo überhaupt Tracking-Bedarf besteht.",
+      },
     ],
   },
   {
@@ -160,7 +165,7 @@ export const INVENTAR_NOT_USED: InventarItem[] = [
   {
     name: "Google Analytics",
     what: "Verbreitestes Web-Tracking-Tool.",
-    why: "DSGVO-Aufwand zu hoch im Verhältnis zum Nutzen. Wir setzen Plausible oder gar nichts ein — wenn ein Kunde es will, machen wir es ordentlich.",
+    why: "DSGVO-Aufwand zu hoch im Verhältnis zum Nutzen. Wir setzen stattdessen Plausible (siehe oben) oder gar nichts ein. Wenn ein Kunde explizit GA will, machen wir es ordentlich mit IP-Anonymisierung, Consent-Banner und Datenverarbeitungs-Vereinbarung — der Aufwand muss aber gerechtfertigt sein.",
   },
   {
     name: "Newsletter-Tools mit Tracker-Pixeln",
