@@ -20,9 +20,6 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { BRANCHEN } from "@/lib/branchen-data";
-import { STANDORTE } from "@/lib/standorte-data";
-
 /**
  * Command-Palette — Linear-/Vercel-Style Cmd+K Modal.
  *
@@ -48,10 +45,11 @@ type Group = {
   items: Action[];
 };
 
-/** Vom Server gebauter Inhalts-Index (Essays + Lexikon-Begriffe) —
- *  siehe lib/search-index.ts für das Warum der Prop-Übergabe. */
+/** Vom Server gebauter Inhalts-Index (Essays, Lexikon-Begriffe,
+ *  Branchen, Standorte, Pakete) — siehe lib/search-index.ts für
+ *  das Warum der Prop-Übergabe. */
 export type PaletteSearchDoc = {
-  kind: "essay" | "begriff";
+  kind: "essay" | "begriff" | "branche" | "standort" | "paket";
   label: string;
   description: string;
   href: string;
@@ -292,26 +290,44 @@ export function CommandPalette({
       },
     ];
 
-    const branchen: Action[] = BRANCHEN.map((b) => ({
-      kind: "link" as const,
-      label: b.label,
-      description: b.shortBody.split(".")[0] + ".",
-      href: `/branchen/${b.slug}`,
-      icon: FileText,
-    }));
+    // Branchen, Standorte, Pakete kommen aus dem Server-Index — kein
+    // Direkt-Import der voll-attributierten Data-Files mehr, das hat
+    // die ganze Branchen-FAQ-Sektion in den Client-Bundle gezogen.
+    const branchen: Action[] = searchIndex
+      .filter((d) => d.kind === "branche")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label,
+        description: d.description.split(".")[0] + ".",
+        href: d.href,
+        icon: FileText,
+      }));
 
-    const standorte: Action[] = STANDORTE.map((s) => ({
-      kind: "link" as const,
-      label: s.name,
-      description: s.tagline,
-      href: `/standorte/${s.slug}`,
-      icon: MapPin,
-    }));
+    const standorte: Action[] = searchIndex
+      .filter((d) => d.kind === "standort")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label.replace(" · Hamburg", ""),
+        description: d.description,
+        href: d.href,
+        icon: MapPin,
+      }));
+
+    const pakete: Action[] = searchIndex
+      .filter((d) => d.kind === "paket")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label,
+        description: d.description,
+        href: d.href,
+        icon: Package,
+      }));
 
     if (!query.trim()) {
       return [
         { label: "Sofort", items: direct },
         { label: "Seiten", items: pages },
+        { label: "Pakete", items: pakete },
         { label: "Branchen", items: branchen.slice(0, 5) },
         { label: "Stadtteile", items: standorte.slice(0, 4) },
       ];
@@ -353,6 +369,7 @@ export function CommandPalette({
     return [
       { label: "Sofort", items: direct.filter(match) },
       { label: "Seiten", items: pages.filter(match) },
+      { label: "Pakete", items: pakete.filter(match) },
       { label: "Branchen", items: branchen.filter(match) },
       { label: "Stadtteile", items: standorte.filter(match) },
       { label: "Essays", items: essays },
