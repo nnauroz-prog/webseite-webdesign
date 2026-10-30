@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { basicSiteCheck } from "@/lib/basic-site-check";
+
 /**
  * `/api/speed-check` — Proxy zu Google PageSpeed Insights API.
  *
@@ -12,6 +14,12 @@ import { NextRequest, NextResponse } from "next/server";
  * Public-Anteil der API: 25.000 Requests pro Tag ohne Key. Reicht
  * für Marketing-Site-Lead-Gen. Mit `PAGESPEED_API_KEY` env var
  * höheres Limit + bessere Quota-Stabilität.
+ *
+ * Antwortet Google nicht (ohne Key praktisch täglich HTTP 429),
+ * fällt die Route auf einen eigenen Basis-Check zurück
+ * (lib/basic-site-check.ts) — Besucher bekommen dann ehrliche
+ * Messwerte statt nur einer Fehlermeldung. Antwort hat dann
+ * `mode: "basic"`.
  *
  * Methode: POST { url, strategy: "mobile" | "desktop" }
  * Response: { scores: { performance, accessibility, bestPractices, seo }, ... }
@@ -115,11 +123,22 @@ export async function POST(req: NextRequest) {
       break;
     }
     lastError = { status: result.httpStatus, userMessage: result.userMessage };
-    if (!result.retryable) break;
+    // Ohne Key ist ein 429 das Tageslimit, kein Schluckauf — gleich
+    // zum Basis-Check statt 2 s zu warten.
+    if (!result.retryable || (!apiKey && result.httpStatus === 429)) break;
     await new Promise((r) => setTimeout(r, 1800));
   }
 
   if (lastError || raw === null) {
+    try {
+      const basic = await basicSiteCheck(targetUrl);
+      console.warn(`[speed-check] PSI ${lastError?.status ?? "?"}, Basis-Check geliefert`);
+      return NextResponse.json(basic);
+    } catch (err) {
+      console.error(
+        `[speed-check] Basis-Check fehlgeschlagen: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
     return NextResponse.json(
       {
         error:
@@ -156,8 +175,8 @@ type CallResult =
 async function callPsi(url: string): Promise<CallResult> {
   try {
     const upstream = await fetch(url, {
-      // Etwas unter der maxDuration-Grenze, damit ein Retry noch reinpasst.
-      signal: AbortSignal.timeout(50_000),
+      // Deutlich unter maxDuration, damit der Basis-Check noch reinpasst.
+      signal: AbortSignal.timeout(38_000),
     });
     if (upstream.ok) {
       const data = await upstream.json();
