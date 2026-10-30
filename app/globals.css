@@ -1569,13 +1569,15 @@ body::before {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1.5px;
+  padding: 2px;
   pointer-events: none;
   background: conic-gradient(
     from var(--sweep),
     transparent 0deg,
-    color-mix(in oklab, var(--gold) 70%, white) 50deg,
-    transparent 110deg,
+    color-mix(in oklab, var(--gold) 35%, transparent) 30deg,
+    color-mix(in oklab, var(--gold) 80%, white) 70deg,
+    color-mix(in oklab, var(--gold) 35%, transparent) 110deg,
+    transparent 140deg,
     transparent 360deg
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
