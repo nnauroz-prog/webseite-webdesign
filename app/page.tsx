@@ -33,6 +33,7 @@ import {
 } from "@/components/marketing/ornaments";
 import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
+import { AVAILABILITY } from "@/lib/availability";
 import { getPaketBySlug } from "@/lib/pakete-data";
 import { WhatWeDontDo } from "@/components/marketing/what-we-dont-do";
 import { WhyWebsite } from "@/components/marketing/why-website";
@@ -639,24 +640,14 @@ function Pricing() {
   const featured = PACKAGES.find((p) => p.highlight)!;
   const others = PACKAGES.filter((p) => !p.highlight);
 
-  // Aktueller Monat als kleiner Kapazitäts-Anker — Server-rendered,
-  // damit der Hinweis sich automatisch jeden Monat aktualisiert ohne
-  // Pflegeaufwand.
-  const monthLabels = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ];
-  const currentMonth = monthLabels[new Date().getMonth()];
+  // Aktueller Monat als kleiner Kapazitäts-Anker, in Hamburger Zeit.
+  // Ob noch Plätze frei sind, kommt aus lib/availability.ts — derselbe
+  // Wert, den /pakete und /anfrage anzeigen.
+  const currentMonth = new Date().toLocaleDateString("de-DE", {
+    month: "long",
+    timeZone: "Europe/Berlin",
+  });
+  const slotsOpen = AVAILABILITY.availableSlots > 0;
 
   return (
     <section id="pakete" className="border-border/40 border-t scroll-mt-20">
@@ -694,8 +685,9 @@ function Pricing() {
             />
             <span className="font-medium">{currentMonth}:</span>
             <span>
-              noch ein paar Slots offen. Wer früh schreibt, sucht sich
-              den Termin aus.
+              {slotsOpen
+                ? "noch ein paar Slots offen. Wer früh schreibt, sucht sich den Termin aus."
+                : `ausgebucht. Wir nehmen Anfragen für ${AVAILABILITY.nextMonth} entgegen — gleiche Konditionen.`}
             </span>
           </p>
         </div>

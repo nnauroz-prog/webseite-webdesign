@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Calendar, Check, Clock } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   type DayCell,
   formatDateLong,
+  isSlotTooSoon,
   nextWorkdays,
   SLOT_DURATION_MIN,
   SLOT_TIMES,
@@ -22,7 +23,7 @@ import { cn } from "@/lib/utils";
  *
  * Drei-Schritt-Flow:
  *   1. Tag wählen (nächste 14 Werktage als Karten)
- *   2. Slot wählen (15-Min-Raster, 10–17 Uhr ohne Mittag)
+ *   2. Slot wählen (30-Min-Raster, 10–17 Uhr ohne Mittag)
  *   3. Kontakt + Notiz + Absenden
  *
  * Backend: Formspree (gleiche Form-ID wie InquiryForm + AuditForm).
@@ -41,8 +42,16 @@ type Status =
   | { kind: "error"; message: string };
 
 export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
-  const days = useMemo(() => nextWorkdays(14), []);
+  const [days, setDays] = useState<DayCell[]>(() => nextWorkdays(14));
+  // Das vorgerenderte HTML kann bis zu eine Stunde alt sein (ISR).
+  // Nach dem Mount mit der Uhr des Besuchers neu rechnen — als echtes
+  // Re-Render, weil React abweichende Attribute beim Hydrieren nicht
+  // nachzieht.
+  useEffect(() => {
+    setDays(nextWorkdays(14));
+  }, []);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const selectedDay = days.find((d) => d.iso === selectedDate);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -57,6 +66,7 @@ export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
   const canSubmit =
     selectedDate != null &&
     selectedSlot != null &&
+    !(selectedDay && isSlotTooSoon(selectedDay, selectedSlot)) &&
     nameOk &&
     emailOk &&
     consent &&
@@ -205,22 +215,27 @@ export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
             : "Erst Tag oben wählen."}
         </p>
         <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
-          {SLOT_TIMES.map((slot) => (
-            <button
-              key={slot}
-              type="button"
-              onClick={() => setSelectedSlot(slot)}
-              aria-pressed={selectedSlot === slot}
-              className={cn(
-                "h-11 rounded-full border text-[14px] font-medium tracking-tight transition-all",
-                selectedSlot === slot
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-border/70 text-foreground/85 hover:border-foreground/40",
-              )}
-            >
-              {slot}
-            </button>
-          ))}
+          {SLOT_TIMES.map((slot) => {
+            const tooSoon = selectedDay ? isSlotTooSoon(selectedDay, slot) : false;
+            return (
+              <button
+                key={slot}
+                type="button"
+                onClick={() => setSelectedSlot(slot)}
+                disabled={tooSoon}
+                aria-pressed={selectedSlot === slot}
+                className={cn(
+                  "h-11 rounded-full border text-[14px] font-medium tracking-tight transition-all",
+                  selectedSlot === slot
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border/70 text-foreground/85 hover:border-foreground/40",
+                  tooSoon && "border-dashed opacity-40 hover:border-border/70",
+                )}
+              >
+                {slot}
+              </button>
+            );
+          })}
         </div>
       </fieldset>
 
@@ -375,6 +390,12 @@ function DayButton({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={selected}
+      title={day.blockedReason}
+      aria-label={
+        day.blockedReason
+          ? `${day.weekday} ${day.day}. ${day.month} — ${day.blockedReason}`
+          : undefined
+      }
       className={cn(
         "relative inline-flex h-20 w-16 shrink-0 flex-col items-center justify-center gap-0.5 rounded-2xl border transition-all sm:h-24 sm:w-20",
         selected
