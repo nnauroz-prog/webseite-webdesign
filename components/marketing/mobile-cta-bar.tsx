@@ -39,7 +39,8 @@ export function MobileCtaBar() {
   if (
     pathname?.startsWith("/anfrage") ||
     pathname?.startsWith("/impressum") ||
-    pathname?.startsWith("/datenschutz")
+    pathname?.startsWith("/datenschutz") ||
+    pathname?.startsWith("/admin")
   ) {
     return null;
   }

@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         // API-Routes (Form-Endpoints, Speed-Check-Proxy) und Next-internals
         // ausschließen — keine User-relevanten Inhalte, kein SEO-Wert.
-        disallow: ["/api/", "/_next/"],
+        disallow: ["/api/", "/_next/", "/admin"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

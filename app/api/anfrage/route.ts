@@ -5,6 +5,7 @@ import {
   LeadDeliveryError,
   type LeadKind,
 } from "@/lib/lead-mail";
+import { recordDelivery, saveLead } from "@/lib/leads-store";
 
 /**
  * POST /api/anfrage — nimmt Anfrage-, Audit- und Termin-Formulare
@@ -134,17 +135,32 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  const lead = { kind, subject, fields, replyTo };
+
+  // Erst speichern, dann mailen: Scheitert die Mail, ist die Anfrage
+  // trotzdem im Admin-Bereich (/admin) und geht nicht verloren.
+  const leadId = await saveLead(lead);
+
   try {
-    const via = await deliverLead({ kind, subject, fields, replyTo });
-    console.info("[anfrage] zugestellt", { kind, via });
+    const via = await deliverLead(lead);
+    console.info("[anfrage] zugestellt", { kind, via, gespeichert: Boolean(leadId) });
+    if (leadId) await recordDelivery(leadId, { via });
     return NextResponse.json({ ok: true });
   } catch (err) {
     const reason = err instanceof LeadDeliveryError ? err.reason : "network";
+    const message = err instanceof Error ? err.message : String(err);
     console.error("[anfrage] Zustellung fehlgeschlagen", {
       kind,
       reason,
-      message: err instanceof Error ? err.message : String(err),
+      message,
+      gespeichert: Boolean(leadId),
     });
+    if (leadId) {
+      await recordDelivery(leadId, { error: `${reason}: ${message}` });
+      // Gespeichert ist gespeichert — für den Besucher ist die
+      // Anfrage angekommen, sie steht im Admin-Bereich.
+      return NextResponse.json({ ok: true });
+    }
     return fail(
       reason === "not_configured" ? 503 : 502,
       `Ihre Nachricht konnte gerade nicht zugestellt werden. ${FALLBACK_HINT}`,
