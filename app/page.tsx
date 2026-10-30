@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MessageSquare, Coffee, Rocket, Send } from "lucide-react";
+import { ArrowRight, Send } from "lucide-react";
 
-import { BranchenMarquee } from "@/components/marketing/branchen-marquee";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { Depth3D } from "@/components/marketing/depth-3d";
-import { DreiSachen } from "@/components/marketing/drei-sachen";
-import { HamburgMap } from "@/components/marketing/hamburg-map";
-import { HamburgWetter } from "@/components/marketing/hamburg-wetter";
-import { LayeredStack } from "@/components/marketing/layered-stack";
-import { ExamplesGallery } from "@/components/marketing/examples-gallery";
 import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { AtelierBrief } from "@/components/marketing/atelier-brief";
-import { AtelierSuite } from "@/components/marketing/atelier-suite";
 import { Beispiele } from "@/components/marketing/beispiele";
+import {
+  AblaufKompakt,
+  Einblicke,
+  FaktenLeiste,
+  Voranbringen,
+} from "@/components/marketing/home-sections";
 import { AtelierTagebuch } from "@/components/marketing/atelier-tagebuch";
-import { SitaloSignatur } from "@/components/marketing/sitalo-signatur";
 import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
-import { ImAtelier } from "@/components/marketing/im-atelier";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
 import { SiegelIntro } from "@/components/marketing/siegel-intro";
@@ -31,12 +27,9 @@ import {
   HandUnderline,
   EditorialStar,
 } from "@/components/marketing/ornaments";
-import { Promises } from "@/components/marketing/promises";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
 import { AVAILABILITY } from "@/lib/availability";
 import { getPaketBySlug } from "@/lib/pakete-data";
-import { WhatWeDontDo } from "@/components/marketing/what-we-dont-do";
-import { WhyWebsite } from "@/components/marketing/why-website";
 
 export const metadata: Metadata = {
   // Absoluter Titel — sonst hängt das Layout-Template noch ein
@@ -61,27 +54,6 @@ export const metadata: Metadata = {
     // Bild wird automatisch aus app/opengraph-image.tsx (twitter-image-Variante) übernommen.
   },
 };
-
-const STEPS = [
-  {
-    n: "01",
-    icon: MessageSquare,
-    title: "Sie schreiben uns.",
-    body: "Drei Felder im Formular, fertig. Wir melden uns innerhalb von 24 Stunden — persönlich, kostenlos, ohne Verkaufsdruck.",
-  },
-  {
-    n: "02",
-    icon: Coffee,
-    title: "Kurzer Austausch.",
-    body: "15 Minuten am Telefon oder bei einem Kaffee in Hamburg. Sie erzählen, was Sie brauchen — wir hören zu und schlagen vor.",
-  },
-  {
-    n: "03",
-    icon: Rocket,
-    title: "48 Stunden später live.",
-    body: "Wir bauen, Sie schauen drüber, wir gehen online. Danach bleiben wir Ihr Ansprechpartner — kein Ticket, keine Hotline.",
-  },
-];
 
 /**
  * Homepage-Pakete: bewusst KURATIERTE Variante (kurze description,
@@ -187,62 +159,28 @@ export default function HomePage() {
       <SiegelIntro />
       <MarketingHeader />
       <main id="main" tabIndex={-1} className="flex-1">
+        {/* Eine Aufgabe pro Sektion, ein Weg zur Anfrage. Ausführliches
+            (Haltung, Grenzen, Werkzeuge, Stadtteile, Atelier-Notizen)
+            steht auf den Unterseiten /atelier, /erreichbarkeit,
+            /standorte, /jetzt — die Startseite verlinkt dorthin. */}
         <Hero />
+        <FaktenLeiste />
         <RevealOnScroll>
-          <WhyWebsite />
+          <Einblicke />
         </RevealOnScroll>
-        <RevealOnScroll>
-          <PersonalNote />
-        </RevealOnScroll>
-        <BranchenMarquee />
-        <RevealOnScroll>
-          <ExamplesGallery />
-        </RevealOnScroll>
-        {/* Beispiele aus echten Projekten — konkrete Resultate
-            (Branche + Stadtteil + Zahl) als Brücke zwischen
-            „wir sagen es ist gut" und „echtem Case Study mit Namen". */}
+        {/* Echte Ergebnisse (Branche + Stadtteil + Zahl) — der
+            Vertrauensbeleg direkt nach den Arbeitsproben. */}
         <RevealOnScroll>
           <Beispiele />
         </RevealOnScroll>
-        {/* Atelier-Suite — fünf interaktive Werkzeuge im Magazin-
-            Spread. Macht sichtbar, dass die ganze Tool-Familie
-            (Speed-Check, Quiz, Rechner, Audit, Termin) existiert,
-            statt sie hinter der Navigation zu vergraben. */}
         <RevealOnScroll>
-          <AtelierSuite />
-        </RevealOnScroll>
-        {/* Konkretisiert das „Sie schicken drei Sachen"-Versprechen
-            visuell — Eingaben links, Ergebnis rechts. */}
-        <RevealOnScroll>
-          <DreiSachen />
+          <Voranbringen />
         </RevealOnScroll>
         <RevealOnScroll>
-          <Steps />
-        </RevealOnScroll>
-        <RevealOnScroll>
-          <Promises />
-        </RevealOnScroll>
-        {/* „Was wir NICHT machen" — hanseatische Anti-Versprechen-
-            Sektion. Baut Vertrauen, indem sie Grenzen offenlegt,
-            statt eine weitere „wir können alles"-Liste zu sein. */}
-        <RevealOnScroll>
-          <WhatWeDontDo />
+          <AblaufKompakt />
         </RevealOnScroll>
         <RevealOnScroll>
           <Pricing />
-        </RevealOnScroll>
-        {/* Hamburg-Karte — die acht Stadtteile als räumlicher
-            Identitätsanker vor den Closing-Sektionen. Echte
-            Tisch-Karte (Depth3D), die mit der Maus kippt. Macht
-            das „aus Hamburg" greifbar statt rhetorisch. */}
-        <RevealOnScroll>
-          <HamburgKarte />
-        </RevealOnScroll>
-        {/* „Aus dem Atelier" — kleine Aktivitäts-Signal-Sektion direkt
-            vor FAQ. Letzte Bestätigung „hier ist Leben" vor den
-            Closing-Sektionen. */}
-        <RevealOnScroll>
-          <ImAtelier />
         </RevealOnScroll>
         <RevealOnScroll>
           <Faq />
@@ -250,15 +188,6 @@ export default function HomePage() {
         <RevealOnScroll>
           <FinalCta />
         </RevealOnScroll>
-        {/* Handgezeichnete Signatur am Ende des Lese-Wegs — wie
-            die Unterschrift unter einem Brief. Zeichnet sich beim
-            Hereinscrollen Strich für Strich. */}
-        <section
-          aria-label="Sitalo-Signatur"
-          className="bg-background border-border/40 border-t py-16 sm:py-20"
-        >
-          <SitaloSignatur caption="— Aus dem Atelier · Hamburg" />
-        </section>
       </main>
       <AtelierBrief />
       <AtelierTagebuch />
@@ -416,221 +345,6 @@ function Hero() {
 }
 
 /* ============================================================
- * PersonalNote — full-bleed editorial pull-quote, dark backdrop
- * ============================================================ */
-function PersonalNote() {
-  return (
-    <section className="bg-foreground text-background relative overflow-hidden">
-      {/* Subtile Espresso-Textur als Background-Overlay — minimal
-          opacity, mixed mit Soft-Light. Lässt den dunklen Block
-          nicht mehr wie eine Tailwind-Solid-Fläche aussehen,
-          sondern wie bedrucktes Papier. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-soft-light"
-        style={{
-          backgroundImage: "url(/images/texture-espresso.webp)",
-          backgroundSize: "640px auto",
-          backgroundRepeat: "repeat",
-        }}
-      />
-      {/* Mehrere Halos für mehr atmosphärische Tiefe */}
-      <div
-        aria-hidden="true"
-        className="bg-gold/20 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
-      <div
-        aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute bottom-0 left-[-10%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
-      {/* Cursor-aware Gold-Halo — folgt der Maus über dem dunklen
-          Block. Setzt die Brand-Atmosphäre fort und gibt der
-          ansonsten ruhigen Quote-Sektion Leben auf Desktop. */}
-      <CursorSpotlight />
-      {/* Dezente vertikale Linien als Editorial-Marker */}
-      <div
-        aria-hidden="true"
-        className="bg-background/10 pointer-events-none absolute left-6 top-0 hidden h-full w-px sm:block"
-      />
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
-        <div className="flex items-center gap-3">
-          <span
-            className="bg-gold/60 gold-pulse inline-block h-1 w-8"
-            aria-hidden="true"
-          />
-          <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
-            Im Klartext
-          </p>
-        </div>
-        <blockquote className="relative mt-10 max-w-4xl">
-          <span
-            aria-hidden="true"
-            className="drop-cap-3d drop-cap-3d-gold serif text-gold/40 absolute -top-12 -left-6 text-[10rem] leading-none"
-          >
-            „
-          </span>
-          <p className="serif text-[1.7rem] font-normal leading-[1.25] tracking-[-0.015em] sm:text-4xl lg:text-[3.25rem] lg:leading-[1.12]">
-            Sie arbeiten gut.{" "}
-            <span className="serif-italic text-background/75">
-              Ihre Website
-            </span>{" "}
-            verschweigt das.
-          </p>
-        </blockquote>
-        <div className="mt-12 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-          <div className="space-y-6">
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              So läuft das heute. Jemand googelt „Friseur um die
-              Ecke", vergleicht zwei Sekunden auf dem Handy, geht
-              zum nächsten mit der besseren Seite. Nicht zum
-              nächsten mit der besseren Arbeit. Ärgert uns mehr
-              als Sie.
-            </p>
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Sie müssen kein Marketing-Mensch werden. Sie brauchen
-              eine Seite, die zeigt, was Sie machen. Schnell, klar,
-              auf dem Handy lesbar. Mehr ist es nicht.
-            </p>
-            <p className="text-background/85 text-[15px] leading-relaxed sm:text-[17px]">
-              Genau das bauen wir. Logo, ein paar Bilder, ein paar
-              Sätze — schicken Sie uns. Übermorgen ist die Seite
-              online. Sieht aus wie etwas, das woanders 5.000 € kostet.
-            </p>
-          </div>
-          <Depth3D className="relative aspect-[4/3]" maxTilt={10}>
-            <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-white/10">
-              <Image
-                src="/images/workspace-macbook.webp"
-                alt="Arbeitsplatz mit MacBook, Notizbuch und Espresso — warmes Schreibtischlicht."
-                fill
-                sizes="(min-width: 1024px) 480px, 100vw"
-                className="object-cover"
-              />
-            </div>
-          </Depth3D>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ============================================================
- * Steps — Editorial-Spread mit übergroßen Numeralen, jede Stufe
- * als eigene Zeile mit alternierender Ausrichtung. Statt 3-Col-
- * Timeline ein vertikaler Lesefluss, der Print-DNA hat.
- * ============================================================ */
-function Steps() {
-  return (
-    <section
-      id="ablauf"
-      className="border-border/40 relative overflow-hidden border-t border-b scroll-mt-20"
-    >
-      <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
-        {/* Bewusst keine Eyebrow-Zeile — Steps soll ohne den gleichen
-            Auftakt-Beat starten, den jede andere Sektion hat. Rechts
-            der 3D-Karteikartenstapel als räumliche Eröffnung der
-            Etappen: drei Schichten, die beim Hover auffächern. */}
-        <div className="grid items-center gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-          <div>
-            <h2 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-              Vom „Hallo"
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                zur Live-Seite — in 48 Stunden.
-              </span>
-            </h2>
-            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-              Nach jedem Schritt sehen Sie was. Kein PowerPoint-
-              Status, kein Jira-Ticket. Einfach die Seite, wie sie
-              wird.
-            </p>
-          </div>
-          <div className="relative">
-            <LayeredStack />
-            <p className="text-muted-foreground mt-6 text-center font-mono text-[10px] uppercase tracking-[0.28em]">
-              <span className="hidden sm:inline">
-                Drei Schichten · auffächern mit der Maus
-              </span>
-              <span className="sm:hidden">Drei Schichten · Brief, Skizze, Live</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Drei Stufen als alternierende Magazin-Zeilen.
-            Bewusst kein 3-Spalten-Grid mit Timeline-Linie — das ist
-            die typische Standard-„Process"-Sektion auf AI-Templates.
-            Stattdessen vertikaler Lesefluss mit übergroßen Numeralen. */}
-        <ol className="etappen-stage mt-20 space-y-16 sm:mt-24 sm:space-y-20 lg:space-y-24">
-          {STEPS.map(({ n, icon: Icon, title, body }, i) => {
-            const flip = i === 1; // mittlere Stufe gespiegelt
-            return (
-              <li
-                key={n}
-                className="etappe-row group relative grid items-start gap-6 sm:grid-cols-[auto_1fr] sm:gap-10 lg:gap-14"
-              >
-                {/* Numeral-Spalte links — riesiges Serif, dezent.
-                    Beim Row-Hover hebt sich das Numeral um translateZ
-                    nach vorn, der Tinten-Schatten vertieft sich. */}
-                <div className={flip ? "sm:order-2 sm:text-right" : ""}>
-                  <span className="etappe-numeral drop-cap-3d serif text-ink-petrol/35 block text-[6rem] font-normal leading-[0.85] tracking-[-0.05em] sm:text-[8rem] lg:text-[10rem]">
-                    {n}
-                  </span>
-                </div>
-                {/* Text + Icon */}
-                <div
-                  className={
-                    flip
-                      ? "sm:order-1 sm:pr-6 sm:text-right"
-                      : "sm:pl-2"
-                  }
-                >
-                  <div
-                    className={
-                      flip
-                        ? "flex items-center gap-3 sm:justify-end"
-                        : "flex items-center gap-3"
-                    }
-                  >
-                    <span className="etappe-icon bg-foreground/[0.04] text-foreground/80 inline-flex h-10 w-10 items-center justify-center rounded-xl">
-                      <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
-                    </span>
-                    <span className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">
-                      Etappe · {n}
-                    </span>
-                  </div>
-                  <h3 className="serif text-foreground mt-5 text-balance text-3xl font-normal leading-[1.15] tracking-[-0.02em] sm:text-4xl lg:text-[2.75rem]">
-                    {title}
-                  </h3>
-                  <p className="text-foreground/80 mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-                    {body}
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
-
-        <div className="mt-20 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          <Link
-            href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-          >
-            Jetzt Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link
-            href="/ablauf"
-            className="text-muted-foreground hover:text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-4 hover:underline"
-          >
-            Ablauf im Detail
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ============================================================
  * Pricing — asymmetrischer Magazin-Spread. Business als „Centerfold",
  * Starter + Premium als kleinere flankierende Editorial-Mentions.
  * Bewusst kein gleichmäßiges 3-Karten-Grid (das ist genau das
@@ -678,13 +392,15 @@ function Pricing() {
           {/* Kapazitäts-Anker — kleiner Hanseatischer Scarcity-Hinweis
               ohne erfundene Zahlen. „Ein paar" statt „X Slots" lässt
               die Sache wahr, ohne falsche Präzision vorzutäuschen. */}
-          <p className="text-foreground/75 mt-6 inline-flex flex-wrap items-center gap-2 text-[13.5px]">
+          {/* Punkt + Fließtext statt flex-wrap: sonst bricht der ganze
+              Satz als Block unter „Oktober:" um. */}
+          <p className="text-foreground/75 mt-6 flex items-baseline gap-2 text-[13.5px] leading-relaxed">
             <span
               aria-hidden="true"
-              className="bg-gold/80 inline-block h-1.5 w-1.5 rounded-full"
+              className="bg-gold/80 inline-block h-1.5 w-1.5 shrink-0 -translate-y-0.5 rounded-full"
             />
-            <span className="font-medium">{currentMonth}:</span>
             <span>
+              <span className="font-medium">{currentMonth}:</span>{" "}
               {slotsOpen
                 ? "noch ein paar Slots offen. Wer früh schreibt, sucht sich den Termin aus."
                 : `ausgebucht. Wir nehmen Anfragen für ${AVAILABILITY.nextMonth} entgegen — gleiche Konditionen.`}
@@ -895,73 +611,6 @@ function PricingCenterfold({
         </Link>
       </div>
     </div>
-  );
-}
-
-/* ============================================================
- * FAQ — quiet accordion, hairlines instead of cards
- * ============================================================ */
-/* ============================================================
- * HamburgKarte — räumlicher Identitätsanker direkt vor den
- * Closing-Sektionen. Acht Stadtteile als Tisch-Karte (Depth3D),
- * klickbare Pins führen zur jeweiligen Standort-Seite.
- * ============================================================ */
-function HamburgKarte() {
-  return (
-    <section
-      id="hamburg"
-      className="border-border/40 relative overflow-hidden border-t scroll-mt-20"
-    >
-      <div
-        aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -top-32 -right-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
-      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
-        <div className="grid items-center gap-16 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
-          <div>
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Wo wir sitzen
-            </p>
-            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-              Acht Stadtteile,
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                eine Stadt, die wir kennen.
-              </span>
-            </h2>
-            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-              Wir wohnen und arbeiten hier. Acht Stadtteile, in
-              denen wir regelmäßig sind — und für die wir wissen,
-              was online funktioniert und was nicht.
-            </p>
-            <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[14.5px] leading-relaxed">
-              Jeder Pin führt zur Stadtteil-Seite mit den
-              Suchbegriffen und Branchen, für die wir dort bauen.
-            </p>
-            <Link
-              href="/standorte"
-              className="text-foreground mt-8 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] hover:underline"
-            >
-              Alle Stadtteile ansehen
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            {/* Live-Wetter-Karte als Locality-Beweis — Open-Meteo,
-                kein API-Key, 1 Stunde server-gecacht. Bei Netzwerk-
-                Fehlern rendert eine ruhige Fallback-Karte ohne Daten. */}
-            <div className="mt-10 max-w-sm">
-              <HamburgWetter />
-            </div>
-          </div>
-          <Depth3D maxTilt={9}>
-            <HamburgMap />
-          </Depth3D>
-        </div>
-      </div>
-    </section>
   );
 }
 
