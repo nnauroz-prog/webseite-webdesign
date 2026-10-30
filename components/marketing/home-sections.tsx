@@ -63,21 +63,18 @@ export function Voranbringen() {
     {
       icon: Globe,
       title: "Eine neue Website",
-      text: "Für Betriebe ohne Seite oder mit einer, die nicht mehr passt.",
       meta: starter ? starter.setup : "",
       href: "/pakete",
     },
     {
       icon: Wrench,
       title: "Die bestehende Seite pflegen",
-      text: "Hosting, Updates, Änderungen — auch wenn wir sie nicht gebaut haben.",
       meta: "ab 49 € / Monat",
       href: "/wartung",
     },
     {
       icon: Search,
       title: "Bei Google gefunden werden",
-      text: "Wir prüfen Ihre Seite und schicken drei bis fünf konkrete Punkte.",
       meta: "kostenlos, in 48 h",
       href: "/audit",
     },
@@ -85,9 +82,9 @@ export function Voranbringen() {
   return (
     <section className={SECTION}>
       <div className={INNER}>
-        <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Was möchten Sie voranbringen?</h2>
+        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Was möchten Sie voranbringen?</h2>
         <ul className="mt-8 grid gap-3 md:mt-10 md:grid-cols-3 md:gap-4">
-          {items.map(({ icon: Icon, title, text, meta, href }) => (
+          {items.map(({ icon: Icon, title, meta, href }) => (
             <li key={title}>
               <SpotlightLink
                 href={href}
@@ -96,7 +93,6 @@ export function Voranbringen() {
                 <Icon className="text-gold h-6 w-6 shrink-0" aria-hidden="true" />
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-semibold tracking-tight md:mt-1 md:text-lg">{title}</span>
-                  <span className="text-muted-foreground mt-2 hidden text-[14.5px] leading-relaxed md:block">{text}</span>
                   <span className="text-foreground/70 mt-1 block font-mono text-[11px] uppercase tracking-[0.18em] md:mt-4">
                     {meta}
                   </span>
@@ -129,7 +125,7 @@ export function AblaufKompakt() {
     <section className={SECTION}>
       <div className={INNER}>
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">So läuft es ab.</h2>
+          <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">So läuft es ab.</h2>
           <Link
             href="/ablauf"
             className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
