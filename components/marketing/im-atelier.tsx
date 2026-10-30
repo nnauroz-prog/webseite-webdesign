@@ -25,7 +25,7 @@ import Link from "next/link";
 
 import { DrawnArrow } from "@/components/marketing/ornaments";
 import { TiltCard } from "@/components/marketing/tilt-card";
-import { ATELIER_NOTES } from "@/lib/atelier-notes";
+import { ATELIER_NOTES, atelierStandMonth } from "@/lib/atelier-notes";
 import { formatDate, JOURNAL_POSTS } from "@/lib/journal-data";
 
 export function ImAtelier() {
@@ -38,25 +38,9 @@ export function ImAtelier() {
   // neuester zuerst.
   const latestPost = JOURNAL_POSTS[0];
 
-  // Aktueller Monat als Eyebrow-Anker — Server-rendered (parallel
-  // zur Pricing-Kapazitäts-Zeile, gleiche Logik).
-  const monthLabels = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ];
-  const now = new Date();
-  const currentMonth = monthLabels[now.getMonth()];
-  const currentYear = now.getFullYear();
+  // Monat des Notizen-Stands, nicht der aktuelle Monat — sonst
+  // datiert die Überschrift alte Einträge auf heute.
+  const standMonth = atelierStandMonth();
 
   return (
     <section className="border-border/40 relative overflow-hidden border-t">
@@ -73,10 +57,10 @@ export function ImAtelier() {
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
               />
-              Aus dem Atelier · {currentMonth} {currentYear}
+              Aus dem Atelier · {standMonth}
             </p>
             <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl">
-              Was wir gerade bauen.
+              Was zuletzt auf der Werkbank lag.
             </h2>
             <p className="text-muted-foreground mt-6 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
               Wir nehmen wenige Projekte gleichzeitig an, damit wir
