@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PAKETE } from "@/lib/pakete-data";
+import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 import {
   INQUIRY_TIMEFRAMES,
@@ -87,12 +88,10 @@ export function InquiryForm({
   initialPackage,
   initialIndustry,
   initialMessage,
-  formspreeId,
 }: {
   initialPackage?: InquiryPackage;
   initialIndustry?: string;
   initialMessage?: string;
-  formspreeId?: string;
 }) {
   const validIndustry =
     initialIndustry &&
@@ -132,21 +131,6 @@ export function InquiryForm({
     if (status.kind === "submitting" || status.kind === "success") return;
     if (!canSubmit) return;
 
-    if (!formspreeId) {
-      setStatus({
-        kind: "error",
-        message:
-          "Anfrage-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder direkt an info@sitalo.de schreiben.",
-      });
-      return;
-    }
-
-    // Honeypot — silent success für Bots.
-    if (data.websiteUrl.trim() !== "") {
-      setStatus({ kind: "success" });
-      return;
-    }
-
     setStatus({ kind: "submitting" });
 
     const industryLabel = INDUSTRY_OPTIONS.find(
@@ -159,58 +143,34 @@ export function InquiryForm({
       ? TIMEFRAME_LABELS[data.timeframe]
       : undefined;
 
-    const payload: Record<string, unknown> = {
-      Name: data.name,
-      "E-Mail": data.email,
-      Nachricht: data.message,
-      _subject: `Neue Anfrage von ${data.name}${
+    const result = await submitLead({
+      kind: "anfrage",
+      subject: `Neue Anfrage von ${data.name}${
         data.company ? ` (${data.company})` : ""
       }`,
-      _replyto: data.email,
-    };
-    if (data.company) payload.Firma = data.company;
-    if (data.phone) payload.Telefon = data.phone;
-    if (industryLabel) payload.Branche = industryLabel;
-    if (packageLabel) payload["Paket-Wunsch"] = packageLabel;
-    if (timeframeLabel) payload.Wunschzeitraum = timeframeLabel;
+      replyTo: data.email,
+      hp: data.websiteUrl,
+      fields: [
+        ["Name", data.name],
+        ["E-Mail", data.email],
+        ["Telefon", data.phone],
+        ["Firma", data.company],
+        ["Branche", industryLabel],
+        ["Paket-Wunsch", packageLabel],
+        ["Wunschzeitraum", timeframeLabel],
+        ["Nachricht", data.message],
+      ],
+    });
 
-    try {
-      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+    if (result.ok) {
+      setStatus({ kind: "success" });
+      track("Anfrage", {
+        branche: industryLabel ?? "(keine)",
+        paket: packageLabel ?? "(keins)",
+        zeitrahmen: timeframeLabel ?? "(offen)",
       });
-      if (response.ok) {
-        setStatus({ kind: "success" });
-        track("Anfrage", {
-          branche: industryLabel ?? "(keine)",
-          paket: packageLabel ?? "(keins)",
-          zeitrahmen: timeframeLabel ?? "(offen)",
-        });
-      } else {
-        // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
-        // und auf 200 Zeichen kürzen, damit reflektierter XSS oder
-        // ellenlange Fehler-Texte nicht ins UI laufen können.
-        const text = await response.text().catch(() => "");
-        const safeText = text.replace(/<[^>]*>/g, "").trim().slice(0, 200);
-        setStatus({
-          kind: "error",
-          message:
-            safeText ||
-            "Anfrage konnte nicht gesendet werden. Bitte erneut versuchen — oder schreiben Sie uns direkt an info@sitalo.de.",
-        });
-      }
-    } catch (err) {
-      setStatus({
-        kind: "error",
-        message:
-          err instanceof Error
-            ? `Netzwerkfehler: ${err.message}`
-            : "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.",
-      });
+    } else {
+      setStatus({ kind: "error", message: result.error });
     }
   }
 
@@ -239,10 +199,13 @@ export function InquiryForm({
         aria-hidden="true"
         className="pointer-events-none absolute left-[-9999px] h-0 w-0 overflow-hidden"
       >
-        <label htmlFor="inq-website_url">Website (bitte leer lassen)</label>
+        {/* Bewusst kein Name/Label mit „Website", „URL" o. Ä. — darauf
+            springen Browser-Autofill und Passwortmanager an, und ein
+            echter Besucher würde unbemerkt als Bot aussortiert. */}
+        <label htmlFor="inq-hp">Bitte leer lassen</label>
         <input
-          id="inq-website_url"
-          name="website_url"
+          id="inq-hp"
+          name="sitalo_hp_field"
           type="text"
           tabIndex={-1}
           autoComplete="off"

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 
 /**
@@ -19,9 +20,8 @@ import { track } from "@/lib/track";
  * Anfrageformular, weil hier nur ein einzelner Mehrwert versprochen
  * wird (ehrlicher Audit innerhalb 48 h), nicht ein ganzes Projekt.
  *
- * Submit-Backend: gleiches Formspree-Setup wie InquiryForm, aber mit
- * eigenem `_subject`, damit die Mails beim Auftraggeber sauber zu
- * filtern sind („Audit-Anfrage").
+ * Versand über /api/anfrage (siehe lib/lead-mail.ts), eigener
+ * Betreff „Audit-Anfrage …" zum Filtern im Postfach.
  */
 
 type FormData = {
@@ -40,7 +40,7 @@ type Status =
   | { kind: "success" }
   | { kind: "error"; message: string };
 
-export function AuditForm({ formspreeId }: { formspreeId?: string }) {
+export function AuditForm() {
   const [data, setData] = useState<FormData>({
     websiteUrl: "",
     name: "",
@@ -74,67 +74,30 @@ export function AuditForm({ formspreeId }: { formspreeId?: string }) {
     if (status.kind === "submitting" || status.kind === "success") return;
     if (!canSubmit) return;
 
-    if (!formspreeId) {
-      setStatus({
-        kind: "error",
-        message:
-          "Audit-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder direkt an info@sitalo.de schreiben.",
-      });
-      return;
-    }
-
-    if (data.honeypot.trim() !== "") {
-      setStatus({ kind: "success" });
-      return;
-    }
-
     setStatus({ kind: "submitting" });
 
     const cleanedUrl = normalizedUrl.startsWith("http")
       ? normalizedUrl
       : `https://${normalizedUrl}`;
 
-    const payload: Record<string, unknown> = {
-      "Audit-URL": cleanedUrl,
-      Name: data.name,
-      "E-Mail": data.email,
-      _subject: `Audit-Anfrage von ${data.name} für ${cleanedUrl}`,
-      _replyto: data.email,
-    };
-    if (data.note.trim()) payload.Hinweis = data.note.trim();
+    const result = await submitLead({
+      kind: "audit",
+      subject: `Audit-Anfrage von ${data.name} für ${cleanedUrl}`,
+      replyTo: data.email,
+      hp: data.honeypot,
+      fields: [
+        ["Audit-URL", cleanedUrl],
+        ["Name", data.name],
+        ["E-Mail", data.email],
+        ["Hinweis", data.note],
+      ],
+    });
 
-    try {
-      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      if (response.ok) {
-        setStatus({ kind: "success" });
-        track("Audit");
-      } else {
-        // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
-        // und auf 200 Zeichen kürzen.
-        const text = await response.text().catch(() => "");
-        const safeText = text.replace(/<[^>]*>/g, "").trim().slice(0, 200);
-        setStatus({
-          kind: "error",
-          message:
-            safeText ||
-            "Audit-Anfrage fehlgeschlagen. Bitte erneut versuchen oder direkt an info@sitalo.de schreiben.",
-        });
-      }
-    } catch (err) {
-      setStatus({
-        kind: "error",
-        message:
-          err instanceof Error
-            ? `Netzwerkfehler: ${err.message}`
-            : "Audit konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.",
-      });
+    if (result.ok) {
+      setStatus({ kind: "success" });
+      track("Audit");
+    } else {
+      setStatus({ kind: "error", message: result.error });
     }
   }
 

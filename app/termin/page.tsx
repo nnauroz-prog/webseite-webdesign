@@ -28,7 +28,6 @@ export const metadata: Metadata = {
  * Kontakt.
  */
 export default function TerminPage() {
-  const formspreeId = process.env.FORMSPREE_FORM_ID?.trim() || undefined;
 
   // Service-Schema für das 30-Min-Erstgespräch + Breadcrumb.
   // ReservationService statt Reservation — wir bieten die Möglichkeit
@@ -111,7 +110,7 @@ export default function TerminPage() {
             </div>
 
             <div className="mt-12 sm:mt-16">
-              <TerminBooking formspreeId={formspreeId} />
+              <TerminBooking />
             </div>
           </div>
         </section>

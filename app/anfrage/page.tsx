@@ -46,7 +46,6 @@ export default async function AnfragePage({
   const initialPackage = resolveInitialPackage(params.paket);
   const initialMessage = params.vorhaben?.toString().trim().slice(0, 500);
   const initialIndustry = params.branche?.toString().trim().slice(0, 40);
-  const formspreeId = process.env.FORMSPREE_FORM_ID?.trim() || undefined;
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -86,7 +85,7 @@ export default async function AnfragePage({
                 initialPackage={initialPackage}
                 initialIndustry={initialIndustry}
                 initialMessage={initialMessage}
-                formspreeId={formspreeId}
+               
               />
             </div>
 
