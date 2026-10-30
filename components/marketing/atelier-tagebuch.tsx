@@ -5,6 +5,7 @@ import { BookOpen, X } from "lucide-react";
 
 import { ATELIER_NOTES } from "@/lib/atelier-notes";
 import { useModal } from "@/lib/use-modal";
+import { useScrolledPast } from "@/lib/use-scrolled-past";
 import { cn } from "@/lib/utils";
 
 /**
@@ -36,6 +37,8 @@ export function AtelierTagebuch() {
   // in lib/use-modal, gemeinsam mit AtelierBrief. Vorher dreimal
   // dupliziert; jetzt einmalig.
   const { dialogRef } = useModal(open, () => setOpen(false));
+  // Wie AtelierBrief erst nach dem Hero — sonst über dem Hero-CTA.
+  const shown = useScrolledPast(600);
 
   return (
     <>
@@ -46,8 +49,11 @@ export function AtelierTagebuch() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Werkstatt-Tagebuch öffnen"
+        aria-hidden={!shown}
+        tabIndex={shown ? 0 : -1}
         className={cn(
           "atelier-tagebuch-trigger fixed bottom-6 left-[5.25rem] z-[60] hidden h-12 w-12",
+          shown ? "opacity-100" : "pointer-events-none opacity-0",
           "items-center justify-center rounded-full",
           "border border-foreground/15 bg-card/90 text-foreground/80",
           "shadow-[0_6px_20px_-6px_rgb(35_31_27_/_0.18)]",

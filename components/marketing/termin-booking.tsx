@@ -16,6 +16,7 @@ import {
   SLOT_DURATION_MIN,
   SLOT_TIMES,
 } from "@/lib/calendar-availability";
+import { submitLead } from "@/lib/submit-lead";
 import { cn } from "@/lib/utils";
 
 /**
@@ -26,7 +27,7 @@ import { cn } from "@/lib/utils";
  *   2. Slot wählen (30-Min-Raster, 10–17 Uhr ohne Mittag)
  *   3. Kontakt + Notiz + Absenden
  *
- * Backend: Formspree (gleiche Form-ID wie InquiryForm + AuditForm).
+ * Versand über /api/anfrage (siehe lib/lead-mail.ts), wie InquiryForm + AuditForm.
  * Eigenes `_subject: "Terminbuchung von X für Y"` damit beim
  * Auftraggeber sauber gefiltert werden kann.
  *
@@ -41,7 +42,7 @@ type Status =
   | { kind: "success"; slot: string; iso: string }
   | { kind: "error"; message: string };
 
-export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
+export function TerminBooking() {
   const [days, setDays] = useState<DayCell[]>(() => nextWorkdays(14));
   // Das vorgerenderte HTML kann bis zu eine Stunde alt sein (ISR).
   // Nach dem Mount mit der Uhr des Besuchers neu rechnen — als echtes
@@ -78,75 +79,28 @@ export function TerminBooking({ formspreeId }: { formspreeId?: string }) {
     if (status.kind === "submitting" || status.kind === "success") return;
     if (!canSubmit || !selectedDate || !selectedSlot) return;
 
-    if (!formspreeId) {
-      setStatus({
-        kind: "error",
-        message:
-          "Buchungs-Empfänger ist nicht konfiguriert. Bitte später erneut versuchen oder direkt an info@sitalo.de schreiben.",
-      });
-      return;
-    }
-
-    if (honeypot.trim() !== "") {
-      setStatus({
-        kind: "success",
-        slot: selectedSlot,
-        iso: selectedDate,
-      });
-      return;
-    }
-
     setStatus({ kind: "submitting" });
 
     const slotDescription = `${formatDateLong(selectedDate)} um ${selectedSlot} Uhr (${SLOT_DURATION_MIN} Min)`;
 
-    const payload: Record<string, unknown> = {
-      Name: name,
-      "E-Mail": email,
-      "Wunsch-Slot": slotDescription,
-      Datum: selectedDate,
-      Uhrzeit: selectedSlot,
-      _subject: `Terminbuchung von ${name} — ${selectedDate} ${selectedSlot}`,
-      _replyto: email,
-    };
-    if (phone.trim()) payload.Telefon = phone.trim();
-    if (note.trim()) payload.Notiz = note.trim();
+    const result = await submitLead({
+      kind: "termin",
+      subject: `Terminbuchung von ${name} — ${selectedDate} ${selectedSlot}`,
+      replyTo: email,
+      hp: honeypot,
+      fields: [
+        ["Wunsch-Slot", slotDescription],
+        ["Name", name],
+        ["E-Mail", email],
+        ["Telefon", phone],
+        ["Notiz", note],
+      ],
+    });
 
-    try {
-      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      if (response.ok) {
-        setStatus({
-          kind: "success",
-          slot: selectedSlot,
-          iso: selectedDate,
-        });
-      } else {
-        // Formspree-Antwort als Plain-Text behandeln: HTML-Tags strippen
-        // und auf 200 Zeichen kürzen (XSS-Schutz).
-        const text = await response.text().catch(() => "");
-        const safeText = text.replace(/<[^>]*>/g, "").trim().slice(0, 200);
-        setStatus({
-          kind: "error",
-          message:
-            safeText ||
-            "Termin-Buchung fehlgeschlagen. Bitte direkt anrufen: 0152 24437370.",
-        });
-      }
-    } catch (err) {
-      setStatus({
-        kind: "error",
-        message:
-          err instanceof Error
-            ? `Netzwerkfehler: ${err.message}`
-            : "Buchung konnte gerade nicht gesendet werden. Bitte versuchen Sie es erneut.",
-      });
+    if (result.ok) {
+      setStatus({ kind: "success", slot: selectedSlot, iso: selectedDate });
+    } else {
+      setStatus({ kind: "error", message: result.error });
     }
   }
 

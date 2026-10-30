@@ -33,9 +33,14 @@ export function nextSprechstunden(count = 3): SprechstundeTermin[] {
   let year = today.getFullYear();
   let month = today.getMonth();
 
+  // Am Sprechstunden-Tag selbst zählt der Termin nur bis zum Ende
+  // (18:30) als „nächster" — danach rückt der Folgemonat nach.
+  const todayIsOver = berlinMinutesNow() >= toMinutes(SPRECHSTUNDE_ENDE_HHMM);
+
   while (out.length < count) {
     const firstThursday = firstThursdayOf(year, month);
-    if (firstThursday >= today) {
+    const isToday = firstThursday.getTime() === today.getTime();
+    if (firstThursday > today || (isToday && !todayIsOver)) {
       out.push(toTermin(firstThursday));
     }
     month += 1;
@@ -61,6 +66,23 @@ function berlinToday(): Date {
   const m = parseInt(parts.find((p) => p.type === "month")!.value, 10);
   const d = parseInt(parts.find((p) => p.type === "day")!.value, 10);
   return new Date(y, m - 1, d);
+}
+
+function berlinMinutesNow(): number {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Berlin",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+  const h = parseInt(parts.find((p) => p.type === "hour")!.value, 10);
+  const m = parseInt(parts.find((p) => p.type === "minute")!.value, 10);
+  return h * 60 + m;
+}
+
+function toMinutes(hhmm: string): number {
+  const [h, m] = hhmm.split(":").map((n) => parseInt(n, 10));
+  return h * 60 + m;
 }
 
 function firstThursdayOf(year: number, monthIdx: number): Date {

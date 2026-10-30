@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 
 import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
 import { useModal } from "@/lib/use-modal";
+import { useScrolledPast } from "@/lib/use-scrolled-past";
 import { cn } from "@/lib/utils";
 
 /**
@@ -55,6 +56,9 @@ export function AtelierBrief() {
     typeof window === "undefined" ? "" : todayLabel(),
   );
   const { dialogRef } = useModal(open, () => setOpen(false));
+  // Erst nach dem Hero einblenden — auf 1280×900-Laptops lag der
+  // Button sonst direkt über „Website anfragen".
+  const shown = useScrolledPast(600);
 
   return (
     <>
@@ -65,8 +69,11 @@ export function AtelierBrief() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Brief vom Atelier öffnen"
+        aria-hidden={!shown}
+        tabIndex={shown ? 0 : -1}
         className={cn(
           "atelier-brief-trigger fixed bottom-6 left-6 z-[60] hidden h-12 w-12",
+          shown ? "opacity-100" : "pointer-events-none opacity-0",
           "items-center justify-center rounded-full",
           "border border-foreground/15 bg-card/90 text-foreground/80",
           "shadow-[0_6px_20px_-6px_rgb(35_31_27_/_0.18)]",

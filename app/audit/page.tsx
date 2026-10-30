@@ -28,7 +28,6 @@ export const metadata: Metadata = {
  * gestellt, hier wird zuerst Vertrauen aufgebaut.
  */
 export default function AuditPage() {
-  const formspreeId = process.env.FORMSPREE_FORM_ID?.trim() || undefined;
 
   // Service + BreadcrumbList JSON-LD — der kostenlose Mini-Audit ist
   // ein eigenständiger Service (free Lead-Magnet mit konkretem
@@ -100,7 +99,7 @@ export default function AuditPage() {
             </div>
 
             <div className="mx-auto mt-12 max-w-2xl">
-              <AuditForm formspreeId={formspreeId} />
+              <AuditForm />
             </div>
           </div>
         </section>

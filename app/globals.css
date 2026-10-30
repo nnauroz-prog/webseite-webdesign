@@ -613,6 +613,13 @@ html {
    Die Komponente schreibt --d3-rx/--d3-ry (Neigung) und
    --d3-sx/--d3-sy (Schattenwanderung) per pointermove. Auf Touch
    und reduced-motion bleibt alles auf den Ruhewerten → flach. */
+/* Höhe durchreichen: Wenn der Wrapper per aspect-[…] eine Höhe hat,
+   muss das Inner-Div sie übernehmen — sonst kollabieren Kinder mit
+   h-full (Bilder mit next/image fill) auf 0 px. Ohne feste Höhe am
+   Wrapper löst sich 100 % zu auto auf und ändert nichts. */
+.depth-3d-inner {
+  height: 100%;
+}
 @media (prefers-reduced-motion: no-preference) {
   .depth-3d {
     perspective: 1100px;
@@ -1165,22 +1172,36 @@ html {
     /* inline-block ist Voraussetzung dafür, dass der Hover-Lift
        weiter unten wirkt — inline-Spans kippen normalerweise nicht. */
     display: inline-block;
+    /* Feste Farbe statt currentColor: color ist unten transparent
+       gesetzt, currentColor wäre damit ebenfalls transparent und
+       vom Wort bliebe nur der Gold-Streifen. */
     background-image: linear-gradient(
       110deg,
-      currentColor 0%,
-      currentColor 38%,
+      var(--muted-foreground) 0%,
+      var(--muted-foreground) 38%,
       rgba(201, 162, 79, 0.95) 50%,
-      currentColor 62%,
-      currentColor 100%
+      var(--muted-foreground) 62%,
+      var(--muted-foreground) 100%
     );
     background-size: 200% 100%;
     background-position: 200% 0;
     background-repeat: no-repeat;
+    /* Grundfarbe unter dem Verlauf: Der Verlauf steht außerhalb des
+       Schimmer-Moments neben dem Wort (no-repeat) — ohne Grundfarbe
+       wäre das Wort dann leer. background-clip: text gilt auch hier. */
+    background-color: var(--muted-foreground);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    animation: hero-shine 6s ease-in-out infinite;
+    /* word-reveal mitlaufen lassen: die Hero-Wörter tragen zusätzlich
+       .reveal-word (opacity: 0 bis zur Animation). Eine einzelne
+       animation-Deklaration hier würde word-reveal überschreiben und
+       die Wörter dauerhaft unsichtbar lassen. */
+    animation:
+      word-reveal 720ms cubic-bezier(0.22, 1, 0.36, 1)
+        var(--word-delay, 0ms) both,
+      hero-shine 6s ease-in-out infinite;
     transition:
       transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
       filter 380ms cubic-bezier(0.22, 1, 0.36, 1);
