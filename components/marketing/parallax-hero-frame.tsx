@@ -27,8 +27,9 @@ export function ParallaxHeroFrame({
 }: {
   src: string;
   alt: string;
-  quote: string;
-  caption: string;
+  /** Ohne quote: nur das Bild, ohne Plakette und Zettel. */
+  quote?: string;
+  caption?: string;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -114,35 +115,39 @@ export function ParallaxHeroFrame({
 
         {/* Ebene 2: Wachssiegel-artige Atelier-Plakette, schwebt
             deutlich vor dem Bild, dreht selbst etwas stärker. */}
-        <div
-          className={cn(
-            "parallax-hero-seal",
-            "border-gold/50 bg-card/95 text-foreground absolute top-5 left-5 inline-flex items-center gap-3 rounded-full border px-4 py-2 backdrop-blur-md sm:top-7 sm:left-7",
-          )}
-        >
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1.5 w-1.5 rounded-full"
-          />
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em]">
-            Sitalo Atelier · MMXXVI
-          </span>
-        </div>
+        {quote ? (
+          <>
+            <div
+              className={cn(
+                "parallax-hero-seal",
+                "border-gold/50 bg-card/95 text-foreground absolute top-5 left-5 inline-flex items-center gap-3 rounded-full border px-4 py-2 backdrop-blur-md sm:top-7 sm:left-7",
+              )}
+            >
+              <span
+                aria-hidden="true"
+                className="bg-gold gold-pulse inline-block h-1.5 w-1.5 rounded-full"
+              />
+              <span className="font-mono text-[10px] tracking-[0.22em] uppercase">
+                Sitalo Atelier · MMXXVI
+              </span>
+            </div>
 
-        {/* Ebene 3: Notiz-Zettel mit Zitat, schwebt am stärksten
+            {/* Ebene 3: Notiz-Zettel mit Zitat, schwebt am stärksten
             vor dem Rest — wirkt wie ein angeheftetes Papier. */}
-        <figure className="parallax-hero-note absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
-          <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
-            {quote}
-          </blockquote>
-          <figcaption className="text-background/75 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-5"
-            />
-            {caption}
-          </figcaption>
-        </figure>
+            <figure className="parallax-hero-note absolute right-5 bottom-5 left-5 sm:right-7 sm:bottom-7 sm:left-7">
+              <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
+                {quote}
+              </blockquote>
+              <figcaption className="text-background/75 mt-3 inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.28em] uppercase">
+                <span
+                  aria-hidden="true"
+                  className="bg-gold gold-pulse inline-block h-1 w-5"
+                />
+                {caption}
+              </figcaption>
+            </figure>
+          </>
+        ) : null}
       </div>
     </div>
   );

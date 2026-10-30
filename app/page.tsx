@@ -5,7 +5,6 @@ import { ArrowRight, Send } from "lucide-react";
 import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
 import { Depth3D } from "@/components/marketing/depth-3d";
 import { AmbientTint } from "@/components/marketing/ambient-tint";
-import { AtelierBrief } from "@/components/marketing/atelier-brief";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
@@ -13,22 +12,16 @@ import {
   FaktenLeiste,
   Voranbringen,
 } from "@/components/marketing/home-sections";
-import { AtelierTagebuch } from "@/components/marketing/atelier-tagebuch";
-import { HamburgGreeting } from "@/components/marketing/hamburg-greeting";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
-import { SiegelIntro } from "@/components/marketing/siegel-intro";
-import { SwingTag } from "@/components/marketing/swing-tag";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
-  DoubleWave,
   HandUnderline,
   EditorialStar,
 } from "@/components/marketing/ornaments";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
-import { AVAILABILITY } from "@/lib/availability";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
@@ -156,7 +149,6 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
       />
       <AmbientTint />
-      <SiegelIntro />
       <MarketingHeader />
       <main id="main" tabIndex={-1} className="flex-1">
         {/* Eine Aufgabe pro Sektion, ein Weg zur Anfrage. Ausführliches
@@ -189,8 +181,6 @@ export default function HomePage() {
           <FinalCta />
         </RevealOnScroll>
       </main>
-      <AtelierBrief />
-      <AtelierTagebuch />
       <MarketingFooter />
     </div>
   );
@@ -200,25 +190,6 @@ export default function HomePage() {
  * Hero — editorial, oversized typography, image as canvas
  * ============================================================ */
 function Hero() {
-  // Editorial-Eyebrow mit aktuellem Monat ("MAI 2026 · HAMBURG").
-  // Wird zur Render-Zeit (Server) berechnet — kein Hydration-Mismatch.
-  const monthLabels = [
-    "JANUAR",
-    "FEBRUAR",
-    "MÄRZ",
-    "APRIL",
-    "MAI",
-    "JUNI",
-    "JULI",
-    "AUGUST",
-    "SEPTEMBER",
-    "OKTOBER",
-    "NOVEMBER",
-    "DEZEMBER",
-  ];
-  const now = new Date();
-  const issueDate = `${monthLabels[now.getMonth()]} ${now.getFullYear()}`;
-
   return (
     <section
       id="start"
@@ -237,32 +208,9 @@ function Hero() {
       <CursorSpotlight />
 
       <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
-        {/* Editorial-Kopfzeile: dünne Linie + Sperrsatz wie eine
-            Zeitschriften-Mastline. Setzt einen anderen Ton als ein
-            klassischer SaaS-Hero. Rechts: zeit-bewusste Begrüßung,
-            die nach Mount auf Hamburg-Lokalzeit umschwenkt. */}
-        <div className="reveal flex items-center justify-between gap-4 border-b border-border/40 pb-5 sm:pb-6">
-          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-            Sitalo · Webdesign · {issueDate}
-          </p>
-          <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-            <HamburgGreeting />
-          </p>
-        </div>
-
-        <div className="mt-10 grid items-end gap-10 sm:mt-14 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
-            {/* Staggered Reveal: jede Zeile fadet leicht versetzt rein —
-                wirkt wie ein bewusst gesetztes Layout, nicht wie ein
-                pop-in. Delays kumulieren über die CSS-Variable. */}
-            <p className="reveal text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Ein kleines Atelier in Hamburg
-            </p>
-            <h1 className="letterpress mt-6 text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
+            <h1 className="letterpress text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
               <WordReveal step={75} delay={120}>
                 {"Wir bauen "}
                 <span className="hero-shine serif-italic text-muted-foreground font-normal">
@@ -279,16 +227,8 @@ function Hero() {
               className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Logo, ein paar Bilder, ein paar Sätze — Rest machen
-              wir. Übermorgen ist die Seite online. Preise und
-              Stundensatz stehen auf der{" "}
-              <Link
-                href="/honorar"
-                className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
-              >
-                Honorar-Seite
-              </Link>{" "}
-              offen vorgerechnet.
+              Logo, ein paar Bilder, ein paar Sätze — den Rest machen
+              wir. Zum Festpreis, ab 499 €.
             </p>
             <div
               className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
@@ -309,18 +249,6 @@ function Hero() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
-            {/* Quiet Trust-Hint unter den CTAs — reduziert die
-                Hürde, ohne das Hero zu beladen. */}
-            <p
-              className="reveal text-muted-foreground/85 mt-5 inline-flex items-center gap-2 text-[13px]"
-              style={{ "--reveal-delay": "1300ms" } as React.CSSProperties}
-            >
-              <span
-                aria-hidden="true"
-                className="bg-ink-olive inline-block h-1 w-1 rounded-full"
-              />
-              Antwort meist noch am selben Tag — kostenlos, persönlich.
-            </p>
           </div>
 
           {/* Rechte Spalte: Workspace-Foto im echten 3D-Tiefenrahmen.
@@ -334,8 +262,6 @@ function Hero() {
             <ParallaxHeroFrame
               src="/images/workspace-macbook.webp"
               alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
-              quote={`„Wir bauen jede Seite, als wäre es unsere eigene."`}
-              caption="Sitalo Atelier · Hamburg"
             />
           </div>
         </div>
@@ -354,18 +280,9 @@ function Pricing() {
   const featured = PACKAGES.find((p) => p.highlight)!;
   const others = PACKAGES.filter((p) => !p.highlight);
 
-  // Aktueller Monat als kleiner Kapazitäts-Anker, in Hamburger Zeit.
-  // Ob noch Plätze frei sind, kommt aus lib/availability.ts — derselbe
-  // Wert, den /pakete und /anfrage anzeigen.
-  const currentMonth = new Date().toLocaleDateString("de-DE", {
-    month: "long",
-    timeZone: "Europe/Berlin",
-  });
-  const slotsOpen = AVAILABILITY.availableSlots > 0;
-
   return (
     <section id="pakete" className="border-border/40 border-t scroll-mt-20">
-      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
+      <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-24">
         {/* Header mit Hand-Underline auf der Italic-Akzentzeile */}
         <div className="max-w-2xl">
           <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
@@ -383,35 +300,12 @@ function Pricing() {
               <HandUnderline className="text-gold/60 absolute -bottom-2 left-0 h-3 w-full" />
             </span>
           </h2>
-          <p className="text-muted-foreground mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-            Einmal zahlen, dann ein fairer Monatsbeitrag für Hosting
-            und Pflege. Was eine Agentur in Hamburg für 5.000 € macht,
-            gibt's bei uns ab 499 € — weil wir allein arbeiten und
-            kein teures Büro tragen müssen.
-          </p>
-          {/* Kapazitäts-Anker — kleiner Hanseatischer Scarcity-Hinweis
-              ohne erfundene Zahlen. „Ein paar" statt „X Slots" lässt
-              die Sache wahr, ohne falsche Präzision vorzutäuschen. */}
-          {/* Punkt + Fließtext statt flex-wrap: sonst bricht der ganze
-              Satz als Block unter „Oktober:" um. */}
-          <p className="text-foreground/75 mt-6 flex items-baseline gap-2 text-[13.5px] leading-relaxed">
-            <span
-              aria-hidden="true"
-              className="bg-gold/80 inline-block h-1.5 w-1.5 shrink-0 -translate-y-0.5 rounded-full"
-            />
-            <span>
-              <span className="font-medium">{currentMonth}:</span>{" "}
-              {slotsOpen
-                ? "noch ein paar Slots offen. Wer früh schreibt, sucht sich den Termin aus."
-                : `ausgebucht. Wir nehmen Anfragen für ${AVAILABILITY.nextMonth} entgegen — gleiche Konditionen.`}
-            </span>
-          </p>
         </div>
 
         {/* Magazin-Spread: featured (Business) groß und dunkel zentral,
             die zwei anderen flankieren als schlanke Editorial-Streifen.
             Kein 3-gleicher-Karten-Reflex. */}
-        <div className="mt-16 grid gap-px sm:mt-20 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
+        <div className="mt-12 grid gap-px sm:mt-16 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
           {/* Linker Streifen: Starter */}
           <Depth3D className="order-2 lg:order-1" maxTilt={4}>
             <PricingFlanke paket={others[0]} side="left" />
@@ -433,52 +327,13 @@ function Pricing() {
           </Depth3D>
         </div>
 
-        {/* Sitalo-Studio-Anker: kein vierter Karten-Strang, sondern
-            eine ruhige Editorial-Zeile unter den drei Paketen.
-            Wer mehr will, klickt. Wer sich für Business/Premium
-            entscheidet, wird nicht gestört. */}
         <Link
-          href="/pakete/studio"
-          data-cursor-label="Sitalo Studio ansehen →"
-          className="border-foreground/15 bg-foreground/[0.025] hover:bg-foreground/[0.05] group mt-12 flex flex-col items-start gap-4 rounded-2xl border px-6 py-6 transition-colors sm:mt-14 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:px-8"
+          href="/pakete"
+          className="text-foreground mt-12 inline-flex items-center gap-2 text-[15px] font-medium underline-offset-4 hover:underline"
         >
-          <div className="flex-1">
-            <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.3em]">
-              Atelier-Stufe · ab 3.490 €
-            </p>
-            <p className="serif text-foreground mt-2 text-balance text-xl leading-snug tracking-[-0.01em] sm:text-2xl">
-              Sitalo Studio —{" "}
-              <span className="serif-italic text-muted-foreground">
-                eine Marke, nicht eine Website.
-              </span>
-            </p>
-            <p className="text-foreground/70 mt-2 max-w-2xl text-pretty text-[14.5px] leading-relaxed">
-              Eigenständige Design-Sprache, Atelier-Besuch, drei
-              Korrekturrunden. Für Inhaber:innen, die sich aktiv vom
-              Branchen-Durchschnitt absetzen.
-            </p>
-          </div>
-          <span className="text-foreground inline-flex items-center gap-2 self-end text-[14px] font-medium underline-offset-4 group-hover:underline sm:self-auto">
-            Mehr erfahren →
-          </span>
+          Alle Pakete vergleichen
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
-
-        {/* Hand-gezeichneter Trenner statt CSS-Border vor dem Disclaimer */}
-        <div className="text-muted-foreground/40 mt-20 mx-auto max-w-md">
-          <DoubleWave className="w-full" />
-        </div>
-
-        <p className="text-muted-foreground mt-10 mx-auto max-w-2xl text-center text-sm text-pretty">
-          Die finalen Kosten hängen vom Umfang, vorhandenen Inhalten und
-          gewünschten Funktionen ab. Volle Details auf der{" "}
-          <Link
-            href="/pakete"
-            className="text-foreground underline underline-offset-4"
-          >
-            Pakete-Seite
-          </Link>
-          .
-        </p>
       </div>
     </section>
   );
@@ -620,15 +475,14 @@ function Faq() {
       id="faq"
       className="border-border/40 border-t scroll-mt-20"
     >
-      <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
-        <div className="grid gap-16 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
+      <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-24">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
           <div>
             <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
               Häufige Fragen.
             </h2>
             <p className="text-muted-foreground mt-6 max-w-sm text-pretty text-lg leading-relaxed">
-              Was Kunden uns am häufigsten fragen. Ihre Frage ist nicht
-              dabei?{" "}
+              Ihre Frage ist nicht dabei?{" "}
               <Link href="/kontakt" className="text-foreground underline underline-offset-4">
                 Schreiben Sie uns.
               </Link>
@@ -704,22 +558,8 @@ function FinalCta() {
         aria-hidden="true"
         className="bg-gold/8 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
-      {/* Editorial-Mast oben — wie eine Magazin-Rückseite */}
-      <div className="border-background/10 relative mx-auto flex w-full max-w-5xl items-center justify-between gap-4 border-b px-6 py-5">
-        <p className="text-background/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Schluss-Statement
-        </p>
-        <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-          Sitalo · Hamburg
-        </p>
-      </div>
-
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
-        <div className="grid items-end gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
+        <div>
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
               <span className="drop-cap-3d drop-cap-3d-gold serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
@@ -727,17 +567,11 @@ function FinalCta() {
               </span>
               Schreiben Sie uns.{" "}
               <span className="serif-italic text-background/70">
-                Übermorgen
-              </span>{" "}
-              kann Ihre Seite{" "}
-              <span className="serif-italic text-background/70">
-                schon online sein.
+                Wir melden uns persönlich.
               </span>
             </h2>
             <p className="text-background/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-              Drei Felder, zwei Minuten. Wir melden uns innerhalb von
-              24 Stunden — persönlich, mit einem konkreten Vorschlag.
-              Kein Vertrag, keine Kosten, kein Druck.
+              Drei Felder, zwei Minuten. Kostenlos und unverbindlich.
             </p>
             <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <MagneticButton
@@ -756,52 +590,6 @@ function FinalCta() {
             </div>
           </div>
 
-          {/* Editorial-Schluss rechts: Atelier-Etikett auf Schnur,
-              das pendelt — Premium-Markenzeichen statt flacher
-              Visitenkarte. Darunter Signatur + die drei
-              Kontakt-Buttons als Aktionsschicht. */}
-          <div className="lg:pl-10">
-            <div className="flex justify-start lg:justify-center">
-              <SwingTag />
-            </div>
-            <p className="text-background/45 mt-10 text-[10px] font-medium uppercase tracking-[0.3em]">
-              Aus dem Atelier
-            </p>
-            <p className="serif-italic text-background mt-4 text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
-              — Sitalo,
-              <br />
-              Hamburg.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-2.5">
-              <a
-                href="tel:+4915224437370"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-              >
-                Anrufen
-              </a>
-              <a
-                href="mailto:info@sitalo.de"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-              >
-                Schreiben
-              </a>
-              <a
-                href="/sitalo-kontakt.vcf"
-                download="Sitalo-Webdesign.vcf"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-              >
-                Speichern
-              </a>
-            </div>
-            <dl className="text-background/65 mt-8 space-y-2 text-[13px]">
-              <div className="flex justify-between gap-4">
-                <dt className="text-background/45 uppercase tracking-[0.2em]">
-                  Antwort
-                </dt>
-                <dd>innerhalb 24 h</dd>
-              </div>
-            </dl>
-          </div>
         </div>
       </div>
     </section>

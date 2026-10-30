@@ -1,155 +1,74 @@
 import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
-import { BriefSiegel } from "@/components/marketing/brief-siegel";
-import { HamburgClock } from "@/components/marketing/hamburg-clock";
-import { ScrambleText } from "@/components/marketing/scramble-text";
-import { TrustBar } from "@/components/marketing/trust-bar";
 import { SitaloLogo } from "@/components/sitalo-logo";
 
 /**
- * Marketing-Footer im Editorial-Stil. Aufgebaut wie eine
- * Zeitschriften-Rückseite: oben eine ruhige Mast-Linie mit der
- * Brand-Adresse und den wichtigsten Kontaktwegen, darunter ein
- * grosses serif-italic Schluss-Statement, dann das Link-Grid und
- * ganz unten die Copyright-Zeile.
+ * Marketing-Footer: Logo + ein Satz, drei kurze Link-Spalten,
+ * darunter Copyright und Rechtliches.
  *
  * Bewusst keine Social-Icons (haben wir nicht), keine Newsletter-Box
  * (haben wir nicht), kein „Made with React"-Marker (peinlich).
  */
 export function MarketingFooter() {
   const year = new Date().getFullYear();
+  // Bewusst kurz: die wichtigsten Wege, Kontakt, Rechtliches.
+  // Alle übrigen Seiten bleiben über Sitemap und ⌘K erreichbar.
   return (
     <>
       <BackToTop />
-      <TrustBar />
       <footer className="bg-foreground text-background relative overflow-hidden print:hidden">
-        {/* Atmosphärischer Gold-Halo links oben — passt zur Brand. */}
-        <div
-          aria-hidden="true"
-          className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-        />
-        {/* Editorial-Mast oben */}
-        <div className="border-background/10 mx-auto flex w-full max-w-7xl flex-col gap-4 border-b px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8">
-          <div className="flex items-center gap-3">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
-            />
-            <p className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-              Sitalo · Professionell aus Hamburg
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 text-[13px]">
-            <a
-              href="tel:+4915224437370"
-              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
-            >
-              Anrufen
-            </a>
-            <a
-              href="mailto:info@sitalo.de"
-              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
-            >
-              Schreiben
-            </a>
-            <a
-              href="/sitalo-kontakt.vcf"
-              download="Sitalo-Webdesign.vcf"
-              className="border-background/20 text-background/85 hover:border-background hover:bg-background hover:text-foreground inline-flex h-9 items-center rounded-full border px-4 text-[12px] font-medium tracking-tight transition-all"
-            >
-              In Kontakte speichern
-            </a>
-          </div>
-        </div>
-
-        <div className="relative mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:py-24 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
-          <div className="max-w-sm">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div className="max-w-xs">
             <SitaloLogo size="md" />
-            {/* Scramble-On-Hover für die italic Schluss-Phrase —
-                kleine Linear-Style-Anspielung, die nur entdeckt wird
-                wenn jemand mit dem Cursor drüberfährt. */}
-            <p className="serif mt-8 text-balance text-2xl font-normal leading-[1.2] tracking-[-0.015em] sm:text-3xl">
-              Drei Sachen reichen.{" "}
-              <span className="serif-italic text-background/75">
-                <ScrambleText>Den Rest bauen wir.</ScrambleText>
-              </span>
+            <p className="text-background/75 mt-6 text-[14px] leading-relaxed">
+              Websites für lokale Unternehmen, persönlich gemacht in Hamburg.
             </p>
-            <p className="text-background/75 mt-5 max-w-xs text-[14px] leading-relaxed">
-              Professionelle Websites für lokale Unternehmen. Persönlich
-              gemacht, aus einem kleinen Atelier in Hamburg.
-            </p>
-            <Link
-              href="/anfrage"
-              className="bg-background text-foreground hover:bg-background/90 group mt-8 inline-flex h-11 items-center rounded-full px-6 text-[14px] font-medium tracking-tight transition-all"
-            >
-              Website anfragen
-              <span
-                aria-hidden="true"
-                className="ml-2 transition-transform group-hover:translate-x-0.5"
-              >
-                →
-              </span>
-            </Link>
           </div>
-          <FooterCol title="Service">
+          <FooterCol title="Angebot">
             <FooterLink href="/leistungen">Leistungen</FooterLink>
-            <FooterLink href="/ablauf">Ablauf</FooterLink>
-            <FooterLink href="/branchen">Branchen</FooterLink>
-            <FooterLink href="/pflege">Pflegedienste</FooterLink>
-            <FooterLink href="/praxen">Praxen</FooterLink>
-            <FooterLink href="/standorte">Standorte</FooterLink>
             <FooterLink href="/pakete">Pakete</FooterLink>
-            <FooterLink href="/honorar">Honorar</FooterLink>
-            <FooterLink href="/wartung">Wartung & Werkbank</FooterLink>
-            <FooterLink href="/erreichbarkeit">Erreichbarkeit</FooterLink>
-            <FooterLink href="/rechner">3-Jahres-Rechner</FooterLink>
+            <FooterLink href="/wartung">Wartung</FooterLink>
+            <FooterLink href="/branchen">Branchen</FooterLink>
             <FooterLink href="/audit">Kostenloser Audit</FooterLink>
-            <FooterLink href="/check">Speed-Check</FooterLink>
           </FooterCol>
           <FooterCol title="Sitalo">
             <FooterLink href="/atelier">Das Atelier</FooterLink>
-            <FooterLink href="/jetzt">Jetzt</FooterLink>
-            <FooterLink href="/manifest">Manifest</FooterLink>
-            <FooterLink href="/auswahl">Auswahl</FooterLink>
-            <FooterLink href="/inventar">Inventar</FooterLink>
-            <FooterLink href="/lexikon">Lexikon</FooterLink>
+            <FooterLink href="/ablauf">Ablauf</FooterLink>
             <FooterLink href="/journal">Journal</FooterLink>
-            <FooterLink href="/anfrage">Website anfragen</FooterLink>
-            <FooterLink href="/termin">Termin buchen</FooterLink>
-            <FooterLink href="/sprechstunde">Sprechstunde</FooterLink>
-            <FooterLink href="/empfehlung">Welches Paket passt?</FooterLink>
-            <FooterLink href="/vergleich">Vergleich</FooterLink>
             <FooterLink href="/faq">FAQ</FooterLink>
-            <FooterLink href="/kontakt">Kontakt</FooterLink>
           </FooterCol>
-          <FooterCol title="Rechtliches">
-            <FooterLink href="/impressum">Impressum</FooterLink>
-            <FooterLink href="/datenschutz">Datenschutz</FooterLink>
+          <FooterCol title="Kontakt">
+            <li>
+              <a
+                href="tel:+4915224437370"
+                className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
+              >
+                0152 24437370
+              </a>
+            </li>
+            <li>
+              <a
+                href="mailto:info@sitalo.de"
+                className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
+              >
+                info@sitalo.de
+              </a>
+            </li>
+            <FooterLink href="/termin">Termin buchen</FooterLink>
           </FooterCol>
         </div>
 
-        {/* Brief-Siegel — versiegelter Umschlag mit dem Wachssiegel
-            auf der Klappe. Hover öffnet die Klappe und das Notiz-
-            papier („Drei Sachen reichen.") schiebt sich heraus.
-            Brand-Signatur als wiederkehrendes Identitäts-Element,
-            jetzt räumlich statt flach. */}
-        <div className="border-background/10 flex justify-center border-t px-6 py-12">
-          <BriefSiegel />
-        </div>
-
-        {/* Editorial-Schluss */}
         <div className="border-background/10 border-t">
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-3 px-6 py-6 text-xs sm:flex-row sm:items-center">
-            <span className="text-background/55">
-              © {year} Sitalo Webdesign
-            </span>
-            {/* Echtzeit-Hamburg-Uhr — tick-tack mit Sekunden. Ersetzt
-                den statischen „Erreichbar jederzeit"-Spruch und gibt
-                dem Footer das Gefühl, dass die Seite gerade lebt. */}
-            <HamburgClock />
-            <span className="serif-italic text-background/60 text-sm">
-              53.5511° N · 9.9937° E
+          <div className="text-background/55 mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs">
+            <span>© {year} Sitalo Webdesign</span>
+            <span className="flex gap-5">
+              <Link href="/impressum" className="hover:text-background transition-colors">
+                Impressum
+              </Link>
+              <Link href="/datenschutz" className="hover:text-background transition-colors">
+                Datenschutz
+              </Link>
             </span>
           </div>
         </div>
