@@ -10,9 +10,9 @@ import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { BRANCHEN } from "@/lib/branchen-data";
 
 export const metadata: Metadata = {
-  title: "Branchen — passende Layouts für Ihren Betrieb",
+  title: "Branchen — Websites für Ihren Betrieb",
   description:
-    "Websites für Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien und Fitnessstudios — pro Branche eigene Layouts.",
+    "Websites für Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien und Fitnessstudios — jede Seite individuell gebaut.",
   alternates: { canonical: "/branchen" },
 };
 
@@ -38,16 +38,17 @@ function Hero() {
         <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32">
           <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
             <div>
-              <EditorialEyebrow>10 Branchen · 10 Layouts</EditorialEyebrow>
+              <EditorialEyebrow>10 Branchen · jede Seite neu gebaut</EditorialEyebrow>
               <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
-                Layouts, die zu Ihrem Alltag passen.
+                Websites, die zu Ihrem Alltag passen.
               </h1>
             </div>
             <div>
               <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
                 Eine Pflegedienst-Seite muss anders aussehen als ein Café —
-                und beide anders als eine Kanzlei. Pro Branche eine eigene
-                Detailseite mit echten Beispielen und passenden Bausteinen.
+                und beide anders als eine Kanzlei. Pro Branche zeigen wir,
+                worauf es ankommt. Gebaut wird jede Seite neu, für Ihren
+                Betrieb.
               </p>
               {/* Bullet-Liste auf zwei Items reduziert — Drei-Beat
                   „Individuell · Branchen-spezifisch · Keine Vorlagen"

@@ -1648,3 +1648,8 @@ body::before {
   from { opacity: 0; transform: translateY(0.6em); clip-path: inset(0 0 100% 0); }
   to { opacity: 1; transform: none; clip-path: inset(0 0 -0.3em 0); }
 }
+
+/* Aurora-Variante auf dunklem Grund (Vorteile-Kachel): nur Gold. */
+.aurora-dark > span:nth-child(1) { background: color-mix(in oklab, var(--gold) 30%, transparent); }
+.aurora-dark > span:nth-child(2) { background: color-mix(in oklab, var(--gold) 14%, transparent); }
+.aurora-dark > span:nth-child(3) { background: color-mix(in oklab, var(--gold) 20%, transparent); }

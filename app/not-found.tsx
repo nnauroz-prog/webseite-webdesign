@@ -51,7 +51,7 @@ export default function NotFound() {
               <NotFoundLink
                 href="/branchen"
                 label="Branchen ansehen"
-                detail="Zehn typische Layouts — vielleicht passt eins zu Ihnen."
+                detail="Zehn Branchen — worauf es bei Ihrer ankommt."
               />
               <NotFoundLink
                 href="/standorte"

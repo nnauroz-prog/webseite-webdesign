@@ -229,7 +229,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Branchen",
-        description: "10 Branchen, 10 Layouts",
+        description: "10 Branchen, jede Seite individuell",
         href: "/branchen",
         icon: FileText,
       },

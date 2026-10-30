@@ -8,9 +8,9 @@ import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
-  FaktenLeiste,
   showcaseItems,
   Voranbringen,
+  Vorteile,
 } from "@/components/marketing/home-sections";
 import { HeroShowcase } from "@/components/marketing/hero-showcase";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
@@ -144,7 +144,7 @@ export default function HomePage() {
             steht auf den Unterseiten /atelier, /erreichbarkeit,
             /standorte, /jetzt — die Startseite verlinkt dorthin. */}
         <Hero />
-        <FaktenLeiste />
+        <Vorteile />
         {/* Echte Ergebnisse (Branche + Stadtteil + Zahl) — der
             Vertrauensbeleg direkt nach den Arbeitsproben im Hero. */}
         <RevealOnScroll>
