@@ -8,6 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { ATELIER_GERADE, ATELIER_NOTES } from "@/lib/atelier-notes";
 import { AVAILABILITY } from "@/lib/availability";
 import { formatDate, JOURNAL_POSTS } from "@/lib/journal-data";
+import { SITE_URL } from "@/lib/site";
 import {
   nextSprechstunden,
   SPRECHSTUNDE_BEGINN_HHMM,
@@ -44,6 +45,32 @@ export default function JetztPage() {
   const latestPosts = JOURNAL_POSTS.slice(0, 2);
   const { availableSlots, slotMonth, nextMonth } = AVAILABILITY;
   const slotsOpen = availableSlots > 0;
+
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `Jetzt — ${monthLabel}`,
+    description:
+      "Was im Sitalo-Atelier gerade passiert: Werkbank, freie Bauplätze, nächste Sprechstunde, zuletzt geschrieben.",
+    datePublished: new Date().toISOString().slice(0, 10),
+    author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
+    publisher: { "@id": `${SITE_URL}/#business` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/jetzt` },
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Jetzt",
+        item: `${SITE_URL}/jetzt`,
+      },
+    ],
+  };
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -246,6 +273,13 @@ export default function JetztPage() {
         </section>
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([articleLd, breadcrumbLd]),
+        }}
+      />
     </div>
   );
 }

@@ -122,7 +122,7 @@ export function ImAtelier() {
                 cursorLabel="Essay lesen →"
               >
                 <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
-                  Neu im Journal · {formatDate(latestPost.publishedAt)}
+                  Zuletzt im Journal · {formatDate(latestPost.publishedAt)}
                 </p>
                 <p className="serif text-foreground mt-2 text-balance text-xl leading-snug tracking-[-0.01em] sm:text-2xl">
                   {latestPost.title}

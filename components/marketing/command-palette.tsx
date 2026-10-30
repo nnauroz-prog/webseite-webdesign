@@ -20,9 +20,6 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { BRANCHEN } from "@/lib/branchen-data";
-import { STANDORTE } from "@/lib/standorte-data";
-
 /**
  * Command-Palette — Linear-/Vercel-Style Cmd+K Modal.
  *
@@ -48,10 +45,11 @@ type Group = {
   items: Action[];
 };
 
-/** Vom Server gebauter Inhalts-Index (Essays + Lexikon-Begriffe) —
- *  siehe lib/search-index.ts für das Warum der Prop-Übergabe. */
+/** Vom Server gebauter Inhalts-Index (Essays, Lexikon-Begriffe,
+ *  Branchen, Standorte, Pakete) — siehe lib/search-index.ts für
+ *  das Warum der Prop-Übergabe. */
 export type PaletteSearchDoc = {
-  kind: "essay" | "begriff";
+  kind: "essay" | "begriff" | "branche" | "standort" | "paket";
   label: string;
   description: string;
   href: string;
@@ -87,21 +85,43 @@ export function CommandPalette({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Beim Öffnen: Input fokussieren, Query + Index resetten
+  // Beim Öffnen: Input fokussieren, Index resetten. Query NICHT
+  // resetten wenn vom URL-Param vorbefüllt (siehe SearchAction-
+  // Effect unten) — sonst kollidiert das mit dem Initial-Query.
   useEffect(() => {
     if (open) {
-      setQuery("");
       setActiveIndex(0);
       // Kurze Verzögerung — Modal muss erst im DOM sein
       setTimeout(() => inputRef.current?.focus(), 20);
       document.body.style.overflow = "hidden";
     } else {
+      setQuery("");
       document.body.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  // Google-Sitelinks-SearchAction: Eingang über ?q=… auf der Seite.
+  // Wenn der User aus dem SERP-Suchfeld kommt, öffnen wir die Palette
+  // automatisch mit vorbefülltem Query — und entfernen den Param
+  // wieder aus der URL, damit er nicht beim Reload nochmal triggert.
+  //
+  // Direkter window.location.search-Read statt useSearchParams-Hook,
+  // damit das Prerender (z. B. von /_not-found) nicht in Suspense
+  // gewickelt werden muss.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q")?.trim();
+    if (!q) return;
+    setQuery(q);
+    setOpen(true);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("q");
+    window.history.replaceState({}, "", url.toString());
+  }, []);
 
   const groups: Group[] = useMemo(() => {
     const direct: Action[] = [
@@ -292,26 +312,44 @@ export function CommandPalette({
       },
     ];
 
-    const branchen: Action[] = BRANCHEN.map((b) => ({
-      kind: "link" as const,
-      label: b.label,
-      description: b.shortBody.split(".")[0] + ".",
-      href: `/branchen/${b.slug}`,
-      icon: FileText,
-    }));
+    // Branchen, Standorte, Pakete kommen aus dem Server-Index — kein
+    // Direkt-Import der voll-attributierten Data-Files mehr, das hat
+    // die ganze Branchen-FAQ-Sektion in den Client-Bundle gezogen.
+    const branchen: Action[] = searchIndex
+      .filter((d) => d.kind === "branche")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label,
+        description: d.description.split(".")[0] + ".",
+        href: d.href,
+        icon: FileText,
+      }));
 
-    const standorte: Action[] = STANDORTE.map((s) => ({
-      kind: "link" as const,
-      label: s.name,
-      description: s.tagline,
-      href: `/standorte/${s.slug}`,
-      icon: MapPin,
-    }));
+    const standorte: Action[] = searchIndex
+      .filter((d) => d.kind === "standort")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label.replace(" · Hamburg", ""),
+        description: d.description,
+        href: d.href,
+        icon: MapPin,
+      }));
+
+    const pakete: Action[] = searchIndex
+      .filter((d) => d.kind === "paket")
+      .map((d) => ({
+        kind: "link" as const,
+        label: d.label,
+        description: d.description,
+        href: d.href,
+        icon: Package,
+      }));
 
     if (!query.trim()) {
       return [
         { label: "Sofort", items: direct },
         { label: "Seiten", items: pages },
+        { label: "Pakete", items: pakete },
         { label: "Branchen", items: branchen.slice(0, 5) },
         { label: "Stadtteile", items: standorte.slice(0, 4) },
       ];
@@ -353,6 +391,7 @@ export function CommandPalette({
     return [
       { label: "Sofort", items: direct.filter(match) },
       { label: "Seiten", items: pages.filter(match) },
+      { label: "Pakete", items: pakete.filter(match) },
       { label: "Branchen", items: branchen.filter(match) },
       { label: "Stadtteile", items: standorte.filter(match) },
       { label: "Essays", items: essays },

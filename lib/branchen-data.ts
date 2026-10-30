@@ -109,6 +109,10 @@ export const BRANCHEN: Branche[] = [
         q: "Wie schnell können wir live gehen?",
         a: "Bei einer Pflegedienst-Seite mittlerer Größe rechnen Sie mit 5–10 Werktagen ab kompletter Datenlieferung. Eine reine Onepager-Visitenkarte kann schon nach 1–2 Tagen stehen.",
       },
+      {
+        q: "Kann unsere Pflegekassen-Vergütungsvereinbarung oder MDK-Bericht direkt verlinkt werden?",
+        a: "Ja. PDF-Downloads werden auf einer eigenen Unterseite gesammelt, mit kurzem Hinweis, was die Dokumente bedeuten. Pflegekassen-Vereinbarung, MDK-Prüfbericht, Hygiene-Konzept — alles wird so platziert, dass Angehörige es ohne Suche finden.",
+      },
     ],
     recommendedPackage: "business",
   },
@@ -178,6 +182,10 @@ export const BRANCHEN: Branche[] = [
         q: "Können Patientenbewertungen eingebunden werden?",
         a: "Ja — Google-Bewertungen können automatisch angezeigt werden. Jameda-Bewertungen sind technisch komplizierter, aber möglich.",
       },
+      {
+        q: "Wie ist das mit Datenschutz, gerade bei Kontaktformularen für Patienten?",
+        a: "Patienten-Daten gehören nicht ins Web-Formular. Wir bauen das Formular so, dass nur unkritische Anliegen (Termin-Wunsch, Anfahrt, Sprechzeiten) abgefragt werden — diagnostische Inhalte werden bewusst nicht erfasst. Plus: Hosting in Deutschland, SSL überall, Datenschutzerklärung praxis-spezifisch formuliert.",
+      },
     ],
     recommendedPackage: "business",
   },
@@ -245,6 +253,10 @@ export const BRANCHEN: Branche[] = [
       {
         q: "Wie werden meine Bilder professionell?",
         a: "Wenn Sie eigene Fotos haben, bereiten wir diese auf (Beschnitt, Farbe, Optimierung). Wenn keine vorhanden sind, empfehlen wir einen lokalen Fotografen — das ist eine Investition, die sich um ein Vielfaches auszahlt.",
+      },
+      {
+        q: "Können Gutscheine direkt über die Seite verkauft werden?",
+        a: "Ja — vom einfachen Print-Gutschein zum Download bis hin zur Online-Zahlung über Stripe. Bei Volumen unter 30 Verkäufen pro Monat reicht meist die einfache Variante; bei mehr lohnt sich ein richtiger Shop, der in unser Premium-Paket integriert wird.",
       },
     ],
     recommendedPackage: "business",
@@ -314,6 +326,10 @@ export const BRANCHEN: Branche[] = [
         q: "Können wir auch eine englische Version anbieten?",
         a: "Ja — gerade in Hamburg sehr sinnvoll für Cafés und Restaurants in Touri-Lagen. Mehrsprachigkeit besprechen wir im Erstgespräch.",
       },
+      {
+        q: "Tischreservierung über die Seite — geht das?",
+        a: "Ja. Bei niedrigem Volumen reicht ein Formular mit Wunschtermin und Personenzahl, das direkt in Ihr Postfach geht. Bei Restaurants mit konstantem Tischbelegungs-Druck binden wir Quandoo, OpenTable oder eine vergleichbare Lösung ein — kein paralleles Tabellenbuch mehr.",
+      },
     ],
     recommendedPackage: "premium",
   },
@@ -381,6 +397,10 @@ export const BRANCHEN: Branche[] = [
       {
         q: "Können wir Werkstatt-Videos einbinden?",
         a: "Ja, sehr gerne. Kurze Videos (15–30 Sek.) von Arbeitsschritten oder fertigen Projekten ziehen die Aufmerksamkeit deutlich. Aufnahmen über Handy reichen aus — Hauptsache stabil und hell.",
+      },
+      {
+        q: "Wie zeigen wir unseren Notdienst sinnvoll auf der Seite?",
+        a: "Notdienst-Nummer prominent im Header — sichtbar auf jeder Unterseite. Plus eine eigene Notdienst-Sektion mit Uhrzeiten und Verfügbarkeitsgebiet. Wer den Notdienst-Anker sucht, soll innerhalb von zwei Sekunden anrufen können, nicht erst ein Formular ausfüllen.",
       },
     ],
     recommendedPackage: "business",
@@ -450,6 +470,10 @@ export const BRANCHEN: Branche[] = [
         q: "Können wir Hygiene-Zertifikate einbinden?",
         a: "Ja, gerne. ISO-Zertifikate, RAL-Gütezeichen, Brancheninnungs-Mitgliedschaften sind Vertrauenssignale, die direkt aufs Logo-Format auf die Seite kommen.",
       },
+      {
+        q: "Wie können wir verschiedene Reinigungs-Segmente (Büro, Privat, Industrie) übersichtlich präsentieren?",
+        a: "Jedes Segment bekommt eine eigene Unterseite mit klarer Zielgruppen-Ansprache, eigenen Preisspannen und eigenem Anfrage-Anker. Die Startseite bündelt drei kurze Einstiegs-Karten und führt jeweils tiefer. So filtert sich die Anfrage selbst — eingehende Mails landen schon vor-segmentiert in Ihrem Postfach.",
+      },
     ],
     recommendedPackage: "business",
   },
@@ -517,6 +541,10 @@ export const BRANCHEN: Branche[] = [
       {
         q: "Welcher Stil passt zu meiner Kanzlei?",
         a: "Klassisch-konservativ (Serif, gedeckte Farben) für etablierte Boutique-Kanzleien. Modern-reduziert (Sans-Serif, viel Weiß) für junge Wirtschaftskanzleien. Wir entscheiden nach Ihrer Mandantenstruktur.",
+      },
+      {
+        q: "Was machen wir mit der Erstberatung — frei, kostenpflichtig, oder gar nicht erwähnen?",
+        a: "Drei Modelle, alle drei sehen wir regelmäßig: Erstberatung kostenlos (für klassische Familien-/Verbraucher-Mandate), pauschal abgerechnet (Wirtschaftskanzleien) oder nach Stundensatz ab Minute eins. Die Website sollte das Modell offen nennen — Mandantinnen, die das vorher wissen, kommen mit klareren Erwartungen.",
       },
     ],
     recommendedPackage: "business",
@@ -586,6 +614,10 @@ export const BRANCHEN: Branche[] = [
         q: "Wie wichtig sind Trainer-Bios?",
         a: "Sehr. Personal Trainer werden gezielt gesucht. Wenn Trainer:innen auf Ihrer Seite mit Spezialisierung, Foto und persönlicher Note auftauchen, gewinnen Sie auch deren persönliches Netzwerk.",
       },
+      {
+        q: "Wie konvertiert ein Probetraining-Anker am besten?",
+        a: `Knapper Button im Header („Kostenloses Probetraining"), Formular mit nur drei Feldern (Name, Mail, Wunsch-Tag), Bestätigung innerhalb 24 h. Wir haben Verbesserungen von 25-40 % der Probetraining-Buchungen gesehen, wenn statt eines langen Anfrage-Formulars dieser knappe Trichter steht.`,
+      },
     ],
     recommendedPackage: "business",
   },
@@ -650,6 +682,10 @@ export const BRANCHEN: Branche[] = [
         q: "Lohnt sich ein Instagram-Feed auf der Seite?",
         a: "Für Beauty-Studios ja — die Seite bleibt lebendig auch zwischen Updates. Wir integrieren Ihren Feed datenschutzkonform (keine direkten Embeds von Instagram, sondern Bild-Caching).",
       },
+      {
+        q: "Können Gutscheine über die Seite verkauft werden?",
+        a: "Ja, und gerade vor Weihnachten/Muttertag/Valentinstag lohnt sich das deutlich. Einfache Variante: PDF-Gutschein nach Stripe-Zahlung. Aufwändigere Variante: personalisierter Gutschein mit Wert und Empfänger-Name. Beides binden wir ohne externe Shop-Plattform direkt in die Seite ein.",
+      },
     ],
     recommendedPackage: "business",
   },
@@ -713,6 +749,10 @@ export const BRANCHEN: Branche[] = [
       {
         q: "Wie wichtig ist die englische Version?",
         a: "Sehr — vor allem in Hamburg. Etwa 30–40 % der Hamburg-Hotel-Sucher kommen aus dem Ausland. Eine saubere englische Version verdoppelt oft die Anfrage-Quote.",
+      },
+      {
+        q: "Wie schaffen wir die Direktbuchung gegen die Booking-Convenience?",
+        a: "Drei Hebel zusammen: Best-Price-Garantie auf der eigenen Seite sichtbar, knapper Buchungs-Pfad (max. drei Klicks bis zur Reservierungs-Anfrage), und ein Hinweis bei der Booking-Bestätigungs-Mail, dass die nächste Buchung über Sie direkt 8-12 % günstiger ist. Wir bauen den Mechanismus, die Provisions-Reduktion ist die Belohnung.",
       },
     ],
     recommendedPackage: "premium",

@@ -7,6 +7,34 @@ import { EmpfehlungWizard } from "@/components/marketing/empfehlung-wizard";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
+
+const WEBAPP_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Sitalo Paket-Empfehlung",
+  description:
+    "Fünf-Fragen-Quiz, das aus Branche, Größe, Zeit und Materialien das passende Paket empfiehlt. Begründung sichtbar, keine Black-Box.",
+  url: `${SITE_URL}/empfehlung`,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any",
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+};
+
+const BREADCRUMB_LD = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Empfehlung",
+      item: `${SITE_URL}/empfehlung`,
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "Welches Paket passt?",
@@ -87,6 +115,13 @@ export default function EmpfehlungPage() {
         </section>
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([WEBAPP_LD, BREADCRUMB_LD]),
+        }}
+      />
     </div>
   );
 }

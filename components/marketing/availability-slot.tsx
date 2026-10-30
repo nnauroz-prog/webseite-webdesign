@@ -1,4 +1,4 @@
-import { AVAILABILITY } from "@/lib/availability";
+import { AVAILABILITY, upcomingSlotLabels } from "@/lib/availability";
 import { cn } from "@/lib/utils";
 
 /**
@@ -25,14 +25,15 @@ export function AvailabilitySlot({
   variant?: "inline" | "card";
   className?: string;
 }) {
-  const { availableSlots, slotMonth, nextMonth, nextSlots } = AVAILABILITY;
+  const { availableSlots, slotMonth, nextMonth } = AVAILABILITY;
   const open = availableSlots > 0;
 
   // Konkrete Termine statt „ein paar Slots" — zeit-konkrete Scarcity
   // konvertiert messbar besser, weil sie aus dem Rhetorischen ins
-  // Planbare wechselt. Wenn die nextSlots-Liste leer ist, fallen wir
-  // auf den Monats-Anker zurück (etwa wenn der Monat voll ist).
-  const slotsList = open && nextSlots.length > 0 ? nextSlots.join(" und ") : "";
+  // Planbare wechselt. Sind keine künftigen Termine gepflegt, fallen
+  // wir auf den Monats-Anker zurück.
+  const upcoming = open ? upcomingSlotLabels() : [];
+  const slotsList = upcoming.join(" und ");
 
   const headline = open
     ? slotsList

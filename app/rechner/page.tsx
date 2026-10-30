@@ -7,6 +7,38 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { TcoRechner } from "@/components/marketing/tco-rechner";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { SITE_URL } from "@/lib/site";
+
+const WEBAPP_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Sitalo 3-Jahres-Kostenrechner",
+  description:
+    "Was kostet eine Website über 3 Jahre? Sitalo vs Wix, Squarespace, Jimdo, ChatGPT-Selbstbau. Inkl. Eigenzeit als Geld bewertet.",
+  url: `${SITE_URL}/rechner`,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any",
+  isAccessibleForFree: true,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "EUR",
+  },
+};
+
+const BREADCRUMB_LD = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "3-Jahres-Rechner",
+      item: `${SITE_URL}/rechner`,
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "3-Jahres-Kostenrechner",
@@ -87,6 +119,13 @@ export default function RechnerPage() {
         </section>
       </main>
       <MarketingFooter />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([WEBAPP_LD, BREADCRUMB_LD]),
+        }}
+      />
     </div>
   );
 }
