@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 
-import { AtelierStatus } from "@/components/marketing/atelier-status";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
@@ -134,40 +133,6 @@ export function MarketingHeader({
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Atelier-Status — pulsierender Punkt + Live-Text. Sagt,
-              ob wir gerade am Schreibtisch sitzen oder schlafen.
-              Wrapper-Div regelt Sichtbarkeit, weil die Komponente
-              intern inline-flex setzt — hidden auf dem Wrapper
-              überschreibt das zuverlässig (sonst Cascade-Konflikt
-              zwischen "inline-flex" der Komponente und "hidden" am
-              gleichen Element). */}
-          <div className="mr-1 hidden lg:inline-block">
-            <AtelierStatus />
-          </div>
-
-          {/* Cmd+K Command-Palette-Hint — nur Desktop, sehr dezent.
-              Klick dispatcht ein synthetisches Cmd+K-Event an window,
-              damit der globale Listener in CommandPalette greift. */}
-          <button
-            type="button"
-            aria-label="Schnellnavigation öffnen"
-            onClick={() => {
-              window.dispatchEvent(
-                new KeyboardEvent("keydown", {
-                  key: "k",
-                  metaKey: true,
-                  bubbles: true,
-                }),
-              );
-            }}
-            className="border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground hidden h-9 items-center gap-1.5 rounded-full border px-3 font-mono text-[11px] tracking-tight transition-colors lg:inline-flex"
-          >
-            <span>Schnell</span>
-            <kbd className="border-border/60 rounded border px-1 text-[10px]">
-              ⌘K
-            </kbd>
-          </button>
-
           {/* Desktop CTA — magnetisches Verhalten via MagneticButton.
               Cursor in der Nähe → Button zieht sich leicht ran.
               Nur Desktop / fine pointer, kein Effekt auf Touch. */}
