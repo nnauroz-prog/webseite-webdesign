@@ -39,6 +39,11 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
+// Alle Seiten stündlich neu rendern (ISR). Masthead, Footer-Jahr,
+// Sprechstunden-Termine und freie Bauplätze hängen vom heutigen
+// Datum ab — ohne Revalidate würde der Build-Tag eingefroren, bis
+// zum nächsten Deploy. Gilt per niedrigstem Wert für jede Route.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

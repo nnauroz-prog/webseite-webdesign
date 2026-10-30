@@ -91,7 +91,7 @@ function Hero() {
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
           />
-          Offen einsehbar · Stand Juni 2026
+          Offen einsehbar · Stand Oktober 2026
         </p>
         <h1 className="serif text-foreground mt-8 text-balance text-5xl font-normal leading-[0.98] tracking-[-0.02em] sm:text-6xl lg:text-7xl">
           Inventar.

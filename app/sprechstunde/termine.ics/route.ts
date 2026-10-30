@@ -25,6 +25,9 @@ import { SITE_URL } from "@/lib/site";
  */
 
 export const dynamic = "force-static";
+// Stündlich neu erzeugen, sonst friert der Build die „nächsten drei"
+// Termine ein und die Datei liefert nach Wochen vergangene Events.
+export const revalidate = 3600;
 
 function icsEscape(s: string): string {
   return s
