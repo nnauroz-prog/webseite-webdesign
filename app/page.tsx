@@ -8,12 +8,12 @@ import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
-  Einblicke,
   FaktenLeiste,
+  showcaseItems,
   Voranbringen,
 } from "@/components/marketing/home-sections";
+import { HeroShowcase } from "@/components/marketing/hero-showcase";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
-import { ParallaxHeroFrame } from "@/components/marketing/parallax-hero-frame";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -118,10 +118,6 @@ const FAQ = [
     q: "Kann ich später noch Sachen ändern lassen?",
     a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben uns kurz, wir setzen es um. Auf Wunsch bauen wir auch Bereiche ein, die Sie selbst pflegen.",
   },
-  {
-    q: "Was passiert nach dem Launch?",
-    a: "Sie bekommen einen festen Ansprechpartner bei uns. Hosting, Updates, Backups, Sicherheit laufen im Hintergrund. Wenn Sie etwas geändert haben wollen, schreiben Sie uns — wir kümmern uns.",
-  },
 ];
 
 // FAQPage-Strukturierte Daten für die fünf Homepage-FAQs.
@@ -157,11 +153,8 @@ export default function HomePage() {
             /standorte, /jetzt — die Startseite verlinkt dorthin. */}
         <Hero />
         <FaktenLeiste />
-        <RevealOnScroll>
-          <Einblicke />
-        </RevealOnScroll>
         {/* Echte Ergebnisse (Branche + Stadtteil + Zahl) — der
-            Vertrauensbeleg direkt nach den Arbeitsproben. */}
+            Vertrauensbeleg direkt nach den Arbeitsproben im Hero. */}
         <RevealOnScroll>
           <Beispiele />
         </RevealOnScroll>
@@ -207,7 +200,7 @@ function Hero() {
       />
       <CursorSpotlight />
 
-      <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-16 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24 lg:pb-32">
+      <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-14 sm:px-6 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28">
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
             <h1 className="letterpress text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
@@ -224,14 +217,14 @@ function Hero() {
               </WordReveal>
             </h1>
             <p
-              className="reveal text-muted-foreground mt-7 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
+              className="reveal text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
               Logo, ein paar Bilder, ein paar Sätze — den Rest machen
               wir. Zum Festpreis, ab 499 €.
             </p>
             <div
-              className="reveal mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center"
+              className="reveal mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-9"
               style={{ "--reveal-delay": "1100ms" } as React.CSSProperties}
             >
               <MagneticButton
@@ -251,18 +244,16 @@ function Hero() {
             </div>
           </div>
 
-          {/* Rechte Spalte: Workspace-Foto im echten 3D-Tiefenrahmen.
-              Atelier-Plakette und Notiz-Zettel schweben vor dem Bild,
-              kippen mit der Maus eigenständig — das ist die räumliche
-              Visitenkarte des Ateliers. */}
+          {/* Rechte Spalte: Kartenstapel mit echten Branchen-Layouts,
+              blättert sich selbst weiter und kippt mit der Maus. Der
+              Innenabstand oben/rechts gibt den hinteren Karten Platz. */}
           <div
-            className="reveal relative"
+            className="reveal relative pt-[9%] pr-[9%]"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
-            <ParallaxHeroFrame
-              src="/images/workspace-macbook.webp"
-              alt="Arbeitsplatz in Hamburg — MacBook, Notizbuch, Espresso. Hier entstehen die Sitalo-Websites."
-            />
+            <Depth3D maxTilt={5}>
+              <HeroShowcase items={showcaseItems()} />
+            </Depth3D>
           </div>
         </div>
       </div>
@@ -305,7 +296,7 @@ function Pricing() {
         {/* Magazin-Spread: featured (Business) groß und dunkel zentral,
             die zwei anderen flankieren als schlanke Editorial-Streifen.
             Kein 3-gleicher-Karten-Reflex. */}
-        <div className="mt-12 grid gap-px sm:mt-16 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
+        <div className="mt-10 grid grid-cols-2 gap-x-5 sm:mt-16 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
           {/* Linker Streifen: Starter */}
           <Depth3D className="order-2 lg:order-1" maxTilt={4}>
             <PricingFlanke paket={others[0]} side="left" />
@@ -313,7 +304,7 @@ function Pricing() {
 
           {/* Centerfold: Business */}
           <Depth3D
-            className="order-1 lg:order-2"
+            className="order-1 col-span-2 lg:order-2 lg:col-span-1"
             maxTilt={6}
           >
             <div id={featured.slug} className="h-full">
@@ -356,24 +347,24 @@ function PricingFlanke({
       id={paket.slug}
       className={
         side === "left"
-          ? "border-border/60 lg:border-r flex h-full flex-col p-6 sm:p-8 lg:pr-10"
-          : "border-border/60 lg:border-l flex h-full flex-col p-6 sm:p-8 lg:pl-10"
+          ? "border-border/60 lg:border-r flex h-full flex-col px-1 py-6 sm:p-8 lg:pr-10"
+          : "border-border/60 lg:border-l flex h-full flex-col px-1 py-6 sm:p-8 lg:pl-10"
       }
     >
       <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">
         {paket.name}
       </p>
-      <p className="serif text-foreground mt-4 text-4xl font-normal leading-none tracking-[-0.025em] sm:text-5xl">
+      <p className="serif text-foreground mt-3 text-[1.9rem] font-normal leading-none tracking-[-0.025em] sm:mt-4 sm:text-5xl">
         {paket.setup}
       </p>
       <p className="text-muted-foreground mt-2 text-[13px]">
         einmalig · zzgl. {paket.monthly}
       </p>
-      <p className="text-foreground/75 mt-6 max-w-xs text-pretty text-[14px] leading-relaxed">
+      <p className="text-foreground/75 mt-6 hidden max-w-xs text-pretty text-[14px] leading-relaxed sm:block">
         {paket.description}
       </p>
-      <ul className="mt-7 space-y-2.5 text-[13.5px]">
-        {paket.bullets.slice(0, 4).map((b) => (
+      <ul className="mt-5 space-y-2 text-[13.5px] sm:mt-7 sm:space-y-2.5">
+        {paket.bullets.slice(0, 3).map((b) => (
           <li
             key={b}
             className="text-foreground/80 flex items-baseline gap-2.5"
@@ -383,7 +374,7 @@ function PricingFlanke({
           </li>
         ))}
       </ul>
-      <div className="mt-auto pt-8">
+      <div className="mt-auto pt-6 sm:pt-8">
         <Link
           href={`/anfrage?paket=${paket.slug}`}
           className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
@@ -405,7 +396,7 @@ function PricingCenterfold({
   paket: (typeof PACKAGES)[number];
 }) {
   return (
-    <div className="bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-8 sm:p-10 lg:p-12">
+    <div className="gold-sweep bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10 lg:p-12">
       <div
         aria-hidden="true"
         className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"

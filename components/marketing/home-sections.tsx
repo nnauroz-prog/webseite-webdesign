@@ -1,49 +1,51 @@
-import Image from "next/image";
+import { ArrowRight, CalendarCheck, FileCheck2, Globe, MapPin, MessageSquare, Search, Wrench } from "lucide-react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarCheck,
-  FileCheck2,
-  Globe,
-  MapPin,
-  MessageSquare,
-  Search,
-  Wrench,
-} from "lucide-react";
 
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import type { ShowcaseItem } from "@/components/marketing/hero-showcase";
+import { SpotlightLink } from "@/components/marketing/motion-bits";
 import { getBrancheBySlug } from "@/lib/branchen-data";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 /**
  * Kompakte Startseiten-Sektionen. Prinzip: eine Aufgabe pro Sektion,
- * ein Satz pro Karte, ein Link weiter. Wer mehr wissen will, landet
- * auf der Unterseite, die das Thema ausführlich behandelt.
+ * so wenig Text wie möglich, ein Link weiter. Ausführliches steht auf
+ * den Unterseiten.
  */
 
 const SECTION = "border-border/40 border-t";
-const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
+const INNER = "mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20";
+
+/* ------------------------------------------------------------------
+ * Branchen-Layouts für den Kartenstapel im Hero.
+ * ---------------------------------------------------------------- */
+const SHOWCASE = ["pflege", "praxis", "handwerker", "kanzlei", "hotel"];
+
+export function showcaseItems(): ShowcaseItem[] {
+  return SHOWCASE.flatMap((slug) => {
+    const b = getBrancheBySlug(slug);
+    return b?.image ? [{ slug: b.slug, label: b.label, src: b.image.src, alt: b.image.alt }] : [];
+  });
+}
 
 /* ------------------------------------------------------------------
  * Fakten-Leiste — an der Stelle, an der andere Kundenlogos zeigen.
  * Nur Zusagen, die an anderer Stelle der Site belegt sind.
  * ---------------------------------------------------------------- */
 const FAKTEN = [
-  { icon: FileCheck2, title: "Festpreis vorab", text: "Schwarz auf weiß, keine Nachträge." },
-  { icon: MapPin, title: "Persönlich aus Hamburg", text: "Kein Callcenter, kein Ticket-System." },
-  { icon: MessageSquare, title: "Antwort meist am selben Werktag", text: "Von uns, nicht von einem Bot." },
-  { icon: CalendarCheck, title: "Monatlich kündbar", text: "Nach sechs Monaten, Bestand inklusive." },
+  { icon: FileCheck2, title: "Festpreis vorab" },
+  { icon: MapPin, title: "Persönlich aus Hamburg" },
+  { icon: MessageSquare, title: "Antwort meist am selben Werktag" },
+  { icon: CalendarCheck, title: "Monatlich kündbar" },
 ];
 
 export function FaktenLeiste() {
   return (
     <section aria-label="Was Sie sicher haben" className="bg-secondary/40 border-border/40 border-y">
-      <ul className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-6 gap-y-8 px-5 py-10 sm:px-6 lg:grid-cols-4 lg:py-12">
-        {FAKTEN.map(({ icon: Icon, title, text }) => (
-          <li key={title} className="flex flex-col gap-2">
-            <Icon className="text-gold h-5 w-5" aria-hidden="true" />
-            <p className="text-[15px] font-medium leading-snug tracking-tight">{title}</p>
-            <p className="text-muted-foreground text-[13.5px] leading-relaxed">{text}</p>
+      <ul className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-4 gap-y-4 px-5 py-6 sm:px-6 lg:grid-cols-4 lg:py-7">
+        {FAKTEN.map(({ icon: Icon, title }) => (
+          <li key={title} className="flex items-center gap-2.5">
+            <Icon className="text-gold h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className="text-[13.5px] font-medium leading-snug tracking-tight sm:text-[14.5px]">{title}</span>
           </li>
         ))}
       </ul>
@@ -52,61 +54,8 @@ export function FaktenLeiste() {
 }
 
 /* ------------------------------------------------------------------
- * Einblicke — vier Branchen-Layouts als Bildkarten.
- * ---------------------------------------------------------------- */
-const EINBLICKE = ["pflege", "praxis", "gastro", "handwerker"];
-
-export function Einblicke() {
-  const branchen = EINBLICKE.map((s) => getBrancheBySlug(s)).filter(
-    (b): b is NonNullable<typeof b> => Boolean(b?.image),
-  );
-  return (
-    <section id="beispiele" className={`${SECTION} scroll-mt-20`}>
-      <div className={INNER}>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <EditorialEyebrow>Layouts nach Branche</EditorialEyebrow>
-            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-              Einblicke in unsere Arbeit.
-            </h2>
-          </div>
-          <Link
-            href="/branchen"
-            className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
-          >
-            Alle zehn Branchen <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-        </div>
-        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-7 lg:grid-cols-4 lg:gap-5">
-          {branchen.map((b) => (
-            <li key={b.slug}>
-              <Link href={`/branchen/${b.slug}`} className="group block">
-                <div className="bg-secondary/40 relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-black/5">
-                  <Image
-                    src={b.image!.src}
-                    alt={b.image!.alt}
-                    fill
-                    sizes="(min-width: 1024px) 280px, 50vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                </div>
-                <p className="mt-3 text-[14px] font-medium leading-snug tracking-tight sm:text-[15px]">
-                  {b.label}
-                </p>
-                <p className="text-muted-foreground mt-1 hidden text-[13.5px] leading-relaxed sm:block">
-                  {b.shortBody.split(". ")[0].replace(/\.$/, "")}.
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------
  * Was möchten Sie voranbringen? — drei Einstiege nach Anliegen.
+ * Mobil als kompakte Zeilen, ab md als Karten mit Maus-Licht.
  * ---------------------------------------------------------------- */
 export function Voranbringen() {
   const starter = getPaketBySlug("starter");
@@ -115,9 +64,8 @@ export function Voranbringen() {
       icon: Globe,
       title: "Eine neue Website",
       text: "Für Betriebe ohne Seite oder mit einer, die nicht mehr passt.",
-      meta: starter ? starter.setup : undefined,
+      meta: starter ? starter.setup : "",
       href: "/pakete",
-      cta: "Pakete ansehen",
     },
     {
       icon: Wrench,
@@ -125,43 +73,39 @@ export function Voranbringen() {
       text: "Hosting, Updates, Änderungen — auch wenn wir sie nicht gebaut haben.",
       meta: "ab 49 € / Monat",
       href: "/wartung",
-      cta: "Wartung ansehen",
     },
     {
       icon: Search,
       title: "Bei Google gefunden werden",
-      text: "Wir sehen uns Ihre Seite an und schicken drei bis fünf konkrete Punkte.",
+      text: "Wir prüfen Ihre Seite und schicken drei bis fünf konkrete Punkte.",
       meta: "kostenlos, in 48 h",
       href: "/audit",
-      cta: "Audit anfordern",
     },
   ];
   return (
     <section className={SECTION}>
       <div className={INNER}>
-        <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-          Was möchten Sie voranbringen?
-        </h2>
-        <ul className="mt-10 grid gap-4 md:grid-cols-3">
-          {items.map(({ icon: Icon, title, text, meta, href, cta }) => (
+        <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Was möchten Sie voranbringen?</h2>
+        <ul className="mt-8 grid gap-3 md:mt-10 md:grid-cols-3 md:gap-4">
+          {items.map(({ icon: Icon, title, text, meta, href }) => (
             <li key={title}>
-              <Link
+              <SpotlightLink
                 href={href}
-                className="border-border/70 bg-card hover:border-foreground/30 group flex h-full flex-col rounded-2xl border p-6 transition-colors"
+                className="border-border/70 bg-card hover:border-gold/50 group flex h-full items-center gap-4 overflow-hidden rounded-2xl border p-4 transition-[border-color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-24px_rgb(40_25_10/0.35)] md:flex-col md:items-start md:p-6"
               >
-                <Icon className="text-gold h-6 w-6" aria-hidden="true" />
-                <p className="mt-5 text-lg font-semibold tracking-tight">{title}</p>
-                <p className="text-muted-foreground mt-2 text-[14.5px] leading-relaxed">{text}</p>
-                {meta ? (
-                  <p className="text-foreground/80 mt-4 font-mono text-[11px] uppercase tracking-[0.18em]">
+                <Icon className="text-gold h-6 w-6 shrink-0" aria-hidden="true" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[16px] font-semibold tracking-tight md:mt-1 md:text-lg">{title}</span>
+                  <span className="text-muted-foreground mt-2 hidden text-[14.5px] leading-relaxed md:block">{text}</span>
+                  <span className="text-foreground/70 mt-1 block font-mono text-[11px] uppercase tracking-[0.18em] md:mt-4">
                     {meta}
-                  </p>
-                ) : null}
-                <span className="text-foreground mt-auto inline-flex items-center gap-1.5 pt-6 text-[14px] font-medium">
-                  {cta}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                  </span>
                 </span>
-              </Link>
+                <ArrowRight
+                  className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1 md:mt-auto"
+                  aria-hidden="true"
+                />
+              </SpotlightLink>
             </li>
           ))}
         </ul>
@@ -171,21 +115,13 @@ export function Voranbringen() {
 }
 
 /* ------------------------------------------------------------------
- * Ablauf — drei Schritte, je ein Satz.
+ * Ablauf — drei Schritte auf einer Linie, die sich beim Scrollen
+ * zeichnet (globals.css: .ablauf-line).
  * ---------------------------------------------------------------- */
 const SCHRITTE = [
-  {
-    title: "Sie schreiben uns",
-    text: "Drei Felder, fertig. Wir melden uns persönlich, meist am selben Werktag.",
-  },
-  {
-    title: "Kurzes Gespräch",
-    text: "15 Minuten am Telefon oder bei einem Kaffee in Hamburg. Danach: Festpreis und Termin.",
-  },
-  {
-    title: "Wir bauen, Sie geben frei",
-    text: "Kleine Seiten stehen oft nach 1–2 Werktagen, größere zum vereinbarten Termin.",
-  },
+  { title: "Sie schreiben uns", text: "Drei Felder. Antwort meist am selben Werktag." },
+  { title: "Kurzes Gespräch", text: "15 Minuten. Danach: Festpreis und Termin." },
+  { title: "Wir bauen, Sie geben frei", text: "Kleine Seiten oft in 1–2 Werktagen." },
 ];
 
 export function AblaufKompakt() {
@@ -193,9 +129,7 @@ export function AblaufKompakt() {
     <section className={SECTION}>
       <div className={INNER}>
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-            So läuft es ab.
-          </h2>
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">So läuft es ab.</h2>
           <Link
             href="/ablauf"
             className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
@@ -203,17 +137,28 @@ export function AblaufKompakt() {
             Ablauf im Detail <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
-        <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">
-          {SCHRITTE.map((s, i) => (
-            <li key={s.title} className="border-border/60 border-t pt-5">
-              <span className="text-gold font-mono text-[12px] tracking-[0.2em]" style={{ fontVariantNumeric: "lining-nums" }}>
-                0{i + 1}
-              </span>
-              <p className="mt-3 text-lg font-semibold tracking-tight">{s.title}</p>
-              <p className="text-muted-foreground mt-2 text-[14.5px] leading-relaxed">{s.text}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="relative mt-10">
+          <div aria-hidden="true" className="bg-border/70 absolute top-[7px] right-0 left-0 hidden h-px md:block" />
+          <div
+            aria-hidden="true"
+            className="ablauf-line from-gold via-gold/70 to-gold/20 absolute top-[7px] right-0 left-0 hidden h-px bg-gradient-to-r md:block"
+          />
+          <ol className="relative grid gap-7 md:grid-cols-3 md:gap-8">
+            {SCHRITTE.map((s, i) => (
+              <li key={s.title} className="flex gap-4 md:block">
+                <span
+                  aria-hidden="true"
+                  className="ablauf-dot border-gold bg-background mt-1 block h-[15px] w-[15px] shrink-0 rounded-full border-2 md:mt-0"
+                />
+                <div>
+                  <p className="text-gold font-mono text-[11px] tracking-[0.2em] md:mt-5">0{i + 1}</p>
+                  <p className="mt-1 text-lg font-semibold tracking-tight">{s.title}</p>
+                  <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{s.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );
