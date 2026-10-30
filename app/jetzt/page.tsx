@@ -5,7 +5,13 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { ATELIER_GERADE, ATELIER_NOTES } from "@/lib/atelier-notes";
+import {
+  ATELIER_GERADE,
+  ATELIER_NOTES,
+  ATELIER_STAND,
+  atelierStandDate,
+  atelierStandMonth,
+} from "@/lib/atelier-notes";
 import { AVAILABILITY } from "@/lib/availability";
 import { formatDate, JOURNAL_POSTS } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
@@ -18,7 +24,7 @@ import {
 export const metadata: Metadata = {
   title: "Jetzt — was im Atelier gerade passiert",
   description:
-    "Die Now-Page des Ateliers: woran wir gerade bauen, wie viele Bauplätze frei sind, wann die nächste Sprechstunde ist, was wir gerade lernen. Monatlich aktualisiert.",
+    "Die Now-Page des Ateliers: woran wir gerade bauen, wie viele Bauplätze frei sind, wann die nächste Sprechstunde ist, was wir gerade lernen.",
   alternates: { canonical: "/jetzt" },
 };
 
@@ -36,11 +42,10 @@ export const metadata: Metadata = {
  * Kein Hamburger Wettbewerber führt eine Now-Page.
  */
 export default function JetztPage() {
-  const monthLabel = new Date().toLocaleDateString("de-DE", {
-    month: "long",
-    year: "numeric",
-    timeZone: "Europe/Berlin",
-  });
+  // Stand der Atelier-Notizen, nicht das heutige Datum — die Seite
+  // verspricht selbst, dass man ihr Veraltetes vorhalten darf.
+  const monthLabel = atelierStandMonth();
+  const standDate = atelierStandDate();
   const sprechstunde = nextSprechstunden(1)[0];
   const latestPosts = JOURNAL_POSTS.slice(0, 2);
   const { availableSlots, slotMonth, nextMonth } = AVAILABILITY;
@@ -52,7 +57,7 @@ export default function JetztPage() {
     headline: `Jetzt — ${monthLabel}`,
     description:
       "Was im Sitalo-Atelier gerade passiert: Werkbank, freie Bauplätze, nächste Sprechstunde, zuletzt geschrieben.",
-    datePublished: new Date().toISOString().slice(0, 10),
+    dateModified: ATELIER_STAND,
     author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
     publisher: { "@id": `${SITE_URL}/#business` },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/jetzt` },
@@ -85,7 +90,7 @@ export default function JetztPage() {
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
               />
-              Stand {monthLabel} · wird monatlich erneuert
+              Stand {standDate}
             </p>
             <h1 className="serif text-foreground mt-8 text-balance text-5xl font-normal leading-[0.98] tracking-[-0.02em] sm:text-6xl lg:text-7xl">
               Jetzt.

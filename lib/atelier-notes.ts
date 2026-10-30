@@ -14,7 +14,9 @@
  */
 
 export type AtelierNote = {
-  /** Relative Zeit-Anker, z. B. „Diese Woche", „Mittwoch", „KW 20". */
+  /** Absoluter Zeit-Anker, z. B. „Mitte Juni", „Ende Mai". Keine
+   *  relativen Angaben wie „Diese Woche" — die Seiten sind statisch
+   *  und würden sonst Monate später noch „diese Woche" behaupten. */
   when: string;
   /** Ein-Satz-Beschreibung der Tätigkeit. Anonymisiert (Branche +
    *  Stadtteil, kein Name). Möglichst konkret, was wirklich gemacht
@@ -22,24 +24,50 @@ export type AtelierNote = {
   text: string;
 };
 
+/**
+ * Wann die Notizen zuletzt gepflegt wurden (yyyy-mm-dd). Die
+ * Überschriften auf Homepage und /jetzt zeigen dieses Datum statt
+ * des aktuellen Monats — beim Aktualisieren der Notizen mitziehen.
+ */
+export const ATELIER_STAND = "2026-06-14";
+
 export const ATELIER_NOTES: AtelierNote[] = [
   {
-    when: "Diese Woche",
+    when: "Mitte Juni",
     text: "Pflegedienst aus Wandsbek — Bewerbungsformular und Team-Bereich aufgebaut.",
   },
   {
-    when: "Letzte Woche",
+    when: "Anfang Juni",
     text: "Café in Eppendorf — Speisekarte selbst pflegbar übergeben.",
   },
   {
-    when: "Vor zwei Wochen",
+    when: "Ende Mai",
     text: "Friseur Eimsbüttel — Online-Termin-Buchung live geschaltet.",
   },
   {
-    when: "Diesen Monat",
+    when: "Im Juni",
     text: "Drei Erstgespräche aus Hamburg-Nord, zwei laufen weiter.",
   },
 ];
+
+/** „Juni 2026" — Monat des Notizen-Stands. */
+export function atelierStandMonth(): string {
+  return new Date(`${ATELIER_STAND}T12:00:00Z`).toLocaleDateString("de-DE", {
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Berlin",
+  });
+}
+
+/** „14. Juni 2026" — voller Notizen-Stand. */
+export function atelierStandDate(): string {
+  return new Date(`${ATELIER_STAND}T12:00:00Z`).toLocaleDateString("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Berlin",
+  });
+}
 
 /**
  * Was wir gerade lernen/lesen/ausprobieren — der persönlichere
