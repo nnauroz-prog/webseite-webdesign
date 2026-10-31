@@ -41,10 +41,10 @@ export function MarketingFooter() {
           <FooterCol title="Kontakt">
             <li>
               <a
-                href="tel:+4915224437370"
+                href="tel:+491607621876"
                 className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
               >
-                0152 24437370
+                0160 7621876
               </a>
             </li>
             <li>
@@ -89,7 +89,7 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h3 className="text-background/55 mb-5 text-[11px] font-medium uppercase tracking-[0.22em]">
+      <h3 className="text-background/55 mb-5 text-[13px] font-medium">
         {title}
       </h3>
       <ul className="space-y-3 text-[15px]">{children}</ul>

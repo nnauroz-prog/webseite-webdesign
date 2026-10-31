@@ -49,10 +49,10 @@ export default function ImpressumPage() {
               <p className="text-muted-foreground">
                 Telefon:{" "}
                 <a
-                  href="tel:+4915224437370"
+                  href="tel:+491607621876"
                   className="hover:text-foreground underline"
                 >
-                  0152 24437370
+                  0160 7621876
                 </a>
                 <br />
                 E-Mail:{" "}

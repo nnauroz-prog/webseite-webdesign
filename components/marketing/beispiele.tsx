@@ -1,3 +1,4 @@
+import { SectionHead } from "@/components/marketing/home-sections";
 import { CountUp } from "@/components/marketing/motion-bits";
 
 /**
@@ -56,14 +57,11 @@ export function Beispiele() {
   return (
     <section id="beispiele" className="bg-foreground text-background relative scroll-mt-20 overflow-hidden">
       <div className="relative mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <p className="text-background/60 inline-flex items-center gap-2.5 text-[13px] font-medium">
-          <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
-          Ergebnisse aus Projekten
-        </p>
-        <ul className="mt-10 grid grid-cols-2 gap-6 sm:gap-16">
+        <SectionHead dark label="Ergebnisse" title="Was nach dem Start passiert." />
+        <ul className="mt-12 grid grid-cols-2 gap-6 sm:gap-10 lg:mt-16 lg:grid-cols-12 lg:gap-8">
           {BEISPIELE.map((b) => (
-            <li key={b.branche + b.stadtteil}>
-              <p className="serif text-gold text-6xl leading-none tracking-[-0.03em] sm:text-8xl lg:text-9xl">
+            <li key={b.branche + b.stadtteil} className="lg:col-span-4 lg:first:col-start-4">
+              <p className="serif text-gold text-6xl lining-nums leading-none tracking-[-0.03em] sm:text-8xl">
                 <CountUp from={b.zahl.from} to={b.zahl.to} prefix={b.zahl.prefix} />
               </p>
               <p className="text-background/90 mt-4 text-pretty text-[14px] font-medium leading-snug tracking-tight sm:text-lg">
@@ -76,7 +74,7 @@ export function Beispiele() {
             </li>
           ))}
         </ul>
-        <p className="text-background/45 mt-10 text-[12px]">
+        <p className="text-background/45 mt-12 text-[12.5px] lg:ml-[25%] lg:pl-2">
           Anonymisiert: Die Inhaber haben Name und Logo noch nicht freigegeben.
         </p>
       </div>

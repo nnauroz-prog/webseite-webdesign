@@ -15,7 +15,7 @@
 
 export const SPRECHSTUNDE_BEGINN_HHMM = "17:00";
 export const SPRECHSTUNDE_ENDE_HHMM = "18:30";
-export const SPRECHSTUNDE_RUFNUMMER = "0152 24437370";
+export const SPRECHSTUNDE_RUFNUMMER = "0160 7621876";
 
 export type SprechstundeTermin = {
   /** ISO-Datum yyyy-mm-dd. */

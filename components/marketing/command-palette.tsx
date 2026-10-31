@@ -170,8 +170,8 @@ export function CommandPalette({
       {
         kind: "external",
         label: "Anrufen",
-        description: "0152 24437370",
-        href: "tel:+4915224437370",
+        description: "0160 7621876",
+        href: "tel:+491607621876",
         icon: Phone,
       },
       {
