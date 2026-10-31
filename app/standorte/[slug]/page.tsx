@@ -114,7 +114,7 @@ export default async function StandortPage({
       "@type": "Place",
       name: `Hamburg ${standort.name}`,
     },
-    telephone: "+4915224437370",
+    telephone: "+491607621876",
     email: "info@sitalo.de",
   };
 

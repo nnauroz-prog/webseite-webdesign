@@ -211,10 +211,10 @@ export function AtelierBrief() {
                 </a>
                 {" · "}
                 <a
-                  href="tel:+4915224437370"
+                  href="tel:+491607621876"
                   className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
                 >
-                  0152 24437370
+                  0160 7621876
                 </a>
               </div>
             </div>

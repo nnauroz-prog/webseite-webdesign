@@ -97,7 +97,7 @@ export default async function AnfragePage({
               </p>
               <div className="flex flex-wrap justify-center gap-2.5">
                 <a
-                  href="tel:+4915224437370"
+                  href="tel:+491607621876"
                   className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
                 >
                   Anrufen

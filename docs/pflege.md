@@ -72,7 +72,7 @@ Reine Referenz — diese Sachen ändern sich selten, aber wenn doch, ist hier zu
 - Wird automatisch als FAQPage-JSON-LD in den HTML-Head gerendert (für Google Rich Results).
 
 ### Telefonnummer & E-Mail
-- Telefonnummer steht hardcoded in mehreren Files: Header-Footer, FinalCta, /kontakt, /atelier. Bei Änderung Suchen-und-Ersetzen über `+4915224437370` und `0152 24437370`.
+- Telefonnummer steht hardcoded in mehreren Files: Header-Footer, FinalCta, /kontakt, /atelier. Bei Änderung Suchen-und-Ersetzen über `+491607621876` und `0160 7621876`.
 - E-Mail `info@sitalo.de` ebenfalls Suchen-und-Ersetzen.
 - vCard `public/sitalo-kontakt.vcf` separat aktualisieren, wenn sich Daten ändern.
 

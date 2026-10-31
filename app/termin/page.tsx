@@ -132,7 +132,7 @@ export default function TerminPage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <a
-                href="tel:+4915224437370"
+                href="tel:+491607621876"
                 className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-11 items-center rounded-full border px-5 text-sm font-medium tracking-tight transition-all"
               >
                 Direkt anrufen

@@ -50,7 +50,7 @@ export default function SprechstundePage() {
     eventStatus: "https://schema.org/EventScheduled",
     location: {
       "@type": "VirtualLocation",
-      url: `tel:+4915224437370`,
+      url: `tel:+491607621876`,
     },
     organizer: {
       "@type": "LocalBusiness",
@@ -162,7 +162,7 @@ function Hero({
             </span>
           </p>
           <a
-            href="tel:+4915224437370"
+            href="tel:+491607621876"
             className="bg-foreground text-background hover:bg-foreground/90 group mt-6 inline-flex h-12 items-center gap-2 rounded-full px-6 text-[15px] font-medium tracking-tight"
           >
             <Phone className="h-4 w-4" aria-hidden="true" />

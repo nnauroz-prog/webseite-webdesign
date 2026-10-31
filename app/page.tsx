@@ -6,6 +6,7 @@ import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
+  SectionHead,
   Voranbringen,
   Vorteile,
 } from "@/components/marketing/home-sections";
@@ -250,28 +251,20 @@ function Pricing() {
   return (
     <section id="pakete" className="border-border/40 border-t scroll-mt-20">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        {/* Header mit Hand-Underline auf der Italic-Akzentzeile */}
-        <div className="max-w-2xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2.5 text-[13px] font-medium">
-            <span
-              aria-hidden="true"
-              className="bg-gold inline-block h-px w-8"
-            />
-            Pakete & Preise
-          </p>
-          <h2 className="rise mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-            Klare Preise.
-            <br />
-            <span className="serif-italic text-muted-foreground relative font-normal">
-              Keine Überraschungen.
-            </span>
-          </h2>
-        </div>
+        <SectionHead
+          label="Pakete & Preise"
+          title={
+            <>
+              Klare Preise. <span className="text-muted-foreground">Keine Überraschungen.</span>
+            </>
+          }
+          link={{ href: "/pakete", text: "Alle Pakete vergleichen" }}
+        />
 
         {/* Magazin-Spread: featured (Business) groß und dunkel zentral,
             die zwei anderen flankieren als schlanke Editorial-Streifen.
             Kein 3-gleicher-Karten-Reflex. */}
-        <div className="mt-10 grid grid-cols-2 gap-x-5 sm:mt-16 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
+        <div className="mt-12 grid grid-cols-2 gap-x-5 lg:mt-16 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
           {/* Linker Streifen: Starter */}
           <div className="order-2 lg:order-1">
             <PricingFlanke paket={others[0]} side="left" />
@@ -289,14 +282,6 @@ function Pricing() {
             <PricingFlanke paket={others[1]} side="right" />
           </div>
         </div>
-
-        <Link
-          href="/pakete"
-          className="text-foreground mt-12 inline-flex items-center gap-2 text-[15px] font-medium underline-offset-4 hover:underline"
-        >
-          Alle Pakete vergleichen
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
       </div>
     </section>
   );
@@ -424,19 +409,9 @@ function Faq() {
       className="border-border/40 border-t scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
-          <div>
-            <h2 className="rise text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
-              Häufige Fragen.
-            </h2>
-            <p className="text-muted-foreground mt-6 max-w-sm text-pretty text-lg leading-relaxed">
-              Ihre Frage ist nicht dabei?{" "}
-              <Link href="/kontakt" className="text-foreground underline underline-offset-4">
-                Schreiben Sie uns.
-              </Link>
-            </p>
-          </div>
-          <dl className="divide-border/70 -mt-4 divide-y">
+        <SectionHead label="Fragen" title="Häufige Fragen." link={{ href: "/faq", text: "Alle Fragen" }} />
+        <div className="mt-10 lg:mt-14 lg:grid lg:grid-cols-12 lg:gap-8">
+          <dl className="divide-border/70 border-border/70 divide-y border-y lg:col-span-9 lg:col-start-4">
             {FAQ.map((item) => (
               <details key={item.q} className="group py-6">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
@@ -461,15 +436,6 @@ function Faq() {
             ))}
           </dl>
         </div>
-        <div className="mt-16 text-left">
-          <Link
-            href="/faq"
-            className="text-foreground inline-flex items-center gap-2 text-[15px] font-medium underline-offset-4 hover:underline"
-          >
-            Alle Fragen ansehen
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
       </div>
     </section>
   );
@@ -487,7 +453,7 @@ function FinalCta() {
       {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
           ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
       {/* Mehrere weiche Halos für editoriale Tiefe */}
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
+      <div className="relative mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
         <div>
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
@@ -508,7 +474,7 @@ function FinalCta() {
                 <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a
-                href="tel:+4915224437370"
+                href="tel:+491607621876"
                 className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
               >
                 Anrufen

@@ -269,7 +269,7 @@ function MobileFullscreenMenu({
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap gap-2.5">
             <a
-              href="tel:+4915224437370"
+              href="tel:+491607621876"
               className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
             >
               Anrufen
