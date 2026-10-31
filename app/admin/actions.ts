@@ -30,7 +30,25 @@ export async function login(
   if (!supabase) return { error: "Supabase ist nicht konfiguriert." };
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: "E-Mail oder Passwort stimmt nicht." };
+  if (error) {
+    // Grund im Vercel-Log festhalten und verständlich anzeigen — „falsches
+    // Passwort" und „falscher Schlüssel" sehen sonst gleich aus.
+    console.error(`[admin] Login fehlgeschlagen: ${error.status ?? "?"} ${error.code ?? ""} ${error.message}`);
+    const msg = `${error.code ?? ""} ${error.message}`.toLowerCase();
+    if (msg.includes("api key") || error.status === 401) {
+      return {
+        error:
+          "Supabase lehnt den Schlüssel ab. NEXT_PUBLIC_SUPABASE_ANON_KEY passt nicht zur Project URL — bitte beide aus demselben Supabase-Projekt in Vercel eintragen und neu deployen.",
+      };
+    }
+    if (msg.includes("not_confirmed") || msg.includes("not confirmed")) {
+      return { error: "Dieses Konto ist in Supabase noch nicht bestätigt (Authentication → Users → Confirm)." };
+    }
+    if (msg.includes("invalid_credentials") || msg.includes("invalid login")) {
+      return { error: "E-Mail oder Passwort stimmt nicht." };
+    }
+    return { error: `Anmeldung nicht möglich: ${error.message}` };
+  }
 
   if (!adminEmails().includes(email)) {
     await supabase.auth.signOut();
