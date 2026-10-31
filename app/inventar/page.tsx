@@ -86,7 +86,7 @@ function Hero() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28 lg:py-32">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -121,7 +121,7 @@ function SectionBlock({ section }: { section: InventarSection }) {
       className="border-border/40 border-b scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -153,7 +153,7 @@ function ItemRow({ item }: { item: InventarItem }) {
           {item.what}
         </p>
         {item.since && (
-          <p className="text-muted-foreground/60 mt-3 font-mono text-[10px] uppercase tracking-[0.22em]">
+          <p className="text-muted-foreground/60 mt-3 text-[13px]">
             {item.since}
           </p>
         )}
@@ -171,7 +171,7 @@ function NotUsedBlock() {
   return (
     <section className="bg-foreground text-background border-foreground/10 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-24 sm:py-28">
-        <p className="text-background/65 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-background/65 inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"

@@ -165,7 +165,7 @@ function QuickCard({
       }`}
     >
       <p
-        className={`font-mono text-[10px] uppercase tracking-[0.22em] ${
+        className={`text-[13px] ${
           highlight ? "text-background/65" : "text-muted-foreground"
         }`}
       >
@@ -271,7 +271,7 @@ function DeepDives() {
     <section className="border-border/40 border-t">
       <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
         <div className="mb-12 max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
             <span
               aria-hidden="true"
               className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -302,7 +302,7 @@ function DeepDiveBlock({ d }: { d: DeepDive }) {
     <article id={d.id} className="scroll-mt-24">
       <div className="grid gap-8 lg:grid-cols-[1fr_2fr] lg:gap-16">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+          <p className="text-muted-foreground text-[13px]">
             Alternative
           </p>
           <h3 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
@@ -360,7 +360,7 @@ function Block({
 }) {
   return (
     <div className="border-border/50 border-l-2 pl-5">
-      <p className="text-muted-foreground/80 mb-3 font-mono text-[10px] uppercase tracking-[0.22em]">
+      <p className="text-muted-foreground/80 mb-3 text-[13px]">
         {title}
       </p>
       {children}
@@ -449,7 +449,7 @@ function TableSummary() {
     <section className="border-border/40 border-t">
       <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
         <div className="max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
             <span
               aria-hidden="true"
               className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -465,22 +465,22 @@ function TableSummary() {
           <table className="w-full min-w-[720px] border-collapse text-left text-[13.5px]">
             <thead>
               <tr className="border-border/40 border-b">
-                <th className="text-muted-foreground py-3 pr-4 font-mono text-[10px] uppercase tracking-[0.18em]">
+                <th className="text-muted-foreground py-3 pr-4 text-[13px]">
                   Kriterium
                 </th>
-                <th className="text-muted-foreground py-3 px-3 text-center font-mono text-[10px] uppercase tracking-[0.18em]">
+                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
                   Wix
                 </th>
-                <th className="text-muted-foreground py-3 px-3 text-center font-mono text-[10px] uppercase tracking-[0.18em]">
+                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
                   Squarespace
                 </th>
-                <th className="text-muted-foreground py-3 px-3 text-center font-mono text-[10px] uppercase tracking-[0.18em]">
+                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
                   Jimdo
                 </th>
-                <th className="text-muted-foreground py-3 px-3 text-center font-mono text-[10px] uppercase tracking-[0.18em]">
+                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
                   KI-Eigenbau
                 </th>
-                <th className="text-foreground bg-foreground/[0.03] py-3 px-3 text-center font-mono text-[10px] uppercase tracking-[0.18em]">
+                <th className="text-foreground bg-foreground/[0.03] py-3 px-3 text-center text-[13px]">
                   Sitalo
                 </th>
               </tr>
@@ -551,7 +551,7 @@ function FinalCta() {
       <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
         <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground text-[13px] font-medium">
               Unsicher, was zu Ihnen passt?
             </p>
             <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">

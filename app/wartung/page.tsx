@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
@@ -244,7 +245,7 @@ function Hero() {
 function Plans() {
   return (
     <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <div className="grid gap-4 md:grid-cols-3">
           {PLANS.map((plan) => (
             <PlanCard key={plan.slug} plan={plan} />
@@ -269,7 +270,7 @@ function PlanCard({ plan }: { plan: Plan }) {
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-xl font-semibold tracking-tight">{plan.name}</h2>
         {dark ? (
-          <span className="bg-gold text-foreground whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]">
+          <span className="bg-gold text-foreground whitespace-nowrap rounded-full px-2.5 py-1 text-[12px] font-semibold">
             Häufigste Wahl
           </span>
         ) : null}
@@ -312,9 +313,9 @@ const CASES = [
 function ForWhom() {
   return (
     <section className="border-border/40 bg-secondary/30 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Wann das hilft.</h2>
-        <ul className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <SectionHead label="Für wen" title="Wann das hilft." />
+        <ul className={`mt-10 lg:mt-14 grid gap-x-8 gap-y-6 sm:grid-cols-2 ${BODY_OFFSET}`}>
           {CASES.map((c) => (
             <li key={c.title} className="border-border/60 border-t pt-4">
               <p className="text-[16px] font-semibold tracking-tight">{c.title}</p>
@@ -363,9 +364,9 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
 function Faq() {
   return (
     <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-6 sm:py-16">
-        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Häufige Fragen.</h2>
-        <div className="divide-border/60 mt-6 divide-y">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <SectionHead label="Fragen" title="Häufige Fragen." />
+        <div className={`divide-border/60 mt-10 lg:mt-14 divide-y ${BODY_OFFSET}`}>
           {FAQ_ITEMS.map((item) => (
             <details key={item.q} className="group py-4">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[16px] font-medium">

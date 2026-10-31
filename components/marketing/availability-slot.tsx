@@ -56,7 +56,7 @@ export function AvailabilitySlot({
           className,
         )}
       >
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className={cn(
@@ -79,7 +79,7 @@ export function AvailabilitySlot({
   return (
     <span
       className={cn(
-        "text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] sm:text-[11px]",
+        "text-muted-foreground inline-flex items-center gap-2 text-[13px]",
         className,
       )}
     >

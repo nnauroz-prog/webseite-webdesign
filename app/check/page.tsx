@@ -95,7 +95,7 @@ export default function CheckPage() {
           <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-24">
             <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
               <div>
-                <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+                <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
                   <span
                     aria-hidden="true"
                     className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -141,7 +141,7 @@ export default function CheckPage() {
 
         <section className="border-border/40 border-t">
           <div className="mx-auto w-full max-w-3xl px-6 py-16 text-center sm:py-20">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -197,7 +197,7 @@ function Card({
         <span className="border-border/60 text-foreground/70 inline-flex h-9 w-9 items-center justify-center rounded-full border">
           <Icon className="h-4 w-4" aria-hidden="true" />
         </span>
-        <span className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+        <span className="text-muted-foreground text-[13px]">
           {badge}
         </span>
       </div>

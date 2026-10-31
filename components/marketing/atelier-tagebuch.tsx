@@ -105,7 +105,7 @@ export function AtelierTagebuch() {
             <div className="relative px-7 pt-12 pb-8 sm:px-10 sm:pt-14 sm:pb-10">
               <h2
                 id="atelier-tagebuch-titel"
-                className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground"
+                className="text-[13px] text-muted-foreground"
               >
                 <span className="sr-only">Werkstatt-Tagebuch — </span>
                 Sitalo
@@ -122,7 +122,7 @@ export function AtelierTagebuch() {
                   >
                     {/* Datums-Streifen links — Mono, sehr klein,
                         wie Ringbuch-Heftung. */}
-                    <span className="text-muted-foreground/85 mt-1 shrink-0 font-mono text-[10.5px] uppercase tracking-[0.18em] sm:w-[6.5rem]">
+                    <span className="text-muted-foreground/85 mt-1 shrink-0 text-[13px] sm:w-[6.5rem]">
                       {note.when}
                     </span>
                     {/* Eintragstext, leicht serif-italic getönt für
@@ -141,7 +141,7 @@ export function AtelierTagebuch() {
                 {/* Leerzeile am Ende — gibt das Gefühl, dass das
                     Tagebuch weiterläuft. */}
                 <li className="flex gap-5 sm:gap-7">
-                  <span className="text-muted-foreground/50 mt-1 shrink-0 font-mono text-[10.5px] uppercase tracking-[0.18em] sm:w-[6.5rem]">
+                  <span className="text-muted-foreground/50 mt-1 shrink-0 text-[13px] sm:w-[6.5rem]">
                     …
                   </span>
                   <p className="text-muted-foreground/55 text-[14px] italic">

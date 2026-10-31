@@ -122,7 +122,7 @@ export function TerminBooking() {
           Calendar-Anhang. Falls der Slot doppelt belegt sein sollte
           (selten), schlagen wir Ihnen zwei Alternativen vor.
         </p>
-        <p className="text-muted-foreground/70 mt-6 font-mono text-[10px] uppercase tracking-[0.2em]">
+        <p className="text-muted-foreground/70 mt-6 text-[13px]">
           Bestätigung manuell · meist schneller als 15 Min
         </p>
       </div>
@@ -136,7 +136,7 @@ export function TerminBooking() {
       className="border-border/60 bg-card/60 ring-foreground/5 space-y-8 rounded-2xl border p-6 ring-1 sm:p-8"
     >
       <fieldset>
-        <legend className="text-muted-foreground flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <legend className="text-muted-foreground flex items-center gap-2 text-[13px]">
           <Calendar className="h-3 w-3" aria-hidden="true" />
           Schritt 1 — Tag
         </legend>
@@ -159,7 +159,7 @@ export function TerminBooking() {
       </fieldset>
 
       <fieldset disabled={!selectedDate} className="disabled:opacity-50">
-        <legend className="text-muted-foreground flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <legend className="text-muted-foreground flex items-center gap-2 text-[13px]">
           <Clock className="h-3 w-3" aria-hidden="true" />
           Schritt 2 — Uhrzeit
         </legend>
@@ -197,7 +197,7 @@ export function TerminBooking() {
         disabled={!selectedDate || !selectedSlot}
         className="disabled:opacity-50"
       >
-        <legend className="text-muted-foreground flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <legend className="text-muted-foreground flex items-center gap-2 text-[13px]">
           <ArrowRight className="h-3 w-3" aria-hidden="true" />
           Schritt 3 — Sie
         </legend>
@@ -360,7 +360,7 @@ function DayButton({
     >
       <span
         className={cn(
-          "font-mono text-[10px] uppercase tracking-[0.18em]",
+          "text-[13px]",
           selected ? "text-background/65" : "text-muted-foreground",
         )}
       >
@@ -371,7 +371,7 @@ function DayButton({
       </span>
       <span
         className={cn(
-          "text-[10px] uppercase tracking-[0.12em]",
+          "text-[13px]",
           selected ? "text-background/65" : "text-muted-foreground",
         )}
       >

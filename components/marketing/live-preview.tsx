@@ -294,7 +294,7 @@ function MiniSite({ preset, name }: { preset: Preset; name: string }) {
       {/* Hero */}
       <div className="grid flex-1 grid-cols-[1.05fr_1fr] gap-10 px-10 pt-10 pb-8" style={{ background: tint }}>
         <div className="flex flex-col justify-center">
-          <p className="lp-step text-[12px] font-semibold uppercase tracking-[0.22em]" style={{ color: accent, "--d": 1 } as React.CSSProperties}>
+          <p className="lp-step text-[12px] font-semibold" style={{ color: accent, "--d": 1 } as React.CSSProperties}>
             {name}
           </p>
           <h3 className="lp-step mt-3 text-[40px] font-semibold leading-[1.05] tracking-[-0.03em]" style={{ "--d": 2 } as React.CSSProperties}>

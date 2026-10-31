@@ -85,7 +85,7 @@ export default function JetztPage() {
         {/* Hero */}
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28 lg:py-32">
-            <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -114,7 +114,7 @@ export default function JetztPage() {
         {/* Werkbank — laufende Arbeit aus den Atelier-Notizen */}
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-            <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
               <span
                 aria-hidden="true"
                 className="bg-gold inline-block h-px w-10"
@@ -133,7 +133,7 @@ export default function JetztPage() {
                   key={note.when + note.text}
                   className="flex flex-col gap-2 py-6 sm:flex-row sm:items-baseline sm:gap-8 sm:py-7"
                 >
-                  <span className="text-muted-foreground/85 font-mono text-[11px] uppercase tracking-[0.15em] shrink-0 sm:w-[9rem]">
+                  <span className="text-muted-foreground/85 text-[13px] shrink-0 sm:w-[9rem]">
                     {note.when}
                   </span>
                   <span className="text-foreground/85 text-pretty text-[16px] leading-[1.65]">
@@ -149,7 +149,7 @@ export default function JetztPage() {
         <section className="border-border/40 border-b">
           <div className="mx-auto grid w-full max-w-3xl gap-5 px-6 py-16 sm:grid-cols-2 sm:py-20">
             <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1 sm:p-7">
-              <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+              <p className="text-muted-foreground text-[13px]">
                 Bauplätze
               </p>
               <p className="serif text-foreground mt-3 text-balance text-2xl leading-snug tracking-[-0.01em] sm:text-3xl">
@@ -166,7 +166,7 @@ export default function JetztPage() {
               </Link>
             </div>
             <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1 sm:p-7">
-              <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+              <p className="text-muted-foreground text-[13px]">
                 Nächste Sprechstunde
               </p>
               <p className="serif text-foreground mt-3 text-balance text-2xl leading-snug tracking-[-0.01em] sm:text-3xl">
@@ -188,7 +188,7 @@ export default function JetztPage() {
         {/* Gerade — der persönlichere Teil */}
         <section className="bg-foreground text-background border-foreground/10 border-b">
           <div className="mx-auto w-full max-w-3xl px-6 py-24 sm:py-28">
-            <p className="text-background/65 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+            <p className="text-background/65 inline-flex items-center gap-2 text-[13px]">
               <span
                 aria-hidden="true"
                 className="bg-gold inline-block h-px w-10"
@@ -207,7 +207,7 @@ export default function JetztPage() {
                   key={item.label}
                   className="grid gap-2 py-7 sm:grid-cols-[11rem_1fr] sm:gap-8 sm:py-8"
                 >
-                  <dt className="text-background/55 font-mono text-[11px] uppercase tracking-[0.18em]">
+                  <dt className="text-background/55 text-[13px]">
                     {item.label}
                   </dt>
                   <dd className="text-background/90 text-pretty text-[16px] leading-[1.65]">
@@ -222,7 +222,7 @@ export default function JetztPage() {
         {/* Zuletzt geschrieben */}
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-            <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
               <span
                 aria-hidden="true"
                 className="bg-gold inline-block h-px w-10"
@@ -236,7 +236,7 @@ export default function JetztPage() {
                     href={`/journal/${post.slug}`}
                     className="group flex flex-col gap-1.5 py-6 sm:py-7"
                   >
-                    <span className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                    <span className="text-muted-foreground text-[13px]">
                       {formatDate(post.publishedAt)} · {post.readingMinutes} Min
                     </span>
                     <span className="serif text-foreground text-balance text-2xl leading-snug tracking-[-0.015em] group-hover:underline group-hover:underline-offset-4 sm:text-3xl">

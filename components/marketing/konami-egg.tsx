@@ -81,7 +81,7 @@ export function KonamiEgg() {
         onClick={(e) => e.stopPropagation()}
         className="bg-card border-border/60 ring-foreground/5 relative w-full max-w-md overflow-hidden rounded-2xl border p-8 text-center shadow-[0_30px_80px_-20px_rgb(0_0_0/0.4)] ring-1"
       >
-        <div className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em]">
+        <div className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span aria-hidden="true" className="bg-gold inline-block h-1 w-6" />
           Geheimes Atelier-Briefing
         </div>
@@ -114,7 +114,7 @@ export function KonamiEgg() {
         </div>
         <p
           aria-hidden="true"
-          className="text-muted-foreground/50 mt-6 font-mono text-[10px] uppercase tracking-[0.22em]"
+          className="text-muted-foreground/50 mt-6 text-[13px]"
         >
           ↑ ↑ ↓ ↓ ← → ← → B A
         </p>

@@ -110,7 +110,7 @@ function Hero() {
         <span />
       </div>
       <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
           <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
           Leistungen
         </p>

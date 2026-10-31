@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Check, Send } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
@@ -118,12 +119,12 @@ const GLAUBENSSATZE = [
 function Glaubenssaetze() {
   return (
     <section className="border-border/40 bg-secondary/30 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Was wir glauben.</h2>
-        <ol className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <SectionHead label="Grundsätze" title="Was wir glauben." />
+        <ol className={`mt-10 lg:mt-14 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 ${BODY_OFFSET}`}>
           {GLAUBENSSATZE.map((g) => (
             <li key={g.n} className="border-border/60 border-t pt-4">
-              <p className="text-gold font-mono text-[11px] tracking-[0.2em]">{g.n}</p>
+              <p className="text-gold text-[13px] font-semibold tabular-nums">{g.n}</p>
               <p className="mt-1 text-[17px] font-semibold tracking-tight">{g.title}</p>
               <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{g.body}</p>
             </li>
@@ -144,9 +145,9 @@ const ARBEITSWEISE = [
 function WieWirArbeiten() {
   return (
     <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Wie wir arbeiten.</h2>
-        <ul className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <SectionHead label="Arbeitsweise" title="Wie wir arbeiten." />
+        <ul className={`mt-10 lg:mt-14 grid gap-x-8 gap-y-6 sm:grid-cols-2 ${BODY_OFFSET}`}>
           {ARBEITSWEISE.map((a) => (
             <li key={a.title} className="flex gap-3">
               <Check className="text-gold mt-1 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -172,7 +173,7 @@ function WarumHamburg() {
       </div>
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         <div>
-          <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">Warum Hamburg</p>
+          <p className="text-background/55 text-[13px] font-medium">Warum Hamburg</p>
           <p className="serif mt-5 text-balance text-3xl leading-[1.2] sm:text-4xl">
             Hier wohnen und arbeiten wir.{" "}
             <span className="serif-italic text-background/70">Und kennen die Stadtteile nicht aus dem Lehrbuch.</span>
@@ -238,7 +239,7 @@ function Schriften() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span aria-hidden="true" className="bg-gold inline-block h-px w-10" />
           Schriften des Ateliers
         </p>

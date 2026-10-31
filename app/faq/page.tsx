@@ -209,7 +209,7 @@ function Group({ group }: { group: Group }) {
   return (
     <section className="border-border/40 border-t">
       <div className="mx-auto w-full max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
-        <h2 className="text-muted-foreground text-[12px] font-medium uppercase tracking-[0.24em]">{group.label}</h2>
+        <h2 className="text-muted-foreground text-[12px] font-medium">{group.label}</h2>
         <div className="divide-border/60 mt-4 divide-y">
           {group.items.map((item) => (
             <details key={item.q} className="group py-4">

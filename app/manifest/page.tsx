@@ -100,7 +100,7 @@ export default function ManifestPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <section>
           <div className="mx-auto w-full max-w-2xl px-6 pt-20 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
-            <p className="text-muted-foreground inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.32em]">
+            <p className="text-muted-foreground inline-flex items-center gap-3 text-[13px]">
               <span
                 aria-hidden="true"
                 className="bg-gold inline-block h-px w-10"
@@ -154,7 +154,7 @@ export default function ManifestPage() {
           <div className="mx-auto w-full max-w-2xl px-6 py-20 text-center sm:py-28">
             <div className="text-muted-foreground/55 inline-flex flex-col items-center gap-4">
               <SitaloStempel size="md" />
-              <p className="font-mono text-[10px] uppercase tracking-[0.28em]">
+              <p className="text-[13px]">
                 Sitalo Atelier · Hamburg
               </p>
             </div>

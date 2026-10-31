@@ -108,7 +108,7 @@ export default function AuditPage() {
           <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-24">
             <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
               <div>
-                <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+                <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
                   <span
                     aria-hidden="true"
                     className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -154,7 +154,7 @@ export default function AuditPage() {
 
         <section className="border-border/40 border-t">
           <div className="mx-auto w-full max-w-3xl px-6 py-16 text-center sm:py-20">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"

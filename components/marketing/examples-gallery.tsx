@@ -132,7 +132,7 @@ export function ExamplesGallery() {
 
         {/* Restliche vier Branchen kompakt als Footer-Liste */}
         <div className="mt-16 sm:mt-20">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
             <span
               aria-hidden="true"
               className="bg-gold gold-pulse inline-block h-1 w-6"

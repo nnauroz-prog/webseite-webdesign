@@ -32,7 +32,7 @@ export default function GlobalError({
       tabIndex={-1}
       className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center focus:outline-none"
     >
-      <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.28em]">
+      <p className="text-muted-foreground text-[13px]">
         Fehler
       </p>
       <h1 className="mt-4 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">

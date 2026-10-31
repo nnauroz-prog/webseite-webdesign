@@ -214,7 +214,7 @@ function MobileFullscreenMenu({
     >
       {/* Header-Zeile innerhalb des Menüs: Wordmark links, X rechts */}
       <div className="flex items-center justify-between px-6 pt-4">
-        <span className="serif text-background text-lg uppercase tracking-[0.25em]">
+        <span className="serif text-background text-lg text-[13px]">
           Sitalo
         </span>
         <button

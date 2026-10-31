@@ -24,7 +24,7 @@ export default function ImpressumPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <section className="border-border/40 border-b py-16 sm:py-24">
           <div className="mx-auto w-full max-w-3xl px-6">
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]">
+            <p className="text-muted-foreground text-[13px] font-medium">
               Rechtliches
             </p>
             <h1 className="mt-4 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-4xl">

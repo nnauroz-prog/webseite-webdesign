@@ -90,7 +90,7 @@ export function AtelierSuite() {
         {/* Editorial-Header */}
         <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -178,12 +178,12 @@ function HeroCard({ tool }: { tool: Tool }) {
               <Icon className="h-5 w-5" aria-hidden="true" />
             </span>
             {tool.badge && (
-              <span className="bg-gold text-foreground inline-flex h-6 items-center rounded-full px-2.5 font-mono text-[10px] uppercase tracking-[0.18em]">
+              <span className="bg-gold text-foreground inline-flex h-6 items-center rounded-full px-2.5 text-[12px]">
                 {tool.badge}
               </span>
             )}
           </div>
-          <p className="text-background/65 relative font-mono text-[10px] uppercase tracking-[0.22em]">
+          <p className="text-background/65 relative text-[13px]">
             {tool.eyebrow}
           </p>
           <h3 className="serif relative text-balance text-3xl font-normal leading-[1.1] tracking-[-0.02em] sm:text-4xl lg:text-[2.75rem]">
@@ -209,7 +209,7 @@ function HeroCard({ tool }: { tool: Tool }) {
             <span className="bg-gold/15 border-gold/40 text-gold inline-flex h-12 w-12 items-center justify-center rounded-full border">
               <Icon className="h-5 w-5" aria-hidden="true" />
             </span>
-            <span className="text-background/55 font-mono text-[10px] uppercase tracking-[0.22em]">
+            <span className="text-background/55 text-[13px]">
               {tool.eyebrow}
             </span>
           </div>
@@ -240,7 +240,7 @@ function SideCard({ tool }: { tool: Tool }) {
               <Icon className="h-4 w-4" aria-hidden="true" />
             </span>
           </div>
-          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+          <p className="text-muted-foreground text-[13px]">
             {tool.eyebrow}
           </p>
           <h3 className="serif text-foreground text-balance text-2xl font-normal leading-[1.15] tracking-[-0.015em]">
@@ -261,7 +261,7 @@ function SideCard({ tool }: { tool: Tool }) {
             <span className="border-gold/40 bg-gold/10 text-gold inline-flex h-10 w-10 items-center justify-center rounded-full border">
               <Icon className="h-4 w-4" aria-hidden="true" />
             </span>
-            <span className="text-background/55 font-mono text-[10px] uppercase tracking-[0.22em]">
+            <span className="text-background/55 text-[13px]">
               {tool.eyebrow}
             </span>
           </div>

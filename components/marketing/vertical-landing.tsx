@@ -100,7 +100,7 @@ function Pains({ data }: { data: VertikalLanding }) {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground text-[13px] font-medium">
           Drei Probleme, die wir oft hören
         </p>
         <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
@@ -109,7 +109,7 @@ function Pains({ data }: { data: VertikalLanding }) {
         <ol className="divide-border/60 mt-12 divide-y">
           {data.pains.map((pain, i) => (
             <li key={pain.headline} className="grid gap-4 py-8 sm:grid-cols-[3rem_1fr] sm:gap-8 sm:py-10">
-              <p className="text-muted-foreground/80 font-mono text-[11px] uppercase tracking-[0.2em]">
+              <p className="text-muted-foreground/80 text-[13px]">
                 {String(i + 1).padStart(2, "0")}
               </p>
               <div>
@@ -132,7 +132,7 @@ function Bauteile({ data }: { data: VertikalLanding }) {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground text-[13px] font-medium">
           Was wir bauen
         </p>
         <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
@@ -163,7 +163,7 @@ function Process({ data }: { data: VertikalLanding }) {
   return (
     <section className="bg-secondary/40 border-border/40 border-b">
       <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground text-[13px] font-medium">
           So läuft das ab
         </p>
         <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
@@ -179,7 +179,7 @@ function Process({ data }: { data: VertikalLanding }) {
               key={step.woche}
               className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1"
             >
-              <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.25em]">
+              <p className="text-muted-foreground text-[13px]">
                 {step.woche}
               </p>
               <p className="text-foreground/85 mt-3 text-pretty text-[15px] leading-relaxed">
@@ -197,7 +197,7 @@ function Stadtteile({ data }: { data: VertikalLanding }) {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground text-[13px] font-medium">
           Hamburg-Anker
         </p>
         <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
@@ -226,7 +226,7 @@ function Faq({ faq }: { faq: { q: string; a: string }[] }) {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground text-[13px] font-medium">
           Häufige Fragen
         </p>
         <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">

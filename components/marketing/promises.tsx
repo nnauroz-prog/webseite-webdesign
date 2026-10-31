@@ -24,7 +24,7 @@ export function Promises() {
         className="pointer-events-none absolute top-1/2 right-6 hidden -translate-y-1/2 lg:block"
       >
         <p
-          className="text-muted-foreground/45 font-mono text-[10px] tracking-[0.4em] uppercase"
+          className="text-muted-foreground/45 text-[13px]"
           style={{
             writingMode: "vertical-rl",
           }}

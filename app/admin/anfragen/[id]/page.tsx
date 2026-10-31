@@ -48,7 +48,7 @@ export default async function AdminLeadPage({
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <StatusPill status={lead.status} />
-        <span className="text-muted-foreground font-mono text-[10.5px] uppercase tracking-[0.18em]">
+        <span className="text-muted-foreground text-[13px]">
           {KIND_LABELS[lead.kind]}
         </span>
       </div>

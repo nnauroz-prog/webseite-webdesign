@@ -27,7 +27,7 @@ export function BriefSiegel({ className }: { className?: string }) {
           {/* Notizpapier im Inneren — schaut beim Öffnen oben raus */}
           <div className="brief-siegel-letter">
             <div className="border-foreground/10 bg-background/95 absolute left-3 right-3 top-3 rounded-sm border px-4 py-3 shadow-sm">
-              <p className="font-mono text-[8.5px] uppercase tracking-[0.28em] text-muted-foreground">
+              <p className="text-[8.5px] text-muted-foreground">
                 Aus dem Atelier
               </p>
               <p className="serif-italic text-foreground mt-1 text-[15px] leading-tight tracking-[-0.005em]">
@@ -55,7 +55,7 @@ export function BriefSiegel({ className }: { className?: string }) {
           </span>
         </div>
       </div>
-      <p className="text-muted-foreground mt-5 text-center font-mono text-[10px] uppercase tracking-[0.28em]">
+      <p className="text-muted-foreground mt-5 text-center text-[13px]">
         Versiegelt · Hamburg
       </p>
     </div>

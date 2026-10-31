@@ -48,14 +48,14 @@ export async function HamburgWetter() {
         className="bg-gold/8 pointer-events-none absolute -top-12 -right-8 h-32 w-32 rounded-full blur-[40px]"
       />
       <div className="relative flex items-center justify-between gap-3">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.28em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold gold-pulse inline-block h-1.5 w-1.5 rounded-full"
           />
           Hamburg, jetzt
         </p>
-        <p className="text-muted-foreground/70 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <p className="text-muted-foreground/70 text-[13px]">
           53.55° N
         </p>
       </div>

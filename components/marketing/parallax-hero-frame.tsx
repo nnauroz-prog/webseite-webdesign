@@ -127,7 +127,7 @@ export function ParallaxHeroFrame({
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1.5 w-1.5 rounded-full"
               />
-              <span className="font-mono text-[10px] tracking-[0.22em] uppercase">
+              <span className="text-[13px]">
                 Sitalo Atelier · MMXXVI
               </span>
             </div>
@@ -138,7 +138,7 @@ export function ParallaxHeroFrame({
               <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
                 {quote}
               </blockquote>
-              <figcaption className="text-background/75 mt-3 inline-flex items-center gap-2 text-[10px] font-medium tracking-[0.28em] uppercase">
+              <figcaption className="text-background/75 mt-3 inline-flex items-center gap-2 text-[13px] font-medium">
                 <span
                   aria-hidden="true"
                   className="bg-gold gold-pulse inline-block h-1 w-5"

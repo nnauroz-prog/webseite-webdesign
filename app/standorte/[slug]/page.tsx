@@ -29,7 +29,7 @@ function StandortJournalHinweis({ standortSlug }: { standortSlug: string }) {
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-20">
         <Link href={`/journal/${post.slug}`} className="group block">
-          <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
             <span
               aria-hidden="true"
               className="bg-gold inline-block h-px w-10"
@@ -222,7 +222,7 @@ export default async function StandortPage({
           <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
             <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
               <div>
-                <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em]">
+                <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
                   <span
                     aria-hidden="true"
                     className="bg-ink-olive inline-block h-1 w-5"
@@ -233,7 +233,7 @@ export default async function StandortPage({
                   {standort.intro}
                 </p>
                 <div className="mt-8">
-                  <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
+                  <p className="text-muted-foreground text-[13px] font-medium">
                     Anker im Viertel
                   </p>
                   <ul className="mt-3 flex flex-wrap gap-2">
@@ -274,7 +274,7 @@ export default async function StandortPage({
                 aria-hidden="true"
                 className="bg-gold/60 gold-pulse inline-block h-1 w-8"
               />
-              <p className="text-background/55 text-[11px] font-medium uppercase tracking-[0.3em]">
+              <p className="text-background/55 text-[13px] font-medium">
                 Beobachtung
               </p>
             </div>
@@ -327,7 +327,7 @@ export default async function StandortPage({
                     <p className="text-muted-foreground mt-3 text-pretty text-[15px] leading-relaxed">
                       {b.warum}
                     </p>
-                    <p className="text-muted-foreground mt-5 inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.2em]">
+                    <p className="text-muted-foreground mt-5 inline-flex items-center gap-2 text-[12px] font-medium">
                       Branche im Detail
                       <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </p>

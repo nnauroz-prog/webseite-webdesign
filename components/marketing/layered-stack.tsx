@@ -72,7 +72,7 @@ export function LayeredStack() {
                       aria-hidden="true"
                     />
                   </span>
-                  <span className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.28em]">
+                  <span className="text-muted-foreground text-[13px]">
                     {layer.eyebrow}
                   </span>
                 </div>

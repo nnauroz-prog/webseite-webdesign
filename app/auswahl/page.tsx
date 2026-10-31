@@ -80,7 +80,7 @@ function Hero() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28 lg:py-32">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -151,7 +151,7 @@ function CriteriaList() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -242,7 +242,7 @@ function Process() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"

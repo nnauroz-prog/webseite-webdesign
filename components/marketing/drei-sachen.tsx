@@ -51,7 +51,7 @@ export function DreiSachen() {
       />
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
         <div className="max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
             <span
               aria-hidden="true"
               className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -104,7 +104,7 @@ export function DreiSachen() {
 
           {/* Rechte Spalte: Output-Foto mit Caption */}
           <div className="relative lg:sticky lg:top-24">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-ink-olive inline-block h-1 w-5"
@@ -132,7 +132,7 @@ export function DreiSachen() {
                   <blockquote className="serif-italic text-background text-lg leading-snug tracking-[-0.005em] sm:text-xl">
                     Übermorgen online — fertig getestet auf echten Geräten.
                   </blockquote>
-                  <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em]">
+                  <figcaption className="text-background/70 mt-3 inline-flex items-center gap-2 text-[13px] font-medium">
                     <span
                       aria-hidden="true"
                       className="bg-gold gold-pulse inline-block h-1 w-5"
