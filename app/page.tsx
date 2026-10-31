@@ -6,11 +6,10 @@ import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
-  showcaseItems,
   Voranbringen,
   Vorteile,
 } from "@/components/marketing/home-sections";
-import { HeroShowcase } from "@/components/marketing/hero-showcase";
+import { LivePreview } from "@/components/marketing/live-preview";
 import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -232,14 +231,13 @@ function Hero() {
             </div>
           </div>
 
-          {/* Rechte Spalte: Kartenstapel mit echten Branchen-Layouts,
-              blättert sich selbst weiter und kippt mit der Maus. Der
-              Innenabstand oben/rechts gibt den hinteren Karten Platz. */}
+          {/* Rechte Spalte: Live-Vorschau — Besucher tippen ihren
+              Betriebsnamen ein und sehen sofort eine Skizze ihrer Seite. */}
           <div
-            className="reveal relative pt-[9%] pr-[9%]"
+            className="reveal relative min-w-0"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
-            <HeroShowcase items={showcaseItems()} />
+            <LivePreview />
           </div>
         </div>
       </div>
