@@ -58,7 +58,7 @@ export default function KontaktPage() {
             Kontakt · Aus Hamburg
           </p>
 
-          <p className="serif mt-16 text-balance text-4xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-5xl lg:text-6xl">
+          <h1 className="serif mt-16 text-balance text-4xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-5xl lg:text-6xl">
             Schreiben Sie uns kurz,{" "}
             <span className="serif-italic text-muted-foreground">
               was Sie vorhaben.
@@ -67,7 +67,7 @@ export default function KontaktPage() {
             <span className="serif-italic text-muted-foreground">
               meist noch am selben Tag.
             </span>
-          </p>
+          </h1>
 
           {/* Vier Kontaktwege — Formular, Telefon, E-Mail, vCard.
               Nummer und E-Mail bewusst hinter Buttons versteckt;

@@ -13,7 +13,7 @@ import { STANDORTE } from "@/lib/standorte-data";
 export const metadata: Metadata = {
   title: "Website erstellen lassen in Hamburg — nach Stadtteil",
   description:
-    "Website erstellen lassen in Hamburg: Webdesign für Unternehmen in Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude, Bergedorf, Harburg, Wandsbek, Barmbek, Bramfeld, Niendorf und der HafenCity. Festpreis ab 499 €.",
+    "Website erstellen lassen in Hamburg: Webdesign für Betriebe in Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude und weiteren Stadtteilen. Ab 499 €.",
   alternates: { canonical: "/standorte" },
 };
 

@@ -24,10 +24,13 @@ const brandSans = Schibsted_Grotesk({
   display: "swap",
 });
 
+// Mono und Serife stehen nie im ersten Bildschirm — nicht vorladen,
+// damit die Grundschrift (größter Text im Hero) zuerst kommt.
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const cormorant = Cormorant_Garamond({
@@ -36,6 +39,7 @@ const cormorant = Cormorant_Garamond({
   weight: ["400", "500"],
   style: ["normal", "italic"],
   display: "swap",
+  preload: false,
 });
 
 // Alle Seiten stündlich neu rendern (ISR). Masthead, Footer-Jahr,
@@ -56,8 +60,14 @@ export const metadata: Metadata = {
 
 const LOCAL_BUSINESS_LD = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  // ProfessionalService: LocalBusiness-Untertyp für Dienstleister ohne
+  // Ladengeschäft. Keine Öffnungszeiten — „24/7" stimmte nicht. Für
+  // Google Maps zählt das Google-Unternehmensprofil; dessen URL gehört
+  // später in sameAs.
+  "@type": "ProfessionalService",
   "@id": `${SITE_URL}/#business`,
+  logo: `${SITE_URL}/icon.png`,
+  image: `${SITE_URL}/opengraph-image`,
   name: "Sitalo Webdesign",
   description:
     "Webdesign für lokale Unternehmen — Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien, Fitnessstudios. Persönlich gemacht, in Hamburg.",
@@ -70,27 +80,10 @@ const LOCAL_BUSINESS_LD = {
     addressCountry: "DE",
   },
   areaServed: { "@type": "Country", name: "Deutschland" },
-  // Keine festen Bürozeiten — „jederzeit erreichbar" wird in
-  // schema.org als 24/7 abgebildet. Google zeigt das im Knowledge
-  // Panel als „Open 24 hours" → signalisiert hohe Verfügbarkeit
-  // für lokale Suchen.
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ],
-    opens: "00:00",
-    closes: "23:59",
-  },
   priceRange: "€€",
   knowsAbout: [
     "Webdesign",
+    "Website erstellen lassen",
     "Website-Entwicklung",
     "Lokale Suchmaschinenoptimierung",
     "Responsive Design",

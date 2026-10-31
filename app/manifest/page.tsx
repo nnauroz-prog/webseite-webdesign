@@ -32,7 +32,7 @@ const BREADCRUMB_LD = {
 };
 
 export const metadata: Metadata = {
-  title: "Manifest",
+  title: "Manifest · Wie wir Websites bauen",
   description:
     "Acht Sätze. Was Sitalo macht, was Sitalo nicht macht, woran sich Inhaber wie Kunden verlassen können.",
   alternates: { canonical: "/manifest" },

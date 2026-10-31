@@ -56,7 +56,11 @@ export function CountUp({
   }, [from, to, duration]);
 
   return (
-    <span ref={ref} className="tabular-nums" aria-label={`${prefix}${to}`}>
+    <span ref={ref} className="tabular-nums">
+      <span className="sr-only">
+        {prefix}
+        {to}
+      </span>
       <span aria-hidden="true">
         {prefix}
         {value}

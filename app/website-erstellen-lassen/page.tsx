@@ -22,9 +22,9 @@ import { SITE_URL } from "@/lib/site";
  */
 
 const TITLE =
-  "Website erstellen lassen ab 499 € — Festpreis, persönlich aus Hamburg";
+  "Website erstellen lassen ab 499 € | Festpreis · Sitalo";
 const DESCRIPTION =
-  "Website erstellen lassen zum Festpreis: individuell gestaltet, für Handy optimiert, bei Google auffindbar. Persönlich betreut aus Hamburg, für Betriebe in ganz Deutschland. Kleine Seiten oft in 1–2 Werktagen.";
+  "Website erstellen lassen zum Festpreis: individuell gestaltet, für Handy und Google optimiert, persönlich betreut aus Hamburg. Oft in 1–2 Werktagen online.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -321,29 +321,17 @@ export default function WebsiteErstellenLassenPage() {
         <section className={`${SECTION} bg-secondary/30`}>
           <div className={INNER}>
             <SectionHead label="Leistungen" title="Was bei uns dabei ist." />
-            <dl
-              className={`mt-10 grid gap-x-8 sm:grid-cols-2 lg:mt-14 ${BODY_OFFSET}`}
-            >
+            <ul className={`mt-10 grid gap-x-8 sm:grid-cols-2 lg:mt-14 ${BODY_OFFSET}`}>
               {ENTHALTEN.map((e) => (
-                <div
-                  key={e.title}
-                  className="border-border flex gap-3 border-t py-5"
-                >
-                  <Check
-                    className="text-gold mt-1 h-4 w-4 shrink-0"
-                    aria-hidden="true"
-                  />
+                <li key={e.title} className="border-border flex gap-3 border-t py-5">
+                  <Check className="text-gold mt-1 h-4 w-4 shrink-0" aria-hidden="true" />
                   <div>
-                    <dt className="text-[16px] font-semibold tracking-tight">
-                      {e.title}
-                    </dt>
-                    <dd className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">
-                      {e.text}
-                    </dd>
+                    <p className="text-[16px] font-semibold tracking-tight">{e.title}</p>
+                    <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{e.text}</p>
                   </div>
-                </div>
+                </li>
               ))}
-            </dl>
+            </ul>
           </div>
         </section>
 

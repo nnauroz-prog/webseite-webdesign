@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Send } from "lucide-react";
 
-import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
@@ -131,7 +130,6 @@ export default function HomePage() {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
       />
-      <AmbientTint />
       <MarketingHeader />
       <main id="main" tabIndex={-1} className="flex-1">
         {/* Eine Aufgabe pro Sektion, ein Weg zur Anfrage. Ausführliches
@@ -173,7 +171,7 @@ function Hero() {
   return (
     <section
       id="start"
-      className="hero-dolly relative overflow-hidden scroll-mt-20"
+      className="relative overflow-hidden scroll-mt-20"
     >
       {/* Warmer Gradient-Backdrop für mehr Atmosphäre */}
       {/* Aurora: drei langsam treibende Farbflächen (globals.css) */}
@@ -183,16 +181,19 @@ function Hero() {
         <span />
       </div>
 
-      <div className="hero-dolly-inner mx-auto w-full max-w-6xl px-5 pt-8 pb-6 sm:px-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
+      <div className="mx-auto w-full max-w-6xl px-5 pt-8 pb-6 sm:px-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
-            <p className="text-muted-foreground text-[13px] font-medium tracking-wide sm:mt-6">
+            {/* Die H1 trägt den Suchbegriff (für Google), der große Satz
+                darunter ist die Botschaft (für Menschen). Optisch wie
+                Kopfzeile + Überschrift. */}
+            <h1 className="text-muted-foreground text-[13px] font-medium tracking-wide sm:mt-6">
               Website erstellen lassen · Webdesign aus Hamburg
-            </p>
-            <h1 className="mt-4 text-balance text-[2.6rem] font-semibold leading-[1.0] tracking-[-0.04em] sm:text-[4rem] lg:text-[4.75rem]">
+            </h1>
+            <p className="text-foreground mt-4 text-balance text-[2.6rem] font-semibold leading-[1.0] tracking-[-0.04em] sm:text-[4rem] lg:text-[4.75rem]">
               Websites für Betriebe,{" "}
               <span className="text-muted-foreground">die ihr Handwerk ernst nehmen.</span>
-            </h1>
+            </p>
             <p
               className="reveal text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
@@ -411,7 +412,7 @@ function Faq() {
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <SectionHead label="Fragen" title="Häufige Fragen." link={{ href: "/faq", text: "Alle Fragen" }} />
         <div className="mt-10 lg:mt-14 lg:grid lg:grid-cols-12 lg:gap-8">
-          <dl className="divide-border/70 border-border/70 divide-y border-y lg:col-span-9 lg:col-start-4">
+          <div className="divide-border/70 border-border/70 divide-y border-y lg:col-span-9 lg:col-start-4">
             {FAQ.map((item) => (
               <details key={item.q} className="group py-6">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
@@ -434,7 +435,7 @@ function Faq() {
                 </p>
               </details>
             ))}
-          </dl>
+          </div>
         </div>
       </div>
     </section>
