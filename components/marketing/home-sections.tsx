@@ -56,13 +56,13 @@ export function Vorteile() {
               <span />
             </div>
             <div className="relative">
-              <p className="text-background/55 font-mono text-[11px] uppercase tracking-[0.22em]">In Tagen online</p>
+              <p className="text-background/60 text-[13px] font-medium">Schnell online</p>
               <p className="serif text-gold mt-4 text-7xl lining-nums leading-none tracking-[-0.03em] sm:text-8xl">1–2</p>
               <p className="mt-2 text-xl font-medium tracking-tight sm:text-2xl">Werktage, bis kleine Seiten stehen.</p>
             </div>
             <div className="relative mt-8 flex items-end justify-between gap-4">
               <p className="text-background/70 max-w-xs text-[14.5px] leading-relaxed">
-                Stichpunkte reichen — die Texte formulieren wir mit Ihnen.
+                Stichpunkte reichen. Die Texte formulieren wir mit Ihnen.
               </p>
               <span className="bg-background text-foreground inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1">
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -127,7 +127,7 @@ export function Voranbringen() {
                 <Icon className="text-gold h-6 w-6 shrink-0" aria-hidden="true" />
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-semibold tracking-tight md:mt-1 md:text-lg">{title}</span>
-                  <span className="text-foreground/70 mt-1 block font-mono text-[11px] uppercase tracking-[0.18em] md:mt-4">
+                  <span className="text-muted-foreground mt-1 block text-[13.5px] md:mt-3">
                     {meta}
                   </span>
                 </span>
@@ -181,7 +181,7 @@ export function AblaufKompakt() {
                   className="ablauf-dot border-gold bg-background mt-1 block h-[15px] w-[15px] shrink-0 rounded-full border-2 md:mt-0"
                 />
                 <div>
-                  <p className="text-gold font-mono text-[11px] tracking-[0.2em] md:mt-5">0{i + 1}</p>
+                  <p className="text-gold text-[13px] font-semibold tabular-nums md:mt-5">0{i + 1}</p>
                   <p className="mt-1 text-lg font-semibold tracking-tight">{s.title}</p>
                   <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{s.text}</p>
                 </div>

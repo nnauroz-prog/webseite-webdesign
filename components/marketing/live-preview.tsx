@@ -44,7 +44,7 @@ const PRESETS: Preset[] = [
     accent: "#2f6b5e",
     tint: "#eef5f2",
     image: "/images/atmosphere/pflege-eingang.webp",
-    headline: "Pflege mit Herz — zu Hause in Ihrer Nähe.",
+    headline: "Pflege mit Herz, zu Hause in Ihrer Nähe.",
     sub: "Ambulante Pflege, Beratung und Entlastung für Angehörige.",
     nav: ["Leistungen", "Team", "Karriere", "Kontakt"],
     cta: "Beratung anfragen",
@@ -73,7 +73,7 @@ const PRESETS: Preset[] = [
     tint: "#f6eff3",
     image: "/images/atmosphere/friseur-stuhl.webp",
     headline: "Ihr Stil. Unser Handwerk.",
-    sub: "Schnitt, Farbe und Pflege — Termin in zwei Klicks.",
+    sub: "Schnitt, Farbe und Pflege. Termin in zwei Klicks.",
     nav: ["Preise", "Team", "Galerie", "Termin"],
     cta: "Termin buchen",
     features: ["Online-Buchung", "Preisliste", "Galerie"],
@@ -87,7 +87,7 @@ const PRESETS: Preset[] = [
     tint: "#f8f0ea",
     image: "/images/atmosphere/gastro-cafe.webp",
     headline: "Frühstück, Kuchen und guter Kaffee.",
-    sub: "Täglich ab 8 Uhr — mitten im Viertel.",
+    sub: "Täglich ab 8 Uhr, mitten im Viertel.",
     nav: ["Karte", "Über uns", "Events", "Reservieren"],
     cta: "Tisch reservieren",
     features: ["Speisekarte", "Öffnungszeiten", "Reservierung"],
@@ -101,7 +101,7 @@ const PRESETS: Preset[] = [
     tint: "#f8efe8",
     image: "/images/atmosphere/handwerker-werkbank.webp",
     headline: "Maßarbeit aus Meisterhand.",
-    sub: "Möbel, Innenausbau und Reparaturen — mit festem Angebot.",
+    sub: "Möbel, Innenausbau und Reparaturen mit festem Angebot.",
     nav: ["Leistungen", "Referenzen", "Über uns", "Kontakt"],
     cta: "Rückruf anfordern",
     features: ["Innenausbau", "Referenzen", "Kostenloses Angebot"],
@@ -129,7 +129,7 @@ const PRESETS: Preset[] = [
     tint: "#eef0f5",
     image: "/images/atmosphere/kanzlei-buecher.webp",
     headline: "Recht, das Klarheit schafft.",
-    sub: "Arbeits-, Familien- und Mietrecht — verständlich erklärt.",
+    sub: "Arbeits-, Familien- und Mietrecht, verständlich erklärt.",
     nav: ["Rechtsgebiete", "Anwälte", "Kosten", "Kontakt"],
     cta: "Erstberatung vereinbaren",
     features: ["Rechtsgebiete", "Erstberatung", "Ihr Team"],
@@ -143,7 +143,7 @@ const PRESETS: Preset[] = [
     tint: "#f9eeec",
     image: "/images/atmosphere/fitness-studio.webp",
     headline: "Stärker. Jeden Tag.",
-    sub: "Training, Kurse und Betreuung — probieren Sie es kostenlos.",
+    sub: "Training, Kurse und Betreuung. Das Probetraining ist kostenlos.",
     nav: ["Kurse", "Preise", "Trainer", "Probetraining"],
     cta: "Probetraining sichern",
     features: ["Kursplan", "Mitgliedschaft", "Probetraining"],
@@ -186,15 +186,15 @@ export function LivePreview() {
   }, []);
 
   const href = `/anfrage?branche=${preset.inquiry}&vorhaben=${encodeURIComponent(
-    `Website für „${shownName}" (${preset.chip}) — wie in der Live-Vorschau.`,
+    `Website für „${shownName}" (${preset.chip}), wie in der Live-Vorschau.`,
   )}`;
 
   return (
     <div className="border-border/70 bg-card/80 rounded-3xl border p-3 shadow-[0_40px_80px_-40px_rgb(15_25_50/0.45)] backdrop-blur sm:p-4">
       {/* Steuerung */}
       <div className="px-1 pt-1 pb-3 sm:px-2">
-        <label htmlFor="lp-name" className="text-muted-foreground text-[12px] font-medium uppercase tracking-[0.2em]">
-          Live-Vorschau · Ihr Betrieb
+        <label htmlFor="lp-name" className="text-foreground text-[14px] font-semibold">
+          Probieren Sie es aus: Wie heißt Ihr Betrieb?
         </label>
         <input
           id="lp-name"
@@ -258,12 +258,12 @@ export function LivePreview() {
       </div>
 
       <div className="flex flex-col items-start gap-2 px-1 pt-4 pb-1 sm:flex-row sm:items-center sm:justify-between sm:px-2">
-        <p className="text-muted-foreground text-[12.5px]">Skizze — Ihre echte Seite gestalten wir individuell.</p>
+        <p className="text-muted-foreground text-[12.5px]">Skizze. Ihre echte Seite gestalten wir individuell.</p>
         <Link
           href={href}
-          className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight"
+          className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-[14px] font-medium tracking-tight"
         >
-          Diese Seite für mich anfragen
+          Diese Seite anfragen
           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </Link>
       </div>
@@ -275,7 +275,7 @@ export function LivePreview() {
 function MiniSite({ preset, name }: { preset: Preset; name: string }) {
   const { accent, tint } = preset;
   return (
-    <div className="lp-build flex h-full flex-col text-[#1b2333]" style={{ fontFamily: "var(--font-geist-sans)" }}>
+    <div className="lp-build flex h-full flex-col text-[#1b2333]" style={{ fontFamily: "var(--font-brand-sans)" }}>
       {/* Navigation */}
       <div className="lp-step flex h-16 items-center justify-between border-b border-black/5 px-10" style={{ "--d": 0 } as React.CSSProperties}>
         <span className="serif max-w-[340px] truncate text-[24px] font-medium tracking-[-0.01em]" style={{ color: accent }}>
