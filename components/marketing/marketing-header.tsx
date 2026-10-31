@@ -111,7 +111,6 @@ export function MarketingHeader({
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:px-6">
         <Link
           href="/"
-          aria-label="Sitalo Webdesign"
           className="shrink-0"
           onClick={() => setMenuOpen(false)}
         >
@@ -201,6 +200,7 @@ function MobileFullscreenMenu({
       aria-modal="true"
       aria-label="Hauptmenü"
       aria-hidden={!open}
+      inert={!open}
       className={cn(
         "bg-foreground text-background fixed inset-0 z-[60] flex flex-col transition-all duration-300 ease-out md:hidden print:hidden",
         open

@@ -9,7 +9,7 @@ import { JOURNAL_POSTS, formatDate } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Journal",
+  title: "Journal · Webdesign-Wissen für Betriebe",
   description:
     "Essays aus dem Hamburger Atelier — Preis-Transparenz, Arbeitsweise, Lokales SEO, Gastronomie, Pflege, Migrationen.",
   alternates: {

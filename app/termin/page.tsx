@@ -10,7 +10,7 @@ import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Termin buchen",
+  title: "Kostenloses Erstgespräch buchen · Webdesign",
   description:
     "30-Minuten-Erstgespräch direkt aus dem Hamburger Atelier. Tag und Uhrzeit wählen, Bestätigung per E-Mail am selben Werktag.",
   alternates: { canonical: "/termin" },

@@ -39,7 +39,7 @@ const BREADCRUMB_LD = {
 export const metadata: Metadata = {
   title: "Welches Paket passt?",
   description:
-    "Fünf Fragen, eine ehrliche Empfehlung. Unser Quiz schaut sich Branche, Größe, vorhandene Materialien, Timing und Ihre aktuelle Seite an — und gibt eine begründete Paket-Empfehlung.",
+    "Welches Website-Paket passt zu Ihnen? Fünf Fragen zu Branche, Größe und Zeitplan, danach eine begründete Empfehlung. Kostenlos.",
   alternates: { canonical: "/empfehlung" },
 };
 

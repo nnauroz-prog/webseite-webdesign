@@ -66,8 +66,8 @@ export async function generateMetadata({
   const standort = getStandortBySlug(slug);
   if (!standort) return {};
 
-  const title = `Website erstellen lassen in Hamburg-${standort.name} · Webdesign`;
-  const description = `Website erstellen lassen in ${standort.name}: individuell gestaltet, zum Festpreis ab 499 €, persönlich betreut aus Hamburg. ${standort.tagline}`;
+  const title = `Website erstellen lassen ${standort.name} · Hamburg`;
+  const description = `Website erstellen lassen in Hamburg-${standort.name}: individuell gestaltet, für Handy und Google optimiert, Festpreis ab 499 €. Persönlich betreut.`;
   return {
     title,
     description,

@@ -93,8 +93,10 @@ export async function generateMetadata({
   const branche = getBrancheBySlug(slug);
   if (!branche) return {};
 
-  const title = `Website für ${branche.label} — aus Hamburg`;
-  const description = `${branche.shortBody} Persönlich gemacht, in Hamburg.`;
+  const title = `Website für ${branche.label} erstellen lassen`;
+  const lead =
+    branche.shortBody.length > 100 ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "." : branche.shortBody;
+  const description = `${lead} Website zum Festpreis ab 499 €, persönlich aus Hamburg.`;
   return {
     title,
     description,
@@ -237,10 +239,10 @@ export default async function BranchePage({
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
-                  href="/pakete"
+                  href="/website-erstellen-lassen"
                   className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
                 >
-                  Pakete & Preise
+                  Kosten & Ablauf
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </div>
