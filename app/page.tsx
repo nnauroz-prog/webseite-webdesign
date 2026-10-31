@@ -13,6 +13,7 @@ import {
   Vorteile,
 } from "@/components/marketing/home-sections";
 import { HeroShowcase } from "@/components/marketing/hero-showcase";
+import { HamburgSkyline } from "@/components/marketing/hamburg-skyline";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -536,7 +537,7 @@ function FinalCta() {
         aria-hidden="true"
         className="bg-gold/8 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
+      <div className="relative mx-auto w-full max-w-5xl px-6 pt-20 pb-10 sm:pt-28 sm:pb-12">
         <div>
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
@@ -567,8 +568,11 @@ function FinalCta() {
               </a>
             </div>
           </div>
-
         </div>
+      </div>
+      {/* Hamburg-Silhouette zeichnet sich beim Hinscrollen in Gold. */}
+      <div className="relative mx-auto w-full max-w-6xl px-0 sm:px-6">
+        <HamburgSkyline className="text-gold block h-[108px] w-full sm:h-auto sm:aspect-[1200/240]" />
       </div>
     </section>
   );
