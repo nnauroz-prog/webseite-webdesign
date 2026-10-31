@@ -114,7 +114,7 @@ export default function KontaktPage() {
             >
               30-Minuten-Termin direkt buchen
             </Link>{" "}
-            — Tag und Uhrzeit selbst wählen, Bestätigung in 15 Minuten.
+            — Tag und Uhrzeit selbst wählen, Bestätigung am selben Werktag.
           </p>
 
           <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">

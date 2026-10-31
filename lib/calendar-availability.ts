@@ -41,7 +41,7 @@ export const SLOT_DURATION_MIN = 30;
 
 /**
  * Mindest-Vorlauf für Buchungen am selben Tag. Die Seite verspricht
- * Bestätigung innerhalb von 15 Minuten — ein Slot, der in einer
+ * Bestätigung am selben Werktag — ein Slot, der in einer
  * halben Stunde beginnt, wäre trotzdem nicht seriös zu halten.
  */
 export const MIN_LEAD_MINUTES = 120;

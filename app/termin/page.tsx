@@ -12,7 +12,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Termin buchen",
   description:
-    "30-Minuten-Erstgespräch direkt aus dem Hamburger Atelier. Tag und Uhrzeit wählen, Bestätigung per E-Mail innerhalb 15 Minuten.",
+    "30-Minuten-Erstgespräch direkt aus dem Hamburger Atelier. Tag und Uhrzeit wählen, Bestätigung per E-Mail am selben Werktag.",
   alternates: { canonical: "/termin" },
 };
 
@@ -37,7 +37,7 @@ export default function TerminPage() {
     "@type": "Service",
     name: "30-Minuten-Erstgespräch",
     description:
-      "Persönliches 30-Minuten-Erstgespräch per Video-Call, Telefon oder vor Ort in Hamburg. Direkte Termin-Auswahl, Bestätigung innerhalb 15 Minuten per Mail.",
+      "Persönliches 30-Minuten-Erstgespräch per Video-Call, Telefon oder vor Ort in Hamburg. Direkte Termin-Auswahl, Bestätigung am selben Werktag per Mail.",
     provider: {
       "@type": "LocalBusiness",
       "@id": `${SITE_URL}/#business`,
@@ -89,9 +89,9 @@ export default function TerminPage() {
                 </span>
               </h1>
               <p className="text-muted-foreground mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-                Tag und Uhrzeit wählen. Wir bestätigen innerhalb von
-                15 Minuten per Mail mit Kalender-Anhang. Kein
-                E-Mail-Pingpong, kein Pflicht-Telefonat vorab.
+                Tag und Uhrzeit wählen. Wir bestätigen am selben Werktag
+                per Mail mit Kalender-Anhang. Kein E-Mail-Pingpong, kein
+                Pflicht-Telefonat vorab.
               </p>
               <div className="text-muted-foreground mx-auto mt-6 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px]">
                 <span className="inline-flex items-center gap-2">

@@ -69,8 +69,8 @@ const SIDE_TOOLS: Tool[] = [
     href: "/termin",
     eyebrow: "V — Termin-Buchung",
     title: "30 Minuten, direkt buchen.",
-    body: "Tag und Uhrzeit selbst wählen. Bestätigung per Mail mit Kalender-Anhang in 15 Minuten. Kein E-Mail-Pingpong vorab.",
-    back: "Sie wählen Tag und Uhrzeit. Bestätigung in 15 Minuten — kein Pingpong.",
+    body: "Tag und Uhrzeit selbst wählen. Bestätigung per Mail am selben Werktag. Kein E-Mail-Pingpong vorab.",
+    back: "Sie wählen Tag und Uhrzeit. Bestätigung am selben Werktag, kein Pingpong.",
     icon: Calendar,
   },
 ];
