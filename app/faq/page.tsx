@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 
 export const metadata: Metadata = {
   title: "Häufige Fragen rund um Ihre neue Website",
@@ -185,15 +184,18 @@ export default function FaqPage() {
 
 function Hero() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 pt-20 pb-16 sm:pt-32 sm:pb-20 lg:pt-40">
-        <h1 className="serif text-balance text-6xl font-normal leading-[1.0] tracking-[-0.025em] sm:text-7xl lg:text-[8rem]">
-          Häufige
-          <br />
-          <span className="serif-italic">Fragen.</span>
+    <section className="relative overflow-hidden">
+      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="mx-auto w-full max-w-3xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
+        <h1 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+          Häufige <span className="serif-italic text-muted-foreground font-normal">Fragen.</span>
         </h1>
-        <p className="text-muted-foreground mt-10 max-w-xl text-pretty text-lg leading-relaxed">
-          Was Kunden uns am häufigsten fragen. Eine Antwort fehlt?{" "}
+        <p className="text-muted-foreground mt-5 text-base leading-relaxed sm:text-lg">
+          Eine Antwort fehlt?{" "}
           <Link href="/kontakt" className="text-foreground underline underline-offset-4">
             Schreiben Sie uns.
           </Link>
@@ -205,52 +207,25 @@ function Hero() {
 
 function Group({ group }: { group: Group }) {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <EditorialEyebrow>{group.label}</EditorialEyebrow>
-        <dl className="divide-border/60 mt-10 divide-y">
+    <section className="border-border/40 border-t">
+      <div className="mx-auto w-full max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
+        <h2 className="text-muted-foreground text-[12px] font-medium uppercase tracking-[0.24em]">{group.label}</h2>
+        <div className="divide-border/60 mt-4 divide-y">
           {group.items.map((item) => (
-            <details
-              key={item.q}
-              className="faq-item group relative py-7 sm:py-9"
-            >
-              {/* Linke Gold-Markierung beim aufgeklappten Item —
-                  ein dünner Strich, der die aktive Frage visuell
-                  hervorhebt. */}
-              <span
-                aria-hidden="true"
-                className="bg-gold absolute top-7 bottom-7 left-0 hidden w-[2px] opacity-0 transition-opacity duration-300 group-open:opacity-100 sm:block sm:py-9 lg:left-[-12px]"
-              />
-              <summary className="grid cursor-pointer list-none items-baseline gap-8 transition-colors sm:grid-cols-[2fr_1fr] sm:gap-12 lg:grid-cols-[2.5fr_1fr]">
-                <h3 className="text-foreground/80 group-open:text-foreground text-2xl font-semibold leading-[1.15] tracking-[-0.02em] transition-colors sm:text-3xl">
-                  {item.q}
-                </h3>
-                <div className="flex items-center justify-between gap-4 sm:justify-end">
-                  <span className="text-muted-foreground/60 group-open:text-foreground font-mono text-xs uppercase tracking-[0.25em] transition-colors">
-                    Antwort
-                  </span>
-                  <span className="border-border/60 text-muted-foreground group-open:border-foreground group-open:bg-foreground group-open:text-background inline-flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 group-open:rotate-45">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                      className="h-4 w-4"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                    </svg>
-                  </span>
-                </div>
+            <details key={item.q} className="group py-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6">
+                <h3 className="text-[17px] font-medium leading-snug tracking-tight sm:text-lg">{item.q}</h3>
+                <span
+                  aria-hidden="true"
+                  className="border-border/70 text-muted-foreground group-open:bg-foreground group-open:text-background group-open:border-foreground inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-lg transition-all group-open:rotate-45"
+                >
+                  +
+                </span>
               </summary>
-              <div className="faq-content overflow-hidden">
-                <p className="text-foreground/75 mt-6 max-w-3xl text-pretty text-[16px] leading-[1.7] sm:text-[17px]">
-                  {item.a}
-                </p>
-              </div>
+              <p className="text-muted-foreground mt-3 max-w-2xl text-pretty text-[15px] leading-relaxed">{item.a}</p>
             </details>
           ))}
-        </dl>
+        </div>
       </div>
     </section>
   );
@@ -258,30 +233,31 @@ function Group({ group }: { group: Group }) {
 
 function Closer() {
   return (
-    <section>
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <p className="serif text-foreground max-w-xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
-            Etwas fehlt?{" "}
-            <span className="serif-italic text-muted-foreground">
-              Fragen Sie uns direkt.
-            </span>
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/anfrage"
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-6 text-[15px] font-medium tracking-tight transition-all"
-            >
-              Projekt anfragen
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              href="/kontakt"
-              className="border-foreground/20 text-foreground hover:border-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-colors"
-            >
-              Kontakt
-            </Link>
-          </div>
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
+          Etwas fehlt?{" "}
+          <span className="serif-italic text-background/70">Fragen Sie direkt.</span>
+        </h2>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/anfrage"
+            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+          >
+            Website anfragen
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <Link
+            href="/kontakt"
+            className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-colors"
+          >
+            Kontakt
+          </Link>
         </div>
       </div>
     </section>
