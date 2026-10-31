@@ -55,14 +55,10 @@ const BEISPIELE: Beispiel[] = [
 export function Beispiele() {
   return (
     <section id="beispiele" className="bg-foreground text-background relative scroll-mt-20 overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="bg-ink-petrol/40 pointer-events-none absolute -top-40 right-[-10%] h-[30rem] w-[30rem] rounded-full blur-[90px]"
-      />
       <div className="relative mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <p className="text-background/55 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
-          <span aria-hidden="true" className="bg-gold inline-block h-1 w-6" />
-          Ergebnisse
+        <p className="text-background/60 inline-flex items-center gap-2.5 text-[13px] font-medium">
+          <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
+          Ergebnisse aus Projekten
         </p>
         <ul className="mt-10 grid grid-cols-2 gap-6 sm:gap-16">
           {BEISPIELE.map((b) => (
@@ -73,7 +69,7 @@ export function Beispiele() {
               <p className="text-background/90 mt-4 text-pretty text-[14px] font-medium leading-snug tracking-tight sm:text-lg">
                 {b.bedeutung}
               </p>
-              <p className="text-background/45 mt-3 font-mono text-[10px] uppercase tracking-[0.2em]">
+              <p className="text-background/55 mt-3 text-[13px]">
                 {b.branche} · {b.stadtteil}
                 <span className="hidden sm:inline"> · {b.zeitraum}</span>
               </p>

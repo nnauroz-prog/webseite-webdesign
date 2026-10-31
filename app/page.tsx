@@ -11,7 +11,6 @@ import {
 } from "@/components/marketing/home-sections";
 import { LivePreview } from "@/components/marketing/live-preview";
 import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
-import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
@@ -24,7 +23,7 @@ export const metadata: Metadata = {
   // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
   title: { absolute: "Sitalo — Webdesign aus Hamburg" },
   description:
-    "Websites für lokale Unternehmen in ganz Deutschland, gebaut in Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
+    "Websites für lokale Unternehmen in ganz Deutschland, gestaltet und gebaut in Hamburg. Persönlich betreut, zum Festpreis, kleine Seiten oft in 1–2 Werktagen.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -91,7 +90,7 @@ const PACKAGES = (["starter", "business", "premium"] as const).map((slug) => {
 const FAQ = [
   {
     q: "Wie schnell ist meine Seite fertig?",
-    a: "Wenn Sie uns alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten besprechen wir vorab einen verbindlichen Termin — wir versprechen nichts, was wir nicht halten können.",
+    a: "Wenn Sie uns alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten vereinbaren wir vorab einen verbindlichen Termin.",
   },
   {
     q: "Was brauchen Sie von mir?",
@@ -99,7 +98,7 @@ const FAQ = [
   },
   {
     q: "Gibt es laufende Kosten?",
-    a: "Ja — für Hosting, Pflege und kleine Änderungen. Je nach Paket 49 €, 79 € oder 129 € im Monat. Nach sechs Monaten Mindestlaufzeit jederzeit zum Monatsende kündbar — beim Ausstieg übergeben wir den kompletten Bestand.",
+    a: "Ja, für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49 €, 79 € oder 179 € im Monat. Nach sechs Monaten Mindestlaufzeit ist der Vertrag zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
   },
   {
     q: "Kann ich später noch Sachen ändern lassen?",
@@ -176,10 +175,6 @@ function Hero() {
       className="hero-dolly relative overflow-hidden scroll-mt-20"
     >
       {/* Warmer Gradient-Backdrop für mehr Atmosphäre */}
-      <div
-        aria-hidden="true"
-        className="from-accent/30 via-background to-background pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br"
-      />
       {/* Aurora: drei langsam treibende Farbflächen (globals.css) */}
       <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
         <span />
@@ -187,28 +182,23 @@ function Hero() {
         <span />
       </div>
 
-      <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-6 sm:px-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
+      <div className="hero-dolly-inner mx-auto w-full max-w-6xl px-5 pt-8 pb-6 sm:px-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
-            <h1 className="text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
-              <WordReveal step={75} delay={120}>
-                {"Wir bauen "}
-                <span className="serif-italic text-muted-foreground font-normal">
-                  Websites
-                </span>
-                <br />
-                {"für Ihr "}
-                <span className="serif-italic text-muted-foreground font-normal">
-                  Unternehmen.
-                </span>
-              </WordReveal>
+            <p className="text-muted-foreground text-[13px] font-medium tracking-wide sm:mt-6">
+              Webdesign aus Hamburg
+            </p>
+            <h1 className="mt-4 text-balance text-[2.6rem] font-semibold leading-[1.0] tracking-[-0.04em] sm:text-[4rem] lg:text-[4.75rem]">
+              Websites für Betriebe,{" "}
+              <span className="text-muted-foreground">die ihr Handwerk ernst nehmen.</span>
             </h1>
             <p
               className="reveal text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Aus Hamburg, für Betriebe in ganz Deutschland. Logo, ein
-              paar Bilder, ein paar Sätze — den Rest machen wir.
+              Gestaltet und gebaut in Hamburg, für Unternehmen in ganz
+              Deutschland. Sie schicken uns Logo, Bilder und ein paar
+              Stichpunkte. Um alles Weitere kümmern wir uns.
             </p>
             <div
               className="reveal mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-9"
@@ -222,10 +212,10 @@ function Hero() {
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
-                href="#beispiele"
+                href="/pakete"
                 className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
               >
-                Beispiele ansehen
+                Preise ansehen
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </div>
@@ -259,10 +249,10 @@ function Pricing() {
 
   return (
     <section id="pakete" className="border-border/40 border-t scroll-mt-20">
-      <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-24">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         {/* Header mit Hand-Underline auf der Italic-Akzentzeile */}
         <div className="max-w-2xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <p className="text-muted-foreground inline-flex items-center gap-2.5 text-[13px] font-medium">
             <span
               aria-hidden="true"
               className="bg-gold inline-block h-px w-8"
@@ -333,7 +323,7 @@ function PricingFlanke({
           : "border-border/60 lg:border-l flex h-full flex-col px-1 py-6 sm:p-8 lg:pl-10"
       }
     >
-      <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em]">
+      <p className="text-muted-foreground text-[13px] font-medium">
         {paket.name}
       </p>
       <p className="serif text-foreground mt-3 text-[1.9rem] font-normal leading-none tracking-[-0.025em] sm:mt-4 sm:text-5xl">
@@ -376,17 +366,9 @@ function PricingCenterfold({
 }) {
   return (
     <div className="bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10 lg:p-12">
-      <div
-        aria-hidden="true"
-        className="bg-ink-petrol/40 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
-      />
-      <div
-        aria-hidden="true"
-        className="bg-ink-petrol/40 pointer-events-none absolute -bottom-32 -left-20 h-72 w-72 rounded-full blur-[80px]"
-      />
 
       <div className="relative flex items-center gap-3">
-        <span className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em]">
+        <span className="text-background/60 text-[13px] font-medium">
           {paket.badge ?? paket.name}
         </span>
       </div>
@@ -441,7 +423,7 @@ function Faq() {
       id="faq"
       className="border-border/40 border-t scroll-mt-20"
     >
-      <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-24">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
           <div>
             <h2 className="rise text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
@@ -505,14 +487,6 @@ function FinalCta() {
       {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
           ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
       {/* Mehrere weiche Halos für editoriale Tiefe */}
-      <div
-        aria-hidden="true"
-        className="bg-ink-petrol/40 pointer-events-none absolute top-0 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full blur-[70px] sm:blur-[140px]"
-      />
-      <div
-        aria-hidden="true"
-        className="bg-ink-petrol/40 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
       <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
         <div>
           <div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
+import { Geist_Mono, Cormorant_Garamond, Schibsted_Grotesk } from "next/font/google";
 
 import { CommandPalette } from "@/components/marketing/command-palette";
 import { buildSearchIndex } from "@/lib/search-index";
@@ -15,8 +15,11 @@ import { SITE_URL } from "@/lib/site";
 // FOIT (Flash of Invisible Text), wo Text bis zu 3 s unsichtbar bleibt,
 // und damit eine LCP-Verzögerung. Cormorant-Weight 600 raus — wir nutzen
 // nur 400 (Headline-Serif) und 400-italic (Akzent-Italic).
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Grundschrift: Schibsted Grotesk — eine Zeitungs-Grotesk aus
+// Skandinavien, sachlich mit eigener Handschrift. Bewusst nicht die
+// Next.js-Standardschrift Geist, die man von unzähligen Vorlagen kennt.
+const brandSans = Schibsted_Grotesk({
+  variable: "--font-brand-sans",
   subsets: ["latin"],
   display: "swap",
 });
@@ -139,7 +142,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable} h-full scroll-smooth antialiased`}
+      className={`${brandSans.variable} ${geistMono.variable} ${cormorant.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col pb-20 md:pb-0">
         <a

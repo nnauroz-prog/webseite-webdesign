@@ -68,7 +68,7 @@ html {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-brand-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-serif);
 }
@@ -1291,6 +1291,27 @@ html {
 
 .serif {
   font-family: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+/* Typografie-System: Überschriften stehen durchgehend in der
+   Grotesk. Das früher kursive Serifen-Akzentwort wird zur zweiten,
+   ruhigeren Tonstufe derselben Schrift — eine Schrift, zwei
+   Helligkeiten, statt Schriftmix in jedem Satz. Die Serife bleibt
+   für Zahlen und Preise reserviert. */
+:is(h1, h2, h3).serif,
+:is(h1, h2, h3) .serif,
+:is(h1, h2, h3) .serif-italic,
+:is(h1, h2, h3).serif-italic {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* Keine treibenden Farbflächen mehr: ruhige, klare Flächen wirken
+   gestalteter als Verläufe. Markup bleibt, falls es zurück soll. */
+.aurora {
+  display: none;
 }
 
 /* Sitalo-Wachssiegel — sehr langsame Rotation für lebendigen Brand-

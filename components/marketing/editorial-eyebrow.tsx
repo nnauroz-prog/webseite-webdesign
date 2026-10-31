@@ -24,14 +24,13 @@ export function EditorialEyebrow({
   variant?: "bar" | "rule";
   className?: string;
 }) {
-  const sizeClass =
-    variant === "rule"
-      ? "font-mono text-[10px]"
-      : "text-[11px] font-medium";
+  // Ruhige Satzschreibung statt gesperrter Mono-Versalien — liest sich
+  // wie Typografie, nicht wie eine Vorlage.
+  const sizeClass = variant === "rule" ? "text-[13px]" : "text-[13px] font-medium";
   return (
     <p
       className={cn(
-        "text-muted-foreground inline-flex items-center gap-2 uppercase tracking-[0.3em]",
+        "text-muted-foreground inline-flex items-center gap-2.5 tracking-normal",
         sizeClass,
         className,
       )}
