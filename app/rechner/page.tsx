@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { TcoRechner } from "@/components/marketing/tco-rechner";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { SITE_URL } from "@/lib/site";
 
 const WEBAPP_LD = {
@@ -61,29 +60,21 @@ export const metadata: Metadata = {
 export default function RechnerPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="3-Jahres-Rechner" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <section className="border-border/40 relative overflow-hidden border-b">
-          <div className="mx-auto w-full max-w-5xl px-6 py-14 sm:py-20 lg:py-24">
-            <div className="text-center">
-              <EditorialEyebrow>Eigenzeit als echtes Geld</EditorialEyebrow>
-              <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
-                Was kostet's
-                <br />
-                <span className="serif-italic text-muted-foreground font-normal">
-                  über 3 Jahre?
-                </span>
-              </h1>
-              <p className="text-muted-foreground mx-auto mt-7 max-w-2xl text-pretty text-base leading-relaxed sm:text-lg">
-                Sitalo, Wix, Squarespace, Jimdo, ChatGPT-Selbstbau —
-                drei Slider, fünf Balken. Inklusive Ihrer Eigenzeit
-                zum Stunden-Wert Ihrer Wahl. Wenn Sie ehrlich 80 €/h
-                einsetzen, sieht der Vergleich anders aus als bei 0 €.
-              </p>
-            </div>
+        <PageHero
+          crumb="3-Jahres-Rechner"
+          eyebrow="Eigenzeit als echtes Geld"
+          title="Was kostet eine Website"
+          accent="über drei Jahre?"
+        >
+          Sitalo, Baukästen und Selbstbau im Vergleich, inklusive Ihrer eigenen
+          Zeit zum Stundenwert Ihrer Wahl.
+        </PageHero>
 
-            <div className="mt-12 sm:mt-16">
+        <section>
+          <div className="mx-auto w-full max-w-5xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div>
               <TcoRechner />
             </div>
           </div>
@@ -98,7 +89,7 @@ export default function RechnerPage() {
               />
               Lieber jemand erklärt's
             </p>
-            <p className="serif text-foreground mt-6 text-balance text-2xl leading-snug sm:text-3xl">
+            <p className="serif text-foreground mt-6 text-2xl leading-snug text-balance sm:text-3xl">
               Wir reden 30 Minuten über Ihre Situation.{" "}
               <span className="serif-italic text-muted-foreground">
                 Kostenlos, ohne Verkaufsschnack.

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 
 import { AvailabilitySlot } from "@/components/marketing/availability-slot";
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import {
   INQUIRY_PACKAGES,
   type InquiryPackage,
@@ -49,38 +48,29 @@ export default async function AnfragePage({
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Anfrage" />
+      <MarketingHeader tone="dark" />
 
       <main id="main" tabIndex={-1} className="flex-1">
-        <section className="border-border/40 relative overflow-hidden border-b">
-          {/* Single-Column statt 2-Column-Hero: das Formular ist der
-              Hauptakt, nicht ein Side-Show neben langem Marketing-Text.
-              Mobile wie Desktop: Form so weit oben wie möglich. */}
-          <div className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-24 lg:py-28">
-            <div className="text-center">
-              <EditorialEyebrow>Drei Felder · ein Klick</EditorialEyebrow>
-              <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
-                Anfrage senden.
-              </h1>
-              <p className="text-muted-foreground mx-auto mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg">
-                Antwort meist noch am selben Tag — persönlich aus dem
-                Hamburger Atelier. Kein Vertrag, der gleich mitkommt.
-              </p>
-              {/* Ehrliche Verfügbarkeits-Anzeige, manuell gepflegt.
-                  Gibt einen leichten Knappheits-Anstoß ohne Fake-Live. */}
-              <div className="mt-7 flex justify-center">
-                <AvailabilitySlot variant="card" />
-              </div>
-            </div>
+        <PageHero
+          crumb="Anfrage"
+          eyebrow="Drei Felder · ein Klick"
+          title="Anfrage senden."
+          accent="Persönlich beantwortet."
+        >
+          Antwort meist am selben Werktag, persönlich aus Hamburg. Kostenlos und
+          unverbindlich.
+        </PageHero>
 
-            {/* Form — Hauptakt, direkt nach Header. */}
-            <div className="mt-10 sm:mt-12">
+        <section>
+          <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div className="mb-8">
+              <AvailabilitySlot variant="inline" />
+            </div>
+            <div>
               <InquiryForm
                 initialPackage={initialPackage}
                 initialIndustry={initialIndustry}
                 initialMessage={initialMessage}
-               
               />
             </div>
 
