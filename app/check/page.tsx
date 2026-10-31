@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Eye, Zap } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SpeedCheck } from "@/components/marketing/speed-check";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { SITE_URL } from "@/lib/site";
 
 const WEBAPP_LD = {
@@ -60,28 +59,21 @@ export const metadata: Metadata = {
 export default function CheckPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Speed-Check" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <section className="border-border/40 relative overflow-hidden border-b">
-          <div className="mx-auto w-full max-w-4xl px-6 py-14 sm:py-20 lg:py-24">
-            <div className="text-center">
-              <EditorialEyebrow>Live · Automatisch · Kostenlos</EditorialEyebrow>
-              <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
-                Wie schnell ist
-                <br />
-                <span className="serif-italic text-muted-foreground font-normal">
-                  Ihre Seite?
-                </span>
-              </h1>
-              <p className="text-muted-foreground mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-                Live PageSpeed-Insights-Test. Performance, Accessibility,
-                Best Practices, SEO. Ergebnis in 30 Sekunden, ohne
-                Kontaktdaten. Kein PDF-Report, keine E-Mail-Pflicht.
-              </p>
-            </div>
+        <PageHero
+          crumb="Speed-Check"
+          eyebrow="Live · automatisch · kostenlos"
+          title="Wie schnell ist"
+          accent="Ihre Seite?"
+        >
+          Ergebnis in etwa 30 Sekunden, ohne Kontaktdaten. Kein PDF-Report,
+          keine E-Mail-Pflicht.
+        </PageHero>
 
-            <div className="mt-12 sm:mt-16">
+        <section>
+          <div className="mx-auto w-full max-w-4xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div>
               <SpeedCheck />
             </div>
           </div>
@@ -98,18 +90,17 @@ export default function CheckPage() {
                   />
                   Zwei Wege
                 </p>
-                <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
+                <h2 className="mt-6 text-3xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
                   Speed-Check
                   <br />
                   <span className="serif-italic text-muted-foreground font-normal">
                     oder Persönlicher Audit?
                   </span>
                 </h2>
-                <p className="text-foreground/75 mt-6 max-w-md text-pretty text-[15.5px] leading-relaxed">
-                  Beide haben Sinn — und sie ergänzen sich. Der Speed-
-                  Check sagt Ihnen, ob die Technik stimmt. Der Audit
-                  sagt Ihnen, ob die Seite das Richtige für Ihre
-                  Kunden tut.
+                <p className="text-foreground/75 mt-6 max-w-md text-[15.5px] leading-relaxed text-pretty">
+                  Beide haben Sinn — und sie ergänzen sich. Der Speed- Check
+                  sagt Ihnen, ob die Technik stimmt. Der Audit sagt Ihnen, ob
+                  die Seite das Richtige für Ihre Kunden tut.
                 </p>
               </div>
 
@@ -144,7 +135,7 @@ export default function CheckPage() {
               />
               Lieber gleich reden
             </p>
-            <p className="serif text-foreground mt-6 text-balance text-2xl leading-snug sm:text-3xl">
+            <p className="serif text-foreground mt-6 text-2xl leading-snug text-balance sm:text-3xl">
               30 Minuten, Hamburg-Zeit.{" "}
               <span className="serif-italic text-muted-foreground">
                 Wir gucken zusammen drauf.
@@ -193,9 +184,7 @@ function Card({
         <span className="border-border/60 text-foreground/70 inline-flex h-9 w-9 items-center justify-center rounded-full border">
           <Icon className="h-4 w-4" aria-hidden="true" />
         </span>
-        <span className="text-muted-foreground text-[13px]">
-          {badge}
-        </span>
+        <span className="text-muted-foreground text-[13px]">{badge}</span>
       </div>
       <h3 className="text-foreground text-xl font-semibold tracking-tight">
         {title}

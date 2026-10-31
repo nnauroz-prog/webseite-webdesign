@@ -135,7 +135,7 @@ export function TerminBooking() {
       noValidate
       className="border-border/60 bg-card/60 ring-foreground/5 space-y-8 rounded-2xl border p-6 ring-1 sm:p-8"
     >
-      <fieldset>
+      <fieldset className="min-w-0">
         <legend className="text-muted-foreground flex items-center gap-2 text-[13px]">
           <Calendar className="h-3 w-3" aria-hidden="true" />
           Schritt 1 — Tag
@@ -158,7 +158,7 @@ export function TerminBooking() {
         </div>
       </fieldset>
 
-      <fieldset disabled={!selectedDate} className="disabled:opacity-50">
+      <fieldset disabled={!selectedDate} className="min-w-0 disabled:opacity-50">
         <legend className="text-muted-foreground flex items-center gap-2 text-[13px]">
           <Clock className="h-3 w-3" aria-hidden="true" />
           Schritt 2 — Uhrzeit
@@ -195,7 +195,7 @@ export function TerminBooking() {
 
       <fieldset
         disabled={!selectedDate || !selectedSlot}
-        className="disabled:opacity-50"
+        className="min-w-0 disabled:opacity-50"
       >
         <legend className="text-muted-foreground flex items-center gap-2 text-[13px]">
           <ArrowRight className="h-3 w-3" aria-hidden="true" />

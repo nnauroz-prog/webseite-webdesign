@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { EmpfehlungWizard } from "@/components/marketing/empfehlung-wizard";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { SITE_URL } from "@/lib/site";
 
 const WEBAPP_LD = {
@@ -57,29 +56,21 @@ export const metadata: Metadata = {
 export default function EmpfehlungPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Paket-Empfehlung" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <section className="border-border/40 relative overflow-hidden border-b">
-          <div className="mx-auto w-full max-w-5xl px-6 py-14 sm:py-20 lg:py-24">
-            <div className="text-center">
-              <EditorialEyebrow>Fünf Fragen · ehrliche Empfehlung</EditorialEyebrow>
-              <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
-                Welches Paket
-                <br />
-                <span className="serif-italic text-muted-foreground font-normal">
-                  passt zu Ihnen?
-                </span>
-              </h1>
-              <p className="text-muted-foreground mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-                Wir gucken auf Branche, Größe, vorhandene Materialien,
-                Timing und Ihre aktuelle Seite — und sagen ehrlich,
-                womit Sie am besten fahren. Kein Lockruf, keine
-                E-Mail-Pflicht.
-              </p>
-            </div>
+        <PageHero
+          crumb="Paket-Empfehlung"
+          eyebrow="Fünf Fragen · ehrliche Empfehlung"
+          title="Welches Paket"
+          accent="passt zu Ihnen?"
+        >
+          Branche, Größe, vorhandene Inhalte und Zeitplan. Danach sagen wir
+          ehrlich, womit Sie am besten fahren. Ohne E-Mail-Pflicht.
+        </PageHero>
 
-            <div className="mt-12 sm:mt-16">
+        <section>
+          <div className="mx-auto w-full max-w-5xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div>
               <EmpfehlungWizard />
             </div>
           </div>
@@ -94,7 +85,7 @@ export default function EmpfehlungPage() {
               />
               Lieber selbst entscheiden
             </p>
-            <p className="serif text-foreground mt-6 text-balance text-2xl leading-snug sm:text-3xl">
+            <p className="serif text-foreground mt-6 text-2xl leading-snug text-balance sm:text-3xl">
               Drei Pakete, klar erklärt.{" "}
               <span className="serif-italic text-muted-foreground">
                 Mehr Detail, mehr Beispiele.

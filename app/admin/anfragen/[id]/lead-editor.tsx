@@ -26,7 +26,7 @@ export function LeadEditor({
   return (
     <form action={action} className="border-border bg-card space-y-5 rounded-2xl border p-5">
       <input type="hidden" name="id" value={id} />
-      <fieldset>
+      <fieldset className="min-w-0">
         <legend className="text-[13px] font-medium">Status</legend>
         <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {LEAD_STATUSES.map((s) => (

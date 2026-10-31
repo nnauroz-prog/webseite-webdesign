@@ -3,10 +3,9 @@ import Link from "next/link";
 import { ArrowRight, Eye, FileText, Mail } from "lucide-react";
 
 import { AuditForm } from "@/components/marketing/audit-form";
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -28,7 +27,6 @@ export const metadata: Metadata = {
  * gestellt, hier wird zuerst Vertrauen aufgebaut.
  */
 export default function AuditPage() {
-
   // Service + BreadcrumbList JSON-LD — der kostenlose Mini-Audit ist
   // ein eigenständiger Service (free Lead-Magnet mit konkretem
   // Deliverable: 3-5 Punkte per Mail in 48 h).
@@ -58,7 +56,12 @@ export default function AuditPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: `${SITE_URL}/`,
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -70,31 +73,22 @@ export default function AuditPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Mini-Audit" />
+      <MarketingHeader tone="dark" />
 
       <main id="main" tabIndex={-1} className="flex-1">
-        <section className="border-border/40 relative overflow-hidden border-b">
-          <div className="mx-auto w-full max-w-4xl px-6 py-16 sm:py-24 lg:py-28">
-            <div className="text-center">
-              <EditorialEyebrow>Kostenlos · Persönlich · 48 h</EditorialEyebrow>
-              <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
-                Wir gucken uns Ihre
-                <br />
-                <span className="serif-italic text-muted-foreground font-normal">
-                  Seite an. Ehrlich.
-                </span>
-              </h1>
-              <p className="text-muted-foreground mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-                Drei bis fünf Punkte aus Hand-drauf-Sicht: was läuft
-                gut, was würden wir an Ihrer Stelle als Erstes anfassen.
-                Keine Lighthouse-Score-Karte, kein Vertriebs-Anruf
-                danach. Ein Mensch guckt drauf, ein Mensch schreibt
-                Ihnen.
-              </p>
-            </div>
+        <PageHero
+          crumb="Mini-Audit"
+          eyebrow="Kostenlos · persönlich · 48 h"
+          title="Wir sehen uns Ihre Seite an."
+          accent="Ehrlich."
+        >
+          Drei bis fünf konkrete Punkte: was gut läuft und was wir an Ihrer
+          Stelle zuerst angehen würden. Kein Vertriebsanruf danach.
+        </PageHero>
 
-            <div className="mx-auto mt-12 max-w-2xl">
+        <section>
+          <div className="mx-auto w-full max-w-4xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
+            <div>
               <AuditForm />
             </div>
           </div>
@@ -111,19 +105,18 @@ export default function AuditPage() {
                   />
                   Was Sie bekommen
                 </p>
-                <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
+                <h2 className="mt-6 text-3xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance sm:text-4xl lg:text-5xl">
                   Eine E-Mail.
                   <br />
                   <span className="serif-italic text-muted-foreground font-normal">
                     Mehr nicht.
                   </span>
                 </h2>
-                <p className="text-foreground/75 mt-6 max-w-md text-pretty text-[15.5px] leading-relaxed">
-                  Kein PDF-Report, kein automatisches Tool. Wir öffnen
-                  Ihre Seite, gucken sie uns am Schreibtisch in
-                  Hamburg an und schreiben Ihnen, was uns aufgefallen
-                  ist — in einer Sprache, die nicht nach Marketing
-                  klingt.
+                <p className="text-foreground/75 mt-6 max-w-md text-[15.5px] leading-relaxed text-pretty">
+                  Kein PDF-Report, kein automatisches Tool. Wir öffnen Ihre
+                  Seite, gucken sie uns am Schreibtisch in Hamburg an und
+                  schreiben Ihnen, was uns aufgefallen ist — in einer Sprache,
+                  die nicht nach Marketing klingt.
                 </p>
               </div>
 
@@ -157,17 +150,17 @@ export default function AuditPage() {
               />
               Klare Ansage
             </p>
-            <p className="serif text-foreground mt-6 text-balance text-2xl leading-snug sm:text-3xl">
+            <p className="serif text-foreground mt-6 text-2xl leading-snug text-balance sm:text-3xl">
               Es kommt kein Vertriebs-Anruf danach.{" "}
               <span className="serif-italic text-muted-foreground">
                 Wenn Sie Lust haben, melden Sie sich. Wenn nicht, auch gut.
               </span>
             </p>
             <p className="text-muted-foreground mt-6 text-[14.5px] leading-relaxed">
-              Wir machen das, weil wir gut darin sind, kurze ehrliche
-              Audits zu schreiben — und weil sich daraus immer wieder
-              schöne Projekte ergeben. Ihre Zeit nehmen wir nicht in
-              Anspruch, wenn Sie sie nicht hergeben.
+              Wir machen das, weil wir gut darin sind, kurze ehrliche Audits zu
+              schreiben — und weil sich daraus immer wieder schöne Projekte
+              ergeben. Ihre Zeit nehmen wir nicht in Anspruch, wenn Sie sie
+              nicht hergeben.
             </p>
             <Link
               href="/anfrage"
