@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -19,68 +18,38 @@ const STEPS = [
   {
     number: "01",
     title: "Sie schreiben uns",
-    body: "Drei Felder im Formular reichen: Name, E-Mail, was Sie vorhaben. Oder eine kurze Mail an info@sitalo.de. Sie bekommen sofort eine Empfangsbestätigung, von uns persönlich eine Antwort innerhalb von 24 Stunden — meistens deutlich schneller. Mit erstem Preisrahmen, ehrlich, ohne „ab Werten\", die später überschrieben werden.",
-    bullets: [
-      "Anfrage übers Formular (3 Schritte) oder per E-Mail",
-      "Bestätigung innerhalb von Sekunden",
-      "Persönliche Antwort von uns binnen 24 h",
-      "Kostet nichts, verpflichtet zu nichts",
-    ],
+    body: "Drei Felder im Formular oder eine kurze Mail — wir antworten persönlich, meist am selben Werktag.",
+    bullets: ["Formular oder E-Mail", "Antwort von einem Menschen", "Kostenlos und unverbindlich"],
   },
   {
     number: "02",
-    title: "Wir lernen uns kurz kennen",
-    body: "15 Minuten am Telefon, per Video oder — wenn Sie in Hamburg sind — bei einem Kaffee. Wir fragen nach Ihrem Betrieb, Ihrer Zielgruppe, was eine Website konkret leisten soll. Sie fragen, was Sie wissen müssen. Erst danach Angebot.",
-    bullets: [
-      "Telefon, Video oder Treffen — Sie entscheiden",
-      "Wir hören zu, fragen nach, machen uns Notizen",
-      "Ehrliche Einschätzung — auch wenn's gegen den Verkauf geht",
-      "Verbindliches Angebot, schwarz auf weiß",
-    ],
+    title: "Wir lernen uns kennen",
+    body: "15 Minuten am Telefon, per Video oder — in Hamburg — bei einem Kaffee. Danach bekommen Sie ein verbindliches Angebot.",
+    bullets: ["Telefon, Video oder Treffen", "Ehrliche Einschätzung", "Festpreis schwarz auf weiß"],
   },
   {
     number: "03",
-    title: "Sie schicken uns drei Sachen",
-    body: "Logo (oder ein Schnappschuss vom alten Briefpapier), 5–10 Bilder (Handy-Fotos sind ok), ein paar Sätze über sich und Ihre Leistungen. Wenn etwas fehlt, sagen wir Bescheid — und empfehlen einen Hamburger Fotografen für 200–400 €, falls Bilder fehlen.",
-    bullets: [
-      "Logo — egal welches Format",
-      "Bilder — Handy reicht. Wir schneiden zu, gleichen Farben an. Stock-Fotos vermeiden wir.",
-      "Texte — Stichpunkte reichen, wir formulieren um",
-      "Bei fehlenden Inhalten: wir helfen oder empfehlen",
-    ],
+    title: "Sie schicken drei Sachen",
+    body: "Logo, ein paar Bilder und Stichpunkte zu Ihren Leistungen. Fehlt etwas, helfen wir.",
+    bullets: ["Logo in jedem Format", "Handy-Fotos reichen", "Stichpunkte statt fertiger Texte"],
   },
   {
     number: "04",
     title: "Wir bauen Ihre Seite",
-    body: "Aus Ihren Unterlagen wird in 1–2 Werktagen eine fertige Seite — strukturiert, getextet, designtechnisch auf Ihre Branche und Ihren Stadtteil zugeschnitten. Während wir bauen, melden wir uns nur bei Rückfragen, sonst bekommen Sie das Ergebnis am Stück.",
-    bullets: [
-      "Aufbau, Texte, Bilder, Design in einem Zug",
-      "Branche- und Stadtteil-spezifische Stichwörter eingebaut",
-      "Parallel für Handy, Tablet, PC gebaut",
-      "Test-Link, sobald die Seite steht",
-    ],
+    body: "Aufbau, Texte, Bilder und Design in einem Zug. Kleine Seiten stehen oft nach 1–2 Werktagen.",
+    bullets: ["Für Handy, Tablet und PC", "Passende Suchbegriffe eingebaut", "Test-Link, sobald sie steht"],
   },
   {
     number: "05",
-    title: "Sie schauen drüber, wir passen an",
-    body: "Sie gehen die Seite in Ruhe durch — auf dem Handy in der Bahn, am Schreibtisch, abends auf dem Sofa. Schicken uns Ihre Änderungswünsche gesammelt zurück. Wir besprechen sie einmal, nicht einzeln, und setzen sie in einem Rutsch um. Erst wenn Sie zufrieden sind, geht es weiter.",
-    bullets: [
-      "Vollständige Vorschau auf einem Test-Link",
-      "Eine Runde gesammelter Änderungen inklusive",
-      "Wir setzen sie sauber um — keine Halbgaren",
-      "Freigabe schriftlich, klar und eindeutig",
-    ],
+    title: "Sie schauen drüber",
+    body: "Sie sehen alles auf dem Test-Link und schicken Änderungswünsche gesammelt — wir setzen sie in einem Rutsch um.",
+    bullets: ["Vollständige Vorschau", "Eine Änderungsrunde inklusive", "Freigabe erst, wenn es passt"],
   },
   {
     number: "06",
     title: "Ihre Seite geht online",
-    body: "Nach Freigabe übernehmen wir Domain, SSL, Hosting und die letzten Tests auf echten Geräten. Live-Schaltung am vereinbarten Termin. Ab da bleiben wir Ihr Ansprechpartner — für Hosting, kleine Änderungen, Erweiterungen. Sie schreiben uns, wir kümmern uns. Kein Ticket-System, kein Callcenter.",
-    bullets: [
-      "Domain, SSL, Hosting — alles eingerichtet",
-      "Tests auf echten Geräten (nicht nur im Simulator)",
-      "Formular geprüft, Maps korrekt, Tracking geprüft",
-      "Live-Schaltung am vereinbarten Termin",
-    ],
+    body: "Domain, SSL, Hosting und Tests auf echten Geräten übernehmen wir. Danach bleiben wir Ihr Ansprechpartner.",
+    bullets: ["Alles technisch eingerichtet", "Formular und Karte geprüft", "Live zum vereinbarten Termin"],
   },
 ];
 
@@ -125,7 +94,6 @@ export default function AblaufPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <Hero />
         <Steps />
-        <Tempo />
         <FinalCta />
       </main>
       <MarketingFooter />
@@ -142,27 +110,24 @@ export default function AblaufPage() {
 
 function Hero() {
   return (
-    <section className="bg-secondary/40 border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 lg:pt-36">
-        <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
-          <div>
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-              Ablauf
-            </p>
-            <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
-              Sechs Schritte.
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                Vom Hallo zum Live-Gang.
-              </span>
-            </h1>
-          </div>
-          <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
-            Sie schreiben uns, wir sprechen, wir bauen — danach bleiben
-            wir Ihr Ansprechpartner. Kein Angebots-Pingpong, kein
-            Ticket-System, keine Hotline.
-          </p>
-        </div>
+    <section className="relative overflow-hidden">
+      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+          <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
+          Ablauf
+        </p>
+        <h1 className="mt-5 max-w-3xl text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+          Sechs Schritte.{" "}
+          <span className="serif-italic text-muted-foreground font-normal">Vom Hallo bis online.</span>
+        </h1>
+        <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
+          Kein Angebots-Pingpong, kein Ticket-System. Größere Projekte bekommen vorab einen verbindlichen Termin.
+        </p>
       </div>
     </section>
   );
@@ -170,150 +135,49 @@ function Hero() {
 
 function Steps() {
   return (
-    <section className="relative">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-32">
-        {/* Vertical timeline spine — hidden on mobile, centered on lg+ */}
-        <div
-          aria-hidden="true"
-          className="border-border/70 absolute top-20 bottom-20 left-1/2 hidden -translate-x-1/2 border-l lg:block"
-        />
-        <ol className="space-y-20 sm:space-y-28">
-          {STEPS.map((step, i) => {
-            const right = i % 2 === 1;
-            return (
-              <li
-                key={step.number}
-                className={`relative grid gap-10 lg:grid-cols-2 lg:gap-20 ${
-                  right ? "lg:[&>div:first-child]:order-2" : ""
-                }`}
-              >
-                <div
-                  className={
-                    right
-                      ? "lg:pl-16 lg:text-left"
-                      : "lg:pr-16 lg:text-right"
-                  }
-                >
-                  <h2 className="text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-                    {step.title}
-                  </h2>
-                  <p className="text-foreground/75 mt-6 text-pretty text-base leading-relaxed sm:text-lg">
-                    {step.body}
-                  </p>
-                </div>
-                <div
-                  className={
-                    right
-                      ? "lg:pr-16 lg:text-right"
-                      : "lg:pl-16 lg:text-left"
-                  }
-                >
-                  <ul
-                    className={
-                      right
-                        ? "lg:[&>li]:justify-end space-y-3"
-                        : "space-y-3"
-                    }
-                  >
-                    {step.bullets.map((b) => (
-                      <li
-                        key={b}
-                        className="text-foreground/80 flex items-baseline gap-3 text-[15px] leading-relaxed sm:text-base"
-                      >
-                        <span className="text-muted-foreground/60 font-mono text-xs">
-                          ·
-                        </span>
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Spine marker — large numeral on the center line */}
-                <div
-                  aria-hidden="true"
-                  className="bg-background absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 px-3 lg:block"
-                >
-                  <span className="serif text-foreground/25 block text-[6rem] font-normal leading-none tracking-[-0.04em]">
-                    {step.number}
-                  </span>
-                </div>
-
-                {/* Mobile: numeral on top, no spine */}
-                <span className="serif text-foreground/20 absolute -top-12 left-0 text-[5rem] font-normal leading-none tracking-[-0.04em] lg:hidden">
-                  {step.number}
-                </span>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-function Tempo() {
-  return (
-    <section className="bg-secondary/40 border-border/40 border-t border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-24 text-center sm:py-32">
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-          Tempo
-        </p>
-        <h2 className="text-foreground mx-auto mt-8 max-w-3xl text-balance text-3xl font-semibold leading-[1.15] tracking-[-0.03em] sm:text-5xl">
-          Viele einfache Seiten sind bei uns{" "}
-          <span className="serif-italic text-foreground/50 font-normal">
-            in 1–2 Werktagen
-          </span>{" "}
-          fertig.
-        </h2>
-        <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-          Bei größeren Projekten oder fehlenden Inhalten besprechen wir
-          vorab einen verbindlichen Termin.
-          <span className="serif-italic"> Wir versprechen nichts, was wir nicht halten können.</span>
-        </p>
-        <div className="mx-auto mt-16 max-w-3xl">
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-            <Image
-              src="/images/workspace-typing.webp"
-              alt="Hände auf einem Laptop, warmes Licht — fokussiertes Arbeiten."
-              fill
-              sizes="(min-width: 1024px) 768px, 100vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </div>
+    <section className="border-border/40 border-t">
+      <ol className="mx-auto grid w-full max-w-6xl gap-x-8 gap-y-10 px-5 py-12 sm:grid-cols-2 sm:px-6 sm:py-16 lg:grid-cols-3">
+        {STEPS.map((step) => (
+          <li key={step.number} id={`step-${step.number}`} className="border-border/60 scroll-mt-24 border-t pt-5">
+            <p className="text-gold font-mono text-[12px] tracking-[0.2em]">{step.number}</p>
+            <h2 className="mt-2 text-xl font-semibold tracking-tight">{step.title}</h2>
+            <p className="text-muted-foreground mt-2 text-[14.5px] leading-relaxed">{step.body}</p>
+            <ul className="mt-4 space-y-1.5 text-[14px]">
+              {step.bullets.map((b) => (
+                <li key={b} className="flex gap-2.5">
+                  <Check className="text-gold mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="text-foreground/85">{b}</span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
 
 function FinalCta() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32">
-        <div className="flex flex-col items-start gap-10 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
-              Schritt 01.
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                Sie schreiben uns.
-              </span>
-            </h2>
-            <p className="text-muted-foreground mt-6 max-w-md text-lg leading-relaxed">
-              Antwort innerhalb von 24 Stunden. Persönlich, von uns.
-            </p>
-          </div>
-          <Link
-            href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-          >
-            Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </div>
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
+          Schritt 01:{" "}
+          <span className="serif-italic text-background/70">Sie schreiben uns.</span>
+        </h2>
+        <Link
+          href="/anfrage"
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+        >
+          Website anfragen
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );
 }
-
