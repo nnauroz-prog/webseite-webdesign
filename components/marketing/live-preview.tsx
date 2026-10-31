@@ -145,7 +145,7 @@ const PRESETS: Preset[] = [
     headline: "Training mit Betreuung, Kurse ab 7 Uhr.",
     sub: "Das Probetraining ist kostenlos und ohne Vertrag.",
     nav: ["Kurse", "Preise", "Trainer", "Probetraining"],
-    cta: "Probetraining sichern",
+    cta: "Probetraining vereinbaren",
     features: ["Kursplan", "Mitgliedschaft", "Probetraining"],
   },
 ];
@@ -255,9 +255,9 @@ export function LivePreview() {
       </div>
 
       <div className="flex flex-col items-start gap-2 px-1 pt-4 pb-1 sm:flex-row sm:items-center sm:justify-between sm:px-2">
-        <p className="text-muted-foreground font-mono text-[12px]">Skizze. Die echte Seite gestalten wir für Ihren Betrieb.</p>
+        <p className="text-muted-foreground font-mono text-[12px]">Eine Skizze zur Orientierung. Ihre Seite gestalten wir eigens für Ihren Betrieb.</p>
         <Link href={href} className="btn-signal h-11 shrink-0 text-[14.5px]">
-          Diese Seite anfragen
+          Mit dieser Skizze anfragen
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>

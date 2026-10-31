@@ -1,13 +1,18 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { BeforeAfter } from "@/components/marketing/before-after";
 import { Abfahrtstafel } from "@/components/marketing/hafen/abfahrtstafel";
 import { ContainerStack } from "@/components/marketing/hafen/container-stack";
 import { Faehrlinie } from "@/components/marketing/hafen/faehrlinie";
 import { HafenHero } from "@/components/marketing/hafen/hafen-hero";
+import { Ladeliste } from "@/components/marketing/hafen/ladeliste";
+import { Lotse } from "@/components/marketing/hafen/lotse";
+import { paketeKurz } from "@/components/marketing/hafen/paket-kurz";
+import { RevealRoot } from "@/components/marketing/hafen/reveal";
+import { VorherNachher as VorherNachherRegler } from "@/components/marketing/hafen/vorher-nachher";
+import { WellenKante } from "@/components/marketing/hafen/wellen-kante";
 import { LivePreview } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -15,6 +20,11 @@ import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 const CONTACT_EMAIL = "info@sitalo.de";
+
+// Der Pegel St. Pauli im Kopf (components/marketing/hafen/pegel.ts) wird
+// alle zehn Minuten neu geholt; die Seite folgt im selben Takt. Steht hier
+// ausdrücklich, damit die Absicht nicht nur am fetch hängt.
+export const revalidate = 600;
 
 export const metadata: Metadata = {
   // Absoluter Titel — sonst hängt das Layout-Template noch ein
@@ -42,19 +52,27 @@ export const metadata: Metadata = {
 const FAQ = [
   {
     q: "Wie schnell ist meine Seite fertig?",
-    a: "Wenn Sie uns alle Unterlagen geschickt haben, oft schon nach 1–2 Werktagen. Bei größeren Projekten vereinbaren wir vorab einen verbindlichen Termin.",
+    a: "Liegen alle Unterlagen vor, sind kleine Seiten oft nach ein bis zwei Werktagen online. Für größere Projekte nennen wir vorab einen verbindlichen Termin.",
   },
   {
     q: "Was brauchen Sie von mir?",
-    a: "Ihr Logo (falls vorhanden), ein paar Bilder, eine kurze Beschreibung Ihrer Leistungen, Öffnungszeiten und Kontaktdaten. Wenn etwas fehlt, sagen wir Bescheid und helfen bei Formulierungen.",
+    a: "Ihr Logo, falls vorhanden, ein paar Fotos, Stichpunkte zu Ihren Leistungen, Öffnungszeiten und Kontaktdaten. Fehlt etwas, sagen wir Bescheid und helfen beim Formulieren.",
+  },
+  {
+    q: "Muss ich die Texte selbst schreiben?",
+    a: "Nein. Sie schicken Stichpunkte, wir formulieren daraus die Texte für Ihre Seite. Sie lesen gegen, ändern, was nicht passt, und geben frei.",
   },
   {
     q: "Gibt es laufende Kosten?",
-    a: "Ja, für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49 €, 79 € oder 179 € im Monat. Nach sechs Monaten Mindestlaufzeit ist der Vertrag zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
+    a: "Ja, einen Monatsbeitrag für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49 €, 79 € oder 179 €. Nach sechs Monaten Mindestlaufzeit ist er zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
   },
   {
-    q: "Kann ich später noch Sachen ändern lassen?",
-    a: "Ja. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben uns kurz, wir setzen es um. Auf Wunsch bauen wir auch Bereiche ein, die Sie selbst pflegen.",
+    q: "Kann ich später noch etwas ändern lassen?",
+    a: "Ja. Kleine Änderungen sind im Monatsbeitrag enthalten: Sie schreiben uns kurz, wir setzen sie um. Auf Wunsch bauen wir Bereiche ein, die Sie selbst pflegen.",
+  },
+  {
+    q: "Gehört die Seite mir?",
+    a: "Ja. Wechseln Sie später zu einem anderen Anbieter, bekommen Sie den vollständigen Quellcode und alle Inhalte übergeben.",
   },
 ];
 
@@ -71,7 +89,31 @@ const FAQ_LD = {
 
 const STARTER = getPaketBySlug("starter");
 const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "499 €";
+const MONTHLY_FROM = STARTER ? STARTER.monthly.replace(/\s*\/\s*Monat$/, "") : "ab 49 €";
+const STUDIO = getPaketBySlug("studio");
+/** Name und Preise je Paket für Ladeliste und Abfahrtstafel (Client). */
+const PAKETE_KURZ = paketeKurz();
 
+/*
+ * Reihenfolge der Abschnitte und warum:
+ *  1. Kopf: wer wir sind, was es kostet.
+ *  2. Leistungen: was zu jeder Website gehört (Containerstapel).
+ *  3. Ladeliste: was davon in IHRER Branche zählt. Hier entsteht das
+ *     Gefühl „die kennen sich aus“, deshalb früh und dunkel abgesetzt.
+ *  4. Lotse: wer was tut. Nimmt die Sorge vor Aufwand.
+ *  5. Ablauf: wie es läuft (Fährlinie).
+ *  6. Vorschau: eine Skizze mit dem eigenen Namen. Steht bewusst nicht
+ *     direkt hinter der Ladeliste, damit nicht zwei Branchenwähler
+ *     aufeinander folgen.
+ *  7. Preise: erst jetzt, wenn Nutzen und Aufwand klar sind.
+ *  8. Vorher/Nachher: Beleg für die Qualität.
+ *  9. Fragen: letzte Zweifel. 10. Kontakt mit Skyline.
+ * Hell und dunkel wechseln sich ab, jeder Abschnitt ist anders gebaut.
+ * Eine einzige Wellenkante (Leistungen → Ladeliste) markiert den
+ * Übergang aufs Wasser; die übrigen Kanten sind gerade. RevealRoot
+ * blendet alle data-reveal-Elemente beim Scrollen ein (API in
+ * components/marketing/hafen/reveal.tsx).
+ */
 export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -81,13 +123,24 @@ export default function HomePage() {
       />
       <MarketingHeader />
       <main id="main" tabIndex={-1} className="flex-1">
+        <RevealRoot />
         <HafenHero />
         <Leistungen />
-        <Vorschau />
+        <WellenKante from="card" to="foreground" />
+        <Ladeliste
+          id="ladeliste"
+          head={<LadelisteKopf />}
+          pakete={PAKETE_KURZ}
+          className="spaeter-geladen"
+          style={spaeter(2400, 1600)}
+        />
+        <section id="lotse" className="spaeter-geladen bg-card scroll-mt-20" style={spaeter(1800, 1130)}>
+          <Lotse />
+        </section>
         <Ablauf />
+        <Vorschau />
         <Preise />
         <VorherNachher />
-        <Musterseiten />
         <Fragen />
         <Kontakt />
       </main>
@@ -98,19 +151,33 @@ export default function HomePage() {
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
+/** Startgröße für .spaeter und .spaeter-geladen (app/hafen.css): Höhe in
+ *  px schmal / ab 1024 px. Gemessen bei 390 bis 1440 px; bei
+ *  Textänderungen grob nachziehen. */
+function spaeter(h: number, hLg: number) {
+  return { "--spaeter-h": `${h}px`, "--spaeter-h-lg": `${hLg}px` } as CSSProperties;
+}
+
 /* ------------------------------------------------------------------
  * Leistungen als Containerstapel.
  * ---------------------------------------------------------------- */
 function Leistungen() {
   return (
-    <section id="leistungen" className="bg-card border-foreground scroll-mt-20 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
-        <h2 className="max-w-4xl text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[4.4rem]">
+    <section
+      id="leistungen"
+      className="spaeter-geladen bg-card border-foreground scroll-mt-20 border-t"
+      style={spaeter(1600, 970)}
+    >
+      <div className="mx-auto w-full max-w-6xl px-5 pt-20 pb-12 sm:px-6 sm:pt-28 sm:pb-16">
+        <h2
+          data-reveal="rise"
+          className="max-w-4xl text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
+        >
           Was zu Ihrer Website gehört
         </h2>
         <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 sm:mt-8">
-          <p className="text-muted-foreground max-w-xl text-[17px] leading-relaxed">
-            Ein Teil fährt in jedem Paket mit, der Rest je nach Bedarf. Was Ihr Betrieb nicht braucht, bleibt an Land.
+          <p data-reveal="fade" className="text-muted-foreground max-w-xl text-[17px] leading-relaxed">
+            Auf jedem Container steht, ab welchem Paket er mitfährt. Geladen wird nur, was Ihr Betrieb braucht.
           </p>
           <Link href="/leistungen" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
             Alle Leistungen {ARROW}
@@ -125,21 +192,52 @@ function Leistungen() {
 }
 
 /* ------------------------------------------------------------------
+ * Ladeliste: Kopf der linken Spalte. Auswahl und Frachtpapier
+ * liegen in components/marketing/hafen/ladeliste.tsx.
+ * ---------------------------------------------------------------- */
+function LadelisteKopf() {
+  return (
+    <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+      <h2
+        data-reveal="rise"
+        className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7 lg:text-[3.6rem]"
+      >
+        Die Ladeliste für Ihre Branche
+      </h2>
+      <div className="max-w-md lg:col-span-4 lg:col-start-9">
+        <p data-reveal="fade" className="text-stahl-hell text-[16.5px] leading-relaxed">
+          Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will. Wählen Sie Ihre
+          Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
+        </p>
+        <Link
+          href="/branchen"
+          className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+        >
+          Alle Branchen im Einzelnen {ARROW}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------
  * Live-Vorschau: Betriebsname eintippen, Skizze entsteht sofort.
  * ---------------------------------------------------------------- */
 function Vorschau() {
   return (
-    <section id="vorschau" className="border-border scroll-mt-20 border-t">
+    <section id="vorschau" className="spaeter-geladen scroll-mt-20" style={spaeter(1050, 900)}>
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-4 lg:pt-2">
-          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">Wie sähe Ihre Seite aus?</h2>
-          <p className="text-muted-foreground mt-5 text-[16.5px] leading-relaxed">
-            Tippen Sie den Namen Ihres Betriebs ein und wählen Sie die Branche. Die Skizze entsteht hier im Browser, ohne
-            Anmeldung.
+          <h2 data-reveal="rise" className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+            Eine erste Skizze mit Ihrem Namen
+          </h2>
+          <p data-reveal="fade" className="text-muted-foreground mt-5 text-[16.5px] leading-relaxed">
+            Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche. Die Skizze entsteht sofort hier im
+            Browser, gespeichert wird nichts.
           </p>
-          <p className="text-muted-foreground mt-4 text-[15px] leading-relaxed">
-            Gefällt Ihnen die Richtung, schicken Sie die Skizze mit einem Klick als Anfrage. Die echte Seite gestalten wir
-            danach für Ihren Betrieb.
+          <p data-reveal="fade" className="text-muted-foreground mt-4 text-[15px] leading-relaxed">
+            Gefällt Ihnen die Richtung, schicken Sie die Skizze als Anfrage. Die echte Seite entwerfen wir danach mit
+            Ihren Fotos und Texten.
           </p>
         </div>
         <div className="min-w-0 lg:col-span-8">
@@ -155,19 +253,28 @@ function Vorschau() {
  * ---------------------------------------------------------------- */
 function Ablauf() {
   return (
-    <section id="ablauf" className="grain bg-foreground text-background scroll-mt-20">
+    <section
+      id="ablauf"
+      className="spaeter-geladen grain bg-foreground text-background scroll-mt-20"
+      style={spaeter(1200, 820)}
+    >
       <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
-          <h2 className="text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7">Eine Linie, vier Halte.</h2>
-          <p className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
-            Vom ersten Anruf bis zur fertigen Seite sprechen Sie mit denselben Leuten.
+          <h2
+            data-reveal="rise"
+            className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7 lg:text-[3.6rem]"
+          >
+            Vier Halte bis zur fertigen Seite
+          </h2>
+          <p data-reveal="fade" className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
+            Sie sprechen vom ersten Anruf an mit denselben Leuten, auch wenn die Seite längst online ist.
           </p>
         </div>
         <div className="mt-14 sm:mt-20">
           <Faehrlinie />
         </div>
         <div className="border-background/15 text-stahl-hell mt-14 flex flex-col justify-between gap-2 border-t pt-5 font-mono text-[12px] sm:mt-16 sm:flex-row">
-          <span>Verkehrt werktags. Bei Nebel auch.</span>
+          <span>Antwort auf Anrufe und Mails meist am selben Werktag.</span>
           <Link href="/ablauf" className="hover:text-background underline-offset-4 hover:underline">
             Ablauf im Detail →
           </Link>
@@ -182,17 +289,24 @@ function Ablauf() {
  * ---------------------------------------------------------------- */
 function Preise() {
   return (
-    <section id="preise" className="border-border scroll-mt-20 border-t">
+    <section id="preise" className="spaeter-geladen border-border scroll-mt-20 border-t" style={spaeter(1100, 700)}>
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
         <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
-          <h2 className="text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]">
+          <h2
+            data-reveal="rise"
+            className="text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
+          >
             Festpreis ab {STARTER_PRICE}
           </h2>
-          <p className="text-muted-foreground mt-6 text-[16.5px] leading-relaxed">
+          <p data-reveal="fade" className="text-muted-foreground mt-6 text-[16.5px] leading-relaxed">
             Den Preis bekommen Sie schriftlich, bevor wir anfangen. Kommt später etwas dazu, sprechen wir vorher darüber.
           </p>
-          <p className="text-muted-foreground mt-4 text-[16.5px] leading-relaxed">
-            Welches Paket passt, klären wir meist in einem kurzen Telefonat. Wir empfehlen meistens Business.
+          <p data-reveal="fade" className="text-muted-foreground mt-4 text-[16.5px] leading-relaxed">
+            Welches Paket passt, klären wir im ersten Telefonat. Die meisten Betriebe wählen Business; die{" "}
+            <Link href="#ladeliste" className="text-foreground underline decoration-[var(--gold)] decoration-2 underline-offset-4">
+              Ladeliste
+            </Link>{" "}
+            nennt die Empfehlung für Ihre Branche.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
             <Link href="/anfrage" className="btn-signal">
@@ -203,10 +317,11 @@ function Preise() {
             </Link>
           </div>
         </div>
-        <div className="min-w-0 lg:col-span-7 lg:col-start-6">
-          <Abfahrtstafel />
+        <div className="min-w-0 lg:col-span-8 lg:col-start-5">
+          <Abfahrtstafel pakete={PAKETE_KURZ} />
           <p className="text-muted-foreground mt-3 font-mono text-[12px] leading-relaxed">
-            Einmalpreise, dazu ein Monatsbeitrag je Paket. Das größere Paket Studio steht auf der Paketseite.
+            Einmalpreise, dazu ein Monatsbeitrag {MONTHLY_FROM}.
+            {STUDIO ? ` ${STUDIO.name} ${STUDIO.setup} steht auf der Paketseite.` : null}
           </p>
         </div>
       </div>
@@ -219,80 +334,26 @@ function Preise() {
  * ---------------------------------------------------------------- */
 function VorherNachher() {
   return (
-    <section className="bg-card border-border border-t">
+    <section className="spaeter bg-card border-border border-t" style={spaeter(760, 1140)}>
       <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
-          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-6">
+          <h2
+            data-reveal="rise"
+            className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-6"
+          >
             Dieselben Inhalte, neu gebaut
           </h2>
-          <p className="text-muted-foreground max-w-lg text-[16.5px] leading-relaxed lg:col-span-5 lg:col-start-8">
-            Ziehen Sie den Regler. Links eine Seite, wie viele Betriebe sie seit Jahren haben, rechts dieselben Angaben so,
-            wie wir sie bauen. Die Tischlerei ist frei erfunden.
+          <p
+            data-reveal="fade"
+            className="text-muted-foreground max-w-lg text-[16.5px] leading-relaxed lg:col-span-5 lg:col-start-8"
+          >
+            Ziehen Sie den Regler. Links steht eine Seite, wie sie viele Betriebe seit Jahren haben. Rechts stehen
+            dieselben Angaben, geordnet nach dem, was Kunden zuerst wissen wollen. Die Tischlerei ist frei erfunden.
           </p>
         </div>
         <div className="mt-12 lg:mt-14">
-          <BeforeAfter />
+          <VorherNachherRegler />
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Musterseiten nach Branche: Bildstrecke wie in einer Zeitung, ein
- * großes Bild, zwei kleine daneben, darunter drei gleich große.
- * ---------------------------------------------------------------- */
-const MUSTER = [
-  { slug: "pflege", label: "Pflegedienst", src: "/images/sitalo-pflege-laptop.webp" },
-  { slug: "handwerker", label: "Tischlerei", src: "/images/sitalo-handwerker-laptop.webp" },
-  { slug: "praxis", label: "Arztpraxis", src: "/images/sitalo-praxis-laptop.webp" },
-  { slug: "kanzlei", label: "Kanzlei", src: "/images/sitalo-kanzlei-laptop.webp" },
-  { slug: "hotel", label: "Hotel", src: "/images/sitalo-hotel-laptop.webp" },
-  { slug: "kosmetik", label: "Kosmetikstudio", src: "/images/sitalo-kosmetik-laptop.webp" },
-];
-
-function Musterseiten() {
-  return (
-    <section className="border-border border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <h2 className="max-w-2xl text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
-            Musterseiten aus sechs Branchen
-          </h2>
-          <Link href="/branchen" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-            Alle Branchen {ARROW}
-          </Link>
-        </div>
-        <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:mt-14 lg:grid-cols-12 lg:gap-y-10">
-          {MUSTER.map((m, i) => (
-            <li
-              key={m.slug}
-              className={
-                i === 0
-                  ? "col-span-2 lg:col-span-7 lg:row-span-2"
-                  : i < 3
-                    ? "col-span-1 lg:col-span-5"
-                    : "col-span-1 lg:col-span-4"
-              }
-            >
-              <Link href={`/branchen/${m.slug}`} className="group flex h-full flex-col">
-                <div className={`bg-secondary relative overflow-hidden ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:flex-1" : "aspect-[4/3]"}`}>
-                  <Image
-                    src={m.src}
-                    alt={`Musterseite für ${m.label} auf einem Laptop`}
-                    fill
-                    sizes={i === 0 ? "(min-width: 1024px) 640px, 100vw" : "(min-width: 1024px) 440px, 50vw"}
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  />
-                </div>
-                <p className="mt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-                  <span className="text-[16px] font-semibold tracking-tight sm:text-[17px]">{m.label}</span>
-                  <span className="label-mono text-muted-foreground text-[11px]">Musterseite</span>
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
@@ -303,17 +364,17 @@ function Musterseiten() {
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <section id="faq" className="bg-card border-border scroll-mt-20 border-t">
+    <section id="faq" className="spaeter border-border scroll-mt-20 border-t" style={spaeter(1450, 880)}>
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4">
-          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+          <h2 data-reveal="rise" className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
             Was vor dem ersten Anruf oft gefragt wird
           </h2>
           <Link href="/faq" className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
             Alle Fragen {ARROW}
           </Link>
         </div>
-        <dl className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
+        <dl data-reveal="stagger" className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
           {FAQ.map((item) => (
             <div key={item.q} className="border-foreground border-t pt-5">
               <dt className="text-[18px] font-semibold leading-snug tracking-[-0.01em]">{item.q}</dt>
@@ -331,10 +392,13 @@ function Fragen() {
  * ---------------------------------------------------------------- */
 function Kontakt() {
   return (
-    <section id="kontakt" className="grain bg-foreground text-background scroll-mt-20">
+    <section id="kontakt" className="spaeter grain bg-foreground text-background scroll-mt-20" style={spaeter(740, 744)}>
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-20 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:grid-cols-12 lg:items-end lg:gap-8">
         <div className="lg:col-span-7">
-          <h2 className="text-stahl-hell text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]">
+          <h2
+            data-reveal="rise"
+            className="text-stahl-hell text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]"
+          >
             Am schnellsten geht es am Telefon.
           </h2>
           <a
@@ -346,9 +410,9 @@ function Kontakt() {
           </a>
         </div>
         <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
-            Eine Viertelstunde reicht meistens. Danach wissen Sie, was es kostet und wann es losgeht. Wer lieber schreibt,
-            schreibt eine Mail oder schickt eine Anfrage. Antwort meist am selben Werktag.
+          <p data-reveal="fade" className="text-stahl-hell text-[16.5px] leading-relaxed">
+            Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und den Termin. Wer lieber schreibt,
+            erreicht uns per Mail oder über das Anfrageformular. Die Antwort kommt meist am selben Werktag.
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}`}

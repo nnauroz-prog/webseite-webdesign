@@ -1362,9 +1362,18 @@ h3:not(.label-mono) {
 }
 
 /* Knöpfe im Hafen-Stil: kantig, Signal-Orange mit Teer-Schrift
-   (Weiß auf Orange hätte zu wenig Kontrast). */
+   (Weiß auf Orange hätte zu wenig Kontrast).
+   Unter dem Zeiger oder mit Tastaturfokus läuft eine Teer-Füllung von
+   links ein (auf dunklem Grund Elbnebel), der Pfeil schiebt nach rechts.
+   Beim Verlassen läuft die Füllung nach rechts hinaus. Die Füllung ist
+   ein ::before mit scaleX, es bewegt sich nur transform. */
 .btn-signal,
 .btn-line {
+  --btn-fill: var(--foreground);
+  --btn-on-fill: var(--background);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1376,45 +1385,82 @@ h3:not(.label-mono) {
   font-weight: 640;
   white-space: nowrap;
   transition:
-    background-color 0.2s,
-    color 0.2s,
-    border-color 0.2s;
+    color 0.28s cubic-bezier(0.65, 0, 0.35, 1) 0.06s,
+    border-color 0.28s ease;
+}
+.btn-signal::before,
+.btn-line::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--btn-fill);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.5s cubic-bezier(0.7, 0, 0.2, 1);
+  pointer-events: none;
 }
 .btn-signal {
   background: var(--gold);
   color: var(--foreground);
 }
-.btn-signal:hover {
-  background: var(--foreground);
-  color: var(--background);
-}
 .btn-line {
   border: 1.5px solid var(--foreground);
   color: var(--foreground);
 }
-.btn-line:hover {
-  background: var(--foreground);
-  color: var(--background);
-}
-:is(.bg-foreground, .on-dark) .btn-signal:hover {
-  background: var(--background);
-  color: var(--foreground);
+:is(.bg-foreground, .on-dark) :is(.btn-signal, .btn-line) {
+  --btn-fill: var(--background);
+  --btn-on-fill: var(--foreground);
 }
 :is(.bg-foreground, .on-dark) .btn-line {
   border-color: rgb(238 238 235 / 0.5);
   color: var(--background);
 }
-:is(.bg-foreground, .on-dark) .btn-line:hover {
-  background: var(--background);
-  color: var(--foreground);
-}
 .btn-signal svg,
 .btn-line svg {
-  transition: transform 0.25s;
+  transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
 }
-.btn-signal:hover svg,
-.btn-line:hover svg {
-  transform: translateX(3px);
+
+/* Aktiv: Zeiger nur bei echter Maus (kein klebendes Hover auf dem
+   Handy), Tastaturfokus immer. */
+@media (hover: hover) and (pointer: fine) {
+  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):hover {
+    color: var(--btn-on-fill);
+    border-color: var(--btn-fill);
+  }
+  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):hover::before {
+    transform: none;
+    transform-origin: left center;
+  }
+  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):hover svg {
+    transform: translateX(4px);
+  }
+}
+:is(.btn-signal, .btn-line):focus-visible {
+  color: var(--btn-on-fill);
+  border-color: var(--btn-fill);
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+:is(.btn-signal, .btn-line):focus-visible::before {
+  transform: none;
+  transform-origin: left center;
+}
+:is(.btn-signal, .btn-line):focus-visible svg {
+  transform: translateX(4px);
+}
+:is(.btn-signal, .btn-line):is(:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-signal::before,
+  .btn-line::before,
+  .btn-signal svg,
+  .btn-line svg {
+    transition: none;
+  }
 }
 
 }
@@ -1792,7 +1838,11 @@ body::before {
 /* ------------------------------------------------------------------
    Hamburg-Silhouette (components/marketing/hamburg-skyline.tsx).
    Einmalig: Linien zeichnen sich nacheinander (--i), dann blenden
-   Flächen, Feinheiten und Spiegelung ein. Danach steht das Bild.
+   Flächen, Feinheiten und Spiegelung ein, danach gehen die Lichter an
+   (--t in ms). Zuletzt blinkt nur das Hindernisfeuer auf dem
+   Fernsehturm langsam weiter, solange die Skyline im Bild ist
+   (data-run). Der Startzustand gilt nur mit .is-armed (setzt das
+   Script); ohne Script steht das fertige Bild mit allen Lichtern.
    ------------------------------------------------------------------ */
 .hh-skyline .hh-draw {
   stroke-dasharray: 1;
@@ -1803,29 +1853,49 @@ body::before {
 .hh-skyline .hh-detail { opacity: 0.55; }
 .hh-skyline .hh-back { opacity: 0.32; fill: currentColor; fill-opacity: 0.05; }
 .hh-skyline .hh-reflection { opacity: 1; }
+.hh-skyline .hh-light { opacity: 1; }
+.hh-skyline .hh-windows { filter: drop-shadow(0 0 1.5px rgb(255 200 140 / 0.9)); }
 
 @media (prefers-reduced-motion: no-preference) {
-  .hh-skyline .hh-draw {
-    stroke-dashoffset: 1;
+  /* Wartezustand: ohne Übergang, damit nichts sichtbar zurückläuft. */
+  .hh-skyline.is-armed:not(.is-drawn) .hh-draw { stroke-dashoffset: 1; }
+  .hh-skyline.is-armed:not(.is-drawn) .hh-fill { fill-opacity: 0; }
+  .hh-skyline.is-armed:not(.is-drawn) :is(.hh-detail, .hh-back, .hh-reflection, .hh-light) {
+    opacity: 0;
+  }
+  .hh-skyline.is-armed.is-drawn .hh-draw {
     transition: stroke-dashoffset 2.2s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 70ms);
   }
-  .hh-skyline .hh-fill {
-    fill-opacity: 0;
+  .hh-skyline.is-armed.is-drawn .hh-fill {
     transition:
       stroke-dashoffset 2.2s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 70ms),
       fill-opacity 1.6s ease calc(var(--i) * 70ms + 1.6s);
   }
-  .hh-skyline .hh-detail,
-  .hh-skyline .hh-back,
-  .hh-skyline .hh-reflection {
-    opacity: 0;
+  .hh-skyline.is-armed.is-drawn :is(.hh-detail, .hh-back, .hh-reflection) {
     transition: opacity 1.8s ease 2.6s;
   }
-  .hh-skyline.is-drawn .hh-draw { stroke-dashoffset: 0; }
-  .hh-skyline.is-drawn .hh-fill { fill-opacity: 1; }
-  .hh-skyline.is-drawn .hh-detail { opacity: 0.55; }
-  .hh-skyline.is-drawn .hh-back { opacity: 0.32; }
-  .hh-skyline.is-drawn .hh-reflection { opacity: 1; }
+  /* Lichter nacheinander, jedes zügig an und dann ruhig. */
+  .hh-skyline.is-armed.is-drawn .hh-light {
+    transition: opacity 0.5s cubic-bezier(0.3, 0, 0.2, 1) calc(var(--t) * 1ms);
+  }
+
+  .hh-skyline .hh-blink {
+    animation: hh-blink 3.2s ease-in-out infinite paused;
+  }
+  .hh-skyline.is-armed .hh-blink {
+    animation-delay: calc(var(--t) * 1ms + 900ms);
+  }
+  .hh-skyline[data-run="true"]:not(.is-armed) .hh-blink,
+  .hh-skyline.is-drawn[data-run="true"] .hh-blink {
+    animation-play-state: running;
+  }
+}
+@keyframes hh-blink {
+  0%,
+  100% { opacity: 0.22; }
+  10%,
+  28% { opacity: 1; }
+  42% { opacity: 0.22; }
 }
 
 

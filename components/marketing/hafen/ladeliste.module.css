@@ -1,0 +1,492 @@
+/* Ladeliste: dunkler Abschnitt, links die Branchen, rechts ein
+   Frachtpapier. Der Abschnitt setzt seine Fläche selbst (nicht über
+   .bg-foreground), damit Knöpfe und Orange im hellen Papier ihre
+   Hell-Varianten behalten. */
+
+.section {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* ---------------------------------------------------------------
+   Auswahl
+   --------------------------------------------------------------- */
+.side {
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .side {
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
+  }
+}
+
+.sideLabel {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stahl-hell);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 0.9rem;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 0.6rem 0.7rem 0.65rem;
+  border: 1px solid rgb(238 238 235 / 0.16);
+  border-radius: 2px;
+  color: var(--stahl-hell);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s;
+}
+.tab:hover {
+  color: var(--background);
+  border-color: rgb(238 238 235 / 0.4);
+}
+.tab:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.tab[aria-selected="true"] {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--foreground);
+}
+
+.tabCode {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+}
+.tabLabel {
+  max-width: 100%;
+  font-size: 14px;
+  font-weight: 620;
+  line-height: 1.25;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+@media (max-width: 379px) {
+  .tab {
+    padding: 0.55rem 0.5rem 0.6rem;
+  }
+  .tabLabel {
+    font-size: 13px;
+  }
+}
+
+/* Ab lg: senkrechte Liste mit Haarlinien, die gewählte Branche
+   bekommt eine orange Kante und eine Leitlinie zum Papier. */
+@media (min-width: 1024px) {
+  .tabs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 0.9rem;
+    border-top: 1px solid rgb(238 238 235 / 0.14);
+  }
+  .tab {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: baseline;
+    padding: 0.85rem 2rem 0.85rem 0;
+    border: 0;
+    border-bottom: 1px solid rgb(238 238 235 / 0.14);
+    border-radius: 0;
+  }
+  .tab::before,
+  .tab::after {
+    content: "";
+    position: absolute;
+    background: var(--gold);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.25, 1);
+  }
+  /* Kante links */
+  .tab::before {
+    left: -1rem;
+    top: 0.7rem;
+    bottom: 0.7rem;
+    width: 3px;
+    transform: scaleY(0);
+  }
+  /* Leitlinie rechts, zeigt aufs Papier */
+  .tab::after {
+    right: 0;
+    top: 50%;
+    width: 1.5rem;
+    height: 1.5px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .tab:hover {
+    border-color: rgb(238 238 235 / 0.14);
+  }
+  .tab[aria-selected="true"] {
+    background: transparent;
+    border-color: rgb(238 238 235 / 0.14);
+    color: var(--background);
+  }
+  .tab[aria-selected="true"]::before {
+    transform: scaleY(1);
+  }
+  .tab[aria-selected="true"]::after {
+    transform: scaleX(1);
+  }
+  .tab[aria-selected="true"] .tabCode {
+    color: var(--gold);
+    opacity: 1;
+  }
+  .tabLabel {
+    font-size: 17px;
+  }
+  .tabCode {
+    font-size: 11.5px;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Frachtpapier
+   --------------------------------------------------------------- */
+.paper {
+  position: relative;
+  border-radius: 3px;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 1.25rem 1.1rem 1.35rem;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.5),
+    0 34px 60px -34px rgb(0 0 0 / 0.75);
+}
+.paper[hidden] {
+  display: none;
+}
+/* Das Panel ist per Tab erreichbar (APG-Muster für Tabs, deren Panel
+   selbst nichts Fokussierbares vor dem Knopf hat). */
+.paper:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+@media (min-width: 640px) {
+  .paper {
+    padding: 1.9rem 2.1rem 2rem;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px double var(--foreground);
+}
+
+.kicker,
+.colhead,
+.fields dt,
+.footLabel,
+.stamp span {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.kicker {
+  color: var(--muted-foreground);
+}
+.title {
+  margin-top: 0.4rem;
+  font-size: 1.6rem;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+@media (min-width: 640px) {
+  .title {
+    font-size: 2.05rem;
+  }
+}
+
+/* Stempel: doppelt gerahmt, leicht schräg, in dunklem Orange. */
+.stamp {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  margin: 0.1rem 0.2rem 0 0;
+  padding: 0.3rem 0.7rem 0.35rem;
+  border: 2px solid var(--gold-ink);
+  outline: 1px solid var(--gold-ink);
+  outline-offset: 2px;
+  color: var(--gold-ink);
+  transform: rotate(-5deg);
+  opacity: 0.9;
+  line-height: 1.15;
+}
+.stamp span {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+.stamp strong {
+  font-size: 1.55rem;
+  font-stretch: 118%;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 1px solid var(--foreground);
+}
+.fields > div {
+  min-width: 0;
+  padding: 0.7rem 0.9rem 0.75rem 0;
+}
+.fields > div + div:not(.fieldWide) {
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--border);
+}
+.fields dt {
+  color: var(--muted-foreground);
+}
+.fields dd {
+  margin-top: 0.2rem;
+  font-size: 14.5px;
+  font-weight: 560;
+  line-height: 1.4;
+}
+.fieldWide {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border);
+}
+@media (min-width: 900px) {
+  .fields {
+    grid-template-columns: 9rem 12rem minmax(0, 1fr);
+  }
+  .fields > .fieldWide {
+    grid-column: auto;
+    padding-left: 0.9rem;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+}
+
+.colhead {
+  display: none;
+  color: var(--muted-foreground);
+}
+@media (min-width: 640px) {
+  .colhead {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 13.5rem) minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.1rem 0 0.55rem;
+    border-bottom: 1px solid var(--foreground);
+  }
+}
+
+.rows {
+  list-style: none;
+}
+.row {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.35rem 0.75rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s;
+}
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: 2.75rem minmax(0, 13.5rem) minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.05rem 0;
+  }
+}
+
+.pos {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s;
+}
+.ladung {
+  font-size: 16px;
+  font-weight: 660;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.stau {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--muted-foreground);
+}
+.stau::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  translate: 0 -1px;
+  border: 1.5px solid currentColor;
+}
+.vermerk {
+  grid-column: 2;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #3a3f41;
+}
+@media (min-width: 640px) {
+  .vermerk {
+    grid-column: auto;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover {
+    background-color: rgb(27 29 30 / 0.028);
+  }
+  .row:hover .pos {
+    color: var(--gold-ink);
+  }
+  .row:hover .stau::before {
+    border-color: var(--gold-ink);
+    background: var(--gold-ink);
+  }
+}
+
+/* Fuß: Paket und Knopf */
+.foot {
+  display: grid;
+  gap: 1.4rem;
+  margin-top: 1.6rem;
+  padding-top: 1.25rem;
+  border-top: 3px double var(--foreground);
+}
+@media (min-width: 900px) {
+  .foot {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2rem;
+  }
+}
+.footLabel {
+  color: var(--muted-foreground);
+}
+.paketName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.9rem;
+  margin-top: 0.35rem;
+  font-size: 1.55rem;
+  font-stretch: 112%;
+  font-weight: 760;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.paketPreis {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-stretch: normal;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--gold-ink);
+}
+.paketGrund {
+  margin-top: 0.5rem;
+  max-width: 34em;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.alt {
+  margin-top: 0.35rem;
+  max-width: 34em;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.6rem;
+}
+@media (min-width: 900px) {
+  .cta {
+    align-items: flex-end;
+  }
+}
+.ctaNote {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--muted-foreground);
+}
+
+/* ---------------------------------------------------------------
+   Wechsel: Positionen laufen gestaffelt ein, der Stempel setzt auf.
+   Nur nach einem Wechsel (.animate), nie beim Laden.
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .animate .title,
+  .animate .fields {
+    animation: paper-fade 0.38s ease both;
+  }
+  .animate .row {
+    animation: row-in 0.46s cubic-bezier(0.2, 0.8, 0.25, 1) both;
+    animation-delay: calc(60ms + var(--i, 0) * 42ms);
+  }
+  .animate .stamp {
+    animation: stamp-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) 0.18s both;
+  }
+  .animate .foot {
+    animation: paper-fade 0.4s ease 0.3s both;
+  }
+}
+@keyframes paper-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    transform: rotate(-11deg) scale(1.35);
+  }
+  60% {
+    opacity: 0.95;
+  }
+}

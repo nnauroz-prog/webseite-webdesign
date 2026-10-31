@@ -33,7 +33,9 @@ export function HamburgPanorama({ tone = "light" }: { tone?: "light" | "dark" })
         </div>
       ) : (
         <div className={`mx-auto w-full max-w-[1600px] px-0 pt-4 sm:px-6 ${FADE}`}>
+          {/* Auf dunklem Grund gehen nach dem Zeichnen die Lichter an. */}
           <HamburgSkyline
+            lights={tone === "dark"}
             className={`block h-[150px] w-full sm:h-auto sm:aspect-[1600/320] ${tone === "dark" ? "text-gold" : "text-foreground/75"}`}
           />
         </div>
