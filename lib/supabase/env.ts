@@ -7,8 +7,24 @@
  * ADMIN_EMAILS                    kommagetrennt, wer den Admin-Bereich sehen darf
  */
 
+/**
+ * Nur der Ursprung zählt (https://xyz.supabase.co). Häufiger Einfügefehler
+ * aus dem Supabase-Dashboard: die REST-Adresse mit „/rest/v1/" am Ende —
+ * dann landet der Login auf „/rest/v1/auth/v1/token" und Supabase meldet
+ * „Invalid path specified in request URL". Wir schneiden jeden Pfad ab.
+ */
+export function normalizeSupabaseUrl(raw: string | undefined): string | undefined {
+  const value = raw?.trim();
+  if (!value) return undefined;
+  try {
+    return new URL(value).origin;
+  } catch {
+    return value.replace(/\/+(rest\/v1)?\/*$/i, "") || undefined;
+  }
+}
+
 export function supabaseUrl(): string | undefined {
-  return process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || undefined;
+  return normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
 }
 
 export function supabaseAnonKey(): string | undefined {
