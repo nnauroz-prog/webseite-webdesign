@@ -46,6 +46,12 @@ const INDUSTRY_OPTIONS = [
   { slug: "sonstiges", label: "Andere Branche" },
 ];
 
+const INDUSTRY_ALIASES: Record<string, string> = {
+  pflege: "pflegedienst",
+  praxis: "arztpraxis",
+  gastro: "cafe",
+};
+
 const PACKAGE_LABELS: Record<InquiryPackage, string> = {
   starter: "Starter-Projekt",
   business: "Business-Auftritt",
@@ -93,11 +99,11 @@ export function InquiryForm({
   initialIndustry?: string;
   initialMessage?: string;
 }) {
+  // Branchen-Seiten verlinken mit ihrem eigenen Slug (?branche=pflege),
+  // das Formular kennt die feineren Optionen — Aliase übersetzen.
+  const industry = initialIndustry ? (INDUSTRY_ALIASES[initialIndustry] ?? initialIndustry) : undefined;
   const validIndustry =
-    initialIndustry &&
-    INDUSTRY_OPTIONS.some((i) => i.slug === initialIndustry)
-      ? initialIndustry
-      : "";
+    industry && INDUSTRY_OPTIONS.some((i) => i.slug === industry) ? industry : "";
 
   const [data, setData] = useState<FormData>({
     name: "",
