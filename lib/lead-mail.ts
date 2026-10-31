@@ -33,6 +33,36 @@ export class LeadDeliveryError extends Error {
   }
 }
 
+/** Welcher Zustellweg ist eingerichtet? Für die Statusanzeige in /admin. */
+export function mailSetup(): { provider: "resend" | "formspree" | null; to: string } {
+  const provider = process.env.RESEND_API_KEY?.trim()
+    ? "resend"
+    : process.env.FORMSPREE_FORM_ID?.trim()
+      ? "formspree"
+      : null;
+  return { provider, to: leadMailTo() };
+}
+
+/** Übersetzt typische Anbieter-Fehler in einen konkreten Hinweis. */
+export function explainDeliveryError(message: string): string {
+  if (/own email address|testing emails/i.test(message)) {
+    return "Resend darf ohne eigene Domain nur an die E-Mail-Adresse des Resend-Kontos senden. LEAD_MAIL_TO muss genau diese Adresse sein — oder sitalo.de bei Resend unter Domains verifizieren.";
+  }
+  if (/api key is invalid|invalid_api_key|missing_api_key|restricted_api_key|Resend 401/i.test(message)) {
+    return "Der RESEND_API_KEY wird abgelehnt. Bitte in Resend einen neuen Schlüssel (Sending access) erstellen und in Vercel ersetzen, dann neu deployen.";
+  }
+  if (/domain.*not verified|verify a domain/i.test(message)) {
+    return "Die Absender-Domain in LEAD_MAIL_FROM ist bei Resend nicht verifiziert. LEAD_MAIL_FROM leer lassen oder die Domain verifizieren.";
+  }
+  if (/fetch failed|ENOTFOUND|ECONN|ETIMEDOUT|network/i.test(message)) {
+    return "Der Mail-Dienst war gerade nicht erreichbar. Bitte in einer Minute noch einmal versuchen.";
+  }
+  if (/Formspree/i.test(message)) {
+    return "Formspree lehnt ab — meist ist das Formular nicht bestätigt oder das Monatslimit erreicht.";
+  }
+  return message;
+}
+
 export function leadMailTo(): string {
   return process.env.LEAD_MAIL_TO?.trim() || "info@sitalo.de";
 }

@@ -5,11 +5,12 @@ import { redirect } from "next/navigation";
 
 import { requireAdmin } from "@/lib/admin/auth";
 import { LEAD_STATUSES, type LeadStatus } from "@/lib/leads-meta";
+import { deliverLead, explainDeliveryError, mailSetup } from "@/lib/lead-mail";
 import { updateLead } from "@/lib/leads-store";
 import { adminConfigured, adminEmails } from "@/lib/supabase/env";
 import { sessionClient } from "@/lib/supabase/server";
 
-export type ActionState = { error?: string; saved?: boolean };
+export type ActionState = { error?: string; saved?: boolean; info?: string };
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -65,4 +66,27 @@ export async function updateLeadAction(
   revalidatePath("/admin");
   revalidatePath(`/admin/anfragen/${id}`);
   return { saved: true };
+}
+
+/** Schickt eine Test-Mail über denselben Weg wie echte Anfragen. */
+export async function sendTestMail(): Promise<ActionState> {
+  const adminEmail = await requireAdmin();
+  const { to } = mailSetup();
+  try {
+    const via = await deliverLead({
+      kind: "anfrage",
+      subject: "Test-Mail von sitalo.de/admin",
+      fields: [
+        ["Hinweis", "Wenn diese Mail ankommt, erreichen Sie alle Anfragen von der Website."],
+        ["Ausgelöst von", adminEmail],
+      ],
+      replyTo: adminEmail,
+    });
+    return {
+      saved: true,
+      info: `Gesendet über ${via === "resend" ? "Resend" : "Formspree"} an ${to}. Bitte auch im Spam-Ordner nachsehen.`,
+    };
+  } catch (err) {
+    return { error: explainDeliveryError(err instanceof Error ? err.message : String(err)) };
+  }
 }

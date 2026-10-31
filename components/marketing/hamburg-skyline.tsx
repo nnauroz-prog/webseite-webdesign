@@ -62,8 +62,34 @@ function crane(x: number) {
 
 type Shape = { d: string; fill?: boolean; fine?: boolean };
 
+/**
+ * Stadt im Hintergrund: Dächer der Alt- und Neustadt, Kontorhäuser,
+ * HafenCity — flach, Giebel, Staffelgiebel, Mansarde. Feste
+ * Zufallsfolge, damit Server und Browser dasselbe zeichnen. Unter der
+ * Köhlbrandbrücke bleibt die Kante niedrig.
+ */
+function backdrop() {
+  let seed = 11;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  let d = "";
+  for (let x = 300; x < W; ) {
+    const w = 14 + Math.round(rnd() * 22);
+    const h = 10 + Math.round(rnd() * 22);
+    const top = WATER - h;
+    const kind = Math.floor(rnd() * 4);
+    if (kind === 0) d += `M${x} ${WATER}V${top}H${x + w}V${WATER}`;
+    else if (kind === 1) d += `M${x} ${WATER}V${top}L${x + w / 2} ${top - 7}L${x + w} ${top}V${WATER}`;
+    else if (kind === 2) {
+      const s = w / 4;
+      d += `M${x} ${WATER}V${top}h${s}v-3h${s}v-3h${s}v3h${s}v3V${WATER}`;
+    } else d += `M${x} ${WATER}V${top + 4}L${x + 3} ${top}H${x + w - 3}L${x + w} ${top + 4}V${WATER}`;
+    x += w + Math.round(rnd() * 4);
+  }
+  return d;
+}
+
 const ELPHI_GLASS =
-  "M950 208V158Q962 152 976 160Q992 150 1010 164Q1034 152 1056 168Q1082 160 1104 174Q1132 168 1156 180Q1170 178 1180 184V208Z";
+  "M950 208V152Q966 170 992 158Q1014 174 1042 163Q1068 180 1096 171Q1124 186 1152 179Q1168 188 1180 185V208Z";
 
 const SHAPES: Shape[] = [
   // Köhlbrandbrücke: Deck (zwei Linien), Pylone, Seilfächer
@@ -87,10 +113,13 @@ const SHAPES: Shape[] = [
   { d: "M752 222V176H764V222M750 176H766M752 176L758 158L764 176M758 158V150", fill: true },
   { d: "M761 186a3 3 0 1 0 -6 0a3 3 0 1 0 6 0M758 186V184.5", fine: true },
   // Michel: Kirchenschiff, Turm mit Säulengeschoss, Kuppel, Laterne, Spitze
-  { d: "M796 240V208L818 196L840 208V240", fill: true },
-  { d: arches(800, 836, 216, 9, 4, 12), fine: true },
-  { d: "M840 240V186H870V240M842 186V168H868V186M845 168V158H865V168M845 158Q855 144 865 158M851 150V143H859V150M855 143V130", fill: true },
-  { d: "M846 172V184M851 172V184M855 172V184M859 172V184M864 172V184M859 200a4 4 0 1 0 -8 0a4 4 0 1 0 8 0", fine: true },
+  { d: "M788 240V210L812 192L838 210V240", fill: true },
+  { d: arches(792, 834, 218, 8, 4, 14) + "M800 206L812 197L824 206", fine: true },
+  { d: "M838 240V180H874V240M836 180H876M841 180V160H871V180M839 160H873M844 160V151H868V151V160M844 151Q856 134 868 151M851 139V130H861V139M851 130Q856 124 861 130M856 125V112", fill: true },
+  {
+    d: "M845 164V178M850 164V178M856 164V178M862 164V178M867 164V178M861 196a5 5 0 1 0 -10 0a5 5 0 1 0 10 0M856 196V192.5M856 196H859M842 214H870M842 226H870",
+    fine: true,
+  },
   // Heinrich-Hertz-Turm
   { d: "M899 240L902 110H908L911 240Z", fill: true },
   { d: "M893 110H917M891 104H919L917 98H893ZM894 92H916L914 86H896ZM902 86H908L906 72H904Z", fill: true },
@@ -110,7 +139,8 @@ const SHAPES: Shape[] = [
   { d: "M1292 240V208H1424V240M1292 208L1300 198H1416L1424 208", fill: true },
   { d: "M1302 198L1308 190L1314 198M1402 198L1408 190L1414 198", fill: true },
   { d: windows(1298, 1418, 214, 8, 6) + windows(1298, 1418, 228, 8, 6), fine: true },
-  { d: "M1350 198V176H1366V198M1348 176H1368M1350 176L1352 168H1364L1366 176M1352 168Q1358 158 1364 168M1358 160V150", fill: true },
+  { d: "M1349 198V170H1367V198M1347 170H1369M1351 170V160H1365V170M1349 160Q1358 140 1367 160M1354 148V142H1362V148M1354 142Q1358 136 1362 142M1358 137V128", fill: true },
+  { d: "M1318 203l3-4l3 4M1328 203l3-4l3 4M1338 203l3-4l3 4M1374 203l3-4l3 4M1384 203l3-4l3 4M1394 203l3-4l3 4M1354 186a4 4 0 1 0 8 0a4 4 0 1 0 -8 0", fine: true },
   // St. Petri
   { d: "M1452 240V182H1466V240M1452 182L1459 141L1466 182", fill: true },
   { d: "M1459 182V148M1455 198V208M1463 198V208", fine: true },
@@ -125,7 +155,12 @@ const SHAPES: Shape[] = [
 ];
 
 // Glasfugen der Elbphilharmonie, per clipPath auf den Wellenaufbau begrenzt.
-const ELPHI_SEAMS = windows(956, 1176, 140, 68, 8) + "M950 178H1180M950 193H1180";
+const ELPHI_SEAMS =
+  windows(956, 1176, 140, 68, 8) +
+  "M950 178H1180M950 193H1180" +
+  arches(952, 1178, 164, 8, 3, 4) +
+  arches(956, 1178, 182, 8, 3, 4) +
+  arches(952, 1178, 197, 8, 3, 4);
 
 export function HamburgSkyline({ className = "" }: { className?: string }) {
   const ref = useRef<SVGSVGElement>(null);
@@ -176,12 +211,21 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
           <feTurbulence type="fractalNoise" baseFrequency="0.004 0.22" numOctaves="1" seed="7" />
           <feDisplacementMap in="SourceGraphic" scale="5" />
         </filter>
+        {/* Hintergrund-Dächer nur dort, wo kein Wahrzeichen steht */}
+        <mask id="hh-back-mask" maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={WATER}>
+          <rect x="0" y="0" width={W} height={WATER} fill="#fff" />
+          {SHAPES.filter((sh) => sh.fill).map((sh, i) => (
+            <path key={i} d={sh.d} fill="#000" stroke="#000" strokeWidth={3} />
+          ))}
+        </mask>
         <clipPath id="hh-elphi-glass">
           <path d={ELPHI_GLASS} />
         </clipPath>
       </defs>
 
       <g id="hh-city" fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round">
+        {/* Stadt im Hintergrund, zurückgenommen */}
+        <path d={backdrop()} strokeWidth={0.6} className="hh-back" mask="url(#hh-back-mask)" />
         {SHAPES.map((s, i) => (
           <path
             key={i}

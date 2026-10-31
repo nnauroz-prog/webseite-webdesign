@@ -5,6 +5,7 @@ import { ArrowLeft, Mail, Phone } from "lucide-react";
 import { LeadEditor } from "@/app/admin/anfragen/[id]/lead-editor";
 import { StatusPill } from "@/app/admin/status-pill";
 import { requireAdmin } from "@/lib/admin/auth";
+import { explainDeliveryError } from "@/lib/lead-mail";
 import { getLead, KIND_LABELS, leadField } from "@/lib/leads-store";
 
 const DATE = new Intl.DateTimeFormat("de-DE", {
@@ -79,7 +80,7 @@ export default async function AdminLeadPage({
       {lead.delivery_error ? (
         <p className="mt-5 rounded-xl bg-red-50 p-4 text-[13px] leading-relaxed text-red-900">
           <strong>Die Benachrichtigungs-Mail ist nicht rausgegangen.</strong> Die
-          Anfrage ist trotzdem hier gespeichert. Grund: {lead.delivery_error}
+          Anfrage ist trotzdem hier gespeichert. Grund: {explainDeliveryError(lead.delivery_error)}
         </p>
       ) : null}
 

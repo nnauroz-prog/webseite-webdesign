@@ -1669,6 +1669,7 @@ body::before {
 .hh-skyline .hh-fill { fill: url(#hh-fill); }
 .hh-skyline .hh-fine { opacity: 0.7; }
 .hh-skyline .hh-detail { opacity: 0.55; }
+.hh-skyline .hh-back { opacity: 0.32; fill: currentColor; fill-opacity: 0.05; }
 .hh-skyline .hh-reflection { opacity: 1; }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1683,6 +1684,7 @@ body::before {
       fill-opacity 1.6s ease calc(var(--i) * 70ms + 1.6s);
   }
   .hh-skyline .hh-detail,
+  .hh-skyline .hh-back,
   .hh-skyline .hh-reflection {
     opacity: 0;
     transition: opacity 1.8s ease 2.6s;
@@ -1690,6 +1692,7 @@ body::before {
   .hh-skyline.is-drawn .hh-draw { stroke-dashoffset: 0; }
   .hh-skyline.is-drawn .hh-fill { fill-opacity: 1; }
   .hh-skyline.is-drawn .hh-detail { opacity: 0.55; }
+  .hh-skyline.is-drawn .hh-back { opacity: 0.32; }
   .hh-skyline.is-drawn .hh-reflection { opacity: 1; }
 }
 
