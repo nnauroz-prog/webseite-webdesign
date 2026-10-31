@@ -36,7 +36,18 @@ export default async function AdminLeadsPage({
     ? (raw as LeadStatus)
     : undefined;
 
-  const [counts, all] = await Promise.all([countByStatus(), listLeads(status)]);
+  // Datenbankfehler nicht als Absturz zeigen, sondern mit Grund und
+  // konkretem nächsten Schritt — meist fehlt die Tabelle oder der
+  // geheime Schlüssel gehört zu einem anderen Supabase-Projekt.
+  let loaded: [Awaited<ReturnType<typeof countByStatus>>, Awaited<ReturnType<typeof listLeads>>];
+  try {
+    loaded = await Promise.all([countByStatus(), listLeads(status)]);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[admin] Laden fehlgeschlagen:", message);
+    return <DbProblem message={message} />;
+  }
+  const [counts, all] = loaded;
   const leads = status ? all : all.filter((l) => l.status !== "archiviert");
   const openCount = counts.neu + counts.in_arbeit + counts.erledigt;
 
@@ -132,6 +143,26 @@ export default async function AdminLeadsPage({
           })}
         </ul>
       )}
+    </div>
+  );
+}
+
+function DbProblem({ message }: { message: string }) {
+  const m = message.toLowerCase();
+  const hint =
+    m.includes("leads") && (m.includes("does not exist") || m.includes("schema cache") || m.includes("could not find"))
+      ? "Die Tabelle „leads“ fehlt in Supabase. Öffnen Sie in Supabase den SQL Editor, fügen Sie den Inhalt von supabase/migrations/20261030000000_leads.sql ein und tippen Sie auf Run. Danach diese Seite neu laden."
+      : m.includes("api key") || m.includes("jwt") || m.includes("401")
+        ? "Supabase lehnt den geheimen Schlüssel ab. SUPABASE_SERVICE_ROLE_KEY in Vercel muss der service_role-Schlüssel aus demselben Projekt sein wie die Project URL. Danach neu deployen."
+        : "Bitte prüfen Sie die Supabase-Einstellungen in Vercel und deployen Sie neu.";
+  return (
+    <div>
+      <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Anfragen</h1>
+      <div role="alert" className="mt-6 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[14.5px] leading-relaxed text-amber-950">
+        <p className="font-semibold">Sie sind angemeldet, aber die Anfragen lassen sich nicht laden.</p>
+        <p className="mt-2">{hint}</p>
+        <p className="mt-3 font-mono text-[12.5px] opacity-80">{message}</p>
+      </div>
     </div>
   );
 }
