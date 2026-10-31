@@ -12,7 +12,7 @@ export default async function Image() {
     headlineBold: "Termin",
     headlineItalic: "direkt buchen.",
     subline:
-      "Tag und Uhrzeit selbst wählen, Bestätigung per Mail mit Kalender-Anhang in 15 Minuten. Kein E-Mail-Pingpong.",
+      "Tag und Uhrzeit selbst wählen, Bestätigung per Mail am selben Werktag. Kein E-Mail-Pingpong.",
     urlPill: "sitalo.de/termin",
   });
 }

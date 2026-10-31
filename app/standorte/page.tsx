@@ -3,17 +3,17 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Depth3D } from "@/components/marketing/depth-3d";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
-  title: "Webdesign nach Hamburger Stadtteil — aus dem Atelier nebenan",
+  title: "Website erstellen lassen in Hamburg — nach Stadtteil",
   description:
-    "Websites für Hamburger Unternehmen, sortiert nach Stadtteil: Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude, Bergedorf, Harburg, Wandsbek, Barmbek, Bramfeld, Niendorf, HafenCity. Lokale Suchphrasen statt Generisch-Hamburg.",
+    "Website erstellen lassen in Hamburg: Webdesign für Unternehmen in Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude, Bergedorf, Harburg, Wandsbek, Barmbek, Bramfeld, Niendorf und der HafenCity. Festpreis ab 499 €.",
   alternates: { canonical: "/standorte" },
 };
 
@@ -34,32 +34,21 @@ export default function StandortePage() {
 
 function Hero() {
   return (
-    <section className="border-border/40 relative overflow-hidden border-b">
-      <div
-        aria-hidden="true"
-        className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
-      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-16 sm:pt-24 sm:pb-24 lg:pt-32 lg:pb-32">
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-          {/* Linke Spalte: Headline + Subtext */}
-          <div>
-            <EditorialEyebrow>Nach Stadtteil</EditorialEyebrow>
-            <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-6xl lg:text-[4.5rem]">
-              Websites für Ihren Hamburger Stadtteil.
-            </h1>
-            <p className="text-muted-foreground mt-8 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
-              „Webdesign Hamburg" ist die falsche Suche. Ihre Kunden
-              tippen „Friseur Eimsbüttel" oder „Café Ottensen". Genau
-              für diese lokalen Phrasen bauen wir — Stadtteil für
-              Stadtteil.
-            </p>
-          </div>
-
-          {/* Rechte Spalte: Hamburg-Karte mit klickbaren Stadtteilen */}
-          <div className="relative">
-            <Depth3D><HamburgMap /></Depth3D>
-          </div>
+    <section>
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 pt-14 pb-16 sm:px-6 sm:pt-20 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+        <div>
+          <EditorialEyebrow>Nach Stadtteil</EditorialEyebrow>
+          <h1 className="mt-5 text-[2.6rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl">
+            Website erstellen lassen{" "}
+            <span className="text-muted-foreground">in Hamburg.</span>
+          </h1>
+          <p className="text-muted-foreground mt-6 max-w-md text-base leading-relaxed text-pretty sm:text-lg">
+            Ihre Kunden suchen nicht „Webdesign Hamburg“, sondern „Friseur
+            Eimsbüttel“ oder „Café Ottensen“. Für diese Suchen bauen wir,
+            Stadtteil für Stadtteil.
+          </p>
         </div>
+        <HamburgMap />
       </div>
     </section>
   );
@@ -67,49 +56,37 @@ function Hero() {
 
 function Liste() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <ul className="grid gap-4 sm:gap-5 lg:grid-cols-2 lg:gap-6">
-          {STANDORTE.map((standort, i) => (
-            <li key={standort.slug}>
-              <Link
-                href={`/standorte/${standort.slug}`}
-                data-cursor-label={`${standort.name} ansehen →`}
-                className="border-border/60 bg-card/60 ring-foreground/5 group relative flex h-full flex-col overflow-hidden rounded-3xl border p-7 ring-1 transition-shadow duration-500 hover:shadow-[0_24px_60px_-30px_rgb(0_0_0/0.25)] sm:p-9"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <span className="serif text-foreground/15 text-[2.5rem] font-normal leading-none tracking-[-0.04em] sm:text-[3rem]">
-                    {String(i + 1).padStart(2, "0")}
+    <section className="border-border/50 border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <SectionHead
+          label="Stadtteile"
+          title="Zwölf Stadtteile, die wir besonders gut kennen."
+        />
+        <div className={`mt-10 lg:mt-14 ${BODY_OFFSET}`}>
+          <ul className="border-border grid border-t sm:grid-cols-2 sm:gap-x-8">
+            {STANDORTE.map((standort) => (
+              <li key={standort.slug} className="border-border border-b">
+                <Link
+                  href={`/standorte/${standort.slug}`}
+                  className="group flex items-start justify-between gap-4 py-5"
+                >
+                  <span>
+                    <span className="block text-lg font-semibold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+                      {standort.name}
+                    </span>
+                    <span className="text-muted-foreground mt-1 block text-[14px] leading-relaxed">
+                      {standort.tagline}
+                    </span>
                   </span>
                   <ArrowRight
+                    className="mt-1.5 h-4 w-4 shrink-0"
                     aria-hidden="true"
-                    className="text-muted-foreground mt-3 h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5"
                   />
-                </div>
-                <h2 className="text-foreground mt-6 text-3xl font-semibold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
-                  {standort.name}
-                </h2>
-                <p className="serif-italic text-muted-foreground mt-3 text-pretty text-base leading-snug sm:text-lg">
-                  {standort.tagline}
-                </p>
-                <div className="text-muted-foreground/85 mt-6 flex flex-wrap gap-x-3 gap-y-1 text-[12.5px]">
-                  {standort.anker.slice(0, 3).map((ank) => (
-                    <span
-                      key={ank}
-                      className="inline-flex items-center gap-1.5"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="bg-ink-olive inline-block h-1 w-1 rounded-full"
-                      />
-                      {ank}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
@@ -117,35 +94,19 @@ function Liste() {
 
 function FinalNote() {
   return (
-    <section>
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="serif text-foreground text-balance text-2xl leading-[1.3] tracking-[-0.015em] sm:text-3xl lg:text-4xl">
-          Ihr Stadtteil ist nicht dabei?{" "}
-          <span className="serif-italic text-muted-foreground">
-            Wir bauen trotzdem.
-          </span>
-        </p>
-        <p className="text-muted-foreground mt-6 max-w-xl text-pretty text-[15px] leading-relaxed">
-          Wir arbeiten für Unternehmen aus ganz Hamburg und Umland —
-          die Stadtteil-Seiten zeigen nur, wofür wir besonders viel
-          lokales Detail-Wissen haben. Wenn Sie aus Bergedorf, Harburg
-          oder dem Speckgürtel kommen, fragen Sie gerne trotzdem an.
-        </p>
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link
-            href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-          >
-            Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link
-            href="/branchen"
-            className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-4 hover:underline"
-          >
-            Branchen ansehen
-          </Link>
-        </div>
+    <section className="bg-foreground text-background">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+        <h2 className="text-3xl leading-tight font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+          Stadtteil nicht dabei?{" "}
+          <span className="text-background/65">Wir bauen trotzdem.</span>
+        </h2>
+        <Link
+          href="/anfrage"
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+        >
+          Website anfragen
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );
