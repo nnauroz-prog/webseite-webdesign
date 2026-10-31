@@ -17,7 +17,7 @@ const PANORAMA_IMAGE: { src: string; alt: string } | null = null;
 const FADE =
   "[mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent),linear-gradient(to_bottom,#000_70%,transparent)] [mask-composite:intersect]";
 
-export function HamburgPanorama() {
+export function HamburgPanorama({ tone = "light" }: { tone?: "light" | "dark" }) {
   return (
     <div className="relative overflow-hidden">
       {PANORAMA_IMAGE ? (
@@ -32,7 +32,9 @@ export function HamburgPanorama() {
         </div>
       ) : (
         <div className={`mx-auto w-full max-w-[1600px] px-0 pt-4 sm:px-6 ${FADE}`}>
-          <HamburgSkyline className="text-foreground/75 block h-[150px] w-full sm:h-auto sm:aspect-[1600/320]" />
+          <HamburgSkyline
+            className={`block h-[150px] w-full sm:h-auto sm:aspect-[1600/320] ${tone === "dark" ? "text-gold" : "text-foreground/75"}`}
+          />
         </div>
       )}
     </div>

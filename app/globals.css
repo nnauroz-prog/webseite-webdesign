@@ -1293,6 +1293,13 @@ html {
   font-family: var(--font-serif), ui-serif, Georgia, serif;
 }
 
+/* Die Serife steht nur noch bei Preisen und Kennzahlen — dort immer
+   Versalziffern, sonst fallen 3, 4, 5, 7, 9 unter die Grundlinie. */
+.serif,
+.serif-italic {
+  font-feature-settings: "lnum" 1;
+}
+
 /* Typografie-System: Überschriften stehen durchgehend in der
    Grotesk. Das früher kursive Serifen-Akzentwort wird zur zweiten,
    ruhigeren Tonstufe derselben Schrift — eine Schrift, zwei
@@ -1737,4 +1744,24 @@ body::before {
    für ausreichenden Kontrast (WCAG AA). Große Ziffern bleiben hell. */
 :where(.bg-background, body) .text-gold:is(.text-\[12px\], .text-\[13px\]) {
   color: oklch(0.52 0.11 75);
+}
+
+/* ------------------------------------------------------------------
+   Grain: feines Papierkorn auf dunklen Flächen. Nimmt dem Marineblau
+   das Digitale, ohne aufzufallen. Reines CSS, kein Bild.
+   ------------------------------------------------------------------ */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
 }

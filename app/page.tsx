@@ -5,6 +5,8 @@ import { ArrowRight, Send } from "lucide-react";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
+  Arbeiten,
+  HamburgBand,
   SectionHead,
   Voranbringen,
   VorherNachher,
@@ -131,7 +133,7 @@ export default function HomePage() {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
       />
-      <MarketingHeader />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
         {/* Eine Aufgabe pro Sektion, ein Weg zur Anfrage. Ausführliches
             (Haltung, Grenzen, Werkzeuge, Stadtteile, Atelier-Notizen)
@@ -139,6 +141,7 @@ export default function HomePage() {
             /standorte, /jetzt — die Startseite verlinkt dorthin. */}
         <Hero />
         <Vorteile />
+        <Arbeiten />
         <VorherNachher />
         {/* Echte Ergebnisse (Branche + Stadtteil + Zahl) — der
             Vertrauensbeleg direkt nach den Arbeitsproben im Hero. */}
@@ -148,6 +151,7 @@ export default function HomePage() {
         <RevealOnScroll>
           <Voranbringen />
         </RevealOnScroll>
+        <HamburgBand />
         <RevealOnScroll>
           <AblaufKompakt />
         </RevealOnScroll>
@@ -173,15 +177,8 @@ function Hero() {
   return (
     <section
       id="start"
-      className="relative overflow-hidden scroll-mt-20"
+      className="grain bg-foreground text-background relative overflow-hidden scroll-mt-20"
     >
-      {/* Warmer Gradient-Backdrop für mehr Atmosphäre */}
-      {/* Aurora: drei langsam treibende Farbflächen (globals.css) */}
-      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
-        <span />
-        <span />
-        <span />
-      </div>
 
       <div className="mx-auto w-full max-w-6xl px-5 pt-8 pb-6 sm:px-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
@@ -189,15 +186,16 @@ function Hero() {
             {/* Die H1 trägt den Suchbegriff (für Google), der große Satz
                 darunter ist die Botschaft (für Menschen). Optisch wie
                 Kopfzeile + Überschrift. */}
-            <h1 className="text-muted-foreground text-[13px] font-medium tracking-wide sm:mt-6">
+            <h1 className="text-gold flex items-center gap-2.5 text-[13px] font-medium tracking-wide sm:mt-6">
+              <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
               Website erstellen lassen · Webdesign aus Hamburg
             </h1>
-            <p className="text-foreground mt-4 text-balance text-[2.6rem] font-semibold leading-[1.0] tracking-[-0.04em] sm:text-[4rem] lg:text-[4.75rem]">
+            <p className="text-background mt-5 text-balance text-[2.6rem] font-semibold leading-[1.0] tracking-[-0.04em] sm:text-[4rem] lg:text-[4.75rem]">
               Websites für Betriebe,{" "}
-              <span className="text-muted-foreground">die ihr Handwerk ernst nehmen.</span>
+              <span className="text-background/55">die ihr Handwerk ernst nehmen.</span>
             </p>
             <p
-              className="reveal text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
+              className="reveal text-background/70 mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
               Gestaltet und gebaut in Hamburg, für Unternehmen in ganz
@@ -210,14 +208,14 @@ function Hero() {
             >
               <Link
                 href="/anfrage"
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+                className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
               >
                 Website anfragen
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/pakete"
-                className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
+                className="text-background inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
               >
                 Preise ansehen
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -235,8 +233,8 @@ function Hero() {
           </div>
         </div>
       </div>
-      {/* Hamburg-Panorama, läuft im Hero-Hintergrund aus */}
-      <HamburgPanorama />
+      {/* Hamburg-Panorama in Gold, läuft im dunklen Hero-Grund aus */}
+      <HamburgPanorama tone="dark" />
     </section>
   );
 }
@@ -353,22 +351,19 @@ function PricingCenterfold({
   paket: (typeof PACKAGES)[number];
 }) {
   return (
-    <div className="bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10 lg:p-12">
-
+    <div className="bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10">
       <div className="relative flex items-center gap-3">
         <span className="text-background/60 text-[13px] font-medium">
           {paket.badge ?? paket.name}
         </span>
       </div>
 
-      <div className="relative mt-8 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-6">
-        <p className="serif text-background text-6xl font-normal leading-none tracking-[-0.03em] sm:text-7xl lg:text-[5.5rem]">
+      <div className="relative mt-8">
+        <p className="serif text-background text-6xl font-normal leading-none tracking-[-0.03em] sm:text-7xl">
           {paket.setup}
         </p>
-        <p className="text-background/60 text-base">
-          einmalig
-          <br className="hidden sm:block" />
-          <span className="text-background/85"> + {paket.monthly}</span>
+        <p className="text-background/60 mt-3 text-[15px]">
+          einmalig · <span className="text-background/85">+ {paket.monthly}</span>
         </p>
       </div>
 
@@ -451,7 +446,7 @@ function FinalCta() {
   return (
     <section
       id="kontakt"
-      className="bg-foreground text-background relative overflow-hidden scroll-mt-20"
+      className="grain bg-foreground text-background relative overflow-hidden scroll-mt-20"
     >
       {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
           ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
