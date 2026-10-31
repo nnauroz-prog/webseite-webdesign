@@ -33,198 +33,81 @@ export default function BranchenPage() {
 
 function Hero() {
   return (
-    <>
-      <section className="border-border/40 border-b">
-        <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-32">
-          <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
-            <div>
-              <EditorialEyebrow>10 Branchen · jede Seite neu gebaut</EditorialEyebrow>
-              <h1 className="mt-6 text-5xl font-semibold leading-[1.0] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[5.5rem]">
-                Websites, die zu Ihrem Alltag passen.
-              </h1>
-            </div>
-            <div>
-              <p className="text-foreground/80 max-w-md text-pretty text-lg leading-relaxed sm:text-xl">
-                Eine Pflegedienst-Seite muss anders aussehen als ein Café —
-                und beide anders als eine Kanzlei. Pro Branche zeigen wir,
-                worauf es ankommt. Gebaut wird jede Seite neu, für Ihren
-                Betrieb.
-              </p>
-              {/* Bullet-Liste auf zwei Items reduziert — Drei-Beat
-                  „Individuell · Branchen-spezifisch · Keine Vorlagen"
-                  war der gleiche Triade-Reflex wie auf den anderen
-                  Seiten. */}
-              <ul className="text-muted-foreground mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
-                <li className="inline-flex items-center gap-2">
-                  <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-                  Individuell
-                </li>
-                <li className="inline-flex items-center gap-2">
-                  <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-                  Keine Vorlagen, auch nicht heimlich
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="border-border/40 overflow-hidden border-b py-8 sm:py-10">
-        <div className="-mx-6 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <ul className="mx-auto flex w-max gap-3 sm:gap-4">
-            {BRANCHEN.map((b) => (
-              <li key={b.slug} className="shrink-0">
-                <Link
-                  href={`/branchen/${b.slug}`}
-                  data-cursor-label={`${b.label} →`}
-                  className="group block w-[200px] sm:w-[260px]"
-                >
-                  {b.image ? (
-                    <div className="bg-secondary/40 relative aspect-[16/10] w-full overflow-hidden rounded-xl ring-1 ring-black/5 transition-shadow group-hover:shadow-[0_20px_40px_-16px_rgb(0_0_0/0.25)]">
-                      <Image
-                        src={b.image.src}
-                        alt={b.image.alt}
-                        fill
-                        sizes="260px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                  ) : (
-                    <div className="bg-secondary/50 flex aspect-[16/10] w-full items-center justify-center rounded-xl ring-1 ring-black/5">
-                      <span className="text-muted-foreground/40 serif text-3xl">
-                        {b.label[0]}
-                      </span>
-                    </div>
-                  )}
-                  <p className="text-foreground/85 group-hover:text-foreground mt-3 text-sm font-medium tracking-tight transition-colors">
-                    {b.label}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    </>
+    <section className="relative overflow-hidden">
+      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
+        <EditorialEyebrow>10 Branchen · jede Seite neu gebaut</EditorialEyebrow>
+        <h1 className="mt-5 max-w-3xl text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+          Websites, die zu Ihrem{" "}
+          <span className="serif-italic text-muted-foreground font-normal">Alltag passen.</span>
+        </h1>
+        <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
+          Eine Praxis braucht anderes als ein Café. Pro Branche zeigen wir, worauf es ankommt.
+        </p>
+      </div>
+    </section>
   );
 }
 
+/** Zehn Branchen als Karten. Details stehen auf /branchen/[slug]. */
 function Sections() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <ol className="divide-border/60 divide-y">
-          {BRANCHEN.map((b, i) => (
-            <li
-              key={b.slug}
-              id={b.slug}
-              className="scroll-mt-20 grid gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-20"
-            >
-              <div className={i % 2 === 0 ? "lg:order-1" : "lg:order-2"}>
+    <section className="border-border/40 border-t">
+      <ul className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-3 gap-y-7 px-5 py-10 sm:gap-x-5 sm:gap-y-10 sm:px-6 sm:py-16 lg:grid-cols-3">
+        {BRANCHEN.map((b) => (
+          <li key={b.slug} id={b.slug} className="scroll-mt-24">
+            <Link href={`/branchen/${b.slug}`} className="group block">
+              <div className="bg-secondary/40 relative aspect-[16/10] w-full overflow-hidden rounded-xl ring-1 ring-black/5">
                 {b.image ? (
-                  <Link
-                    href={`/branchen/${b.slug}`}
-                    data-cursor-label={`${b.label} — Details →`}
-                    className="group block"
-                    aria-label={`${b.label} — Details ansehen`}
-                  >
-                    <div className="bg-secondary/40 relative aspect-[16/10] w-full overflow-hidden rounded-2xl shadow-[0_24px_48px_-16px_rgb(0_0_0/0.18)] ring-1 ring-black/5">
-                      <Image
-                        src={b.image.src}
-                        alt={b.image.alt}
-                        fill
-                        sizes="(min-width: 1024px) 720px, 100vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                      />
-                    </div>
-                  </Link>
-                ) : (
-                  <div className="bg-secondary/30 flex aspect-[16/10] w-full items-center justify-center rounded-2xl">
-                    <span className="drop-cap-3d serif text-foreground/20 text-[8rem] font-normal leading-none">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                )}
+                  <Image
+                    src={b.image.src}
+                    alt={b.image.alt}
+                    fill
+                    sizes="(min-width: 1024px) 360px, 50vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  />
+                ) : null}
               </div>
-              <div
-                className={
-                  i % 2 === 0
-                    ? "flex flex-col justify-center lg:order-2"
-                    : "flex flex-col justify-center lg:order-1"
-                }
-              >
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
-                  Branche
-                </p>
-                <h2 className="mt-4 text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-                  <Link
-                    href={`/branchen/${b.slug}`}
-                    className="hover:underline underline-offset-[6px] decoration-foreground/30"
-                  >
-                    {b.label}
-                  </Link>
-                </h2>
-                <p className="text-foreground/80 mt-6 max-w-xl text-pretty text-lg leading-relaxed">
-                  {b.shortBody}
-                </p>
-                <ul className="divide-border/60 mt-8 divide-y">
-                  {b.bullets.map((item) => (
-                    <li
-                      key={item}
-                      className="text-foreground/85 flex items-baseline gap-4 py-3 text-[15px] leading-relaxed"
-                    >
-                      <span className="text-muted-foreground/70 font-mono text-xs">
-                        ·
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-10 flex flex-wrap items-center gap-4">
-                  <Link
-                    href={`/branchen/${b.slug}`}
-                    className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-                  >
-                    Mehr zu {b.label}
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  </Link>
-                  <Link
-                    href={`/anfrage?branche=${b.inquirySlug}`}
-                    className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-4 hover:underline"
-                  >
-                    Direkt anfragen
-                  </Link>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
+              <h2 className="mt-3 text-[15px] font-semibold leading-snug tracking-tight sm:mt-4 sm:text-xl">{b.label}</h2>
+              <p className="text-muted-foreground mt-1.5 hidden text-[14.5px] leading-relaxed sm:block">
+                {b.shortBody.split(". ")[0].replace(/\.$/, "")}.
+              </p>
+              <span className="text-foreground mt-3 hidden items-center sm:inline-flex gap-1.5 text-[14px] font-medium underline-offset-4 group-hover:underline">
+                Mehr erfahren
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
 
 function FinalCta() {
   return (
-    <section className="bg-accent/30 border-border/40 border-t">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <div className="text-center">
-          <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
-            Ihre Branche{" "}
-            <span className="serif-italic text-muted-foreground">
-              nicht dabei?
-            </span>{" "}
-            Fragen Sie uns trotzdem.
-          </p>
-          <div className="mt-10 flex justify-center">
-            <Link
-              href="/anfrage"
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-            >
-              Website anfragen
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-        </div>
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
+          Ihre Branche nicht dabei?{" "}
+          <span className="serif-italic text-background/70">Fragen Sie trotzdem.</span>
+        </h2>
+        <Link
+          href="/anfrage"
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+        >
+          Website anfragen
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );

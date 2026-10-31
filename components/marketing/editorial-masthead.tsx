@@ -1,47 +1,24 @@
+import Link from "next/link";
+
 /**
- * Editorial-Masthead — kleine Zeitschriften-Kopfzeile, die ganz oben
- * auf jeder Unterseite direkt unter dem Header sitzt.
- *
- * Links: das aktuelle Sektions-Label (z. B. „Pakete", „Kontakt").
- * Rechts: der aktuelle Monat plus Standort.
- *
- * Konsistente Brand-Sprache über alle Sub-Seiten hinweg — der
- * Besucher erkennt, dass alle Seiten zur selben Marke gehören,
- * ohne dass wir das Logo zwanzigmal wiederholen müssen.
+ * Schlichte Brotkrumen-Zeile unter dem Header jeder Unterseite:
+ * „Start › Pakete". Ersetzt die frühere Zeitschriften-Kopfzeile mit
+ * Monat und Ort — ruhiger und hilft beim Zurückfinden.
  */
-const MONTH_LABELS = [
-  "JANUAR",
-  "FEBRUAR",
-  "MÄRZ",
-  "APRIL",
-  "MAI",
-  "JUNI",
-  "JULI",
-  "AUGUST",
-  "SEPTEMBER",
-  "OKTOBER",
-  "NOVEMBER",
-  "DEZEMBER",
-];
-
 export function EditorialMasthead({ section }: { section: string }) {
-  const now = new Date();
-  const issueDate = `${MONTH_LABELS[now.getMonth()]} ${now.getFullYear()}`;
-
   return (
-    <div className="border-border/40 border-b">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-5 sm:py-6">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Sitalo · {section}
-        </p>
-        <p className="text-muted-foreground text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-          {issueDate} · Hamburg
-        </p>
-      </div>
-    </div>
+    <nav aria-label="Brotkrumen" className="border-border/40 border-b">
+      <ol className="text-muted-foreground mx-auto flex w-full max-w-6xl items-center gap-2 px-5 py-3 text-[13px] sm:px-6">
+        <li>
+          <Link href="/" className="hover:text-foreground transition-colors">
+            Start
+          </Link>
+        </li>
+        <li aria-hidden="true">›</li>
+        <li aria-current="page" className="text-foreground">
+          {section}
+        </li>
+      </ol>
+    </nav>
   );
 }
