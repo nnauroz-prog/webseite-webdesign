@@ -31,16 +31,16 @@ const PALETTES: Record<
   }
 > = {
   cream: {
-    background: "#FAF7F1",
-    foreground: "#231F1B",
-    muted: "rgba(35, 31, 27, 0.62)",
+    background: "#F9FAFC",
+    foreground: "#0E1C33",
+    muted: "rgba(14, 28, 51, 0.62)",
     gold: "#C9A24F",
     accent: "rgba(201, 162, 79, 0.16)",
   },
   espresso: {
-    background: "#231F1B",
-    foreground: "#FAF7F1",
-    muted: "rgba(250, 247, 241, 0.6)",
+    background: "#0E1C33",
+    foreground: "#F9FAFC",
+    muted: "rgba(249, 250, 252, 0.6)",
     gold: "#C9A24F",
     accent: "rgba(201, 162, 79, 0.18)",
   },

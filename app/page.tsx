@@ -390,11 +390,11 @@ function PricingCenterfold({
     <div className="gold-sweep bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10 lg:p-12">
       <div
         aria-hidden="true"
-        className="bg-gold/15 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
+        className="bg-ink-petrol/40 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
       />
       <div
         aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -bottom-32 -left-20 h-72 w-72 rounded-full blur-[80px]"
+        className="bg-ink-petrol/40 pointer-events-none absolute -bottom-32 -left-20 h-72 w-72 rounded-full blur-[80px]"
       />
 
       <div className="relative flex items-center gap-3">
@@ -515,27 +515,17 @@ function FinalCta() {
       id="kontakt"
       className="bg-foreground text-background relative overflow-hidden scroll-mt-20"
     >
-      {/* Espresso-Textur als bedruckt-Papier-Optik */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-soft-light"
-        style={{
-          backgroundImage: "url(/images/texture-espresso.webp)",
-          backgroundSize: "640px auto",
-          backgroundRepeat: "repeat",
-        }}
-      />
       {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
           ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
       <CursorSpotlight />
       {/* Mehrere weiche Halos für editoriale Tiefe */}
       <div
         aria-hidden="true"
-        className="bg-gold/18 pointer-events-none absolute top-0 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full blur-[70px] sm:blur-[140px]"
+        className="bg-ink-petrol/40 pointer-events-none absolute top-0 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full blur-[70px] sm:blur-[140px]"
       />
       <div
         aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
+        className="bg-ink-petrol/40 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
       <div className="relative mx-auto w-full max-w-5xl px-6 pt-20 pb-10 sm:pt-28 sm:pb-12">
         <div>

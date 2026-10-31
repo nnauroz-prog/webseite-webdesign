@@ -20,7 +20,7 @@ export function MarketingFooter() {
       <footer className="bg-foreground text-background relative overflow-hidden print:hidden">
         <div className="relative mx-auto grid w-full max-w-6xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
-            <SitaloLogo size="md" />
+            <SitaloLogo size="md" tone="light" />
             <p className="text-background/75 mt-6 text-[14px] leading-relaxed">
               Websites für lokale Unternehmen, persönlich gemacht in Hamburg.
             </p>
