@@ -4,20 +4,15 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { MagneticButton } from "@/components/marketing/magnetic-button";
+import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import {
   STANDORTE,
   getAllStandortSlugs,
   getStandortBySlug,
 } from "@/lib/standorte-data";
-import {
-  formatDate,
-  getPost,
-  JOURNAL_BY_STANDORT,
-} from "@/lib/journal-data";
+import { formatDate, getPost, JOURNAL_BY_STANDORT } from "@/lib/journal-data";
 
 function StandortJournalHinweis({ standortSlug }: { standortSlug: string }) {
   const postSlug = JOURNAL_BY_STANDORT[standortSlug];
@@ -26,9 +21,12 @@ function StandortJournalHinweis({ standortSlug }: { standortSlug: string }) {
   if (!post) return null;
 
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-20">
-        <Link href={`/journal/${post.slug}`} className="group block">
+    <section className="border-border/50 border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
+        <Link
+          href={`/journal/${post.slug}`}
+          className="group block lg:pl-[calc(25%+0.5rem)]"
+        >
           <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
             <span
               aria-hidden="true"
@@ -36,10 +34,10 @@ function StandortJournalHinweis({ standortSlug }: { standortSlug: string }) {
             />
             Aus dem Journal · {formatDate(post.publishedAt)}
           </p>
-          <h2 className="serif text-foreground mt-5 max-w-3xl text-balance text-3xl font-normal leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+          <h2 className="text-foreground mt-4 max-w-3xl text-2xl leading-[1.15] font-semibold tracking-[-0.02em] text-balance group-hover:underline sm:text-3xl">
             {post.title}
           </h2>
-          <p className="text-muted-foreground mt-4 max-w-2xl text-pretty text-[15.5px] leading-relaxed">
+          <p className="text-muted-foreground mt-4 max-w-2xl text-[15.5px] leading-relaxed text-pretty">
             {post.dek}
           </p>
           <span className="text-foreground mt-6 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] group-hover:underline">
@@ -51,6 +49,9 @@ function StandortJournalHinweis({ standortSlug }: { standortSlug: string }) {
     </section>
   );
 }
+
+const SECTION = "border-border/50 border-t";
+const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
 
 export function generateStaticParams() {
   return getAllStandortSlugs().map((slug) => ({ slug }));
@@ -65,8 +66,8 @@ export async function generateMetadata({
   const standort = getStandortBySlug(slug);
   if (!standort) return {};
 
-  const title = `Webdesign ${standort.name} — aus dem Atelier nebenan`;
-  const description = `${standort.tagline} Professionelle Websites für ${standort.name}er Unternehmen — schnell, persönlich, auf den Stadtteil zugeschnitten.`;
+  const title = `Website erstellen lassen in Hamburg-${standort.name} · Webdesign`;
+  const description = `Website erstellen lassen in ${standort.name}: individuell gestaltet, zum Festpreis ab 499 €, persönlich betreut aus Hamburg. ${standort.tagline}`;
   return {
     title,
     description,
@@ -148,218 +149,151 @@ export default async function StandortPage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
-      <EditorialMasthead section={`Standorte · ${standort.name}`} />
+      <EditorialMasthead section={`Standorte › ${standort.name}`} />
       <main id="main" tabIndex={-1} className="flex-1">
-        {/* Hero */}
-        <section className="border-border/40 relative overflow-hidden border-b">
-          <div
-            aria-hidden="true"
-            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-          />
-          <div className="mx-auto w-full max-w-7xl px-6 pt-12 pb-16 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-32">
-            <nav
-              aria-label="Breadcrumb"
-              className="text-muted-foreground text-sm"
-            >
-              <ol className="flex items-center gap-2">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    Sitalo
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li>
-                  <Link
-                    href="/standorte"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    Standorte
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li className="text-foreground" aria-current="page">
-                  {standort.name}
-                </li>
-              </ol>
-            </nav>
-
-            <div className="mt-10 max-w-4xl">
-              <EditorialEyebrow>Webdesign in Hamburg-{standort.name}</EditorialEyebrow>
-              <h1 className="mt-6 text-balance text-[2.5rem] font-semibold leading-[1.0] tracking-[-0.035em] sm:text-5xl lg:text-[5.25rem] lg:tracking-[-0.04em]">
-                Websites für{" "}
-                <span className="serif-italic text-muted-foreground font-normal">
-                  {standort.name}.
-                </span>
-              </h1>
-              <p className="text-foreground/80 mt-7 max-w-2xl text-pretty text-lg leading-relaxed sm:mt-9 sm:text-xl">
-                {standort.tagline}
-              </p>
-              <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                <MagneticButton
-                  href={`/anfrage?ort=${standort.slug}`}
-                  className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-                >
-                  Website anfragen
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </MagneticButton>
-                <Link
-                  href="/pakete"
-                  className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
-                >
-                  Pakete & Preise
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </div>
+        <section>
+          <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-20">
+            <p className="text-muted-foreground flex items-center gap-2.5 text-[13px] font-medium">
+              <span
+                aria-hidden="true"
+                className="bg-gold inline-block h-px w-8"
+              />
+              Webdesign in Hamburg-{standort.name}
+            </p>
+            <h1 className="mt-5 max-w-4xl text-[2.6rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl">
+              Website erstellen lassen{" "}
+              <span className="text-muted-foreground">in {standort.name}.</span>
+            </h1>
+            <p className="text-muted-foreground mt-6 max-w-2xl text-base leading-relaxed text-pretty sm:text-lg">
+              {standort.tagline}
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <Link
+                href={`/anfrage?ort=${standort.slug}`}
+                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+              >
+                Website anfragen
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <Link
+                href="/website-erstellen-lassen"
+                className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
+              >
+                Kosten und Ablauf
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Intro + Body — editorial prose */}
-        <section className="border-border/40 border-b bg-secondary/40">
-          <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
-            <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
-              <div>
-                <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-                  <span
-                    aria-hidden="true"
-                    className="bg-ink-olive inline-block h-1 w-5"
-                  />
-                  Über den Stadtteil
-                </p>
-                <p className="serif-italic text-foreground/80 mt-6 text-pretty text-xl leading-snug sm:text-2xl">
+        <section className={SECTION}>
+          <div className={INNER}>
+            <SectionHead
+              label="Der Stadtteil"
+              title={`Webdesign für ${standort.name}.`}
+            />
+            <div
+              className={`mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[1fr_16rem] ${BODY_OFFSET}`}
+            >
+              <div className="space-y-5">
+                <p className="text-foreground text-xl leading-[1.5] tracking-[-0.01em] text-pretty">
                   {standort.intro}
                 </p>
-                <div className="mt-8">
-                  <p className="text-muted-foreground text-[13px] font-medium">
-                    Anker im Viertel
-                  </p>
-                  <ul className="mt-3 flex flex-wrap gap-2">
-                    {standort.anker.map((ank) => (
-                      <li
-                        key={ank}
-                        className="border-border/60 bg-background text-foreground/80 inline-flex items-center rounded-full border px-3 py-1.5 text-[13px]"
-                      >
-                        {ank}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div className="space-y-6">
                 {standort.body.map((p, i) => (
                   <p
                     key={i}
-                    className="text-foreground/85 text-pretty text-[16px] leading-[1.7] sm:text-[17px]"
+                    className="text-foreground/85 text-[16px] leading-[1.7] text-pretty"
                   >
                     {p}
                   </p>
                 ))}
               </div>
+              <div>
+                <p className="text-muted-foreground text-[13px] font-medium">
+                  Anker im Viertel
+                </p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {standort.anker.map((ank) => (
+                    <li
+                      key={ank}
+                      className="border-border/70 bg-card rounded-full border px-3 py-1.5 text-[13px]"
+                    >
+                      {ank}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Pull-Quote */}
-        <section className="bg-foreground text-background relative overflow-hidden">
-          <div
-            aria-hidden="true"
-            className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-          />
-          <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28 lg:py-32">
-            <div className="flex items-center gap-3">
-              <span
-                aria-hidden="true"
-                className="bg-gold/60 gold-pulse inline-block h-1 w-8"
-              />
-              <p className="text-background/55 text-[13px] font-medium">
-                Beobachtung
-              </p>
-            </div>
-            <blockquote className="relative mt-8 max-w-4xl">
-              <span
-                aria-hidden="true"
-                className="drop-cap-3d drop-cap-3d-gold serif text-gold/40 absolute -top-10 -left-4 text-[8rem] leading-none"
-              >
-                „
-              </span>
-              <p className="serif text-balance text-2xl leading-[1.25] tracking-[-0.015em] sm:text-3xl lg:text-[2.75rem] lg:leading-[1.15]">
-                {standort.pullQuote}
-              </p>
-            </blockquote>
+        <section className="bg-foreground text-background">
+          <div className={INNER}>
+            <SectionHead
+              dark
+              label="Beobachtung"
+              title={`Was uns in ${standort.name} auffällt.`}
+            />
+            <p
+              className={`text-background/85 mt-8 max-w-3xl text-xl leading-[1.5] text-pretty sm:text-2xl ${BODY_OFFSET}`}
+            >
+              {standort.pullQuote}
+            </p>
           </div>
         </section>
 
-        {/* Branchen-Empfehlung */}
-        <section className="border-border/40 border-b">
-          <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-            <div className="max-w-3xl">
-              <EditorialEyebrow>Was für {standort.name} besonders passt</EditorialEyebrow>
-              <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
-                Drei Branchen, die wir
-                <br />
-                <span className="serif-italic text-muted-foreground font-normal">
-                  hier besonders gut kennen.
-                </span>
-              </h2>
-            </div>
-            <ul className="mt-14 grid gap-4 sm:gap-5 lg:grid-cols-3 lg:gap-6">
-              {standort.empfohleneBranchen.map((b, i) => (
-                <li key={b.slug}>
-                  <Link
-                    href={`/branchen/${b.slug}`}
-                    className="border-border/60 bg-card/70 ring-foreground/5 group flex h-full flex-col overflow-hidden rounded-3xl border p-7 ring-1 transition-shadow duration-500 hover:shadow-[0_24px_60px_-30px_rgb(0_0_0/0.25)] sm:p-8"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="serif text-ink-petrol/60 text-[3rem] font-normal leading-none tracking-[-0.04em] sm:text-[3.5rem]">
-                        {String(i + 1).padStart(2, "0")}
+        <section className={SECTION}>
+          <div className={INNER}>
+            <SectionHead
+              label="Branchen"
+              title={`Was in ${standort.name} besonders gefragt ist.`}
+            />
+            <div className={`mt-10 lg:mt-14 ${BODY_OFFSET}`}>
+              <ul className="border-border border-t">
+                {standort.empfohleneBranchen.map((b, i) => (
+                  <li key={b.slug} className="border-border border-b">
+                    <Link
+                      href={`/branchen/${b.slug}`}
+                      className="group flex items-start gap-5 py-6"
+                    >
+                      <span className="text-gold pt-1 text-[13px] tabular-nums">
+                        0{i + 1}
+                      </span>
+                      <span className="flex-1">
+                        <span className="block text-xl font-semibold tracking-[-0.02em] transition-transform duration-300 group-hover:translate-x-1">
+                          Website für {b.label}
+                        </span>
+                        <span className="text-muted-foreground mt-1 block text-[14.5px] leading-relaxed">
+                          {b.warum}
+                        </span>
                       </span>
                       <ArrowRight
+                        className="mt-1.5 h-4 w-4 shrink-0"
                         aria-hidden="true"
-                        className="text-muted-foreground mt-2 h-5 w-5 transition-transform group-hover:translate-x-0.5"
                       />
-                    </div>
-                    <h3 className="text-foreground mt-6 text-2xl font-medium leading-snug tracking-[-0.015em]">
-                      {b.label}
-                    </h3>
-                    <p className="text-muted-foreground mt-3 text-pretty text-[15px] leading-relaxed">
-                      {b.warum}
-                    </p>
-                    <p className="text-muted-foreground mt-5 inline-flex items-center gap-2 text-[12px] font-medium">
-                      Branche im Detail
-                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                    </p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
-        {/* Passender Journal-Essay — nur bei Stadtteilen, die ein
-            Essay wirklich berührt. */}
         <StandortJournalHinweis standortSlug={standort.slug} />
 
-        {/* Weitere Stadtteile */}
-        <section className="bg-secondary/40 border-border/40 border-b">
-          <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-20">
-            <EditorialEyebrow>Weitere Stadtteile</EditorialEyebrow>
-            <ul className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <section className={`${SECTION} bg-secondary/30`}>
+          <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
+            <h2 className="text-muted-foreground text-[13px] font-medium">
+              Weitere Stadtteile
+            </h2>
+            <ul className="mt-4 flex flex-wrap gap-2">
               {otherStandorte.map((other) => (
                 <li key={other.slug}>
                   <Link
                     href={`/standorte/${other.slug}`}
-                    className="border-border/60 hover:border-foreground/40 hover:bg-background group flex items-center justify-between gap-4 rounded-2xl border bg-background/60 px-5 py-4 transition-all"
+                    className="border-border/70 bg-card hover:border-foreground/40 inline-flex rounded-full border px-4 py-1.5 text-[14px] transition-colors"
                   >
-                    <span className="text-foreground text-[15px] font-medium tracking-tight">
-                      {other.name}
-                    </span>
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="text-muted-foreground h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                    />
+                    {other.name}
                   </Link>
                 </li>
               ))}
@@ -367,24 +301,19 @@ export default async function StandortPage({
           </div>
         </section>
 
-        {/* Final-CTA */}
-        <section>
-          <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-            <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
-              <p className="serif text-foreground max-w-xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
-                Lohnt sich {standort.name}?{" "}
-                <span className="serif-italic text-muted-foreground">
-                  Schreiben Sie uns kurz.
-                </span>
-              </p>
-              <MagneticButton
-                href={`/anfrage?ort=${standort.slug}`}
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 shrink-0 items-center rounded-full px-8 text-base font-medium tracking-tight"
-              >
-                Website anfragen
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </MagneticButton>
-            </div>
+        <section className="bg-foreground text-background">
+          <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+            <h2 className="text-3xl leading-tight font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+              Website für {standort.name}?{" "}
+              <span className="text-background/65">Schreiben Sie uns.</span>
+            </h2>
+            <Link
+              href={`/anfrage?ort=${standort.slug}`}
+              className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+            >
+              Website anfragen
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
         </section>
       </main>
