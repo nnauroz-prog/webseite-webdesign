@@ -16,7 +16,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
-  title: "Webdesign-Leistungen für lokale Unternehmen aus Hamburg",
+  title: "Webdesign-Leistungen für lokale Unternehmen",
   description:
     "Was wir für Sie machen: Webdesign, Inhalte strukturieren, Kontakt sauber, Google-Basis, Hosting, laufende Pflege. Aus Hamburg.",
   alternates: { canonical: "/leistungen" },

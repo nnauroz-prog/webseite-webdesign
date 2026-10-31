@@ -187,7 +187,7 @@ export function AtelierBrief() {
                 <p>
                   Unsere Seite ist absichtlich kein Showroom. Wir bauen
                   Websites, weil wir der Meinung sind, dass kleine
-                  Hamburger Betriebe online besser dastehen sollten. Nicht
+                  Betriebe online besser dastehen sollten. Nicht
                   schicker — sondern brauchbar.
                 </p>
                 <p>

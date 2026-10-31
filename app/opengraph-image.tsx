@@ -14,7 +14,7 @@ import { loadGoogleFont } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt =
-  "Sitalo Webdesign — Websites für lokale Unternehmen aus Hamburg.";
+  "Sitalo Webdesign — Websites für lokale Unternehmen. Aus Hamburg, deutschlandweit.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

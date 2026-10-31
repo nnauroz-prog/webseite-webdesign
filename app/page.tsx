@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
   title: { absolute: "Sitalo — Webdesign aus Hamburg" },
   description:
-    "Websites für lokale Unternehmen aus Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
+    "Websites für lokale Unternehmen in ganz Deutschland, gebaut in Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -203,7 +203,7 @@ function Hero() {
                   Websites
                 </span>
                 <br />
-                {"für Hamburger "}
+                {"für Ihr "}
                 <span className="hero-shine serif-italic text-muted-foreground font-normal">
                   Unternehmen.
                 </span>
@@ -213,8 +213,8 @@ function Hero() {
               className="reveal text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Logo, ein paar Bilder, ein paar Sätze — den Rest machen
-              wir. Zum Festpreis, ab 499 €.
+              Aus Hamburg, für Betriebe in ganz Deutschland. Logo, ein
+              paar Bilder, ein paar Sätze — den Rest machen wir.
             </p>
             <div
               className="reveal mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-9"

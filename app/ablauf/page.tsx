@@ -30,7 +30,7 @@ const STEPS = [
   {
     number: "02",
     title: "Wir lernen uns kurz kennen",
-    body: "15 Minuten am Telefon oder bei einem Kaffee in Hamburg — auf der Schanze, in Eppendorf, wo es Ihnen passt. Wir fragen nach Ihrem Betrieb, Ihrer Zielgruppe, was eine Website konkret leisten soll. Sie fragen, was Sie wissen müssen. Erst danach Angebot.",
+    body: "15 Minuten am Telefon, per Video oder — wenn Sie in Hamburg sind — bei einem Kaffee. Wir fragen nach Ihrem Betrieb, Ihrer Zielgruppe, was eine Website konkret leisten soll. Sie fragen, was Sie wissen müssen. Erst danach Angebot.",
     bullets: [
       "Telefon, Video oder Treffen — Sie entscheiden",
       "Wir hören zu, fragen nach, machen uns Notizen",

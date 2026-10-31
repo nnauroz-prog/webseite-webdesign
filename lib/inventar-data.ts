@@ -170,7 +170,7 @@ export const INVENTAR_NOT_USED: InventarItem[] = [
   {
     name: "Newsletter-Tools mit Tracker-Pixeln",
     what: "Mailchimp, ActiveCampaign, Sendinblue.",
-    why: "Für lokale Hamburger Unternehmen schlicht überdimensioniert. Wenn überhaupt nötig: eine einfache Mailingliste mit Opt-out-Link, ohne Pixel.",
+    why: "Für lokale Unternehmen schlicht überdimensioniert. Wenn überhaupt nötig: eine einfache Mailingliste mit Opt-out-Link, ohne Pixel.",
   },
   {
     name: "Live-Chat-Widgets",
