@@ -52,7 +52,7 @@ export function ImAtelier() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
           {/* Linke Spalte: Eyebrow + Headline + Blurb + CTA */}
           <div>
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -90,7 +90,7 @@ export function ImAtelier() {
                 >
                   {/* Zeit-Anker in Mono-Font, klein und gedimmt —
                       wie ein Tagebuch-Datum am Zeilenanfang */}
-                  <span className="text-muted-foreground/85 font-mono text-[11px] uppercase tracking-[0.15em] shrink-0 sm:w-[8.5rem]">
+                  <span className="text-muted-foreground/85 text-[13px] shrink-0 sm:w-[8.5rem]">
                     {note.when}
                   </span>
                   <span className="text-foreground/85 text-pretty text-[15px] leading-relaxed sm:text-[16px]">
@@ -105,7 +105,7 @@ export function ImAtelier() {
                 className="border-foreground/15 bg-foreground/[0.03] mt-6 rounded-2xl border p-5 sm:p-6"
                 cursorLabel="Essay lesen →"
               >
-                <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                <p className="text-muted-foreground text-[13px]">
                   Zuletzt im Journal · {formatDate(latestPost.publishedAt)}
                 </p>
                 <p className="serif text-foreground mt-2 text-balance text-xl leading-snug tracking-[-0.01em] sm:text-2xl">

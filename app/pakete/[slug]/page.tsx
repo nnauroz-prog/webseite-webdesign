@@ -195,8 +195,8 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-background/55 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
-                      : "text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]"
+                      ? "text-background/55 inline-flex items-center gap-2 text-[13px] font-medium"
+                      : "text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium"
                   }
                 >
                   <span
@@ -255,8 +255,8 @@ export default async function PaketDetailPage({
                 <p
                   className={
                     dark
-                      ? "text-background/65 text-[11px] font-medium uppercase tracking-[0.25em]"
-                      : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]"
+                      ? "text-background/65 text-[13px] font-medium"
+                      : "text-muted-foreground text-[13px] font-medium"
                   }
                 >
                   Preis
@@ -321,7 +321,7 @@ export default async function PaketDetailPage({
           <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
             <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
               <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                <p className="text-muted-foreground text-[13px] font-medium">
                   Was enthalten ist
                 </p>
                 <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
@@ -342,7 +342,7 @@ export default async function PaketDetailPage({
                 </ul>
               </div>
               <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                <p className="text-muted-foreground text-[13px] font-medium">
                   Was nicht enthalten ist
                 </p>
                 <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
@@ -377,7 +377,7 @@ export default async function PaketDetailPage({
           <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
             <div className="grid gap-16 lg:grid-cols-[1fr_1.6fr] lg:gap-24">
               <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                <p className="text-muted-foreground text-[13px] font-medium">
                   Nach dem Launch
                 </p>
                 <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-5xl">
@@ -404,7 +404,7 @@ export default async function PaketDetailPage({
         {/* Recommended for */}
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground text-[13px] font-medium">
               Typische Beispiele
             </p>
             <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-5xl">
@@ -441,7 +441,7 @@ export default async function PaketDetailPage({
           <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
             <div className="grid gap-16 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
               <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                <p className="text-muted-foreground text-[13px] font-medium">
                   Fragen zum {paket.name}-Paket
                 </p>
                 <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-5xl">
@@ -483,7 +483,7 @@ export default async function PaketDetailPage({
         {/* Other packages */}
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground text-[13px] font-medium">
               Andere Pakete
             </p>
             <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">

@@ -163,14 +163,14 @@ export function AtelierBrief() {
                   hört „Brief vom Atelier" beim Öffnen). */}
               <h2
                 id="atelier-brief-titel"
-                className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground"
+                className="text-[13px] text-muted-foreground"
               >
                 <span className="sr-only">Brief vom Atelier — </span>
                 Sitalo Atelier · Hamburg
               </h2>
               <p
                 suppressHydrationWarning
-                className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/70 mt-1"
+                className="text-[13px] text-muted-foreground/70 mt-1"
               >
                 {date || " "}
               </p>

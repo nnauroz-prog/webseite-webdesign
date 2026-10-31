@@ -70,7 +70,7 @@ export default function JournalPage() {
         <section className="border-border/40 border-b">
           <div className="mx-auto w-full max-w-5xl px-6 py-14 sm:py-20 lg:py-24">
             <div className="text-center">
-              <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+              <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
                 <span
                   aria-hidden="true"
                   className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -97,7 +97,7 @@ export default function JournalPage() {
                 href={`/journal/${hero.slug}`}
                 className="group block"
               >
-                <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+                <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
                   <span
                     aria-hidden="true"
                     className="bg-gold inline-block h-1 w-6"
@@ -124,12 +124,12 @@ export default function JournalPage() {
           <section className="border-border/40 border-b">
             <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
               <div className="mb-10 flex items-baseline justify-between gap-4">
-                <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                <p className="text-muted-foreground text-[13px]">
                   Weitere Beiträge
                 </p>
                 <a
                   href="/journal/feed.xml"
-                  className="text-muted-foreground hover:text-foreground font-mono text-[10px] uppercase tracking-[0.22em] underline-offset-4 transition-colors hover:underline"
+                  className="text-muted-foreground hover:text-foreground text-[13px] underline-offset-4 transition-colors hover:underline"
                 >
                   RSS
                 </a>
@@ -142,7 +142,7 @@ export default function JournalPage() {
                       className="group flex flex-col gap-3 py-7 sm:flex-row sm:items-baseline sm:justify-between sm:gap-12 sm:py-9"
                     >
                       <div>
-                        <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                        <p className="text-muted-foreground text-[13px]">
                           {formatDate(post.publishedAt)} · {post.readingMinutes} Min
                         </p>
                         <h3 className="text-foreground mt-3 text-2xl font-semibold leading-snug tracking-[-0.02em] sm:text-3xl">
@@ -166,7 +166,7 @@ export default function JournalPage() {
 
         <section>
           <div className="mx-auto w-full max-w-3xl px-6 py-16 text-center sm:py-20">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"

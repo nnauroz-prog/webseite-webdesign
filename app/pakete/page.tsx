@@ -13,6 +13,7 @@ import {
 
 import { AvailabilitySlot } from "@/components/marketing/availability-slot";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
@@ -98,8 +99,8 @@ function Packages() {
                   <span
                     className={
                       dark
-                        ? "bg-gold text-foreground shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]"
-                        : "border-border text-muted-foreground shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]"
+                        ? "bg-gold text-foreground shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-[12px] font-semibold"
+                        : "border-border text-muted-foreground shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[12px] font-semibold"
                     }
                   >
                     {p.badge}
@@ -177,8 +178,8 @@ function PflegeHosting() {
   return (
     <section className="border-border/40 bg-secondary/30 border-t">
       <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20">
-        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Im Monatsbeitrag drin.</h2>
-        <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+        <SectionHead label="Monatsbeitrag" title="Im Monatsbeitrag drin." />
+        <ul className={`mt-10 lg:mt-14 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3 ${BODY_OFFSET}`}>
           {IM_MONATLICHEN.map(({ icon: Icon, text }) => (
             <li key={text} className="flex items-center gap-3 text-[15px]">
               <span className="bg-background border-border/70 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border">
@@ -188,7 +189,7 @@ function PflegeHosting() {
             </li>
           ))}
         </ul>
-        <p className="text-muted-foreground mt-8 text-[13.5px]">
+        <p className={`text-muted-foreground mt-8 text-[13.5px] ${BODY_OFFSET}`}>
           Größere Erweiterungen beziffern wir vorab. Mindestlaufzeit 6 Monate, danach monatlich kündbar.{" "}
           <Link href="/wartung" className="text-foreground underline underline-offset-4">
             Mehr zur Wartung

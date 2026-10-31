@@ -316,7 +316,7 @@ function StepShell({
 }) {
   return (
     <div className="animate-fade-up">
-      <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+      <p className="text-muted-foreground text-[13px]">
         {eyebrow}
       </p>
       <h2 className="text-foreground mt-3 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.025em] sm:text-4xl">
@@ -402,7 +402,7 @@ function Result({
 
   return (
     <div className="animate-fade-up">
-      <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+      <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
         <Sparkles className="h-3 w-3" aria-hidden="true" />
         Unsere Empfehlung für Sie
       </p>
@@ -417,7 +417,7 @@ function Result({
       </p>
 
       <div className="border-border/40 mt-8 border-t pt-6">
-        <p className="text-muted-foreground/80 mb-4 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <p className="text-muted-foreground/80 mb-4 text-[13px]">
           Warum diese Empfehlung
         </p>
         <ul className="space-y-3">

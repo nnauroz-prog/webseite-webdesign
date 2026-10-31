@@ -27,7 +27,7 @@ export default async function AdminLayout({
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link href="/admin" className="flex items-baseline gap-2">
             <span className="serif text-lg tracking-tight">Sitalo</span>
-            <span className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+            <span className="text-muted-foreground text-[13px]">
               Anfragen
             </span>
           </Link>

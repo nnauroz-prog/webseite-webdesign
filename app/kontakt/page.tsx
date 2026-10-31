@@ -54,7 +54,7 @@ export default function KontaktPage() {
       <main id="main" tabIndex={-1} className="bg-secondary/40 flex-1">
         <section className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
           {/* Editorial letter-style layout */}
-          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+          <p className="text-muted-foreground text-[13px] font-medium">
             Kontakt · Aus Hamburg
           </p>
 
@@ -120,7 +120,7 @@ export default function KontaktPage() {
           <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
             <div className="space-y-12">
               <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                <p className="text-muted-foreground text-[13px] font-medium">
                   Antwortzeit
                 </p>
                 <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
@@ -140,7 +140,7 @@ export default function KontaktPage() {
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                <p className="text-muted-foreground text-[13px] font-medium">
                   Sprechzeiten
                 </p>
                 <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
@@ -153,7 +153,7 @@ export default function KontaktPage() {
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+                <p className="text-muted-foreground text-[13px] font-medium">
                   Standort
                 </p>
                 <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
@@ -191,7 +191,7 @@ export default function KontaktPage() {
                     className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
                   />
                   <div className="absolute bottom-4 left-5 right-5 text-background">
-                    <p className="font-mono text-[10px] tracking-[0.25em] uppercase opacity-80">
+                    <p className="text-[13px] opacity-80">
                       53.5511° N · 9.9937° E
                     </p>
                     <p className="serif mt-1 text-2xl font-normal tracking-[-0.01em]">
@@ -238,7 +238,7 @@ export default function KontaktPage() {
               meisten unterwegs sind, klickbar. Verlängert das
               „Treffen vor Ort"-Versprechen visuell. */}
           <div className="border-border/60 mt-20 border-t pt-16 sm:mt-24 sm:pt-20">
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground text-[13px] font-medium">
               Wo wir unterwegs sind
             </p>
             <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
@@ -292,7 +292,7 @@ function ContactMethod({
   const inner = (
     <div className="group flex h-full flex-col justify-between p-8 sm:p-10">
       <div>
-        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
+        <p className="text-muted-foreground text-[13px] font-medium">
           {label}
         </p>
         <p className="text-foreground mt-4 text-2xl font-medium tracking-[-0.015em] sm:text-3xl">

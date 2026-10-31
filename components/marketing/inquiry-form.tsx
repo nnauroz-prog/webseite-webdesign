@@ -440,7 +440,7 @@ function SuccessScreen() {
         </div>
       </div>
       <div className="border-border/40 mt-8 border-t pt-6">
-        <p className="text-muted-foreground text-[13px] font-medium uppercase tracking-[0.22em]">
+        <p className="text-muted-foreground text-[13px] font-medium">
           Während Sie warten
         </p>
         <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[14.5px] leading-relaxed">

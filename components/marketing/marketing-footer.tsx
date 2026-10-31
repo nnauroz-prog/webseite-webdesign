@@ -26,6 +26,7 @@ export function MarketingFooter() {
             </p>
           </div>
           <FooterCol title="Angebot">
+            <FooterLink href="/website-erstellen-lassen">Website erstellen lassen</FooterLink>
             <FooterLink href="/leistungen">Leistungen</FooterLink>
             <FooterLink href="/pakete">Pakete</FooterLink>
             <FooterLink href="/wartung">Wartung</FooterLink>

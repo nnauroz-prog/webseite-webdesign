@@ -108,7 +108,7 @@ export function ShortcutHelp() {
       >
         <div className="border-border/60 flex items-center justify-between border-b px-5 py-4">
           <div>
-            <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+            <p className="text-muted-foreground text-[13px]">
               Tastenkürzel
             </p>
             <p className="text-foreground mt-1 text-base font-medium tracking-tight">
@@ -128,7 +128,7 @@ export function ShortcutHelp() {
         <div className="max-h-[70vh] overflow-y-auto px-5 py-5">
           {SHORTCUTS.map((group) => (
             <section key={group.group} className="mb-5 last:mb-0">
-              <p className="text-muted-foreground/80 mb-3 font-mono text-[10px] uppercase tracking-[0.18em]">
+              <p className="text-muted-foreground/80 mb-3 text-[13px]">
                 {group.group}
               </p>
               <ul className="divide-border/40 divide-y">
@@ -157,7 +157,7 @@ export function ShortcutHelp() {
           ))}
         </div>
 
-        <div className="border-border/60 text-muted-foreground/80 border-t px-5 py-3 font-mono text-[10px] uppercase tracking-[0.15em]">
+        <div className="border-border/60 text-muted-foreground/80 border-t px-5 py-3 text-[13px]">
           Drücke <kbd className="border-border/70 mx-1 rounded border px-1 normal-case">?</kbd>{" "}
           jederzeit für diese Übersicht
         </div>

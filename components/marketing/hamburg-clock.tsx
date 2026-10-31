@@ -26,7 +26,7 @@ export function HamburgClock() {
 
   if (!now) {
     return (
-      <span className="text-background/55 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] tabular-nums">
+      <span className="text-background/55 inline-flex items-center gap-2 text-[13px] tabular-nums">
         <span aria-hidden="true" className="bg-gold inline-block h-1 w-1 rounded-full" />
         <span>—:—:— · Hamburg</span>
       </span>
@@ -49,7 +49,7 @@ export function HamburgClock() {
   return (
     <span
       title={`${weekday}, ${now.toLocaleDateString("de-DE", { timeZone: "Europe/Berlin" })}`}
-      className="text-background/55 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] tabular-nums"
+      className="text-background/55 inline-flex items-center gap-2 text-[13px] tabular-nums"
     >
       <span
         aria-hidden="true"

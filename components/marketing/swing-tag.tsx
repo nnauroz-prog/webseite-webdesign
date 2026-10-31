@@ -113,7 +113,7 @@ export function SwingTag({ className }: { className?: string }) {
               aria-hidden="true"
               className="bg-gold/70 mt-2 inline-block h-[2px] w-8"
             />
-            <p className="text-background/55 font-mono text-[9.5px] uppercase tracking-[0.3em]">
+            <p className="text-background/55 text-[9.5px]">
               Anno MMXXVI
             </p>
           </div>

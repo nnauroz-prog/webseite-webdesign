@@ -481,7 +481,7 @@ export function CommandPalette({
               let idx = -1;
               return groups.map((g) => (
                 <div key={g.label} className="mb-2">
-                  <p className="text-muted-foreground/80 px-4 pt-3 pb-1 font-mono text-[10px] uppercase tracking-[0.18em]">
+                  <p className="text-muted-foreground/80 px-4 pt-3 pb-1 text-[13px]">
                     {g.label}
                   </p>
                   <ul>
@@ -510,7 +510,7 @@ export function CommandPalette({
         </div>
 
         {/* Footer Hint */}
-        <div className="border-border/60 text-muted-foreground/80 flex items-center justify-between gap-2 border-t px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.15em]">
+        <div className="border-border/60 text-muted-foreground/80 flex items-center justify-between gap-2 border-t px-4 py-2.5 text-[13px]">
           <span className="inline-flex items-center gap-2">
             <kbd className="border-border/70 rounded-md border px-1.5 py-0.5 normal-case">
               ↑↓

@@ -29,7 +29,7 @@ export default function DatenschutzPage() {
             className="bg-gold/8 pointer-events-none absolute -top-32 -left-20 -z-10 h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
           />
           <div className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-24">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"

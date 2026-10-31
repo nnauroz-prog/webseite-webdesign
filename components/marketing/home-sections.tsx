@@ -10,6 +10,10 @@ import { getPaketBySlug } from "@/lib/pakete-data";
  */
 
 const SECTION = "border-border/50 border-t";
+
+/** Einzug für Inhalte unter einem SectionHead: beginnt auf der zweiten
+ *  Kante (Spalte 4 von 12 inkl. Abstand), mobil ohne Einzug. */
+export const BODY_OFFSET = "lg:pl-[calc(25%+0.5rem)]";
 const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
 
 /** Abschnittskopf: Name links (ab lg eigene Spalte), Überschrift rechts. */
@@ -102,7 +106,7 @@ export function Vorteile() {
 export function Voranbringen() {
   const starter = getPaketBySlug("starter");
   const items = [
-    { title: "Eine neue Website", text: "Für Betriebe ohne Seite oder mit einer, die nicht mehr passt.", meta: starter ? starter.setup : "", href: "/pakete" },
+    { title: "Eine neue Website erstellen lassen", text: "Für Betriebe ohne Seite oder mit einer, die nicht mehr passt.", meta: starter ? starter.setup : "", href: "/website-erstellen-lassen" },
     { title: "Die bestehende Seite pflegen", text: "Hosting, Updates und Änderungen, auch wenn wir sie nicht gebaut haben.", meta: "ab 49 € / Monat", href: "/wartung" },
     { title: "Bei Google gefunden werden", text: "Wir prüfen Ihre Seite und schicken konkrete Punkte.", meta: "kostenlos, in 48 h", href: "/audit" },
   ];

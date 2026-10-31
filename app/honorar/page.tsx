@@ -59,7 +59,7 @@ function Hero() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28 lg:py-32">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -95,7 +95,7 @@ function Stundensatz() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -135,7 +135,7 @@ function PaketBlock({ paket }: { paket: HonorarPaket }) {
       className="border-border/40 border-b scroll-mt-20"
     >
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -150,7 +150,7 @@ function PaketBlock({ paket }: { paket: HonorarPaket }) {
         </h2>
 
         <div className="border-foreground/15 mt-10 border-l-2 pl-6">
-          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+          <p className="text-muted-foreground text-[13px]">
             Setup-Aufwand · ca. {paket.stundenSetup} Stunden
           </p>
           <ol className="mt-5 space-y-3">
@@ -181,7 +181,7 @@ function PaketBlock({ paket }: { paket: HonorarPaket }) {
         </div>
 
         <div className="border-foreground/15 mt-10 border-l-2 pl-6">
-          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+          <p className="text-muted-foreground text-[13px]">
             Monatlich · {paket.monthly}
           </p>
           <ul className="mt-5 space-y-2.5">
@@ -208,7 +208,7 @@ function NichtAbgerechnetBlock() {
   return (
     <section className="bg-foreground text-background border-foreground/10 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-24 sm:py-28">
-        <p className="text-background/65 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-background/65 inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -253,7 +253,7 @@ function ZusatzBlock() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"

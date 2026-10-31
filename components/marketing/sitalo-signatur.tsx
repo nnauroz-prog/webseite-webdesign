@@ -141,7 +141,7 @@ export function SitaloSignatur({
         />
       </svg>
       {caption && (
-        <p className="text-muted-foreground mt-4 font-mono text-[10px] uppercase tracking-[0.28em]">
+        <p className="text-muted-foreground mt-4 text-[13px]">
           {caption}
         </p>
       )}

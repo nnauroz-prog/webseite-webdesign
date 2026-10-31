@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
@@ -26,10 +27,10 @@ function JournalHinweis({ brancheSlug }: { brancheSlug: string }) {
     <section className="border-border/40 border-t">
       <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
         <Link href={`/journal/${post.slug}`} className="group block max-w-3xl">
-          <p className="text-muted-foreground text-[12px] font-medium uppercase tracking-[0.24em]">
+          <p className="text-muted-foreground text-[12px] font-medium">
             Aus dem Journal · {post.readingMinutes} Min
           </p>
-          <h2 className="serif text-foreground mt-3 text-balance text-2xl leading-[1.2] tracking-[-0.01em] group-hover:underline sm:text-3xl">
+          <h2 className="serif text-foreground mt-3 text-2xl leading-[1.2] tracking-[-0.01em] text-balance group-hover:underline sm:text-3xl">
             {post.title}
           </h2>
         </Link>
@@ -55,7 +56,7 @@ function StandortHinweise({ brancheSlug }: { brancheSlug: string }) {
   return (
     <section className="border-border/40 border-t">
       <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
-        <h2 className="text-muted-foreground text-[12px] font-medium uppercase tracking-[0.24em]">
+        <h2 className="text-muted-foreground text-[12px] font-medium">
           In Hamburg besonders gefragt in
         </h2>
         <ul className="mt-4 flex flex-wrap gap-2">
@@ -207,7 +208,10 @@ export default async function BranchePage({
 
       <main id="main" tabIndex={-1} className="flex-1">
         <section className="relative overflow-hidden">
-          <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
+          <div
+            aria-hidden="true"
+            className="aurora pointer-events-none absolute inset-0 -z-10"
+          >
             <span />
             <span />
             <span />
@@ -215,11 +219,13 @@ export default async function BranchePage({
           <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 pt-12 pb-12 sm:px-6 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
             <div>
               <EditorialEyebrow>Branche</EditorialEyebrow>
-              <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+              <h1 className="mt-5 text-4xl leading-[1.02] font-semibold tracking-[-0.035em] text-balance sm:text-6xl">
                 Website für{" "}
-                <span className="serif-italic text-muted-foreground font-normal">{branche.label}.</span>
+                <span className="serif-italic text-muted-foreground font-normal">
+                  {branche.label}.
+                </span>
               </h1>
-              <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
+              <p className="text-muted-foreground mt-5 max-w-xl text-base leading-relaxed text-pretty sm:text-lg">
                 {branche.detailHeadline}
               </p>
               <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -256,11 +262,11 @@ export default async function BranchePage({
 
         {/* Einordnung: ein Absatz, darunter typischer Aufbau als Chips */}
         <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-            <p className="serif text-foreground max-w-3xl text-balance text-2xl leading-[1.35] tracking-[-0.01em] sm:text-3xl">
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <p className="serif text-foreground max-w-3xl text-2xl leading-[1.35] tracking-[-0.01em] text-balance sm:text-3xl">
               {branche.detailIntro[0]}
             </p>
-            <h2 className="text-muted-foreground mt-10 text-[12px] font-medium uppercase tracking-[0.24em]">
+            <h2 className="text-muted-foreground mt-10 text-[12px] font-medium">
               Typischer Aufbau
             </h2>
             <ul className="mt-4 flex flex-wrap gap-2">
@@ -278,39 +284,57 @@ export default async function BranchePage({
 
         {/* Was dabei wichtig ist */}
         <section className="border-border/40 bg-secondary/30 border-t">
-          <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-            <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Worauf es ankommt.</h2>
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <SectionHead label="Schwerpunkte" title="Worauf es ankommt." />
+            <ul
+              className={`mt-10 grid gap-4 sm:grid-cols-2 lg:mt-14 ${BODY_OFFSET}`}
+            >
               {branche.features.map((feat) => (
-                <li key={feat.title} className="border-border/70 bg-card rounded-2xl border p-5 sm:p-6">
+                <li
+                  key={feat.title}
+                  className="border-border/70 bg-card rounded-2xl border p-5 sm:p-6"
+                >
                   <h3 className="flex gap-2.5 text-[17px] font-semibold tracking-tight">
-                    <Check className="text-gold mt-1 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <Check
+                      className="text-gold mt-1 h-4 w-4 shrink-0"
+                      aria-hidden="true"
+                    />
                     {feat.title}
                   </h3>
-                  <p className="text-muted-foreground mt-2 text-[14.5px] leading-relaxed">{feat.body}</p>
+                  <p className="text-muted-foreground mt-2 text-[14.5px] leading-relaxed">
+                    {feat.body}
+                  </p>
                 </li>
               ))}
             </ul>
-            <div className="border-border/70 bg-card mt-6 flex flex-col items-start gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-              <p className="text-[15px]">
-                Für {branche.label} empfehlen wir meist das{" "}
-                <span className="font-semibold capitalize">{branche.recommendedPackage}</span>-Paket.
-              </p>
-              <Link
-                href={`/pakete#${branche.recommendedPackage}`}
-                className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
-              >
-                Paket ansehen <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
+            <div className={`mt-6 ${BODY_OFFSET}`}>
+              <div className="border-border/70 bg-card flex flex-col items-start gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                <p className="text-[15px]">
+                  Für {branche.label} empfehlen wir meist das{" "}
+                  <span className="font-semibold capitalize">
+                    {branche.recommendedPackage}
+                  </span>
+                  -Paket.
+                </p>
+                <Link
+                  href={`/pakete#${branche.recommendedPackage}`}
+                  className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
+                >
+                  Paket ansehen{" "}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Branchen-FAQ */}
         <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-6 sm:py-16">
-            <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Häufige Fragen.</h2>
-            <div className="divide-border/60 mt-6 divide-y">
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <SectionHead label="Fragen" title="Häufige Fragen." />
+            <div
+              className={`divide-border/60 mt-10 divide-y lg:mt-14 ${BODY_OFFSET}`}
+            >
               {branche.faq.map((item) => (
                 <details key={item.q} className="group py-4">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[16px] font-medium">
@@ -322,7 +346,9 @@ export default async function BranchePage({
                       +
                     </span>
                   </summary>
-                  <p className="text-muted-foreground mt-3 text-[14.5px] leading-relaxed">{item.a}</p>
+                  <p className="text-muted-foreground mt-3 text-[14.5px] leading-relaxed">
+                    {item.a}
+                  </p>
                 </details>
               ))}
             </div>
@@ -335,7 +361,7 @@ export default async function BranchePage({
         {/* Weitere Branchen */}
         <section className="border-border/40 border-t">
           <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
-            <h2 className="text-muted-foreground text-[12px] font-medium uppercase tracking-[0.24em]">
+            <h2 className="text-muted-foreground text-[12px] font-medium">
               Weitere Branchen
             </h2>
             <ul className="mt-4 flex flex-wrap gap-2">
@@ -354,15 +380,20 @@ export default async function BranchePage({
         </section>
 
         <section className="bg-foreground text-background relative overflow-hidden">
-          <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
+          <div
+            aria-hidden="true"
+            className="aurora aurora-dark pointer-events-none absolute inset-0"
+          >
             <span />
             <span />
             <span />
           </div>
           <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
-            <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
+            <h2 className="serif text-3xl leading-tight text-balance sm:text-5xl">
               Klingt nach Ihrem Betrieb?{" "}
-              <span className="serif-italic text-background/70">Schreiben Sie uns.</span>
+              <span className="serif-italic text-background/70">
+                Schreiben Sie uns.
+              </span>
             </h2>
             <Link
               href={`/anfrage?branche=${branche.inquirySlug}&paket=${branche.recommendedPackage}`}

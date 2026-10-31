@@ -123,7 +123,7 @@ export function TcoRechner() {
             className="accent-foreground mt-4 w-full"
             aria-label="Updates pro Monat"
           />
-          <div className="text-muted-foreground/60 mt-1 flex justify-between text-[10px] font-mono uppercase tracking-[0.18em]">
+          <div className="text-muted-foreground/60 mt-1 flex justify-between text-[13px]">
             <span>0</span>
             <span>10</span>
           </div>
@@ -147,7 +147,7 @@ export function TcoRechner() {
             className="accent-foreground mt-4 w-full"
             aria-label="Stunden-Wert in Euro"
           />
-          <div className="text-muted-foreground/60 mt-1 flex justify-between text-[10px] font-mono uppercase tracking-[0.18em]">
+          <div className="text-muted-foreground/60 mt-1 flex justify-between text-[13px]">
             <span>0 €</span>
             <span>150 €</span>
           </div>
@@ -156,7 +156,7 @@ export function TcoRechner() {
 
       {/* Results */}
       <div className="border-border/40 mt-10 border-t pt-8">
-        <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+        <p className="text-muted-foreground text-[13px]">
           Gesamtkosten über 36 Monate
         </p>
         <p className="text-foreground mt-2 text-[15px]">
@@ -189,7 +189,7 @@ export function TcoRechner() {
           >
             <p
               className={cn(
-                "font-mono text-[10px] uppercase tracking-[0.22em]",
+                "text-[13px]",
                 sitaloWins ? "text-background/65" : "text-muted-foreground",
               )}
             >
@@ -241,7 +241,7 @@ export function TcoRechner() {
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+    <p className="text-muted-foreground text-[13px]">
       {children}
     </p>
   );
@@ -270,12 +270,12 @@ function ResultBar({
             {result.label}
           </span>
           {isCheapest && (
-            <span className="bg-gold text-foreground inline-flex h-5 items-center rounded-full px-2 font-mono text-[9px] uppercase tracking-[0.16em]">
+            <span className="bg-gold text-foreground inline-flex h-5 items-center rounded-full px-2 text-[9px]">
               Billiger
             </span>
           )}
           {result.highlight && !isCheapest && (
-            <span className="border-foreground/30 text-muted-foreground inline-flex h-5 items-center rounded-full border px-2 font-mono text-[9px] uppercase tracking-[0.16em]">
+            <span className="border-foreground/30 text-muted-foreground inline-flex h-5 items-center rounded-full border px-2 text-[9px]">
               Sitalo
             </span>
           )}

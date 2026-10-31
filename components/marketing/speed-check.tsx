@@ -238,7 +238,7 @@ function BasicPanel({ data }: { data: BasicData }) {
   return (
     <div className="animate-fade-up space-y-6">
       <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1 sm:p-8">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span aria-hidden="true" className="bg-gold gold-pulse inline-block h-1 w-6" />
           Basis-Check · {passed} von {data.items.length} in Ordnung
         </p>
@@ -293,7 +293,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
   return (
     <div className="animate-fade-up space-y-6">
       <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1 sm:p-8">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold gold-pulse inline-block h-1 w-6"
@@ -313,7 +313,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
 
         {(metrics.lcp || metrics.cls || metrics.inp) && (
           <div className="border-border/40 mt-8 border-t pt-6">
-            <p className="text-muted-foreground/80 mb-3 font-mono text-[10px] uppercase tracking-[0.22em]">
+            <p className="text-muted-foreground/80 mb-3 text-[13px]">
               Core Web Vitals
             </p>
             <div className="flex flex-wrap gap-3">
@@ -336,7 +336,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
       >
         <p
           className={cn(
-            "font-mono text-[10px] uppercase tracking-[0.22em]",
+            "text-[13px]",
             veryBad ? "text-background/65" : "text-muted-foreground",
           )}
         >
@@ -494,7 +494,7 @@ function ScoreRing({ label, score }: { label: string; score: number | null }) {
 function MetricPill({ label, value }: { label: string; value: string }) {
   return (
     <span className="border-border/60 inline-flex items-center gap-2 rounded-full border px-3 py-1.5">
-      <span className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.18em]">
+      <span className="text-muted-foreground text-[13px]">
         {label}
       </span>
       <span className="text-foreground text-[13px] font-medium tabular-nums">

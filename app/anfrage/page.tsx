@@ -92,7 +92,7 @@ export default async function AnfragePage({
             {/* Lieber-direkt-Strip unterhalb — sekundärer Weg, nicht
                 den Hero blockierend. */}
             <div className="border-border/60 mt-10 flex flex-col items-center gap-4 border-t pt-8 text-center sm:flex-row sm:justify-center sm:gap-3">
-              <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]">
+              <p className="text-muted-foreground text-[13px] font-medium">
                 Lieber direkt
               </p>
               <div className="flex flex-wrap justify-center gap-2.5">

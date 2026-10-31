@@ -114,7 +114,7 @@ function Hero({
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28 lg:py-32">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -149,7 +149,7 @@ function Hero({
           aria-label="Nächste Sprechstunde"
           className="border-foreground/15 bg-card/60 ring-foreground/5 mt-14 rounded-2xl border p-6 ring-1 sm:p-8"
         >
-          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+          <p className="text-muted-foreground text-[13px]">
             Nächste Sprechstunde
           </p>
           <p className="serif text-foreground mt-3 text-balance text-3xl font-normal leading-snug tracking-[-0.01em] sm:text-4xl">
@@ -178,7 +178,7 @@ function WieAblauft() {
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -223,7 +223,7 @@ function TypischeThemen() {
   return (
     <section className="bg-foreground text-background border-foreground/10 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-24 sm:py-28">
-        <p className="text-background/65 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-background/65 inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"
@@ -273,7 +273,7 @@ function NaechsteTermine({
   return (
     <section className="border-border/40 border-b">
       <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em]">
+        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span
             aria-hidden="true"
             className="bg-gold inline-block h-px w-10"

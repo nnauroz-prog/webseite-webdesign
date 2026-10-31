@@ -142,7 +142,7 @@ export default async function JournalPostPage({
                 <ArrowLeft className="h-4 w-4" />
                 Zurück zum Journal
               </Link>
-              <p className="text-muted-foreground mt-8 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+              <p className="text-muted-foreground mt-8 inline-flex items-center gap-2 text-[13px]">
                 <span
                   aria-hidden="true"
                   className="bg-gold inline-block h-1 w-6"
@@ -160,7 +160,7 @@ export default async function JournalPostPage({
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="border-border/60 text-muted-foreground inline-flex h-7 items-center rounded-full border px-3 font-mono text-[10px] uppercase tracking-[0.18em]"
+                      className="border-border/60 text-muted-foreground inline-flex h-7 items-center rounded-full border px-3 text-[12px]"
                     >
                       {tag}
                     </span>
@@ -180,7 +180,7 @@ export default async function JournalPostPage({
                     href={`/journal/${prev.slug}`}
                     className="border-border/60 group rounded-2xl border p-5 transition-colors hover:border-foreground/40"
                   >
-                    <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                    <p className="text-muted-foreground text-[13px]">
                       Neuerer Beitrag
                     </p>
                     <p className="text-foreground group-hover:text-foreground mt-2 text-[16px] font-medium leading-snug tracking-[-0.01em]">
@@ -195,7 +195,7 @@ export default async function JournalPostPage({
                     href={`/journal/${next.slug}`}
                     className="border-border/60 group rounded-2xl border p-5 text-right transition-colors hover:border-foreground/40 sm:text-right"
                   >
-                    <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.22em]">
+                    <p className="text-muted-foreground text-[13px]">
                       Älterer Beitrag
                     </p>
                     <p className="text-foreground mt-2 text-[16px] font-medium leading-snug tracking-[-0.01em]">
@@ -212,7 +212,7 @@ export default async function JournalPostPage({
 
         <section className="border-border/40 border-t">
           <div className="mx-auto w-full max-w-3xl px-6 py-16 text-center sm:py-20">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
+            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span
                 aria-hidden="true"
                 className="bg-gold gold-pulse inline-block h-1 w-6"
