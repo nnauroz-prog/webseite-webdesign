@@ -1,7 +1,9 @@
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { BeforeAfter } from "@/components/marketing/before-after";
+import { getBrancheBySlug } from "@/lib/branchen-data";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 /**
@@ -40,13 +42,13 @@ export function SectionHead({
         {label}
       </p>
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 lg:col-span-9">
-        <h2 className="max-w-2xl text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.03em] sm:text-[2.6rem]">
+        <h2 className="min-w-0 max-w-2xl flex-1 basis-[18rem] text-balance text-3xl font-semibold leading-[1.06] tracking-[-0.035em] sm:text-[2.75rem] lg:text-[3.1rem]">
           {title}
         </h2>
         {link ? (
           <Link
             href={link.href}
-            className={`inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline ${
+            className={`inline-flex shrink-0 items-center gap-1.5 pb-1 text-[14px] font-medium underline-offset-4 hover:underline ${
               dark ? "text-background" : "text-foreground"
             }`}
           >
@@ -209,6 +211,92 @@ export function VorherNachher() {
         </p>
         <div className={`mt-10 lg:mt-12 ${BODY_OFFSET}`}>
           <BeforeAfter />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Arbeiten — große Bildstrecke mit Beispielseiten nach Branche.
+ * Scrollt waagerecht bis zum Bildschirmrand, rastet pro Karte ein.
+ * ---------------------------------------------------------------- */
+const ARBEITEN = ["pflege", "handwerker", "praxis", "kanzlei", "hotel", "kosmetik"];
+
+export function Arbeiten() {
+  const items = ARBEITEN.flatMap((slug) => {
+    const b = getBrancheBySlug(slug);
+    return b?.image ? [{ slug: b.slug, label: b.label, src: b.image.src, alt: b.image.alt }] : [];
+  });
+  return (
+    <section className={`${SECTION} overflow-hidden`}>
+      <div className={INNER}>
+        <SectionHead
+          label="Arbeiten"
+          title={
+            <>
+              Beispielseiten nach Branche. <span className="text-muted-foreground">Jede anders gebaut.</span>
+            </>
+          }
+          link={{ href: "/branchen", text: "Alle Branchen" }}
+        />
+      </div>
+      {/* Die Strecke beginnt auf der zweiten Kante und läuft rechts aus dem Bild. */}
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+        <ul
+          className={`-mb-8 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${BODY_OFFSET}`}
+          style={{ scrollPaddingLeft: "calc(25% + 0.5rem)" }}
+        >
+          {items.map((it, i) => (
+            <li key={it.slug} className="w-[82vw] shrink-0 snap-start sm:w-[30rem]">
+              <Link href={`/branchen/${it.slug}`} className="group block">
+                <div className="bg-secondary relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-black/5">
+                  <Image
+                    src={it.src}
+                    alt={it.alt}
+                    fill
+                    sizes="(min-width: 640px) 480px, 82vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  />
+                </div>
+                <div className="mt-4 flex items-baseline justify-between gap-4">
+                  <p className="text-lg font-semibold tracking-tight">Website für {it.label}</p>
+                  <span className="text-gold text-[13px] tabular-nums">0{i + 1}</span>
+                </div>
+              </Link>
+            </li>
+          ))}
+          <li aria-hidden="true" className="w-px shrink-0" />
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Hamburg-Bildband — ein großes Foto über die volle Breite mit einem
+ * Satz. Atempause zwischen den Textsektionen.
+ * ---------------------------------------------------------------- */
+export function HamburgBand() {
+  return (
+    <section className="relative h-[60vh] min-h-[26rem] overflow-hidden">
+      <Image
+        src="/images/hamburg-speicherstadt.webp"
+        alt="Hamburger Speicherstadt am Abend, Backsteinspeicher am Fleet"
+        fill
+        sizes="100vw"
+        className="object-cover"
+      />
+      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#0b1526]/85 via-[#0b1526]/30 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0">
+        <div className="mx-auto w-full max-w-6xl px-5 pb-12 sm:px-6 sm:pb-16">
+          <p className="text-gold flex items-center gap-2.5 text-[13px] font-medium">
+            <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
+            Hamburg
+          </p>
+          <p className="mt-4 max-w-3xl text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl">
+            Gestaltet in Hamburg. <span className="text-white/60">Gebaut für Betriebe in ganz Deutschland.</span>
+          </p>
         </div>
       </div>
     </section>

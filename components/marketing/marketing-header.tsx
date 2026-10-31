@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 
-import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
 
@@ -56,11 +55,17 @@ const MOBILE_NAV: NavItem[] = [
 export function MarketingHeader({
   nav = DEFAULT_NAV,
   className,
+  tone = "light",
 }: {
   nav?: NavItem[];
   className?: string;
+  /** "dark": die Seite beginnt mit einem dunklen Hero — Logo, Links und
+   *  Knöpfe sind hell, bis der Besucher scrollt und der Header seinen
+   *  hellen Hintergrund bekommt. */
+  tone?: "light" | "dark";
 }) {
   const [scrolled, setScrolled] = useState(false);
+  const onDark = tone === "dark" && !scrolled;
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Subtle visual shift when the user scrolls past the hero.
@@ -104,7 +109,9 @@ export function MarketingHeader({
           "sticky top-0 z-40 backdrop-blur-xl transition-[background-color,border-color] duration-500 print:hidden",
           scrolled
             ? "border-border/40 border-b bg-background/85"
-            : "border-transparent border-b bg-background/0",
+            : onDark
+              ? "bg-foreground border-b border-transparent"
+              : "border-transparent border-b bg-background/0",
           className,
         )}
       >
@@ -114,7 +121,7 @@ export function MarketingHeader({
           className="shrink-0"
           onClick={() => setMenuOpen(false)}
         >
-          <SitaloLogo size="md" hideTaglineOnMobile />
+          <SitaloLogo size="md" hideTaglineOnMobile tone={onDark ? "light" : "dark"} />
         </Link>
 
         {/* Desktop nav — Gold-Underline-Animation auf Hover über das
@@ -124,7 +131,10 @@ export function MarketingHeader({
             <Link
               key={item.href}
               href={item.href}
-              className="nav-link-underline text-muted-foreground hover:text-foreground relative rounded-full px-3 py-2 transition-colors"
+              className={cn(
+                "nav-link-underline relative rounded-full px-3 py-2 transition-colors",
+                onDark ? "text-background/75 hover:text-background" : "text-muted-foreground hover:text-foreground",
+              )}
             >
               {item.label}
             </Link>
@@ -132,20 +142,24 @@ export function MarketingHeader({
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Desktop CTA — magnetisches Verhalten via MagneticButton.
-              Cursor in der Nähe → Button zieht sich leicht ran.
-              Nur Desktop / fine pointer, kein Effekt auf Touch. */}
-          <MagneticButton
+          {/* Desktop CTA */}
+          <Link
             href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 hidden h-10 items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight shadow-sm hover:shadow md:inline-flex"
+            className={cn(
+              "hidden h-10 items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-colors hover:shadow md:inline-flex",
+              onDark ? "bg-background text-foreground hover:bg-background/90" : "bg-foreground text-background hover:bg-foreground/90",
+            )}
           >
             Website anfragen
-          </MagneticButton>
+          </Link>
 
           {/* Mobile compact CTA + burger */}
           <Link
             href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-9 items-center justify-center rounded-full px-3.5 text-xs font-medium tracking-tight shadow-sm transition-all md:hidden"
+            className={cn(
+              "inline-flex h-9 items-center justify-center rounded-full px-3.5 text-xs font-medium tracking-tight shadow-sm transition-all md:hidden",
+              onDark ? "bg-background text-foreground hover:bg-background/90" : "bg-foreground text-background hover:bg-foreground/90",
+            )}
           >
             Anfragen
           </Link>
@@ -155,7 +169,10 @@ export function MarketingHeader({
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((v) => !v)}
-            className="border-border bg-background hover:bg-secondary inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors md:hidden"
+            className={cn(
+              "inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors md:hidden",
+              onDark ? "border-background/30 text-background hover:bg-background/10" : "border-border bg-background hover:bg-secondary",
+            )}
           >
             {menuOpen ? (
               <X className="h-4 w-4" aria-hidden="true" />

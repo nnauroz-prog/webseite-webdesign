@@ -55,7 +55,7 @@ const BEISPIELE: Beispiel[] = [
 
 export function Beispiele() {
   return (
-    <section id="beispiele" className="bg-foreground text-background relative scroll-mt-20 overflow-hidden">
+    <section id="beispiele" className="grain bg-foreground text-background relative scroll-mt-20 overflow-hidden">
       <div className="relative mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <SectionHead dark label="Ergebnisse" title="Was nach dem Start passiert." />
         <ul className="mt-12 grid grid-cols-2 gap-6 sm:gap-10 lg:mt-16 lg:grid-cols-12 lg:gap-8">

@@ -190,7 +190,7 @@ export function LivePreview() {
   )}`;
 
   return (
-    <div className="border-border/70 bg-card/80 rounded-3xl border p-3 shadow-[0_40px_80px_-40px_rgb(15_25_50/0.45)] backdrop-blur sm:p-4">
+    <div className="bg-card rounded-3xl p-3 shadow-[0_40px_80px_-40px_rgb(0_0_0/0.6)] ring-1 ring-white/10 sm:p-4">
       {/* Steuerung */}
       <div className="px-1 pt-1 pb-3 sm:px-2">
         <label htmlFor="lp-name" className="text-foreground text-[14px] font-semibold">
