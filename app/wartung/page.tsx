@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, X } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -214,38 +214,27 @@ export default function WartungPage() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="bg-gold/10 pointer-events-none absolute -top-32 left-1/2 -z-10 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-[60px] sm:blur-[120px]"
-      />
-      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
+      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
         <EditorialEyebrow>Wartung & Werkbank</EditorialEyebrow>
-        <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[6rem]">
-          Für die Seite,
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            die schon läuft.
-          </span>
+        <h1 className="mt-5 max-w-3xl text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+          Für die Seite,{" "}
+          <span className="serif-italic text-muted-foreground font-normal">die schon läuft.</span>
         </h1>
-        <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
-          Hosting, Updates, kleine Änderungen — auch wenn wir die
-          Seite nicht selbst gebaut haben. Wenn Sie mehr Hände
-          brauchen, gibt's die Werkbank On-Demand obendrauf.
-          Monatlich kündbar nach sechs Monaten.
+        <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
+          Hosting, Updates und kleine Änderungen — auch wenn wir die Seite nicht selbst gebaut haben.
         </p>
-        <ul className="text-muted-foreground mx-auto mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
-          <li className="inline-flex items-center gap-2">
-            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Auch für WordPress, Wix, Squarespace
-          </li>
-          <li className="inline-flex items-center gap-2">
-            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Umzug aufs Sitalo-Hosting kostenlos
-          </li>
-          <li className="inline-flex items-center gap-2">
-            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Monatlich kündbar nach 6 Monaten
-          </li>
+        <ul className="text-foreground/80 mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[14px]">
+          {["Auch für WordPress, Wix, Squarespace", "Umzug aufs Sitalo-Hosting kostenlos", "Nach 6 Monaten monatlich kündbar"].map((t) => (
+            <li key={t} className="inline-flex items-center gap-2">
+              <Check className="text-gold h-4 w-4" aria-hidden="true" />
+              {t}
+            </li>
+          ))}
         </ul>
       </div>
     </section>
@@ -255,18 +244,14 @@ function Hero() {
 function Plans() {
   return (
     <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
+        <div className="grid gap-4 md:grid-cols-3">
           {PLANS.map((plan) => (
             <PlanCard key={plan.slug} plan={plan} />
           ))}
         </div>
-
-        <p className="text-muted-foreground mx-auto mt-12 max-w-2xl text-center text-[13.5px] leading-relaxed">
-          Alle Preise zzgl. MwSt. Einmaliges Onboarding ab 199 € — wir
-          gucken uns Ihre Seite an, sichern den Bestand und richten
-          alles für die laufende Pflege ein. Bei einem Umzug auf
-          unser Hosting fällt das Onboarding weg.
+        <p className="text-muted-foreground mt-6 text-[13px]">
+          Preise zzgl. MwSt. Einmaliges Onboarding ab 199 € — entfällt beim Umzug auf unser Hosting.
         </p>
       </div>
     </section>
@@ -274,174 +259,71 @@ function Plans() {
 }
 
 function PlanCard({ plan }: { plan: Plan }) {
+  const dark = plan.highlight;
   return (
     <article
-      className={`relative flex flex-col gap-6 rounded-3xl border p-7 sm:p-9 ${
-        plan.highlight
-          ? "bg-foreground text-background border-foreground"
-          : "border-border/60 bg-card/60"
+      className={`relative flex flex-col rounded-3xl border p-6 ${
+        dark ? "bg-foreground text-background border-foreground" : "border-border/70 bg-card"
       }`}
     >
-      {plan.highlight && (
-        <span className="bg-gold text-foreground absolute -top-3 left-7 inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em]">
-          Häufigste Wahl
-        </span>
-      )}
-      <header>
-        <p
-          className={`font-mono text-[10px] uppercase tracking-[0.22em] ${
-            plan.highlight ? "text-background/65" : "text-muted-foreground"
-          }`}
-        >
-          Wartung {plan.name}
-        </p>
-        <p className="mt-3 text-4xl font-semibold tracking-[-0.03em] sm:text-5xl">
-          {plan.monthly}
-        </p>
-        <p
-          className={`mt-3 text-[15px] leading-relaxed ${
-            plan.highlight ? "text-background/75" : "text-foreground/75"
-          }`}
-        >
-          {plan.description}
-        </p>
-      </header>
-
-      <ul className="space-y-2.5">
-        {plan.contents.map((item) => (
-          <li
-            key={item}
-            className="flex items-start gap-3 text-[14.5px] leading-relaxed"
-          >
-            <span
-              className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-                plan.highlight ? "bg-background/15" : "bg-foreground/8"
-              }`}
-            >
-              <Check
-                className={`h-3 w-3 ${
-                  plan.highlight ? "text-background" : "text-foreground/70"
-                }`}
-                aria-hidden="true"
-              />
-            </span>
-            <span
-              className={
-                plan.highlight ? "text-background/90" : "text-foreground/85"
-              }
-            >
-              {item}
-            </span>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold tracking-tight">{plan.name}</h2>
+        {dark ? (
+          <span className="bg-gold text-foreground whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]">
+            Häufigste Wahl
+          </span>
+        ) : null}
+      </div>
+      <p className="serif mt-5 text-4xl lining-nums leading-none tracking-[-0.03em]">{plan.monthly}</p>
+      <p className={`mt-4 text-[14px] leading-relaxed ${dark ? "text-background/80" : "text-foreground/75"}`}>
+        {plan.description}
+      </p>
+      <ul className={`mt-5 space-y-2 border-t pt-5 text-[14px] ${dark ? "border-background/15" : "border-border/60"}`}>
+        {plan.contents.slice(0, 4).map((item) => (
+          <li key={item} className="flex gap-2.5">
+            <Check className="text-gold mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className={dark ? "text-background/90" : "text-foreground/85"}>{item}</span>
           </li>
         ))}
       </ul>
-
-      <div
-        className={`mt-2 border-t pt-4 ${
-          plan.highlight ? "border-background/15" : "border-border/50"
-        }`}
-      >
-        <p
-          className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
-            plan.highlight ? "text-background/55" : "text-muted-foreground"
-          }`}
-        >
-          Was nicht drin ist
-        </p>
-        <ul className="mt-3 space-y-2">
-          {plan.limits.map((limit) => (
-            <li
-              key={limit}
-              className="flex items-start gap-3 text-[13.5px] leading-relaxed"
-            >
-              <X
-                className={`mt-1 h-3 w-3 shrink-0 ${
-                  plan.highlight ? "text-background/45" : "text-muted-foreground/60"
-                }`}
-                aria-hidden="true"
-              />
-              <span
-                className={
-                  plan.highlight ? "text-background/70" : "text-foreground/65"
-                }
-              >
-                {limit}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
+      <p className={`mt-4 mb-6 text-[12.5px] leading-relaxed ${dark ? "text-background/55" : "text-muted-foreground"}`}>
+        Nicht enthalten: {plan.limits.join(" · ")}
+      </p>
       <Link
         href={`/anfrage?vorhaben=Wartung+${plan.name}`}
-        className={`mt-auto inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[14.5px] font-medium tracking-tight transition-all ${
-          plan.highlight
-            ? "bg-background text-foreground hover:bg-background/90"
-            : "bg-foreground text-background hover:bg-foreground/90"
+        className={`mt-auto inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-[14px] font-medium tracking-tight transition-colors ${
+          dark ? "bg-background text-foreground hover:bg-background/90" : "bg-foreground text-background hover:bg-foreground/90"
         }`}
       >
-        Wartung anfragen
-        <ArrowRight className="h-4 w-4" />
+        {plan.name} anfragen
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </Link>
     </article>
   );
 }
 
+const CASES = [
+  { title: "Der Vorgänger ist weg", body: "Wir übernehmen, sichern den Bestand und führen weiter." },
+  { title: "Die Seite altert", body: "Updates, Zertifikate, Plugins — wir bringen alles auf Stand, ohne Neustart." },
+  { title: "Jemand, der ans Telefon geht", body: "Formular streikt am Freitag? Kein Ticket, sondern eine Person." },
+  { title: "Hände statt neues Projekt", body: "Mit der Werkbank zwei Stunden im Monat für Kleines, ohne Angebot." },
+];
+
 function ForWhom() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
-          <div className="lg:sticky lg:top-24">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Für wen sinnvoll
-            </p>
-            <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-              Drei typische Fälle,
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                in denen wir helfen.
-              </span>
-            </h2>
-          </div>
-          <ul className="divide-border/40 divide-y">
-            <CaseItem
-              title="Der Vorgänger ist nicht mehr da"
-              body="Ihr ursprünglicher Webdesigner ist verschwunden, krank, in Rente — und niemand kümmert sich. Wir übernehmen, dokumentieren den Bestand, sichern alles und führen weiter."
-            />
-            <CaseItem
-              title="Die Seite läuft, aber sie altert"
-              body="Das letzte Update ist 18 Monate her, das SSL-Zertifikat läuft demnächst aus, Plugins sind veraltet. Wir bringen alles auf Stand, ohne Re-Launch."
-            />
-            <CaseItem
-              title="Sie wollen jemanden, der einfach ans Telefon geht"
-              body="Wenn am Freitagnachmittag das Kontaktformular streikt, brauchen Sie keine Ticket-Nummer. Sie brauchen jemanden, der ranngeht und es macht."
-            />
-            <CaseItem
-              title="Sie brauchen Hände, kein neues Projekt"
-              body="Die Seite läuft, aber jeden Monat kommt was Kleines: ein neuer Bereich, ein A/B-Test, eine Konversion-Optimierung, eine Strategie-Frage. Mit der Werkbank On-Demand haben Sie zwei Stunden im Monat zur freien Verfügung — ohne jedes Mal ein Angebot zu schreiben."
-            />
-          </ul>
-        </div>
+    <section className="border-border/40 bg-secondary/30 border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
+        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Wann das hilft.</h2>
+        <ul className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+          {CASES.map((c) => (
+            <li key={c.title} className="border-border/60 border-t pt-4">
+              <p className="text-[16px] font-semibold tracking-tight">{c.title}</p>
+              <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{c.body}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
-  );
-}
-
-function CaseItem({ title, body }: { title: string; body: string }) {
-  return (
-    <li className="py-6 sm:py-7">
-      <p className="text-foreground text-lg font-medium tracking-[-0.01em] sm:text-xl">
-        {title}
-      </p>
-      <p className="text-muted-foreground mt-1.5 text-[15px] leading-relaxed">
-        {body}
-      </p>
-    </li>
   );
 }
 
@@ -479,32 +361,23 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
 ];
 
 function Faq() {
-  const items = FAQ_ITEMS;
   return (
     <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Häufige Fragen
-        </p>
-        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
-          Wartungs-FAQ.
-        </h2>
-        <dl className="divide-border/50 mt-10 divide-y">
-          {items.map((item) => (
-            <div key={item.q} className="py-6">
-              <dt className="text-foreground text-lg font-medium tracking-[-0.01em]">
+      <div className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-6 sm:py-16">
+        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Häufige Fragen.</h2>
+        <div className="divide-border/60 mt-6 divide-y">
+          {FAQ_ITEMS.map((item) => (
+            <details key={item.q} className="group py-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[16px] font-medium">
                 {item.q}
-              </dt>
-              <dd className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
-                {item.a}
-              </dd>
-            </div>
+                <span aria-hidden="true" className="text-muted-foreground text-xl transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="text-muted-foreground mt-3 text-[14.5px] leading-relaxed">{item.a}</p>
+            </details>
           ))}
-        </dl>
+        </div>
       </div>
     </section>
   );
@@ -512,29 +385,24 @@ function Faq() {
 
 function FinalCta() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-              Unverbindlich
-            </p>
-            <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
-              Wir gucken uns Ihre Seite
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                vorher kostenlos an.
-              </span>
-            </h2>
-          </div>
-          <Link
-            href="/audit"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight"
-          >
-            Audit anfordern
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </div>
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
+          Erst ansehen,{" "}
+          <span className="serif-italic text-background/70">dann entscheiden.</span>
+        </h2>
+        <Link
+          href="/audit"
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight"
+        >
+          Kostenlosen Audit anfordern
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );
