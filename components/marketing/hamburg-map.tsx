@@ -3,63 +3,47 @@ import Link from "next/link";
 import { STANDORTE } from "@/lib/standorte-data";
 
 /**
- * Hand-gezeichnete Hamburg-Karte mit den Sitalo-Stadtteilen.
+ * Schematische Hamburg-Karte mit den Stadtteilen, die eine eigene
+ * Seite haben. Keine maßstabsgetreue Karte, sondern eine Skizze wie
+ * auf einem Hafenplan: gestrichelte Stadtgrenze, Elbe und Alster als
+ * graue Wasserflächen, Stadtteile als kleine Quadrate.
  *
- * Bewusst keine geografisch exakte Karte (das wäre Tourismus-
- * Broschüre), sondern eine STYLISIERTE Sketch-Abstraktion. Die
- * Stadtteil-Positionen sind nur grob-orientierend in
- * West/Ost/Nord/Süd korrekt — die Karte ist Sitalo-Identitäts-
- * Element, kein Navi.
+ * Jeder Stadtteil verlinkt auf /standorte/[slug]. Mit `active` wird ein
+ * Stadtteil hervorgehoben (Detailseite), die übrigen treten zurück.
  *
- * Jeder Stadtteil ist ein klickbarer Punkt, der zur jeweiligen
- * /standorte/[slug]-Seite linkt. Eyebrow-Label schwebt rechts neben
- * dem Punkt, mit subtilem Hover-Highlight.
- *
- * SVG bewusst mit unregelmäßigen Kurven gezeichnet — sieht nach
- * Filzstift aus, nicht nach Auto-CAD. Anti-Generic-Geste, die kein
- * Konkurrent kopiert hat.
+ * Die Beschriftung ist auf dem Handy in Karten-Einheiten größer
+ * gesetzt, damit sie bei kleiner Kartenbreite lesbar bleibt.
  */
 
-// Stadtteil-Position auf der 600×400-Karte. Grob-orientierend an der
-// Hamburg-Geografie — Eimsbüttel NW, Wandsbek NO, Harburg südlich der
-// Elbe, HafenCity am Hafenrand. Neue Stadtteile (Barmbek, Bramfeld,
-// Niendorf, HafenCity) eingefügt; Pin-Positionen leicht verschoben,
-// damit die Labels sich nicht überlappen.
+// Position auf der 600×400-Karte, grob an der Lage orientiert:
+// Eimsbüttel im Nordwesten, Wandsbek im Nordosten, Harburg südlich der
+// Elbe, HafenCity am Hafenrand.
 const PINS: Record<string, { x: number; y: number; align: "left" | "right" }> = {
   niendorf: { x: 175, y: 105, align: "left" },
-  eppendorf: { x: 285, y: 115, align: "right" },
-  winterhude: { x: 360, y: 95, align: "right" },
-  eimsbuettel: { x: 230, y: 150, align: "left" },
-  barmbek: { x: 405, y: 130, align: "right" },
-  bramfeld: { x: 470, y: 105, align: "right" },
-  wandsbek: { x: 460, y: 165, align: "right" },
-  altona: { x: 145, y: 205, align: "left" },
-  "st-pauli": { x: 245, y: 235, align: "left" },
-  hafencity: { x: 310, y: 245, align: "right" },
-  bergedorf: { x: 525, y: 245, align: "right" },
-  harburg: { x: 280, y: 340, align: "left" },
+  eppendorf: { x: 290, y: 118, align: "left" },
+  winterhude: { x: 352, y: 98, align: "right" },
+  eimsbuettel: { x: 230, y: 152, align: "left" },
+  barmbek: { x: 408, y: 132, align: "right" },
+  bramfeld: { x: 482, y: 106, align: "right" },
+  wandsbek: { x: 462, y: 170, align: "right" },
+  altona: { x: 145, y: 208, align: "left" },
+  "st-pauli": { x: 245, y: 238, align: "left" },
+  hafencity: { x: 305, y: 250, align: "right" },
+  bergedorf: { x: 535, y: 236, align: "left" },
+  harburg: { x: 280, y: 352, align: "left" },
 };
 
-export function HamburgMap() {
+export function HamburgMap({ active }: { active?: string }) {
   return (
-    <div className="relative mx-auto w-full max-w-xl">
+    <figure className="-mx-3 max-w-xl sm:mx-auto">
       <svg
-        viewBox="0 0 600 400"
+        viewBox="54 52 524 343"
         fill="none"
         className="block w-full"
-        aria-label="Hamburg-Karte mit den Sitalo-Stadtteilen"
-        role="img"
+        role="group"
+        aria-label="Schematische Karte: Hamburger Stadtteile mit eigener Seite"
       >
-        {/* Atmosphärischer Gold-Schimmer hinter der Karte */}
-        <defs>
-          <radialGradient id="hamburg-glow" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stopColor="oklch(0.66 0.13 80)" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="oklch(0.66 0.13 80)" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="600" height="400" fill="url(#hamburg-glow)" />
-
-        {/* Hauptstadt-Blob — gestylte Form, kein 1:1 Hamburg-Outline */}
+        {/* Stadtgebiet, gestrichelt wie eine Grenze auf dem Plan */}
         <path
           d="M 80 180
              C 60 130, 110 80, 180 70
@@ -70,83 +54,61 @@ export function HamburgMap() {
              C 180 285, 110 270, 90 235
              C 75 215, 75 195, 80 180 Z"
           stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
+          strokeWidth="1.2"
+          strokeDasharray="5 4"
           strokeLinejoin="round"
+          className="text-foreground/45"
+        />
+
+        {/* Elbe als Wasserfläche, darin die Fahrrinne */}
+        <path
+          d="M 40 312
+             Q 130 297, 210 310
+             T 380 307
+             T 580 314
+             L 580 334
+             Q 470 326, 380 329
+             T 210 332
+             Q 130 322, 40 334 Z"
+          className="fill-[#d3d6d3]"
+        />
+        <path
+          d="M 40 323 Q 130 310, 210 321 T 380 318 T 580 324"
+          stroke="currentColor"
+          strokeWidth="0.9"
+          strokeDasharray="7 6"
           className="text-foreground/35"
         />
 
-        {/* Alster — kleiner See im Zentrum-Norden */}
+        {/* Außenalster */}
         <path
           d="M 330 125
              C 320 135, 325 155, 345 158
              C 365 161, 380 145, 372 128
              C 365 115, 340 115, 330 125 Z"
+          className="fill-[#d3d6d3]"
+        />
+
+        {/* Harburg südlich der Elbe */}
+        <path
+          d="M 220 365
+             C 200 355, 195 375, 215 385
+             C 245 393, 295 395, 335 389
+             C 360 384, 365 368, 345 360
+             C 310 353, 250 355, 220 365 Z"
           stroke="currentColor"
           strokeWidth="1.2"
-          strokeLinecap="round"
-          fill="none"
-          className="text-ink-petrol/50"
-        />
-
-        {/* Elbe — wellige Linie quer durch unten */}
-        <path
-          d="M 50 320
-             Q 130 305, 210 318
-             T 380 315
-             T 560 322"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          fill="none"
-          className="text-ink-petrol/60"
-        />
-        {/* Zweite Elbe-Linie — leicht versetzt, gibt Tiefe */}
-        <path
-          d="M 50 332
-             Q 130 320, 210 330
-             T 380 328
-             T 560 335"
-          stroke="currentColor"
-          strokeWidth="1.1"
-          strokeLinecap="round"
-          fill="none"
-          className="text-ink-petrol/35"
-        />
-
-        {/* Harburg-Blob — südlich der Elbe, kleinere Form */}
-        <path
-          d="M 220 360
-             C 200 350, 195 370, 215 380
-             C 245 390, 295 395, 335 388
-             C 360 383, 365 365, 345 355
-             C 310 348, 250 350, 220 360 Z"
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
+          strokeDasharray="5 4"
           strokeLinejoin="round"
-          className="text-foreground/35"
+          className="text-foreground/45"
         />
 
-        {/* Atmosphärische Schraffur-Linien im Hintergrund */}
-        <g className="text-foreground/8" stroke="currentColor" strokeWidth="0.8">
-          <line x1="120" y1="100" x2="125" y2="115" />
-          <line x1="135" y1="105" x2="140" y2="120" />
-          <line x1="480" y1="120" x2="485" y2="135" />
-          <line x1="495" y1="115" x2="500" y2="130" />
+        {/* Beschriftung der Gewässer und Nordpfeil, in Mono */}
+        <g className="fill-muted-foreground font-mono text-[13px] sm:text-[10px]" letterSpacing="1.5">
+          <text x="62" y="304">ELBE</text>
+          <text x="64" y="74">N ↑</text>
         </g>
 
-        {/* Compass-Mini-Element unten links — typografische Geste */}
-        <g
-          transform="translate(45 380)"
-          className="text-muted-foreground/45 font-mono"
-        >
-          <text fontSize="9" letterSpacing="2" fill="currentColor">
-            N ↑
-          </text>
-        </g>
-
-        {/* Stadtteil-Punkte als klickbare Anker */}
         {STANDORTE.map((s) => {
           const pin = PINS[s.slug];
           if (!pin) return null;
@@ -158,11 +120,13 @@ export function HamburgMap() {
               x={pin.x}
               y={pin.y}
               align={pin.align}
+              state={!active ? "default" : active === s.slug ? "active" : "muted"}
             />
           );
         })}
       </svg>
-    </div>
+      <figcaption className="hafen-caption mt-3 ml-3 sm:ml-0">Karte schematisch, nicht maßstabsgetreu</figcaption>
+    </figure>
   );
 }
 
@@ -172,80 +136,66 @@ function Pin({
   x,
   y,
   align,
+  state,
 }: {
   slug: string;
   name: string;
   x: number;
   y: number;
   align: "left" | "right";
+  state: "default" | "active" | "muted";
 }) {
-  // Label-Position: links oder rechts vom Punkt, je nach Karten-Quadrant
-  const labelX = align === "right" ? x + 14 : x - 14;
+  const gap = state === "active" ? 18 : 12;
+  const labelX = align === "right" ? x + gap : x - gap;
   const textAnchor = align === "right" ? "start" : "end";
+  const size = state === "active" ? 12 : 9;
+
+  const squareClass =
+    state === "muted"
+      ? "fill-foreground/55 group-hover:fill-gold group-focus-visible:fill-gold"
+      : "fill-gold group-hover:fill-foreground group-focus-visible:fill-foreground";
+  const labelClass =
+    state === "active"
+      ? "fill-foreground font-semibold"
+      : state === "muted"
+        ? "fill-muted-foreground group-hover:fill-foreground group-focus-visible:fill-foreground"
+        : "fill-foreground";
 
   return (
     <Link
       href={`/standorte/${slug}`}
       aria-label={`Webdesign in Hamburg-${name}`}
+      aria-current={state === "active" ? "page" : undefined}
+      className="group outline-none"
     >
-      <g className="group cursor-pointer">
-        {/* Hit-Area — größer als sichtbar, damit Hover/Touch leichter trifft */}
-        <circle cx={x} cy={y} r="22" fill="transparent" />
-
-        {/* Boden-Schatten unter dem Pin — wandert beim Hover, gibt
-            dem Pin gefühlte Höhe über der Karte. */}
-        <ellipse
-          cx={x}
-          cy={y + 1}
-          rx="6"
-          ry="2"
-          className="fill-foreground/30 blur-[2px] transition-all duration-300 group-hover:translate-y-[3px] group-hover:opacity-100"
-          style={{ transformOrigin: `${x}px ${y}px` }}
-        />
-
-        {/* Pulse-Ring beim Hover */}
-        <circle
-          cx={x}
-          cy={y}
-          r="10"
-          className="fill-none stroke-gold opacity-0 transition-opacity duration-300 group-hover:opacity-60"
-          strokeWidth="1"
-        />
-
-        {/* Pin-Stiel — wird nur beim Hover sichtbar, suggeriert
-            dass der Pin auf der Karte steht statt aufgemalt zu sein. */}
-        <line
-          x1={x}
-          y1={y}
-          x2={x}
-          y2={y + 4}
-          className="stroke-gold/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      {/* Trefferfläche, größer als das sichtbare Quadrat */}
+      <rect x={x - 18} y={y - 14} width="36" height="28" fill="transparent" />
+      {state === "active" ? (
+        <rect
+          x={x - 11}
+          y={y - 11}
+          width="22"
+          height="22"
+          stroke="currentColor"
           strokeWidth="1.2"
+          className="text-foreground"
         />
-
-        {/* Hauptpunkt — Gold, gefüllt, hebt beim Hover ab */}
-        <circle
-          cx={x}
-          cy={y}
-          r="4.5"
-          className="fill-gold transition-transform duration-300 group-hover:translate-y-[-5px] group-hover:scale-125"
-          style={{ transformOrigin: `${x}px ${y}px` }}
-        />
-
-        {/* Label — Stadtteilname. Numeral-Hochzahlen wurden raus-
-            genommen — auf Mobile wirkten die „01", „02" als
-            Tipp-Fehler vor dem Stadtteilnamen. Die Reihenfolge
-            ergibt sich ohnehin aus dem STANDORTE-Array. */}
-        <text
-          x={labelX}
-          y={y + 4}
-          fontSize="13"
-          textAnchor={textAnchor}
-          className="fill-foreground font-medium tracking-tight transition-colors group-hover:fill-foreground"
-        >
-          {name}
-        </text>
-      </g>
+      ) : null}
+      <rect
+        x={x - size / 2}
+        y={y - size / 2}
+        width={size}
+        height={size}
+        className={`transition-colors duration-200 ${squareClass}`}
+      />
+      <text
+        x={labelX}
+        y={y + 5}
+        textAnchor={textAnchor}
+        className={`text-[17px] tracking-tight transition-colors duration-200 group-hover:underline group-focus-visible:underline sm:text-[13.5px] ${labelClass}`}
+      >
+        {name}
+      </text>
     </Link>
   );
 }

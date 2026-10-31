@@ -1,92 +1,103 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
-import { MagneticButton } from "@/components/marketing/magnetic-button";
+import { getPaketBySlug } from "@/lib/pakete-data";
+import { CONTACT_EMAIL } from "@/lib/site";
 import type { VertikalLanding } from "@/lib/vertikal-landings";
 
 /**
- * VerticalLanding — Renderer für die konversion-orientierten
- * Vertikal-Landings (/pflege, /praxen). Bewusst andere Struktur als
- * /branchen/[slug]:
- *   - Hero mit direktem CTA, kein Archive-Breadcrumb
- *   - Pain-first (drei Probleme, die diese Branche kennt)
- *   - Bauteile als knappe Liste, nicht als Feature-Grid
- *   - Prozess als Drei-Wochen-Sequenz mit beobachtbaren Etappen
- *   - Stadtteil-Anker für lokales Vertrauen
- *   - Schluss-Zitat im Serif-Stil
- *
- * Keine emotionalen Atmosphäre-Bilder, kein Karussell, kein Related-
- * Branchen — das gehört aufs /branchen-Archiv. Hier zählt: in 90
- * Sekunden klar, dann CTA.
+ * VerticalLanding: Renderer für die Branchen-Landingpages (/pflege,
+ * /praxen). Bewusst anders gebaut als /branchen/[slug]:
+ *   - Kopf mit Steckbrief (Paket, Preis, Dauer) statt Bild
+ *   - typische Probleme als drei Zeitungsspalten
+ *   - Bauteile als Verzeichnis mit Haarlinien
+ *   - Ablauf als Linie mit drei Halten (echte Reihenfolge)
+ *   - Fragen offen gesetzt, Frage links, Antwort rechts
+ *   - Abschluss mit Telefonnummer statt Fragesatz
  */
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
+
+const ZAHLWORT = ["null", "eine", "zwei", "drei", "vier", "fünf", "sechs"];
+
 export function VerticalLanding({
   data,
   faq,
 }: {
   data: VertikalLanding;
-  /** Optional FAQ aus den Branchen-Daten — wenn vorhanden, wird
-   *  zwischen Stadtteilen und Closer eine FAQ-Sektion gerendert.
-   *  Quelle: branchen-data.ts via brancheSlug, damit die FAQ-
-   *  Antworten einmal gepflegt und mehrfach genutzt werden. */
+  /** Fragen aus den Branchen-Daten. Werden offen gesetzt, wenn vorhanden. */
   faq?: { q: string; a: string }[];
 }) {
   const inquiryHref = `/anfrage?branche=${data.inquirySlug}&paket=${data.recommendedPackage}`;
+  const wochen = ZAHLWORT[data.process.length] ?? String(data.process.length);
 
   return (
     <>
-      <Hero data={data} inquiryHref={inquiryHref} />
+      <Hero data={data} inquiryHref={inquiryHref} wochen={wochen} />
       <Pains data={data} />
       <Bauteile data={data} />
-      <Process data={data} />
-      <Stadtteile data={data} />
+      <Process data={data} wochen={wochen} />
       {faq && faq.length > 0 ? <Faq faq={faq} /> : null}
       <Closer data={data} inquiryHref={inquiryHref} />
     </>
   );
 }
 
+/** Überschrift und optionaler Zusatz als ein Satz, ohne grauen Zweitteil. */
+function joinLine(main: string, extra?: string) {
+  return extra ? `${main} ${extra}` : main;
+}
+
 function Hero({
   data,
   inquiryHref,
+  wochen,
 }: {
   data: VertikalLanding;
   inquiryHref: string;
+  wochen: string;
 }) {
+  const paket = getPaketBySlug(data.recommendedPackage);
+  const facts: { k: string; v: string }[] = [];
+  if (paket) {
+    facts.push({ k: "Paket", v: paket.name });
+    facts.push({ k: "Einmalig", v: paket.setup });
+    facts.push({ k: "Monatlich", v: paket.monthly.replace(/\s*\/\s*Monat$/, "") });
+  }
+  facts.push({ k: "Dauer", v: `etwa ${wochen} Wochen` });
+  facts.push({ k: "Vor dem Start", v: "Test-Link für Sie" });
+
   return (
-    <section className="border-border/40 relative overflow-hidden border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32">
-        <EditorialEyebrow>{data.eyebrow}</EditorialEyebrow>
-        <h1 className="mt-6 text-balance text-[2.75rem] font-semibold leading-[1.0] tracking-[-0.035em] sm:text-6xl lg:text-[5.25rem] lg:tracking-[-0.04em]">
-          {data.headline}
-          {data.headlineItalic && (
-            <>
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                {data.headlineItalic}
-              </span>
-            </>
-          )}
-        </h1>
-        <p className="text-foreground/80 mt-8 max-w-2xl text-pretty text-lg leading-relaxed sm:text-xl">
-          {data.subhead}
-        </p>
-        <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-          <MagneticButton
-            href={inquiryHref}
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-          >
-            Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </MagneticButton>
-          <Link
-            href={`/branchen/${data.brancheSlug}`}
-            className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
-          >
-            Alle Details ansehen
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+    <section className="border-border border-b">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:grid-cols-12 lg:gap-8 lg:pt-20 lg:pb-24">
+        <div className="min-w-0 lg:col-span-7">
+          <p className="label-mono text-muted-foreground">{data.eyebrow}</p>
+          <h1 className="mt-6 text-balance text-[2.4rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[4.1rem]">
+            {joinLine(data.headline, data.headlineItalic)}
+          </h1>
+          <p className="mt-6 max-w-xl text-pretty text-[17px] leading-relaxed text-[#33383a] sm:mt-8 sm:text-[18px]">
+            {data.subhead}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 sm:mt-9">
+            <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <Link href={`/branchen/${data.brancheSlug}`} className="btn-line grow sm:grow-0">
+              Musterseite ansehen
+            </Link>
+          </div>
         </div>
+
+        <aside className="bg-card border-foreground self-end border-t-2 lg:col-span-4 lg:col-start-9">
+          <h2 className="label-mono text-muted-foreground px-5 pt-5">Auf einen Blick</h2>
+          <dl className="divide-border mt-2 divide-y px-5 pb-1">
+            {facts.map((f) => (
+              <div key={f.k} className="flex items-baseline justify-between gap-6 py-3">
+                <dt className="text-muted-foreground text-[14px]">{f.k}</dt>
+                <dd className="text-right text-[15.5px] font-semibold tabular-nums">{f.v}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
       </div>
     </section>
   );
@@ -94,31 +105,21 @@ function Hero({
 
 function Pains({ data }: { data: VertikalLanding }) {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[13px] font-medium">
-          Drei Probleme, die wir oft hören
-        </p>
-        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-          Woran es meistens hakt.
+    <section className="border-border border-b">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <h2 className="max-w-3xl text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+          Woran es meistens hakt
         </h2>
-        <ol className="divide-border/60 mt-12 divide-y">
-          {data.pains.map((pain, i) => (
-            <li key={pain.headline} className="grid gap-4 py-8 sm:grid-cols-[3rem_1fr] sm:gap-8 sm:py-10">
-              <p className="text-muted-foreground/80 text-[13px]">
-                {String(i + 1).padStart(2, "0")}
-              </p>
-              <div>
-                <h3 className="text-foreground text-xl font-semibold tracking-[-0.015em] sm:text-2xl">
-                  {pain.headline}
-                </h3>
-                <p className="text-foreground/75 mt-3 max-w-2xl text-pretty text-[15.5px] leading-relaxed sm:text-base">
-                  {pain.body}
-                </p>
-              </div>
+        <ul className="mt-12 grid gap-10 sm:mt-16 md:grid-cols-3 md:gap-8">
+          {data.pains.map((pain) => (
+            <li key={pain.headline} className="border-foreground border-t-2 pt-5">
+              <h3 className="text-balance text-[20px] leading-snug tracking-[-0.015em] sm:text-[21px]">
+                {pain.headline}
+              </h3>
+              <p className="text-muted-foreground mt-3 text-pretty text-[15.5px] leading-relaxed">{pain.body}</p>
             </li>
           ))}
-        </ol>
+        </ul>
       </div>
     </section>
   );
@@ -126,61 +127,53 @@ function Pains({ data }: { data: VertikalLanding }) {
 
 function Bauteile({ data }: { data: VertikalLanding }) {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[13px] font-medium">
-          Was wir bauen
-        </p>
-        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-          Die Bauteile,
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            konkret.
-          </span>
-        </h2>
-        <ul className="divide-border/60 mt-12 divide-y">
+    <section className="bg-card border-border border-b">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+            Was auf die Seite kommt
+          </h2>
+          <p className="text-muted-foreground mt-5 max-w-sm text-[16.5px] leading-relaxed">
+            Welche Teile Ihr Betrieb davon braucht, klären wir im ersten Gespräch.
+          </p>
+        </div>
+        <dl className="border-foreground border-t lg:col-span-8">
           {data.bauteile.map((bt) => (
-            <li key={bt.name} className="grid gap-3 py-6 sm:grid-cols-[14rem_1fr] sm:gap-8 sm:py-7">
-              <p className="text-foreground text-[16px] font-medium tracking-[-0.005em] sm:text-[17px]">
-                {bt.name}
-              </p>
-              <p className="text-foreground/75 max-w-2xl text-pretty text-[15px] leading-relaxed">
-                {bt.what}
-              </p>
-            </li>
+            <div
+              key={bt.name}
+              className="border-border grid gap-2 border-b py-5 sm:grid-cols-[13rem_1fr] sm:gap-8 sm:py-6"
+            >
+              <dt className="text-[17px] font-semibold leading-snug tracking-[-0.01em]">{bt.name}</dt>
+              <dd className="text-muted-foreground text-pretty text-[15.5px] leading-relaxed">{bt.what}</dd>
+            </div>
           ))}
-        </ul>
+        </dl>
       </div>
     </section>
   );
 }
 
-function Process({ data }: { data: VertikalLanding }) {
+function Process({ data, wochen }: { data: VertikalLanding; wochen: string }) {
   return (
-    <section className="bg-secondary/40 border-border/40 border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[13px] font-medium">
-          So läuft das ab
-        </p>
-        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-          Drei Wochen,
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            beobachtbar.
-          </span>
-        </h2>
-        <ol className="mt-12 grid gap-6 sm:grid-cols-3">
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
+          <h2 className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7">
+            In {wochen} Wochen online
+          </h2>
+          <p className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
+            Den Tag, an dem die Seite online geht, legen wir im ersten Gespräch fest.
+          </p>
+        </div>
+        <ol className="border-background/25 mt-14 grid gap-10 border-l pl-7 sm:mt-20 md:grid-cols-3 md:gap-8 md:border-t md:border-l-0 md:pl-0">
           {data.process.map((step) => (
-            <li
-              key={step.woche}
-              className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1"
-            >
-              <p className="text-muted-foreground text-[13px]">
-                {step.woche}
-              </p>
-              <p className="text-foreground/85 mt-3 text-pretty text-[15px] leading-relaxed">
-                {step.what}
-              </p>
+            <li key={step.woche} className="relative md:pt-8">
+              <span
+                aria-hidden="true"
+                className="bg-gold absolute top-[4px] -left-[34px] h-[11px] w-[11px] md:-top-[6px] md:left-0"
+              />
+              <p className="label-mono text-gold">{step.woche}</p>
+              <p className="text-background/85 mt-3 max-w-sm text-pretty text-[16px] leading-relaxed">{step.what}</p>
             </li>
           ))}
         </ol>
@@ -189,67 +182,24 @@ function Process({ data }: { data: VertikalLanding }) {
   );
 }
 
-function Stadtteile({ data }: { data: VertikalLanding }) {
-  return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground text-[13px] font-medium">
-          Hamburg-Anker
-        </p>
-        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
-          Stadtteile, in denen wir
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            schon gearbeitet haben.
-          </span>
-        </h2>
-        <ul className="mt-10 flex flex-wrap gap-2.5">
-          {data.stadtteile.map((s) => (
-            <li
-              key={s}
-              className="border-border/60 text-foreground/80 inline-flex h-9 items-center rounded-full border px-4 text-[14px]"
-            >
-              {s}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
 function Faq({ faq }: { faq: { q: string; a: string }[] }) {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <p className="text-muted-foreground text-[13px] font-medium">
-          Häufige Fragen
-        </p>
-        <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-          Was Inhaber typischerweise fragen.
+    <section className="border-border border-b">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+          Fragen vor dem Auftrag
         </h2>
-        <dl className="divide-border/60 mt-12 divide-y">
+        <dl className="mt-12 sm:mt-14">
           {faq.map((item) => (
-            <details key={item.q} className="group py-6">
-              <summary className="text-foreground flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
-                {item.q}
-                <span className="text-muted-foreground transition-transform group-open:rotate-45">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                    className="h-5 w-5"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                  </svg>
-                </span>
-              </summary>
-              <p className="text-muted-foreground mt-4 max-w-2xl text-pretty text-[15px] leading-relaxed">
+            <div
+              key={item.q}
+              className="border-foreground grid gap-3 border-t py-6 sm:grid-cols-12 sm:gap-8 sm:py-7"
+            >
+              <dt className="text-[18px] font-semibold leading-snug tracking-[-0.01em] sm:col-span-5">{item.q}</dt>
+              <dd className="text-muted-foreground text-pretty text-[15.5px] leading-relaxed sm:col-span-7">
                 {item.a}
-              </p>
-            </details>
+              </dd>
+            </div>
           ))}
         </dl>
       </div>
@@ -257,43 +207,40 @@ function Faq({ faq }: { faq: { q: string; a: string }[] }) {
   );
 }
 
-function Closer({
-  data,
-  inquiryHref,
-}: {
-  data: VertikalLanding;
-  inquiryHref: string;
-}) {
+function Closer({ data, inquiryHref }: { data: VertikalLanding; inquiryHref: string }) {
   return (
-    <section>
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <div className="border-ink-petrol/60 max-w-3xl border-l-2 pl-6 sm:pl-10">
-          <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.015em] sm:text-4xl lg:text-5xl">
-            {data.schlussZitat}
-            {data.schlussZitatItalic && (
-              <>
-                <br />
-                <span className="serif-italic text-muted-foreground">
-                  {data.schlussZitatItalic}
-                </span>
-              </>
-            )}
+    <section className="bg-card border-foreground border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <h2 className="text-balance text-[2.2rem] leading-[1.02] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
+          {joinLine(data.schlussZitat, data.schlussZitatItalic)}
+        </h2>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="label-mono text-muted-foreground">Telefon</p>
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold-ink mt-2 inline-block text-[2.1rem] leading-none tracking-[-0.03em] whitespace-nowrap tabular-nums transition-colors sm:text-[2.5rem]"
+            style={{ fontStretch: "115%", fontWeight: 760 }}
+          >
+            0160 7621876
+          </a>
+          <p className="text-muted-foreground mt-4 text-[15.5px] leading-relaxed">
+            Wir antworten meist am selben Werktag. Schriftlich geht es an{" "}
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="text-foreground decoration-gold underline decoration-[1.5px] underline-offset-4"
+            >
+              {CONTACT_EMAIL}
+            </a>
+            .
           </p>
-        </div>
-        <div className="mt-12 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          <Link
-            href={inquiryHref}
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-          >
-            Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link
-            href="/sprechstunde"
-            className="text-foreground inline-flex h-14 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
-          >
-            Lieber kurz telefonieren
-          </Link>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <Link href="/termin" className="btn-line grow sm:grow-0">
+              Gesprächstermin buchen
+            </Link>
+          </div>
         </div>
       </div>
     </section>

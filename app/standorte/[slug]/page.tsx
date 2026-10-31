@@ -4,54 +4,20 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
+import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { formatDate, getPost, JOURNAL_BY_STANDORT } from "@/lib/journal-data";
 import {
   STANDORTE,
   getAllStandortSlugs,
   getStandortBySlug,
+  type Standort,
 } from "@/lib/standorte-data";
-import { formatDate, getPost, JOURNAL_BY_STANDORT } from "@/lib/journal-data";
 
-function StandortJournalHinweis({ standortSlug }: { standortSlug: string }) {
-  const postSlug = JOURNAL_BY_STANDORT[standortSlug];
-  if (!postSlug) return null;
-  const post = getPost(postSlug);
-  if (!post) return null;
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
-  return (
-    <section className="border-border/50 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-        <Link
-          href={`/journal/${post.slug}`}
-          className="group block lg:pl-[calc(25%+0.5rem)]"
-        >
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
-            <span
-              aria-hidden="true"
-              className="bg-gold inline-block h-px w-10"
-            />
-            Aus dem Journal · {formatDate(post.publishedAt)}
-          </p>
-          <h2 className="text-foreground mt-4 max-w-3xl text-2xl leading-[1.15] font-semibold tracking-[-0.02em] text-balance group-hover:underline sm:text-3xl">
-            {post.title}
-          </h2>
-          <p className="text-muted-foreground mt-4 max-w-2xl text-[15.5px] leading-relaxed text-pretty">
-            {post.dek}
-          </p>
-          <span className="text-foreground mt-6 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] group-hover:underline">
-            Essay lesen · {post.readingMinutes} Min
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </span>
-        </Link>
-      </div>
-    </section>
-  );
-}
-
-const SECTION = "border-border/50 border-t";
-const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
+const ZAHLWORT: Record<number, string> = { 1: "Eine", 2: "Zwei", 3: "Drei", 4: "Vier", 5: "Fünf" };
 
 export function generateStaticParams() {
   return getAllStandortSlugs().map((slug) => ({ slug }));
@@ -93,8 +59,6 @@ export default async function StandortPage({
   const { slug } = await params;
   const standort = getStandortBySlug(slug);
   if (!standort) notFound();
-
-  const otherStandorte = STANDORTE.filter((s) => s.slug !== standort.slug);
 
   /* JSON-LD: LocalBusiness + BreadcrumbList als Array. LocalBusiness
    * verknüpft den Stadtteil mit Sitalo, BreadcrumbList gibt Google die
@@ -151,178 +115,203 @@ export default async function StandortPage({
       <MarketingHeader />
       <EditorialMasthead section={`Standorte › ${standort.name}`} />
       <main id="main" tabIndex={-1} className="flex-1">
-        <section>
-          <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-20">
-            <p className="text-muted-foreground flex items-center gap-2.5 text-[13px] font-medium">
-              <span
-                aria-hidden="true"
-                className="bg-gold inline-block h-px w-8"
-              />
-              Webdesign in Hamburg-{standort.name}
-            </p>
-            <h1 className="mt-5 max-w-4xl text-[2.6rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl">
-              Website erstellen lassen{" "}
-              <span className="text-muted-foreground">in {standort.name}.</span>
-            </h1>
-            <p className="text-muted-foreground mt-6 max-w-2xl text-base leading-relaxed text-pretty sm:text-lg">
-              {standort.tagline}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2">
-              <Link
-                href={`/anfrage?ort=${standort.slug}`}
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-              >
-                Website anfragen
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-              <Link
-                href="/website-erstellen-lassen"
-                className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
-              >
-                Kosten und Ablauf
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className={SECTION}>
-          <div className={INNER}>
-            <SectionHead
-              label="Der Stadtteil"
-              title={`Webdesign für ${standort.name}.`}
-            />
-            <div
-              className={`mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[1fr_16rem] ${BODY_OFFSET}`}
-            >
-              <div className="space-y-5">
-                <p className="text-foreground text-xl leading-[1.5] tracking-[-0.01em] text-pretty">
-                  {standort.intro}
-                </p>
-                {standort.body.map((p, i) => (
-                  <p
-                    key={i}
-                    className="text-foreground/85 text-[16px] leading-[1.7] text-pretty"
-                  >
-                    {p}
-                  </p>
-                ))}
-              </div>
-              <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Anker im Viertel
-                </p>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {standort.anker.map((ank) => (
-                    <li
-                      key={ank}
-                      className="border-border/70 bg-card rounded-full border px-3 py-1.5 text-[13px]"
-                    >
-                      {ank}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-foreground text-background">
-          <div className={INNER}>
-            <SectionHead
-              dark
-              label="Beobachtung"
-              title={`Was uns in ${standort.name} auffällt.`}
-            />
-            <p
-              className={`text-background/85 mt-8 max-w-3xl text-xl leading-[1.5] text-pretty sm:text-2xl ${BODY_OFFSET}`}
-            >
-              {standort.pullQuote}
-            </p>
-          </div>
-        </section>
-
-        <section className={SECTION}>
-          <div className={INNER}>
-            <SectionHead
-              label="Branchen"
-              title={`Was in ${standort.name} besonders gefragt ist.`}
-            />
-            <div className={`mt-10 lg:mt-14 ${BODY_OFFSET}`}>
-              <ul className="border-border border-t">
-                {standort.empfohleneBranchen.map((b, i) => (
-                  <li key={b.slug} className="border-border border-b">
-                    <Link
-                      href={`/branchen/${b.slug}`}
-                      className="group flex items-start gap-5 py-6"
-                    >
-                      <span className="text-gold pt-1 text-[13px] tabular-nums">
-                        0{i + 1}
-                      </span>
-                      <span className="flex-1">
-                        <span className="block text-xl font-semibold tracking-[-0.02em] transition-transform duration-300 group-hover:translate-x-1">
-                          Website für {b.label}
-                        </span>
-                        <span className="text-muted-foreground mt-1 block text-[14.5px] leading-relaxed">
-                          {b.warum}
-                        </span>
-                      </span>
-                      <ArrowRight
-                        className="mt-1.5 h-4 w-4 shrink-0"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <StandortJournalHinweis standortSlug={standort.slug} />
-
-        <section className={`${SECTION} bg-secondary/30`}>
-          <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
-            <h2 className="text-muted-foreground text-[13px] font-medium">
-              Weitere Stadtteile
-            </h2>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {otherStandorte.map((other) => (
-                <li key={other.slug}>
-                  <Link
-                    href={`/standorte/${other.slug}`}
-                    className="border-border/70 bg-card hover:border-foreground/40 inline-flex rounded-full border px-4 py-1.5 text-[14px] transition-colors"
-                  >
-                    {other.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section className="bg-foreground text-background">
-          <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
-            <h2 className="text-3xl leading-tight font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
-              Website für {standort.name}?{" "}
-              <span className="text-background/65">Schreiben Sie uns.</span>
-            </h2>
-            <Link
-              href={`/anfrage?ort=${standort.slug}`}
-              className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-            >
-              Website anfragen
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-        </section>
+        <Hero standort={standort} />
+        <Viertel standort={standort} />
+        <Branchen standort={standort} />
+        <Weiter standort={standort} />
+        <Schluss standort={standort} />
       </main>
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Kopf: Überschrift links, rechts die Karte mit dem Stadtteil markiert.
+ * ---------------------------------------------------------------- */
+function Hero({ standort }: { standort: Standort }) {
+  return (
+    <section>
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:grid-cols-12 lg:gap-8">
+        <div className="min-w-0 lg:col-span-6">
+          <p className="label-mono text-muted-foreground">Webdesign in Hamburg-{standort.name}</p>
+          <h1 className="mt-6 text-balance text-[2.4rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[3.75rem]">
+            Website erstellen lassen in {standort.name}
+          </h1>
+          <p className="mt-6 max-w-xl text-pretty text-[17px] leading-relaxed text-[#33383a] sm:text-[18px]">
+            {standort.tagline}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href={`/anfrage?ort=${standort.slug}`} className="btn-signal grow sm:grow-0">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <Link href="/website-erstellen-lassen" className="btn-line grow sm:grow-0">
+              Kosten und Ablauf
+            </Link>
+          </div>
+        </div>
+        <div className="min-w-0 lg:col-span-6">
+          <HamburgMap active={standort.slug} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Das Viertel: Fließtext, daneben Orte und eine Randnotiz.
+ * ---------------------------------------------------------------- */
+function Viertel({ standort }: { standort: Standort }) {
+  return (
+    <section className="border-border border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+            Webdesign für {standort.name}
+          </h2>
+          <p className="mt-8 text-pretty text-[20px] leading-[1.5] tracking-[-0.01em] sm:text-[22px]">
+            {standort.intro}
+          </p>
+          <div className="mt-6 space-y-5">
+            {standort.body.map((p, i) => (
+              <p key={i} className="text-muted-foreground text-pretty text-[16.5px] leading-[1.7]">
+                {p}
+              </p>
+            ))}
+          </div>
+        </div>
+        <aside className="space-y-12 lg:col-span-4 lg:col-start-9 lg:pt-3">
+          <div>
+            <h2 className="label-mono text-muted-foreground">Orte im Viertel</h2>
+            <ul className="border-foreground mt-4 border-t">
+              {standort.anker.map((ank) => (
+                <li key={ank} className="border-border border-b py-2.5 text-[15.5px]">
+                  {ank}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <figure className="border-foreground border-l-2 pl-5">
+            <figcaption className="label-mono text-muted-foreground">Beobachtung</figcaption>
+            <blockquote className="mt-3 text-pretty text-[19px] leading-[1.45] tracking-[-0.01em]">
+              {standort.pullQuote}
+            </blockquote>
+          </figure>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Passende Branchen als Zeitungsspalten.
+ * ---------------------------------------------------------------- */
+function Branchen({ standort }: { standort: Standort }) {
+  const n = standort.empfohleneBranchen.length;
+  return (
+    <section className="bg-card border-border border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <h2 className="max-w-3xl text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+          {ZAHLWORT[n] ?? n} Branchen, die zu {standort.name} passen
+        </h2>
+        <ul className="mt-12 grid gap-10 sm:mt-14 md:grid-cols-3 md:gap-8">
+          {standort.empfohleneBranchen.map((b) => (
+            <li key={b.slug} className="border-foreground border-t-2 pt-5">
+              <Link href={`/branchen/${b.slug}`} className="group block">
+                <h3 className="text-balance text-[20px] leading-snug tracking-[-0.015em] underline-offset-4 group-hover:underline">
+                  Website für {b.label}
+                </h3>
+                <p className="text-muted-foreground mt-3 text-pretty text-[15.5px] leading-relaxed">{b.warum}</p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-[14.5px] font-semibold">
+                  Zur Branchenseite {ARROW}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Weiterlesen: Journal-Beitrag (falls vorhanden) und die übrigen
+ * Stadtteile als Register.
+ * ---------------------------------------------------------------- */
+function Weiter({ standort }: { standort: Standort }) {
+  const postSlug = JOURNAL_BY_STANDORT[standort.slug];
+  const post = postSlug ? getPost(postSlug) : undefined;
+  const andere = STANDORTE.filter((s) => s.slug !== standort.slug);
+
+  return (
+    <section className="border-border border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-20 lg:grid-cols-12 lg:gap-8">
+        {post ? (
+          <div className="lg:col-span-5">
+            <h2 className="label-mono text-muted-foreground">Aus dem Journal · {formatDate(post.publishedAt)}</h2>
+            <Link href={`/journal/${post.slug}`} className="group border-foreground mt-4 block border-t pt-4">
+              <span
+                className="block text-[24px] leading-tight tracking-[-0.02em] underline-offset-4 group-hover:underline sm:text-[28px]"
+                style={{ fontStretch: "110%", fontWeight: 700 }}
+              >
+                {post.title}
+              </span>
+              <span className="text-muted-foreground mt-3 block max-w-md text-[15.5px] leading-relaxed">{post.dek}</span>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-[14.5px] font-semibold">
+                Lesen, {post.readingMinutes} Min {ARROW}
+              </span>
+            </Link>
+          </div>
+        ) : null}
+        <div className={post ? "lg:col-span-6 lg:col-start-7" : "lg:col-span-12"}>
+          <h2 className="label-mono text-muted-foreground">Weitere Stadtteile</h2>
+          <ul
+            className={`border-foreground mt-4 columns-2 gap-6 border-t sm:gap-8 ${post ? "" : "sm:columns-3 lg:columns-4"}`}
+          >
+            {andere.map((other) => (
+              <li key={other.slug} className="break-inside-avoid">
+                <Link
+                  href={`/standorte/${other.slug}`}
+                  className="border-border flex items-center justify-between gap-3 border-b py-2.5 text-[15.5px] underline-offset-4 hover:underline"
+                >
+                  {other.name}
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Schluss({ standort }: { standort: Standort }) {
+  return (
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
+          Das erste Gespräch führen wir am Telefon oder bei Ihnen in {standort.name}.
+        </h2>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
+            Auf Anfragen antworten wir meist am selben Werktag. Den Festpreis bekommen Sie schriftlich, bevor wir
+            anfangen.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href={`/anfrage?ort=${standort.slug}`} className="btn-signal grow sm:grow-0">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <a href="tel:+491607621876" className="btn-line grow tabular-nums sm:grow-0">
+              0160 7621876
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
