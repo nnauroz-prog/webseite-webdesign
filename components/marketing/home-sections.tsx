@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+import { BeforeAfter } from "@/components/marketing/before-after";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 /**
@@ -181,6 +182,33 @@ export function AblaufKompakt() {
               ))}
             </ol>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Vorher / Nachher — Regler über einer typischen Betriebsseite.
+ * ---------------------------------------------------------------- */
+export function VorherNachher() {
+  return (
+    <section className={SECTION}>
+      <div className={INNER}>
+        <SectionHead
+          label="Vorher · Nachher"
+          title={
+            <>
+              Dieselbe Tischlerei. <span className="text-muted-foreground">Ein anderer erster Eindruck.</span>
+            </>
+          }
+        />
+        <p className={`text-muted-foreground mt-6 max-w-xl text-[15.5px] leading-relaxed ${BODY_OFFSET}`}>
+          Ziehen Sie den Regler. Links eine Seite, wie sie bei vielen Betrieben noch online ist, rechts dieselben
+          Inhalte so, wie wir sie bauen. Beispielbetrieb, frei erfunden.
+        </p>
+        <div className={`mt-10 lg:mt-12 ${BODY_OFFSET}`}>
+          <BeforeAfter />
         </div>
       </div>
     </section>

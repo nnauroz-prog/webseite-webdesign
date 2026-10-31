@@ -34,6 +34,7 @@ const STATIC_ROUTES: Array<{
   { path: "", priority: 1.0, changeFrequency: "weekly" },
   // Conversion-Hubs
   { path: "/website-erstellen-lassen", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/website-kosten", priority: 0.8, changeFrequency: "monthly" },
   { path: "/anfrage", priority: 0.9, changeFrequency: "monthly" },
   { path: "/branchen", priority: 0.9, changeFrequency: "monthly" },
   { path: "/pakete", priority: 0.9, changeFrequency: "monthly" },

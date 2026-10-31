@@ -43,10 +43,6 @@ export async function HamburgWetter() {
 
   return (
     <div className="border-border/60 bg-card/40 ring-foreground/5 relative overflow-hidden rounded-2xl border p-5 ring-1">
-      <div
-        aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -top-12 -right-8 h-32 w-32 rounded-full blur-[40px]"
-      />
       <div className="relative flex items-center justify-between gap-3">
         <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
           <span

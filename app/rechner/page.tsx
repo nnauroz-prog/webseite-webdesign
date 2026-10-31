@@ -65,10 +65,6 @@ export default function RechnerPage() {
       <EditorialMasthead section="3-Jahres-Rechner" />
       <main id="main" tabIndex={-1} className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
-          <div
-            aria-hidden="true"
-            className="bg-gold/10 pointer-events-none absolute -top-32 left-1/2 -z-10 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-[60px] sm:blur-[120px]"
-          />
           <div className="mx-auto w-full max-w-5xl px-6 py-14 sm:py-20 lg:py-24">
             <div className="text-center">
               <EditorialEyebrow>Eigenzeit als echtes Geld</EditorialEyebrow>

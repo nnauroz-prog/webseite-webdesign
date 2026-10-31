@@ -7,6 +7,7 @@ import {
   AblaufKompakt,
   SectionHead,
   Voranbringen,
+  VorherNachher,
   Vorteile,
 } from "@/components/marketing/home-sections";
 import { LivePreview } from "@/components/marketing/live-preview";
@@ -138,6 +139,7 @@ export default function HomePage() {
             /standorte, /jetzt — die Startseite verlinkt dorthin. */}
         <Hero />
         <Vorteile />
+        <VorherNachher />
         {/* Echte Ergebnisse (Branche + Stadtteil + Zahl) — der
             Vertrauensbeleg direkt nach den Arbeitsproben im Hero. */}
         <RevealOnScroll>

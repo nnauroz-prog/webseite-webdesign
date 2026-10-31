@@ -280,7 +280,7 @@ export default function WebsiteErstellenLassenPage() {
             <SectionHead
               label="Kosten"
               title="Was kostet eine Website?"
-              link={{ href: "/pakete", text: "Alle Pakete im Detail" }}
+              link={{ href: "/website-kosten", text: "Kosten im Detail" }}
             />
             <p
               className={`text-muted-foreground mt-6 max-w-2xl text-[15.5px] leading-relaxed ${BODY_OFFSET}`}

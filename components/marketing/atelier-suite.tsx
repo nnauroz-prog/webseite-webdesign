@@ -81,11 +81,6 @@ export function AtelierSuite() {
       id="werkzeuge"
       className="border-border/40 relative overflow-hidden border-t scroll-mt-20"
     >
-      {/* Dezenter Gold-Halo rechts oben — atmosphärischer Anker. */}
-      <div
-        aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -top-32 right-[-10%] h-[28rem] w-[28rem] rounded-full blur-[80px] sm:blur-[140px]"
-      />
       <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-32">
         {/* Editorial-Header */}
         <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
@@ -168,11 +163,6 @@ function HeroCard({ tool }: { tool: Tool }) {
       className="col-span-1 w-full min-h-[520px] rounded-3xl sm:min-h-[560px] lg:col-span-6"
       front={
         <div className="bg-foreground text-background ring-foreground/10 relative flex h-full flex-col gap-6 overflow-hidden rounded-3xl p-8 ring-1 sm:p-10">
-          {/* Schwacher Gold-Glow innerhalb der Karte. */}
-          <div
-            aria-hidden="true"
-            className="bg-gold/20 pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full blur-[80px]"
-          />
           <div className="relative flex items-start justify-between gap-4">
             <span className="border-background/25 inline-flex h-12 w-12 items-center justify-center rounded-full border">
               <Icon className="h-5 w-5" aria-hidden="true" />
@@ -200,11 +190,6 @@ function HeroCard({ tool }: { tool: Tool }) {
       }
       back={
         <div className="bg-foreground text-background ring-gold/30 relative flex h-full flex-col justify-between gap-8 overflow-hidden rounded-3xl p-8 ring-1 sm:p-10">
-          {/* Stärkerer Gold-Glow auf der Rückseite — Versprechen-Modus. */}
-          <div
-            aria-hidden="true"
-            className="bg-gold/30 pointer-events-none absolute -top-24 -right-16 h-80 w-80 rounded-full blur-[90px]"
-          />
           <div className="relative flex items-start justify-between gap-4">
             <span className="bg-gold/15 border-gold/40 text-gold inline-flex h-12 w-12 items-center justify-center rounded-full border">
               <Icon className="h-5 w-5" aria-hidden="true" />
