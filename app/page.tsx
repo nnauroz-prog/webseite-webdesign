@@ -11,8 +11,10 @@ import { Faehrlinie } from "@/components/marketing/hafen/faehrlinie";
 import { LivePreview } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
 import { getPaketBySlug } from "@/lib/pakete-data";
-import { CONTACT_EMAIL } from "@/lib/site";
+
+const CONTACT_EMAIL = "info@sitalo.de";
 
 export const metadata: Metadata = {
   // Absoluter Titel — sonst hängt das Layout-Template noch ein
@@ -385,7 +387,7 @@ function Fragen() {
 function Kontakt() {
   return (
     <section id="kontakt" className="grain bg-foreground text-background scroll-mt-20">
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:items-end lg:gap-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-20 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:grid-cols-12 lg:items-end lg:gap-8">
         <div className="lg:col-span-7">
           <h2 className="text-stahl-hell text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]">
             Am schnellsten geht es am Telefon.
@@ -416,6 +418,9 @@ function Kontakt() {
           </div>
         </div>
       </div>
+      {/* Hamburg als Linienzeichnung, zeichnet sich beim Hinscrollen.
+          Darunter beginnt der Fuß mit der Elbe-Linie. */}
+      <HamburgPanorama tone="dark" />
     </section>
   );
 }
