@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  DatabaseBackup,
+  Lock,
+  Mail,
+  PencilLine,
+  RefreshCw,
+  Server,
+} from "lucide-react";
 
 import { AvailabilitySlot } from "@/components/marketing/availability-slot";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
@@ -25,7 +34,6 @@ export default function PaketePage() {
         <Hero />
         <Packages />
         <PflegeHosting />
-        <PricingDisclaimer />
         <FinalCta />
       </main>
       <MarketingFooter />
@@ -36,391 +44,155 @@ export default function PaketePage() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
+      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-10 sm:px-6 sm:pt-20 sm:pb-12">
         <EditorialEyebrow>Pakete & Preise</EditorialEyebrow>
-        <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[6rem]">
-          Drei Wege.
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            Ein Ergebnis.
-          </span>
+        <h1 className="mt-5 text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl">
+          Klare Preise.{" "}
+          <span className="serif-italic text-muted-foreground font-normal">Festpreis vorab.</span>
         </h1>
-        <p className="text-muted-foreground mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl">
-          Einmalige Erstellung, dann ein fairer Monatsbeitrag. Was Sie
-          nicht brauchen, zahlen Sie nicht.
-        </p>
-        {/* Drei harte Fakten als Sub-Statement — gibt Vertrauen
-            direkt unter der Headline, bevor der Besucher scrollt. */}
-        <ul className="text-muted-foreground mx-auto mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] sm:text-[14px]">
-          <li className="inline-flex items-center gap-2">
-            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Live in 1–2 Werktagen
-          </li>
-          <li className="inline-flex items-center gap-2">
-            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Hosting in der EU
-          </li>
-          <li className="inline-flex items-center gap-2">
-            <span className="bg-ink-olive inline-block h-1 w-1 rounded-full" />
-            Nach 6 Monaten monatlich kündbar
-          </li>
+        <ul className="text-foreground/80 mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[14px]">
+          {["Live in 1–2 Werktagen", "Hosting in der EU", "Nach 6 Monaten monatlich kündbar"].map((t) => (
+            <li key={t} className="inline-flex items-center gap-2">
+              <Check className="text-gold h-4 w-4" aria-hidden="true" />
+              {t}
+            </li>
+          ))}
         </ul>
-        {/* Verfügbarkeit — ehrlich gepflegt, gibt einen leichten
-            Knappheits-Anker direkt unter den Fakten. */}
-        <div className="mt-6 flex justify-center">
+        <div className="mt-5">
           <AvailabilitySlot variant="inline" />
         </div>
-        {/* Anchor strip — quick jumps */}
-        <nav className="mt-12 flex flex-wrap justify-center gap-2 sm:gap-3">
-          {PAKETE.map((p) => (
-            <a
-              key={p.slug}
-              href={`#${p.slug}`}
-              className="border-border/70 text-foreground/70 hover:border-foreground hover:text-foreground inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors"
-            >
-              <span>{p.name}</span>
-              <span className="text-muted-foreground/70">·</span>
-              <span className="text-muted-foreground/70">{p.setup}</span>
-            </a>
-          ))}
-        </nav>
-        {/* Quiz-Hinweis — alternativer Weg für unsichere Besucher.
-            Fünf-Fragen-Quiz statt selbst durch alle Tabs scrollen. */}
-        <p className="text-muted-foreground mt-8 text-center text-[13.5px]">
-          Unsicher?{" "}
-          <a
-            href="/empfehlung"
-            className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
-          >
-            Fünf Fragen beantworten und Empfehlung bekommen
-          </a>
-          . Oder die{" "}
-          <a
-            href="/honorar"
-            className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
-          >
-            offene Honorar-Rechnung lesen
-          </a>
-          , falls Sie wissen wollen, wie die Preise zustande kommen.
-        </p>
       </div>
     </section>
-  );
-}
-
-function Packages() {
-  return (
-    <>
-      {PAKETE.map((p, i) => {
-        const dark = p.highlight;
-        // Slug-basiert statt index-basiert, damit eine spätere
-        // Umordnung der PAKETE-Liste den Look nicht durcheinander
-        // bringt. Premium kriegt warmen Accent-Tint, Studio einen
-        // ruhigen Secondary-Cream als visuelle Vier-Tier-Hierarchie.
-        const tinted = p.slug === "premium";
-        const atelierTinted = p.slug === "studio";
-        return (
-          <section
-            key={p.slug}
-            id={p.slug}
-            className={
-              dark
-                ? "bg-foreground text-background relative overflow-hidden scroll-mt-16"
-                : tinted
-                  ? "bg-accent/40 border-border/40 border-t scroll-mt-16"
-                  : atelierTinted
-                    ? "bg-secondary/50 border-border/40 border-t scroll-mt-16"
-                    : "border-border/40 border-t scroll-mt-16"
-            }
-          >
-            {dark ? (
-              <div
-                aria-hidden="true"
-                className="bg-gold/15 pointer-events-none absolute -top-20 right-[-10%] h-[32rem] w-[32rem] rounded-full blur-3xl"
-              />
-            ) : null}
-            <div className="relative mx-auto w-full max-w-7xl px-6 py-24 sm:py-32 lg:py-40">
-              <div className="grid gap-16 lg:grid-cols-[1.1fr_1fr] lg:gap-24">
-                <div>
-                  <div className="flex items-baseline gap-4">
-                    <span
-                      className={
-                        dark
-                          ? "serif text-background/30 text-[5rem] font-normal leading-none tracking-[-0.04em]"
-                          : "serif text-foreground/20 text-[5rem] font-normal leading-none tracking-[-0.04em]"
-                      }
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {p.badge ? (
-                      <span className="bg-gold/90 text-foreground inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em]">
-                        {p.badge}
-                      </span>
-                    ) : null}
-                  </div>
-                  <h2 className="mt-6 text-6xl font-semibold leading-[0.95] tracking-[-0.04em] sm:text-7xl lg:text-8xl">
-                    {p.name}
-                  </h2>
-                  <p
-                    className={
-                      dark
-                        ? "text-background/85 mt-8 max-w-xl text-pretty text-xl leading-relaxed"
-                        : "text-foreground/80 mt-8 max-w-xl text-pretty text-xl leading-relaxed"
-                    }
-                  >
-                    {p.description}
-                  </p>
-
-                  <div
-                    className={
-                      dark
-                        ? "border-background/20 mt-12 border-t pt-8"
-                        : "border-border/60 mt-12 border-t pt-8"
-                    }
-                  >
-                    <p className="drop-cap-3d text-5xl font-semibold tracking-[-0.025em] sm:text-6xl">
-                      {p.setup}
-                    </p>
-                    <p
-                      className={
-                        dark
-                          ? "text-background/65 mt-2 text-base"
-                          : "text-muted-foreground mt-2 text-base"
-                      }
-                    >
-                      einmalig · + {p.monthly}
-                    </p>
-                    <div className="mt-8 flex flex-wrap items-center gap-4">
-                      <Link
-                        href={`/anfrage?paket=${p.slug}`}
-                        className={
-                          dark
-                            ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-                            : "bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-                        }
-                      >
-                        {p.name} anfragen
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                      </Link>
-                      <Link
-                        href={`/pakete/${p.slug}`}
-                        className={
-                          dark
-                            ? "text-background/80 hover:text-background inline-flex h-14 items-center text-base font-medium underline-offset-4 hover:underline"
-                            : "text-foreground inline-flex h-14 items-center text-base font-medium underline-offset-4 hover:underline"
-                        }
-                      >
-                        Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                <div className="lg:pt-12">
-                  <p
-                    className={
-                      dark
-                        ? "text-background/65 text-[11px] font-medium uppercase tracking-[0.25em]"
-                        : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.25em]"
-                    }
-                  >
-                    Für wen
-                  </p>
-                  <p
-                    className={
-                      dark
-                        ? "text-background/90 mt-4 max-w-md text-[15px] leading-relaxed"
-                        : "text-foreground/80 mt-4 max-w-md text-[15px] leading-relaxed"
-                    }
-                  >
-                    {p.whoFor}
-                  </p>
-
-                  <div className="mt-12">
-                    <PackageColumn
-                      title="Was enthalten ist"
-                      items={p.contents}
-                      dark={dark}
-                    />
-                  </div>
-                  <div className="mt-12">
-                    <PackageColumn
-                      title="Typische Beispiele"
-                      items={p.examples}
-                      dark={dark}
-                    />
-                  </div>
-                  <div className="mt-12">
-                    <PackageColumn
-                      title="Nicht in diesem Paket"
-                      items={p.limits}
-                      dark={dark}
-                      muted
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        );
-      })}
-    </>
-  );
-}
-
-function PackageColumn({
-  title,
-  items,
-  muted,
-  dark,
-}: {
-  title: string;
-  items: string[];
-  muted?: boolean;
-  dark?: boolean;
-}) {
-  const labelClass = dark
-    ? "text-background/55 text-[11px] font-medium uppercase tracking-[0.22em]"
-    : "text-muted-foreground text-[11px] font-medium uppercase tracking-[0.22em]";
-  const itemClass = muted
-    ? dark
-      ? "text-background/55 flex items-baseline gap-3 py-2 text-[14px] leading-relaxed"
-      : "text-muted-foreground flex items-baseline gap-3 py-2 text-[14px] leading-relaxed"
-    : dark
-      ? "text-background/90 flex items-baseline gap-3 py-2 text-[15px] leading-relaxed"
-      : "text-foreground/85 flex items-baseline gap-3 py-2 text-[15px] leading-relaxed";
-  const dividerClass = dark ? "divide-background/15" : "divide-border/60";
-  return (
-    <div>
-      <h3 className={labelClass}>{title}</h3>
-      <ul className={`mt-4 divide-y ${dividerClass}`}>
-        {items.map((item) => (
-          <li key={item} className={itemClass}>
-            <span
-              className={
-                dark
-                  ? "text-background/50 font-mono text-xs"
-                  : "text-muted-foreground/60 font-mono text-xs"
-              }
-            >
-              ·
-            </span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
 /**
- * Pflege & Hosting — erklärt was im monatlichen Beitrag drin ist
- * und wie Wartung skaliert, wenn jemand mehr braucht als das
- * jeweilige Paket vorsieht. Steht direkt unter den drei Tieren,
- * damit das wiederkehrende „und was kommt nach dem Launch?" gleich
- * mit beantwortet ist.
+ * Vier Pakete als Karten nebeneinander. Je Karte: Preis, ein Satz
+ * „für wen", die ersten fünf Leistungen. Alles Weitere (Beispiele,
+ * Grenzen, FAQ) steht auf /pakete/[slug].
  */
-function PflegeHosting() {
+function Packages() {
   return (
     <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
-          <div className="lg:sticky lg:top-24">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-[11px]">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Pflege & Hosting
-            </p>
-            <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
-              Was nach dem Launch
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                dazugehört.
-              </span>
-            </h2>
-            <p className="text-foreground/75 mt-7 max-w-md text-pretty text-[15.5px] leading-relaxed">
-              Der monatliche Betrag in jedem Paket ist kein
-              versteckter Vertrag — er ist die Antwort auf die Frage
-              „wer kümmert sich, wenn ich morgen eine neue
-              Telefonnummer habe?".
-            </p>
-          </div>
-
-          <div className="space-y-8">
-            <PflegeRow
-              title="Im Monatlichen drin"
-              items={[
-                "Hosting in Deutschland (DSGVO-konform, kein US-Daten-Detour)",
-                "SSL-Zertifikat, automatisch verlängert",
-                "Sicherheits- und Performance-Updates",
-                "Tägliche Backups, 30 Tage zurückrollbar",
-                "Kleine Inhalts-Änderungen (je nach Paket: 1–3 pro Monat)",
-                "Domain-Anfragen und E-Mail-Setup auf Wunsch",
-              ]}
-            />
-            <PflegeRow
-              title="Wenn mehr nötig ist"
-              items={[
-                "Größere Erweiterungen (neue Seite, neuer Bereich) — auf Stundenbasis, transparent vorab beziffert",
-                "Mehr Änderungsrunden pro Monat — Pflege-Aufstockung im Halbjahres-Turnus möglich",
-                "Saisonale Aktionen, Eventseiten, Kampagnen — projektbezogen, kein Aufschlag aufs Monatliche",
-              ]}
-            />
-            <PflegeRow
-              title="Was nicht drin ist"
-              items={[
-                "Neue Logos, Foto-Shootings, Texterstellung von Grund auf",
-                "Bezahlte Anzeigen (Google Ads, Meta) — Empfehlung auf Wunsch",
-                "Online-Shop-Erweiterungen über 30 Artikel hinaus",
-              ]}
-            />
-          </div>
-        </div>
+      <div className="mx-auto grid w-full max-w-6xl gap-4 px-5 py-12 sm:px-6 sm:py-16 md:grid-cols-2 lg:grid-cols-4">
+        {PAKETE.map((p) => {
+          const dark = p.highlight;
+          return (
+            <article
+              key={p.slug}
+              id={p.slug}
+              className={
+                dark
+                  ? "gold-sweep bg-foreground text-background relative flex scroll-mt-24 flex-col overflow-hidden rounded-3xl p-6 shadow-[0_30px_60px_-30px_rgb(40_25_10/0.5)] lg:-my-3 lg:py-9"
+                  : "border-border/70 bg-card relative flex scroll-mt-24 flex-col rounded-3xl border p-6"
+              }
+            >
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-xl font-semibold tracking-tight">{p.name}</h2>
+                {p.badge ? (
+                  <span
+                    className={
+                      dark
+                        ? "bg-gold text-foreground shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]"
+                        : "border-border text-muted-foreground shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]"
+                    }
+                  >
+                    {p.badge}
+                  </span>
+                ) : null}
+              </div>
+              <p className="serif mt-5 text-5xl lining-nums leading-none tracking-[-0.03em]">{p.setup}</p>
+              <p className={dark ? "text-background/60 mt-2 text-[13px]" : "text-muted-foreground mt-2 text-[13px]"}>
+                einmalig · + {p.monthly}
+              </p>
+              <p className={dark ? "text-background/85 mt-5 text-[14px] leading-relaxed" : "text-foreground/80 mt-5 text-[14px] leading-relaxed"}>
+                {firstSentence(p.whoFor)}
+              </p>
+              <ul className={`mt-5 space-y-2 border-t pt-5 text-[14px] ${dark ? "border-background/15" : "border-border/60"}`}>
+                {p.contents.slice(0, 5).map((c) => (
+                  <li key={c} className="flex gap-2.5">
+                    <Check className="text-gold mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span className={dark ? "text-background/90" : "text-foreground/85"}>{c}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto flex flex-col gap-2 pt-7">
+                <Link
+                  href={`/anfrage?paket=${p.slug}`}
+                  className={
+                    dark
+                      ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-11 items-center justify-center rounded-full px-5 text-[14px] font-medium tracking-tight"
+                      : "bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center justify-center rounded-full px-5 text-[14px] font-medium tracking-tight"
+                  }
+                >
+                  {p.name} anfragen
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+                <Link
+                  href={`/pakete/${p.slug}`}
+                  className={
+                    dark
+                      ? "text-background/75 hover:text-background inline-flex h-9 items-center justify-center text-[13.5px] font-medium underline-offset-4 hover:underline"
+                      : "text-foreground/75 hover:text-foreground inline-flex h-9 items-center justify-center text-[13.5px] font-medium underline-offset-4 hover:underline"
+                  }
+                >
+                  Alle Details
+                </Link>
+              </div>
+            </article>
+          );
+        })}
       </div>
+      <p className="text-muted-foreground mx-auto w-full max-w-6xl px-5 pb-12 text-[13px] sm:px-6">
+        Einstiegspreise zzgl. MwSt. Den verbindlichen Festpreis bekommen Sie nach Ihrer Anfrage.{" "}
+        <Link href="/empfehlung" className="text-foreground underline underline-offset-4">
+          Unsicher? Fünf Fragen, eine Empfehlung.
+        </Link>
+      </p>
     </section>
   );
 }
 
-function PflegeRow({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div>
-      <p className="text-muted-foreground/80 mb-4 font-mono text-[10px] uppercase tracking-[0.22em]">
-        {title}
-      </p>
-      <ul className="divide-border/40 divide-y">
-        {items.map((item) => (
-          <li
-            key={item}
-            className="text-foreground/85 flex items-start gap-3 py-3 text-[15px] leading-relaxed"
-          >
-            <span
-              aria-hidden="true"
-              className="bg-ink-olive mt-2 inline-block h-1 w-1 shrink-0 rounded-full"
-            />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+function firstSentence(text: string) {
+  const m = text.match(/^.+?[.!?](\s|$)/);
+  return (m ? m[0] : text).trim();
 }
 
-function PricingDisclaimer() {
+/** Was im Monatsbeitrag steckt — sechs Punkte als Raster. */
+const IM_MONATLICHEN = [
+  { icon: Server, text: "Hosting in Deutschland, DSGVO-konform" },
+  { icon: Lock, text: "SSL-Zertifikat, automatisch verlängert" },
+  { icon: RefreshCw, text: "Sicherheits- und Performance-Updates" },
+  { icon: DatabaseBackup, text: "Tägliche Backups, 30 Tage zurück" },
+  { icon: PencilLine, text: "Kleine Änderungen, je nach Paket 1–3 pro Monat" },
+  { icon: Mail, text: "Domain und E-Mail-Setup auf Wunsch" },
+];
+
+function PflegeHosting() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-20">
-        <p className="text-foreground/75 text-pretty text-base leading-relaxed sm:text-lg">
-          Die genannten Preise sind{" "}
-          <span className="serif-italic text-foreground font-medium">
-            Einstiegspreise
-          </span>
-          . Der finale Preis hängt vom Umfang ab — Sie bekommen nach Ihrer
-          Anfrage eine klare, verbindliche Einschätzung.
-        </p>
-        <p className="text-muted-foreground mt-4 text-sm">
-          Alle Preise zzgl. MwSt. · Monatliche Betreuung jederzeit zum
-          Monatsende kündbar · Mindestlaufzeit 6 Monate.
+    <section className="border-border/40 bg-secondary/30 border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20">
+        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Im Monatsbeitrag drin.</h2>
+        <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+          {IM_MONATLICHEN.map(({ icon: Icon, text }) => (
+            <li key={text} className="flex items-center gap-3 text-[15px]">
+              <span className="bg-background border-border/70 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border">
+                <Icon className="text-gold h-4 w-4" aria-hidden="true" />
+              </span>
+              {text}
+            </li>
+          ))}
+        </ul>
+        <p className="text-muted-foreground mt-8 text-[13.5px]">
+          Größere Erweiterungen beziffern wir vorab. Mindestlaufzeit 6 Monate, danach monatlich kündbar.{" "}
+          <Link href="/wartung" className="text-foreground underline underline-offset-4">
+            Mehr zur Wartung
+          </Link>
         </p>
       </div>
     </section>
@@ -429,29 +201,24 @@ function PricingDisclaimer() {
 
 function FinalCta() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.3em]">
-              Unsicher?
-            </p>
-            <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
-              Wir empfehlen Ihnen
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                das passende Paket.
-              </span>
-            </h2>
-          </div>
-          <Link
-            href="/anfrage"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 shrink-0 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-          >
-            Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </div>
+    <section className="bg-foreground text-background relative overflow-hidden">
+      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
+          Welches passt?{" "}
+          <span className="serif-italic text-background/70">Wir sagen es Ihnen ehrlich.</span>
+        </h2>
+        <Link
+          href="/anfrage"
+          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+        >
+          Website anfragen
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </section>
   );
