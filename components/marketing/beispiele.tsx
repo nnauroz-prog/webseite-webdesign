@@ -57,7 +57,7 @@ export function Beispiele() {
     <section id="beispiele" className="bg-foreground text-background relative scroll-mt-20 overflow-hidden">
       <div
         aria-hidden="true"
-        className="bg-gold/15 pointer-events-none absolute -top-40 right-[-10%] h-[30rem] w-[30rem] rounded-full blur-[90px]"
+        className="bg-ink-petrol/40 pointer-events-none absolute -top-40 right-[-10%] h-[30rem] w-[30rem] rounded-full blur-[90px]"
       />
       <div className="relative mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <p className="text-background/55 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">

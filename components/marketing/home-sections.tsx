@@ -122,7 +122,7 @@ export function Voranbringen() {
             <li key={title}>
               <SpotlightLink
                 href={href}
-                className="border-border/70 bg-card hover:border-gold/50 group flex h-full items-center gap-4 overflow-hidden rounded-2xl border p-4 transition-[border-color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-24px_rgb(40_25_10/0.35)] md:flex-col md:items-start md:p-6"
+                className="border-border/70 bg-card hover:border-gold/50 group flex h-full items-center gap-4 overflow-hidden rounded-2xl border p-4 transition-[border-color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-24px_rgb(15_25_50/0.35)] md:flex-col md:items-start md:p-6"
               >
                 <Icon className="text-gold h-6 w-6 shrink-0" aria-hidden="true" />
                 <span className="min-w-0 flex-1">

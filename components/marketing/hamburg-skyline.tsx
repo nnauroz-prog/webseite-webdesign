@@ -8,59 +8,66 @@ import { useEffect, useRef, useState } from "react";
  * blinkendes Flugwarnlicht am Fernsehturm, ein Containerschiff auf der
  * Elbe, Wellen, zwei Möwen.
  *
- * Von links: Containerkräne, Elbphilharmonie, Speicherstadt, Michel,
- * Heinrich-Hertz-Turm, Rathaus, St. Nikolai, St. Petri, St. Katharinen,
- * St. Jacobi, Dancing Towers, Köhlbrandbrücke. Künstlerische Freiheit
- * bei Reihenfolge und Abständen — erkennbar, nicht kartengenau.
+ * Vom Elbufer gesehen, West → Ost: Köhlbrandbrücke, Containerbrücken,
+ * Dancing Towers, Landungsbrücken mit Pegelturm, Michel,
+ * Heinrich-Hertz-Turm, Elbphilharmonie, St. Katharinen, St. Nikolai,
+ * Rathaus, St. Petri, St. Jacobi, Speicherstadt. Abstände gestaucht —
+ * erkennbar, nicht kartengenau.
  *
  * Farbe kommt über currentColor (auf dunklem Grund: text-gold).
- * Mobil wird rechts abgeschnitten (xMinYMax slice), damit die
- * Wahrzeichen nicht zu Strichen schrumpfen. Bei prefers-reduced-motion
+ * Mobil wird links und rechts beschnitten (xMidYMax slice), damit die
+ * Wahrzeichen in der Mitte (Michel bis Rathaus) groß bleiben. Bei prefers-reduced-motion
  * steht die fertige Silhouette ohne Bewegung da.
  */
 
 // Jede Form einzeln, damit sie nacheinander gezeichnet werden kann.
+// Reihenfolge wie vom Elbufer gesehen, West → Ost.
 const SHAPES: { d: string; fill?: boolean }[] = [
-  // Containerkräne
-  { d: "M28 200V128M58 200V128M14 128H128M44 116h20v12H44zM96 128l-6-10h-40M58 128l38-10" },
-  { d: "M120 200V140M144 200V140M110 140H196M126 130h16v10h-16zM144 140l30-8" },
-  // Elbphilharmonie: Backsteinsockel + gläserner Wellenaufbau
-  { d: "M214 200V150H378V200", fill: true },
-  { d: "M214 150L216 112Q232 96 250 112Q268 86 292 100Q312 78 336 98Q356 88 372 108L378 116V150", fill: true },
-  { d: "M220 164H372M220 178H372M220 190H372" },
-  // Speicherstadt: Giebelreihe mit Türmchen
-  { d: "M392 200V168L402 156L412 168L422 156L432 168V150L437 142L442 150V168L452 156L462 168L472 156L482 168V200", fill: true },
-  // Michel: Kirchenschiff + barocker Turm mit Kuppel und Laterne
-  { d: "M490 200V164L512 148L530 164V200", fill: true },
-  { d: "M528 200V110H562V200M532 110V88H558V110M535 88Q545 64 555 88M541 70V56H549V70M545 56V30", fill: true },
-  // Heinrich-Hertz-Turm
-  { d: "M611 200L614 92H620L623 200", fill: true },
-  { d: "M602 96H632M604 88H630M606 80H628L626 72H608Z", fill: true },
-  { d: "M617 72V24" },
-  // Rathaus mit Mittelturm
-  { d: "M664 200V162L676 154H738L750 162V200", fill: true },
-  { d: "M699 154V112H715V154M697 112L707 92L717 112M707 92V76", fill: true },
-  // St. Nikolai — höchste Spitze der Altstadt
-  { d: "M784 200V122H800V200M784 122L792 32L800 122", fill: true },
-  // St. Petri
-  { d: "M836 200V116H850V200M836 116L843 58L850 116", fill: true },
-  // St. Katharinen (barocke Haube)
-  { d: "M884 200V128H898V200M884 128Q891 108 898 128M887 114Q891 96 895 114M891 98V70", fill: true },
-  // St. Jacobi
-  { d: "M934 200V122H948V200M934 122L941 64L948 122", fill: true },
-  // Dancing Towers
-  { d: "M984 200L982 156L992 118H1008L1001 156L1004 200Z", fill: true },
-  { d: "M1012 200L1014 162L1026 132H1040L1030 162L1030 200Z", fill: true },
   // Köhlbrandbrücke: geschwungenes Deck, zwei Pylone, Seilfächer
-  { d: "M1056 200Q1128 164 1196 178" },
-  { d: "M1100 186V108M1152 175V100" },
-  { d: "M1100 112L1070 192M1100 112L1084 188M1100 112L1118 180M1100 112L1132 178M1152 104L1128 178M1152 104L1140 176M1152 104L1170 175M1152 104L1186 176" },
+  { d: "M0 196Q72 164 150 190" },
+  { d: "M46 181V96M104 178V100" },
+  { d: "M46 100L14 190M46 100L28 186M46 100L64 176M46 100L80 175M104 104L84 176M104 104L94 177M104 104L122 182M104 104L138 187" },
+  // Containerbrücken (STS-Kräne): A-Rahmen, langer Ausleger übers Wasser
+  { d: "M178 200L184 138M214 200L208 138M150 138H236M188 128h16v10h-16zM184 138L196 112L208 138M196 112L152 138M196 112L234 138" },
+  { d: "M232 200L237 146M262 200L257 146M210 146H282M240 137h13v9h-13zM237 146L247 124L257 146M247 124L212 146M247 124L280 146" },
+  // Dancing Towers
+  { d: "M296 200L294 156L304 118H320L313 156L316 200Z", fill: true },
+  { d: "M322 200L324 162L336 132H350L340 162L340 200Z", fill: true },
+  // Landungsbrücken mit Kuppeltürmen und Pegelturm
+  { d: "M362 200V172H476V200", fill: true },
+  { d: "M372 172V160H384V172M372 160Q378 148 384 160M418 172V158H430V172M418 158Q424 144 430 158", fill: true },
+  { d: "M462 172V128H474V172M462 128L468 112L474 128M468 112V104", fill: true },
+  // Michel: Kirchenschiff + barocker Turm, Kuppel, Laterne, Spitze
+  { d: "M498 200V164L520 148L538 164V200", fill: true },
+  { d: "M536 200V110H570V200M540 110V88H566V110M543 88Q553 64 563 88M549 70V56H557V70M553 56V30", fill: true },
+  // Heinrich-Hertz-Turm
+  { d: "M600 200L603 92H609L612 200", fill: true },
+  { d: "M591 96H621M593 88H619M595 80H617L615 72H597Z", fill: true },
+  { d: "M606 72V20" },
+  // Elbphilharmonie: Backsteinsockel, Glasaufbau — höchster Punkt im
+  // Westen, die Wellen fallen nach Osten ab.
+  { d: "M640 200V148H800V200", fill: true },
+  { d: "M640 148V90Q656 82 674 100Q694 86 714 104Q736 96 756 112Q778 104 800 120V148", fill: true },
+  { d: "M646 162H794M646 175H794M646 188H794" },
+  // St. Katharinen (barocke Haube)
+  { d: "M826 200V128H840V200M826 128Q833 108 840 128M829 114Q833 96 837 114M833 98V68", fill: true },
+  // St. Nikolai — die höchste, schlankste Spitze
+  { d: "M862 200V118H878V200M862 118L870 28L878 118", fill: true },
+  // Rathaus mit Mittelturm
+  { d: "M896 200V162L908 154H990L1002 162V200", fill: true },
+  { d: "M941 154V108H957V154M939 108L949 84L959 108M949 84V60", fill: true },
+  // St. Petri
+  { d: "M1022 200V116H1036V200M1022 116L1029 50L1036 116", fill: true },
+  // St. Jacobi
+  { d: "M1060 200V122H1074V200M1060 122L1067 58L1074 122", fill: true },
+  // Speicherstadt: Giebelreihe mit Türmchen, im Vordergrund
+  { d: "M1092 200V168L1102 156L1112 168L1122 156L1132 168V150L1137 142L1142 150V168L1152 156L1162 168L1172 156L1182 168L1192 156L1200 164V200", fill: true },
 ];
 
-// Fenster in der Elbphilharmonie, die nacheinander aufleuchten.
+// Fenster im Glasaufbau der Elbphilharmonie, die nacheinander leuchten.
 const ELPHI_LIGHTS = [
-  [236, 128], [258, 120], [282, 116], [306, 112], [330, 116], [352, 124],
-  [246, 138], [272, 134], [298, 130], [322, 132], [346, 138],
+  [650, 110], [672, 116], [694, 116], [716, 120], [740, 124], [764, 128], [784, 132],
+  [660, 130], [686, 132], [712, 134], [738, 136], [764, 140],
 ];
 
 export function HamburgSkyline({ className = "" }: { className?: string }) {
@@ -91,9 +98,9 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
     <svg
       ref={ref}
       viewBox="0 0 1200 240"
-      preserveAspectRatio="xMinYMax slice"
+      preserveAspectRatio="xMidYMax slice"
       role="img"
-      aria-label="Silhouette von Hamburg: Hafenkräne, Elbphilharmonie, Speicherstadt, Michel, Fernsehturm, Rathaus, Kirchtürme, Dancing Towers und Köhlbrandbrücke"
+      aria-label="Silhouette von Hamburg: Köhlbrandbrücke, Containerbrücken, Dancing Towers, Landungsbrücken, Michel, Fernsehturm, Elbphilharmonie, Kirchtürme, Rathaus und Speicherstadt"
       className={`hh-skyline ${drawn ? "is-drawn" : ""} ${className}`}
     >
       <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
@@ -114,12 +121,12 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
           <rect key={i} x={x} y={y} width="5" height="3" rx="0.5" style={{ "--i": i } as React.CSSProperties} />
         ))}
       </g>
-      <circle className="hh-beacon" cx="617" cy="24" r="2.6" fill="#e5484d" />
+      <circle className="hh-beacon" cx="606" cy="20" r="2.6" fill="#e5484d" />
 
       {/* Möwen */}
       <g className="hh-gulls" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round">
-        <path d="M430 60q6-6 12 0q6-6 12 0" />
-        <path d="M462 46q4-4 8 0q4-4 8 0" />
+        <path d="M640 50q6-6 12 0q6-6 12 0" />
+        <path d="M672 36q4-4 8 0q4-4 8 0" />
       </g>
 
       {/* Elbe: Wasserlinie, Wellen, Schiff */}

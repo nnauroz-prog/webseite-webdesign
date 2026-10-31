@@ -64,7 +64,7 @@ export function HeroShowcase({ items }: { items: ShowcaseItem[] }) {
               aria-hidden={pos !== 0}
               aria-label="Nächstes Beispiel zeigen"
               onClick={() => setActive((a) => (a + 1) % n)}
-              className={`absolute inset-0 overflow-hidden rounded-3xl shadow-[0_40px_80px_-30px_rgb(40_25_10/0.45)] ring-1 ring-black/10 transition-[translate,rotate,scale,opacity,filter] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${POS[Math.min(pos, POS.length - 1)]}`}
+              className={`absolute inset-0 overflow-hidden rounded-3xl shadow-[0_40px_80px_-30px_rgb(15_25_50/0.45)] ring-1 ring-black/10 transition-[translate,rotate,scale,opacity,filter] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${POS[Math.min(pos, POS.length - 1)]}`}
             >
               <Image
                 src={item.src}

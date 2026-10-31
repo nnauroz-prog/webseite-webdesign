@@ -1,50 +1,62 @@
-import Image from "next/image";
-
 import { cn } from "@/lib/utils";
 
 /**
- * Sitalo wordmark. Renders the cream-background PNG inside a tinted
- * card so the cream blends seamlessly into both light and dark
- * surfaces (the source has no alpha channel).
+ * Sitalo-Wortmarke als Vektor, nachgebaut nach dem ursprünglichen
+ * Logo (public/sitalo-logo.webp): „SITAL" in Serifenschrift, das „O"
+ * als goldener Doppelring, darunter gesperrt „WEBDESIGN".
  *
- * Source asset: 1672×941 (~1.78:1).
+ * Kein Bild mehr, kein Creme-Kasten: Die Schrift nimmt die Textfarbe
+ * an (currentColor), die Ringe bleiben Gold. tone="light" für dunkle
+ * Flächen wie den Footer.
  *
- * Sizes:
- *   - sm: ~28px tall (sidebar, footer attribution)
- *   - md: ~40px tall (mobile-nav header, marketing nav)
- *   - lg: ~64px tall (auth pages, marketing hero overlay)
+ * Sizes (Höhe):
+ *   - sm: 28px
+ *   - md: 40px (Header, Footer)
+ *   - lg: 64px
  */
 export function SitaloLogo({
   size = "md",
   className,
-  priority = false,
+  tone = "dark",
 }: {
   size?: "sm" | "md" | "lg";
   className?: string;
+  tone?: "dark" | "light";
+  /** Früher fürs Bild-Preloading; bleibt für bestehende Aufrufe. */
   priority?: boolean;
 }) {
   const heights: Record<string, number> = { sm: 28, md: 40, lg: 64 };
-  const widths: Record<string, number> = { sm: 50, md: 71, lg: 114 };
   const h = heights[size];
-  const w = widths[size];
-
   return (
-    <span
-      className={cn(
-        "inline-flex items-center justify-center overflow-hidden rounded-md bg-[#f3ece1] px-1.5 py-0.5",
-        className,
-      )}
-      style={{ height: h, width: w }}
+    <svg
+      viewBox="0 0 186 76"
+      height={h}
+      width={(h * 186) / 76}
+      role="img"
       aria-label="Sitalo Webdesign"
+      className={cn(tone === "light" ? "text-background" : "text-foreground", className)}
     >
-      <Image
-        src="/sitalo-logo.webp"
-        alt="Sitalo Webdesign"
-        width={1672}
-        height={941}
-        priority={priority}
-        className="h-full w-full object-contain"
-      />
-    </span>
+      <text
+        x="0"
+        y="46"
+        fill="currentColor"
+        style={{ fontFamily: "var(--font-serif), Georgia, serif", fontSize: 52, letterSpacing: "0.01em" }}
+      >
+        SITAL
+      </text>
+      <g fill="none" stroke="var(--gold)" strokeWidth="2.2">
+        <ellipse cx="158" cy="29" rx="17" ry="18" />
+        <ellipse cx="165" cy="29" rx="17" ry="18" />
+      </g>
+      <text
+        x="95"
+        y="70"
+        fill="currentColor"
+        textAnchor="middle"
+        style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif", fontSize: 11, letterSpacing: "0.42em" }}
+      >
+        WEBDESIGN
+      </text>
+    </svg>
   );
 }

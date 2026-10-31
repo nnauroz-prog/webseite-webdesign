@@ -56,9 +56,9 @@ export function AtelierTagebuch() {
           shown ? "opacity-100" : "pointer-events-none opacity-0",
           "items-center justify-center rounded-full",
           "border border-foreground/15 bg-card/90 text-foreground/80",
-          "shadow-[0_6px_20px_-6px_rgb(35_31_27_/_0.18)]",
+          "shadow-[0_6px_20px_-6px_rgb(15_25_50_/_0.18)]",
           "backdrop-blur-sm transition-all duration-300",
-          "hover:border-foreground/35 hover:text-foreground hover:shadow-[0_10px_28px_-8px_rgb(35_31_27_/_0.28)]",
+          "hover:border-foreground/35 hover:text-foreground hover:shadow-[0_10px_28px_-8px_rgb(15_25_50_/_0.28)]",
           "focus-visible:ring-2 focus-visible:ring-foreground/30 focus:outline-none",
           "md:flex print:hidden",
         )}
