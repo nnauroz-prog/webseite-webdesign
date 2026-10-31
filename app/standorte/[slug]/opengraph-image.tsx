@@ -21,8 +21,8 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const COLORS = {
-  background: "#F9FAFC",
-  foreground: "#0E1C33",
+  background: "#EEEEEB",
+  foreground: "#1B1D1E",
   muted: "#5B6B85",
   olive: "#7B8A4B",
   accent: "#E3ECF7",

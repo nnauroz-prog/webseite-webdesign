@@ -28,7 +28,7 @@ Lokale Unternehmen in Deutschland mit Fokus auf Hamburg und Umland: Pflegedienst
 
 ## Wichtige Seiten
 
-- [Startseite](https://www.sitalo.de/): Hero, Beispiele, Pakete, Versprechen.
+- [Startseite](https://www.sitalo.de/): Leistungen, Live-Vorschau, Ablauf, Preise, Musterseiten, Fragen, Kontakt.
 - [Branchen-Übersicht](https://www.sitalo.de/branchen): Pro Branche eigene Detailseite.
 - [Pakete](https://www.sitalo.de/pakete): Drei Pakete mit Detail-Seiten unter /pakete/[slug].
 - [Ablauf](https://www.sitalo.de/ablauf): Sechs Schritte vom ersten Hallo zur Live-Schaltung.

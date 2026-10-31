@@ -2,8 +2,8 @@ import Link from "next/link";
 
 /**
  * Einheitlicher Seitenkopf für Unterseiten, passend zum Startseiten-Hero:
- * dunkle Fläche mit Papierkorn, linksbündig auf der Satzkante, goldene
- * Kopfzeile, zweistufige Überschrift, ein Absatz. Brotkrumen sitzen im
+ * dunkle Teerfläche mit Papierkorn, linksbündig auf der Satzkante,
+ * Kopfzeile in Mono mit orangem Quadrat, breite Überschrift, ein Absatz. Brotkrumen sitzen im
  * Kopf selbst (statt der hellen EditorialMasthead-Leiste), damit kein
  * heller Streifen zwischen dunklem Header und dunklem Hero entsteht.
  *
@@ -33,7 +33,7 @@ export function PageHero({
     <section className="grain bg-foreground text-background relative overflow-hidden">
       <div className="mx-auto w-full max-w-6xl px-5 pt-6 pb-16 sm:px-6 sm:pt-8 sm:pb-20 lg:pb-24">
         <nav aria-label="Brotkrumen">
-          <ol className="text-background/55 flex items-center gap-2 text-[13px]">
+          <ol className="text-stahl-hell flex items-center gap-2 font-mono text-[12px]">
             <li>
               <Link href="/" className="hover:text-background transition-colors">
                 Start
@@ -46,21 +46,21 @@ export function PageHero({
           </ol>
         </nav>
         <div className="mt-12 max-w-4xl sm:mt-16">
-          <p className="text-gold flex items-center gap-2.5 text-[13px] font-medium">
-            <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
+          <p className="label-mono text-stahl-hell flex items-center gap-3">
+            <span aria-hidden="true" className="bg-gold inline-block h-2.5 w-2.5 shrink-0" />
             {eyebrow}
           </p>
-          <h1 className="mt-5 text-balance text-[2.6rem] font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl lg:text-[4.25rem]">
+          <h1 className="mt-6 text-balance text-[2.5rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[4.25rem]">
             {title}
             {accent ? (
               <>
                 {" "}
-                <span className="text-background/55">{accent}</span>
+                <span className="text-background/60">{accent}</span>
               </>
             ) : null}
           </h1>
           {children ? (
-            <p className="text-background/70 mt-6 max-w-2xl text-pretty text-base leading-relaxed sm:text-lg">
+            <p className="text-stahl-hell mt-6 max-w-2xl text-pretty text-[16.5px] leading-relaxed sm:text-lg">
               {children}
             </p>
           ) : null}

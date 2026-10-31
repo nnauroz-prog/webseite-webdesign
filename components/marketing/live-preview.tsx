@@ -44,8 +44,8 @@ const PRESETS: Preset[] = [
     accent: "#2f6b5e",
     tint: "#eef5f2",
     image: "/images/atmosphere/pflege-eingang.webp",
-    headline: "Pflege mit Herz, zu Hause in Ihrer Nähe.",
-    sub: "Ambulante Pflege, Beratung und Entlastung für Angehörige.",
+    headline: "Ambulante Pflege in Ihrem Viertel.",
+    sub: "Grund- und Behandlungspflege, Beratung zum Pflegegrad. Rückruf am selben Werktag.",
     nav: ["Leistungen", "Team", "Karriere", "Kontakt"],
     cta: "Beratung anfragen",
     features: ["Grund- & Behandlungspflege", "Pflegegrad-Beratung", "Jetzt bewerben"],
@@ -58,8 +58,8 @@ const PRESETS: Preset[] = [
     accent: "#1f5f8b",
     tint: "#edf3f8",
     image: "/images/atmosphere/praxis-raum.webp",
-    headline: "Moderne Medizin, persönlich betreut.",
-    sub: "Termine online, kurze Wege und alle Leistungen auf einen Blick.",
+    headline: "Hausarztpraxis, Termine auch online.",
+    sub: "Sprechzeiten Mo–Fr ab 8 Uhr. Neue Patientinnen und Patienten willkommen.",
     nav: ["Praxis", "Leistungen", "Team", "Termin"],
     cta: "Termin buchen",
     features: ["Online-Termin", "Sprechzeiten", "Unsere Leistungen"],
@@ -72,8 +72,8 @@ const PRESETS: Preset[] = [
     accent: "#6b3f5a",
     tint: "#f6eff3",
     image: "/images/atmosphere/friseur-stuhl.webp",
-    headline: "Ihr Stil. Unser Handwerk.",
-    sub: "Schnitt, Farbe und Pflege. Termin in zwei Klicks.",
+    headline: "Schnitt, Farbe, Pflege.",
+    sub: "Dienstag bis Samstag geöffnet. Termin online buchen oder anrufen.",
     nav: ["Preise", "Team", "Galerie", "Termin"],
     cta: "Termin buchen",
     features: ["Online-Buchung", "Preisliste", "Galerie"],
@@ -86,8 +86,8 @@ const PRESETS: Preset[] = [
     accent: "#9a4b2c",
     tint: "#f8f0ea",
     image: "/images/atmosphere/gastro-cafe.webp",
-    headline: "Frühstück, Kuchen und guter Kaffee.",
-    sub: "Täglich ab 8 Uhr, mitten im Viertel.",
+    headline: "Frühstück bis 14 Uhr, Kuchen aus eigener Backstube.",
+    sub: "Täglich ab 8 Uhr geöffnet. Tische für Gruppen bitte reservieren.",
     nav: ["Karte", "Über uns", "Events", "Reservieren"],
     cta: "Tisch reservieren",
     features: ["Speisekarte", "Öffnungszeiten", "Reservierung"],
@@ -100,8 +100,8 @@ const PRESETS: Preset[] = [
     accent: "#b4572a",
     tint: "#f8efe8",
     image: "/images/atmosphere/handwerker-werkbank.webp",
-    headline: "Maßarbeit aus Meisterhand.",
-    sub: "Möbel, Innenausbau und Reparaturen mit festem Angebot.",
+    headline: "Möbel und Innenausbau nach Maß.",
+    sub: "Festes Angebot nach Aufmaß vor Ort. Einsatz im Umkreis von 40 km.",
     nav: ["Leistungen", "Referenzen", "Über uns", "Kontakt"],
     cta: "Rückruf anfordern",
     features: ["Innenausbau", "Referenzen", "Kostenloses Angebot"],
@@ -114,8 +114,8 @@ const PRESETS: Preset[] = [
     accent: "#1d7a8c",
     tint: "#ebf5f7",
     image: "/images/atmosphere/reinigung-flur.webp",
-    headline: "Saubere Räume. Verlässlich.",
-    sub: "Büro-, Praxis- und Treppenhausreinigung zu festen Zeiten.",
+    headline: "Büros und Treppenhäuser, zu festen Zeiten.",
+    sub: "Reinigung nach Plan, auch abends und am Wochenende.",
     nav: ["Leistungen", "Gebiete", "Preise", "Kontakt"],
     cta: "Angebot anfragen",
     features: ["Büroreinigung", "Einsatzgebiete", "Festpreis-Angebot"],
@@ -128,8 +128,8 @@ const PRESETS: Preset[] = [
     accent: "#1f2f4f",
     tint: "#eef0f5",
     image: "/images/atmosphere/kanzlei-buecher.webp",
-    headline: "Recht, das Klarheit schafft.",
-    sub: "Arbeits-, Familien- und Mietrecht, verständlich erklärt.",
+    headline: "Arbeitsrecht, Familienrecht, Mietrecht.",
+    sub: "Erstberatung zum festen Preis. Termine auch per Video.",
     nav: ["Rechtsgebiete", "Anwälte", "Kosten", "Kontakt"],
     cta: "Erstberatung vereinbaren",
     features: ["Rechtsgebiete", "Erstberatung", "Ihr Team"],
@@ -142,8 +142,8 @@ const PRESETS: Preset[] = [
     accent: "#c4402c",
     tint: "#f9eeec",
     image: "/images/atmosphere/fitness-studio.webp",
-    headline: "Stärker. Jeden Tag.",
-    sub: "Training, Kurse und Betreuung. Das Probetraining ist kostenlos.",
+    headline: "Training mit Betreuung, Kurse ab 7 Uhr.",
+    sub: "Das Probetraining ist kostenlos und ohne Vertrag.",
     nav: ["Kurse", "Preise", "Trainer", "Probetraining"],
     cta: "Probetraining sichern",
     features: ["Kursplan", "Mitgliedschaft", "Probetraining"],
@@ -190,11 +190,11 @@ export function LivePreview() {
   )}`;
 
   return (
-    <div className="bg-card rounded-3xl p-3 shadow-[0_40px_80px_-40px_rgb(0_0_0/0.6)] ring-1 ring-white/10 sm:p-4">
+    <div className="bg-card border-foreground/15 rounded-[3px] border p-3 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:p-4">
       {/* Steuerung */}
       <div className="px-1 pt-1 pb-3 sm:px-2">
         <label htmlFor="lp-name" className="text-foreground text-[14px] font-semibold">
-          Probieren Sie es aus: Wie heißt Ihr Betrieb?
+          Wie heißt Ihr Betrieb?
         </label>
         <input
           id="lp-name"
@@ -203,7 +203,7 @@ export function LivePreview() {
           onChange={(e) => setName(e.target.value.slice(0, 40))}
           placeholder={preset.defaultName}
           autoComplete="organization"
-          className="border-border bg-background focus-visible:ring-ring/40 mt-2 h-11 w-full rounded-xl border px-4 text-[15px] outline-none focus-visible:ring-2"
+          className="border-input bg-background focus-visible:border-foreground mt-2 h-11 w-full rounded-[2px] border px-4 text-[15px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/40"
         />
         <div role="radiogroup" aria-label="Branche" className="-mx-1 mt-3 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
           {PRESETS.map((p) => {
@@ -215,7 +215,7 @@ export function LivePreview() {
                 role="radio"
                 aria-checked={active}
                 onClick={() => setPresetKey(p.key)}
-                className={`h-8 shrink-0 rounded-full border px-3.5 text-[13px] font-medium transition-colors ${
+                className={`h-8 shrink-0 rounded-[2px] border px-3.5 text-[13px] font-medium transition-colors ${
                   active
                     ? "bg-foreground text-background border-foreground"
                     : "border-border text-foreground/75 hover:border-foreground/40"
@@ -229,16 +229,13 @@ export function LivePreview() {
       </div>
 
       {/* Browserfenster */}
-      <div className="overflow-hidden rounded-2xl ring-1 ring-black/10">
-        <div className="flex items-center gap-2 bg-[#e9ecf1] px-3 py-2">
-          <span className="flex gap-1.5" aria-hidden="true">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-          </span>
-          <span className="mx-auto max-w-[70%] truncate rounded-md bg-white/80 px-3 py-0.5 text-center text-[11px] text-[#4b5563]">
-            {domainFor(shownName)}
-          </span>
+      <div className="overflow-hidden rounded-[2px] ring-1 ring-black/15">
+        <div className="bg-foreground flex items-center gap-2 px-3 py-2">
+          <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
+            <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+            <rect x="1.5" y="6" width="9" height="7" rx="1" fill="currentColor" />
+          </svg>
+          <span className="text-background/85 min-w-0 truncate font-mono text-[11.5px]">{domainFor(shownName)}</span>
         </div>
         <div
           ref={frameRef}
@@ -258,13 +255,10 @@ export function LivePreview() {
       </div>
 
       <div className="flex flex-col items-start gap-2 px-1 pt-4 pb-1 sm:flex-row sm:items-center sm:justify-between sm:px-2">
-        <p className="text-muted-foreground text-[12.5px]">Skizze. Ihre echte Seite gestalten wir individuell.</p>
-        <Link
-          href={href}
-          className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-[14px] font-medium tracking-tight"
-        >
+        <p className="text-muted-foreground font-mono text-[12px]">Skizze. Die echte Seite gestalten wir für Ihren Betrieb.</p>
+        <Link href={href} className="btn-signal h-11 shrink-0 text-[14.5px]">
           Diese Seite anfragen
-          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
     </div>

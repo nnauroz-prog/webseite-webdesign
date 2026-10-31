@@ -1,25 +1,18 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Send } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-import { Beispiele } from "@/components/marketing/beispiele";
-import {
-  AblaufKompakt,
-  Arbeiten,
-  HamburgBand,
-  SectionHead,
-  Voranbringen,
-  VorherNachher,
-  Vorteile,
-} from "@/components/marketing/home-sections";
+import { BeforeAfter } from "@/components/marketing/before-after";
+import { Abfahrtstafel } from "@/components/marketing/hafen/abfahrtstafel";
+import { ContainerStack } from "@/components/marketing/hafen/container-stack";
+import { Containerbruecke } from "@/components/marketing/hafen/containerbruecke";
+import { Faehrlinie } from "@/components/marketing/hafen/faehrlinie";
 import { LivePreview } from "@/components/marketing/live-preview";
-import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import {
-} from "@/components/marketing/ornaments";
-import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
 import { getPaketBySlug } from "@/lib/pakete-data";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
   // Absoluter Titel — sonst hängt das Layout-Template noch ein
@@ -32,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Sitalo — Webdesign aus Hamburg",
     description:
-      "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest. Aus Hamburg, persönlich gemacht.",
+      "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499 €, Test-Link vor dem Start.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
     // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
@@ -40,55 +33,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Sitalo — Webdesign aus Hamburg",
-    description: "Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest.",
-    // Bild wird automatisch aus app/opengraph-image.tsx (twitter-image-Variante) übernommen.
+    description: "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499 €.",
   },
 };
-
-/**
- * Homepage-Pakete: bewusst KURATIERTE Variante (ohne Beschreibung,
- * 5-Bullet-Liste statt voller contents), aber Preis und Monatsbeitrag
- * werden aus der kanonischen Quelle (lib/pakete-data.ts) gezogen.
- * So gibt's nur eine Stelle, an der Preise geändert werden müssen.
- *
- * Sitalo Studio steht nur auf /pakete.
- */
-const PACKAGES = (["starter", "business", "premium"] as const).map((slug) => {
-  const p = getPaketBySlug(slug);
-  if (!p) throw new Error(`Paket "${slug}" fehlt in lib/pakete-data.ts`);
-  return {
-    slug,
-    name: p.name,
-    setup: p.setup,
-    monthly: p.monthly,
-    badge: p.badge,
-    highlight: p.highlight,
-    bullets:
-      slug === "starter"
-        ? [
-            "Onepage-Website",
-            "Mobil optimiert",
-            "Kontaktformular",
-            "Google Maps & Direktwahl",
-            "Hosting inklusive",
-          ]
-        : slug === "business"
-          ? [
-              "Mehrseitige Website",
-              "Eigene Bereiche & Galerie",
-              "SEO-Grundlagen",
-              "Bilder­bearbeitung",
-              "Laufende Betreuung",
-            ]
-          : [
-              "Premium-Design",
-              "Selbst pflegbare Inhalte",
-              "Formularsystem",
-              "Erweiterte SEO-Basis",
-              "Bevorzugter Support",
-            ],
-  };
-});
 
 const FAQ = [
   {
@@ -105,379 +52,367 @@ const FAQ = [
   },
   {
     q: "Kann ich später noch Sachen ändern lassen?",
-    a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben uns kurz, wir setzen es um. Auf Wunsch bauen wir auch Bereiche ein, die Sie selbst pflegen.",
+    a: "Ja. Kleine Änderungen sind in der monatlichen Betreuung dabei. Sie schreiben uns kurz, wir setzen es um. Auf Wunsch bauen wir auch Bereiche ein, die Sie selbst pflegen.",
   },
 ];
 
-// FAQPage-Strukturierte Daten für die fünf Homepage-FAQs.
-// Schema.org-FAQPage qualifiziert für Rich-Snippets in Google
-// Search Results (Frage + Antwort ausklappbar direkt im SERP).
+// FAQPage-Strukturierte Daten für die Startseiten-Fragen.
 const FAQ_LD = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: FAQ.map((item) => ({
     "@type": "Question",
     name: item.q,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.a,
-    },
+    acceptedAnswer: { "@type": "Answer", text: item.a },
   })),
 };
+
+const STARTER = getPaketBySlug("starter");
+const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "499 €";
 
 export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
       />
-      <MarketingHeader tone="dark" />
+      <MarketingHeader />
       <main id="main" tabIndex={-1} className="flex-1">
-        {/* Eine Aufgabe pro Sektion, ein Weg zur Anfrage. Ausführliches
-            (Haltung, Grenzen, Werkzeuge, Stadtteile, Atelier-Notizen)
-            steht auf den Unterseiten /atelier, /erreichbarkeit,
-            /standorte, /jetzt — die Startseite verlinkt dorthin. */}
         <Hero />
-        <Vorteile />
-        <Arbeiten />
+        <Leistungen />
+        <Vorschau />
+        <Ablauf />
+        <Preise />
         <VorherNachher />
-        {/* Echte Ergebnisse (Branche + Stadtteil + Zahl) — der
-            Vertrauensbeleg direkt nach den Arbeitsproben im Hero. */}
-        <RevealOnScroll>
-          <Beispiele />
-        </RevealOnScroll>
-        <RevealOnScroll>
-          <Voranbringen />
-        </RevealOnScroll>
-        <HamburgBand />
-        <RevealOnScroll>
-          <AblaufKompakt />
-        </RevealOnScroll>
-        <RevealOnScroll>
-          <Pricing />
-        </RevealOnScroll>
-        <RevealOnScroll>
-          <Faq />
-        </RevealOnScroll>
-        <RevealOnScroll>
-          <FinalCta />
-        </RevealOnScroll>
+        <Musterseiten />
+        <Fragen />
+        <Kontakt />
       </main>
       <MarketingFooter />
     </div>
   );
 }
 
-/* ============================================================
- * Hero — editorial, oversized typography, image as canvas
- * ============================================================ */
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
+
+/* ------------------------------------------------------------------
+ * Kopf: Hafen-Plakat. Links die Botschaft, unten rechts die
+ * Containerbrücke am Kai, am Horizont Hamburg im Dunst.
+ * ---------------------------------------------------------------- */
 function Hero() {
   return (
-    <section
-      id="start"
-      className="grain bg-foreground text-background relative overflow-hidden scroll-mt-20"
-    >
-
-      <div className="mx-auto w-full max-w-6xl px-5 pt-8 pb-6 sm:px-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
-          <div>
-            {/* Die H1 trägt den Suchbegriff (für Google), der große Satz
-                darunter ist die Botschaft (für Menschen). Optisch wie
-                Kopfzeile + Überschrift. */}
-            <h1 className="text-gold flex items-center gap-2.5 text-[13px] font-medium tracking-wide sm:mt-6">
-              <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
-              Website erstellen lassen · Webdesign aus Hamburg
-            </h1>
-            <p className="text-background mt-5 text-balance text-[2.6rem] font-semibold leading-[1.0] tracking-[-0.04em] sm:text-[4rem] lg:text-[4.75rem]">
-              Websites für Betriebe,{" "}
-              <span className="text-background/55">die ihr Handwerk ernst nehmen.</span>
-            </p>
-            <p
-              className="reveal text-background/70 mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
-              style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
-            >
-              Gestaltet und gebaut in Hamburg, für Unternehmen in ganz
-              Deutschland. Sie schicken uns Logo, Bilder und ein paar
-              Stichpunkte. Um alles Weitere kümmern wir uns.
-            </p>
-            <div
-              className="reveal mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-9"
-              style={{ "--reveal-delay": "1100ms" } as React.CSSProperties}
-            >
-              <Link
-                href="/anfrage"
-                className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-              >
-                Website anfragen
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-              <Link
-                href="/pakete"
-                className="text-background inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
-              >
-                Preise ansehen
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Rechte Spalte: Live-Vorschau — Besucher tippen ihren
-              Betriebsnamen ein und sehen sofort eine Skizze ihrer Seite. */}
-          <div
-            className="reveal relative min-w-0"
-            style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
+    <section id="start" className="hafen-hero scroll-mt-20">
+      <div className="relative z-[2] mx-auto w-full max-w-6xl px-5 pt-9 sm:px-6 sm:pt-14 lg:pt-16">
+        <div className="lg:max-w-[31rem] xl:max-w-[35rem]">
+          {/* Die H1 trägt den Suchbegriff (für Google), der große Satz
+              darunter ist die Botschaft (für Menschen). */}
+          <h1 className="label-mono text-muted-foreground flex items-start gap-3 leading-relaxed">
+            <span aria-hidden="true" className="bg-gold mt-[5px] inline-block h-2.5 w-2.5 shrink-0" />
+            Website erstellen lassen · Webdesign aus Hamburg
+          </h1>
+          <p
+            className="mt-6 text-balance text-[2.75rem] leading-[0.95] tracking-[-0.04em] sm:mt-8 sm:text-[4rem] lg:text-[3.6rem] xl:text-[4.4rem]"
+            style={{ fontStretch: "112%", fontWeight: 790 }}
           >
-            <LivePreview />
+            Wir bauen Websites für Betriebe.
+          </p>
+          <p className="mt-6 max-w-[33em] text-pretty text-[16.5px] leading-relaxed text-[#33383a] sm:mt-8 sm:text-[18px]">
+            Ein kleines Studio in Hamburg. Wir arbeiten für Pflegedienste, Praxen, Handwerksbetriebe und Cafés in ganz
+            Deutschland. Den Festpreis kennen Sie, bevor wir anfangen.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 sm:mt-9">
+            <Link href="/anfrage" className="btn-signal grow sm:grow-0">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <Link href="#preise" className="btn-line grow sm:grow-0">
+              Preise ansehen
+            </Link>
           </div>
+          <p className="text-muted-foreground mt-6 flex flex-col gap-1.5 text-[14px] sm:flex-row sm:flex-wrap sm:gap-x-5">
+            <Link href="/wartung" className="hover:text-foreground underline decoration-[var(--border)] underline-offset-4 hover:decoration-current">
+              Schon eine Website? Pflege ab 49 € im Monat
+            </Link>
+            <Link href="/audit" className="hover:text-foreground underline decoration-[var(--border)] underline-offset-4 hover:decoration-current">
+              Kostenloser Google-Check
+            </Link>
+          </p>
         </div>
       </div>
-      {/* Hamburg-Panorama in Gold, läuft im dunklen Hero-Grund aus */}
-      <HamburgPanorama tone="dark" />
-    </section>
-  );
-}
 
-/* ============================================================
- * Pricing — asymmetrischer Magazin-Spread. Business als „Centerfold",
- * Starter + Premium als kleinere flankierende Editorial-Mentions.
- * Bewusst kein gleichmäßiges 3-Karten-Grid (das ist genau das
- * AI-Template-Tell).
- * ============================================================ */
-function Pricing() {
-  const featured = PACKAGES.find((p) => p.highlight)!;
-  const others = PACKAGES.filter((p) => !p.highlight);
+      <Containerbruecke />
 
-  return (
-    <section id="pakete" className="border-border/40 border-t scroll-mt-20">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <SectionHead
-          label="Pakete & Preise"
-          title={
-            <>
-              Klare Preise. <span className="text-muted-foreground">Keine Überraschungen.</span>
-            </>
-          }
-          link={{ href: "/pakete", text: "Alle Pakete vergleichen" }}
-        />
-
-        {/* Magazin-Spread: featured (Business) groß und dunkel zentral,
-            die zwei anderen flankieren als schlanke Editorial-Streifen.
-            Kein 3-gleicher-Karten-Reflex. */}
-        <div className="mt-12 grid grid-cols-2 gap-x-5 lg:mt-16 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
-          {/* Linker Streifen: Starter */}
-          <div className="order-2 lg:order-1">
-            <PricingFlanke paket={others[0]} side="left" />
-          </div>
-
-          {/* Centerfold: Business */}
-          <div className="order-1 col-span-2 lg:order-2 lg:col-span-1">
-            <div id={featured.slug} className="h-full">
-              <PricingCenterfold paket={featured} />
-            </div>
-          </div>
-
-          {/* Rechter Streifen: Premium */}
-          <div className="order-3">
-            <PricingFlanke paket={others[1]} side="right" />
-          </div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-2 z-[3]">
+        <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+          <p className="hafen-caption max-w-[62%] sm:max-w-none">Blick von Steinwerder über die Elbe, frei gezeichnet.</p>
         </div>
       </div>
     </section>
   );
 }
 
-/* Sub-Komponenten für die asymmetrische Pricing-Sektion. */
-
-/** Schmaler flankierender Streifen für Starter / Premium —
- *  bewusst nicht als „Karte" gestaltet, sondern als Editorial-
- *  Spalte mit Hairline-Trennung. */
-function PricingFlanke({
-  paket,
-  side,
-}: {
-  paket: (typeof PACKAGES)[number];
-  side: "left" | "right";
-}) {
+/* ------------------------------------------------------------------
+ * Leistungen als Containerstapel.
+ * ---------------------------------------------------------------- */
+function Leistungen() {
   return (
-    <div
-      id={paket.slug}
-      className={
-        side === "left"
-          ? "border-border/60 lg:border-r flex h-full flex-col px-1 py-6 sm:p-8 lg:pr-10"
-          : "border-border/60 lg:border-l flex h-full flex-col px-1 py-6 sm:p-8 lg:pl-10"
-      }
-    >
-      <p className="text-muted-foreground text-[13px] font-medium">
-        {paket.name}
-      </p>
-      <p className="serif text-foreground mt-3 text-[1.9rem] font-normal leading-none tracking-[-0.025em] sm:mt-4 sm:text-5xl">
-        {paket.setup}
-      </p>
-      <p className="text-muted-foreground mt-2 text-[13px]">
-        einmalig · zzgl. {paket.monthly}
-      </p>
-      <ul className="mt-5 space-y-2 text-[13.5px] sm:mt-7 sm:space-y-2.5">
-        {paket.bullets.slice(0, 3).map((b) => (
-          <li
-            key={b}
-            className="text-foreground/80 flex items-baseline gap-2.5"
-          >
-            <span className="bg-ink-olive mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full" />
-            <span>{b}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-auto pt-6 sm:pt-8">
-        <Link
-          href={`/anfrage?paket=${paket.slug}`}
-          className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
-        >
-          {paket.name} anfragen
-          <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-        </Link>
+    <section id="leistungen" className="bg-card border-foreground scroll-mt-20 border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <h2 className="max-w-4xl text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[4.4rem]">
+          Was zu Ihrer Website gehört
+        </h2>
+        <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 sm:mt-8">
+          <p className="text-muted-foreground max-w-xl text-[17px] leading-relaxed">
+            Ein Teil fährt in jedem Paket mit, der Rest je nach Bedarf. Was Ihr Betrieb nicht braucht, bleibt an Land.
+          </p>
+          <Link href="/leistungen" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+            Alle Leistungen {ARROW}
+          </Link>
+        </div>
+        <div className="mt-12 sm:mt-16">
+          <ContainerStack />
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-/** Centerfold für die empfohlene Variante (Business) — dunkel,
- *  groß, magazin-aufmacher-style. Asymmetrisch gegen die zwei
- *  schlanken Flanken gesetzt. */
-function PricingCenterfold({
-  paket,
-}: {
-  paket: (typeof PACKAGES)[number];
-}) {
+/* ------------------------------------------------------------------
+ * Live-Vorschau: Betriebsname eintippen, Skizze entsteht sofort.
+ * ---------------------------------------------------------------- */
+function Vorschau() {
   return (
-    <div className="bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10">
-      <div className="relative flex items-center gap-3">
-        <span className="text-background/60 text-[13px] font-medium">
-          {paket.badge ?? paket.name}
-        </span>
+    <section id="vorschau" className="border-border scroll-mt-20 border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-12">
+        <div className="lg:col-span-4 lg:pt-2">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">Wie sähe Ihre Seite aus?</h2>
+          <p className="text-muted-foreground mt-5 text-[16.5px] leading-relaxed">
+            Tippen Sie den Namen Ihres Betriebs ein und wählen Sie die Branche. Die Skizze entsteht hier im Browser, ohne
+            Anmeldung.
+          </p>
+          <p className="text-muted-foreground mt-4 text-[15px] leading-relaxed">
+            Gefällt Ihnen die Richtung, schicken Sie die Skizze mit einem Klick als Anfrage. Die echte Seite gestalten wir
+            danach für Ihren Betrieb.
+          </p>
+        </div>
+        <div className="min-w-0 lg:col-span-8">
+          <LivePreview />
+        </div>
       </div>
-
-      <div className="relative mt-8">
-        <p className="serif text-background text-6xl font-normal leading-none tracking-[-0.03em] sm:text-7xl">
-          {paket.setup}
-        </p>
-        <p className="text-background/60 mt-3 text-[15px]">
-          einmalig · <span className="text-background/85">+ {paket.monthly}</span>
-        </p>
-      </div>
-
-
-      <ul className="relative mt-8 grid gap-2.5 text-[14px] sm:grid-cols-2 sm:gap-x-6">
-        {paket.bullets.map((b) => (
-          <li
-            key={b}
-            className="text-background/90 flex items-baseline gap-2.5"
-          >
-            <span className="bg-gold/80 mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full" />
-            <span>{b}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="relative mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-        <Link
-          href={`/anfrage?paket=${paket.slug}`}
-          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-        >
-          {paket.name} anfragen
-          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-        </Link>
-        <Link
-          href={`/pakete/${paket.slug}`}
-          data-cursor-label={`${paket.name} im Detail →`}
-          className="text-background/85 hover:text-background inline-flex h-12 items-center text-[14px] font-medium underline-offset-4 hover:underline"
-        >
-          {paket.name} im Detail
-        </Link>
-      </div>
-    </div>
+    </section>
   );
 }
 
-function Faq() {
+/* ------------------------------------------------------------------
+ * Ablauf als Fährlinie.
+ * ---------------------------------------------------------------- */
+function Ablauf() {
   return (
-    <section
-      id="faq"
-      className="border-border/40 border-t scroll-mt-20"
-    >
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <SectionHead label="Fragen" title="Häufige Fragen." link={{ href: "/faq", text: "Alle Fragen" }} />
-        <div className="mt-10 lg:mt-14 lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="divide-border/70 border-border/70 divide-y border-y lg:col-span-9 lg:col-start-4">
-            {FAQ.map((item) => (
-              <details key={item.q} className="group py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
-                  {item.q}
-                  <span className="text-muted-foreground transition-transform group-open:rotate-45">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                    </svg>
-                  </span>
-                </summary>
-                <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed text-pretty">
-                  {item.a}
+    <section id="ablauf" className="grain bg-foreground text-background scroll-mt-20">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
+          <h2 className="text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7">Eine Linie, vier Halte.</h2>
+          <p className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
+            Vom ersten Anruf bis zur fertigen Seite sprechen Sie mit denselben Leuten.
+          </p>
+        </div>
+        <div className="mt-14 sm:mt-20">
+          <Faehrlinie />
+        </div>
+        <div className="border-background/15 text-stahl-hell mt-14 flex flex-col justify-between gap-2 border-t pt-5 font-mono text-[12px] sm:mt-16 sm:flex-row">
+          <span>Verkehrt werktags. Bei Nebel auch.</span>
+          <Link href="/ablauf" className="hover:text-background underline-offset-4 hover:underline">
+            Ablauf im Detail →
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Preise als Abfahrtstafel.
+ * ---------------------------------------------------------------- */
+function Preise() {
+  return (
+    <section id="preise" className="border-border scroll-mt-20 border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+          <h2 className="text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]">
+            Festpreis ab {STARTER_PRICE}
+          </h2>
+          <p className="text-muted-foreground mt-6 text-[16.5px] leading-relaxed">
+            Den Preis bekommen Sie schriftlich, bevor wir anfangen. Kommt später etwas dazu, sprechen wir vorher darüber.
+          </p>
+          <p className="text-muted-foreground mt-4 text-[16.5px] leading-relaxed">
+            Welches Paket passt, klären wir meist in einem kurzen Telefonat. Wir empfehlen meistens Business.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Link href="/anfrage" className="btn-signal">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <Link href="/pakete" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+              Pakete vergleichen {ARROW}
+            </Link>
+          </div>
+        </div>
+        <div className="min-w-0 lg:col-span-7 lg:col-start-6">
+          <Abfahrtstafel />
+          <p className="text-muted-foreground mt-3 font-mono text-[12px] leading-relaxed">
+            Einmalpreise, dazu ein Monatsbeitrag je Paket. Das größere Paket Studio steht auf der Paketseite.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Vorher / Nachher.
+ * ---------------------------------------------------------------- */
+function VorherNachher() {
+  return (
+    <section className="bg-card border-border border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-6">
+            Dieselben Inhalte, neu gebaut
+          </h2>
+          <p className="text-muted-foreground max-w-lg text-[16.5px] leading-relaxed lg:col-span-5 lg:col-start-8">
+            Ziehen Sie den Regler. Links eine Seite, wie viele Betriebe sie seit Jahren haben, rechts dieselben Angaben so,
+            wie wir sie bauen. Die Tischlerei ist frei erfunden.
+          </p>
+        </div>
+        <div className="mt-12 lg:mt-14">
+          <BeforeAfter />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Musterseiten nach Branche: Bildstrecke wie in einer Zeitung, ein
+ * großes Bild, zwei kleine daneben, darunter drei gleich große.
+ * ---------------------------------------------------------------- */
+const MUSTER = [
+  { slug: "pflege", label: "Pflegedienst", src: "/images/sitalo-pflege-laptop.webp" },
+  { slug: "handwerker", label: "Tischlerei", src: "/images/sitalo-handwerker-laptop.webp" },
+  { slug: "praxis", label: "Arztpraxis", src: "/images/sitalo-praxis-laptop.webp" },
+  { slug: "kanzlei", label: "Kanzlei", src: "/images/sitalo-kanzlei-laptop.webp" },
+  { slug: "hotel", label: "Hotel", src: "/images/sitalo-hotel-laptop.webp" },
+  { slug: "kosmetik", label: "Kosmetikstudio", src: "/images/sitalo-kosmetik-laptop.webp" },
+];
+
+function Musterseiten() {
+  return (
+    <section className="border-border border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+          <h2 className="max-w-2xl text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+            Musterseiten aus sechs Branchen
+          </h2>
+          <Link href="/branchen" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+            Alle Branchen {ARROW}
+          </Link>
+        </div>
+        <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:mt-14 lg:grid-cols-12 lg:gap-y-10">
+          {MUSTER.map((m, i) => (
+            <li
+              key={m.slug}
+              className={
+                i === 0
+                  ? "col-span-2 lg:col-span-7 lg:row-span-2"
+                  : i < 3
+                    ? "col-span-1 lg:col-span-5"
+                    : "col-span-1 lg:col-span-4"
+              }
+            >
+              <Link href={`/branchen/${m.slug}`} className="group flex h-full flex-col">
+                <div className={`bg-secondary relative overflow-hidden ${i === 0 ? "aspect-[4/3] lg:aspect-auto lg:flex-1" : "aspect-[4/3]"}`}>
+                  <Image
+                    src={m.src}
+                    alt={`Musterseite für ${m.label} auf einem Laptop`}
+                    fill
+                    sizes={i === 0 ? "(min-width: 1024px) 640px, 100vw" : "(min-width: 1024px) 440px, 50vw"}
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  />
+                </div>
+                <p className="mt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+                  <span className="text-[16px] font-semibold tracking-tight sm:text-[17px]">{m.label}</span>
+                  <span className="label-mono text-muted-foreground text-[11px]">Musterseite</span>
                 </p>
-              </details>
-            ))}
-          </div>
-        </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
 }
 
-/* ============================================================
- * FinalCta — quiet but confident closer
- * ============================================================ */
-function FinalCta() {
+/* ------------------------------------------------------------------
+ * Fragen: offen gesetzt wie ein kurzes Interview, nichts zum Aufklappen.
+ * ---------------------------------------------------------------- */
+function Fragen() {
   return (
-    <section
-      id="kontakt"
-      className="grain bg-foreground text-background relative overflow-hidden scroll-mt-20"
-    >
-      {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
-          ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
-      {/* Mehrere weiche Halos für editoriale Tiefe */}
-      <div className="relative mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
-        <div>
-          <div>
-            <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
-              Schreiben Sie uns.{" "}
-              <span className="serif-italic text-background/70">
-                Wir melden uns persönlich.
-              </span>
-            </h2>
-            <p className="text-background/70 mt-10 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-              Drei Felder, zwei Minuten. Kostenlos und unverbindlich.
-            </p>
-            <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-              <Link
-                href="/anfrage"
-                className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-              >
-                Website anfragen
-                <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-              <a
-                href="tel:+491607621876"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
-              >
-                Anrufen
-              </a>
+    <section id="faq" className="bg-card border-border scroll-mt-20 border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-4">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+            Was vor dem ersten Anruf oft gefragt wird
+          </h2>
+          <Link href="/faq" className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+            Alle Fragen {ARROW}
+          </Link>
+        </div>
+        <dl className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
+          {FAQ.map((item) => (
+            <div key={item.q} className="border-foreground border-t pt-5">
+              <dt className="text-[18px] font-semibold leading-snug tracking-[-0.01em]">{item.q}</dt>
+              <dd className="text-muted-foreground mt-3 text-[15.5px] leading-relaxed">{item.a}</dd>
             </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Kontakt: Telefonnummer groß, daneben Mail und Anfrage.
+ * ---------------------------------------------------------------- */
+function Kontakt() {
+  return (
+    <section id="kontakt" className="grain bg-foreground text-background scroll-mt-20">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-stahl-hell text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]">
+            Am schnellsten geht es am Telefon.
+          </h2>
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4.2rem] lg:text-[4.4rem] xl:text-[4.9rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
+          >
+            0160 7621876
+          </a>
+        </div>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
+            Eine Viertelstunde reicht meistens. Danach wissen Sie, was es kostet und wann es losgeht. Wer lieber schreibt,
+            schreibt eine Mail oder schickt eine Anfrage. Antwort meist am selben Werktag.
+          </p>
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="border-gold mt-6 inline-block border-b-[1.5px] pb-0.5 text-[19px] font-semibold"
+          >
+            {CONTACT_EMAIL}
+          </a>
+          <div className="mt-8">
+            <Link href="/anfrage" className="btn-signal">
+              Anfrage schreiben {ARROW}
+            </Link>
           </div>
         </div>
       </div>

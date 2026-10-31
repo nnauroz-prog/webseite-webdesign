@@ -31,18 +31,18 @@ const PALETTES: Record<
   }
 > = {
   cream: {
-    background: "#F9FAFC",
-    foreground: "#0E1C33",
-    muted: "rgba(14, 28, 51, 0.62)",
-    gold: "#C9A24F",
-    accent: "rgba(201, 162, 79, 0.16)",
+    background: "#EEEEEB",
+    foreground: "#1B1D1E",
+    muted: "rgba(27, 29, 30, 0.62)",
+    gold: "#F45B1E",
+    accent: "rgba(244, 91, 30, 0.16)",
   },
   espresso: {
-    background: "#0E1C33",
-    foreground: "#F9FAFC",
+    background: "#1B1D1E",
+    foreground: "#EEEEEB",
     muted: "rgba(249, 250, 252, 0.6)",
-    gold: "#C9A24F",
-    accent: "rgba(201, 162, 79, 0.18)",
+    gold: "#F45B1E",
+    accent: "rgba(244, 91, 30, 0.18)",
   },
 };
 
