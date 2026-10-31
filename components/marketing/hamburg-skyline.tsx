@@ -6,7 +6,8 @@ import { useEffect, useRef, useState } from "react";
  * Hamburg-Silhouette als feine Linienzeichnung mit Spiegelung in der
  * Elbe. Höhen maßstäblich (1 m ≈ 0,75 Einheiten): Fernsehturm 279 m,
  * St. Nikolai 147 m, Michel und St. Petri 132 m, St. Jacobi 125 m,
- * St. Katharinen 115 m, Rathaus 112 m, Elbphilharmonie 110 m.
+ * St. Katharinen 115 m, Rathaus 112 m. Ausnahme: die Elbphilharmonie
+ * (110 m) ist perspektivisch überhöht, weil sie vorn am Wasser steht.
  *
  * Vom Elbufer gesehen, West → Ost: Köhlbrandbrücke, Containerbrücken,
  * Dancing Towers, Landungsbrücken mit Pegelturm, Michel,
@@ -89,7 +90,7 @@ function backdrop() {
 }
 
 const ELPHI_GLASS =
-  "M950 208V152Q966 170 992 158Q1014 174 1042 163Q1068 180 1096 171Q1124 186 1152 179Q1168 188 1180 185V208Z";
+  "M950 201V100Q966 128 992 110Q1014 136 1042 120Q1068 146 1096 132Q1124 156 1152 144Q1168 158 1180 152V201Z";
 
 const SHAPES: Shape[] = [
   // Köhlbrandbrücke: Deck (zwei Linien), Pylone, Seilfächer
@@ -124,11 +125,12 @@ const SHAPES: Shape[] = [
   { d: "M899 240L902 110H908L911 240Z", fill: true },
   { d: "M893 110H917M891 104H919L917 98H893ZM894 92H916L914 86H896ZM902 86H908L906 72H904Z", fill: true },
   { d: "M905 72V31M902 60H908M902 48H908", fine: true },
-  // Elbphilharmonie: Backsteinsockel (gut ein Drittel der Höhe),
-  // Plaza-Fuge, Glasaufbau mit Wellendach — höchster Punkt im Westen
-  { d: "M950 240V212H1180V240", fill: true },
-  { d: windows(956, 1176, 217, 6, 6) + windows(956, 1176, 228, 6, 6), fine: true },
-  { d: "M950 212H1180M950 208H1180", fine: true },
+  // Elbphilharmonie: Backsteinsockel, Plaza-Fuge, Glasaufbau mit
+  // Wellendach — höchster Punkt im Westen. Bewusst überhöht: sie steht
+  // vorn am Wasser und wirkt vom Ufer aus größer als der Michel.
+  { d: "M950 240V205H1180V240", fill: true },
+  { d: windows(956, 1176, 211, 7, 6) + windows(956, 1176, 225, 7, 6), fine: true },
+  { d: "M950 205H1180M950 201H1180", fine: true },
   { d: ELPHI_GLASS, fill: true },
   // St. Katharinen — barocke, gestufte Haube
   { d: "M1196 240V186H1212V240M1196 186Q1204 176 1212 186M1199 179V172H1209V179M1199 172Q1204 164 1209 172M1204 166V154", fill: true },
@@ -156,11 +158,13 @@ const SHAPES: Shape[] = [
 
 // Glasfugen der Elbphilharmonie, per clipPath auf den Wellenaufbau begrenzt.
 const ELPHI_SEAMS =
-  windows(956, 1176, 140, 68, 8) +
-  "M950 178H1180M950 193H1180" +
-  arches(952, 1178, 164, 8, 3, 4) +
-  arches(956, 1178, 182, 8, 3, 4) +
-  arches(952, 1178, 197, 8, 3, 4);
+  windows(956, 1176, 96, 105, 8) +
+  "M950 128H1180M950 148H1180M950 168H1180M950 186H1180" +
+  arches(952, 1178, 116, 8, 3, 4) +
+  arches(956, 1178, 136, 8, 3, 4) +
+  arches(952, 1178, 156, 8, 3, 4) +
+  arches(956, 1178, 175, 8, 3, 4) +
+  arches(952, 1178, 192, 8, 3, 4);
 
 export function HamburgSkyline({ className = "" }: { className?: string }) {
   const ref = useRef<SVGSVGElement>(null);
