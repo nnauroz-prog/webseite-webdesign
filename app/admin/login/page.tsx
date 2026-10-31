@@ -2,10 +2,17 @@ import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/app/admin/login/login-form";
 import { getAdminEmail } from "@/lib/admin/auth";
+import { parseNext } from "@/lib/admin/validate";
 import { adminConfigured } from "@/lib/supabase/env";
 
-export default async function AdminLoginPage() {
-  if (await getAdminEmail()) redirect("/admin");
+export default async function AdminLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string | string[] }>;
+}) {
+  // Ziel nach dem Login (Direktlink aus der Mail), streng geprüft.
+  const next = parseNext((await searchParams).next) ?? "/admin";
+  if (await getAdminEmail()) redirect(next);
 
   return (
     <div className="mx-auto max-w-sm pt-8 sm:pt-16">
@@ -15,7 +22,7 @@ export default async function AdminLoginPage() {
       </p>
       <div className="mt-8">
         {adminConfigured() ? (
-          <LoginForm />
+          <LoginForm next={next} />
         ) : (
           <div className="border-border bg-card rounded-2xl border p-5 text-[14px] leading-relaxed">
             <p className="font-medium">Noch nicht eingerichtet.</p>

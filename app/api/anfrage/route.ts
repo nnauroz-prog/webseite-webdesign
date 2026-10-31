@@ -6,6 +6,7 @@ import {
   type LeadKind,
 } from "@/lib/lead-mail";
 import { recordDelivery, saveLead } from "@/lib/leads-store";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * POST /api/anfrage — nimmt Anfrage-, Audit- und Termin-Formulare
@@ -13,8 +14,8 @@ import { recordDelivery, saveLead } from "@/lib/leads-store";
  *
  * Body: { kind, subject, fields: [label, value][], replyTo, hp }
  * `hp` ist das Honeypot-Feld. Ist es gefüllt, antworten wir mit Erfolg
- * (Bots sollen nichts merken), loggen den Fall aber — so ist im
- * Vercel-Log sichtbar, falls echte Besucher hineinlaufen.
+ * (Bots sollen nichts merken), loggen den Fall aber (ohne Personendaten)
+ * — so ist im Vercel-Log sichtbar, falls echte Besucher hineinlaufen.
  */
 
 export const runtime = "nodejs";
@@ -127,10 +128,12 @@ export async function POST(req: NextRequest) {
 
   const hp = typeof b.hp === "string" ? b.hp.trim() : "";
   if (hp) {
+    // Ohne Personendaten: nur Art, Länge des Inhalts und Mail-Domain.
+    const domain = replyTo.split("@")[1] ?? "";
     console.warn("[anfrage] Honeypot gefüllt — nicht zugestellt", {
       kind,
-      replyTo,
-      hp: hp.slice(0, 100),
+      hpLaenge: hp.length,
+      domain,
     });
     return NextResponse.json({ ok: true });
   }
@@ -142,7 +145,10 @@ export async function POST(req: NextRequest) {
   const leadId = await saveLead(lead);
 
   try {
-    const via = await deliverLead(lead);
+    const via = await deliverLead(
+      lead,
+      leadId ? { adminUrl: `${SITE_URL}/admin/anfragen/${leadId}` } : undefined,
+    );
     console.info("[anfrage] zugestellt", { kind, via, gespeichert: Boolean(leadId) });
     if (leadId) await recordDelivery(leadId, { via });
     return NextResponse.json({ ok: true });

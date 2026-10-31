@@ -14,22 +14,22 @@
  *   3. Keins von beiden → LeadDeliveryError „not_configured"
  */
 
-export type LeadKind = "anfrage" | "audit" | "termin";
+import type { Lead } from "@/lib/leads-meta";
 
-export type Lead = {
-  kind: LeadKind;
-  subject: string;
-  /** Feld-Label → Wert, in Anzeige-Reihenfolge. */
-  fields: [string, string][];
-  replyTo: string;
-};
+// Lead und LeadKind liegen in lib/leads-meta.ts (ohne Server-Code);
+// hier weitergereicht, damit bestehende Importe funktionieren.
+export type { Lead, LeadKind } from "@/lib/leads-meta";
+
+export type LeadDeliveryReason = "not_configured" | "provider_rejected" | "network";
 
 export class LeadDeliveryError extends Error {
-  constructor(
-    public readonly reason: "not_configured" | "provider_rejected" | "network",
-    message: string,
-  ) {
+  // Bewusst ohne Parameter-Property: Node entfernt unter node --test
+  // nur Typen und kann `constructor(public readonly …)` nicht laden.
+  readonly reason: LeadDeliveryReason;
+
+  constructor(reason: LeadDeliveryReason, message: string) {
     super(message);
+    this.reason = reason;
   }
 }
 
@@ -67,15 +67,30 @@ export function leadMailTo(): string {
   return process.env.LEAD_MAIL_TO?.trim() || "info@sitalo.de";
 }
 
-function textBody(lead: Lead): string {
+/** Optionen für die Benachrichtigung. */
+export type DeliverOptions = {
+  /** Direktlink in den Admin-Bereich (/admin/anfragen/<id>). */
+  adminUrl?: string;
+};
+
+const ADMIN_LINK_LABEL = "Im Admin öffnen";
+
+function textBody(lead: Lead, opts: DeliverOptions = {}): string {
   const width = Math.max(...lead.fields.map(([k]) => k.length));
   const lines = lead.fields.map(([k, v]) =>
     v.includes("\n") ? `${k}:\n${v}\n` : `${k.padEnd(width)}  ${v}`,
   );
-  return `${lines.join("\n")}\n\n—\nGesendet über sitalo.de (${lead.kind})`;
+  const admin = opts.adminUrl
+    ? `\n\n${ADMIN_LINK_LABEL} (Vorlagen, Status, Wiedervorlage):\n${opts.adminUrl}`
+    : "";
+  return `${lines.join("\n")}${admin}\n\n—\nGesendet über sitalo.de (${lead.kind})`;
 }
 
-async function viaResend(lead: Lead, apiKey: string): Promise<void> {
+async function viaResend(
+  lead: Lead,
+  apiKey: string,
+  opts: DeliverOptions,
+): Promise<void> {
   const from =
     process.env.LEAD_MAIL_FROM?.trim() || "Sitalo Website <onboarding@resend.dev>";
   const res = await fetch("https://api.resend.com/emails", {
@@ -89,7 +104,7 @@ async function viaResend(lead: Lead, apiKey: string): Promise<void> {
       to: [leadMailTo()],
       reply_to: lead.replyTo,
       subject: lead.subject,
-      text: textBody(lead),
+      text: textBody(lead, opts),
     }),
   });
   if (!res.ok) {
@@ -101,8 +116,13 @@ async function viaResend(lead: Lead, apiKey: string): Promise<void> {
   }
 }
 
-async function viaFormspree(lead: Lead, formId: string): Promise<void> {
+async function viaFormspree(
+  lead: Lead,
+  formId: string,
+  opts: DeliverOptions,
+): Promise<void> {
   const payload: Record<string, string> = Object.fromEntries(lead.fields);
+  if (opts.adminUrl) payload[ADMIN_LINK_LABEL] = opts.adminUrl;
   payload._subject = lead.subject;
   payload._replyto = lead.replyTo;
   const res = await fetch(`https://formspree.io/f/${formId}`, {
@@ -119,16 +139,19 @@ async function viaFormspree(lead: Lead, formId: string): Promise<void> {
   }
 }
 
-export async function deliverLead(lead: Lead): Promise<"resend" | "formspree"> {
+export async function deliverLead(
+  lead: Lead,
+  opts: DeliverOptions = {},
+): Promise<"resend" | "formspree"> {
   const resendKey = process.env.RESEND_API_KEY?.trim();
   const formspreeId = process.env.FORMSPREE_FORM_ID?.trim();
   try {
     if (resendKey) {
-      await viaResend(lead, resendKey);
+      await viaResend(lead, resendKey, opts);
       return "resend";
     }
     if (formspreeId) {
-      await viaFormspree(lead, formspreeId);
+      await viaFormspree(lead, formspreeId, opts);
       return "formspree";
     }
   } catch (err) {

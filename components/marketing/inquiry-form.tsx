@@ -14,6 +14,7 @@ import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 import {
   INQUIRY_TIMEFRAMES,
+  PACKAGE_LABELS,
   type InquiryPackage,
 } from "@/lib/validations/inquiries";
 
@@ -50,14 +51,6 @@ const INDUSTRY_ALIASES: Record<string, string> = {
   pflege: "pflegedienst",
   praxis: "arztpraxis",
   gastro: "cafe",
-};
-
-const PACKAGE_LABELS: Record<InquiryPackage, string> = {
-  starter: "Starter-Projekt",
-  business: "Business-Auftritt",
-  premium: "Premium-System",
-  studio: "Sitalo Studio",
-  unsicher: "Empfehlung gewünscht",
 };
 
 const TIMEFRAME_LABELS: Record<(typeof INQUIRY_TIMEFRAMES)[number], string> = {

@@ -119,7 +119,7 @@ export function TerminBooking() {
         <p className="text-muted-foreground mx-auto mt-3 max-w-md text-pretty text-[14.5px] leading-relaxed">
           {formatDateLong(status.iso)} um {status.slot} Uhr. Sie bekommen
           am selben Werktag eine Bestätigung per E-Mail mit
-          Kalender-Anhang. Falls der Slot doppelt belegt sein sollte
+          Kalender-Eintrag. Falls der Slot doppelt belegt sein sollte
           (selten), schlagen wir Ihnen zwei Alternativen vor.
         </p>
         <p className="text-muted-foreground/70 mt-6 text-[13px]">

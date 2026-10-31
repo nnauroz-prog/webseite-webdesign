@@ -20,6 +20,20 @@ const eslintConfig = defineConfig([
       "react-hooks/set-state-in-effect": "off",
     },
   },
+  {
+    // Reine Module laufen auch unter `node --test`, das nur Typen
+    // entfernt: Ein `import { X }` mit reinem Typ X bricht dort ab,
+    // `import { type X }` lädt das Modul trotzdem. Deshalb in lib/
+    // nur getrennte `import type { … }`-Zeilen.
+    files: ["lib/**/*.ts", "lib/**/*.tsx"],
+    rules: {
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", fixStyle: "separate-type-imports" },
+      ],
+      "@typescript-eslint/no-import-type-side-effects": "error",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

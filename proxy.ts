@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { parseNext } from "@/lib/admin/validate";
 import { normalizeSupabaseUrl } from "@/lib/supabase/env";
 
 /**
@@ -49,9 +50,15 @@ export async function proxy(request: NextRequest) {
   // per echtem 307 zum Login. (Ein redirect() in der Seite käme wegen
   // app/loading.tsx erst gestreamt mit HTTP 200.) Ob die Sitzung auch
   // zu einem Admin gehört, prüft weiterhin requireAdmin().
-  const isLogin = request.nextUrl.pathname.startsWith("/admin/login");
+  const { pathname } = request.nextUrl;
+  const isLogin = pathname.startsWith("/admin/login");
   if (!data?.claims && !isLogin) {
-    const redirect = NextResponse.redirect(new URL("/admin/login", request.url));
+    const login = new URL("/admin/login", request.url);
+    // Direktlink aus der Benachrichtigungs-Mail: nach dem Login zurück
+    // zur Anfrage. Nur /admin und /admin/anfragen/<uuid> (ohne Query),
+    // login() prüft das Ziel noch einmal mit parseNext.
+    if (parseNext(pathname)) login.searchParams.set("next", pathname);
+    const redirect = NextResponse.redirect(login);
     for (const c of response.cookies.getAll()) redirect.cookies.set(c);
     return redirect;
   }
