@@ -23,13 +23,13 @@ export type ShowcaseItem = {
 
 const POS = [
   "translate-x-0 translate-y-0 rotate-0 scale-100 opacity-100 z-30",
-  "translate-x-[6%] -translate-y-[9%] rotate-[2.5deg] scale-[0.93] opacity-100 brightness-[0.82] z-20",
-  "translate-x-[12%] -translate-y-[17%] rotate-[5deg] scale-[0.86] opacity-100 brightness-[0.68] z-10",
-  "translate-x-[12%] -translate-y-[17%] rotate-[5deg] scale-[0.86] opacity-0 z-0",
-  "-translate-x-[18%] translate-y-[4%] -rotate-[6deg] scale-95 opacity-0 z-40",
+  "translate-x-[4%] -translate-y-[6%] scale-[0.94] opacity-100 brightness-[0.85] z-20",
+  "translate-x-[8%] -translate-y-[12%] scale-[0.88] opacity-100 brightness-[0.72] z-10",
+  "translate-x-[8%] -translate-y-[12%] scale-[0.88] opacity-0 z-0",
+  "-translate-x-[6%] translate-y-0 scale-100 opacity-0 z-40",
 ];
 
-const INTERVAL = 3400;
+const INTERVAL = 5000;
 
 export function HeroShowcase({ items }: { items: ShowcaseItem[] }) {
   const [active, setActive] = useState(0);
@@ -64,7 +64,7 @@ export function HeroShowcase({ items }: { items: ShowcaseItem[] }) {
               aria-hidden={pos !== 0}
               aria-label="Nächstes Beispiel zeigen"
               onClick={() => setActive((a) => (a + 1) % n)}
-              className={`absolute inset-0 overflow-hidden rounded-3xl shadow-[0_40px_80px_-30px_rgb(15_25_50/0.45)] ring-1 ring-black/10 transition-[translate,rotate,scale,opacity,filter] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${POS[Math.min(pos, POS.length - 1)]}`}
+              className={`absolute inset-0 overflow-hidden rounded-2xl shadow-[0_30px_60px_-30px_rgb(15_25_50/0.4)] ring-1 ring-black/10 transition-[translate,rotate,scale,opacity,filter] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${POS[Math.min(pos, POS.length - 1)]}`}
             >
               <Image
                 src={item.src}
@@ -86,7 +86,6 @@ export function HeroShowcase({ items }: { items: ShowcaseItem[] }) {
           className="bg-background/80 border-border/60 pointer-events-auto inline-flex items-center gap-3 rounded-full border py-2 pr-4 pl-3 shadow-lg backdrop-blur-md"
         >
           <span className="relative flex h-2 w-2">
-            <span className="bg-gold absolute inline-flex h-full w-full animate-ping rounded-full opacity-60 motion-reduce:animate-none" />
             <span className="bg-gold relative inline-flex h-2 w-2 rounded-full" />
           </span>
           <span className="text-[13px] font-medium tracking-tight" aria-live="polite">

@@ -1,7 +1,9 @@
 import Link from "next/link";
 
+import { MailStatus } from "@/app/admin/mail-status";
 import { StatusPill } from "@/app/admin/status-pill";
 import { requireAdmin } from "@/lib/admin/auth";
+import { mailSetup } from "@/lib/lead-mail";
 import {
   countByStatus,
   KIND_LABELS,
@@ -51,6 +53,8 @@ export default async function AdminLeadsPage({
           ? "Keine neuen Anfragen."
           : `${counts.neu} neue ${counts.neu === 1 ? "Anfrage" : "Anfragen"}.`}
       </p>
+
+      <MailStatus {...mailSetup()} />
 
       <nav aria-label="Nach Status filtern" className="-mx-4 mt-6 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <ul className="flex w-max gap-2">

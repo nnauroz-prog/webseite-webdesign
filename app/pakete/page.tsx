@@ -88,7 +88,7 @@ function Packages() {
               id={p.slug}
               className={
                 dark
-                  ? "gold-sweep bg-foreground text-background relative flex scroll-mt-24 flex-col overflow-hidden rounded-3xl p-6 shadow-[0_30px_60px_-30px_rgb(15_25_50/0.5)] lg:-my-3 lg:py-9"
+                  ? "bg-foreground text-background relative flex scroll-mt-24 flex-col overflow-hidden rounded-3xl p-6 shadow-[0_30px_60px_-30px_rgb(15_25_50/0.5)] lg:-my-3 lg:py-9"
                   : "border-border/70 bg-card relative flex scroll-mt-24 flex-col rounded-3xl border p-6"
               }
             >

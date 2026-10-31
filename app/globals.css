@@ -1659,67 +1659,40 @@ body::before {
 
 /* ------------------------------------------------------------------
    Hamburg-Silhouette (components/marketing/hamburg-skyline.tsx).
-   Linien zeichnen sich nacheinander (--i), dann füllen sich die
-   Gebäude leicht. Danach: Lichter, Flugwarnlicht, Wellen, Schiff,
-   Möwen. Ohne Bewegung: alles sofort fertig, nichts wandert.
+   Einmalig: Linien zeichnen sich nacheinander (--i), dann blenden
+   Flächen, Feinheiten und Spiegelung ein. Danach steht das Bild.
    ------------------------------------------------------------------ */
 .hh-skyline .hh-draw {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
 }
-.hh-skyline .hh-fill {
-  fill: currentColor;
-  fill-opacity: 0.1;
-}
-.hh-skyline .hh-lights rect { opacity: 0.8; }
-.hh-skyline .hh-ship { transform: translateX(760px); }
+.hh-skyline .hh-fill { fill: url(#hh-fill); }
+.hh-skyline .hh-fine { opacity: 0.7; }
+.hh-skyline .hh-detail { opacity: 0.55; }
+.hh-skyline .hh-back { opacity: 0.32; fill: currentColor; fill-opacity: 0.05; }
+.hh-skyline .hh-reflection { opacity: 1; }
 
 @media (prefers-reduced-motion: no-preference) {
   .hh-skyline .hh-draw {
     stroke-dashoffset: 1;
-    transition: stroke-dashoffset 1.8s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 110ms);
+    transition: stroke-dashoffset 2.2s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 70ms);
   }
   .hh-skyline .hh-fill {
     fill-opacity: 0;
     transition:
-      stroke-dashoffset 1.8s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 110ms),
-      fill-opacity 1.4s ease calc(var(--i) * 110ms + 1.4s);
+      stroke-dashoffset 2.2s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 70ms),
+      fill-opacity 1.6s ease calc(var(--i) * 70ms + 1.6s);
+  }
+  .hh-skyline .hh-detail,
+  .hh-skyline .hh-back,
+  .hh-skyline .hh-reflection {
+    opacity: 0;
+    transition: opacity 1.8s ease 2.6s;
   }
   .hh-skyline.is-drawn .hh-draw { stroke-dashoffset: 0; }
-  .hh-skyline.is-drawn .hh-fill { fill-opacity: 0.1; }
+  .hh-skyline.is-drawn .hh-fill { fill-opacity: 1; }
+  .hh-skyline.is-drawn .hh-detail { opacity: 0.55; }
+  .hh-skyline.is-drawn .hh-back { opacity: 0.32; }
+  .hh-skyline.is-drawn .hh-reflection { opacity: 1; }
+}
 
-  .hh-skyline .hh-lights rect,
-  .hh-skyline .hh-beacon,
-  .hh-skyline .hh-ship,
-  .hh-skyline .hh-gulls { opacity: 0; transition: opacity 1s ease 3s; }
-  .hh-skyline.is-drawn .hh-ship,
-  .hh-skyline.is-drawn .hh-gulls { opacity: 1; }
-
-  .hh-skyline.is-drawn .hh-lights rect {
-    animation: hh-twinkle 5s ease-in-out calc(3s + var(--i) * 420ms) infinite;
-  }
-  .hh-skyline.is-drawn .hh-beacon {
-    opacity: 1;
-    animation: hh-blink 1.8s steps(1) 3s infinite;
-  }
-  .hh-skyline .hh-waves { animation: hh-waves 5s linear infinite; }
-  .hh-skyline .hh-ship { animation: hh-ship 70s linear infinite; }
-  .hh-skyline .hh-gulls { animation: hh-gulls 26s ease-in-out infinite alternate; }
-}
-@keyframes hh-twinkle {
-  0%, 100% { opacity: 0.15; }
-  40%, 70% { opacity: 0.95; }
-}
-@keyframes hh-blink {
-  0%, 60% { opacity: 1; }
-  61%, 100% { opacity: 0.15; }
-}
-@keyframes hh-waves { to { transform: translateX(-30px); } }
-@keyframes hh-ship {
-  from { transform: translateX(1240px); }
-  to { transform: translateX(-120px); }
-}
-@keyframes hh-gulls {
-  from { transform: translate(-120px, 14px); }
-  to { transform: translate(260px, -8px); }
-}

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Send } from "lucide-react";
 
-import { CursorSpotlight } from "@/components/marketing/cursor-spotlight";
-import { Depth3D } from "@/components/marketing/depth-3d";
 import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
@@ -13,14 +11,11 @@ import {
   Vorteile,
 } from "@/components/marketing/home-sections";
 import { HeroShowcase } from "@/components/marketing/hero-showcase";
-import { HamburgSkyline } from "@/components/marketing/hamburg-skyline";
-import { MagneticButton } from "@/components/marketing/magnetic-button";
+import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
-  HandUnderline,
-  EditorialStar,
 } from "@/components/marketing/ornaments";
 import { RevealOnScroll } from "@/components/marketing/reveal-on-scroll";
 import { getPaketBySlug } from "@/lib/pakete-data";
@@ -192,20 +187,19 @@ function Hero() {
         <span />
         <span />
       </div>
-      <CursorSpotlight />
 
-      <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-14 sm:px-6 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28">
+      <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-6 sm:px-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
-            <h1 className="letterpress text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
+            <h1 className="text-balance text-[2.5rem] font-semibold leading-[0.98] tracking-[-0.035em] sm:mt-8 sm:text-[4.25rem] sm:leading-[0.96] lg:text-[5.75rem] lg:tracking-[-0.04em]">
               <WordReveal step={75} delay={120}>
                 {"Wir bauen "}
-                <span className="hero-shine serif-italic text-muted-foreground font-normal">
+                <span className="serif-italic text-muted-foreground font-normal">
                   Websites
                 </span>
                 <br />
                 {"für Ihr "}
-                <span className="hero-shine serif-italic text-muted-foreground font-normal">
+                <span className="serif-italic text-muted-foreground font-normal">
                   Unternehmen.
                 </span>
               </WordReveal>
@@ -221,13 +215,13 @@ function Hero() {
               className="reveal mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-9"
               style={{ "--reveal-delay": "1100ms" } as React.CSSProperties}
             >
-              <MagneticButton
+              <Link
                 href="/anfrage"
                 className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
               >
                 Website anfragen
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </MagneticButton>
+              </Link>
               <Link
                 href="#beispiele"
                 className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
@@ -245,12 +239,12 @@ function Hero() {
             className="reveal relative pt-[9%] pr-[9%]"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
-            <Depth3D maxTilt={5}>
-              <HeroShowcase items={showcaseItems()} />
-            </Depth3D>
+            <HeroShowcase items={showcaseItems()} />
           </div>
         </div>
       </div>
+      {/* Hamburg-Panorama, läuft im Hero-Hintergrund aus */}
+      <HamburgPanorama />
     </section>
   );
 }
@@ -273,7 +267,7 @@ function Pricing() {
           <p className="text-muted-foreground inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em]">
             <span
               aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
+              className="bg-gold inline-block h-px w-8"
             />
             Pakete & Preise
           </p>
@@ -282,7 +276,6 @@ function Pricing() {
             <br />
             <span className="serif-italic text-muted-foreground relative font-normal">
               Keine Überraschungen.
-              <HandUnderline className="text-gold/60 absolute -bottom-2 left-0 h-3 w-full" />
             </span>
           </h2>
         </div>
@@ -292,24 +285,21 @@ function Pricing() {
             Kein 3-gleicher-Karten-Reflex. */}
         <div className="mt-10 grid grid-cols-2 gap-x-5 sm:mt-16 lg:grid-cols-[1fr_2fr_1fr] lg:gap-6">
           {/* Linker Streifen: Starter */}
-          <Depth3D className="order-2 lg:order-1" maxTilt={4}>
+          <div className="order-2 lg:order-1">
             <PricingFlanke paket={others[0]} side="left" />
-          </Depth3D>
+          </div>
 
           {/* Centerfold: Business */}
-          <Depth3D
-            className="order-1 col-span-2 lg:order-2 lg:col-span-1"
-            maxTilt={6}
-          >
+          <div className="order-1 col-span-2 lg:order-2 lg:col-span-1">
             <div id={featured.slug} className="h-full">
               <PricingCenterfold paket={featured} />
             </div>
-          </Depth3D>
+          </div>
 
           {/* Rechter Streifen: Premium */}
-          <Depth3D className="order-3" maxTilt={4}>
+          <div className="order-3">
             <PricingFlanke paket={others[1]} side="right" />
-          </Depth3D>
+          </div>
         </div>
 
         <Link
@@ -387,7 +377,7 @@ function PricingCenterfold({
   paket: (typeof PACKAGES)[number];
 }) {
   return (
-    <div className="gold-sweep bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10 lg:p-12">
+    <div className="bg-foreground text-background relative flex h-full flex-col overflow-hidden rounded-3xl p-7 sm:p-10 lg:p-12">
       <div
         aria-hidden="true"
         className="bg-ink-petrol/40 pointer-events-none absolute -top-32 -right-20 h-80 w-80 rounded-full blur-[80px]"
@@ -398,7 +388,6 @@ function PricingCenterfold({
       />
 
       <div className="relative flex items-center gap-3">
-        <EditorialStar className="text-gold h-4 w-4" />
         <span className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em]">
           {paket.badge ?? paket.name}
         </span>
@@ -517,7 +506,6 @@ function FinalCta() {
     >
       {/* Cursor-aware Gold-Spotlight — bringt Bewegung in den
           ansonsten ruhigen Closer. Auf Touch unsichtbar. */}
-      <CursorSpotlight />
       {/* Mehrere weiche Halos für editoriale Tiefe */}
       <div
         aria-hidden="true"
@@ -527,13 +515,10 @@ function FinalCta() {
         aria-hidden="true"
         className="bg-ink-petrol/40 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
-      <div className="relative mx-auto w-full max-w-5xl px-6 pt-20 pb-10 sm:pt-28 sm:pb-12">
+      <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
         <div>
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
-              <span className="drop-cap-3d drop-cap-3d-gold serif-italic text-gold/70 absolute -mt-12 -ml-4 text-[8rem] leading-none">
-                „
-              </span>
               Schreiben Sie uns.{" "}
               <span className="serif-italic text-background/70">
                 Wir melden uns persönlich.
@@ -543,13 +528,13 @@ function FinalCta() {
               Drei Felder, zwei Minuten. Kostenlos und unverbindlich.
             </p>
             <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-              <MagneticButton
+              <Link
                 href="/anfrage"
                 className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium tracking-tight"
               >
                 Website anfragen
                 <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </MagneticButton>
+              </Link>
               <a
                 href="tel:+4915224437370"
                 className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-all"
@@ -559,10 +544,6 @@ function FinalCta() {
             </div>
           </div>
         </div>
-      </div>
-      {/* Hamburg-Silhouette zeichnet sich beim Hinscrollen in Gold. */}
-      <div className="relative mx-auto w-full max-w-6xl px-0 sm:px-6">
-        <HamburgSkyline className="text-gold block h-[108px] w-full sm:h-auto sm:aspect-[1200/240]" />
       </div>
     </section>
   );
