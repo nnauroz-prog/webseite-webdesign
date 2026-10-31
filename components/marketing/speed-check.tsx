@@ -42,10 +42,18 @@ type ScoreData = {
   };
 };
 
+/** Ersatz-Ergebnis, wenn Google nicht antwortet (lib/basic-site-check.ts). */
+type BasicData = {
+  analyzedUrl: string;
+  mode: "basic";
+  items: { label: string; ok: boolean; detail: string }[];
+};
+
 type Status =
   | { kind: "idle" }
   | { kind: "loading"; url: string }
   | { kind: "success"; data: ScoreData }
+  | { kind: "basic"; data: BasicData }
   | { kind: "error"; message: string };
 
 export function SpeedCheck() {
@@ -81,7 +89,7 @@ export function SpeedCheck() {
         });
         return;
       }
-      setStatus({ kind: "success", data });
+      setStatus(data.mode === "basic" ? { kind: "basic", data } : { kind: "success", data });
     } catch (err) {
       const isAbort =
         err instanceof Error &&
@@ -176,6 +184,7 @@ export function SpeedCheck() {
       )}
 
       {status.kind === "success" && <ResultPanel data={status.data} />}
+      {status.kind === "basic" && <BasicPanel data={status.data} />}
     </div>
   );
 }
@@ -220,6 +229,54 @@ function LoadingPanel({ url }: { url: string }) {
         Das dauert ehrlich gesagt 15–30 Sekunden — PageSpeed Insights
         rendert Ihre Seite einmal komplett durch. Bitte kurz Geduld.
       </p>
+    </div>
+  );
+}
+
+function BasicPanel({ data }: { data: BasicData }) {
+  const passed = data.items.filter((i) => i.ok).length;
+  return (
+    <div className="animate-fade-up space-y-6">
+      <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1 sm:p-8">
+        <p className="text-muted-foreground inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]">
+          <span aria-hidden="true" className="bg-gold gold-pulse inline-block h-1 w-6" />
+          Basis-Check · {passed} von {data.items.length} in Ordnung
+        </p>
+        <p className="text-foreground mt-3 text-[14px] break-all">{data.analyzedUrl}</p>
+        <p className="text-muted-foreground mt-2 text-[13px] leading-relaxed">
+          Der ausführliche Google-Test ist gerade ausgelastet. Diese Werte
+          haben wir selbst gemessen.
+        </p>
+        <ul className="divide-border/50 mt-6 divide-y">
+          {data.items.map((item) => (
+            <li key={item.label} className="flex items-start gap-3 py-3">
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
+                  item.ok
+                    ? "bg-emerald-600/15 text-emerald-700 dark:text-emerald-400"
+                    : "bg-red-600/15 text-red-700 dark:text-red-400",
+                )}
+              >
+                {item.ok ? "✓" : "!"}
+              </span>
+              <span className="min-w-0">
+                <span className="sr-only">{item.ok ? "In Ordnung: " : "Problem: "}</span>
+                <span className="text-foreground block text-[14.5px] font-medium">{item.label}</span>
+                <span className="text-muted-foreground block text-[13px] break-words">{item.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <Link
+        href="/audit"
+        className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight"
+      >
+        Persönlichen Audit anfordern
+        <ArrowRight className="ml-2 h-4 w-4" />
+      </Link>
     </div>
   );
 }

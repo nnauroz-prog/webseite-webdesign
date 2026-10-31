@@ -8,9 +8,9 @@ import { AmbientTint } from "@/components/marketing/ambient-tint";
 import { Beispiele } from "@/components/marketing/beispiele";
 import {
   AblaufKompakt,
-  FaktenLeiste,
   showcaseItems,
   Voranbringen,
+  Vorteile,
 } from "@/components/marketing/home-sections";
 import { HeroShowcase } from "@/components/marketing/hero-showcase";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
@@ -49,14 +49,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * Homepage-Pakete: bewusst KURATIERTE Variante (kurze description,
+ * Homepage-Pakete: bewusst KURATIERTE Variante (ohne Beschreibung,
  * 5-Bullet-Liste statt voller contents), aber Preis und Monatsbeitrag
  * werden aus der kanonischen Quelle (lib/pakete-data.ts) gezogen.
  * So gibt's nur eine Stelle, an der Preise geändert werden müssen.
  *
- * Sitalo Studio steht hier bewusst nicht — die vierte Stufe wird
- * als ruhige Editorial-Zeile unter dem 3-Karten-Spread angeteasert,
- * statt den Magazin-Rhythmus auf 4 Karten zu brechen.
+ * Sitalo Studio steht nur auf /pakete.
  */
 const PACKAGES = (["starter", "business", "premium"] as const).map((slug) => {
   const p = getPaketBySlug(slug);
@@ -68,12 +66,6 @@ const PACKAGES = (["starter", "business", "premium"] as const).map((slug) => {
     monthly: p.monthly,
     badge: p.badge,
     highlight: p.highlight,
-    description:
-      slug === "starter"
-        ? "Eine Seite. Alles Wichtige auf einen Blick. Für Einzelunternehmer und kleine Betriebe."
-        : slug === "business"
-          ? "Mehrere Sektionen, Team, Leistungen, Galerie. Für lokale Unternehmen, die professionell auftreten wollen."
-          : "Individuelle Struktur mit Bereichen, die Sie selbst pflegen können. Speisekarte, Angebote, Termine.",
     bullets:
       slug === "starter"
         ? [
@@ -152,7 +144,7 @@ export default function HomePage() {
             steht auf den Unterseiten /atelier, /erreichbarkeit,
             /standorte, /jetzt — die Startseite verlinkt dorthin. */}
         <Hero />
-        <FaktenLeiste />
+        <Vorteile />
         {/* Echte Ergebnisse (Branche + Stadtteil + Zahl) — der
             Vertrauensbeleg direkt nach den Arbeitsproben im Hero. */}
         <RevealOnScroll>
@@ -193,11 +185,12 @@ function Hero() {
         aria-hidden="true"
         className="from-accent/30 via-background to-background pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br"
       />
-      {/* Dezentes Gold-Halo links oben */}
-      <div
-        aria-hidden="true"
-        className="bg-gold/10 pointer-events-none absolute -top-40 -left-20 -z-10 h-[36rem] w-[36rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
+      {/* Aurora: drei langsam treibende Farbflächen (globals.css) */}
+      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
+        <span />
+        <span />
+        <span />
+      </div>
       <CursorSpotlight />
 
       <div className="hero-dolly-inner mx-auto w-full max-w-7xl px-5 pt-8 pb-14 sm:px-6 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28">
@@ -283,7 +276,7 @@ function Pricing() {
             />
             Pakete & Preise
           </p>
-          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+          <h2 className="rise mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
             Klare Preise.
             <br />
             <span className="serif-italic text-muted-foreground relative font-normal">
@@ -360,9 +353,6 @@ function PricingFlanke({
       <p className="text-muted-foreground mt-2 text-[13px]">
         einmalig · zzgl. {paket.monthly}
       </p>
-      <p className="text-foreground/75 mt-6 hidden max-w-xs text-pretty text-[14px] leading-relaxed sm:block">
-        {paket.description}
-      </p>
       <ul className="mt-5 space-y-2 text-[13.5px] sm:mt-7 sm:space-y-2.5">
         {paket.bullets.slice(0, 3).map((b) => (
           <li
@@ -409,7 +399,7 @@ function PricingCenterfold({
       <div className="relative flex items-center gap-3">
         <EditorialStar className="text-gold h-4 w-4" />
         <span className="text-background/55 text-[10px] font-medium uppercase tracking-[0.3em]">
-          {paket.badge ?? paket.name} · Aufmacher
+          {paket.badge ?? paket.name}
         </span>
       </div>
 
@@ -424,9 +414,6 @@ function PricingCenterfold({
         </p>
       </div>
 
-      <p className="relative text-background/85 mt-8 max-w-md text-pretty text-base leading-relaxed sm:text-lg">
-        {paket.description}
-      </p>
 
       <ul className="relative mt-8 grid gap-2.5 text-[14px] sm:grid-cols-2 sm:gap-x-6">
         {paket.bullets.map((b) => (
@@ -469,7 +456,7 @@ function Faq() {
       <div className="mx-auto w-full max-w-7xl px-6 py-16 sm:py-24">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
           <div>
-            <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
+            <h2 className="rise text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
               Häufige Fragen.
             </h2>
             <p className="text-muted-foreground mt-6 max-w-sm text-pretty text-lg leading-relaxed">

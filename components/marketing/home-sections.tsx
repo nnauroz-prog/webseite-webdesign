@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarCheck, FileCheck2, Globe, MapPin, MessageSquare, Search, Wrench } from "lucide-react";
+import { ArrowRight, Eye, FileCheck2, Gauge, Globe, MessageSquare, Search, Wrench } from "lucide-react";
 import Link from "next/link";
 
 import type { ShowcaseItem } from "@/components/marketing/hero-showcase";
@@ -28,27 +28,61 @@ export function showcaseItems(): ShowcaseItem[] {
 }
 
 /* ------------------------------------------------------------------
- * Fakten-Leiste — an der Stelle, an der andere Kundenlogos zeigen.
- * Nur Zusagen, die an anderer Stelle der Site belegt sind.
+ * Vorteile — eine große Kachel (Tempo) + vier kleine. Nur Zusagen,
+ * die an anderer Stelle der Site belegt sind: 1–2 Werktage (FAQ),
+ * Festpreis (Pakete), Vorschau-Link (Ablauf), Ladezeit (Leistungen),
+ * Änderungen im Monatsbeitrag (Wartung).
  * ---------------------------------------------------------------- */
-const FAKTEN = [
-  { icon: FileCheck2, title: "Festpreis vorab" },
-  { icon: MapPin, title: "Persönlich aus Hamburg" },
-  { icon: MessageSquare, title: "Antwort meist am selben Werktag" },
-  { icon: CalendarCheck, title: "Monatlich kündbar" },
+const VORTEILE = [
+  { icon: FileCheck2, kpi: "ab 499 €", title: "Festpreis vorab", text: "Schwarz auf weiß, keine Nachträge.", href: "/pakete" },
+  { icon: Eye, kpi: "Vorschau", title: "Erst sehen, dann live", text: "Alles auf einem Test-Link, bevor es online geht.", href: "/ablauf" },
+  { icon: Gauge, kpi: "Grün", title: "Schnell bei Google", text: "Kurze Ladezeiten, saubere Struktur.", href: "/check" },
+  { icon: MessageSquare, kpi: "1 Nachricht", title: "Änderungen ohne Aufwand", text: "Kleine Änderungen sind im Monatsbeitrag drin.", href: "/wartung" },
 ];
 
-export function FaktenLeiste() {
+export function Vorteile() {
   return (
-    <section aria-label="Was Sie sicher haben" className="bg-secondary/40 border-border/40 border-y">
-      <ul className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-4 gap-y-4 px-5 py-6 sm:px-6 lg:grid-cols-4 lg:py-7">
-        {FAKTEN.map(({ icon: Icon, title }) => (
-          <li key={title} className="flex items-center gap-2.5">
-            <Icon className="text-gold h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="text-[13.5px] font-medium leading-snug tracking-tight sm:text-[14.5px]">{title}</span>
-          </li>
-        ))}
-      </ul>
+    <section className={SECTION}>
+      <div className={INNER}>
+        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Warum mit uns.</h2>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 lg:grid-cols-4 lg:gap-4">
+          <Link
+            href="/anfrage"
+            className="bg-foreground text-background group relative col-span-2 flex min-h-[15rem] flex-col justify-between overflow-hidden rounded-3xl p-6 sm:p-8 lg:row-span-2 lg:min-h-0"
+          >
+            <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="relative">
+              <p className="text-background/55 font-mono text-[11px] uppercase tracking-[0.22em]">In Tagen online</p>
+              <p className="serif text-gold mt-4 text-7xl lining-nums leading-none tracking-[-0.03em] sm:text-8xl">1–2</p>
+              <p className="mt-2 text-xl font-medium tracking-tight sm:text-2xl">Werktage, bis kleine Seiten stehen.</p>
+            </div>
+            <div className="relative mt-8 flex items-end justify-between gap-4">
+              <p className="text-background/70 max-w-xs text-[14.5px] leading-relaxed">
+                Stichpunkte reichen — die Texte formulieren wir mit Ihnen.
+              </p>
+              <span className="bg-background text-foreground inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-1">
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </span>
+            </div>
+          </Link>
+          {VORTEILE.map(({ icon: Icon, kpi, title, text, href }) => (
+            <SpotlightLink
+              key={title}
+              href={href}
+              className="border-border/70 bg-card hover:border-gold/50 group flex flex-col rounded-3xl border p-5 transition-[border-color,translate] duration-300 hover:-translate-y-0.5 sm:p-6"
+            >
+              <Icon className="text-gold h-5 w-5" aria-hidden="true" />
+              <p className="serif mt-5 text-2xl lining-nums leading-none tracking-[-0.02em] sm:text-3xl">{kpi}</p>
+              <p className="mt-2 text-[14.5px] font-semibold leading-snug tracking-tight">{title}</p>
+              <p className="text-muted-foreground mt-1 hidden text-[13.5px] leading-relaxed sm:block">{text}</p>
+            </SpotlightLink>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -63,21 +97,18 @@ export function Voranbringen() {
     {
       icon: Globe,
       title: "Eine neue Website",
-      text: "Für Betriebe ohne Seite oder mit einer, die nicht mehr passt.",
       meta: starter ? starter.setup : "",
       href: "/pakete",
     },
     {
       icon: Wrench,
       title: "Die bestehende Seite pflegen",
-      text: "Hosting, Updates, Änderungen — auch wenn wir sie nicht gebaut haben.",
       meta: "ab 49 € / Monat",
       href: "/wartung",
     },
     {
       icon: Search,
       title: "Bei Google gefunden werden",
-      text: "Wir prüfen Ihre Seite und schicken drei bis fünf konkrete Punkte.",
       meta: "kostenlos, in 48 h",
       href: "/audit",
     },
@@ -85,9 +116,9 @@ export function Voranbringen() {
   return (
     <section className={SECTION}>
       <div className={INNER}>
-        <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Was möchten Sie voranbringen?</h2>
+        <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">Was möchten Sie voranbringen?</h2>
         <ul className="mt-8 grid gap-3 md:mt-10 md:grid-cols-3 md:gap-4">
-          {items.map(({ icon: Icon, title, text, meta, href }) => (
+          {items.map(({ icon: Icon, title, meta, href }) => (
             <li key={title}>
               <SpotlightLink
                 href={href}
@@ -96,7 +127,6 @@ export function Voranbringen() {
                 <Icon className="text-gold h-6 w-6 shrink-0" aria-hidden="true" />
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-semibold tracking-tight md:mt-1 md:text-lg">{title}</span>
-                  <span className="text-muted-foreground mt-2 hidden text-[14.5px] leading-relaxed md:block">{text}</span>
                   <span className="text-foreground/70 mt-1 block font-mono text-[11px] uppercase tracking-[0.18em] md:mt-4">
                     {meta}
                   </span>
@@ -129,7 +159,7 @@ export function AblaufKompakt() {
     <section className={SECTION}>
       <div className={INNER}>
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">So läuft es ab.</h2>
+          <h2 className="rise text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">So läuft es ab.</h2>
           <Link
             href="/ablauf"
             className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
