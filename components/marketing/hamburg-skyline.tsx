@@ -3,72 +3,129 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Hamburg-Silhouette, die sich beim ersten Sichtkontakt in Goldlinien
- * selbst zeichnet und danach leise lebt: Lichter in der Elbphilharmonie,
- * blinkendes Flugwarnlicht am Fernsehturm, ein Containerschiff auf der
- * Elbe, Wellen, zwei Möwen.
+ * Hamburg-Silhouette als feine Linienzeichnung mit Spiegelung in der
+ * Elbe. Höhen maßstäblich (1 m ≈ 0,75 Einheiten): Fernsehturm 279 m,
+ * St. Nikolai 147 m, Michel und St. Petri 132 m, St. Jacobi 125 m,
+ * St. Katharinen 115 m, Rathaus 112 m, Elbphilharmonie 110 m.
  *
  * Vom Elbufer gesehen, West → Ost: Köhlbrandbrücke, Containerbrücken,
  * Dancing Towers, Landungsbrücken mit Pegelturm, Michel,
  * Heinrich-Hertz-Turm, Elbphilharmonie, St. Katharinen, St. Nikolai,
- * Rathaus, St. Petri, St. Jacobi, Speicherstadt. Abstände gestaucht —
- * erkennbar, nicht kartengenau.
+ * Rathaus, St. Petri, St. Jacobi, Speicherstadt. Abstände gestaucht.
  *
- * Farbe kommt über currentColor (auf dunklem Grund: text-gold).
- * Mobil wird links und rechts beschnitten (xMidYMax slice), damit die
- * Wahrzeichen in der Mitte (Michel bis Rathaus) groß bleiben. Bei prefers-reduced-motion
- * steht die fertige Silhouette ohne Bewegung da.
+ * Bewegung: die Linien zeichnen sich beim ersten Sichtkontakt einmal
+ * nacheinander, Flächen und Spiegelung blenden danach ein — dann steht
+ * das Bild. Bei prefers-reduced-motion sofort fertig.
  */
 
-// Jede Form einzeln, damit sie nacheinander gezeichnet werden kann.
-// Reihenfolge wie vom Elbufer gesehen, West → Ost.
-const SHAPES: { d: string; fill?: boolean }[] = [
-  // Köhlbrandbrücke: geschwungenes Deck, zwei Pylone, Seilfächer
-  { d: "M0 196Q72 164 150 190" },
-  { d: "M46 181V96M104 178V100" },
-  { d: "M46 100L14 190M46 100L28 186M46 100L64 176M46 100L80 175M104 104L84 176M104 104L94 177M104 104L122 182M104 104L138 187" },
-  // Containerbrücken (STS-Kräne): A-Rahmen, langer Ausleger übers Wasser
-  { d: "M178 200L184 138M214 200L208 138M150 138H236M188 128h16v10h-16zM184 138L196 112L208 138M196 112L152 138M196 112L234 138" },
-  { d: "M232 200L237 146M262 200L257 146M210 146H282M240 137h13v9h-13zM237 146L247 124L257 146M247 124L212 146M247 124L280 146" },
-  // Dancing Towers
-  { d: "M296 200L294 156L304 118H320L313 156L316 200Z", fill: true },
-  { d: "M322 200L324 162L336 132H350L340 162L340 200Z", fill: true },
-  // Landungsbrücken mit Kuppeltürmen und Pegelturm
-  { d: "M362 200V172H476V200", fill: true },
-  { d: "M372 172V160H384V172M372 160Q378 148 384 160M418 172V158H430V172M418 158Q424 144 430 158", fill: true },
-  { d: "M462 172V128H474V172M462 128L468 112L474 128M468 112V104", fill: true },
-  // Michel: Kirchenschiff + barocker Turm, Kuppel, Laterne, Spitze
-  { d: "M498 200V164L520 148L538 164V200", fill: true },
-  { d: "M536 200V110H570V200M540 110V88H566V110M543 88Q553 64 563 88M549 70V56H557V70M553 56V30", fill: true },
+const W = 1600;
+const WATER = 240;
+
+/** Fachwerk zwischen zwei Gurten (Zickzack). */
+function lattice(x1: number, x2: number, yTop: number, yBot: number, step: number) {
+  let d = `M${x1} ${yBot}`;
+  let up = true;
+  for (let x = x1 + step; x <= x2; x += step) {
+    d += `L${x} ${up ? yTop : yBot}`;
+    up = !up;
+  }
+  return d;
+}
+
+/** Senkrechte Fensterschlitze in einer Reihe. */
+function windows(x1: number, x2: number, y: number, h: number, step: number) {
+  let d = "";
+  for (let x = x1; x <= x2; x += step) d += `M${x} ${y}v${h}`;
+  return d;
+}
+
+/** Rundbogenfenster in einer Reihe. */
+function arches(x1: number, x2: number, y: number, step: number, w = 4, h = 8) {
+  let d = "";
+  for (let x = x1; x + w <= x2; x += step) {
+    d += `M${x} ${y + h}V${y + w / 2}a${w / 2} ${w / 2} 0 0 1 ${w} 0V${y + h}`;
+  }
+  return d;
+}
+
+/** Containerbrücke (STS-Kran) an Position x, Ausleger übers Wasser nach links. */
+function crane(x: number) {
+  return [
+    // Portal: zwei Beine mit Kreuzverband, Querträger
+    `M${x} ${WATER}L${x + 6} 176M${x + 48} ${WATER}L${x + 42} 176M${x + 2} 222L${x + 46} 196M${x + 46} 222L${x + 2} 196M${x - 4} 176H${x + 54}M${x - 4} 172H${x + 54}`,
+    // Ausleger mit Fachwerk
+    `M${x - 40} 168H${x + 92}M${x - 40} 162H${x + 92}${lattice(x - 40, x + 92, 162, 168, 6)}`,
+    // A-Bock, Abspannungen, Maschinenhaus
+    `M${x + 10} 172L${x + 25} 130L${x + 40} 172M${x + 25} 130L${x - 38} 162M${x + 25} 130L${x + 90} 162M${x + 16} 172V160H${x + 36}V172`,
+  ];
+}
+
+type Shape = { d: string; fill?: boolean; fine?: boolean };
+
+const ELPHI_GLASS =
+  "M950 208V158Q962 152 976 160Q992 150 1010 164Q1034 152 1056 168Q1082 160 1104 174Q1132 168 1156 180Q1170 178 1180 184V208Z";
+
+const SHAPES: Shape[] = [
+  // Köhlbrandbrücke: Deck (zwei Linien), Pylone, Seilfächer
+  { d: "M10 236C80 214 120 204 160 202S250 214 310 236M10 240C80 218 120 208 160 206S250 218 310 240" },
+  { d: "M106 240L108 138H112L114 240M206 240L208 138H212L214 240", fill: true },
+  {
+    d: "M110 142L30 229M110 145L50 222M110 148L70 215M110 151L90 210M110 142L130 204M110 145L145 203M110 148L158 202M210 142L162 202M210 145L175 203M210 148L190 205M210 142L290 229M210 145L270 222M210 148L250 215M210 151L230 210",
+    fine: true,
+  },
+  // Containerbrücken
+  ...crane(370).map((d) => ({ d })),
+  ...crane(452).map((d) => ({ d })),
+  // Dancing Towers — zwei geknickte Hochhäuser
+  { d: "M512 240L518 208L512 176H534L540 208L534 240Z", fill: true },
+  { d: "M544 240L548 214L556 190H574L566 214L562 240Z", fill: true },
+  { d: "M514 186H535M516 196H537M518 206H539M516 216H538M515 226H536M550 200H569M548 210H566M548 220H564M548 230H563", fine: true },
+  // Landungsbrücken: Halle, Kuppeltürme, Pegelturm mit Uhr
+  { d: "M592 240V222H772V240M592 222L598 216H766L772 222", fill: true },
+  { d: arches(598, 744, 226, 8), fine: true },
+  { d: "M616 216V200H628V216M616 200Q622 186 628 200M622 189V182M686 216V200H698V216M686 200Q692 186 698 200M692 189V182", fill: true },
+  { d: "M752 222V176H764V222M750 176H766M752 176L758 158L764 176M758 158V150", fill: true },
+  { d: "M761 186a3 3 0 1 0 -6 0a3 3 0 1 0 6 0M758 186V184.5", fine: true },
+  // Michel: Kirchenschiff, Turm mit Säulengeschoss, Kuppel, Laterne, Spitze
+  { d: "M796 240V208L818 196L840 208V240", fill: true },
+  { d: arches(800, 836, 216, 9, 4, 12), fine: true },
+  { d: "M840 240V186H870V240M842 186V168H868V186M845 168V158H865V168M845 158Q855 144 865 158M851 150V143H859V150M855 143V130", fill: true },
+  { d: "M846 172V184M851 172V184M855 172V184M859 172V184M864 172V184M859 200a4 4 0 1 0 -8 0a4 4 0 1 0 8 0", fine: true },
   // Heinrich-Hertz-Turm
-  { d: "M600 200L603 92H609L612 200", fill: true },
-  { d: "M591 96H621M593 88H619M595 80H617L615 72H597Z", fill: true },
-  { d: "M606 72V20" },
-  // Elbphilharmonie: Backsteinsockel, Glasaufbau — höchster Punkt im
-  // Westen, die Wellen fallen nach Osten ab.
-  { d: "M640 200V148H800V200", fill: true },
-  { d: "M640 148V90Q656 82 674 100Q694 86 714 104Q736 96 756 112Q778 104 800 120V148", fill: true },
-  { d: "M646 162H794M646 175H794M646 188H794" },
-  // St. Katharinen (barocke Haube)
-  { d: "M826 200V128H840V200M826 128Q833 108 840 128M829 114Q833 96 837 114M833 98V68", fill: true },
-  // St. Nikolai — die höchste, schlankste Spitze
-  { d: "M862 200V118H878V200M862 118L870 28L878 118", fill: true },
-  // Rathaus mit Mittelturm
-  { d: "M896 200V162L908 154H990L1002 162V200", fill: true },
-  { d: "M941 154V108H957V154M939 108L949 84L959 108M949 84V60", fill: true },
+  { d: "M899 240L902 110H908L911 240Z", fill: true },
+  { d: "M893 110H917M891 104H919L917 98H893ZM894 92H916L914 86H896ZM902 86H908L906 72H904Z", fill: true },
+  { d: "M905 72V31M902 60H908M902 48H908", fine: true },
+  // Elbphilharmonie: Backsteinsockel (gut ein Drittel der Höhe),
+  // Plaza-Fuge, Glasaufbau mit Wellendach — höchster Punkt im Westen
+  { d: "M950 240V212H1180V240", fill: true },
+  { d: windows(956, 1176, 217, 6, 6) + windows(956, 1176, 228, 6, 6), fine: true },
+  { d: "M950 212H1180M950 208H1180", fine: true },
+  { d: ELPHI_GLASS, fill: true },
+  // St. Katharinen — barocke, gestufte Haube
+  { d: "M1196 240V186H1212V240M1196 186Q1204 176 1212 186M1199 179V172H1209V179M1199 172Q1204 164 1209 172M1204 166V154", fill: true },
+  // St. Nikolai — höchste, schlanke neugotische Spitze
+  { d: "M1256 240V178H1272V240M1256 178L1264 130L1272 178M1256 178L1258 170M1272 178L1270 170", fill: true },
+  { d: "M1264 178V140M1259 196V206M1269 196V206", fine: true },
+  // Rathaus: Mansarddach, Seitengiebel, Mittelturm
+  { d: "M1292 240V208H1424V240M1292 208L1300 198H1416L1424 208", fill: true },
+  { d: "M1302 198L1308 190L1314 198M1402 198L1408 190L1414 198", fill: true },
+  { d: windows(1298, 1418, 214, 8, 6) + windows(1298, 1418, 228, 8, 6), fine: true },
+  { d: "M1350 198V176H1366V198M1348 176H1368M1350 176L1352 168H1364L1366 176M1352 168Q1358 158 1364 168M1358 160V150", fill: true },
   // St. Petri
-  { d: "M1022 200V116H1036V200M1022 116L1029 50L1036 116", fill: true },
+  { d: "M1452 240V182H1466V240M1452 182L1459 141L1466 182", fill: true },
+  { d: "M1459 182V148M1455 198V208M1463 198V208", fine: true },
   // St. Jacobi
-  { d: "M1060 200V122H1074V200M1060 122L1067 58L1074 122", fill: true },
-  // Speicherstadt: Giebelreihe mit Türmchen, im Vordergrund
-  { d: "M1092 200V168L1102 156L1112 168L1122 156L1132 168V150L1137 142L1142 150V168L1152 156L1162 168L1172 156L1182 168L1192 156L1200 164V200", fill: true },
+  { d: "M1494 240V188H1508V240M1494 188L1501 146L1508 188", fill: true },
+  // Speicherstadt: Giebelreihe mit Türmchen
+  {
+    d: "M1522 240V218L1530 210L1538 218L1546 210L1554 218V206L1558 200L1562 206V218L1570 210L1578 218L1586 210L1594 218L1600 214V240",
+    fill: true,
+  },
+  { d: windows(1526, 1596, 224, 5, 6) + windows(1526, 1596, 232, 4, 6), fine: true },
 ];
 
-// Fenster im Glasaufbau der Elbphilharmonie, die nacheinander leuchten.
-const ELPHI_LIGHTS = [
-  [650, 110], [672, 116], [694, 116], [716, 120], [740, 124], [764, 128], [784, 132],
-  [660, 130], [686, 132], [712, 134], [738, 136], [764, 140],
-];
+// Glasfugen der Elbphilharmonie, per clipPath auf den Wellenaufbau begrenzt.
+const ELPHI_SEAMS = windows(956, 1176, 140, 68, 8) + "M950 178H1180M950 193H1180";
 
 export function HamburgSkyline({ className = "" }: { className?: string }) {
   const ref = useRef<SVGSVGElement>(null);
@@ -88,7 +145,7 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
           io.disconnect();
         }
       },
-      { threshold: 0.35 },
+      { threshold: 0.3 },
     );
     io.observe(node);
     return () => io.disconnect();
@@ -97,52 +154,53 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
   return (
     <svg
       ref={ref}
-      viewBox="0 0 1200 240"
+      viewBox={`0 0 ${W} 320`}
       preserveAspectRatio="xMidYMax slice"
       role="img"
-      aria-label="Silhouette von Hamburg: Köhlbrandbrücke, Containerbrücken, Dancing Towers, Landungsbrücken, Michel, Fernsehturm, Elbphilharmonie, Kirchtürme, Rathaus und Speicherstadt"
+      aria-label="Silhouette von Hamburg mit Spiegelung in der Elbe: Köhlbrandbrücke, Containerbrücken, Dancing Towers, Landungsbrücken, Michel, Fernsehturm, Elbphilharmonie, St. Katharinen, St. Nikolai, Rathaus, St. Petri, St. Jacobi und Speicherstadt"
       className={`hh-skyline ${drawn ? "is-drawn" : ""} ${className}`}
     >
-      <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
+      <defs>
+        <linearGradient id="hh-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0.22" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0.04" />
+        </linearGradient>
+        <linearGradient id="hh-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#fff" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        <mask id="hh-reflect-mask" maskUnits="userSpaceOnUse" x="0" y={WATER} width={W} height="80">
+          <rect x="0" y={WATER} width={W} height="80" fill="url(#hh-fade)" />
+        </mask>
+        <filter id="hh-ripple" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.004 0.22" numOctaves="1" seed="7" />
+          <feDisplacementMap in="SourceGraphic" scale="5" />
+        </filter>
+        <clipPath id="hh-elphi-glass">
+          <path d={ELPHI_GLASS} />
+        </clipPath>
+      </defs>
+
+      <g id="hh-city" fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round">
         {SHAPES.map((s, i) => (
           <path
             key={i}
             d={s.d}
             pathLength={1}
-            className={s.fill ? "hh-draw hh-fill" : "hh-draw"}
+            strokeWidth={s.fine ? 0.7 : 1.25}
+            className={s.fill ? "hh-draw hh-fill" : s.fine ? "hh-draw hh-fine" : "hh-draw"}
             style={{ "--i": i } as React.CSSProperties}
           />
         ))}
+        <path d={ELPHI_SEAMS} clipPath="url(#hh-elphi-glass)" strokeWidth={0.6} className="hh-detail" />
       </g>
 
-      {/* Lichter */}
-      <g className="hh-lights" fill="currentColor">
-        {ELPHI_LIGHTS.map(([x, y], i) => (
-          <rect key={i} x={x} y={y} width="5" height="3" rx="0.5" style={{ "--i": i } as React.CSSProperties} />
-        ))}
-      </g>
-      <circle className="hh-beacon" cx="606" cy="20" r="2.6" fill="#e5484d" />
+      {/* Wasserlinie */}
+      <path d={`M0 ${WATER + 0.5}H${W}`} stroke="currentColor" strokeWidth="1" className="hh-detail" />
 
-      {/* Möwen */}
-      <g className="hh-gulls" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round">
-        <path d="M640 50q6-6 12 0q6-6 12 0" />
-        <path d="M672 36q4-4 8 0q4-4 8 0" />
-      </g>
-
-      {/* Elbe: Wasserlinie, Wellen, Schiff */}
-      <path d="M0 200.5H1200" stroke="currentColor" strokeWidth="1.2" opacity="0.6" />
-      <g className="hh-waves" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.35">
-        <path d="M0 214q15-5 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0" />
-        <path d="M-15 228q15-4 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0" />
-      </g>
-      <g className="hh-ship" fill="currentColor">
-        <path d="M0 196h92l-8 12H8z" />
-        <rect x="14" y="184" width="14" height="12" opacity="0.9" />
-        <rect x="30" y="184" width="14" height="12" opacity="0.7" />
-        <rect x="46" y="184" width="14" height="12" opacity="0.9" />
-        <rect x="30" y="174" width="14" height="10" opacity="0.6" />
-        <rect x="66" y="176" width="10" height="20" />
-        <rect x="69" y="170" width="4" height="6" />
+      {/* Spiegelung: gestaucht, gewellt, nach unten auslaufend */}
+      <g mask="url(#hh-reflect-mask)" className="hh-reflection">
+        <use href="#hh-city" transform={`matrix(1 0 0 -0.5 0 ${WATER * 1.5})`} filter="url(#hh-ripple)" />
       </g>
     </svg>
   );

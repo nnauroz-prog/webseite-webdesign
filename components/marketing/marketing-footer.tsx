@@ -69,6 +69,9 @@ export function MarketingFooter() {
               <Link href="/datenschutz" className="hover:text-background transition-colors">
                 Datenschutz
               </Link>
+              <Link href="/admin" rel="nofollow" className="hover:text-background transition-colors">
+                Login
+              </Link>
             </span>
           </div>
         </div>

@@ -115,7 +115,7 @@ export function MarketingHeader({
           className="shrink-0"
           onClick={() => setMenuOpen(false)}
         >
-          <SitaloLogo size="md" priority />
+          <SitaloLogo size="md" hideTaglineOnMobile />
         </Link>
 
         {/* Desktop nav — Gold-Underline-Animation auf Hover über das
