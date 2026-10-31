@@ -13,6 +13,7 @@ import {
   Vorteile,
 } from "@/components/marketing/home-sections";
 import { HeroShowcase } from "@/components/marketing/hero-showcase";
+import { HamburgSkyline } from "@/components/marketing/hamburg-skyline";
 import { MagneticButton } from "@/components/marketing/magnetic-button";
 import { WordReveal } from "@/components/marketing/word-reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
   title: { absolute: "Sitalo — Webdesign aus Hamburg" },
   description:
-    "Websites für lokale Unternehmen aus Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
+    "Websites für lokale Unternehmen in ganz Deutschland, gebaut in Hamburg. Sie schicken uns Ihre Unterlagen, wir melden uns persönlich und liefern die fertige Seite — meist in 1–2 Werktagen.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -203,7 +204,7 @@ function Hero() {
                   Websites
                 </span>
                 <br />
-                {"für Hamburger "}
+                {"für Ihr "}
                 <span className="hero-shine serif-italic text-muted-foreground font-normal">
                   Unternehmen.
                 </span>
@@ -213,8 +214,8 @@ function Hero() {
               className="reveal text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:mt-9 sm:text-lg"
               style={{ "--reveal-delay": "900ms" } as React.CSSProperties}
             >
-              Logo, ein paar Bilder, ein paar Sätze — den Rest machen
-              wir. Zum Festpreis, ab 499 €.
+              Aus Hamburg, für Betriebe in ganz Deutschland. Logo, ein
+              paar Bilder, ein paar Sätze — den Rest machen wir.
             </p>
             <div
               className="reveal mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-9"
@@ -536,7 +537,7 @@ function FinalCta() {
         aria-hidden="true"
         className="bg-gold/8 pointer-events-none absolute bottom-0 right-[-8%] h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
       />
-      <div className="relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
+      <div className="relative mx-auto w-full max-w-5xl px-6 pt-20 pb-10 sm:pt-28 sm:pb-12">
         <div>
           <div>
             <h2 className="serif text-balance text-4xl font-normal leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-[4.25rem] lg:leading-[1.02]">
@@ -567,8 +568,11 @@ function FinalCta() {
               </a>
             </div>
           </div>
-
         </div>
+      </div>
+      {/* Hamburg-Silhouette zeichnet sich beim Hinscrollen in Gold. */}
+      <div className="relative mx-auto w-full max-w-6xl px-0 sm:px-6">
+        <HamburgSkyline className="text-gold block h-[108px] w-full sm:h-auto sm:aspect-[1200/240]" />
       </div>
     </section>
   );

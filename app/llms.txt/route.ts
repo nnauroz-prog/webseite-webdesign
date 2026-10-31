@@ -9,7 +9,7 @@
 
 const CONTENT = `# Sitalo Webdesign
 
-> Professionelle Websites für lokale Unternehmen aus Hamburg. Sie schicken uns drei Sachen — Logo, Bilder, ein paar Sätze. Wir bauen den Rest, meist in 1–2 Werktagen. Persönlich, ohne Baukasten-Stress.
+> Professionelle Websites für lokale Unternehmen in ganz Deutschland, gebaut in Hamburg. Sie schicken uns drei Sachen — Logo, Bilder, ein paar Sätze. Wir bauen den Rest, meist in 1–2 Werktagen. Persönlich, ohne Baukasten-Stress.
 
 ## Was Sitalo ist
 

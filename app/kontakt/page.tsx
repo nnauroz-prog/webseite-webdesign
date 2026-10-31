@@ -163,7 +163,7 @@ export default function KontaktPage() {
                 </p>
                 <p className="text-muted-foreground mt-2 text-sm">
                   Treffen vor Ort auf Wunsch — Café, Ihr Büro oder
-                  meins. Sonst läuft alles per Telefon, Video und
+                  unseres. Sonst läuft alles per Telefon, Video und
                   Mail. Funktioniert genauso gut.
                 </p>
               </div>
