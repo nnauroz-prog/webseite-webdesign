@@ -106,7 +106,7 @@ export function Vorteile() {
 export function Voranbringen() {
   const starter = getPaketBySlug("starter");
   const items = [
-    { title: "Eine neue Website", text: "Für Betriebe ohne Seite oder mit einer, die nicht mehr passt.", meta: starter ? starter.setup : "", href: "/pakete" },
+    { title: "Eine neue Website erstellen lassen", text: "Für Betriebe ohne Seite oder mit einer, die nicht mehr passt.", meta: starter ? starter.setup : "", href: "/website-erstellen-lassen" },
     { title: "Die bestehende Seite pflegen", text: "Hosting, Updates und Änderungen, auch wenn wir sie nicht gebaut haben.", meta: "ab 49 € / Monat", href: "/wartung" },
     { title: "Bei Google gefunden werden", text: "Wir prüfen Ihre Seite und schicken konkrete Punkte.", meta: "kostenlos, in 48 h", href: "/audit" },
   ];

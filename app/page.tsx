@@ -22,9 +22,9 @@ import { getPaketBySlug } from "@/lib/pakete-data";
 export const metadata: Metadata = {
   // Absoluter Titel — sonst hängt das Layout-Template noch ein
   // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
-  title: { absolute: "Sitalo — Webdesign aus Hamburg" },
+  title: { absolute: "Website erstellen lassen · Webdesign aus Hamburg | Sitalo" },
   description:
-    "Websites für lokale Unternehmen in ganz Deutschland, gestaltet und gebaut in Hamburg. Persönlich betreut, zum Festpreis, kleine Seiten oft in 1–2 Werktagen.",
+    "Website erstellen lassen zum Festpreis ab 499 €: individuell gestaltet, für Handy und Google optimiert. Persönlich aus Hamburg, für Betriebe in ganz Deutschland.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -187,7 +187,7 @@ function Hero() {
         <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
             <p className="text-muted-foreground text-[13px] font-medium tracking-wide sm:mt-6">
-              Webdesign aus Hamburg
+              Website erstellen lassen · Webdesign aus Hamburg
             </p>
             <h1 className="mt-4 text-balance text-[2.6rem] font-semibold leading-[1.0] tracking-[-0.04em] sm:text-[4rem] lg:text-[4.75rem]">
               Websites für Betriebe,{" "}
