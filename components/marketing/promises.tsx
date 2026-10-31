@@ -13,10 +13,6 @@ import { ArrowRight } from "lucide-react";
 export function Promises() {
   return (
     <section className="border-border/40 relative overflow-hidden border-t">
-      <div
-        aria-hidden="true"
-        className="bg-gold/8 pointer-events-none absolute -top-32 right-[-10%] -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
       {/* Marginalia rechts — wie ein redaktioneller Kapitel-Marker
           am Rand einer Buchseite. Nur Desktop. */}
       <div

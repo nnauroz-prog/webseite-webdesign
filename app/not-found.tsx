@@ -18,10 +18,6 @@ export default function NotFound() {
       <EditorialMasthead section="Fehler 404" />
       <main id="main" tabIndex={-1} className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
-          <div
-            aria-hidden="true"
-            className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-          />
           <div className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
             <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span

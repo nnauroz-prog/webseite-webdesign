@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check, Minus } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { MagneticButton } from "@/components/marketing/magnetic-button";
+import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import {
-  PAKETE,
-  getAllPaketSlugs,
-  getPaketBySlug,
-} from "@/lib/pakete-data";
+import { PAKETE, getAllPaketSlugs, getPaketBySlug } from "@/lib/pakete-data";
+
+const SECTION = "border-border/50 border-t";
+const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
 
 export function generateStaticParams() {
   return getAllPaketSlugs().map((slug) => ({ slug }));
@@ -26,7 +25,7 @@ export async function generateMetadata({
   const paket = getPaketBySlug(slug);
   if (!paket) return {};
 
-  const title = `${paket.name}-Paket — Website ${paket.setup}`;
+  const title = `Website-Paket ${paket.name}: ${paket.setup} Festpreis`;
   const description = paket.description;
   return {
     title,
@@ -128,185 +127,102 @@ export default async function PaketDetailPage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
-      <EditorialMasthead section={`Pakete · ${paket.name}`} />
+      <EditorialMasthead section={`Pakete › ${paket.name}`} />
 
       <main id="main" tabIndex={-1} className="flex-1">
-        {/* Breadcrumb + Hero */}
-        <section
-          className={
-            dark
-              ? "bg-foreground text-background relative overflow-hidden"
-              : "border-border/40 border-b"
-          }
-        >
-          {dark ? (
-            <div
-              aria-hidden="true"
-              className="bg-gold/15 pointer-events-none absolute -top-32 right-[8%] h-[28rem] w-[28rem] rounded-full blur-3xl"
-            />
-          ) : null}
-          <div className="relative mx-auto w-full max-w-7xl px-6 pt-12 pb-16 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-32">
-            <nav
-              aria-label="Breadcrumb"
-              className={
-                dark
-                  ? "text-background/55 text-sm"
-                  : "text-muted-foreground text-sm"
-              }
-            >
-              <ol className="flex items-center gap-2">
-                <li>
-                  <Link
-                    href="/"
-                    className={
-                      dark
-                        ? "hover:text-background transition-colors"
-                        : "hover:text-foreground transition-colors"
-                    }
-                  >
-                    Sitalo
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li>
-                  <Link
-                    href="/pakete"
-                    className={
-                      dark
-                        ? "hover:text-background transition-colors"
-                        : "hover:text-foreground transition-colors"
-                    }
-                  >
-                    Pakete
-                  </Link>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li
-                  className={dark ? "text-background" : "text-foreground"}
-                  aria-current="page"
-                >
-                  {paket.name}
-                </li>
-              </ol>
-            </nav>
-
-            <div className="mt-12 grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-              <div>
-                <p
+        {/* Hero: Name und Kernaussage links, Preis rechts */}
+        <section className={dark ? "bg-foreground text-background" : ""}>
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-20 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-8">
+              <p
+                className={`flex items-center gap-2.5 text-[13px] font-medium ${dark ? "text-background/60" : "text-muted-foreground"}`}
+              >
+                <span
+                  aria-hidden="true"
+                  className="bg-gold inline-block h-px w-8"
+                />
+                {paket.badge ? `Paket · ${paket.badge}` : "Paket"}
+              </p>
+              <h1 className="mt-5 text-[2.6rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance sm:text-6xl">
+                {paket.name}.{" "}
+                <span
                   className={
-                    dark
-                      ? "text-background/55 inline-flex items-center gap-2 text-[13px] font-medium"
-                      : "text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium"
+                    dark ? "text-background/60" : "text-muted-foreground"
                   }
                 >
-                  <span
+                  {paket.detailHeadline}
+                </span>
+              </h1>
+              <p
+                className={`mt-6 max-w-xl text-base leading-relaxed text-pretty sm:text-lg ${dark ? "text-background/75" : "text-muted-foreground"}`}
+              >
+                {paket.description}
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <Link
+                  href={`/anfrage?paket=${paket.slug}`}
+                  className={`group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight ${
+                    dark
+                      ? "bg-background text-foreground hover:bg-background/90"
+                      : "bg-foreground text-background hover:bg-foreground/90"
+                  }`}
+                >
+                  {paket.name} anfragen
+                  <ArrowRight
+                    className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5"
                     aria-hidden="true"
-                    className="bg-gold gold-pulse inline-block h-1 w-6"
                   />
-                  {paket.badge ? `Paket · ${paket.badge}` : "Paket"}
-                </p>
-                <h1 className="mt-6 text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-[6rem]">
-                  {paket.name}
-                  <br />
-                  <span
-                    className={
-                      dark
-                        ? "serif-italic text-background/65 font-normal"
-                        : "serif-italic text-muted-foreground font-normal"
-                    }
-                  >
-                    {paket.detailHeadline}
-                  </span>
-                </h1>
-                <p
-                  className={
-                    dark
-                      ? "text-background/75 mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg"
-                      : "text-muted-foreground mt-6 max-w-lg text-pretty text-base leading-relaxed sm:text-lg"
-                  }
+                </Link>
+                <Link
+                  href="/pakete"
+                  className={`inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline ${dark ? "text-background" : "text-foreground"}`}
                 >
-                  {paket.description}
-                </p>
-                <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                  <MagneticButton
-                    href={`/anfrage?paket=${paket.slug}`}
-                    className={
-                      dark
-                        ? "bg-background text-foreground hover:bg-background/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight"
-                        : "bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 items-center rounded-full px-8 text-base font-medium tracking-tight"
-                    }
-                  >
-                    {paket.name} anfragen
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  </MagneticButton>
-                  <Link
-                    href="/pakete"
-                    className={
-                      dark
-                        ? "text-background inline-flex h-14 items-center text-base font-medium underline-offset-[6px] hover:underline"
-                        : "text-foreground inline-flex h-14 items-center text-base font-medium underline-offset-[6px] hover:underline"
-                    }
-                  >
-                    Pakete vergleichen
-                  </Link>
-                </div>
+                  Pakete vergleichen
+                </Link>
               </div>
-              <div className="lg:pl-8 lg:pt-8">
-                <p
-                  className={
-                    dark
-                      ? "text-background/65 text-[13px] font-medium"
-                      : "text-muted-foreground text-[13px] font-medium"
-                  }
-                >
-                  Preis
-                </p>
-                <p className="drop-cap-3d mt-4 text-6xl font-semibold tracking-[-0.03em] sm:text-7xl">
-                  {paket.setup}
-                </p>
-                <p
-                  className={
-                    dark
-                      ? "text-background/65 mt-2 text-base"
-                      : "text-muted-foreground mt-2 text-base"
-                  }
-                >
-                  einmalig
-                </p>
-                <p
-                  className={
-                    dark
-                      ? "text-background/85 mt-6 text-xl"
-                      : "text-foreground/85 mt-6 text-xl"
-                  }
-                >
-                  + {paket.monthly}
-                </p>
-                <p
-                  className={
-                    dark
-                      ? "text-background/65 mt-1 text-sm"
-                      : "text-muted-foreground mt-1 text-sm"
-                  }
-                >
-                  laufende Betreuung
-                </p>
-              </div>
+            </div>
+            <div
+              className={`self-end border-t pt-6 lg:col-span-4 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8 ${dark ? "border-background/15" : "border-border"}`}
+            >
+              <p
+                className={`text-[13px] font-medium ${dark ? "text-background/60" : "text-muted-foreground"}`}
+              >
+                Festpreis
+              </p>
+              <p className="serif mt-3 text-6xl leading-none tracking-[-0.03em] lining-nums">
+                {paket.setup}
+              </p>
+              <p
+                className={`mt-2 text-[14px] ${dark ? "text-background/65" : "text-muted-foreground"}`}
+              >
+                einmalig, zzgl. MwSt.
+              </p>
+              <p className="mt-5 text-lg font-medium">+ {paket.monthly}</p>
+              <p
+                className={`mt-1 text-[14px] ${dark ? "text-background/65" : "text-muted-foreground"}`}
+              >
+                Hosting, Updates und Betreuung
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Intro */}
-        <section className="border-border/40 border-b">
-          <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-            <div className="space-y-8">
+        <section className={SECTION}>
+          <div className={INNER}>
+            <SectionHead
+              label="Überblick"
+              title={`Für wen ${paket.name} gemacht ist.`}
+            />
+            <div
+              className={`mt-10 max-w-3xl space-y-5 lg:mt-14 ${BODY_OFFSET}`}
+            >
               {paket.detailIntro.map((paragraph, i) => (
                 <p
                   key={i}
                   className={
                     i === 0
-                      ? "serif text-foreground text-balance text-2xl leading-[1.4] tracking-[-0.01em] sm:text-3xl lg:text-[2.25rem]"
-                      : "text-foreground/80 max-w-3xl text-pretty text-lg leading-relaxed sm:text-xl"
+                      ? "text-foreground text-xl leading-[1.5] tracking-[-0.01em] text-pretty"
+                      : "text-foreground/80 text-[16px] leading-[1.7] text-pretty"
                   }
                 >
                   {paragraph}
@@ -316,84 +232,156 @@ export default async function PaketDetailPage({
           </div>
         </section>
 
-        {/* What's included + What's not */}
-        <section className="border-border/40 border-b">
-          <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-            <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
+        <section className={`${SECTION} bg-secondary/30`}>
+          <div className={INNER}>
+            <SectionHead
+              label="Leistungsumfang"
+              title="Was enthalten ist, und was nicht."
+            />
+            <div
+              className={`mt-10 grid gap-10 sm:grid-cols-2 sm:gap-8 lg:mt-14 ${BODY_OFFSET}`}
+            >
               <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Was enthalten ist
-                </p>
-                <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
-                  Sie bekommen.
-                </h2>
-                <ul className="divide-border/60 mt-8 divide-y">
+                <h3 className="text-[15px] font-semibold">Enthalten</h3>
+                <ul className="border-border mt-3 border-t">
                   {paket.contents.map((c) => (
                     <li
                       key={c}
-                      className="text-foreground/85 flex items-baseline gap-4 py-3 text-[15px] leading-relaxed sm:text-base"
+                      className="border-border flex gap-3 border-b py-3 text-[15px] leading-relaxed"
                     >
-                      <span className="text-muted-foreground/60 font-mono text-xs">
-                        ✓
-                      </span>
-                      <span>{c}</span>
+                      <Check
+                        className="text-gold mt-1 h-4 w-4 shrink-0"
+                        aria-hidden="true"
+                      />
+                      {c}
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Was nicht enthalten ist
-                </p>
-                <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
-                  <span className="serif-italic text-muted-foreground font-normal">
-                    Ehrlich gesagt.
-                  </span>
-                </h2>
-                <ul className="divide-border/60 mt-8 divide-y">
+                <h3 className="text-[15px] font-semibold">Nicht enthalten</h3>
+                <ul className="border-border mt-3 border-t">
                   {paket.limits.map((l) => (
                     <li
                       key={l}
-                      className="text-muted-foreground flex items-baseline gap-4 py-3 text-[15px] leading-relaxed"
+                      className="border-border text-muted-foreground flex gap-3 border-b py-3 text-[15px] leading-relaxed"
                     >
-                      <span className="text-muted-foreground/40 font-mono text-xs">
-                        —
-                      </span>
-                      <span>{l}</span>
+                      <Minus
+                        className="mt-1 h-4 w-4 shrink-0 opacity-60"
+                        aria-hidden="true"
+                      />
+                      {l}
                     </li>
                   ))}
                 </ul>
-                <p className="text-muted-foreground mt-8 max-w-md text-sm leading-relaxed">
-                  Was hier fehlt, gibt's im nächsthöheren Paket. Wechseln
-                  ist jederzeit möglich, ohne Neuaufbau.
+                <p className="text-muted-foreground mt-4 text-[13.5px]">
+                  Was hier fehlt, gibt es im nächsthöheren Paket. Wechseln geht
+                  jederzeit, ohne Neuaufbau.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* After launch */}
-        <section className="bg-secondary/40 border-border/40 border-b">
-          <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-            <div className="grid gap-16 lg:grid-cols-[1fr_1.6fr] lg:gap-24">
-              <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Nach dem Launch
-                </p>
-                <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-5xl">
-                  Was{" "}
-                  <span className="serif-italic text-muted-foreground font-normal">
-                    danach passiert.
-                  </span>
-                </h2>
-              </div>
-              <ul className="divide-border/60 divide-y">
-                {paket.afterLaunch.map((item) => (
+        <section className={SECTION}>
+          <div className={INNER}>
+            <SectionHead label="Nach dem Start" title="Was danach passiert." />
+            <div className={`mt-10 lg:mt-14 ${BODY_OFFSET}`}>
+              <ol className="border-border border-t">
+                {paket.afterLaunch.map((item, i) => (
                   <li
                     key={item}
-                    className="text-foreground/85 py-4 text-[15px] leading-relaxed sm:text-base"
+                    className="border-border flex gap-4 border-b py-4 text-[15.5px] leading-relaxed"
                   >
+                    <span className="text-gold pt-0.5 text-[13px] font-semibold tabular-nums">
+                      0{i + 1}
+                    </span>
                     {item}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section className={`${SECTION} bg-secondary/30`}>
+          <div className={INNER}>
+            <SectionHead
+              label="Passt zu"
+              title={`Wer mit ${paket.name} gut fährt.`}
+            />
+            <div className={`mt-10 lg:mt-14 ${BODY_OFFSET}`}>
+              <ul className="flex flex-wrap gap-2">
+                {paket.recommendedFor.map((r) => (
+                  <li key={r.slug}>
+                    <Link
+                      href={`/branchen/${r.slug}`}
+                      className="border-border/70 bg-card hover:border-foreground/40 inline-flex rounded-full border px-4 py-2 text-[14px] transition-colors"
+                    >
+                      {r.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-muted-foreground mt-6 max-w-2xl text-[14.5px] leading-relaxed text-pretty">
+                Typische Projekte: {paket.examples.join(" · ")}.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className={SECTION}>
+          <div className={INNER}>
+            <SectionHead
+              label="Fragen"
+              title={`Fragen zum ${paket.name}-Paket.`}
+            />
+            <div
+              className={`divide-border/60 border-border/60 mt-10 divide-y border-y lg:mt-14 ${BODY_OFFSET}`}
+            >
+              {paket.faq.map((item) => (
+                <details key={item.q} className="group py-4">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6">
+                    <h3 className="text-[16px] leading-snug font-medium sm:text-[17px]">
+                      {item.q}
+                    </h3>
+                    <span
+                      aria-hidden="true"
+                      className="text-muted-foreground text-xl transition-transform group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="text-muted-foreground mt-3 max-w-2xl text-[15px] leading-relaxed">
+                    {item.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={SECTION}>
+          <div className={INNER}>
+            <SectionHead
+              label="Andere Pakete"
+              title={`${paket.name} passt nicht ganz?`}
+            />
+            <div className={`mt-10 lg:mt-14 ${BODY_OFFSET}`}>
+              <ul className="border-border border-t">
+                {otherPakete.map((other) => (
+                  <li key={other.slug} className="border-border border-b">
+                    <Link
+                      href={`/pakete/${other.slug}`}
+                      className="group flex items-baseline justify-between gap-6 py-5"
+                    >
+                      <span className="text-lg font-semibold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+                        {other.name}
+                      </span>
+                      <span className="text-muted-foreground text-[14px] tabular-nums">
+                        {other.setup} · + {other.monthly}
+                      </span>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -401,135 +389,22 @@ export default async function PaketDetailPage({
           </div>
         </section>
 
-        {/* Recommended for */}
-        <section className="border-border/40 border-b">
-          <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-            <p className="text-muted-foreground text-[13px] font-medium">
-              Typische Beispiele
-            </p>
-            <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-5xl">
-              Wer mit{" "}
-              <span className="serif-italic text-muted-foreground font-normal">
-                {paket.name}
-              </span>{" "}
-              meist gut fährt.
+        <section className="bg-foreground text-background">
+          <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
+            <h2 className="text-3xl leading-tight font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+              Klingt nach {paket.name}?{" "}
+              <span className="text-background/65">Schreiben Sie uns.</span>
             </h2>
-            <ul className="mt-12 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {paket.recommendedFor.map((r) => (
-                <li key={r.slug}>
-                  <Link
-                    href={`/branchen/${r.slug}`}
-                    className="border-border/60 hover:border-foreground/40 hover:bg-secondary/40 group flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 transition-all"
-                  >
-                    <span className="text-foreground text-[15px] font-medium tracking-tight">
-                      {r.label}
-                    </span>
-                    <ArrowRight className="text-muted-foreground group-hover:text-foreground h-4 w-4 transition-all group-hover:translate-x-0.5" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <p className="text-muted-foreground mt-12 max-w-2xl text-pretty text-[15px] leading-relaxed">
-              Konkrete Beispiele aus diesem Paket:{" "}
-              {paket.examples.join(" · ")}.
-            </p>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="border-border/40 border-b">
-          <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-28">
-            <div className="grid gap-16 lg:grid-cols-[0.9fr_1.4fr] lg:gap-24">
-              <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Fragen zum {paket.name}-Paket
-                </p>
-                <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl lg:text-5xl">
-                  Was Kunden
-                  <br />
-                  <span className="serif-italic text-muted-foreground font-normal">
-                    konkret fragen.
-                  </span>
-                </h2>
-              </div>
-              <dl className="divide-border/70 -mt-4 divide-y">
-                {paket.faq.map((item) => (
-                  <details key={item.q} className="group py-6">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-medium tracking-[-0.01em] sm:text-xl">
-                      {item.q}
-                      <span className="text-muted-foreground transition-transform group-open:rotate-45">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={1.5}
-                          className="h-5 w-5"
-                          aria-hidden="true"
-                        >
-                          <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                        </svg>
-                      </span>
-                    </summary>
-                    <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed text-pretty">
-                      {item.a}
-                    </p>
-                  </details>
-                ))}
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        {/* Other packages */}
-        <section className="border-border/40 border-b">
-          <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
-            <p className="text-muted-foreground text-[13px] font-medium">
-              Andere Pakete
-            </p>
-            <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.025em] sm:text-4xl">
-              {paket.name} passt nicht ganz?
-            </h2>
-            <ul className="mt-12 grid gap-3 sm:grid-cols-2">
-              {otherPakete.map((other) => (
-                <li key={other.slug}>
-                  <Link
-                    href={`/pakete/${other.slug}`}
-                    className="border-border/60 hover:border-foreground/40 hover:bg-secondary/40 group flex items-center justify-between gap-4 rounded-2xl border px-6 py-5 transition-all"
-                  >
-                    <div>
-                      <p className="text-foreground text-lg font-medium tracking-tight">
-                        {other.name}
-                      </p>
-                      <p className="text-muted-foreground mt-1 text-sm">
-                        {other.setup} · + {other.monthly}
-                      </p>
-                    </div>
-                    <ArrowRight className="text-muted-foreground group-hover:text-foreground h-5 w-5 transition-all group-hover:translate-x-0.5" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Closer */}
-        <section>
-          <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-            <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
-              <p className="serif text-foreground max-w-xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
-                Klingt nach {paket.name}?{" "}
-                <span className="serif-italic text-muted-foreground">
-                  Schreiben Sie uns kurz.
-                </span>
-              </p>
-              <Link
-                href={`/anfrage?paket=${paket.slug}`}
-                className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-14 shrink-0 items-center rounded-full px-8 text-base font-medium tracking-tight transition-all"
-              >
-                {paket.name} anfragen
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </div>
+            <Link
+              href={`/anfrage?paket=${paket.slug}`}
+              className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+            >
+              {paket.name} anfragen
+              <ArrowRight
+                className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </Link>
           </div>
         </section>
       </main>

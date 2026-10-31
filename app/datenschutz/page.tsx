@@ -24,10 +24,6 @@ export default function DatenschutzPage() {
 
       <main id="main" tabIndex={-1} className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
-          <div
-            aria-hidden="true"
-            className="bg-gold/8 pointer-events-none absolute -top-32 -left-20 -z-10 h-[24rem] w-[24rem] rounded-full blur-[60px] sm:blur-[120px]"
-          />
           <div className="mx-auto w-full max-w-3xl px-6 py-16 sm:py-24">
             <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
               <span

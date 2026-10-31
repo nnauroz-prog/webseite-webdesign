@@ -55,10 +55,6 @@ function Hero({
 }) {
   return (
     <section className="border-border/40 relative overflow-hidden border-b">
-      <div
-        aria-hidden="true"
-        className="bg-gold/10 pointer-events-none absolute -top-32 -left-20 -z-10 h-[28rem] w-[28rem] rounded-full blur-[60px] sm:blur-[120px]"
-      />
       <div className="mx-auto w-full max-w-5xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 lg:pt-32">
         <EditorialEyebrow>{data.eyebrow}</EditorialEyebrow>
         <h1 className="mt-6 text-balance text-[2.75rem] font-semibold leading-[1.0] tracking-[-0.035em] sm:text-6xl lg:text-[5.25rem] lg:tracking-[-0.04em]">

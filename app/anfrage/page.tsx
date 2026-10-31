@@ -54,11 +54,6 @@ export default async function AnfragePage({
 
       <main id="main" tabIndex={-1} className="flex-1">
         <section className="border-border/40 relative overflow-hidden border-b">
-          {/* Dezenter Gold-Halo — konsistent mit Hero-Sprache. */}
-          <div
-            aria-hidden="true"
-            className="bg-gold/10 pointer-events-none absolute -top-32 left-1/2 -z-10 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full blur-[60px] sm:blur-[120px]"
-          />
           {/* Single-Column statt 2-Column-Hero: das Formular ist der
               Hauptakt, nicht ein Side-Show neben langem Marketing-Text.
               Mobile wie Desktop: Form so weit oben wie möglich. */}
