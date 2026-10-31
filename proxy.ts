@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { normalizeSupabaseUrl } from "@/lib/supabase/env";
+
 /**
  * Erneuert die Supabase-Login-Sitzung für den Admin-Bereich, bevor
  * die Seite rendert. Supabase rotiert das Refresh-Token bei jeder
@@ -14,7 +16,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * (lib/admin/auth.ts).
  */
 export async function proxy(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return NextResponse.next();
 
