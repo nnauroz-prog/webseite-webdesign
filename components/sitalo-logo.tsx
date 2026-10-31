@@ -36,7 +36,7 @@ export function SitaloLogo({
     >
       <span
         aria-hidden="true"
-        className="serif inline-flex items-center font-medium tracking-[0.06em]"
+        className="font-logo inline-flex items-center font-medium tracking-[0.06em]"
         style={{ fontSize: fontPx }}
       >
         SITAL

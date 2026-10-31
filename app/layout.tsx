@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Cormorant_Garamond, Schibsted_Grotesk } from "next/font/google";
+import { Cormorant_Garamond, Doto, IBM_Plex_Mono, Mona_Sans } from "next/font/google";
 
 import { CommandPalette } from "@/components/marketing/command-palette";
 import { buildSearchIndex } from "@/lib/search-index";
@@ -8,36 +8,49 @@ import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PlausibleScript } from "@/components/marketing/plausible-script";
 import { ShortcutHelp } from "@/components/marketing/shortcut-help";
 import "./globals.css";
+import "./hafen.css";
 import { SITE_URL } from "@/lib/site";
 
 // Display: "swap" auf allen Fonts — der Browser nimmt sofort den
 // Fallback und tauscht aus, sobald die Web-Font geladen ist. Vermeidet
-// FOIT (Flash of Invisible Text), wo Text bis zu 3 s unsichtbar bleibt,
-// und damit eine LCP-Verzögerung. Cormorant-Weight 600 raus — wir nutzen
-// nur 400 (Headline-Serif) und 400-italic (Akzent-Italic).
-// Grundschrift: Schibsted Grotesk — eine Zeitungs-Grotesk aus
-// Skandinavien, sachlich mit eigener Handschrift. Bewusst nicht die
-// Next.js-Standardschrift Geist, die man von unzähligen Vorlagen kennt.
-const brandSans = Schibsted_Grotesk({
+// FOIT (Flash of Invisible Text) und damit eine LCP-Verzögerung.
+//
+// Grundschrift: Mona Sans, variabel in Breite und Stärke. Überschriften
+// stehen breit und kräftig wie Beschriftungen im Hafen (Containerbrücken,
+// Kaischilder), Fließtext in normaler Breite.
+const brandSans = Mona_Sans({
   variable: "--font-brand-sans",
   subsets: ["latin"],
+  axes: ["wdth"],
   display: "swap",
 });
 
-// Mono und Serife stehen nie im ersten Bildschirm — nicht vorladen,
-// damit die Grundschrift (größter Text im Hero) zuerst kommt.
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// IBM Plex Mono für Beschriftungen: Containernummern, Uhrzeit,
+// Bildunterschriften. Steht nie als größter Text im ersten Bildschirm,
+// deshalb nicht vorladen.
+const brandMono = IBM_Plex_Mono({
+  variable: "--font-brand-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
   preload: false,
 });
 
+// Punktmatrix nur für die Abfahrtstafel mit den Preisen.
+const dotMatrix = Doto({
+  variable: "--font-dot",
+  subsets: ["latin"],
+  weight: ["700", "800"],
+  display: "swap",
+  preload: false,
+});
+
+// Cormorant nur noch für die Wortmarke (SITAL + Doppelring), so wie
+// im ursprünglichen Logo.
 const cormorant = Cormorant_Garamond({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["400", "500"],
-  style: ["normal", "italic"],
+  weight: ["500"],
   display: "swap",
   preload: false,
 });
@@ -135,7 +148,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${brandSans.variable} ${geistMono.variable} ${cormorant.variable} h-full scroll-smooth antialiased`}
+      className={`${brandSans.variable} ${brandMono.variable} ${dotMatrix.variable} ${cormorant.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col pb-20 md:pb-0">
         <a

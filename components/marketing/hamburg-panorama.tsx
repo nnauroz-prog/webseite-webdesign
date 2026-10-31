@@ -3,7 +3,8 @@ import Image from "next/image";
 import { HamburgSkyline } from "@/components/marketing/hamburg-skyline";
 
 /**
- * Hamburg-Panorama unter dem Hero, über die volle Breite, Ränder laufen
+ * Hamburg-Panorama als Linienzeichnung über die volle Breite (Startseite,
+ * unten im Kontakt-Abschnitt). Ränder laufen
  * weich in den Hintergrund aus.
  *
  * Solange kein eigenes Panorama-Bild hinterlegt ist, steht hier die

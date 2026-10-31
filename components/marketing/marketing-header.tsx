@@ -106,12 +106,12 @@ export function MarketingHeader({
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 backdrop-blur-xl transition-[background-color,border-color] duration-500 print:hidden",
+          "sticky top-0 z-40 transition-[background-color,border-color] duration-300 print:hidden",
           scrolled
-            ? "border-border/40 border-b bg-background/85"
+            ? "border-border border-b bg-background"
             : onDark
               ? "bg-foreground border-b border-transparent"
-              : "border-transparent border-b bg-background/0",
+              : "border-transparent border-b bg-transparent",
           className,
         )}
       >
@@ -126,14 +126,14 @@ export function MarketingHeader({
 
         {/* Desktop nav — Gold-Underline-Animation auf Hover über das
             ::after-Pseudo-Element via .nav-link-underline (globals.css). */}
-        <nav className="hidden items-center gap-1 text-sm md:flex">
+        <nav className="hidden items-center gap-1 text-[14.5px] lg:flex">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "nav-link-underline relative rounded-full px-3 py-2 transition-colors",
-                onDark ? "text-background/75 hover:text-background" : "text-muted-foreground hover:text-foreground",
+                "nav-link-underline relative px-2.5 py-2 font-medium transition-colors lg:px-3",
+                onDark ? "text-background/80 hover:text-background" : "text-foreground/80 hover:text-foreground",
               )}
             >
               {item.label}
@@ -142,12 +142,21 @@ export function MarketingHeader({
         </nav>
 
         <div className="flex items-center gap-2">
+          <a
+            href="tel:+491607621876"
+            className={cn(
+              "mr-2 hidden text-[14.5px] font-semibold tabular-nums transition-colors xl:inline",
+              onDark ? "text-background hover:text-gold" : "text-foreground hover:text-gold-ink",
+            )}
+          >
+            0160 7621876
+          </a>
           {/* Desktop CTA */}
           <Link
             href="/anfrage"
             className={cn(
-              "hidden h-10 items-center justify-center rounded-full px-5 text-sm font-medium tracking-tight shadow-sm transition-colors hover:shadow md:inline-flex",
-              onDark ? "bg-background text-foreground hover:bg-background/90" : "bg-foreground text-background hover:bg-foreground/90",
+              "hidden h-10 items-center justify-center rounded-[2px] px-5 text-[14px] font-semibold transition-colors lg:inline-flex",
+              onDark ? "bg-gold text-foreground hover:bg-background" : "bg-foreground text-background hover:bg-gold hover:text-foreground",
             )}
           >
             Website anfragen
@@ -157,8 +166,8 @@ export function MarketingHeader({
           <Link
             href="/anfrage"
             className={cn(
-              "inline-flex h-9 items-center justify-center rounded-full px-3.5 text-xs font-medium tracking-tight shadow-sm transition-all md:hidden",
-              onDark ? "bg-background text-foreground hover:bg-background/90" : "bg-foreground text-background hover:bg-foreground/90",
+              "inline-flex h-9 items-center justify-center rounded-[2px] px-3.5 text-[13px] font-semibold transition-colors lg:hidden",
+              onDark ? "bg-gold text-foreground" : "bg-foreground text-background",
             )}
           >
             Anfragen
@@ -170,8 +179,8 @@ export function MarketingHeader({
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
-              "inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors md:hidden",
-              onDark ? "border-background/30 text-background hover:bg-background/10" : "border-border bg-background hover:bg-secondary",
+              "inline-flex h-9 w-9 items-center justify-center rounded-[2px] border transition-colors lg:hidden",
+              onDark ? "border-background/40 text-background hover:bg-background/10" : "border-foreground/70 bg-transparent hover:bg-secondary",
             )}
           >
             {menuOpen ? (
@@ -219,7 +228,7 @@ function MobileFullscreenMenu({
       aria-hidden={!open}
       inert={!open}
       className={cn(
-        "bg-foreground text-background fixed inset-0 z-[60] flex flex-col transition-all duration-300 ease-out md:hidden print:hidden",
+        "bg-foreground text-background fixed inset-0 z-[60] flex flex-col transition-all duration-300 ease-out lg:hidden print:hidden",
         open
           ? "pointer-events-auto opacity-100"
           : "pointer-events-none opacity-0",
@@ -231,14 +240,12 @@ function MobileFullscreenMenu({
     >
       {/* Header-Zeile innerhalb des Menüs: Wordmark links, X rechts */}
       <div className="flex items-center justify-between px-6 pt-4">
-        <span className="serif text-background text-lg text-[13px]">
-          Sitalo
-        </span>
+        <SitaloLogo size="sm" tone="light" />
         <button
           type="button"
           onClick={onClose}
           aria-label="Menü schließen"
-          className="border-background/20 text-background hover:bg-background/10 inline-flex h-10 w-10 items-center justify-center rounded-full border transition-colors"
+          className="border-background/30 text-background hover:bg-background/10 inline-flex h-10 w-10 items-center justify-center rounded-[2px] border transition-colors"
         >
           <X className="h-5 w-5" aria-hidden="true" />
         </button>
@@ -257,7 +264,7 @@ function MobileFullscreenMenu({
             href={item.href}
             onClick={onClose}
             className={cn(
-              "text-background block shrink-0 py-3 text-3xl font-semibold uppercase tracking-[-0.01em] transition-opacity sm:text-4xl",
+              "text-background block shrink-0 py-2.5 text-[2rem] font-bold tracking-[-0.025em] [font-stretch:112%] transition-opacity sm:text-4xl",
               open
                 ? "translate-y-0 opacity-100"
                 : "translate-y-3 opacity-0",
@@ -278,7 +285,7 @@ function MobileFullscreenMenu({
         <Link
           href="/anfrage"
           onClick={onClose}
-          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 text-[15px] font-medium tracking-tight transition-all"
+          className="btn-signal w-full"
         >
           Website anfragen
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -287,29 +294,25 @@ function MobileFullscreenMenu({
           <div className="flex flex-wrap gap-2.5">
             <a
               href="tel:+491607621876"
-              className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+              className="border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors"
             >
               Anrufen
             </a>
             <a
               href="mailto:info@sitalo.de"
-              className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+              className="border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors"
             >
               Schreiben
             </a>
             <a
               href="/sitalo-kontakt.vcf"
               download="Sitalo-Webdesign.vcf"
-              className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
+              className="border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors"
             >
               Speichern
             </a>
           </div>
-          <span
-            className="serif-italic text-background/50 text-base"
-          >
-            — Aus Hamburg
-          </span>
+          <span className="label-mono text-stahl-hell">0160 7621876 · Hamburg</span>
         </div>
       </div>
     </div>

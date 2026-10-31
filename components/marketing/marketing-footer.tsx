@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
+import { ElbeLinie } from "@/components/marketing/hafen/elbe-linie";
 import { SitaloLogo } from "@/components/sitalo-logo";
 
 /**
@@ -18,11 +19,12 @@ export function MarketingFooter() {
     <>
       <BackToTop />
       <footer className="bg-foreground text-background relative overflow-hidden print:hidden">
-        <div className="relative mx-auto grid w-full max-w-6xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <ElbeLinie />
+        <div className="relative mx-auto grid w-full max-w-6xl gap-12 px-5 pt-10 pb-16 sm:px-6 sm:pt-12 sm:pb-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
             <SitaloLogo size="md" tone="light" />
             <p className="text-background/75 mt-6 text-[14px] leading-relaxed">
-              Websites für lokale Unternehmen, persönlich gemacht in Hamburg.
+              Websites für Betriebe in ganz Deutschland. Gestaltet und gebaut in Hamburg.
             </p>
           </div>
           <FooterCol title="Angebot">
@@ -62,7 +64,7 @@ export function MarketingFooter() {
         </div>
 
         <div className="border-background/10 border-t">
-          <div className="text-background/55 mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs">
+          <div className="text-background/60 mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-6 font-mono text-[12px] sm:px-6">
             <span>© {year} Sitalo Webdesign</span>
             <span className="flex gap-5">
               <Link href="/impressum" className="hover:text-background transition-colors">
@@ -91,7 +93,7 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h3 className="text-background/55 mb-5 text-[13px] font-medium">
+      <h3 className="label-mono text-stahl-hell mb-5">
         {title}
       </h3>
       <ul className="space-y-3 text-[15px]">{children}</ul>

@@ -5,44 +5,51 @@ html {
   font-feature-settings: "liga" 1, "dlig" 0, "hlig" 0, "calt" 0;
 }
 
-/* Sitalo palette — warm cream, espresso brown, gold as primary
-   action accent. Plus zwei dezente Tinten-Akzente als Sekundär-
-   Familie: ink-petrol für editoriale Highlights (Drop-Caps,
-   Pull-Quotes, inline-bold Zahlen) und ink-olive für kleine
-   Detail-Akzente (Bullets, Separator-Punkte). Beide bewusst
-   gedeckt — kein Knall-Blau, kein Park-Grün. */
+/* ------------------------------------------------------------------
+   Hafen-Palette. Grundfläche wie Elbnebel (neutrales Hellgrau, kein
+   Creme), Schrift und dunkle Flächen in Teer (Schiffsrumpf,
+   Kaimauer), Signal-Orange als einziger lauter Akzent (Containerbrücke,
+   Primärknopf). Hafengrün und Container-Rot als ruhige Zweitfarben.
+
+   Der Token heißt aus historischen Gründen weiter --gold, damit alle
+   bestehenden Klassen (bg-gold, text-gold …) die neue Farbe bekommen.
+   Für Schrift auf hellem Grund gibt es --gold-ink (AA-Kontrast).
+   ------------------------------------------------------------------ */
 :root {
-  --radius: 0.6rem;
+  --radius: 0.25rem;
 
-  /* Hanseatische Palette: tiefes Marineblau statt Braun, klares Weiß
-     statt Creme, Gold als Akzent (Hafen, Messing, Schiffsbeschläge). */
-  --background: oklch(0.985 0.004 250);
-  --foreground: oklch(0.23 0.055 258);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.23 0.055 258);
+  --background: #eeeeeb;
+  --foreground: #1b1d1e;
+  --card: #fafaf8;
+  --card-foreground: #1b1d1e;
 
-  --primary: oklch(0.25 0.06 258);
-  --primary-foreground: oklch(0.985 0.004 250);
+  --primary: #1b1d1e;
+  --primary-foreground: #eeeeeb;
 
-  --secondary: oklch(0.955 0.012 250);
-  --secondary-foreground: oklch(0.25 0.06 258);
-  --muted: oklch(0.965 0.008 250);
-  /* Muted-Foreground mit ~6:1 Kontrast auf dem Hintergrund — für
-     längere Body-Texte angenehm lesbar. */
-  --muted-foreground: oklch(0.45 0.035 256);
+  --secondary: #e4e4e0;
+  --secondary-foreground: #1b1d1e;
+  --muted: #e7e7e3;
+  /* Stahl: Nebentexte, ~5,6:1 auf der Grundfläche. */
+  --muted-foreground: #565b5d;
 
-  /* Helles Elbblau — u. a. für die Aurora-Flächen. */
-  --accent: oklch(0.91 0.04 238);
-  --accent-foreground: oklch(0.3 0.07 255);
-  --gold: oklch(0.7 0.12 78);
+  --accent: #e2e2de;
+  --accent-foreground: #1b1d1e;
 
-  /* Tinten-Akzente — sekundär zur Gold-Primärfarbe. */
-  --ink-petrol: oklch(0.42 0.08 225);
-  --ink-olive: oklch(0.6 0.1 78);
+  /* Signal-Orange (Containerbrücke). Als Fläche und auf Teer. */
+  --gold: #f45b1e;
+  /* Dasselbe Orange, abgedunkelt für Schrift auf hellem Grund. */
+  --gold-ink: #b13d0c;
 
-  --border: oklch(0.9 0.012 250);
-  --input: oklch(0.9 0.012 250);
-  --ring: oklch(0.55 0.1 250);
+  /* Zweitfarben aus dem Containerstapel. */
+  --ink-petrol: #2e5c4d; /* Hafengrün */
+  --ink-olive: #a8382a; /* Container-Rot */
+  --zink: #b3b6b2;
+  --teer-2: #26292b;
+  --stahl-hell: #a3a8a9;
+
+  --border: #d6d6d1;
+  --input: #cfcfca;
+  --ring: #f45b1e;
 }
 
 @theme inline {
@@ -59,18 +66,23 @@ html {
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
   --color-ink-petrol: var(--ink-petrol);
   --color-ink-olive: var(--ink-olive);
+  --color-zink: var(--zink);
+  --color-teer-2: var(--teer-2);
+  --color-stahl-hell: var(--stahl-hell);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-brand-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-brand-mono);
   --font-serif: var(--font-serif);
+  --font-dot: var(--font-dot);
 }
 
 @layer base {
@@ -102,19 +114,19 @@ html {
     pointer-events: none;
     opacity: 0.035;
     mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.14 0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.11 0 0 0 0 0.12 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 220px 220px;
   }
 
   /* Custom Selection: Gold-Tönung statt Browser-Default. Auf
      beiden Hintergründen (Cream und Dunkel-Sektionen) lesbar. */
   ::selection {
-    background-color: oklch(0.66 0.13 80 / 0.32);
+    background-color: rgb(244 91 30 / 0.32);
     color: var(--foreground);
   }
   .bg-foreground ::selection,
   [class*="bg-foreground"] ::selection {
-    background-color: oklch(0.66 0.13 80 / 0.45);
+    background-color: rgb(244 91 30 / 0.45);
     color: var(--background);
   }
 
@@ -122,7 +134,7 @@ html {
      Nur Webkit/Blink (Firefox hat eigene Scrollbar-API mit
      scrollbar-color, die wir parallel setzen). */
   html {
-    scrollbar-color: oklch(0.66 0.13 80 / 0.5) transparent;
+    scrollbar-color: rgb(244 91 30 / 0.5) transparent;
     scrollbar-width: thin;
   }
   ::-webkit-scrollbar {
@@ -133,14 +145,14 @@ html {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: oklch(0.66 0.13 80 / 0.35);
+    background-color: rgb(244 91 30 / 0.35);
     border-radius: 999px;
     border: 2px solid transparent;
     background-clip: content-box;
     transition: background-color 200ms;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: oklch(0.66 0.13 80 / 0.7);
+    background-color: rgb(244 91 30 / 0.7);
   }
 
   /* Editorial display defaults — tighter tracking, refined hierarchy. */
@@ -224,7 +236,7 @@ html {
   a[href]:focus-visible,
   [tabindex="0"]:focus-visible,
   summary:focus-visible {
-    outline: 2px solid oklch(0.66 0.13 80);
+    outline: 2px solid var(--gold);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -349,13 +361,13 @@ html {
   left: 50%;
   width: 0;
   height: 2px;
-  background-color: #c9a24f;
+  background-color: var(--gold);
   transform: translateX(-50%);
   transition: width 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  border-radius: 2px;
+  border-radius: 0;
 }
 .nav-link-underline:hover::after {
-  width: 20px;
+  width: calc(100% - 1.25rem);
 }
 
 /* Word-by-Word-Reveal für Headlines.
@@ -417,9 +429,10 @@ html {
      Geschichteter Text-Shadow ergibt Holzschnitt-Tiefe wie bei
      den anderen Drop-Caps der Seite. */
   .journal-lead::first-letter {
-    font-family: var(--font-serif), Cormorant, serif;
-    font-style: italic;
-    font-weight: 500;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-stretch: 115%;
+    font-style: normal;
+    font-weight: 780;
     color: var(--gold);
     font-size: 4.5em;
     line-height: 0.88;
@@ -427,12 +440,12 @@ html {
     margin: 0.1em 0.12em 0 -0.04em;
     padding-top: 0.05em;
     text-shadow:
-      1px 1px 0 rgb(201 162 79 / 0.18),
-      2px 2px 0 rgb(201 162 79 / 0.14),
-      3px 3px 0 rgb(201 162 79 / 0.11),
-      4px 4px 0 rgb(201 162 79 / 0.08),
-      5px 5px 0 rgb(201 162 79 / 0.06),
-      6px 6px 0 rgb(201 162 79 / 0.04);
+      1px 1px 0 rgb(244 91 30 / 0.18),
+      2px 2px 0 rgb(244 91 30 / 0.14),
+      3px 3px 0 rgb(244 91 30 / 0.11),
+      4px 4px 0 rgb(244 91 30 / 0.08),
+      5px 5px 0 rgb(244 91 30 / 0.06),
+      6px 6px 0 rgb(244 91 30 / 0.04);
   }
 }
 
@@ -1143,19 +1156,19 @@ html {
    ebenfalls flacher. */
 .drop-cap-3d-gold {
   text-shadow:
-    1px 1px 0 rgb(201 162 79 / 0.16),
-    2px 2px 0 rgb(201 162 79 / 0.1),
-    3px 3px 0 rgb(201 162 79 / 0.07);
+    1px 1px 0 rgb(244 91 30 / 0.16),
+    2px 2px 0 rgb(244 91 30 / 0.1),
+    3px 3px 0 rgb(244 91 30 / 0.07);
 }
 @media (min-width: 640px) {
   .drop-cap-3d-gold {
     text-shadow:
-      1px 1px 0 rgb(201 162 79 / 0.18),
-      2px 2px 0 rgb(201 162 79 / 0.14),
-      3px 3px 0 rgb(201 162 79 / 0.11),
-      4px 4px 0 rgb(201 162 79 / 0.08),
-      5px 5px 0 rgb(201 162 79 / 0.06),
-      6px 6px 0 rgb(201 162 79 / 0.04);
+      1px 1px 0 rgb(244 91 30 / 0.18),
+      2px 2px 0 rgb(244 91 30 / 0.14),
+      3px 3px 0 rgb(244 91 30 / 0.11),
+      4px 4px 0 rgb(244 91 30 / 0.08),
+      5px 5px 0 rgb(244 91 30 / 0.06),
+      6px 6px 0 rgb(244 91 30 / 0.04);
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -1282,37 +1295,128 @@ html {
   );
 }
 
-/* Editorial pull-quote serif italic — used for signatures and quotes. */
+/* Früher Cormorant, jetzt die breite Grotesk: Preise und Kennzahlen
+   stehen wie Beschriftungen am Containerterminal. Die Klassennamen
+   bleiben, damit bestehendes Markup ohne Änderung mitzieht. */
 .serif-italic {
-  font-family: var(--font-serif), ui-serif, Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-style: italic;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .serif {
-  font-family: var(--font-serif), ui-serif, Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-stretch: 112%;
+  font-weight: 700;
 }
 
-/* Die Serife steht nur noch bei Preisen und Kennzahlen — dort immer
-   Versalziffern, sonst fallen 3, 4, 5, 7, 9 unter die Grundlinie. */
 .serif,
 .serif-italic {
-  font-feature-settings: "lnum" 1;
+  font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
-/* Typografie-System: Überschriften stehen durchgehend in der
-   Grotesk. Das früher kursive Serifen-Akzentwort wird zur zweiten,
-   ruhigeren Tonstufe derselben Schrift — eine Schrift, zwei
-   Helligkeiten, statt Schriftmix in jedem Satz. Die Serife bleibt
-   für Zahlen und Preise reserviert. */
+/* Die Wortmarke behält die Antiqua aus dem ursprünglichen Logo. */
+.font-logo {
+  font-family: var(--font-serif), Cormorant, Georgia, serif;
+}
+
+/* Überschriften: breit und kräftig, wie Beschriftungen im Hafen.
+   Absichtlich ungeschichtet, damit es die Gewichts-Utilities
+   (font-semibold usw.) überstimmt und alle Seiten einheitlich sind. */
+:is(h1, h2):not(.label-mono) {
+  font-stretch: 112%;
+  font-weight: 740;
+}
+h3:not(.label-mono) {
+  font-stretch: 106%;
+  font-weight: 680;
+}
 :is(h1, h2, h3).serif,
 :is(h1, h2, h3) .serif,
 :is(h1, h2, h3) .serif-italic,
 :is(h1, h2, h3).serif-italic {
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: inherit;
   font-style: normal;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  font-stretch: inherit;
+  font-weight: inherit;
+}
+
+/* Signal-Orange als Schrift: auf hellem Grund abgedunkelt, auf
+   dunklen Flächen in voller Leuchtkraft. */
+.text-gold {
+  color: var(--gold-ink);
+}
+:is(.bg-foreground, .bg-teer-2, .on-dark) .text-gold,
+:is(.bg-foreground, .bg-teer-2, .on-dark).text-gold {
+  color: var(--gold);
+}
+
+@layer components {
+/* Beschriftung in Mono: kleine Versalien mit Sperrung. */
+.label-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Knöpfe im Hafen-Stil: kantig, Signal-Orange mit Teer-Schrift
+   (Weiß auf Orange hätte zu wenig Kontrast). */
+.btn-signal,
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  height: 3.25rem;
+  padding: 0 1.4rem;
+  border-radius: 2px;
+  font-size: 15.5px;
+  font-weight: 640;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+.btn-signal {
+  background: var(--gold);
+  color: var(--foreground);
+}
+.btn-signal:hover {
+  background: var(--foreground);
+  color: var(--background);
+}
+.btn-line {
+  border: 1.5px solid var(--foreground);
+  color: var(--foreground);
+}
+.btn-line:hover {
+  background: var(--foreground);
+  color: var(--background);
+}
+:is(.bg-foreground, .on-dark) .btn-signal:hover {
+  background: var(--background);
+  color: var(--foreground);
+}
+:is(.bg-foreground, .on-dark) .btn-line {
+  border-color: rgb(238 238 235 / 0.5);
+  color: var(--background);
+}
+:is(.bg-foreground, .on-dark) .btn-line:hover {
+  background: var(--background);
+  color: var(--foreground);
+}
+.btn-signal svg,
+.btn-line svg {
+  transition: transform 0.25s;
+}
+.btn-signal:hover svg,
+.btn-line:hover svg {
+  transform: translateX(3px);
+}
+
 }
 
 /* Keine treibenden Farbflächen mehr: ruhige, klare Flächen wirken
@@ -1373,9 +1477,9 @@ html {
   transform-origin: center;
 }
 @keyframes atelier-brief-pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 oklch(0.66 0.13 80 / 0.45); }
-  70% { transform: scale(1); box-shadow: 0 0 0 10px oklch(0.66 0.13 80 / 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 oklch(0.66 0.13 80 / 0); }
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgb(244 91 30 / 0.45); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgb(244 91 30 / 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgb(244 91 30 / 0); }
 }
 /* Nach 14,4 s (3 Pulse à 2,4 s) verstummt der Dot, bleibt aber
    als ruhiger Akzent sichtbar. */
@@ -1740,14 +1844,8 @@ body::before {
   to { opacity: 1; transform: none; }
 }
 
-/* Kleine Gold-Ziffern auf hellem Grund brauchen ein dunkleres Gold
-   für ausreichenden Kontrast (WCAG AA). Große Ziffern bleiben hell. */
-:where(.bg-background, body) .text-gold:is(.text-\[12px\], .text-\[13px\]) {
-  color: oklch(0.52 0.11 75);
-}
-
 /* ------------------------------------------------------------------
-   Grain: feines Papierkorn auf dunklen Flächen. Nimmt dem Marineblau
+   Grain: feines Papierkorn auf dunklen Flächen. Nimmt dem Teerschwarz
    das Digitale, ohne aufzufallen. Reines CSS, kein Bild.
    ------------------------------------------------------------------ */
 .grain {
@@ -1764,4 +1862,10 @@ body::before {
   mix-blend-mode: soft-light;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
+}
+
+/* Admin: kein Platz für die mobile CTA-Leiste der Marketing-Seiten
+   (body pb-20); der Admin regelt den unteren Abstand selbst. */
+body:has([data-admin]) {
+  padding-bottom: 0;
 }

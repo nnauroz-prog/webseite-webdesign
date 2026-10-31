@@ -16,13 +16,13 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const COLORS = {
-  background: "#F9FAFC",
-  foreground: "#0E1C33",
+  background: "#EEEEEB",
+  foreground: "#1B1D1E",
   muted: "#5B6B85",
-  gold: "#C9A24F",
+  gold: "#F45B1E",
   accent: "#E3ECF7",
-  highlightBg: "#0E1C33",
-  highlightFg: "#F9FAFC",
+  highlightBg: "#1B1D1E",
+  highlightFg: "#EEEEEB",
 };
 
 export function generateStaticParams() {

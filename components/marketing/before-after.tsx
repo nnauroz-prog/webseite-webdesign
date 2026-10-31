@@ -60,16 +60,17 @@ export function BeforeAfter() {
 
   return (
     <div className="select-none">
-      <div className="overflow-hidden rounded-2xl shadow-[0_40px_80px_-40px_rgb(15_25_50/0.45)] ring-1 ring-black/10">
-        <div className="flex items-center gap-2 bg-[#e9ecf1] px-3 py-2">
-          <span className="flex gap-1.5" aria-hidden="true">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-          </span>
-          <span className="mx-auto rounded-md bg-white/80 px-3 py-0.5 text-[11px] text-[#4b5563]">
-            www.tischlerei-nordholz.de
-          </span>
+      <div className="mb-3 flex justify-between gap-4" aria-hidden="true">
+        <span className="label-mono text-muted-foreground text-[11px]">← So oft gesehen</span>
+        <span className="label-mono text-[11px]">So bauen wir →</span>
+      </div>
+      <div className="overflow-hidden rounded-[2px] shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] ring-1 ring-black/15">
+        <div className="bg-foreground flex items-center gap-2 px-3 py-2">
+          <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
+            <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+            <rect x="1.5" y="6" width="9" height="7" rx="1" fill="currentColor" />
+          </svg>
+          <span className="text-background/85 font-mono text-[11.5px]">www.tischlerei-nordholz.de</span>
         </div>
         <div
           ref={frameRef}
@@ -109,12 +110,6 @@ export function BeforeAfter() {
               </svg>
             </div>
           </div>
-          <span className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-black/70 px-3 py-1 text-[12px] font-medium text-white">
-            Vorher
-          </span>
-          <span className="bg-foreground pointer-events-none absolute right-3 bottom-3 rounded-full px-3 py-1 text-[12px] font-medium text-white">
-            Mit Sitalo
-          </span>
 
           <input
             type="range"
@@ -135,62 +130,53 @@ export function BeforeAfter() {
   );
 }
 
-/** Typische ältere Betriebsseite: kleine Schrift, Tabellenoptik, Lauftext. */
+/** Typische Baukasten-Seite von etwa 2016: großes Titelbild mit dünner
+ *  Schrift, zentrierter Willkommenstext in kleinem Grau, Öffnungszeiten
+ *  als PDF, Cookie-Banner über dem Inhalt. Keine Parodie, sondern so,
+ *  wie viele Betriebsseiten heute noch aussehen. */
 function Vorher() {
   return (
-    <div className="h-full w-full bg-[#dfe6ee] p-6" style={{ fontFamily: "Verdana, Tahoma, sans-serif" }}>
-      <div className="mx-auto h-full w-[760px] border border-[#8aa0b8] bg-white">
-        <div className="bg-gradient-to-b from-[#3d6fa6] to-[#244d7c] px-4 py-3 text-center">
-          <p className="text-[26px] font-bold text-[#ffd84a]" style={{ fontFamily: "Georgia, serif", textShadow: "2px 2px 0 #102a4a" }}>
-            Tischlerei Nordholz
-          </p>
-          <p className="text-[11px] text-white">Ihr Partner für Holz seit 1987 !!!</p>
+    <div className="relative h-full w-full bg-white text-[#666]" style={{ fontFamily: "'Open Sans', Arial, sans-serif" }}>
+      <div className="flex h-12 items-center justify-between bg-[#f4f4f4] px-8 text-[12px]">
+        <span className="text-[15px] tracking-[0.18em] text-[#555] uppercase">Tischlerei Nordholz</span>
+        <span className="flex gap-5 uppercase tracking-[0.08em]">
+          <span className="text-[#c0392b]">Home</span>
+          <span>Über uns</span>
+          <span>Leistungen</span>
+          <span>Galerie</span>
+          <span>Kontakt</span>
+          <span>Impressum</span>
+        </span>
+      </div>
+      <div className="relative h-[230px] overflow-hidden">
+        <Image src="/images/atmosphere/handwerker-werkbank.webp" alt="" fill sizes="960px" className="object-cover brightness-75 saturate-50" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+          <p className="text-[34px] font-light tracking-[0.04em]">Willkommen</p>
+          <p className="mt-1 text-[13px] font-light">bei Ihrer Tischlerei im Hamburger Raum</p>
         </div>
-        <div className="flex border-y border-[#8aa0b8] bg-[#c9d6e4] text-[11px]">
-          {["Home", "Über uns", "Leistungen", "Galerie", "Anfahrt", "Gästebuch", "Links", "Impressum"].map((n) => (
-            <span key={n} className="border-r border-[#8aa0b8] px-3 py-1.5 text-[#1d3d63] underline">
-              {n}
-            </span>
-          ))}
+        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-white" />
+          <span className="h-2 w-2 rounded-full bg-white/50" />
+          <span className="h-2 w-2 rounded-full bg-white/50" />
         </div>
-        <div className="flex gap-4 p-4">
-          <div className="w-[170px] shrink-0 space-y-2 text-[10px]">
-            <div className="border border-[#8aa0b8] bg-[#eef2f6] p-2">
-              <p className="font-bold text-[#244d7c]">NEWS</p>
-              <p className="mt-1 text-[#333]">12.03.2019: Unsere Homepage ist online!</p>
-              <p className="mt-1 text-[#333]">Wir haben Betriebsferien vom 24.12.–02.01.</p>
-            </div>
-            <div className="border border-[#8aa0b8] bg-[#eef2f6] p-2 text-center">
-              <p className="text-[#333]">Sie sind Besucher Nr.</p>
-              <p className="mt-1 bg-black px-2 font-mono text-[14px] tracking-[0.2em] text-[#36ff5a]">004817</p>
-            </div>
-            <div className="border border-[#8aa0b8] bg-[#fff8c4] p-2 text-center text-[#a00]">
-              Diese Seite ist optimiert für Internet Explorer, 1024×768
-            </div>
-          </div>
-          <div className="flex-1 text-[11px] leading-[1.5] text-[#333]">
-            <p className="text-center text-[18px] font-bold text-[#244d7c]" style={{ fontFamily: "Georgia, serif" }}>
-              Herzlich Willkommen auf unserer Homepage !
-            </p>
-            <div className="mt-3 flex gap-3">
-              <div className="relative h-[120px] w-[160px] shrink-0 overflow-hidden border-4 border-double border-[#8aa0b8] grayscale-[40%]">
-                <Image src="/images/atmosphere/handwerker-werkbank.webp" alt="" fill sizes="160px" className="object-cover" />
-              </div>
-              <p>
-                Wir sind eine Tischlerei im Hamburger Raum und fertigen Möbel, Treppen, Fenster, Türen und vieles mehr
-                nach Ihren Wünschen. Qualität ist bei uns selbstverständlich. Rufen Sie uns an oder schreiben Sie uns eine
-                E-Mail, wir freuen uns auf Ihre Anfrage. Weitere Informationen finden Sie unter dem Menüpunkt
-                „Leistungen“. Bitte beachten Sie auch unsere Sonderangebote.
-              </p>
-            </div>
-            <p className="mt-3">
-              <b>Kontakt:</b> Tel. 040 / 123 45 67 · Fax 040 / 123 45 68 · E-Mail: info@tischlerei-nordholz.de
-            </p>
-            <p className="mt-3 text-center text-[10px] text-[#666]">
-              Letzte Aktualisierung: 14.06.2019 · © 2008–2019 · Webmaster
-            </p>
-          </div>
-        </div>
+      </div>
+      <div className="mx-auto max-w-[620px] px-6 py-6 text-center text-[11.5px] leading-[1.7]">
+        <p className="text-[17px] font-light text-[#555]">Herzlich willkommen auf unserer Homepage</p>
+        <p className="mt-3">
+          Wir sind ein Familienbetrieb und fertigen Möbel, Treppen, Fenster, Türen und vieles mehr nach Ihren Wünschen.
+          Qualität und Zuverlässigkeit sind für uns selbstverständlich. Weitere Informationen finden Sie unter dem
+          Menüpunkt Leistungen. Wir freuen uns auf Ihren Besuch!
+        </p>
+        <p className="mt-3">
+          <span className="text-[#c0392b] underline">Öffnungszeiten (PDF, 1,2 MB)</span> · Anfahrt siehe Kontakt
+        </p>
+        <p className="mt-2 text-[10px] text-[#6f6f6f]">© 2016 Tischlerei Nordholz · Erstellt mit einem Homepage-Baukasten</p>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-6 bg-[#333]/95 px-8 py-4 text-[11px] text-white">
+        <span>
+          Diese Website verwendet Cookies. Wenn Sie die Website weiter nutzen, gehen wir von Ihrem Einverständnis aus.
+        </span>
+        <span className="shrink-0 bg-[#c0392b] px-4 py-1.5">OK</span>
       </div>
     </div>
   );
@@ -222,11 +208,11 @@ function Nachher() {
           <p className="text-[13px] font-semibold" style={{ color: accent }}>
             Tischlerei in Hamburg · seit 1987
           </p>
-          <h3 className="mt-3 text-[44px] font-semibold leading-[1.02] tracking-[-0.035em]">
-            Maßarbeit aus Holz, die bleibt.
+          <h3 className="mt-3 text-[42px] font-semibold leading-[1.02] tracking-[-0.035em]">
+            Möbel, Treppen und Innenausbau aus eigener Werkstatt.
           </h3>
           <p className="mt-4 text-[16px] leading-relaxed text-[#4b5563]">
-            Möbel, Treppen und Innenausbau aus eigener Werkstatt. Mit festem Angebot in 48 Stunden.
+            Festes Angebot nach Aufmaß vor Ort, meist innerhalb von zwei Werktagen.
           </p>
           <div className="mt-6 flex gap-3">
             <span className="rounded-full px-5 py-2.5 text-[14px] font-medium text-white" style={{ background: accent }}>
@@ -237,9 +223,9 @@ function Nachher() {
             </span>
           </div>
           <div className="mt-8 flex gap-6 text-[13px] text-[#4b5563]">
-            <span>★ 4,9 bei Google</span>
             <span>Meisterbetrieb</span>
-            <span>Festpreis</span>
+            <span>Mo–Fr 7–16 Uhr</span>
+            <span>Einsatz bis 40 km</span>
           </div>
         </div>
       </div>
