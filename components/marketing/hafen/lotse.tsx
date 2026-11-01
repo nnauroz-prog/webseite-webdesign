@@ -50,7 +50,7 @@ const WIR: { title: string; tag?: string; text?: string }[] = [
     tag: "Ab Business",
     text: "Titel und Beschreibung für jede Seite, Sitemap und strukturierte Daten.",
   },
-  { title: "Pflege nach dem Start", tag: "Ab 49 € im Monat" },
+  { title: "Pflege nach dem Start", tag: "Ab 49\u00A0€ im Monat" },
 ];
 
 /** Signalflagge H des Internationalen Signalbuchs: „Ich habe einen Lotsen an Bord.“ */
@@ -133,7 +133,7 @@ export function Lotse() {
       <div className={s.foot}>
         <span>Ihr Teil beginnt mit einem Anruf.</span>
         <a href="tel:+491607621876" className={s.phone}>
-          0160 7621876
+          0160&nbsp;7621876
         </a>
       </div>
     </div>

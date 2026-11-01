@@ -40,7 +40,7 @@ export async function generateMetadata({
   const title = `Website für ${branche.label} erstellen lassen`;
   const lead =
     branche.shortBody.length > 100 ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "." : branche.shortBody;
-  const description = `${lead} Website zum Festpreis ab 499 €, gebaut in Hamburg.`;
+  const description = `${lead} Website zum Festpreis ab 499\u00A0€, gebaut in Hamburg.`;
   return {
     title,
     description,

@@ -26,8 +26,8 @@ export default async function Image({
     return editorialOgImage({
       variant: "hell",
       eyebrow: "Sitalo · Pakete",
-      headline: "Website-Pakete ab 499 €",
-      subline: "Dazu ab 49 € im Monat für Hosting, Updates und kleine Änderungen.",
+      headline: "Website-Pakete ab 499\u00A0€",
+      subline: "Dazu ab 49\u00A0€ im Monat für Hosting, Updates und kleine Änderungen.",
       url: "sitalo.de/pakete",
     });
   }

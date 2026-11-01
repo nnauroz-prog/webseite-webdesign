@@ -238,7 +238,7 @@ function Kontakt() {
             className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
             style={{ fontStretch: "118%", fontWeight: 780 }}
           >
-            0160 7621876
+            0160&nbsp;7621876
           </a>
         </div>
         <div className="lg:col-span-4 lg:col-start-9">

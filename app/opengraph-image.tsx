@@ -9,7 +9,7 @@ import { loadGoogleFont } from "@/lib/og-fonts";
  */
 
 export const runtime = "nodejs";
-export const alt = "Sitalo Webdesign aus Hamburg: Websites für Betriebe in ganz Deutschland, Festpreis ab 499 €.";
+export const alt = "Sitalo Webdesign aus Hamburg: Websites für Betriebe in ganz Deutschland, Festpreis ab 499\u00A0€.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -26,7 +26,7 @@ const C = {
 
 const LABEL = "SITALO · WEBDESIGN AUS HAMBURG";
 const HEADLINE = "Wir bauen Websites für Betriebe.";
-const SUBLINE = "Festpreis ab 499 € · Test-Link vor dem Start";
+const SUBLINE = "Festpreis ab 499\u00A0€ · Test-Link vor dem Start";
 
 const STACK = [
   [C.zink, C.rost],

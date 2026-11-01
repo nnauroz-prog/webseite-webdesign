@@ -141,7 +141,7 @@ export default function ManifestPage() {
                   Sitalo Webdesign, Hamburg
                   <br />
                   <a href="tel:+491607621876" className="hover:text-foreground underline-offset-4 hover:underline">
-                    0160 7621876
+                    0160&nbsp;7621876
                   </a>
                   {" · "}
                   <a href="mailto:info@sitalo.de" className="hover:text-foreground underline-offset-4 hover:underline">

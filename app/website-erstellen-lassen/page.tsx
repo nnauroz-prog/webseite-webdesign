@@ -25,7 +25,7 @@ import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
  */
 
 const TITLE =
-  "Website erstellen lassen ab 499 € | Festpreis · Sitalo";
+  "Website erstellen lassen ab 499\u00A0€ | Festpreis · Sitalo";
 const DESCRIPTION =
   "Website erstellen lassen zum Festpreis: individuell gestaltet, für Handy und Google optimiert, betreut aus Hamburg. Kleine Seiten oft in 1–2 Werktagen online.";
 
@@ -119,7 +119,7 @@ const VERGLEICH: { label: string; selbst: string; lassen: string; vorn: "selbst"
 const FAQ = [
   {
     q: "Was kostet es, eine Website erstellen zu lassen?",
-    a: `Bei uns ${PAKETE[0].setup} einmalig für eine Onepage-Website, ${PAKETE[1].setup} für eine mehrseitige Website. Dazu kommt ein Monatsbeitrag ab 49 € für Hosting, Updates und kleine Änderungen. Den genauen Festpreis bekommen Sie vor Auftrag schriftlich.`,
+    a: `Bei uns ${PAKETE[0].setup} einmalig für eine Onepage-Website, ${PAKETE[1].setup} für eine mehrseitige Website. Dazu kommt ein Monatsbeitrag ab 49\u00A0€ für Hosting, Updates und kleine Änderungen. Den genauen Festpreis bekommen Sie vor Auftrag schriftlich.`,
   },
   {
     q: "Wie lange dauert es, bis meine Website online ist?",
@@ -220,7 +220,7 @@ export default function WebsiteErstellenLassenPage() {
                 href="tel:+491607621876"
                 className="text-background text-[15.5px] font-semibold underline-offset-[6px] hover:underline"
               >
-                0160 7621876
+                0160&nbsp;7621876
               </a>
             </div>
           }
@@ -478,7 +478,7 @@ export default function WebsiteErstellenLassenPage() {
                 className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
                 style={{ fontStretch: "118%", fontWeight: 780 }}
               >
-                0160 7621876
+                0160&nbsp;7621876
               </a>
             </div>
             <div className="lg:col-span-4 lg:col-start-9">

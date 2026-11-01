@@ -58,7 +58,7 @@ export default function ImpressumPage() {
                 <Row label="Kontakt">
                   Telefon:{" "}
                   <a href="tel:+491607621876" className="underline underline-offset-4">
-                    0160 7621876
+                    0160&nbsp;7621876
                   </a>
                   <br />
                   E-Mail:{" "}

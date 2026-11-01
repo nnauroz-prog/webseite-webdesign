@@ -229,7 +229,7 @@ const FUNKELN = (() => {
 /* Beschriftungen der abgesetzten Container. Die Seriennummer ist der
    Einstiegspreis und zählt hoch; als Eigentümerkennung steht der
    Markenname statt eines (womöglich vergebenen) ISO-Präfixes. */
-const STARTER = getPaketBySlug("starter")?.setup ?? "ab 499 €";
+const STARTER = getPaketBySlug("starter")?.setup ?? "ab 499\u00A0€";
 const SCHILDER = [
   { serie: "000499", text: `Festpreis vorab · ${STARTER}` },
   { serie: "000500", text: "Test-Link vor dem Start" },

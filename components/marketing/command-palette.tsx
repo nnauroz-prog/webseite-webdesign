@@ -176,7 +176,7 @@ export function CommandPalette({
       {
         kind: "external",
         label: "Anrufen",
-        description: "0160 7621876",
+        description: "0160\u00A07621876",
         href: "tel:+491607621876",
         icon: Phone,
       },
@@ -193,7 +193,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Pakete & Preise",
-        description: "Starter ab 499 €, dazu ab 49 € im Monat",
+        description: "Starter ab 499\u00A0€, dazu ab 49\u00A0€ im Monat",
         href: "/pakete",
         icon: Package,
       },
@@ -214,7 +214,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Wartung & Werkbank",
-        description: "Pflege ab 49 €, Werkbank mit festen Stunden ab 299 €",
+        description: "Pflege ab 49\u00A0€, Werkbank mit festen Stunden ab 299\u00A0€",
         href: "/wartung",
         icon: Wrench,
       },

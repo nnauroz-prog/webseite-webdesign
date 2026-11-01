@@ -30,13 +30,13 @@ export const metadata: Metadata = {
   // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
   title: { absolute: "Website erstellen lassen · Webdesign aus Hamburg | Sitalo" },
   description:
-    "Website erstellen lassen zum Festpreis ab 499 €: individuell gestaltet, für Handy und Google optimiert. Persönlich aus Hamburg, für Betriebe in ganz Deutschland.",
+    "Website erstellen lassen zum Festpreis ab 499\u00A0€: individuell gestaltet, für Handy und Google optimiert. Persönlich aus Hamburg, für Betriebe in ganz Deutschland.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     title: "Sitalo — Webdesign aus Hamburg",
     description:
-      "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499 €, Test-Link vor dem Start.",
+      "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499\u00A0€, Test-Link vor dem Start.",
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
     // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Sitalo — Webdesign aus Hamburg",
-    description: "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499 €.",
+    description: "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499\u00A0€.",
   },
 };
 
@@ -63,7 +63,7 @@ const FAQ = [
   },
   {
     q: "Gibt es laufende Kosten?",
-    a: "Ja, einen Monatsbeitrag für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49 €, 79 €, 179 € oder 249 €. Nach sechs Monaten Mindestlaufzeit ist er zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
+    a: "Ja, einen Monatsbeitrag für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49\u00A0€, 79\u00A0€, 179\u00A0€ oder 249\u00A0€. Nach sechs Monaten Mindestlaufzeit ist er zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
   },
   {
     q: "Kann ich später noch etwas ändern lassen?",
@@ -87,8 +87,8 @@ const FAQ_LD = {
 };
 
 const STARTER = getPaketBySlug("starter");
-const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "499 €";
-const MONTHLY_FROM = STARTER ? STARTER.monthly.replace(/\s*\/\s*Monat$/, "") : "ab 49 €";
+const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "499\u00A0€";
+const MONTHLY_FROM = STARTER ? STARTER.monthly.replace(/\s*\/\s*Monat$/, "") : "ab 49\u00A0€";
 const STUDIO = getPaketBySlug("studio");
 /** Name und Preise je Paket für Ladeliste und Abfahrtstafel (Client). */
 const PAKETE_KURZ = paketeKurz();
@@ -421,7 +421,7 @@ function Kontakt() {
             className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4.2rem] lg:text-[4.4rem] xl:text-[4.9rem]"
             style={{ fontStretch: "118%", fontWeight: 780 }}
           >
-            0160 7621876
+            0160&nbsp;7621876
           </a>
         </div>
         <div className="lg:col-span-4 lg:col-start-9">

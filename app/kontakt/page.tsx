@@ -97,7 +97,7 @@ function Briefkopf() {
             className="hover:text-gold mt-8 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[3.6rem]"
             style={{ fontStretch: "118%", fontWeight: 780 }}
           >
-            0160 7621876
+            0160&nbsp;7621876
           </a>
           <div>
             <a
@@ -127,7 +127,7 @@ function Visitenkarte() {
         <SitaloLogo size="sm" />
         <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[13.5px] sm:text-[14.5px]">
           <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Telefon</span>
-          <span className="font-mono tabular-nums">0160 7621876</span>
+          <span className="font-mono tabular-nums">0160&nbsp;7621876</span>
           <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Mail</span>
           <span className="truncate font-mono">info@sitalo.de</span>
           <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Web</span>

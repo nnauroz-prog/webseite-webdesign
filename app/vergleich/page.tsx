@@ -86,7 +86,7 @@ export default function VergleichPage() {
 }
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
-const STARTER_MONTHLY = (getPaketBySlug("starter")?.monthly ?? "ab 49 € / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_MONTHLY = (getPaketBySlug("starter")?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
 
 /* ------------------------------------------------------------------
  * Faustregel: drei Zeilen, wer womit am besten fährt.
@@ -164,7 +164,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Die Ladezeit am Handy hängt stark von Vorlage, Bildern und Zusatz-Apps ab",
     ],
     realCost:
-      "Ab ca. 15 € im Monat. Dazu realistisch 10 bis 40 Stunden für den Aufbau und 1 bis 3 Stunden Pflege im Monat, je nachdem, wie oft sich etwas ändert.",
+      "Ab ca. 15\u00A0€ im Monat. Dazu realistisch 10 bis 40 Stunden für den Aufbau und 1 bis 3 Stunden Pflege im Monat, je nachdem, wie oft sich etwas ändert.",
   },
   {
     id: "squarespace",
@@ -180,7 +180,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Telefon-Knopf, Anfahrt oder Speisekarte am Handy richten Sie selbst ein",
     ],
     realCost:
-      "Ab ca. 16 € im Monat. Etwas weniger Pflege als bei Wix, dafür mehr Aufwand am Anfang, bis die Rechtstexte für Deutschland stimmen.",
+      "Ab ca. 16\u00A0€ im Monat. Etwas weniger Pflege als bei Wix, dafür mehr Aufwand am Anfang, bis die Rechtstexte für Deutschland stimmen.",
   },
   {
     id: "jimdo",
@@ -196,7 +196,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Wenig Spielraum für eine eigene Gestaltung, viele Jimdo-Seiten sehen sich ähnlich",
       "Der Export ist begrenzt. Bei einem Wechsel wird die Seite meist neu gebaut",
     ],
-    realCost: "Ab ca. 9 € im Monat. Der günstigste Einstieg, aber nach oben schnell begrenzt.",
+    realCost: "Ab ca. 9\u00A0€ im Monat. Der günstigste Einstieg, aber nach oben schnell begrenzt.",
   },
   {
     id: "ki-eigenbau",
@@ -215,7 +215,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Wenn nach dem Start etwas kaputtgeht, gibt es niemanden, den Sie anrufen können",
     ],
     realCost:
-      "Werkzeuge ca. 0 bis 30 € im Monat. Dazu realistisch 30 bis 80 Stunden Einarbeitung und laufende Pflege. Riskant, wenn der Betrieb auf die Seite angewiesen ist.",
+      "Werkzeuge ca. 0 bis 30\u00A0€ im Monat. Dazu realistisch 30 bis 80 Stunden Einarbeitung und laufende Pflege. Riskant, wenn der Betrieb auf die Seite angewiesen ist.",
   },
 ];
 
@@ -309,7 +309,7 @@ const TABLE: TableRow[] = [
   { feature: "Texte werden für Sie geschrieben", wix: "no", squarespace: "no", jimdo: "no", ki: "no", sitalo: "yes" },
   { feature: "Updates laufen ohne Ihr Zutun", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "no", sitalo: "yes" },
   { feature: "Umzug zu anderem Anbieter möglich", wix: "no", squarespace: "partial", jimdo: "no", ki: "yes", sitalo: "yes" },
-  { feature: "Bis 30 € im Monat", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
+  { feature: "Bis 30\u00A0€ im Monat", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
 ];
 
 const SPALTEN: { key: Exclude<keyof TableRow, "feature">; label: string }[] = [
@@ -435,7 +435,7 @@ function FinalCta() {
             Seite prüfen lassen {ARROW}
           </Link>
           <a href="tel:+491607621876" className="text-background text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
-            0160 7621876
+            0160&nbsp;7621876
           </a>
         </div>
       </div>

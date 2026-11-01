@@ -232,7 +232,7 @@ export default async function JournalPostPage({
                 className="hover:text-gold mt-4 block text-[2rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.6rem]"
                 style={{ fontStretch: "118%", fontWeight: 780 }}
               >
-                0160 7621876
+                0160&nbsp;7621876
               </a>
               <p className="text-muted-foreground mt-4 text-[15.5px] leading-relaxed">
                 Oder per Mail an{" "}

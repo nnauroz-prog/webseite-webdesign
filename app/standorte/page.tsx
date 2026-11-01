@@ -12,7 +12,7 @@ import { STANDORTE } from "@/lib/standorte-data";
 export const metadata: Metadata = {
   title: "Website erstellen lassen in Hamburg — nach Stadtteil",
   description:
-    "Website erstellen lassen in Hamburg: Webdesign für Betriebe in Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude und weiteren Stadtteilen. Ab 499 €.",
+    "Website erstellen lassen in Hamburg: Webdesign für Betriebe in Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude und weiteren Stadtteilen. Ab 499\u00A0€.",
   alternates: { canonical: "/standorte" },
 };
 

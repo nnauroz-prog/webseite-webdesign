@@ -263,7 +263,7 @@ export function InquiryForm({
           rows={5}
           value={data.message}
           onChange={(e) => update("message", e.target.value)}
-          placeholder="Zwei, drei Sätze reichen. Was Sie machen, was Sie brauchen, was Sie noch nicht haben — wir fragen den Rest in der Antwort."
+          placeholder="Zwei, drei Sätze reichen: was Ihr Betrieb macht und was die Website können soll. Den Rest fragen wir in der Antwort."
         />
       </div>
 
@@ -388,7 +388,7 @@ export function InquiryForm({
         <p className="text-muted-foreground text-[13px]">
           {canSubmit
             ? "Bereit zum Senden."
-            : "Drei Felder + Häkchen ausfüllen, dann geht's."}
+            : "Drei Felder ausfüllen und das Häkchen setzen, dann geht es los."}
         </p>
         <Button
           type="submit"

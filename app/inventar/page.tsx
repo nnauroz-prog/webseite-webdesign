@@ -204,7 +204,7 @@ function ClosingNote() {
               href="tel:+491607621876"
               className="text-foreground font-semibold whitespace-nowrap underline-offset-4 hover:underline"
             >
-              0160 7621876
+              0160&nbsp;7621876
             </a>
             .
           </p>
