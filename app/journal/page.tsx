@@ -203,7 +203,7 @@ export default function JournalPage() {
                 href="tel:+491607621876"
                 className="font-mono text-[15px] font-medium tabular-nums underline-offset-4 hover:underline"
               >
-                0160 7621876
+                0160&nbsp;7621876
               </a>
             </div>
           </div>

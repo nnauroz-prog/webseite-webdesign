@@ -48,7 +48,7 @@ export function MarketingFooter() {
                 href="tel:+491607621876"
                 className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
               >
-                0160 7621876
+                0160&nbsp;7621876
               </a>
             </li>
             <li>

@@ -175,7 +175,7 @@ export default function RechnerPage() {
                 Termin buchen <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <a href="tel:+491607621876" className="text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
-                0160 7621876
+                0160&nbsp;7621876
               </a>
             </div>
           </div>

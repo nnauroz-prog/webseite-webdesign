@@ -24,7 +24,7 @@ import { StapelMotor } from "./stapel-motor";
  * Attribute.
  */
 
-const MONTHLY = getPaketBySlug("starter")?.monthly.replace(/\s*\/\s*Monat$/, "").replace(/^ab/, "Ab") ?? "Ab 49 €";
+const MONTHLY = getPaketBySlug("starter")?.monthly.replace(/\s*\/\s*Monat$/, "").replace(/^ab/, "Ab") ?? "Ab 49\u00A0€";
 
 type Box = {
   title: string;

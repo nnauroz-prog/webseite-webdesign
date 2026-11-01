@@ -91,7 +91,7 @@ export default function TerminPage() {
         >
           Im Kalender sind 30 Minuten reserviert, meist reicht eine Viertelstunde.
           Sie wählen Tag und Uhrzeit, wir bestätigen meist am selben Werktag per
-          Mail und schicken den Kalendereintrag als Anhang mit.
+          Mail, mit einem Link für Ihren Kalender.
         </PageHero>
 
         <section aria-label="Termin wählen">
@@ -115,7 +115,7 @@ export default function TerminPage() {
                 className="text-foreground hover:text-gold mt-6 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[3.5rem]"
                 style={{ fontStretch: "118%", fontWeight: 780 }}
               >
-                0160 7621876
+                0160&nbsp;7621876
               </a>
             </div>
             <div className="lg:col-span-4 lg:col-start-9">

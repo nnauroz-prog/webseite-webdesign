@@ -52,8 +52,8 @@ export const PAKETE: Paket[] = [
   {
     slug: "starter",
     name: "Starter",
-    setup: "ab 499 €",
-    monthly: "ab 49 € / Monat",
+    setup: "ab 499\u00A0€",
+    monthly: "ab 49\u00A0€ / Monat",
     dauer: "oft 1–2 Werktage",
     description:
       "Eine Seite mit allem Wichtigen: Leistungen, Öffnungszeiten und Kontakt. Für Selbstständige und kleine Betriebe.",
@@ -115,8 +115,8 @@ export const PAKETE: Paket[] = [
     name: "Business",
     badge: "Empfohlen",
     highlight: true,
-    setup: "ab 899 €",
-    monthly: "ab 79 € / Monat",
+    setup: "ab 899\u00A0€",
+    monthly: "ab 79\u00A0€ / Monat",
     dauer: "meist 5–10 Werktage",
     description:
       "Mehrere Seiten für Leistungen, Team und Galerie. Für lokale Betriebe mit mehreren Angeboten.",
@@ -152,7 +152,7 @@ export const PAKETE: Paket[] = [
       "Hosting in der EU mit SSL und automatischen Backups",
       "Drei kleine Änderungen pro Monat (Texte, Bilder, Team, …)",
       "Updates und eine regelmäßige Prüfung der Ladezeit",
-      "Sie schreiben oder rufen direkt bei uns an, unter 0160 7621876",
+      "Sie schreiben oder rufen direkt bei uns an, unter 0160\u00A07621876",
       "Erweiterungen jederzeit, etwa eine weitere Unterseite; den Preis nennen wir vorher",
     ],
     recommendedFor: [
@@ -181,8 +181,8 @@ export const PAKETE: Paket[] = [
   {
     slug: "premium",
     name: "Premium",
-    setup: "ab 2.499 €",
-    monthly: "ab 179 € / Monat",
+    setup: "ab 2.499\u00A0€",
+    monthly: "ab 179\u00A0€ / Monat",
     dauer: "meist 2–3 Wochen",
     description:
       "Eine Struktur, die wir für Ihren Betrieb anlegen, mit Bereichen, die Sie selbst pflegen, etwa Speisekarte, Wochenangebot oder Termine.",
@@ -248,8 +248,8 @@ export const PAKETE: Paket[] = [
     slug: "studio",
     name: "Sitalo Studio",
     badge: "Neues Erscheinungsbild",
-    setup: "ab 3.490 €",
-    monthly: "ab 249 € / Monat",
+    setup: "ab 3.490\u00A0€",
+    monthly: "ab 249\u00A0€ / Monat",
     dauer: "meist 3–5 Wochen",
     description:
       "Neues Erscheinungsbild, bis zu drei Korrekturrunden und ein Treffen vor Ort. Für Betriebe, die ihren ganzen Auftritt neu aufstellen.",

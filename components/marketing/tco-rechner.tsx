@@ -144,7 +144,7 @@ export function TcoRechner() {
           </label>
           <p className="serif text-foreground mt-3 text-[2.4rem] leading-none tracking-[-0.03em]">{hourly} €</p>
           <p className="text-muted-foreground mt-2 text-[13.5px] leading-snug">
-            Bei 0 € zählt nur, was Sie an Anbieter zahlen.
+            Bei 0&nbsp;€ zählt nur, was Sie an Anbieter zahlen.
           </p>
           <input
             id="tco-hourly"
@@ -157,8 +157,8 @@ export function TcoRechner() {
             className="accent-gold mt-5 w-full"
           />
           <div className="text-muted-foreground mt-1 flex justify-between font-mono text-[12px]">
-            <span>0 €</span>
-            <span>150 €</span>
+            <span>0&nbsp;€</span>
+            <span>150&nbsp;€</span>
           </div>
         </div>
       </div>

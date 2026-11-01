@@ -18,7 +18,7 @@ function NebenLinks() {
   return (
     <>
       <Link href="/wartung" className={NEBEN}>
-        Schon eine Website? Pflege ab 49 € im Monat
+        Schon eine Website? Pflege ab 49&nbsp;€ im Monat
       </Link>
       <Link href="/audit" className={NEBEN}>
         Kostenlose Durchsicht Ihrer Website
@@ -103,7 +103,7 @@ export async function HafenHero() {
           <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
             <p className={s.caption}>
               <span className="hidden sm:inline">Blick von Steinwerder über die Elbe, frei gezeichnet.</span>
-              <span className="sm:hidden">Steinwerder, frei gezeichnet.</span>
+              <span className="sm:hidden">Blick über die Elbe, frei gezeichnet.</span>
               {pegel ? (
                 <span
                   className={s.pegel}

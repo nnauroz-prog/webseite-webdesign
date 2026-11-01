@@ -246,7 +246,7 @@ export default function AuditPage() {
               />
               <WegZeile
                 href="tel:+491607621876"
-                title="0160 7621876"
+                title="0160\u00A07621876"
                 body="Für alle, die lieber gleich sprechen. Ans Telefon gehen wir selbst."
                 external
               />

@@ -81,7 +81,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Auf die Preisfrage antworten wir in einem Satz: Starter ab 499 €, Business ab 899 €, Premium ab 2.499 €, Studio ab 3.490 €, den genauen Festpreis bekommen Sie schriftlich. Dann machen wir eine Pause. In dieser Pause kommt oft die zweite Frage.",
+        text: "Auf die Preisfrage antworten wir in einem Satz: Starter ab 499\u00A0€, Business ab 899\u00A0€, Premium ab 2.499\u00A0€, Studio ab 3.490\u00A0€, den genauen Festpreis bekommen Sie schriftlich. Dann machen wir eine Pause. In dieser Pause kommt oft die zweite Frage.",
       },
       {
         kind: "p",
@@ -181,11 +181,11 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Eine Website für einen kleinen Betrieb kostet bei einer Agentur meist ab etwa 5.000 €. Freelancer liegen oft zwischen 800 und 5.000 €. Ein Baukasten kostet etwa 10 bis 40 € im Monat. Dazu kommt Ihre eigene Zeit für Gestaltung, Texte und Technik. Sie steht in keiner Rechnung, fällt aber trotzdem an, meist abends und am Wochenende.",
+        text: "Eine Website für einen kleinen Betrieb kostet bei einer Agentur meist ab etwa 5.000\u00A0€. Freelancer liegen oft zwischen 800 und 5.000\u00A0€. Ein Baukasten kostet etwa 10 bis 40\u00A0€ im Monat. Dazu kommt Ihre eigene Zeit für Gestaltung, Texte und Technik. Sie steht in keiner Rechnung, fällt aber trotzdem an, meist abends und am Wochenende.",
       },
       {
         kind: "p",
-        text: "Unsere Pakete beginnen bei 499 € für eine einzelne Seite. Business kostet ab 899 €, Premium mit Bereichen, die Sie selbst pflegen, ab 2.499 € und Studio mit eigener Gestaltung ab 3.490 €.",
+        text: "Unsere Pakete beginnen bei 499\u00A0€ für eine einzelne Seite. Business kostet ab 899\u00A0€, Premium mit Bereichen, die Sie selbst pflegen, ab 2.499\u00A0€ und Studio mit eigener Gestaltung ab 3.490\u00A0€.",
       },
       {
         kind: "h2",
@@ -205,7 +205,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Unser Monatsbeitrag ab 49 € deckt genau diesen Posten ab, und er steht im Angebot. Darin sind Hosting in der EU, Updates, Backups und je nach Paket eine bis zehn kleine Änderungen pro Monat enthalten.",
+        text: "Unser Monatsbeitrag ab 49\u00A0€ deckt genau diesen Posten ab, und er steht im Angebot. Darin sind Hosting in der EU, Updates, Backups und je nach Paket eine bis zehn kleine Änderungen pro Monat enthalten.",
       },
       {
         kind: "h2",

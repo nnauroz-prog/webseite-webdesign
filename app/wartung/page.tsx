@@ -48,7 +48,7 @@ const PLANS: Plan[] = [
   {
     slug: "basis",
     name: "Basis",
-    price: "49 €",
+    price: "49\u00A0€",
     description: "Für Seiten, die vor allem sicher und aktuell bleiben sollen.",
     contents: [
       "Hosting auf einem Server in der EU, Umzug zu uns inklusive (Wix und Squarespace bleiben beim Anbieter)",
@@ -63,7 +63,7 @@ const PLANS: Plan[] = [
   {
     slug: "plus",
     name: "Plus",
-    price: "99 €",
+    price: "99\u00A0€",
     description: "Für Seiten, auf denen sich öfter etwas ändert, etwa die Speisekarte, eine Aktion oder das Team.",
     contents: [
       "Alles aus Basis",
@@ -81,7 +81,7 @@ const PLANS: Plan[] = [
   {
     slug: "werkbank",
     name: "Werkbank",
-    price: "299 €",
+    price: "299\u00A0€",
     description:
       "Wartung plus feste Stunden im Monat für Gestaltung und Technik, ohne für jede Kleinigkeit ein neues Projekt aufzusetzen.",
     contents: [
@@ -196,7 +196,7 @@ export default function WartungPage() {
           title="Website-Wartung für Seiten, die schon laufen"
           meta={
             <span className="text-stahl-hell font-mono text-[12px]">
-              Ab 49 € im Monat · nach 6 Monaten monatlich kündbar
+              Ab 49&nbsp;€ im Monat · nach 6 Monaten monatlich kündbar
             </span>
           }
         >
@@ -231,7 +231,7 @@ function Plans() {
             Drei Tarife für die laufende Pflege
           </h2>
           <p className="text-muted-foreground max-w-sm text-[14.5px] leading-relaxed">
-            Preise zzgl. MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab 199 € und
+            Preise zzgl. MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab 199&nbsp;€ und
             entfällt, wenn Sie auf unser Hosting umziehen.
           </p>
         </div>
@@ -411,7 +411,7 @@ function Abschluss() {
             className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
             style={{ fontStretch: "118%", fontWeight: 780 }}
           >
-            0160 7621876
+            0160&nbsp;7621876
           </a>
         </div>
         <div className="lg:col-span-4 lg:col-start-9">

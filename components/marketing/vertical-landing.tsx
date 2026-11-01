@@ -275,7 +275,7 @@ export function Briefkarte({
                 className="hover:text-gold mt-3 inline-block text-[2.1rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.6rem]"
                 style={{ fontStretch: "118%", fontWeight: 780 }}
               >
-                0160 7621876
+                0160&nbsp;7621876
               </a>
               <dl className="border-border mt-7 border-t text-[15px]">
                 <div className="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-b py-2.5">

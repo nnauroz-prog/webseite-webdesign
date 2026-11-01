@@ -252,7 +252,7 @@ export function LivePreview() {
           autoComplete="organization"
           className="border-input bg-background focus-visible:border-foreground mt-2 h-11 w-full rounded-[2px] border px-4 text-[15px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/40"
         />
-        <div role="radiogroup" aria-label="Branche" className="-mx-1 mt-3 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
+        <div role="radiogroup" aria-label="Branche" className="mt-3 flex flex-wrap gap-1.5">
           {PRESETS.map((p) => {
             const active = p.key === presetKey;
             return (

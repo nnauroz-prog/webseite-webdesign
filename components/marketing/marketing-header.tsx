@@ -149,7 +149,7 @@ export function MarketingHeader({
               onDark ? "text-background hover:text-gold" : "text-foreground hover:text-gold-ink",
             )}
           >
-            0160 7621876
+            0160&nbsp;7621876
           </a>
           {/* Desktop CTA */}
           <Link
@@ -312,7 +312,7 @@ function MobileFullscreenMenu({
               Speichern
             </a>
           </div>
-          <span className="label-mono text-stahl-hell">0160 7621876 · Hamburg</span>
+          <span className="label-mono text-stahl-hell">0160&nbsp;7621876 · Hamburg</span>
         </div>
       </div>
     </div>

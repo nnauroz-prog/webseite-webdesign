@@ -263,7 +263,7 @@ export function Abfahrtstafel({ pakete }: { pakete: PaketeKurz }) {
     `Monatsbeitrag ab ${starterMonthly} für Hosting und kleine Änderungen`,
     "Kleine Seiten oft in 1–2 Werktagen online",
     "Festpreis vorab, Test-Link vor dem Start",
-    "Telefon 0160 7621876",
+    "Telefon 0160\u00A07621876",
   ];
 
   return (
@@ -275,7 +275,8 @@ export function Abfahrtstafel({ pakete }: { pakete: PaketeKurz }) {
           </span>
           <span className="text-stahl-hell hidden font-mono text-[12px] md:inline">Anleger Sitalo</span>
           <span className="board-status led led-gruen ml-auto" aria-hidden="true">
-            pünktlich
+            {/* Am Handy nur der grüne Punkt, damit Uhr und Titel Luft haben. */}
+            <span className="hidden min-[400px]:inline">pünktlich</span>
           </span>
           <Uhr />
         </div>

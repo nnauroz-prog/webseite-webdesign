@@ -62,7 +62,9 @@ function compose(
     ...paragraphs.filter((p): p is string => Boolean(p)),
     SIGNATURE,
   ];
-  return clampBody(parts.join("\n\n"));
+  // Geschützte Leerzeichen (Website-Typografie, z. B. „499 €“) in der
+  // Mail als normale Leerzeichen: mailto-Texte bleiben schlichter Text.
+  return clampBody(parts.join("\n\n").replace(/\u00A0/g, " "));
 }
 
 function packageSentence(lead: LeadRow): string | undefined {

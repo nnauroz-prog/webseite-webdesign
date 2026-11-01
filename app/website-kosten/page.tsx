@@ -30,9 +30,9 @@ export const metadata: Metadata = {
 };
 
 const STARTER = getPaketBySlug("starter");
-const STARTER_SETUP = STARTER?.setup ?? "ab 499 €";
+const STARTER_SETUP = STARTER?.setup ?? "ab 499\u00A0€";
 /** „ab 49 € / Monat" → „ab 49 €" */
-const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49 € / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
@@ -47,20 +47,20 @@ const PAKET_KURZ: Record<Paket["slug"], string> = {
 const WEGE = [
   {
     name: "Baukasten selbst",
-    einmalig: "0 €",
-    laufend: "ca. 10–40 € / Monat",
+    einmalig: "0\u00A0€",
+    laufend: "ca. 10–40\u00A0€ / Monat",
     passt: "Wenn Sie Zeit haben und Gestaltung, Texte, Technik und Rechtliches selbst übernehmen.",
   },
   {
     name: "Freelancer",
-    einmalig: "ca. 800–5.000 €",
+    einmalig: "ca. 800–5.000\u00A0€",
     laufend: "oft nach Aufwand",
     passt: "Wenn Sie jemanden finden, der auch nach dem Start verlässlich erreichbar bleibt.",
   },
   {
     name: "Agentur",
-    einmalig: "ab ca. 5.000 €",
-    laufend: "Wartungsvertrag, oft 100–500 € / Monat",
+    einmalig: "ab ca. 5.000\u00A0€",
+    laufend: "Wartungsvertrag, oft 100–500\u00A0€ / Monat",
     passt: "Für größere Unternehmen mit Shop, Schnittstellen oder eigener Marketing-Abteilung.",
   },
 ];
@@ -324,7 +324,7 @@ export default function WebsiteKostenPage() {
               <p className="text-stahl-hell mt-6 max-w-xl text-[16.5px] leading-relaxed">
                 Schreiben Sie uns, was die Seite können soll. Wir antworten meist am selben Werktag. Telefon:{" "}
                 <a href="tel:+491607621876" className="text-background font-semibold whitespace-nowrap underline-offset-4 hover:underline">
-                  0160 7621876
+                  0160&nbsp;7621876
                 </a>
               </p>
             </div>

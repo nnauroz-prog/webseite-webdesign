@@ -9,18 +9,18 @@ import { PAKETE, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Pakete & Preise — Websites ab 499 €",
+  title: "Pakete & Preise — Websites ab 499\u00A0€",
   description:
-    "Websites ab 499 € einmalig, dazu ab 49 € im Monat für Hosting und kleine Änderungen. Den Festpreis bekommen Sie vor Auftrag schriftlich.",
+    "Websites ab 499\u00A0€ einmalig, dazu ab 49\u00A0€ im Monat für Hosting und kleine Änderungen. Den Festpreis bekommen Sie vor Auftrag schriftlich.",
   alternates: { canonical: "/pakete" },
 };
 
 type Slug = Paket["slug"];
 
 const STARTER = getPaketBySlug("starter");
-const STARTER_SETUP = STARTER?.setup ?? "ab 499 €";
+const STARTER_SETUP = STARTER?.setup ?? "ab 499\u00A0€";
 /** „ab 49 € / Monat" → „ab 49 €" */
-const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49 € / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
 
 /** „ab 2.499 €" → „2.499 €", „ab 79 € / Monat" → „79 €" */
 function betrag(label: string) {
@@ -45,7 +45,7 @@ function gross(text: string) {
  * Die Dauer folgt den kanonischen Richtwerten (ab vollständigen
  * Unterlagen), siehe auch pakete-data detailIntro.
  */
-const ZEILEN: { label: string; zahl?: boolean; werte: Record<Slug, string> }[] = [
+const ZEILEN: { label: string; werte: Record<Slug, string> }[] = [
   {
     label: "Umfang",
     werte: {
@@ -79,8 +79,7 @@ const ZEILEN: { label: string; zahl?: boolean; werte: Record<Slug, string> }[] =
   },
   {
     label: "Kleine Änderungen im Monat",
-    zahl: true,
-    werte: { starter: "1", business: "3", premium: "6", studio: "10" },
+    werte: { starter: "Bis zu 1", business: "Bis zu 3", premium: "Bis zu 6", studio: "Bis zu 10" },
   },
   {
     label: "Dauer bis online",
@@ -211,7 +210,7 @@ function Vergleich() {
                         z.werte[p.slug] === "–" ? "text-muted-foreground" : "text-foreground/85"
                       }`}
                     >
-                      {z.zahl ? <span className="serif text-[1.25rem]">{z.werte[p.slug]}</span> : z.werte[p.slug]}
+                      {z.werte[p.slug]}
                     </td>
                   ))}
                 </tr>
@@ -405,7 +404,7 @@ function Abschluss() {
             className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
             style={{ fontStretch: "118%", fontWeight: 780 }}
           >
-            0160 7621876
+            0160&nbsp;7621876
           </a>
         </div>
         <div className="lg:col-span-4 lg:col-start-9">

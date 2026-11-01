@@ -130,7 +130,7 @@ export default async function AnfragePage({
                     className="text-foreground hover:text-gold mt-4 block text-[2rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.25rem]"
                     style={{ fontStretch: "118%", fontWeight: 780 }}
                   >
-                    0160 7621876
+                    0160&nbsp;7621876
                   </a>
                   <dl className="mt-6 space-y-2.5 text-[14.5px]">
                     <div className="flex gap-3">
