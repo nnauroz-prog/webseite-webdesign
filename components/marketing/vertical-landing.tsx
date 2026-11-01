@@ -101,6 +101,17 @@ function Hero({
               </div>
             ))}
           </dl>
+          {/* Verweis auf die Geldseite; „erstellen lassen" im Ankertext,
+              weil die Seite diesen Begriff bundesweit führt. */}
+          <p className="border-border border-t px-5 py-3.5 text-[14px] leading-snug">
+            <Link
+              href="/website-erstellen-lassen"
+              className="text-foreground inline-flex items-center gap-1 font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
+            >
+              Preise und Ablauf: Website erstellen lassen
+              <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            </Link>
+          </p>
         </aside>
       </div>
     </section>

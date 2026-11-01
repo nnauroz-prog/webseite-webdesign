@@ -315,6 +315,21 @@ export const PAKETE: Paket[] = [
   },
 ];
 
+/**
+ * Alle Preise oben sind Nettopreise. Das Angebot richtet sich nur an
+ * Unternehmer (§ 14 BGB), deshalb dürfen Netto-Preise stehen, wenn das
+ * bei jeder Preisnennung klar dabeisteht (PAngV gilt gegenüber
+ * Verbrauchern). Kurzform für Hero-Zeilen, Langform für Fußnoten.
+ */
+export const PREIS_HINWEIS_KURZ = "Für Betriebe und Selbstständige, Preise zzgl. 19 % USt.";
+export const PREIS_HINWEIS =
+  "Unser Angebot richtet sich an Betriebe und Selbstständige (Unternehmer nach § 14 BGB). Alle Preise zzgl. 19 % USt.";
+
+/** „oft 1–2 Werktage" → „oft nach 1–2 Werktagen" (für „steht … online"). */
+export function nachDauer(dauer: string): string {
+  return dauer.replace(/^(oft|meist)\s+/, "$1 nach ").replace(/Werktage$/, "Werktagen");
+}
+
 export function getPaketBySlug(
   slug: string,
 ): Paket | undefined {

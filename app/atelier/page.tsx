@@ -10,7 +10,7 @@ import { LEXIKON } from "@/lib/lexikon-data";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Über Sitalo — ein kleines Büro für Webdesign in Hamburg",
+  title: "Über Sitalo: ein kleines Webdesign-Büro in Hamburg",
   description:
     "Sitalo ist ein kleines Büro für Webdesign in Hamburg: wie ein Auftrag bei uns abläuft, woran wir uns halten und was wir nicht machen.",
   alternates: { canonical: "/atelier" },

@@ -29,7 +29,7 @@ const CONTENT = `# Sitalo Webdesign
 
 ## Was Sitalo macht
 
-Sitalo baut fertige Websites für Betriebe, die keine Zeit für einen Baukasten (Wix, Jimdo, Squarespace) haben. Aus den Stichpunkten des Kunden formulieren wir die Texte, der Kunde streicht und ergänzt. Den Festpreis gibt es schriftlich, bevor die Arbeit beginnt. Nach dem Start kümmert sich Sitalo um Hosting, Updates und kleine Änderungen gegen einen Monatsbeitrag. Websites ab 499 € einmalig, Monatsbeitrag ab 49 €.
+Sitalo baut fertige Websites für Betriebe, die keine Zeit für einen Baukasten (Wix, Jimdo, Squarespace) haben. Aus den Stichpunkten des Kunden formulieren wir die Texte, der Kunde streicht und ergänzt. Den Festpreis gibt es schriftlich, bevor die Arbeit beginnt. Nach dem Start kümmert sich Sitalo um Hosting, Updates und kleine Änderungen gegen einen Monatsbeitrag. Websites ab 499 € einmalig, Monatsbeitrag ab 49 €, jeweils zzgl. USt.; das Angebot richtet sich an Betriebe und Selbstständige.
 
 ## Für wen
 
@@ -45,6 +45,8 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 
 - [Startseite](https://www.sitalo.de/): Leistungen, Live-Vorschau, Ablauf, Preise, Musterseiten, Fragen, Kontakt.
 - [Website erstellen lassen](https://www.sitalo.de/website-erstellen-lassen): Kosten, Ablauf und Leistungen auf einer Seite.
+- [Webseite erstellen](https://www.sitalo.de/webseite-erstellen): Anleitung in sieben Schritten mit allen Wegen (Baukasten, WordPress, selbst programmieren, erstellen lassen), Kosten, Pflichtangaben und Entscheidungshilfe.
+- [Website-Kosten](https://www.sitalo.de/website-kosten): Was eine Website kostet, Baukasten, Freelancer und Agentur im Vergleich, Checkliste für Angebote.
 - [Branchen](https://www.sitalo.de/branchen): Je Branche eine eigene Seite mit Musterseite, Seitenplan und Fragen.
 - [Pakete](https://www.sitalo.de/pakete): ${ZAHLWORT[PAKETE.length] ?? PAKETE.length} Pakete im Vergleich, Details unter /pakete/[slug].
 - [Ablauf](https://www.sitalo.de/ablauf): Sechs Schritte von der ersten Nachricht bis zur fertigen Seite.

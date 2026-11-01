@@ -5,20 +5,47 @@ import { ArrowRight, Check, Minus, X } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
+import { formatDate } from "@/lib/journal-data";
+import { baukastenKosten } from "@/lib/fremdpreise";
 import { getPaketBySlug } from "@/lib/pakete-data";
+import { SEITEN_STAND } from "@/lib/seiten-stand";
 import { SITE_URL } from "@/lib/site";
 
+const TITLE = "Wix, Jimdo, Squarespace oder Webdesigner?";
+const DESCRIPTION =
+  "Wix, Squarespace, Jimdo, Selbstbau mit ChatGPT oder Webdesign-Büro: wann welcher Weg für lokale Betriebe passt, was er kostet und worauf Sie achten sollten.";
+/** Erstveröffentlichung und letzte inhaltliche Überarbeitung (ISO), lib/seiten-stand.ts. */
+const { veroeffentlicht: VEROEFFENTLICHT, stand: STAND } = SEITEN_STAND["/vergleich"];
+
 export const metadata: Metadata = {
-  title: "Vergleich — Wix, Squarespace, Jimdo, Selbstbau mit ChatGPT",
-  description:
-    "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Selbstbau mit ChatGPT, wann ein Webdesign-Büro wie Sitalo.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/vergleich" },
+  // Ein eigenes openGraph ersetzt das aus dem Layout, deshalb siteName und locale hier mit.
+  openGraph: {
+    type: "article",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: `${SITE_URL}/vergleich`,
+    siteName: "Sitalo Webdesign",
+    locale: "de_DE",
+    publishedTime: VEROEFFENTLICHT,
+    modifiedTime: STAND,
+  },
 };
 
 /**
  * `/vergleich` — Sitalo neben Wix, Squarespace, Jimdo und dem
  * Selbstbau mit Chat-Programmen wie ChatGPT. Jede Option bekommt die Fälle,
  * in denen sie passt, auch wenn das gegen uns spricht.
+ *
+ * Abgrenzung: Diese Seite vergleicht Anbieter mit Namen. Die Wege
+ * allgemein und die Schritte zum Selbstbau stehen im Ratgeber
+ * /webseite-erstellen, das Erstellenlassen auf /website-erstellen-lassen.
+ *
+ * Fremdpreise nur mit Tarif, Beleg und Prüfdatum aus lib/fremdpreise.ts,
+ * gleichlautend mit dem Ratgeber. Derzeit ohne Beträge, weil die
+ * Preisseiten der Anbieter nicht geprüft werden konnten (UWG §§ 5, 6).
  */
 export default function VergleichPage() {
   // Article-Schema für die Vergleichs-Page + Breadcrumb. Article
@@ -28,19 +55,14 @@ export default function VergleichPage() {
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Wix, Squarespace, Jimdo, Selbstbau mit ChatGPT oder Webdesign-Büro?",
-    description:
-      "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Selbstbau mit ChatGPT, wann ein Webdesign-Büro wie Sitalo.",
-    author: {
-      "@type": "Organization",
-      name: "Sitalo Webdesign",
-      url: SITE_URL,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Sitalo Webdesign",
-      url: SITE_URL,
-    },
+    headline: TITLE,
+    description: DESCRIPTION,
+    inLanguage: "de-DE",
+    datePublished: VEROEFFENTLICHT,
+    dateModified: STAND,
+    image: `${SITE_URL}/vergleich/opengraph-image`,
+    author: { "@id": `${SITE_URL}/#business` },
+    publisher: { "@id": `${SITE_URL}/#business` },
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": `${SITE_URL}/vergleich`,
@@ -91,12 +113,19 @@ const STARTER_MONTHLY = (getPaketBySlug("starter")?.monthly ?? "ab 49\u00A0€ /
 /* ------------------------------------------------------------------
  * Faustregel: drei Zeilen, wer womit am besten fährt.
  * ---------------------------------------------------------------- */
-const FAUSTREGEL = [
+const FAUSTREGEL: {
+  weg: string;
+  wann: string;
+  detail: string;
+  link?: { href: string; label: string };
+  sitalo?: boolean;
+}[] = [
   {
     weg: "Wix oder Squarespace",
     wann: "Sie haben Zeit und Freude am Selbstbauen.",
     detail:
       "Günstig, solange Sie die Stunden für Texte, Bilder, die Ansicht am Handy und Google selbst aufbringen.",
+    link: { href: "/webseite-erstellen#schritte", label: "Webseite mit Baukasten selbst erstellen: die Schritte" },
   },
   {
     weg: "Selbst programmieren mit ChatGPT",
@@ -109,6 +138,7 @@ const FAUSTREGEL = [
     wann: "Sie haben für die eigene Website keine freien Abende.",
     detail:
       "Sie schicken Stichpunkte und Fotos, wir schreiben die Texte und bauen die Seite. Hosting, Updates und kleine Änderungen laufen danach über den Monatsbeitrag.",
+    link: { href: "/website-erstellen-lassen", label: "Website erstellen lassen: Festpreis und Ablauf" },
     sitalo: true,
   },
 ];
@@ -130,7 +160,18 @@ function Faustregel() {
               <p className="text-[1.3rem] leading-snug tracking-[-0.015em] sm:text-[1.5rem] lg:col-span-4" style={{ fontStretch: "106%", fontWeight: 650 }}>
                 {f.wann}
               </p>
-              <p className="text-foreground/80 text-[15.5px] leading-relaxed lg:col-span-5">{f.detail}</p>
+              <div className="lg:col-span-5">
+                <p className="text-foreground/80 text-[15.5px] leading-relaxed">{f.detail}</p>
+                {f.link ? (
+                  <Link
+                    href={f.link.href}
+                    className="text-foreground mt-2.5 inline-flex items-center gap-1 text-[14.5px] font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
+                  >
+                    {f.link.label}
+                    <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  </Link>
+                ) : null}
+              </div>
             </li>
           ))}
         </ul>
@@ -160,11 +201,10 @@ const DEEP_DIVES: DeepDive[] = [
       "Wenn Sie lernen möchten, wie Handy-Ansicht und Suchmaschinen funktionieren",
     ],
     watchOut: [
-      "Eine Wix-Seite lässt sich nicht zu einem anderen Anbieter mitnehmen. Wer wechselt, baut neu",
+      "Die Gestaltung einer Wix-Seite lässt sich nicht zu einem anderen Anbieter mitnehmen. Texte und Bilder nehmen Sie mit, die Seite wird neu gebaut",
       "Die Ladezeit am Handy hängt stark von Vorlage, Bildern und Zusatz-Apps ab",
     ],
-    realCost:
-      "Ab ca. 15\u00A0€ im Monat. Dazu realistisch 10 bis 40 Stunden für den Aufbau und 1 bis 3 Stunden Pflege im Monat, je nachdem, wie oft sich etwas ändert.",
+    realCost: `${baukastenKosten("Wix")} Dazu nach unserer Einschätzung 10 bis 40 Stunden für den Aufbau und 1 bis 3 Stunden Pflege im Monat, je nachdem, wie oft sich etwas ändert.`,
   },
   {
     id: "squarespace",
@@ -179,8 +219,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Impressum und Datenschutzerklärung nach deutschem Recht müssen Sie selbst erstellen und einbinden",
       "Telefon-Knopf, Anfahrt oder Speisekarte am Handy richten Sie selbst ein",
     ],
-    realCost:
-      "Ab ca. 16\u00A0€ im Monat. Etwas weniger Pflege als bei Wix, dafür mehr Aufwand am Anfang, bis die Rechtstexte für Deutschland stimmen.",
+    realCost: `${baukastenKosten("Squarespace")} Nach unserer Einschätzung etwas weniger Pflege als bei Wix, dafür mehr Aufwand am Anfang, bis die Rechtstexte für Deutschland stimmen.`,
   },
   {
     id: "jimdo",
@@ -196,7 +235,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Wenig Spielraum für eine eigene Gestaltung, viele Jimdo-Seiten sehen sich ähnlich",
       "Der Export ist begrenzt. Bei einem Wechsel wird die Seite meist neu gebaut",
     ],
-    realCost: "Ab ca. 9\u00A0€ im Monat. Der günstigste Einstieg, aber nach oben schnell begrenzt.",
+    realCost: `${baukastenKosten("Jimdo")} Für eine einfache Seite ein günstiger Einstieg, für größere Seiten schnell begrenzt.`,
   },
   {
     id: "ki-eigenbau",
@@ -215,7 +254,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Wenn nach dem Start etwas kaputtgeht, gibt es niemanden, den Sie anrufen können",
     ],
     realCost:
-      "Werkzeuge ca. 0 bis 30\u00A0€ im Monat. Dazu realistisch 30 bis 80 Stunden Einarbeitung und laufende Pflege. Riskant, wenn der Betrieb auf die Seite angewiesen ist.",
+      "Werkzeuge ca. 0 bis 30\u00A0€ im Monat. Dazu nach unserer Einschätzung 30 bis 80 Stunden mit Einarbeitung, danach laufende Pflege. Riskant, wenn der Betrieb auf die Seite angewiesen ist.",
   },
 ];
 
@@ -294,6 +333,8 @@ type Wert = "yes" | "partial" | "no";
 
 type TableRow = {
   feature: string;
+  /** Kurze Einschränkung direkt unter dem Kriterium. */
+  hinweis?: string;
   wix: Wert;
   squarespace: Wert;
   jimdo: Wert;
@@ -304,15 +345,39 @@ type TableRow = {
 const TABLE: TableRow[] = [
   { feature: "Fester Ansprechpartner, der Ihre Seite kennt", wix: "no", squarespace: "no", jimdo: "no", ki: "no", sitalo: "yes" },
   { feature: "Handy-Ansicht ohne Nacharbeit", wix: "partial", squarespace: "partial", jimdo: "partial", ki: "no", sitalo: "yes" },
-  { feature: "Grundlagen für die lokale Suche", wix: "partial", squarespace: "no", jimdo: "partial", ki: "no", sitalo: "yes" },
-  { feature: "Datenschutz nach deutschem Recht", wix: "partial", squarespace: "partial", jimdo: "yes", ki: "no", sitalo: "yes" },
+  {
+    feature: "Grundlagen für die lokale Suche",
+    hinweis: "Bei Sitalo ab dem Paket Business",
+    wix: "partial",
+    squarespace: "partial",
+    jimdo: "partial",
+    ki: "no",
+    sitalo: "yes",
+  },
+  {
+    feature: "Rechtstexte im Preis",
+    hinweis: "Bei Jimdo gibt es Rechtstexte im System, je nach Tarif",
+    wix: "no",
+    squarespace: "no",
+    jimdo: "partial",
+    ki: "no",
+    sitalo: "no",
+  },
   { feature: "Texte werden für Sie geschrieben", wix: "no", squarespace: "no", jimdo: "no", ki: "no", sitalo: "yes" },
   { feature: "Updates laufen ohne Ihr Zutun", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "no", sitalo: "yes" },
-  { feature: "Umzug zu anderem Anbieter möglich", wix: "no", squarespace: "partial", jimdo: "no", ki: "yes", sitalo: "yes" },
-  { feature: "Bis 30\u00A0€ im Monat", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
+  {
+    feature: "Gestaltung lässt sich als Ganzes mitnehmen",
+    hinweis: "Bei Sitalo und im Selbstbau über den Quellcode",
+    wix: "no",
+    squarespace: "partial",
+    jimdo: "no",
+    ki: "yes",
+    sitalo: "yes",
+  },
+  { feature: "Einstiegstarif bis 30\u00A0€ im Monat", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
 ];
 
-const SPALTEN: { key: Exclude<keyof TableRow, "feature">; label: string }[] = [
+const SPALTEN: { key: Exclude<keyof TableRow, "feature" | "hinweis">; label: string }[] = [
   { key: "wix", label: "Wix" },
   { key: "squarespace", label: "Squarespace" },
   { key: "jimdo", label: "Jimdo" },
@@ -329,7 +394,7 @@ function TableSummary() {
             Die Kurzfassung als Tabelle
           </h2>
           <p className="text-muted-foreground max-w-md text-[15.5px] leading-relaxed lg:col-span-5">
-            Beim Preis liegen die Baukästen vorn. Sitalo kostet {STARTER_MONTHLY} im Monat, dazu kommt der Aufbau.
+            Beim Preis liegen die Baukästen vorn. Sitalo kostet {STARTER_MONTHLY} im Monat zzgl. USt., dazu kommt der Aufbau.
           </p>
         </div>
 
@@ -362,6 +427,11 @@ function TableSummary() {
                 <tr key={row.feature} className="border-border border-t">
                   <th scope="row" className="py-3.5 pr-3 leading-snug font-medium sm:pr-4">
                     {row.feature}
+                    {row.hinweis ? (
+                      <span className="text-muted-foreground mt-0.5 block text-[12.5px] leading-snug font-normal">
+                        {row.hinweis}
+                      </span>
+                    ) : null}
                   </th>
                   {SPALTEN.map((c) => (
                     <Cell key={c.key} value={row[c.key]} highlight={c.key === "sitalo"} />
@@ -383,9 +453,22 @@ function TableSummary() {
             <X className="h-3.5 w-3.5" aria-hidden="true" /> fehlt meistens
           </span>
           <span>
-            Unsere Einschätzung. Tarife und Funktionen der Anbieter ändern sich, im Zweifel lohnt ein Blick auf deren Seite.
+            Unsere Einschätzung, Stand <time dateTime={STAND}>{formatDate(STAND)}</time>. Tarife und Funktionen der
+            Anbieter ändern sich, im Zweifel lohnt ein Blick auf deren Seite.
           </span>
         </p>
+        <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-3">
+          <li>
+            <Link href="/rechner" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+              Gesamtkosten über drei Jahre berechnen {ARROW}
+            </Link>
+          </li>
+          <li>
+            <Link href="/pakete" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+              Unsere Pakete und Preise {ARROW}
+            </Link>
+          </li>
+        </ul>
       </div>
     </section>
   );
@@ -437,6 +520,12 @@ function FinalCta() {
           <a href="tel:+491607621876" className="text-background text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
             0160&nbsp;7621876
           </a>
+          <Link
+            href="/website-erstellen-lassen"
+            className="text-stahl-hell hover:text-background inline-flex basis-full items-center gap-1.5 text-[14.5px] font-semibold underline-offset-4 hover:underline lg:justify-end"
+          >
+            Website erstellen lassen bei Sitalo {ARROW}
+          </Link>
         </div>
       </div>
     </section>

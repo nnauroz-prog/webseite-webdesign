@@ -4,6 +4,7 @@ import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { PREIS_HINWEIS } from "@/lib/pakete-data";
 import {
   INQUIRY_PACKAGES,
   type InquiryPackage,
@@ -158,6 +159,10 @@ export default async function AnfragePage({
                     </div>
                   </dl>
                 </div>
+
+                <p className="text-muted-foreground border-border border-t pt-5 text-[13.5px] leading-relaxed">
+                  {PREIS_HINWEIS}
+                </p>
               </aside>
             </div>
           </div>

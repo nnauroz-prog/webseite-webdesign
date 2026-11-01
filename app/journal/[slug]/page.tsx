@@ -36,11 +36,11 @@ export async function generateMetadata({
   if (!post) return {};
   return {
     title: post.seoTitle ?? `${post.title} — Journal`,
-    description: post.dek,
+    description: post.seoDescription ?? post.dek,
     alternates: { canonical: `/journal/${post.slug}` },
     openGraph: {
       title: post.title,
-      description: post.dek,
+      description: post.seoDescription ?? post.dek,
       type: "article",
       publishedTime: post.publishedAt,
       tags: post.tags,

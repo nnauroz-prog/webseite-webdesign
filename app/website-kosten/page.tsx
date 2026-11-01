@@ -5,7 +5,10 @@ import { ArrowRight } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
-import { PAKETE, getPaketBySlug, type Paket } from "@/lib/pakete-data";
+import { ANGEBOT_CHECKLISTE } from "@/lib/angebot-checkliste";
+import { formatDate } from "@/lib/journal-data";
+import { PAKETE, PREIS_HINWEIS, getPaketBySlug, nachDauer, type Paket } from "@/lib/pakete-data";
+import { SEITEN_STAND } from "@/lib/seiten-stand";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -14,22 +17,44 @@ import { SITE_URL } from "@/lib/site";
  * Suche, die direkt vor einer Beauftragung steht — führt am Ende auf
  * unsere Pakete und die Anfrage.
  *
- * Marktspannen sind bewusst als grobe Erfahrungswerte formuliert, nicht
- * als Statistik. Eigene Preise kommen aus lib/pakete-data.ts.
+ * Marktspannen sind als unsere Einschätzung gekennzeichnet, nicht als
+ * Statistik. Keine Fremdpreise einzelner Anbieter (lib/fremdpreise.ts).
+ * Eigene Preise kommen aus lib/pakete-data.ts, die sechs Fragen aus
+ * lib/angebot-checkliste.ts.
+ *
+ * Abgrenzung: Die Geldseite /website-erstellen-lassen zeigt nur die
+ * eigenen Festpreise; die Marktspannen stehen ausschließlich hier. Der
+ * Ratgeber /webseite-erstellen behandelt die Kosten des Selbstbaus und
+ * verlinkt für das Erstellenlassen hierher.
  */
 
-const TITLE = "Was kostet eine Website? Preise 2026 im Überblick";
+const TITLE = "Was kostet eine Website? Preise und laufende Kosten";
 const DESCRIPTION =
-  "Was eine Website für kleine Unternehmen kostet: Baukasten, Freelancer, Agentur im Vergleich, laufende Kosten und worauf Sie beim Angebot achten sollten.";
+  "Was es kostet, eine Website erstellen zu lassen: Baukasten, Freelancer und Agentur im Vergleich, laufende Kosten und sechs Fragen an jedes Angebot.";
+/** Erstveröffentlichung und letzte inhaltliche Überarbeitung (ISO), lib/seiten-stand.ts.
+ *  Speist die sichtbare Zeile im Kopf, das Article-Schema und die Sitemap. */
+const { veroeffentlicht: VEROEFFENTLICHT, stand: STAND } = SEITEN_STAND["/website-kosten"];
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} · Sitalo` },
   description: DESCRIPTION,
   alternates: { canonical: "/website-kosten" },
-  openGraph: { type: "article", title: TITLE, description: DESCRIPTION, url: `${SITE_URL}/website-kosten` },
+  // Ein eigenes openGraph ersetzt das aus dem Layout, deshalb siteName und locale hier mit.
+  openGraph: {
+    type: "article",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: `${SITE_URL}/website-kosten`,
+    siteName: "Sitalo Webdesign",
+    locale: "de_DE",
+    publishedTime: VEROEFFENTLICHT,
+    modifiedTime: STAND,
+  },
 };
 
 const STARTER = getPaketBySlug("starter");
+const BUSINESS = getPaketBySlug("business") as Paket;
+const PREMIUM = getPaketBySlug("premium") as Paket;
 const STARTER_SETUP = STARTER?.setup ?? "ab 499\u00A0€";
 /** „ab 49 € / Monat" → „ab 49 €" */
 const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
@@ -44,12 +69,15 @@ const PAKET_KURZ: Record<Paket["slug"], string> = {
   studio: "Eigene Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden und ein Treffen vor Ort.",
 };
 
-const WEGE = [
+type Verweis = { href: string; label: string };
+
+const WEGE: { name: string; einmalig: string; laufend: string; passt: string; link?: Verweis }[] = [
   {
     name: "Baukasten selbst",
     einmalig: "0\u00A0€",
-    laufend: "ca. 10–40\u00A0€ / Monat",
+    laufend: "Abo je nach Tarif",
     passt: "Wenn Sie Zeit haben und Gestaltung, Texte, Technik und Rechtliches selbst übernehmen.",
+    link: { href: "/webseite-erstellen", label: "Webseite selbst erstellen: was dazugehört" },
   },
   {
     name: "Freelancer",
@@ -74,23 +102,91 @@ const FAKTOREN = [
   { title: "Betreuung danach", text: "Hosting, Updates, Sicherheit und kleine Änderungen fallen jeden Monat an, auch wenn das im Angebot nicht steht." },
 ];
 
-const CHECKLISTE = [
-  "Ist der Preis ein Festpreis oder eine Schätzung?",
-  "Sind Texte, Bildbearbeitung und Rechtstexte enthalten?",
-  "Wem gehören Domain und Inhalte, wenn Sie wechseln möchten?",
-  "Was kosten Hosting, Updates und kleine Änderungen im Monat?",
-  "Wie schnell bekommen Sie eine Antwort, wenn etwas nicht funktioniert?",
-  "Wird die Seite für Handy und Google eingerichtet?",
+/** Die sechs Fragen, gemeinsam mit /website-erstellen-lassen (dort für uns beantwortet). */
+const CHECKLISTE = ANGEBOT_CHECKLISTE.map((c) => c.frage);
+
+/**
+ * Laufende Posten einer Website. Richtwerte nur, wo sie allgemein gelten
+ * und mit dem Ratgeber /webseite-erstellen übereinstimmen; sonst ohne Zahl.
+ */
+const LAUFEND: { posten: string; richtwert: string; hinweis: string }[] = [
+  {
+    posten: "Domain (.de)",
+    richtwert: "meist unter 20\u00A0€ im Jahr",
+    hinweis: "Läuft immer auf Ihren Namen. Prüfen Sie den Preis ab dem zweiten Jahr, im ersten ist sie oft im Tarif enthalten.",
+  },
+  {
+    posten: "Hosting",
+    richtwert: "ab wenigen Euro im Monat",
+    hinweis: "Der Speicherplatz für Ihre Seite. Achten Sie auf Server in der EU und automatische Backups.",
+  },
+  {
+    posten: "SSL-Zertifikat",
+    richtwert: "meist im Hosting enthalten",
+    hinweis: "Sorgt für das Schloss in der Adresszeile. Extra kosten sollte es für eine einfache Seite nichts.",
+  },
+  {
+    posten: "E-Mail-Postfach",
+    richtwert: "im Tarif oder extra",
+    hinweis: "Adressen wie info@ihr-betrieb.de. Ob das Postfach im Tarif steckt, ist je nach Anbieter verschieden.",
+  },
+  {
+    posten: "Updates und Wartung",
+    richtwert: "Ihre Zeit oder ein Monatsbeitrag",
+    hinweis: "Bei WordPress und eigenem Code fallen Updates und Backups regelmäßig an. Beim Baukasten übernimmt der Anbieter die Technik.",
+  },
+  {
+    posten: "Änderungen",
+    richtwert: "im Beitrag oder nach Aufwand",
+    hinweis: "Neue Öffnungszeiten, ein anderes Foto, eine neue Leistung. Fragen Sie, wie viele Änderungen im Monat enthalten sind.",
+  },
+  {
+    posten: "Rechtstexte",
+    richtwert: "kostenlos bis Abo",
+    hinweis: "Generatoren gibt es teils kostenlos, sonst als Abo, über Ihren Verband oder eine Anwältin.",
+  },
+  {
+    posten: "Erweiterungen",
+    richtwert: "oft eigene Abos",
+    hinweis: "Terminbuchung, Newsletter oder Bezahlfunktionen laufen häufig über eigene Anbieter mit Monats- oder Jahrespreis.",
+  },
+];
+
+/** Was eine Website nach Umfang braucht, mit unserem Paket als Beispiel. */
+const UMFANG: { titel: string; text: string; paket?: Paket; hinweis: string }[] = [
+  {
+    titel: "Eine einzelne Seite",
+    text: "Leistungen, Öffnungszeiten, Anfahrt und Kontakt auf einer Seite, die man von oben nach unten liest. Passt für Selbstständige und kleine Betriebe mit wenigen Leistungen.",
+    paket: STARTER as Paket,
+    hinweis: "Fragen Sie, ob Texte und Fotos enthalten sind oder ob Sie alles fertig liefern müssen.",
+  },
+  {
+    titel: "Mehrere Seiten, etwa fünf",
+    text: "Eigene Seiten für Leistungen, Team, Referenzen oder Galerie und Kontakt. Jede Seite bekommt einen eigenen Titel für Google, damit Sie für einzelne Leistungen gefunden werden.",
+    paket: BUSINESS,
+    hinweis: "Fragen Sie, wie viele Unterseiten im Preis sind und was jede weitere kostet.",
+  },
+  {
+    titel: "Mit Bereichen zum Selbstpflegen oder Online-Buchung",
+    text: "Speisekarte, Wochenangebot, Kursplan oder Termine tragen Sie selbst ein. Dafür braucht die Seite eine Anmeldung und Bereiche, die nur Sie ändern können.",
+    paket: PREMIUM,
+    hinweis: "Fragen Sie, wer die Buchungssoftware stellt und ob dafür ein eigenes Abo anfällt.",
+  },
+  {
+    titel: "Mit Onlineshop",
+    text: "Warenkorb, Zahlungsarten, Versandkosten und Widerrufsbelehrung. Dazu kommen meist Gebühren je Zahlung beim Zahlungsanbieter. Shops bauen wir nur im Einzelfall, ein Shopsystem passt dann oft besser.",
+    hinweis: "Rechnen Sie die Abo- und Zahlungsgebühren über ein Jahr zusammen, bevor Sie sich entscheiden.",
+  },
 ];
 
 const FAQ = [
   {
     q: "Was kostet eine einfache Website für ein kleines Unternehmen?",
-    a: `Eine professionelle Onepage-Website kostet je nach Anbieter meist zwischen einigen hundert und wenigen tausend Euro. Bei uns beginnt sie bei ${STARTER_SETUP.replace(/^ab\s*/, "")}, dazu kommt ein Monatsbeitrag ${STARTER_MONTHLY} für Hosting und Pflege.`,
+    a: `Eine professionell gebaute Onepage-Website kostet nach unserer Einschätzung je nach Anbieter meist zwischen einigen hundert und wenigen tausend Euro. Bei uns beginnt sie bei ${STARTER_SETUP.replace(/^ab\s*/, "")}, dazu kommt ein Monatsbeitrag ${STARTER_MONTHLY} für Hosting und Pflege, jeweils zzgl. USt.`,
   },
   {
     q: "Welche laufenden Kosten hat eine Website?",
-    a: "Domain, Hosting, SSL-Zertifikat, Updates und Sicherheit. Je nach Anbieter zahlen Sie dafür einzeln oder in einem Monatsbeitrag. Dazu kommen Änderungen, wenn sich Öffnungszeiten, Preise oder Angebote ändern.",
+    a: "Domain, Hosting, SSL-Zertifikat, Updates und Sicherheit. Je nach Anbieter zahlen Sie dafür einzeln oder in einem Monatsbeitrag. Dazu kommen Änderungen, wenn sich Öffnungszeiten, Preise oder Angebote ändern, und Abos für Erweiterungen wie eine Terminbuchung. Die Posten im Einzelnen stehen in der Tabelle oben.",
   },
   {
     q: "Ist ein Baukasten nicht günstiger?",
@@ -98,7 +194,7 @@ const FAQ = [
   },
   {
     q: "Warum unterscheiden sich Angebote so stark?",
-    a: "Weil sehr Unterschiedliches enthalten ist. Vergleichen Sie Angebote anhand der Checkliste auf dieser Seite. Am meisten verraten der Festpreis, die enthaltenen Rechtstexte und die Frage, wem die Seite am Ende gehört.",
+    a: "Weil sehr Unterschiedliches enthalten ist. Vergleichen Sie Angebote anhand der Checkliste auf dieser Seite. Am meisten verraten der Festpreis, wer die Rechtstexte liefert und die Frage, wem die Seite am Ende gehört.",
   },
 ];
 
@@ -110,8 +206,10 @@ export default function WebsiteKostenPage() {
       headline: TITLE,
       description: DESCRIPTION,
       inLanguage: "de-DE",
-      dateModified: "2026-11-01",
-      author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
+      datePublished: VEROEFFENTLICHT,
+      dateModified: STAND,
+      image: `${SITE_URL}/website-kosten/opengraph-image`,
+      author: { "@id": `${SITE_URL}/#business` },
       publisher: { "@id": `${SITE_URL}/#business` },
       mainEntityOfPage: `${SITE_URL}/website-kosten`,
     },
@@ -133,10 +231,21 @@ export default function WebsiteKostenPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero crumb="Website-Kosten" eyebrow="Ratgeber · Preise 2026" title="Was kostet eine Website?">
+        <PageHero
+          crumb="Website-Kosten"
+          eyebrow="Ratgeber · Preise"
+          title="Was kostet eine Website?"
+          meta={
+            <p className="label-mono text-stahl-hell text-[11px]">
+              Sitalo Webdesign, Hamburg · zuletzt überarbeitet am{" "}
+              <time dateTime={STAND}>{formatDate(STAND)}</time>
+            </p>
+          }
+        >
           Zwischen null Euro und mehreren zehntausend, je nachdem, wer sie baut und was sie können muss. Für kleine
-          Betriebe liegt eine professionell gebaute Website meist bei einigen hundert bis wenigen tausend Euro, dazu kommen
-          laufende Kosten. Hier steht, wovon der Preis abhängt und was Sie im Angebot prüfen sollten.
+          Betriebe liegt eine professionell gebaute Website nach unserer Einschätzung meist bei einigen hundert bis wenigen
+          tausend Euro, dazu kommen laufende Kosten. Hier steht, wovon der Preis abhängt, was jeden Monat anfällt und was
+          Sie im Angebot prüfen sollten.
         </PageHero>
 
         {/* Drei Wege als Tabelle */}
@@ -147,8 +256,8 @@ export default function WebsiteKostenPage() {
                 Baukasten, Freelancer oder Agentur
               </h2>
               <p className="text-muted-foreground max-w-md text-[15.5px] leading-relaxed lg:col-span-4 lg:col-start-9">
-                Grobe Erfahrungswerte für kleine Betriebe in Deutschland, ohne Shop. Einzelne Angebote können deutlich
-                abweichen.
+                Nach unserer Einschätzung, für kleine Betriebe in Deutschland ohne Shop. Das ist keine Statistik; einzelne
+                Angebote können deutlich abweichen.
               </p>
             </div>
 
@@ -167,7 +276,10 @@ export default function WebsiteKostenPage() {
                     <th scope="row" className="py-5 pr-4 text-[16px] font-semibold">{w.name}</th>
                     <td className="py-5 pr-4 whitespace-nowrap">{w.einmalig}</td>
                     <td className="text-muted-foreground py-5 pr-4">{w.laufend}</td>
-                    <td className="text-muted-foreground py-5">{w.passt}</td>
+                    <td className="text-muted-foreground py-5">
+                      {w.passt}
+                      {w.link ? <WegLink link={w.link} /> : null}
+                    </td>
                   </tr>
                 ))}
                 <tr className="border-foreground bg-card border-y-2 align-top">
@@ -175,7 +287,7 @@ export default function WebsiteKostenPage() {
                     Sitalo
                   </th>
                   <td className="py-5 pr-4 font-semibold whitespace-nowrap">{STARTER_SETUP}</td>
-                  <td className="py-5 pr-4">{STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen</td>
+                  <td className="py-5 pr-4">{STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen; zzgl. USt.</td>
                   <td className="py-5 pr-3">Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie uns selbst erreichen.</td>
                 </tr>
               </tbody>
@@ -186,9 +298,10 @@ export default function WebsiteKostenPage() {
               {[
                 ...WEGE,
                 {
+                  link: undefined,
                   name: "Sitalo",
                   einmalig: STARTER_SETUP,
-                  laufend: `${STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen`,
+                  laufend: `${STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen; zzgl. USt.`,
                   passt: "Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie uns selbst erreichen.",
                 },
               ].map((w) => (
@@ -198,10 +311,63 @@ export default function WebsiteKostenPage() {
                     <span className="text-[15px] font-semibold">{w.einmalig}</span>
                   </dt>
                   <dd className="text-muted-foreground mt-1 text-[14.5px]">Laufend: {w.laufend}</dd>
-                  <dd className="mt-2 text-[14.5px] leading-relaxed">{w.passt}</dd>
+                  <dd className="mt-2 text-[14.5px] leading-relaxed">
+                    {w.passt}
+                    {w.link ? <WegLink link={w.link} /> : null}
+                  </dd>
                 </div>
               ))}
             </dl>
+          </div>
+        </section>
+
+        {/* Laufende Kosten: eine Liste für alle Breiten, ab md drei Spalten */}
+        <section id="laufende-kosten" className="border-foreground scroll-mt-20 border-t">
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-4">
+              <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+                Laufende Kosten im Monat
+              </h2>
+              <p className="text-muted-foreground mt-5 text-[15.5px] leading-relaxed">
+                Auch eine fertige Website kostet jeden Monat etwas, selbst wenn Sie sie selbst gebaut haben. Diese Posten
+                kommen zusammen, einzeln bezahlt oder in einem Monatsbeitrag gebündelt.
+              </p>
+              <p className="text-muted-foreground mt-4 text-[15.5px] leading-relaxed">
+                Wenn Sie selbst bauen:{" "}
+                <Link href="/webseite-erstellen#kosten" className="text-foreground underline underline-offset-4">
+                  was der Selbstbau kostet
+                </Link>
+                .
+              </p>
+            </div>
+            <div className="min-w-0 lg:col-span-8">
+              <div
+                aria-hidden="true"
+                className="border-foreground hidden grid-cols-[11rem_12rem_minmax(0,1fr)] gap-x-6 border-t-[3px] py-3 md:grid"
+              >
+                {["Posten", "Richtwert", "Worauf Sie achten"].map((h) => (
+                  <span key={h} className="label-mono text-muted-foreground text-[11px]">
+                    {h}
+                  </span>
+                ))}
+              </div>
+              <dl className="border-foreground border-t-[3px] md:border-t-0">
+                {LAUFEND.map((l) => (
+                  <div
+                    key={l.posten}
+                    className="border-border grid gap-1 border-b py-4 md:grid-cols-[11rem_12rem_minmax(0,1fr)] md:gap-x-6 md:border-t md:border-b-0"
+                  >
+                    <dt className="text-[16px] font-semibold md:text-[15px]">{l.posten}</dt>
+                    <dd className="text-[15px]">{l.richtwert}</dd>
+                    <dd className="text-muted-foreground text-[14.5px] leading-relaxed md:text-[15px]">{l.hinweis}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="text-muted-foreground mt-5 text-[14.5px] leading-relaxed">
+                Bei uns stecken Hosting in der EU, SSL-Zertifikat, Backups, Updates und kleine Änderungen im
+                Monatsbeitrag, {STARTER_MONTHLY} zzgl. USt. Rechtstexte und Abos für Erweiterungen kommen wie überall dazu.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -225,6 +391,47 @@ export default function WebsiteKostenPage() {
           </div>
         </section>
 
+        {/* Nach Umfang: vier Stufen, mit unserem Paket als Beispiel */}
+        <section id="umfang" className="border-foreground scroll-mt-20 border-t">
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+              <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem] lg:col-span-7">
+                Was eine Website nach Umfang kostet
+              </h2>
+              <p className="text-muted-foreground max-w-md text-[15.5px] leading-relaxed lg:col-span-4 lg:col-start-9">
+                Der größte Hebel beim Preis ist der Umfang. Als Anhaltspunkt steht bei jeder Stufe, was sie bei uns kostet.
+                Holen Sie für den Vergleich zwei, drei Angebote ein.
+              </p>
+            </div>
+            <div className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-2 lg:mt-12">
+              {UMFANG.map((u) => (
+                <article key={u.titel} className="border-foreground border-t-2 pt-5">
+                  <h3 className="text-[1.3rem] leading-tight tracking-[-0.015em]">{u.titel}</h3>
+                  <p className="text-foreground/85 mt-3 text-[15.5px] leading-relaxed">{u.text}</p>
+                  <p className="mt-3 text-[15px] leading-relaxed">
+                    <span className="label-mono text-muted-foreground mr-2 text-[10.5px]">Bei uns</span>
+                    {u.paket ? (
+                      <>
+                        <Link
+                          href={`/pakete/${u.paket.slug}`}
+                          className="font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
+                        >
+                          {u.paket.name}
+                        </Link>
+                        , {u.paket.setup} einmalig und {u.paket.monthly.replace(/\s*\/\s*Monat$/, "")} im Monat, zzgl.
+                        USt.; online {nachDauer(u.paket.dauer)} ab vollständigen Unterlagen.
+                      </>
+                    ) : (
+                      "nur im Einzelfall, den Preis nennen wir nach einem Gespräch."
+                    )}
+                  </p>
+                  <p className="text-muted-foreground mt-2 text-[14.5px] leading-relaxed">{u.hinweis}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Eigene Preise als Preisliste */}
         <section className="border-border border-t">
           <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
@@ -232,9 +439,21 @@ export default function WebsiteKostenPage() {
               <h2 className="max-w-2xl text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
                 Was eine Website bei uns kostet
               </h2>
-              <Link href="/pakete" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-                Pakete im Vergleich {ARROW}
-              </Link>
+              <ul className="flex flex-wrap gap-x-7 gap-y-3">
+                <li>
+                  <Link href="/pakete" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+                    Pakete im Vergleich {ARROW}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/website-erstellen-lassen"
+                    className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+                  >
+                    Website erstellen lassen: Leistungen und Ablauf {ARROW}
+                  </Link>
+                </li>
+              </ul>
             </div>
             <ul className="border-foreground mt-10 border-t lg:mt-12">
               {PAKETE.map((p) => (
@@ -258,24 +477,29 @@ export default function WebsiteKostenPage() {
               ))}
             </ul>
             <p className="text-muted-foreground mt-6 text-[14.5px] leading-relaxed">
-              Alle Preise zzgl. MwSt. Im{" "}
+              {PREIS_HINWEIS} Im{" "}
               <Link href="/rechner" className="text-foreground underline underline-offset-4">
                 3-Jahres-Rechner
               </Link>{" "}
-              sehen Sie die Gesamtkosten neben Wix, Squarespace und Jimdo, Ihre eigene Arbeitszeit eingerechnet.
+              sehen Sie die Gesamtkosten neben angenommenen Baukasten-Tarifen, Ihre eigene Arbeitszeit eingerechnet.
             </p>
           </div>
         </section>
 
-        {/* Checkliste wie ein Zettel zum Abhaken */}
-        <section className="border-border border-t">
+        {/* Checkliste wie ein Zettel zum Abhaken. Anker #checkliste wird von
+            /website-erstellen-lassen und /webseite-erstellen verlinkt. */}
+        <section id="checkliste" className="border-border scroll-mt-20 border-t">
           <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-4">
               <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
                 Sechs Fragen an jedes Angebot
               </h2>
               <p className="text-muted-foreground mt-5 text-[15.5px] leading-relaxed">
-                Legen Sie die Liste neben jedes Angebot, das Sie bekommen. Auch neben unseres.
+                Legen Sie die Liste neben jedes Angebot, das Sie bekommen. Auch neben unseres:{" "}
+                <Link href="/website-erstellen-lassen#zusagen" className="text-foreground underline underline-offset-4">
+                  unsere Antworten auf die sechs Fragen
+                </Link>
+                .
               </p>
             </div>
             <div className="bg-card border-border border px-5 py-6 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:px-9 sm:py-9 lg:col-span-7 lg:col-start-6">
@@ -339,5 +563,21 @@ export default function WebsiteKostenPage() {
       <MarketingFooter />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
     </div>
+  );
+}
+
+/** Kurzer Verweis hinter einem Tabellen- oder Listeneintrag. */
+function WegLink({ link }: { link: Verweis }) {
+  return (
+    <>
+      {" "}
+      <Link
+        href={link.href}
+        className="text-foreground inline-flex items-center gap-1 font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
+      >
+        {link.label}
+        <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+      </Link>
+    </>
   );
 }

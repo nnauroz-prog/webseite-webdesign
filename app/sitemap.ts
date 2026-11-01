@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 import { getAllBrancheSlugs } from "@/lib/branchen-data";
 import { JOURNAL_POSTS } from "@/lib/journal-data";
 import { getAllPaketSlugs } from "@/lib/pakete-data";
+import { SEITEN_STAND, STAND_UEBRIGE_SEITEN } from "@/lib/seiten-stand";
 import { getAllStandortSlugs } from "@/lib/standorte-data";
 import { SITE_URL } from "@/lib/site";
 
@@ -35,6 +36,8 @@ const STATIC_ROUTES: Array<{
   // Conversion-Hubs
   { path: "/website-erstellen-lassen", priority: 0.9, changeFrequency: "monthly" },
   { path: "/website-kosten", priority: 0.8, changeFrequency: "monthly" },
+  // Ratgeber für Selbstbauer („Webseite erstellen“), führt am Ende auf die Geldseite
+  { path: "/webseite-erstellen", priority: 0.8, changeFrequency: "monthly" },
   { path: "/anfrage", priority: 0.9, changeFrequency: "monthly" },
   { path: "/branchen", priority: 0.9, changeFrequency: "monthly" },
   { path: "/pakete", priority: 0.9, changeFrequency: "monthly" },
@@ -68,13 +71,21 @@ const STATIC_ROUTES: Array<{
   { path: "/lexikon", priority: 0.5, changeFrequency: "yearly" },
 ];
 
+/** Echter Stand einer Seite, sonst das feste Datum für die übrigen Seiten. */
+function lastModifiedFor(path: string): Date {
+  const eintrag = (SEITEN_STAND as Record<string, { stand: string } | undefined>)[path];
+  return new Date(eintrag?.stand ?? STAND_UEBRIGE_SEITEN);
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  // Kein pauschales „jetzt": Ein lastmod, das sich bei jedem Build ändert,
+  // lernt Google zu ignorieren. Datumswerte stehen in lib/seiten-stand.ts.
+  const fest = new Date(STAND_UEBRIGE_SEITEN);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
     ({ path, priority, changeFrequency }) => ({
       url: `${SITE_URL}${path}`,
-      lastModified: now,
+      lastModified: lastModifiedFor(path),
       changeFrequency,
       priority,
     }),
@@ -83,7 +94,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const brancheEntries: MetadataRoute.Sitemap = getAllBrancheSlugs().map(
     (slug) => ({
       url: `${SITE_URL}/branchen/${slug}`,
-      lastModified: now,
+      lastModified: fest,
       changeFrequency: "monthly",
       priority: 0.8,
     }),
@@ -92,7 +103,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const paketEntries: MetadataRoute.Sitemap = getAllPaketSlugs().map(
     (slug) => ({
       url: `${SITE_URL}/pakete/${slug}`,
-      lastModified: now,
+      lastModified: fest,
       changeFrequency: "monthly",
       priority: 0.8,
     }),
@@ -101,7 +112,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const standortEntries: MetadataRoute.Sitemap = getAllStandortSlugs().map(
     (slug) => ({
       url: `${SITE_URL}/standorte/${slug}`,
-      lastModified: now,
+      lastModified: fest,
       changeFrequency: "monthly",
       priority: 0.8,
     }),

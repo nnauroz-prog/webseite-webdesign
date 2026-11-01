@@ -54,9 +54,9 @@ export type VertikalLanding = {
 export const VERTIKAL_LANDINGS: VertikalLanding[] = [
   {
     slug: "pflege",
-    seoTitle: "Website für Pflegedienste erstellen lassen · Festpreis",
+    seoTitle: "Website für Pflegedienste erstellen lassen",
     seoDescription:
-      "Websites für Pflegedienste. Leistungen und Einsatzgebiet klar erklärt, mit Bewerbungsformular für Pflegekräfte und Notfallnummer. Gebaut in Hamburg, Festpreis vorab.",
+      "Website für Pflegedienste erstellen lassen: Leistungen und Einsatzgebiet klar erklärt, Bewerbungsformular für Pflegekräfte, Notfallnummer. Festpreis vorab.",
     brancheSlug: "pflege",
     inquirySlug: "pflege",
     recommendedPackage: "business",

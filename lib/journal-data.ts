@@ -27,6 +27,8 @@ export type JournalPost = {
   seoTitle?: string;
   /** Untertitel als Dek — eine Zeile Kontext. */
   dek: string;
+  /** Beschreibung für Google, wenn der Dek dafür zu kurz ist (120–158 Zeichen). */
+  seoDescription?: string;
   /** ISO-Datum, yyyy-mm-dd, Veröffentlichung. */
   publishedAt: string;
   /** Geschätzte Lesezeit in Minuten — manuell gepflegt. */
@@ -40,7 +42,7 @@ export type JournalPost = {
 const POSTS: JournalPost[] = [
   {
     slug: "die-zweite-frage",
-    seoTitle: "Erstgespräch beim Webdesigner: Was Anrufer wissen wollen",
+    seoTitle: "Erstgespräch beim Webdesigner: Was Anrufer fragen",
     title: "Die zweite Frage",
     dek: "Was Anrufer im Erstgespräch eigentlich wissen wollen, und warum sie zuerst nach dem Preis fragen.",
     publishedAt: "2026-06-15",
@@ -110,6 +112,8 @@ const POSTS: JournalPost[] = [
     seoTitle: "Neue Website jetzt oder später? Wann es warten kann",
     title: "Wann eine Website warten kann",
     dek: "Drei Fälle, in denen wir raten, mit der eigenen Website noch zu warten.",
+    seoDescription:
+      "Drei Fälle, in denen wir raten, mit der Website noch zu warten: Das Geschäft steht noch nicht, Instagram ist der Vertriebskanal oder die Saison läuft.",
     publishedAt: "2026-06-12",
     readingMinutes: 4,
     tags: ["Beratung", "Entscheidung", "Lokales Geschäft"],
@@ -170,7 +174,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "der-preis-einer-website",
-    seoTitle: "Website-Festpreis erklärt: Wie unsere Preise entstehen",
+    seoTitle: "Website-Festpreis: Wie unsere Preise entstehen",
     title: "Der Preis, einmal offen hingelegt",
     dek: "Was eine Website kostet, wie unsere Preise entstehen und welcher Posten in vielen Angeboten fehlt.",
     publishedAt: "2026-06-08",
@@ -347,7 +351,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "pflegedienst-google-maps-hamburg",
-    seoTitle: "Pflegedienst bei Google Maps: Was der Eintrag braucht",
+    seoTitle: "Pflegedienst bei Google Maps: Was hineingehört",
     title: "Wer auf der Karte fehlt, ist nicht im Gespräch",
     dek: "Wie Angehörige in Hamburg nach ambulanter Pflege suchen, und was ein vollständiger Google-Eintrag dafür braucht.",
     publishedAt: "2026-05-26",
@@ -519,23 +523,25 @@ export const JOURNAL_CTAS: Record<string, JournalCta> = {
     secondaryHref: "/anfrage",
     secondaryLabel: "Schriftlich anfragen",
   },
+  // Ankertexte: „Website erstellen lassen" nur auf /website-erstellen-lassen,
+  // „Webseite (selbst) erstellen" ohne „lassen" nur auf /webseite-erstellen.
   "wann-eine-website-warten-kann": {
     primaryHref: "/audit",
     primaryLabel: "Kostenlose Durchsicht Ihrer Website",
-    secondaryHref: "/sprechstunde",
-    secondaryLabel: "Zur Sprechstunde",
+    secondaryHref: "/webseite-erstellen",
+    secondaryLabel: "Webseite selbst erstellen: Anleitung",
   },
   "der-preis-einer-website": {
-    primaryHref: "/pakete",
-    primaryLabel: "Pakete und Preise",
+    primaryHref: "/website-erstellen-lassen",
+    primaryLabel: "Website erstellen lassen: Preise und Ablauf",
     secondaryHref: "/honorar",
     secondaryLabel: "Wie sich der Preis zusammensetzt",
   },
   "warum-wir-keine-mockups-zeigen": {
     primaryHref: "/ablauf",
     primaryLabel: "Der Ablauf im Einzelnen",
-    secondaryHref: "/anfrage",
-    secondaryLabel: "Website anfragen",
+    secondaryHref: "/website-erstellen-lassen",
+    secondaryLabel: "Website erstellen lassen: Ablauf und Festpreis",
   },
   "cafe-website-hamburg-2026": {
     primaryHref: "/branchen/gastro",

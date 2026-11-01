@@ -66,7 +66,6 @@ export default function ImpressumPage() {
                     info@sitalo.de
                   </a>
                 </Row>
-                <Row label="Umsatzsteuer-ID">folgt in Kürze</Row>
                 <Row label="Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV">
                   Nadim Nauroz
                   <br />

@@ -14,8 +14,9 @@ import {
   getBrancheBySlug,
   type Branche,
 } from "@/lib/branchen-data";
+import { BRANCHEN_SEO } from "@/lib/branchen-seo";
 import { getPost, JOURNAL_BY_BRANCHE } from "@/lib/journal-data";
-import { getPaketBySlug } from "@/lib/pakete-data";
+import { getPaketBySlug, nachDauer } from "@/lib/pakete-data";
 import { getStandorteForBranche } from "@/lib/standorte-data";
 import { SITE_URL } from "@/lib/site";
 
@@ -38,10 +39,12 @@ export async function generateMetadata({
   const branche = getBrancheBySlug(slug);
   if (!branche) return {};
 
-  const title = `Website für ${branche.label} erstellen lassen`;
+  // Titel und Beschreibung je Branche: lib/branchen-seo.ts (Landingpage führt „erstellen lassen").
+  const seo = BRANCHEN_SEO[branche.slug];
+  const title = seo?.title ?? `Website für ${seo?.seoLabel ?? branche.label} erstellen lassen`;
   const lead =
     branche.shortBody.length > 100 ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "." : branche.shortBody;
-  const description = `${lead} Website zum Festpreis ab 499\u00A0€, gebaut in Hamburg.`;
+  const description = seo?.description ?? `${lead} Website zum Festpreis ab 499\u00A0€, gebaut in Hamburg.`;
   return {
     title,
     description,
@@ -79,17 +82,8 @@ export default async function BranchePage({
     "@type": "Service",
     name: `Webdesign für ${branche.label}`,
     description: branche.shortBody,
-    provider: {
-      "@type": "LocalBusiness",
-      "@id": `${SITE_URL}/#business`,
-      name: "Sitalo Webdesign",
-      areaServed: "DE",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Hamburg",
-        addressCountry: "DE",
-      },
-    },
+    // Das Unternehmen selbst beschreibt das Root-Layout (ProfessionalService).
+    provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "Country", name: "Deutschland" },
     serviceType: "Webdesign",
     url: `https://www.sitalo.de/branchen/${branche.slug}`,
@@ -168,11 +162,16 @@ export default async function BranchePage({
  * ---------------------------------------------------------------- */
 function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string }) {
   const paket = getPaketBySlug(branche.recommendedPackage);
+  const landing = BRANCHEN_SEO[branche.slug]?.landing;
+  const zweitlink =
+    "text-foreground font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current";
   return (
     <section>
       <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:grid-cols-12 lg:gap-8">
         <div className="min-w-0 lg:col-span-6">
-          <p className="label-mono text-muted-foreground">Website erstellen lassen</p>
+          <p className="label-mono text-muted-foreground">
+            {landing ? "Seitenplan und Muster" : "Website erstellen lassen"}
+          </p>
           <h1 className="mt-6 text-balance text-[2.3rem] leading-[0.98] tracking-[-0.038em] hyphens-auto sm:text-[3.4rem] lg:text-[3.75rem]">
             Website für {branche.label}
           </h1>
@@ -184,7 +183,7 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
               Anfrage schreiben {ARROW}
             </Link>
             <Link href="/website-erstellen-lassen" className="btn-line grow sm:grow-0">
-              Kosten und Ablauf
+              Festpreis und Ablauf
             </Link>
           </div>
           {paket ? (
@@ -197,7 +196,17 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
                 {paket.name}
               </Link>
               , <span className="tabular-nums">{paket.setup}</span> einmalig und{" "}
-              <span className="tabular-nums">{paket.monthly.replace(/\s*\/\s*Monat$/, "")}</span> im Monat.
+              <span className="tabular-nums">{paket.monthly.replace(/\s*\/\s*Monat$/, "")}</span> im Monat, zzgl.
+              USt. Online {nachDauer(paket.dauer)} ab vollständigen Unterlagen.{" "}
+              {landing ? (
+                <Link href={landing.href} className={zweitlink}>
+                  {landing.label}
+                </Link>
+              ) : (
+                <Link href="/website-erstellen-lassen" className={zweitlink}>
+                  Preise und Ablauf: Website erstellen lassen
+                </Link>
+              )}
             </p>
           ) : null}
         </div>

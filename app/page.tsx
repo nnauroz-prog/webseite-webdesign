@@ -16,7 +16,7 @@ import { LivePreview } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
-import { getPaketBySlug } from "@/lib/pakete-data";
+import { PREIS_HINWEIS, getPaketBySlug } from "@/lib/pakete-data";
 
 const CONTACT_EMAIL = "info@sitalo.de";
 
@@ -28,13 +28,17 @@ export const revalidate = 600;
 export const metadata: Metadata = {
   // Absoluter Titel — sonst hängt das Layout-Template noch ein
   // „· Sitalo" an den ohnehin gebrandeten Home-Titel.
-  title: { absolute: "Website erstellen lassen · Webdesign aus Hamburg | Sitalo" },
+  // Die Startseite führt Marke und „Webdesign Hamburg“. „Website erstellen
+  // lassen“ steht im Titel der Geldseite /website-erstellen-lassen, damit
+  // sich beide Seiten bei Google keine Konkurrenz machen; die H1 im Hero
+  // nennt den Begriff weiterhin, Preise() verlinkt auf die Geldseite.
+  title: { absolute: "Webdesign Hamburg · Websites zum Festpreis ab 499 € | Sitalo" },
   description:
-    "Website erstellen lassen zum Festpreis ab 499\u00A0€: individuell gestaltet, für Handy und Google optimiert. Persönlich aus Hamburg, für Betriebe in ganz Deutschland.",
+    "Webdesign aus Hamburg für Betriebe in ganz Deutschland: Websites zum Festpreis ab 499\u00A0€, Test-Link vor dem Start und kleine Änderungen im Monatsbeitrag.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    title: "Sitalo — Webdesign aus Hamburg",
+    title: "Sitalo · Webdesign Hamburg",
     description:
       "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499\u00A0€, Test-Link vor dem Start.",
     siteName: "Sitalo Webdesign",
@@ -43,7 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sitalo — Webdesign aus Hamburg",
+    title: "Sitalo · Webdesign Hamburg",
     description: "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499\u00A0€.",
   },
 };
@@ -331,12 +335,18 @@ function Preise() {
               Pakete vergleichen {ARROW}
             </Link>
           </div>
+          <Link
+            href="/website-erstellen-lassen"
+            className="text-muted-foreground hover:text-foreground mt-5 inline-flex items-center gap-1.5 text-[14.5px] font-semibold underline-offset-4 hover:underline"
+          >
+            Website erstellen lassen: Preise und Ablauf {ARROW}
+          </Link>
         </div>
         <div className="min-w-0 lg:col-span-8 lg:col-start-5">
           <Abfahrtstafel pakete={PAKETE_KURZ} />
           <p className="text-muted-foreground mt-3 font-mono text-[12px] leading-relaxed">
             Einmalpreise, dazu ein Monatsbeitrag {MONTHLY_FROM}.
-            {STUDIO ? ` ${STUDIO.name} ${STUDIO.setup} steht auf der Paketseite.` : null}
+            {STUDIO ? ` ${STUDIO.name} ${STUDIO.setup} steht auf der Paketseite.` : null} {PREIS_HINWEIS}
           </p>
         </div>
       </div>
@@ -385,9 +395,21 @@ function Fragen() {
           <h2 data-reveal="rise" className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
             Was vor dem ersten Anruf oft gefragt wird
           </h2>
-          <Link href="/faq" className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-            Alle Fragen {ARROW}
-          </Link>
+          <ul className="mt-6 space-y-3">
+            <li>
+              <Link href="/faq" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+                Alle Fragen {ARROW}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/webseite-erstellen"
+                className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-[14.5px] font-semibold underline-offset-4 hover:underline"
+              >
+                Selbst bauen: Webseite erstellen in sieben Schritten {ARROW}
+              </Link>
+            </li>
+          </ul>
         </div>
         <dl data-reveal="stagger" className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
           {FAQ.map((item) => (
