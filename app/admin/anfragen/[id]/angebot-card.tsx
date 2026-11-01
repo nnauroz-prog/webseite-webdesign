@@ -7,23 +7,27 @@ import { useEffect, useState, useTransition } from "react";
 import type { SendAngebot } from "@/app/admin/anfragen/[id]/angebot-send-sheet";
 import type { Angebot, AngebotStatus } from "@/lib/admin/angebote";
 
-import { setStatusAction } from "@/app/admin/actions";
+import { setOutcomeAction, setStatusAction } from "@/app/admin/actions";
 import {
   declineAngebotAction,
   withdrawAngebotAction,
 } from "@/app/admin/angebot-actions";
 import {
   ANGEBOT_PILL,
+  NOCH_NICHT_VERSCHICKT,
+  sendeVermerk,
   vorschauPfad,
 } from "@/app/admin/anfragen/[id]/angebot-format";
 import { AngebotSendSheet } from "@/app/admin/anfragen/[id]/angebot-send-sheet";
 import { emitStatusDone, statusDoneLabel } from "@/app/admin/client-state";
 import { runAction } from "@/app/admin/run-action";
 import { ANGEBOT_GRENZEN, istBearbeitbar } from "@/lib/admin/angebote";
+import { outcomeText } from "@/lib/admin/timeline";
+import { STATUS_LABELS } from "@/lib/leads-meta";
 import { cn } from "@/lib/utils";
 
 const BTN =
-  "inline-flex h-12 min-w-0 items-center justify-center gap-2 rounded-[3px] px-4 text-[15px] font-medium transition-colors disabled:opacity-60";
+  "inline-flex h-12 min-w-0 items-center justify-center gap-2 rounded-[3px] px-3 text-[15px] font-medium transition-colors disabled:opacity-60";
 const SECONDARY =
   "border-border bg-background hover:border-foreground/40 border";
 const TEXT_BTN =
@@ -47,6 +51,8 @@ export function AngebotCard({
   leadId,
   leadOpen,
   superseded,
+  bestaetigungFehlt = false,
+  nochNichtVerschickt = false,
 }: {
   angebot: CardAngebot;
   pill: { key: AngebotStatus | "abgelaufen"; label: string };
@@ -59,11 +65,21 @@ export function AngebotCard({
   leadOpen: boolean;
   /** Es gibt ein neueres Angebot zu dieser Anfrage. */
   superseded: boolean;
+  /** Angenommen, aber die Bestätigungs-Mail an den Kunden ist nicht rausgegangen. */
+  bestaetigungFehlt?: boolean;
+  /** Laut Verlauf freigegeben, aber noch nie an den Kunden geschickt. */
+  nochNichtVerschickt?: boolean;
 }) {
   const [sending, setSending] = useState(0);
   const [panel, setPanel] = useState<"none" | "withdraw" | "decline">("none");
   const [grund, setGrund] = useState("");
   const [note, setNote] = useState<string | null>(null);
+  // Freigegeben, aber noch kein Weg angetippt: Der Kunde hat noch
+  // nichts. Anfangswert aus dem Verlauf (nochNichtVerschickt), danach
+  // aus dem Senden-Blatt.
+  const [nichtVerschickt, setNichtVerschickt] = useState(
+    nochNichtVerschickt,
+  );
   const [error, setError] = useState<{
     text: string;
     retry: () => void;
@@ -107,18 +123,32 @@ export function AngebotCard({
     });
   }
 
+  /**
+   * „Erledigt, Auftrag erhalten“: Status und Ergebnis in einem Schritt.
+   * Das Ergebnis ist bei einem angenommenen Angebot eindeutig, die
+   * Rückfrage „Wie ist es ausgegangen?“ wäre ein überflüssiger Tipp.
+   * Scheitert nur das Ergebnis (z. B. ohne Datenbank-Update), fragt die
+   * Daumenleiste wie bisher nach.
+   */
   function leadDone() {
     run(async () => {
       const res = await runAction(() => setStatusAction(leadId, "erledigt"));
       if (!res.ok) return setError({ text: res.error, retry: leadDone });
-      // Daumenleiste zeigt „Rückgängig“ bzw. fragt nach dem Ergebnis.
-      emitStatusDone({
-        label: statusDoneLabel("erledigt"),
-        undo: res.undo,
-        askOutcome: res.askOutcome,
-      });
+      let label = statusDoneLabel("erledigt");
+      let askOutcome = res.askOutcome;
+      if (res.askOutcome) {
+        const o = await runAction(() => setOutcomeAction(leadId, "gewonnen"));
+        if (o.ok) {
+          label = `${STATUS_LABELS.erledigt}: ${outcomeText("gewonnen", null)}`;
+          askOutcome = false;
+        }
+      }
+      // Daumenleiste zeigt „Rückgängig“ (stellt den Stand vorher wieder her).
+      emitStatusDone({ label, undo: res.undo, askOutcome });
     });
   }
+
+  const shownStatus = nichtVerschickt ? NOCH_NICHT_VERSCHICKT : statusText;
 
   return (
     <article
@@ -148,16 +178,18 @@ export function AngebotCard({
       </p>
       <p className="mt-1 text-[15px] tabular-nums">{betrag}</p>
       <p className="text-muted-foreground text-[13px]">{steuer}</p>
-      {statusText !== pill.label ? (
+      {shownStatus !== pill.label ? (
         <p
           className={cn(
             "mt-1.5 text-[14px]",
             status === "angenommen"
               ? "text-ink-petrol font-medium"
-              : "text-muted-foreground",
+              : nichtVerschickt
+                ? "text-gold-ink font-medium"
+                : "text-muted-foreground",
           )}
         >
-          {statusText}
+          {shownStatus}
         </p>
       ) : null}
       {status === "abgelehnt" && angebot.abgelehnt_grund ? (
@@ -172,27 +204,37 @@ export function AngebotCard({
         </p>
       ) : null}
 
+      {status === "angenommen" && bestaetigungFehlt ? (
+        <p className="border-ink-olive/30 bg-ink-olive/8 mt-3 rounded-[4px] border p-3 text-[14.5px] leading-relaxed">
+          <strong className="text-ink-olive">
+            Die Bestätigungs-Mail an den Kunden ist nicht rausgegangen.
+          </strong>{" "}
+          Schick sie beim Anruf oder per Mail selbst nach.
+        </p>
+      ) : null}
+
       {status === "angenommen" && leadOpen ? (
         <div className="bg-ink-petrol/8 mt-3 rounded-[4px] p-3">
           <p className="text-[15px] leading-relaxed">
             <strong>Nächster Schritt:</strong> Ruf den Kunden an und nenn den
-            Starttermin. Danach die Anfrage auf Erledigt setzen.
+            Starttermin. Danach die Anfrage abschließen.
           </p>
           <button
             type="button"
             onClick={leadDone}
             disabled={pending}
-            className={cn(BTN, "bg-foreground text-background mt-2 h-11")}
+            className={cn(BTN, "bg-foreground text-background mt-2 h-11 px-4")}
           >
             {pending ? (
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : null}
-            Auf Erledigt setzen
+            Erledigt, Auftrag erhalten
           </button>
         </div>
       ) : null}
 
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      {/* Unter 360 px passt „Kundenansicht“ nicht neben „Ansehen“: dann untereinander. */}
+      <div className="mt-3 grid grid-cols-2 gap-2 max-[359px]:grid-cols-1">
         <Link href={editHref} className={cn(BTN, SECONDARY)}>
           {editable ? (
             <Pencil className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -210,17 +252,21 @@ export function AngebotCard({
             }}
             className={cn(
               BTN,
-              "bg-foreground text-background px-3 whitespace-nowrap",
+              "bg-foreground text-background whitespace-nowrap",
             )}
           >
             <Send
               className={cn(
                 "h-4 w-4 shrink-0",
-                status === "gesendet" && "max-[400px]:hidden",
+                status === "gesendet" &&
+                  !nichtVerschickt &&
+                  "max-[400px]:hidden",
               )}
               aria-hidden="true"
             />
-            {status === "gesendet" ? "Erneut senden" : "Senden"}
+            {status === "gesendet" && !nichtVerschickt
+              ? "Erneut senden"
+              : "Senden"}
           </button>
         ) : (
           <a
@@ -384,16 +430,12 @@ export function AngebotCard({
           open
           angebot={angebot}
           editHref={editHref}
+          nochNichtVerschickt={nichtVerschickt}
           onClose={() => setSending(0)}
-          onSent={({ anfrageInArbeit, erstmals }) => {
+          onSent={(info) => {
             setSending(0);
-            setNote(
-              `${angebot.nummer} ${erstmals ? "freigegeben und als gesendet" : "erneut als gesendet"} vermerkt.${
-                anfrageInArbeit
-                  ? " Die Anfrage steht jetzt auf „In Arbeit“."
-                  : ""
-              }`,
-            );
+            setNichtVerschickt(!info.verschickt);
+            setNote(sendeVermerk(angebot.nummer, info));
           }}
         />
       ) : null}

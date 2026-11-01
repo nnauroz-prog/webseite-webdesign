@@ -1,5 +1,6 @@
 import type { Angebot } from "@/lib/admin/angebote";
 import type { SchemaPart } from "@/lib/admin/schema";
+import type { LeadEvent } from "@/lib/leads-meta";
 
 import { AngebotCard } from "@/app/admin/anfragen/[id]/angebot-card";
 import {
@@ -11,16 +12,18 @@ import { DbProblem } from "@/app/admin/db-problem";
 import {
   ANGEBOT_STATUS_LABELS,
   berechneSummen,
+  bestaetigungFehlt,
+  nochNichtVerschickt,
   editorPfad,
   kundenAnsicht,
   statusZeile,
 } from "@/lib/admin/angebote";
 
 /**
- * Abschnitt „Angebot“ auf der Detailseite. Ohne Angebot ein großer
- * Knopf „Angebot erstellen“; sonst die Angebote, das jüngste oben.
- * Fehlt die Tabelle noch, steht hier nur ein kurzer Hinweis (das
- * Banner oben bietet das Update an).
+ * Abschnitt „Angebot“ auf der Detailseite. Ohne Angebot ein Knopf
+ * „Angebot erstellen“ (groß nur bei offener Anfrage); sonst die
+ * Angebote, das jüngste oben. Fehlt die Tabelle noch, steht hier nur
+ * ein kurzer Hinweis (das Banner oben bietet das Update an).
  */
 export function AngeboteSection({
   leadId,
@@ -28,6 +31,8 @@ export function AngeboteSection({
   loadError,
   schemaPart,
   leadOpen,
+  kontaktFehlt,
+  events,
   paketName,
   now,
 }: {
@@ -38,6 +43,10 @@ export function AngeboteSection({
   loadError: unknown;
   schemaPart: SchemaPart;
   leadOpen: boolean;
+  /** Weder Name noch E-Mail noch Telefon: Ein Angebot braucht erst einen Namen. */
+  kontaktFehlt: boolean;
+  /** Verlauf der Anfrage (für „Bestätigungs-Mail nicht rausgegangen“). */
+  events: LeadEvent[] | null;
   /** Paket, mit dem ein neues Angebot startet. */
   paketName: string;
   now: Date;
@@ -67,10 +76,15 @@ export function AngeboteSection({
       ) : count === 0 ? (
         <>
           <p className="text-muted-foreground mt-1 text-[14px] leading-relaxed">
-            Aus der Anfrage entsteht ein Entwurf mit Paket {paketName}, Preisen
-            und Standardtexten. Du kannst alles ändern, bevor es rausgeht.
+            {kontaktFehlt
+              ? "Für ein Angebot brauchst du mindestens einen Namen – trag ihn im Editor nach. Ohne E-Mail-Adresse bleibt nur Teilen oder Link kopieren."
+              : `Aus der Anfrage entsteht ein Entwurf mit Paket ${paketName}, Preisen und Standardtexten. Du kannst alles ändern, bevor es rausgeht.`}
           </p>
-          <CreateAngebotButton leadId={leadId} big />
+          {/* Groß nur, wo es der nächste Schritt ist: bei offener Anfrage mit Kontakt. */}
+          <CreateAngebotButton
+            leadId={leadId}
+            big={leadOpen && !kontaktFehlt}
+          />
         </>
       ) : (
         <>
@@ -109,6 +123,14 @@ export function AngeboteSection({
                     editHref={editorPfad(leadId, a.id)}
                     leadId={leadId}
                     leadOpen={leadOpen}
+                    nochNichtVerschickt={nochNichtVerschickt(
+                      events ?? [],
+                      a.nummer,
+                    )}
+                    bestaetigungFehlt={
+                      a.status === "angenommen" &&
+                      bestaetigungFehlt(events ?? [], a.nummer)
+                    }
                     superseded={angebote
                       .slice(0, i)
                       .some(
@@ -120,7 +142,7 @@ export function AngeboteSection({
               );
             })}
           </ul>
-          <CreateAngebotButton leadId={leadId} big={false} />
+          <CreateAngebotButton leadId={leadId} big={false} weiteres />
         </>
       )}
     </section>

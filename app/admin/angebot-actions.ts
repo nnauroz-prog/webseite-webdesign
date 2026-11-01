@@ -27,6 +27,7 @@ import {
   getAngebotById,
   markAngebotDeclined,
   markAngebotSent,
+  noteAngebotVerschickt,
   removeAngebotEntwurf,
   updateAngebot,
   withdrawAngebot,
@@ -303,6 +304,27 @@ export async function markAngebotSentAction(
       ok: false,
       error: dbFailure("Angebot als gesendet markieren", err, id),
     };
+  }
+}
+
+/**
+ * Direkt nach der Freigabe einen Weg angetippt (Mail, Teilen, Link):
+ * Verlauf „an den Kunden geschickt“. Damit steht auch nach dem Neuladen
+ * nicht mehr „noch nicht verschickt“.
+ */
+export async function markAngebotVerschicktAction(
+  rawId: unknown,
+): Promise<AngebotResult> {
+  const actor = await requireAdmin();
+  const id = parseId(rawId);
+  if (!id) return { ok: false, error: INVALID };
+  try {
+    const res = await noteAngebotVerschickt(id, actor);
+    if (!res.ok) return { ok: false, error: grundText(res) };
+    revalidateAngebot(res.angebot);
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: dbFailure("Versand vermerken", err, id) };
   }
 }
 

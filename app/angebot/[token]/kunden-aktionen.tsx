@@ -135,7 +135,7 @@ export function ZumAnnehmen({ className }: { className?: string }) {
   return (
     <a href="#annehmen" className={cn("btn-signal", className)}>
       Annehmen
-      <ArrowDown className="h-4 w-4" aria-hidden="true" />
+      <ArrowDown className="h-4 w-4 max-[359px]:hidden" aria-hidden="true" />
     </a>
   );
 }
@@ -228,7 +228,7 @@ export function AnnahmeBereich({
   kundeName: string;
   /** updated_at beim Laden: Angenommen wird nur genau diese Fassung. */
   stand: string;
-  /** „899,00 € einmalig und 79,00 € im Monat, jeweils zuzüglich …“ */
+  /** „899,00 € einmalig und 79,00 € im Monat, jeweils zuzüglich … (… brutto)“ */
   preis: string;
 }) {
   const admin = useAdminVorschau();
@@ -368,10 +368,14 @@ export function AnnahmeBereich({
 
           <Meldung text={allgemeinerFehler(annahme)} />
 
+          {/* „Preis“, nicht „Gesamt“: Im Blatt darüber heißt „Gesamt“ der
+              Bruttobetrag; hier stehen die Nettobeträge mit Steuerhinweis
+              (und die Bruttobeträge in Klammern), nicht dasselbe Wort mit
+              einer anderen Zahl. */}
           {preis ? (
             <p className="border-border mt-6 max-w-[36rem] border-t pt-4 text-[14.5px] leading-snug">
               <span className="label-mono text-muted-foreground mr-2">
-                Gesamt
+                Preis
               </span>
               {preis}
             </p>

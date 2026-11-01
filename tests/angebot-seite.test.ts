@@ -7,12 +7,14 @@ import {
   absaetze,
   absenderAdresse,
   aktualisiertNachSenden,
+  festeRechtsformen,
   KUNDEN_MELDUNGEN,
   mengeText,
   nichtMehrOnline,
   positionsGruppen,
   rueckfrageMailHref,
   statusKasten,
+  titelGross,
 } from "@/app/angebot/angebot-seite";
 import { kundenAnsicht } from "@/lib/admin/angebote";
 
@@ -112,6 +114,24 @@ describe("Texte", () => {
     assert.equal(mengeText(5), "5 ×");
   });
 
+  it("festeRechtsformen: e. K. und & Co. KG brechen nicht um", () => {
+    assert.equal(
+      festeRechtsformen("Website für Malerbetrieb Jansen e. K."),
+      "Website für Malerbetrieb Jansen e.\u00a0K.",
+    );
+    assert.equal(
+      festeRechtsformen("Hansen GmbH & Co. KG und Verein e. V."),
+      "Hansen GmbH &\u00a0Co.\u00a0KG und Verein e.\u00a0V.",
+    );
+    // Gewöhnliche Sätze bleiben, wie sie sind.
+    assert.equal(festeRechtsformen("Angebot: Ihre neue Website"), "Angebot: Ihre neue Website");
+  });
+
+  it("titelGross: ab 61 Zeichen eine Stufe kleiner", () => {
+    assert.equal(titelGross("x".repeat(60)), true);
+    assert.equal(titelGross("x".repeat(61)), false);
+  });
+
   it("rueckfrageMailHref: nur die Nummer im Betreff", () => {
     assert.equal(
       rueckfrageMailHref("A-2026-0001"),
@@ -206,7 +226,7 @@ describe("statusKasten", () => {
     );
     assert.equal(
       k?.text,
-      "Angenommen am 1. November 2026 um 10:30 Uhr von Tom Berger. Danke für Ihren Auftrag! Wir melden uns meist noch am selben Werktag mit dem Starttermin. Für Ihre Unterlagen können Sie das Angebot oben als PDF speichern.",
+      "Angenommen am 1. November 2026 um 10:30 Uhr von Tom Berger. Danke für Ihren Auftrag! Wir melden uns meist noch am selben Werktag mit dem Starttermin. Für Ihre Unterlagen können Sie das Angebot als PDF speichern.",
     );
   });
 

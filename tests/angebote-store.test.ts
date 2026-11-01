@@ -326,10 +326,20 @@ describe("angebote-store gegen Mock v3", () => {
     const again = await store.markAngebotSent(a.id, ADMIN, later);
     assert.ok(again.ok);
     assert.equal(again.angebot.sent_at, later.toISOString());
+    // Aus dem Entwurf: „freigegeben“ (Kunde hat noch nichts). Das
+    // erneute Senden ist das erste echte „gesendet“, also ohne erneut.
     assert.deepEqual(events(lead.id).slice(1), [
+      { actor: ADMIN, was: "freigegeben", nummer: a.nummer },
       { actor: ADMIN, was: "gesendet", nummer: a.nummer },
-      { actor: ADMIN, was: "gesendet", nummer: a.nummer, erneut: true },
     ]);
+    const third = await store.markAngebotSent(a.id, ADMIN, later);
+    assert.ok(third.ok);
+    assert.deepEqual(events(lead.id).at(-1), {
+      actor: ADMIN,
+      was: "gesendet",
+      nummer: a.nummer,
+      erneut: true,
+    });
     assert.deepEqual(
       await store.markAngebotSent(
         "00000000-0000-4000-8000-000000000000",
@@ -340,6 +350,34 @@ describe("angebote-store gegen Mock v3", () => {
         ok: false,
         grund: "nicht_gefunden",
       },
+    );
+  });
+
+  it("noteAngebotVerschickt: Weg angetippt → „gesendet“ im Verlauf, nur bei gesendet", async () => {
+    const { lead, a } = await created({ senden: true });
+    const r = await store.noteAngebotVerschickt(a.id, ADMIN);
+    assert.ok(r.ok);
+    assert.deepEqual(events(lead.id).slice(1), [
+      { actor: ADMIN, was: "freigegeben", nummer: a.nummer },
+      { actor: ADMIN, was: "gesendet", nummer: a.nummer },
+    ]);
+    const again = await store.noteAngebotVerschickt(a.id, ADMIN);
+    assert.ok(again.ok);
+    assert.deepEqual(events(lead.id).at(-1), {
+      actor: ADMIN,
+      was: "gesendet",
+      nummer: a.nummer,
+      erneut: true,
+    });
+    // Angebot selbst unverändert (sent_at bleibt).
+    assert.equal((await store.getAngebotById(a.id))?.sent_at, a.sent_at);
+
+    const draft = await created();
+    const d = await store.noteAngebotVerschickt(draft.a.id, ADMIN);
+    assert.equal(!d.ok && d.grund, "gesperrt");
+    assert.deepEqual(
+      await store.noteAngebotVerschickt("00000000-0000-4000-8000-000000000000", ADMIN),
+      { ok: false, grund: "nicht_gefunden" },
     );
   });
 

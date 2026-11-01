@@ -131,7 +131,7 @@ export default async function AdminLeadPage({
     } else if (hasOutcomeEvent(events)) {
       result = { text: "Ergebnis: ohne Angabe", action: "Ändern" };
     } else if (lead.kind !== "audit") {
-      result = { text: "Ergebnis fehlt", action: "nachtragen" };
+      result = { text: "Ergebnis fehlt", action: "Nachtragen" };
     }
   }
 
@@ -271,6 +271,8 @@ export default async function AdminLeadPage({
           loadError={angebote.error}
           schemaPart={schema.angebote}
           leadOpen={open}
+          kontaktFehlt={!fieldValue(lead, "Name") && unreachable}
+          events={events}
           paketName={
             PAKETE.find((p) => p.slug === paketAusAnfrage(lead))?.name ?? "Business"
           }

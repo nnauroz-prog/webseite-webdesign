@@ -6,6 +6,7 @@ import { ANGEBOT_KONTAKT } from "@/lib/admin/angebote";
 import { cn } from "@/lib/utils";
 
 import styles from "./angebot.module.css";
+import { Fuss } from "./fuss";
 
 /**
  * Unbekannter oder unvollständiger Angebots-Link (auch: Entwurf ohne
@@ -50,6 +51,7 @@ export default function AngebotNichtGefunden() {
           </Link>
         </p>
       </main>
+      <Fuss />
     </div>
   );
 }

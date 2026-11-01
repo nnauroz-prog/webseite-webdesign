@@ -2,7 +2,6 @@ import { CircleCheck, Inbox } from "lucide-react";
 import Link from "next/link";
 import { cache } from "react";
 
-import type { AngebotHinweis, AngebotKurz } from "@/lib/admin/angebote";
 import type { LeadRow, LeadStatus } from "@/lib/leads-meta";
 
 import { ContactPrompt } from "@/app/admin/contact-prompt";
@@ -14,7 +13,6 @@ import { LeadCard } from "@/app/admin/lead-card";
 import { LeadSearch } from "@/app/admin/lead-search";
 import { MailStatus } from "@/app/admin/mail-status";
 import { SchemaNotice } from "@/app/admin/schema-notice";
-import { angebotHinweis, angeboteNachAnfrage } from "@/lib/admin/angebote";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
   berlinDateIso,
@@ -26,7 +24,7 @@ import {
 import { cardModel, dayLabel, firstNoteLine } from "@/lib/admin/card-model";
 import { checkSchema } from "@/lib/admin/schema";
 import { buildToday } from "@/lib/admin/today";
-import { listAngeboteKurz } from "@/lib/angebote-store";
+import { loadAngebotHinweise } from "@/lib/angebot-hinweise";
 import { explainDeliveryError, mailSetup } from "@/lib/lead-mail";
 import {
   DELETE_REASON_LABELS,
@@ -59,28 +57,6 @@ const loadOverview = cache(async (status: LeadStatus | null) => {
   ]);
   return { all, filtered, counts, schema, deletions, angebote };
 });
-
-/**
- * Angebots-Hinweise je Anfrage („Angebot gesendet“ …). Fehlt die
- * Tabelle oder klemmt die Abfrage, gibt es einfach keine Hinweise:
- * Die Übersicht soll daran nie scheitern.
- */
-async function loadAngebotHinweise(): Promise<Map<string, AngebotHinweis>> {
-  let rows: AngebotKurz[] | null = null;
-  try {
-    rows = await listAngeboteKurz();
-  } catch (err) {
-    console.error("[admin] Angebots-Hinweise nicht geladen", {
-      code: err && typeof err === "object" && "code" in err ? String(err.code) : "unbekannt",
-    });
-  }
-  const out = new Map<string, AngebotHinweis>();
-  for (const [leadId, list] of angeboteNachAnfrage(rows ?? [])) {
-    const h = angebotHinweis(list);
-    if (h) out.set(leadId, h);
-  }
-  return out;
-}
 
 function parseTab(raw: string | string[] | undefined): LeadStatus | null {
   return typeof raw === "string" &&
@@ -290,9 +266,11 @@ export default async function AdminHomePage({
                             card={cardModel(lead, now)}
                             hideStatus
                             angebot={angebot}
+                            // Kurz, damit am iPhone nichts abgeschnitten
+                            // wird; die Nummer steht auf der Detailseite.
                             context={
                               angebot?.status === "angenommen"
-                                ? `${angebot.nummer} angenommen: Starttermin nennen`
+                                ? "Starttermin nennen"
                                 : undefined
                             }
                           />

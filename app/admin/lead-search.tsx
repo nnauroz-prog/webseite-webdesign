@@ -14,7 +14,13 @@ import { isRedirect } from "@/app/admin/run-action";
 import { cardModel } from "@/lib/admin/card-model";
 import { cn } from "@/lib/utils";
 
-const EMPTY: SearchState = { q: "", hits: [], more: false, truncated: false };
+const EMPTY: SearchState = {
+  q: "",
+  hits: [],
+  more: false,
+  truncated: false,
+  angebote: {},
+};
 const SEARCH_OFFLINE = "Keine Verbindung. Bitte nochmal suchen.";
 
 /** Langer Begriff in der Überschrift gekürzt (das Feld zeigt ihn ganz). */
@@ -188,7 +194,10 @@ export function LeadSearch({
             <ul className="mt-3 space-y-2 lg:grid lg:grid-cols-2 lg:gap-2 lg:space-y-0">
               {state.hits.map((hit) => (
                 <li key={hit.id}>
-                  <LeadCard card={cardModel(hit, now)} />
+                  <LeadCard
+                    card={cardModel(hit, now)}
+                    angebot={state.angebote[hit.id]}
+                  />
                 </li>
               ))}
             </ul>

@@ -5,7 +5,7 @@
 
 import type { AngebotStatus, AngebotSummen } from "@/lib/admin/angebote";
 
-import { formatEuro } from "@/lib/admin/angebote";
+import { formatEuro, ustKurz } from "@/lib/admin/angebote";
 
 /** „899,00 € einmalig · 79,00 € monatlich“ (netto), sonst „Noch ohne Betrag“. */
 export function betragZeile(s: AngebotSummen): string {
@@ -19,7 +19,7 @@ export function betragZeile(s: AngebotSummen): string {
 
 /** „netto, zzgl. 19 % USt“ bzw. „ohne USt (§ 19 UStG)“. */
 export function steuerZeile(satz: 0 | 19): string {
-  return satz === 0 ? "ohne USt (§ 19 UStG)" : "netto, zzgl. 19 % USt";
+  return satz === 0 ? ustKurz(0) : `netto, ${ustKurz(19)}`;
 }
 
 /** Farbe der Status-Marke; „abgelaufen“ gilt für gesendete nach Gültig bis. */
@@ -35,4 +35,20 @@ export const ANGEBOT_PILL: Record<AngebotStatus | "abgelaufen", string> = {
 /** Pfad der Kundenansicht (öffentliche Seite) für „Vorschau“. */
 export function vorschauPfad(token: string): string {
   return `/angebot/${token}`;
+}
+
+/** Nach der Freigabe ohne Mail/Teilen/Link: Statuszeile auf Karte und im Editor. */
+export const NOCH_NICHT_VERSCHICKT = "Freigegeben, noch nicht verschickt";
+
+/** Vermerk nach dem Senden-Blatt (Karte und Editor). */
+export function sendeVermerk(
+  nummer: string,
+  info: { anfrageInArbeit: boolean; erstmals: boolean; verschickt: boolean },
+): string {
+  const was = !info.verschickt
+    ? `${nummer} freigegeben, aber noch nicht an den Kunden geschickt. Tipp auf „Senden“, sobald du es verschicken willst.`
+    : `${nummer} ${info.erstmals ? "freigegeben und als gesendet" : "erneut als gesendet"} vermerkt.`;
+  return info.anfrageInArbeit
+    ? `${was} Die Anfrage steht jetzt auf „In Arbeit“.`
+    : was;
 }

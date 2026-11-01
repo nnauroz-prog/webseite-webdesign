@@ -20,6 +20,8 @@ import {
 } from "@/app/admin/anfragen/[id]/angebot/[angebotId]/editor-model";
 import {
   betragZeile,
+  NOCH_NICHT_VERSCHICKT,
+  sendeVermerk,
   steuerZeile,
 } from "@/app/admin/anfragen/[id]/angebot-format";
 import {
@@ -310,7 +312,36 @@ describe("Angebots-Zeilen im Admin", () => {
       "899,00\u00a0€ einmalig · 79,00\u00a0€ monatlich",
     );
     assert.equal(betragZeile(berechneSummen([], 19)), "Noch ohne Betrag");
-    assert.equal(steuerZeile(19), "netto, zzgl. 19 % USt");
-    assert.equal(steuerZeile(0), "ohne USt (§ 19 UStG)");
+    // Zahl und Prozentzeichen bzw. § und Nummer bleiben zusammen.
+    assert.equal(steuerZeile(19), "netto, zzgl. 19\u00a0%\u00a0USt");
+    assert.equal(steuerZeile(0), "ohne USt (§\u00a019\u00a0UStG)");
+  });
+
+  it("sendeVermerk: freigegeben ohne Weg heißt „noch nicht geschickt“", () => {
+    assert.equal(
+      sendeVermerk("A-2026-0005", {
+        anfrageInArbeit: false,
+        erstmals: true,
+        verschickt: true,
+      }),
+      "A-2026-0005 freigegeben und als gesendet vermerkt.",
+    );
+    assert.equal(
+      sendeVermerk("A-2026-0005", {
+        anfrageInArbeit: true,
+        erstmals: false,
+        verschickt: true,
+      }),
+      "A-2026-0005 erneut als gesendet vermerkt. Die Anfrage steht jetzt auf „In Arbeit“.",
+    );
+    assert.match(
+      sendeVermerk("A-2026-0005", {
+        anfrageInArbeit: false,
+        erstmals: true,
+        verschickt: false,
+      }),
+      /^A-2026-0005 freigegeben, aber noch nicht an den Kunden geschickt\./,
+    );
+    assert.equal(NOCH_NICHT_VERSCHICKT, "Freigegeben, noch nicht verschickt");
   });
 });

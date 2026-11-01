@@ -33,7 +33,8 @@ const STATUS_HINTS: Record<LeadStatus, string> = {
   neu: "Noch nicht gemeldet",
   in_arbeit: "Im Gespräch, Antwort läuft",
   erledigt: "Abgeschlossen, mit oder ohne Auftrag",
-  archiviert: "Aus der Liste, kann gelöscht werden",
+  // Nicht „kann gelöscht werden“: Bei angenommenen Angeboten ist Löschen gesperrt.
+  archiviert: "Aus der Liste, bleibt aufbewahrt",
 };
 
 /**

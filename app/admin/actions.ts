@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import type { AngebotHinweis } from "@/lib/admin/angebote";
 import type { SchemaStatus } from "@/lib/admin/schema";
 import type {
   LeadOutcome,
@@ -36,6 +37,7 @@ import {
   parseStatus,
   parseTemplateId,
 } from "@/lib/admin/validate";
+import { loadAngebotHinweise } from "@/lib/angebot-hinweise";
 import { getAngeboteByLead } from "@/lib/angebote-store";
 import { deliverLead, explainDeliveryError, mailSetup } from "@/lib/lead-mail";
 import { CONTACT_RESULT_LABELS } from "@/lib/leads-meta";
@@ -119,7 +121,17 @@ export type SearchState = {
   more: boolean;
   /** Die 500er-Grenze wurde erreicht: nur die neuesten 500 durchsucht. */
   truncated: boolean;
+  /** Angebots-Hinweis je Treffer-ID („Angebot gesendet“ …), wie auf der Übersicht. */
+  angebote: Record<string, AngebotHinweis>;
   error?: string;
+};
+
+const SEARCH_EMPTY: SearchState = {
+  q: "",
+  hits: [],
+  more: false,
+  truncated: false,
+  angebote: {},
 };
 
 const INVALID = "Ungültige Eingabe.";
@@ -579,29 +591,30 @@ export async function searchLeadsAction(
 ): Promise<SearchState> {
   await requireAdmin();
   const q = parseQuery(formData.get("q"));
-  if (q === null) {
-    return { q: "", hits: [], more: false, truncated: false, error: INVALID };
-  }
-  if (!q) return { q: "", hits: [], more: false, truncated: false };
+  if (q === null) return { ...SEARCH_EMPTY, error: INVALID };
+  if (!q) return SEARCH_EMPTY;
 
   try {
-    const all = await listLeads();
+    const [all, hinweise] = await Promise.all([
+      listLeads(),
+      loadAngebotHinweise(),
+    ]);
     const matches = all.filter((lead) => matchLead(lead, q));
     const hits = matches.slice(0, SEARCH_LIMIT).map(withoutNotes);
+    const angebote: Record<string, AngebotHinweis> = {};
+    for (const h of hits) {
+      const a = hinweise.get(h.id);
+      if (a) angebote[h.id] = a;
+    }
     return {
       q,
       hits,
       more: matches.length > SEARCH_LIMIT,
       truncated: all.length >= 500,
+      angebote,
     };
   } catch (err) {
-    return {
-      q,
-      hits: [],
-      more: false,
-      truncated: false,
-      error: dbFailure("Suche", err),
-    };
+    return { ...SEARCH_EMPTY, q, error: dbFailure("Suche", err) };
   }
 }
 
