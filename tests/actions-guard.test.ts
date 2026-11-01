@@ -4,6 +4,9 @@
  * - Jede Server Action ('use server' auf Datei- oder Funktionsebene,
  *   auch Pfeilfunktionen) außer login und logout beginnt mit
  *   `await requireAdmin()` (z. B. `const actor = await requireAdmin();`).
+ *   Ausnahme: die Kunden-Actions in app/angebot/actions.ts (Token statt
+ *   Login); sie beginnen mit parseToken, nutzen nur die Kunden-
+ *   Funktionen des Speichers und loggen weder Token noch Kundendaten.
  * - Inline-'use server' gibt es nicht: Alle Actions bleiben in
  *   app/admin/actions.ts.
  * - Jede page.tsx und jedes generateMetadata unter app/admin (außer
@@ -155,6 +158,19 @@ const SOURCE_FILES = [
 ];
 const PUBLIC_ACTIONS = new Set(["login", "logout"]);
 
+/**
+ * Öffentliche Actions der Kundenseite /angebot/[token]: ohne Login,
+ * ausgewiesen nur durch den Token. Nur diese Namen in genau dieser
+ * Datei; jede weitere Action dort braucht requireAdmin. Weitere Regeln
+ * im Abschnitt „Kundenseite /angebot“ unten.
+ */
+const KUNDEN_ACTIONS_DATEI = "app/angebot/actions.ts";
+const KUNDEN_ACTIONS = new Set([
+  "angebotGeoeffnet",
+  "angebotAnnehmen",
+  "angebotAblehnen",
+]);
+
 describe("Server Actions verlangen requireAdmin", () => {
   const serverFiles = SOURCE_FILES.filter((f) =>
     hasDirective(parse(f).statements),
@@ -178,6 +194,8 @@ describe("Server Actions verlangen requireAdmin", () => {
           `${name}: in einer 'use server'-Datei nur Funktionen exportieren`,
         );
         if (PUBLIC_ACTIONS.has(name)) continue;
+        if (rel(file) === KUNDEN_ACTIONS_DATEI && KUNDEN_ACTIONS.has(name))
+          continue;
         const body = bodyStatements(fn);
         assert.ok(body, `${name}: braucht einen Funktionsblock`);
         assert.ok(
@@ -416,5 +434,114 @@ describe("Logs ohne Personendaten", () => {
     const call = (sf.statements[0] as ts.ExpressionStatement)
       .expression as ts.CallExpression;
     assert.ok(PII.test(call.arguments[1].getText(sf)));
+  });
+});
+
+describe("Kundenseite /angebot", () => {
+  const kundenDateien = walk(path.join(ROOT, "app", "angebot"));
+  const STORE = "@/lib/angebote-store";
+  /** Kunden-Funktionen des Speichers; alles andere ist Admin. */
+  const KUNDEN_STORE = new Set([
+    "getAngebotByToken",
+    "markAngebotViewed",
+    "acceptAngebot",
+    "declineAngebot",
+    "logAngebotMailFehler",
+    "logAngebotBestaetigung",
+    "AngebotErgebnis",
+  ]);
+
+  it("findet die Action-Datei mit 'use server'", () => {
+    const file = path.join(ROOT, KUNDEN_ACTIONS_DATEI);
+    assert.ok(kundenDateien.includes(file));
+    assert.ok(hasDirective(parse(file).statements));
+  });
+
+  it("jede öffentliche Action prüft zuerst den Token (parseToken)", () => {
+    const sf = parse(path.join(ROOT, KUNDEN_ACTIONS_DATEI));
+    const fns = exportedFunctions(sf);
+    assert.deepEqual(
+      fns.map((f) => f.name).sort(),
+      [...KUNDEN_ACTIONS].sort(),
+      "neue Kunden-Action? Hier und in KUNDEN_ACTIONS eintragen",
+    );
+    for (const { name, fn } of fns) {
+      assert.ok(fn, name);
+      const first = (bodyStatements(fn) ?? [])[0];
+      const init =
+        first &&
+        ts.isVariableStatement(first) &&
+        first.declarationList.declarations[0]?.initializer;
+      assert.ok(
+        init &&
+          ts.isCallExpression(init) &&
+          ts.isIdentifier(init.expression) &&
+          init.expression.text === "parseToken",
+        `${name}: erste Anweisung muss \`const t = parseToken(token);\` sein`,
+      );
+    }
+  });
+
+  it("nutzt vom Speicher nur die Kunden-Funktionen", () => {
+    const fremd: string[] = [];
+    for (const file of kundenDateien) {
+      const sf = parse(file);
+      for (const stmt of sf.statements) {
+        if (
+          !ts.isImportDeclaration(stmt) ||
+          !ts.isStringLiteral(stmt.moduleSpecifier) ||
+          stmt.moduleSpecifier.text !== STORE
+        )
+          continue;
+        const bindings = stmt.importClause?.namedBindings;
+        if (!bindings || !ts.isNamedImports(bindings)) {
+          fremd.push(`${rel(file)}: import * / default`);
+          continue;
+        }
+        for (const el of bindings.elements) {
+          const name = (el.propertyName ?? el.name).text;
+          if (!KUNDEN_STORE.has(name)) fremd.push(`${rel(file)}: ${name}`);
+        }
+      }
+    }
+    assert.deepEqual(fremd, []);
+  });
+
+  it("kein console.* mit Token oder Kundendaten", () => {
+    const files = [
+      ...kundenDateien,
+      path.join(ROOT, "lib", "angebote-store.ts"),
+      path.join(ROOT, "lib", "angebot-mail.ts"),
+    ];
+    const GEHEIM =
+      /\b(token|t|kunde_email|kunde_name|kunde_firma|angenommen_von|abgelehnt_grund|grund|name|reply_to|replyTo|message)\b/;
+    const hits: string[] = [];
+    for (const file of files) {
+      const sf = parse(file);
+      const visit = (node: ts.Node) => {
+        if (
+          ts.isCallExpression(node) &&
+          ts.isPropertyAccessExpression(node.expression) &&
+          ts.isIdentifier(node.expression.expression) &&
+          node.expression.expression.text === "console"
+        ) {
+          for (const arg of node.arguments) {
+            if (
+              ts.isStringLiteral(arg) ||
+              ts.isNoSubstitutionTemplateLiteral(arg)
+            )
+              continue;
+            if (GEHEIM.test(arg.getText(sf))) {
+              const line =
+                sf.getLineAndCharacterOfPosition(node.getStart()).line + 1;
+              hits.push(`${rel(file)}:${line}`);
+            }
+          }
+        }
+        ts.forEachChild(node, visit);
+      };
+      visit(sf);
+    }
+    assert.deepEqual(hits, []);
   });
 });

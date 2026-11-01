@@ -4,23 +4,34 @@ import { Check, Copy, ExternalLink, RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import type { MigrationId } from "@/lib/admin/migration-sql";
+
 import { kickRender } from "@/app/admin/render-kick";
-import { MIGRATION_SQL, MIGRATION_SQL_FILE } from "@/lib/admin/migration-sql";
+import { MIGRATIONS, migrationSqlFor } from "@/lib/admin/migration-sql";
 
 /**
- * Hinweis, solange die Migration 20261101000000_admin_ausbau.sql
- * fehlt. Ruhig (Gold-Rand, kein roter Alarm) und am iPhone machbar:
- * SQL kopieren, Editor öffnen, Run, hier erneut prüfen.
+ * Hinweis, solange eine Migration fehlt (missing, aus
+ * missingMigrations). „SQL kopieren“ kopiert nur die fehlenden, bei
+ * mehreren hintereinander. Ruhig (Gold-Rand, kein roter Alarm) und am
+ * iPhone machbar: SQL kopieren, Editor öffnen, Run, hier erneut prüfen.
  */
-export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
+export function SchemaBanner({
+  editorUrl,
+  missing,
+}: {
+  editorUrl: string;
+  missing: MigrationId[];
+}) {
   const router = useRouter();
+  const migrations = MIGRATIONS.filter((m) => missing.includes(m.id));
+  const sql = migrationSqlFor(migrations);
   const [copied, setCopied] = useState(false);
   const [manual, setManual] = useState(false);
   const [checking, startCheck] = useTransition();
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(MIGRATION_SQL);
+      await navigator.clipboard.writeText(sql);
       setCopied(true);
       setManual(false);
     } catch {
@@ -43,8 +54,14 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
         <li>4. Zurück hier „Erneut prüfen“ tippen</li>
       </ol>
       <p className="text-muted-foreground mt-2 text-[14px]">
-        Bis dahin aus: Wiedervorlage, Ergebnis, Verlauf, Löschprotokoll.
-        Datei: <span className="font-mono text-[12.5px] break-all">{MIGRATION_SQL_FILE}</span>
+        Bis dahin aus: {migrations.map((m) => m.features).join(", ")}.{" "}
+        {migrations.length > 1 ? "Dateien" : "Datei"}:{" "}
+        {migrations.map((m, i) => (
+          <span key={m.id}>
+            {i > 0 ? ", " : null}
+            <span className="font-mono text-[12.5px] break-all">{m.file}</span>
+          </span>
+        ))}
       </p>
       <div className="mt-3 grid gap-2 sm:grid-cols-3">
         <button
@@ -91,7 +108,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
           </p>
           <textarea
             readOnly
-            value={MIGRATION_SQL}
+            value={sql}
             onFocus={(e) => e.currentTarget.select()}
             onClick={(e) => e.currentTarget.select()}
             rows={6}

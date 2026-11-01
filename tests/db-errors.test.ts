@@ -38,6 +38,35 @@ describe("explainDbError", () => {
     assert.equal(e.kind, "missing_schema_v2");
   });
 
+  it("fehlende Tabelle oder Spalte angebote → missing_schema_angebote mit eigener Datei", () => {
+    for (const [code, msg] of [
+      [
+        "PGRST205",
+        "Could not find the table 'public.angebote' in the schema cache",
+      ],
+      ["42P01", 'relation "public.angebote" does not exist'],
+      ["42703", "column angebote.abgelehnt_grund does not exist"],
+      [
+        "PGRST204",
+        "Could not find the 'abgelehnt_grund' column of 'angebote' in the schema cache",
+      ],
+    ]) {
+      const e = explainDbError(new DbError(msg, code));
+      assert.equal(e.kind, "missing_schema_angebote", msg);
+      assert.ok(e.hint.includes("20261102000000_angebote.sql"));
+    }
+    // lead_events bleibt beim Admin-Ausbau.
+    assert.equal(
+      explainDbError(
+        new DbError(
+          "Could not find the table 'public.lead_events' in the schema cache",
+          "PGRST205",
+        ),
+      ).kind,
+      "missing_schema_v2",
+    );
+  });
+
   it("fehlende Tabelle leads → missing_table_leads", () => {
     for (const code of ["PGRST205", "42P01"]) {
       const e = explainDbError(

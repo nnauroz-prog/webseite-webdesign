@@ -5,15 +5,17 @@
  *   Mail-Vorlage wird {leadId, kanal, at} gemerkt. Kommt die Seite
  *   danach wieder in den Vordergrund (nach mindestens 5 s im
  *   Hintergrund), fragt der Kontakt-Streifen nach.
- * - Rücksprung: Welche Detailseite aus dem Admin heraus geöffnet wurde
- *   („‹ Zurück“ nutzt dann router.back() und behält Suche und Reiter).
+ * - Rücksprung: Welche Detail- und Angebotsseiten aus dem Admin heraus
+ *   geöffnet wurden („‹ Zurück“ nutzt dann router.back() und behält
+ *   Suche und Reiter).
+ * - Ungespeicherte Angebots-Entwürfe des Editors.
  * - Suchbegriff: wird nur nach einer Zurück-Navigation (popstate) und
  *   höchstens 10 Min lang erneut gesucht.
  * - Ereignisse zwischen Teilen der Detailseite (Status geändert,
  *   Ergebnis-Schritt öffnen).
  *
  * clearAdminSession() leert alles (Abmelden, endgültiges Löschen):
- * Suchbegriff und Vormerkung enthalten oft Kundendaten.
+ * Suchbegriff, Vormerkung und Entwürfe enthalten oft Kundendaten.
  *
  * sessionStorage kann fehlen oder werfen (privates Fenster); dann
  * gilt der Speicher im Modul als Rückfallebene.
@@ -119,23 +121,88 @@ export function takeContact(now: number): ContactMark | null {
   return mark;
 }
 
-export function rememberBackTarget(pathname: string): void {
-  memoryBack = pathname;
+/** So viele zuletzt aus dem Admin geöffnete Seiten merken (Anfrage → Angebot → …). */
+const BACK_MAX = 6;
+
+function readBackList(): string[] {
   try {
-    window.sessionStorage.setItem(BACK_KEY, pathname);
+    const raw = window.sessionStorage.getItem(BACK_KEY);
+    if (raw) {
+      // Früher stand hier ein einzelner Pfad.
+      if (raw.startsWith("/")) return [raw];
+      const v: unknown = JSON.parse(raw);
+      if (Array.isArray(v)) return v.filter((p): p is string => typeof p === "string");
+      return [];
+    }
+  } catch {
+    // Modulzustand
+  }
+  return memoryBack ? (JSON.parse(memoryBack) as string[]) : [];
+}
+
+/**
+ * Seite, die per Tipp aus dem Admin geöffnet wurde. Gemerkt werden die
+ * letzten paar Pfade, damit „Zurück“ auch nach Anfrage → Angebot →
+ * zurück zur Anfrage noch bis zur Liste mit router.back() springt.
+ */
+export function rememberBackTarget(pathname: string): void {
+  const list = [...readBackList().filter((p) => p !== pathname), pathname].slice(-BACK_MAX);
+  memoryBack = JSON.stringify(list);
+  try {
+    window.sessionStorage.setItem(BACK_KEY, memoryBack);
   } catch {
     // Modulzustand reicht
   }
 }
 
+/** Zuletzt aus dem Admin geöffnete Seite (oder null). */
 export function backTarget(): string | null {
+  const list = readBackList();
+  return list[list.length - 1] ?? null;
+}
+
+/** Wurde diese Seite per Tipp aus dem Admin geöffnet (dann gibt es ein „Zurück“)? */
+export function openedFromAdmin(pathname: string): boolean {
+  return readBackList().includes(pathname);
+}
+
+// --- Ungespeicherte Angebots-Entwürfe (Editor) ---
+
+const DRAFT_PREFIX = "sitalo-admin-angebot-";
+
+/**
+ * Ungespeicherter Stand des Angebots-Editors, damit beim Zurück-Wischen
+ * oder Neuladen nichts verloren geht. `base` ist updated_at des
+ * gespeicherten Stands, auf dem der Entwurf aufbaut.
+ */
+export type AngebotDraft = { base: string; at: number; data: unknown };
+
+export function readAngebotDraft(id: string): AngebotDraft | null {
   try {
-    const v = window.sessionStorage.getItem(BACK_KEY);
-    if (v) return v;
+    const raw = window.sessionStorage.getItem(DRAFT_PREFIX + id);
+    if (!raw) return null;
+    const v: unknown = JSON.parse(raw);
+    if (
+      v &&
+      typeof v === "object" &&
+      typeof (v as AngebotDraft).base === "string" &&
+      typeof (v as AngebotDraft).at === "number"
+    ) {
+      return v as AngebotDraft;
+    }
   } catch {
-    // Modulzustand
+    // ohne Speicher kein Entwurf
   }
-  return memoryBack;
+  return null;
+}
+
+export function writeAngebotDraft(id: string, draft: AngebotDraft | null): void {
+  try {
+    if (draft) window.sessionStorage.setItem(DRAFT_PREFIX + id, JSON.stringify(draft));
+    else window.sessionStorage.removeItem(DRAFT_PREFIX + id);
+  } catch {
+    // ohne Speicher: Warnung beim Verlassen bleibt
+  }
 }
 
 // --- Suchbegriff ---
@@ -209,6 +276,11 @@ export function clearAdminSession(): void {
   try {
     for (const key of [CONTACT_KEY, BACK_KEY, SEARCH_KEY]) {
       window.sessionStorage.removeItem(key);
+    }
+    // Angebots-Entwürfe enthalten Kundendaten.
+    for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
+      const key = window.sessionStorage.key(i);
+      if (key?.startsWith(DRAFT_PREFIX)) window.sessionStorage.removeItem(key);
     }
   } catch {
     // Modulzustand ist schon leer

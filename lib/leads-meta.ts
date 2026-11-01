@@ -124,7 +124,9 @@ export type LeadEventAction =
   | "wiedervorlage"
   | "ergebnis"
   | "notiz"
-  | "notizen";
+  | "notizen"
+  /** Angebote: detail { was, nummer } (lib/admin/angebote.ts). */
+  | "angebot";
 
 export type LeadEvent = {
   id: string;

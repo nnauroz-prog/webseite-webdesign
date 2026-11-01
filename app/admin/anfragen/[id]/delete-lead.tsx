@@ -33,10 +33,37 @@ export type RelatedEntry = { id: string; label: string };
  * Bestätigung sind Pflicht. Bei einer Löschanfrage der Person stehen
  * weitere Einträge derselben Person (E-Mail oder Telefon) daneben.
  */
-export function DeleteLead({ leadId, related }: { leadId: string; related: RelatedEntry[] }) {
+export function DeleteLead({
+  leadId,
+  related,
+  angenommen = [],
+}: {
+  leadId: string;
+  related: RelatedEntry[];
+  /** Nummern angenommener Angebote: Dann ist Löschen gesperrt. */
+  angenommen?: string[];
+}) {
   const [state, action, pending] = useActionState<ActionState, FormData>(remove, {});
   const [reason, setReason] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
+
+  if (angenommen.length) {
+    return (
+      <Disclosure
+        className="border-ink-olive/35 mt-4"
+        summaryClassName="text-ink-olive text-[16px] font-semibold"
+        title="Endgültig löschen"
+      >
+        <p className="text-[14.5px] leading-relaxed">
+          Geht bei dieser Anfrage nicht: Es gibt ein angenommenes Angebot (
+          {angenommen.join(", ")}). Es gehört zu deinen Geschäftsunterlagen und
+          muss in der Regel sechs Jahre aufbewahrt werden (§ 257 HGB, § 147 AO).
+          Die Löschpflicht nach Art. 17 DSGVO gilt dafür nicht. Lass die Anfrage
+          archiviert.
+        </p>
+      </Disclosure>
+    );
+  }
 
   return (
     <Disclosure

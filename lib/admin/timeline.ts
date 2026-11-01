@@ -6,6 +6,7 @@
 
 import type { LeadEvent, LeadRow } from "@/lib/leads-meta";
 
+import { angebotEventText } from "@/lib/admin/angebote";
 import { berlinParts, formatShortDay } from "@/lib/admin/berlin-time";
 import {
   CONTACT_RESULT_LABELS,
@@ -81,6 +82,8 @@ export function eventText(event: Pick<LeadEvent, "action" | "detail">): string |
         : "Wiedervorlage entfernt";
     case "ergebnis":
       return `Ergebnis: ${outcomeText(d.outcome, d.lost_reason)}`;
+    case "angebot":
+      return angebotEventText(d);
     default:
       return null;
   }

@@ -2,15 +2,19 @@
  * Kleiner PostgREST-Mock für node --test (ohne Abhängigkeit).
  *
  * Unterstützt unter /rest/v1/:table GET, POST, PATCH und DELETE mit
- * select (Spaltenliste oder *), col=eq.value, order=col.asc|desc,
- * limit, Prefer: return=representation und
+ * select (Spaltenliste oder *), Filtern col=eq|neq|gt|gte|lt|lte.value,
+ * col=in.(a,b), col=is.null, order=col.asc|desc, limit,
+ * Prefer: return=representation und
  * Accept: application/vnd.pgrst.object+json (single).
  *
- * Zwei Modi:
+ * Modi (je Migration einer mehr):
  *   'v0' noch gar keine Tabelle (vor 20261030000000_leads.sql)
  *   'v1' nur leads mit den Spalten aus 20261030000000_leads.sql
  *   'v2' zusätzlich follow_up_on/outcome/lost_reason, lead_events
  *        (on delete cascade) und lead_deletions
+ *   'v3' zusätzlich angebote (20261102000000_angebote.sql): Nummer
+ *        A-<Jahr>-0001 als Default, Checks, eindeutige token/nummer,
+ *        on delete cascade, updated_at nur bei inhaltlicher Änderung
  *
  * Fehler wie PostgREST: unbekannte Tabelle → 404 PGRST205, unbekannte
  * Spalte in select/filter/order → 400 42703, unbekannte Spalte im
@@ -45,35 +49,141 @@ const DELETIONS = [
   "lead_created_at",
   "reason",
 ];
+const ANGEBOTE = [
+  "id",
+  "lead_id",
+  "nummer",
+  "token",
+  "status",
+  "created_at",
+  "updated_at",
+  "sent_at",
+  "first_viewed_at",
+  "accepted_at",
+  "declined_at",
+  "gueltig_bis",
+  "kunde_name",
+  "kunde_firma",
+  "kunde_email",
+  "titel",
+  "einleitung",
+  "hinweise",
+  "positionen",
+  "ust_satz",
+  "angenommen_von",
+  "abgelehnt_grund",
+];
+/** Spalten, deren Änderung updated_at setzt (wie der Trigger). */
+const ANGEBOT_INHALT = [
+  "kunde_name",
+  "kunde_firma",
+  "kunde_email",
+  "titel",
+  "einleitung",
+  "hinweise",
+  "positionen",
+  "ust_satz",
+  "gueltig_bis",
+];
+const ANGEBOT_STATUSES = [
+  "entwurf",
+  "gesendet",
+  "angenommen",
+  "abgelehnt",
+  "zurueckgezogen",
+];
 
 function schemaFor(mode) {
   if (mode === "v0") return {};
   if (mode === "v1") return { leads: LEADS_V1 };
-  return { leads: LEADS_V2, lead_events: EVENTS, lead_deletions: DELETIONS };
+  const v2 = {
+    leads: LEADS_V2,
+    lead_events: EVENTS,
+    lead_deletions: DELETIONS,
+  };
+  if (mode === "v2") return v2;
+  return { ...v2, angebote: ANGEBOTE };
 }
 
 const REQUIRED = {
   leads: ["kind", "subject", "reply_to", "fields"],
   lead_events: ["lead_id", "actor", "action"],
   lead_deletions: ["deleted_by", "lead_id", "reason"],
+  angebote: [
+    "lead_id",
+    "token",
+    "gueltig_bis",
+    "kunde_name",
+    "titel",
+    "einleitung",
+    "hinweise",
+  ],
 };
+
+const berlinYear = (d) =>
+  new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+  }).format(d);
+
+/** Ein PostgREST-Filter „op.wert“ als Prüffunktion, oder null. */
+function parseFilter(raw) {
+  const dot = raw.indexOf(".");
+  if (dot < 0) return null;
+  const op = raw.slice(0, dot);
+  const value = raw.slice(dot + 1);
+  const str = (v) => (v === null || v === undefined ? null : String(v));
+  switch (op) {
+    case "eq":
+      return (v) => str(v) === value;
+    case "neq":
+      return (v) => str(v) !== value;
+    case "gt":
+      return (v) => v != null && String(v) > value;
+    case "gte":
+      return (v) => v != null && String(v) >= value;
+    case "lt":
+      return (v) => v != null && String(v) < value;
+    case "lte":
+      return (v) => v != null && String(v) <= value;
+    case "is":
+      if (value === "null") return (v) => v === null || v === undefined;
+      if (value === "true") return (v) => v === true;
+      if (value === "false") return (v) => v === false;
+      return null;
+    case "in": {
+      const m = /^\((.*)\)$/.exec(value);
+      if (!m) return null;
+      const list = m[1].split(",").map((x) => x.trim().replace(/^"|"$/g, ""));
+      return (v) => list.includes(str(v));
+    }
+    default:
+      return null;
+  }
+}
 
 export const SERVICE_KEY = "test-service-role-key";
 
 /**
  * @typedef {Record<string, any>} Row
- * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[] }} Tables
+ * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[] }} Tables
  * @typedef {{ method: string; url: string; headers: { prefer: string; accept: string }; body: unknown }} MockRequest
- * @typedef {"v0" | "v1" | "v2"} MockMode
+ * @typedef {"v0" | "v1" | "v2" | "v3"} MockMode
  */
 
+/** @returns {Tables} */
+function emptyTables() {
+  return { leads: [], lead_events: [], lead_deletions: [], angebote: [] };
+}
+
 /** @param {{ mode?: MockMode; key?: string }} [options] */
-export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
-  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[] }} */
+export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
+  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[]; angebotSeq: number }} */
   const state = {
     mode,
-    tables: { leads: [], lead_events: [], lead_deletions: [] },
+    tables: emptyTables(),
     requests: [],
+    angebotSeq: 0,
   };
   let lastTime = 0;
   const nowIso = () => {
@@ -94,7 +204,7 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
         delivered_via: null,
         delivery_error: null,
       };
-      if (state.mode === "v2")
+      if (state.mode === "v2" || state.mode === "v3")
         Object.assign(row, {
           follow_up_on: null,
           outcome: null,
@@ -104,6 +214,28 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
     }
     if (table === "lead_events")
       return { id: randomUUID(), created_at: t, detail: {} };
+    if (table === "angebote") {
+      // Wie angebote_naechste_nummer(): Jahr in Hamburg, Zähler läuft weiter.
+      state.angebotSeq += 1;
+      const n = String(state.angebotSeq).padStart(4, "0");
+      return {
+        id: randomUUID(),
+        nummer: `A-${berlinYear(new Date(t))}-${n}`,
+        status: "entwurf",
+        created_at: t,
+        updated_at: t,
+        sent_at: null,
+        first_viewed_at: null,
+        accepted_at: null,
+        declined_at: null,
+        kunde_firma: null,
+        kunde_email: null,
+        positionen: [],
+        ust_satz: 19,
+        angenommen_von: null,
+        abgelehnt_grund: null,
+      };
+    }
     return {
       id: randomUUID(),
       deleted_at: t,
@@ -136,19 +268,56 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
         return checkFail(table, "leads_outcome_check");
     }
     if (
-      table === "lead_events" &&
+      (table === "lead_events" || table === "angebote") &&
       !state.tables.leads.some((l) => l.id === row.lead_id)
     ) {
       return {
         status: 409,
         body: {
           code: "23503",
-          message:
-            'insert or update on table "lead_events" violates foreign key constraint',
+          message: `insert or update on table "${table}" violates foreign key constraint`,
         },
       };
     }
+    if (table === "angebote") {
+      if (!ANGEBOT_STATUSES.includes(row.status))
+        return checkFail(table, "angebote_status_check");
+      if (typeof row.token !== "string" || row.token.length < 32)
+        return checkFail(table, "angebote_token_check");
+      if (row.ust_satz !== 0 && row.ust_satz !== 19)
+        return checkFail(table, "angebote_ust_satz_check");
+      if (!Array.isArray(row.positionen))
+        return checkFail(table, "angebote_positionen_check");
+      for (const col of ["token", "nummer"]) {
+        if (
+          state.tables.angebote.some(
+            (a) => a.id !== row.id && a[col] === row[col],
+          )
+        ) {
+          return {
+            status: 409,
+            body: {
+              code: "23505",
+              message: `duplicate key value violates unique constraint "angebote_${col}_key"`,
+            },
+          };
+        }
+      }
+    }
     return null;
+  }
+
+  /** Trigger-Ersatz für updated_at nach einem PATCH. */
+  function touch(table, before, next) {
+    if (table === "leads") return nowIso();
+    if (
+      table === "angebote" &&
+      ANGEBOT_INHALT.some(
+        (c) => JSON.stringify(before[c]) !== JSON.stringify(next[c]),
+      )
+    )
+      return nowIso();
+    return before.updated_at;
   }
 
   function checkFail(table, name) {
@@ -222,12 +391,13 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
       if (["select", "order", "limit", "offset", "columns"].includes(k))
         continue;
       if (!columns.includes(k)) return missingColumn(k);
-      if (!v.startsWith("eq."))
+      const test = parseFilter(v);
+      if (!test)
         return {
           status: 400,
-          body: { code: "PGRST100", message: `mock: nur eq, nicht ${v}` },
+          body: { code: "PGRST100", message: `mock: Filter ${v} unbekannt` },
         };
-      filters.push([k, v.slice(3)]);
+      filters.push([k, test]);
     }
 
     // order
@@ -246,7 +416,7 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
     const wantsRepresentation = /return=representation/.test(prefer);
     const single = (req.headers.accept ?? "").includes("vnd.pgrst.object+json");
     const rows = state.tables[table];
-    const matches = (row) => filters.every(([k, v]) => String(row[k]) === v);
+    const matches = (row) => filters.every(([k, test]) => test(row[k]));
     const project = (row) =>
       Object.fromEntries(selected.map((c) => [c, row[c] ?? null]));
 
@@ -323,26 +493,29 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
         }
       }
       const hit = rows.filter(matches);
+      const nextRows = [];
       for (const row of hit) {
         const next = { ...row, ...body };
-        if (table === "leads") next.updated_at = nowIso(); // Trigger-Ersatz
+        if (table === "leads" || table === "angebote")
+          next.updated_at = touch(table, row, next); // Trigger-Ersatz
         const fail = check(table, next);
         if (fail) return fail;
+        nextRows.push(next);
       }
-      for (const row of hit) {
-        Object.assign(row, body);
-        if (table === "leads") row.updated_at = nowIso();
-      }
+      hit.forEach((row, i) => Object.assign(row, nextRows[i]));
       return wantsRepresentation ? respond(200, hit) : { status: 204 };
     }
 
     if (req.method === "DELETE") {
       const hit = rows.filter(matches);
       state.tables[table] = rows.filter((r) => !hit.includes(r));
-      if (table === "leads" && state.mode === "v2") {
+      if (table === "leads" && (state.mode === "v2" || state.mode === "v3")) {
         const ids = new Set(hit.map((r) => r.id));
         state.tables.lead_events = state.tables.lead_events.filter(
           (e) => !ids.has(e.lead_id),
+        );
+        state.tables.angebote = state.tables.angebote.filter(
+          (a) => !ids.has(a.lead_id),
         );
       }
       return wantsRepresentation ? respond(200, hit) : { status: 204 };
@@ -383,8 +556,9 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
     /** @param {MockMode} [next] */
     reset(next = state.mode) {
       state.mode = next;
-      state.tables = { leads: [], lead_events: [], lead_deletions: [] };
+      state.tables = emptyTables();
       state.requests = [];
+      state.angebotSeq = 0;
     },
     /** Zeile direkt anlegen (an der API vorbei), gibt sie zurück. */
     /**
@@ -401,6 +575,45 @@ export async function startMock({ mode = "v2", key = SERVICE_KEY } = {}) {
         ...partial,
       };
       state.tables.leads.push(row);
+      return row;
+    },
+    /**
+     * Angebot direkt anlegen (an der API vorbei, Modus v3), gibt es
+     * zurück. Ohne lead_id wird eine Anfrage mit angelegt.
+     * @param {Row} [partial]
+     * @returns {Row}
+     */
+    seedAngebot(partial = {}) {
+      const leadId =
+        partial.lead_id ??
+        this.seedLead({
+          fields: [
+            ["Name", "Kunde"],
+            ["Firma", "Firma"],
+          ],
+        }).id;
+      const row = {
+        ...defaults("angebote"),
+        lead_id: leadId,
+        token: randomUUID().replace(/-/g, "") + "abcdefghijk",
+        gueltig_bis: "2026-12-01",
+        kunde_name: "Kunde",
+        titel: "Angebot: Website für Firma",
+        einleitung: "Guten Tag Kunde,",
+        hinweise: "Hinweise",
+        positionen: [
+          {
+            id: "paket-business-einmalig",
+            titel: "Website-Paket Business",
+            beschreibung: "",
+            menge: 1,
+            preis_cent: 89900,
+            art: "einmalig",
+          },
+        ],
+        ...partial,
+      };
+      state.tables.angebote.push(row);
       return row;
     },
     close() {

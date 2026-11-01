@@ -7,6 +7,8 @@ export const MIGRATION_LEADS_FILE =
   "supabase/migrations/20261030000000_leads.sql";
 export const MIGRATION_ADMIN_FILE =
   "supabase/migrations/20261101000000_admin_ausbau.sql";
+export const MIGRATION_ANGEBOTE_FILE =
+  "supabase/migrations/20261102000000_angebote.sql";
 
 /** Fehler aus lib/leads-store.ts; `code` ist der PostgREST/Postgres-Code. */
 export class DbError extends Error {
@@ -58,6 +60,7 @@ export function isMissingTable(err: unknown): boolean {
 export type DbProblemKind =
   | "missing_table_leads"
   | "missing_schema_v2"
+  | "missing_schema_angebote"
   | "auth"
   | "network"
   | "other";
@@ -70,7 +73,9 @@ export type DbExplanation = {
   raw: string;
 };
 
-const NEW_TABLES = /lead_events|lead_deletions/i;
+const NEW_TABLES = /lead_events|lead_deletions|angebote/i;
+/** Tabelle oder Spalte aus 20261102000000_angebote.sql. */
+const ANGEBOTE_SCHEMA = /\bangebote\b/i;
 
 export function explainDbError(err: unknown): DbExplanation {
   const code = codeOf(err);
@@ -82,6 +87,19 @@ export function explainDbError(err: unknown): DbExplanation {
       kind: "missing_table_leads",
       title: "Die Tabelle „leads“ fehlt in Supabase.",
       hint: `Öffne in Supabase den SQL Editor, füge den Inhalt von ${MIGRATION_LEADS_FILE} ein und tippe auf Run. Danach diese Seite neu laden.`,
+      raw,
+    };
+  }
+
+  if (
+    code &&
+    (MISSING_COLUMN.has(code) || MISSING_TABLE.has(code)) &&
+    ANGEBOTE_SCHEMA.test(m)
+  ) {
+    return {
+      kind: "missing_schema_angebote",
+      title: "Datenbank-Update für Angebote ausstehend.",
+      hint: `Führe in Supabase einmal ${MIGRATION_ANGEBOTE_FILE} aus (im Hinweis oben „SQL kopieren“, dann SQL Editor, einfügen, Run). Danach diese Seite neu laden.`,
       raw,
     };
   }

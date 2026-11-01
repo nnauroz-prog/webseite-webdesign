@@ -4,7 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { backTarget, openOutcome } from "@/app/admin/client-state";
+import { openedFromAdmin, openOutcome } from "@/app/admin/client-state";
 
 /**
  * „‹ Zurück“: Wurde die Detailseite aus dem Admin heraus geöffnet,
@@ -17,7 +17,7 @@ export function BackLink() {
     <Link
       href="/admin"
       onClick={(e) => {
-        if (backTarget() === window.location.pathname && window.history.length > 1) {
+        if (openedFromAdmin(window.location.pathname) && window.history.length > 1) {
           e.preventDefault();
           router.back();
         }

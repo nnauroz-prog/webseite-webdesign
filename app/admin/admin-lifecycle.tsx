@@ -37,8 +37,8 @@ function busy(): boolean {
  *   Login, Kundendaten bleiben nicht sichtbar.
  * - Nach mehr als 60 s im Hintergrund: router.refresh(), damit neue
  *   Anfragen erscheinen. Nicht, solange getippt wird.
- * - Merkt sich, welche Detailseite aus dem Admin geöffnet wurde
- *   („‹ Zurück“ springt dann wirklich zurück).
+ * - Merkt sich, welche Detail- und Angebotsseiten aus dem Admin
+ *   geöffnet wurden („‹ Zurück“ springt dann wirklich zurück).
  * - Nach mehr als 10 Min im Hintergrund oder per Kopf-Link
  *   „Sitalo · Admin“: offene Suche schließen.
  */
@@ -76,7 +76,8 @@ export function AdminLifecycle() {
         rememberSearch("", Date.now());
         window.dispatchEvent(new CustomEvent(SEARCH_RESET_EVENT, { detail: "kopf" }));
       }
-      if (/^\/admin\/anfragen\/[0-9a-f-]{36}$/i.test(a.pathname)) {
+      // Detailseite oder Angebots-Editor einer Anfrage.
+      if (/^\/admin\/anfragen\/[0-9a-f-]{36}(\/angebot\/[0-9a-f-]{36})?$/i.test(a.pathname)) {
         rememberBackTarget(a.pathname);
       }
     };

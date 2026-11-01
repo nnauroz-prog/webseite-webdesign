@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import type { AngebotHinweis } from "@/lib/admin/angebote";
 import type { CardModel } from "@/lib/admin/card-model";
 
 import { CallButton } from "@/app/admin/call-button";
@@ -16,12 +17,15 @@ export function LeadCard({
   card,
   hideStatus = false,
   context,
+  angebot,
 }: {
   card: CardModel;
   /** In „Jetzt melden“ sind alle neu, die Status-Pill wäre doppelt. */
   hideStatus?: boolean;
   /** Ersetzt die Vorschau, z. B. erste Notizzeile bei Wiedervorlagen. */
   context?: string;
+  /** „Angebot gesendet/geöffnet/angenommen“ (angebotHinweis), sonst nichts. */
+  angebot?: AngebotHinweis | null;
 }) {
   const neu = card.status === "neu";
   const preview = context ?? card.preview;
@@ -74,6 +78,18 @@ export function LeadCard({
               )}
             >
               {card.outcome.label}
+            </span>
+          ) : null}
+          {angebot ? (
+            <span
+              className={cn(
+                "rounded-[3px] border px-2 py-0.5 text-[12.5px] font-medium",
+                angebot.status === "angenommen"
+                  ? "border-ink-petrol/45 text-ink-petrol"
+                  : "border-border text-foreground",
+              )}
+            >
+              {angebot.text}
             </span>
           ) : null}
           {card.mailFailed ? (

@@ -1,0 +1,153 @@
+/*
+ * Kundenseite /angebot/[token]: Bildschirm-Feinheiten und Druck/PDF.
+ *
+ * Gedruckt (bzw. „Als PDF sichern“) wird nur das Angebot selbst: A4,
+ * schwarz auf weiß, ohne Kopf, Fuß, Knöpfe und Formulare, mit
+ * sinnvollen Seitenumbrüchen (Positionen und Summen werden nicht
+ * zerrissen, Überschriften bleiben bei ihrem Inhalt).
+ */
+
+.seite {
+  /* Platzhalter: Die Seite wird über :has(.seite) erkannt. */
+  isolation: isolate;
+}
+
+/*
+ * Die „Website anfragen“-Leiste des Root-Layouts (MobileCtaBar) gehört
+ * nicht auf ein Angebot. Sie steht als festes Element neben dem Inhalt
+ * im body; nur auf dieser Seite ausblenden, ebenso den Platz, den das
+ * Root-Layout unten für sie freihält.
+ */
+:global(body):has(.seite) > :global(div.fixed.bottom-0) {
+  display: none !important;
+}
+:global(body):has(.seite) {
+  padding-bottom: 0 !important;
+}
+
+/* Liste statt Tabelle am Handy; ab sm die Tabelle. */
+.tabelle {
+  border-collapse: collapse;
+}
+
+/* Zahlen in Tabellen und Summen gleich breit. */
+.zahl {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 16mm 18mm;
+  }
+
+  .nichtDrucken {
+    display: none !important;
+  }
+
+  :global(body):has(.seite) {
+    background: #fff !important;
+  }
+
+  .seite,
+  .haupt {
+    background: #fff !important;
+    color: #000 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .blatt {
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  /* Schwarz auf weiß: auch Nebentexte und Beschriftungen. */
+  .blatt *,
+  .kasten,
+  .kasten * {
+    color: #000 !important;
+  }
+  .blatt a {
+    text-decoration: none !important;
+  }
+
+  /* Linien bleiben, aber neutral. */
+  .blatt :global(.border-border) {
+    border-color: #bdbdbd !important;
+  }
+  .blatt :global(.border-foreground) {
+    border-color: #000 !important;
+  }
+
+  .kante {
+    display: none !important;
+  }
+
+  .kasten {
+    border: 1px solid #000 !important;
+    background: #fff !important;
+    margin: 0 0 8mm !important;
+    break-inside: avoid;
+  }
+  .kasten :global(.bg-gold),
+  .kasten :global(.bg-ink-petrol),
+  .kasten :global(.bg-foreground) {
+    display: none !important;
+  }
+
+  /* Am Handy die Liste, im Druck immer die Tabelle. */
+  .tabelle {
+    display: table !important;
+    width: 100% !important;
+  }
+  .liste {
+    display: none !important;
+  }
+  .tabelle thead {
+    display: table-header-group;
+  }
+
+  .zeile,
+  .summen,
+  .block {
+    break-inside: avoid;
+  }
+  /* Die Summe bleibt bei der letzten Position ihrer Gruppe. */
+  .summen {
+    break-before: avoid;
+  }
+  .blatt h1,
+  .blatt h2 {
+    break-after: avoid;
+  }
+
+  .text {
+    font-size: 10.5pt !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Auf Papier enger setzen als am Bildschirm. */
+  .abschnitt {
+    margin-top: 8mm !important;
+  }
+  .zeile > td {
+    padding-top: 2.5mm !important;
+    padding-bottom: 2.5mm !important;
+  }
+  .titel {
+    margin-top: 8mm !important;
+    font-size: 20pt !important;
+  }
+  /* Kontaktzeile nicht allein auf eine neue Seite. */
+  .schluss {
+    break-before: avoid;
+  }
+}
