@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, Loader2, Smartphone, Monitor } from "lucide-react";
+import { ArrowRight, Loader2, Monitor, Smartphone } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -13,15 +12,16 @@ import { cn } from "@/lib/utils";
 /**
  * Speed-Check-Tool — Live-PageSpeed-Analyse über /api/speed-check.
  *
- * UX:
- *   - URL-Input + Strategie-Toggle (Mobile / Desktop)
- *   - Loading-Animation während der ~15-30 s Wartezeit
- *   - Vier Score-Ringe (Performance, Accessibility, Best Practices, SEO)
- *   - Core Web Vitals als kompakte Metric-Pills
- *   - Conditional CTA: bei schlechten Scores → /audit, sonst dezent
+ * Aufbau im Hafen-Stil: ein Prüfschein mit Haarlinien statt Karten,
+ * die vier Lighthouse-Werte als Skalen mit Tabellenziffern statt
+ * Ringen, Core Web Vitals als Zeilen. Die Bewertung steht immer auch
+ * als Wort neben der Zahl, damit sie nicht nur an der Farbe hängt.
  *
- * Bewusst klar gerahmt als „technisch und automatisch" — Abgrenzung
- * zu /audit (menschlich, 48 h, persönlich).
+ * Farben: Hafengrün ab 90, Signal-Orange 50 bis 89, Container-Rot
+ * unter 50 (die Schwellen von Lighthouse).
+ *
+ * Abgrenzung zu /audit: hier misst Google automatisch die Technik,
+ * im Audit sehen wir uns die Seite selbst an.
  */
 
 type Strategy = "mobile" | "desktop";
@@ -97,10 +97,10 @@ export function SpeedCheck() {
       setStatus({
         kind: "error",
         message: isAbort
-          ? "Analyse abgebrochen oder zu langsam — bitte erneut versuchen."
+          ? "Die Messung hat zu lange gedauert. Bitte versuchen Sie es noch einmal."
           : err instanceof Error
             ? err.message
-            : "Netzwerkfehler — bitte erneut versuchen.",
+            : "Die Verbindung ist abgebrochen. Bitte versuchen Sie es noch einmal.",
       });
     } finally {
       window.clearTimeout(timeoutId);
@@ -108,77 +108,79 @@ export function SpeedCheck() {
   }
 
   return (
-    <div className="space-y-8">
-      <form
-        onSubmit={check}
-        className="border-border/60 bg-card/60 ring-foreground/5 space-y-5 rounded-2xl border p-6 ring-1 sm:p-8"
-      >
-        <div>
-          <Label htmlFor="check-url" className="text-foreground text-sm">
-            Welche Seite testen wir?
-          </Label>
-          <Input
-            id="check-url"
-            type="text"
-            inputMode="url"
-            autoComplete="url"
-            placeholder="z. B. cafe-nordlicht.de"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="mt-2"
-            required
-          />
-          <p className="text-muted-foreground mt-1.5 text-[12.5px]">
-            Mit oder ohne https:// — wir richten das.
-          </p>
-        </div>
-
-        <div>
-          <Label className="text-foreground text-sm">
-            Auf welchem Gerät?
-          </Label>
-          <div className="mt-3 inline-flex rounded-full border border-border/70 p-1">
-            <StrategyButton
-              active={strategy === "mobile"}
-              onClick={() => setStrategy("mobile")}
-              icon={Smartphone}
-              label="Mobile"
+    <div className="space-y-6">
+      <form onSubmit={check} className="bg-card border-border rounded-[3px] border">
+        <div className="grid gap-7 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-10">
+          <div className="min-w-0">
+            <Label htmlFor="check-url" className="text-foreground text-[15px] font-semibold">
+              Adresse der Website
+            </Label>
+            <Input
+              id="check-url"
+              type="text"
+              inputMode="url"
+              autoComplete="url"
+              placeholder="z. B. cafe-nordlicht.de"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="mt-3 h-12 rounded-[2px] text-[16px] shadow-none"
+              required
             />
-            <StrategyButton
-              active={strategy === "desktop"}
-              onClick={() => setStrategy("desktop")}
-              icon={Monitor}
-              label="Desktop"
-            />
+            <p className="text-muted-foreground mt-2 text-[13px]">
+              Mit oder ohne https://, beides geht.
+            </p>
           </div>
-          <p className="text-muted-foreground mt-2 text-[12.5px]">
-            Mobile ist meist strenger — wie Google indexiert.
-          </p>
+
+          <fieldset className="min-w-0">
+            <legend className="text-foreground text-[15px] font-semibold">
+              Gemessen wird
+            </legend>
+            <div className="border-border mt-3 inline-flex rounded-[2px] border p-[3px]">
+              <StrategyButton
+                active={strategy === "mobile"}
+                onClick={() => setStrategy("mobile")}
+                icon={Smartphone}
+                label="am Handy"
+              />
+              <StrategyButton
+                active={strategy === "desktop"}
+                onClick={() => setStrategy("desktop")}
+                icon={Monitor}
+                label="am Rechner"
+              />
+            </div>
+          </fieldset>
         </div>
 
-        <Button
-          type="submit"
-          disabled={status.kind === "loading" || url.trim().length < 4}
-          className="bg-foreground text-background hover:bg-foreground/90 group h-12 rounded-full px-6 text-[15px] font-medium tracking-tight"
-        >
-          {status.kind === "loading" ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Wird analysiert…
-            </>
-          ) : (
-            <>
-              Geschwindigkeit testen
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </>
-          )}
-        </Button>
+        <div className="border-border flex flex-col gap-4 border-t px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <p className="text-muted-foreground max-w-md text-[13.5px] leading-relaxed">
+            Die Handy-Messung ist strenger. Google bewertet Seiten in erster
+            Linie nach der Ansicht auf dem Handy.
+          </p>
+          <button
+            type="submit"
+            disabled={status.kind === "loading" || url.trim().length < 4}
+            className="btn-signal h-12 shrink-0 text-[15px]"
+          >
+            {status.kind === "loading" ? (
+              <>
+                Wird gemessen
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              </>
+            ) : (
+              <>
+                Geschwindigkeit testen
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </>
+            )}
+          </button>
+        </div>
       </form>
 
       {status.kind === "loading" && <LoadingPanel url={status.url} />}
 
       {status.kind === "error" && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="rounded-[3px]">
           <AlertDescription>{status.message}</AlertDescription>
         </Alert>
       )}
@@ -206,10 +208,10 @@ function StrategyButton({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex h-10 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium tracking-tight transition-all",
+        "inline-flex h-11 items-center gap-2 rounded-[2px] px-4 text-[14px] font-semibold transition-colors",
         active
           ? "bg-foreground text-background"
-          : "text-foreground/65 hover:text-foreground",
+          : "text-muted-foreground hover:text-foreground",
       )}
     >
       <Icon className="h-4 w-4" aria-hidden="true" />
@@ -220,15 +222,21 @@ function StrategyButton({
 
 function LoadingPanel({ url }: { url: string }) {
   return (
-    <div className="border-border/60 bg-card/30 ring-foreground/5 animate-fade-up rounded-2xl border p-8 text-center ring-1">
-      <Loader2 className="text-foreground/70 mx-auto h-8 w-8 animate-spin" />
-      <p className="text-foreground mt-5 text-balance text-lg font-medium">
-        Wir gucken uns {url} gerade an.
-      </p>
-      <p className="text-muted-foreground mt-2 text-[13.5px] leading-relaxed">
-        Das dauert ehrlich gesagt 15–30 Sekunden — PageSpeed Insights
-        rendert Ihre Seite einmal komplett durch. Bitte kurz Geduld.
-      </p>
+    <div
+      role="status"
+      aria-live="polite"
+      className="bg-card border-border animate-fade-up flex items-start gap-4 rounded-[3px] border p-5 sm:p-8"
+    >
+      <Loader2 className="text-gold mt-1 h-5 w-5 shrink-0 animate-spin" aria-hidden="true" />
+      <div className="min-w-0">
+        <p className="text-foreground text-[17px] font-semibold break-words">
+          Google lädt {url} gerade.
+        </p>
+        <p className="text-muted-foreground mt-2 max-w-xl text-[14px] leading-relaxed">
+          PageSpeed Insights öffnet die Seite einmal komplett, so wie ein
+          Besucher. Das dauert 15 bis 30 Sekunden, manchmal etwas länger.
+        </p>
+      </div>
     </div>
   );
 }
@@ -237,49 +245,54 @@ function BasicPanel({ data }: { data: BasicData }) {
   const passed = data.items.filter((i) => i.ok).length;
   return (
     <div className="animate-fade-up space-y-6">
-      <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1 sm:p-8">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
-          <span aria-hidden="true" className="bg-gold gold-pulse inline-block h-1 w-6" />
-          Basis-Check · {passed} von {data.items.length} in Ordnung
+      <div className="bg-card border-border rounded-[3px] border">
+        <div className="border-border flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b px-5 py-4 sm:px-8">
+          <p className="label-mono text-muted-foreground">
+            Basis-Check · {passed} von {data.items.length} in Ordnung
+          </p>
+          <p className="text-foreground min-w-0 font-mono text-[13px] break-all">
+            {data.analyzedUrl}
+          </p>
+        </div>
+        <p className="text-muted-foreground px-5 pt-5 text-[14px] leading-relaxed sm:px-8">
+          Google PageSpeed ist gerade ausgelastet. Diese Werte haben wir
+          selbst gemessen.
         </p>
-        <p className="text-foreground mt-3 text-[14px] break-all">{data.analyzedUrl}</p>
-        <p className="text-muted-foreground mt-2 text-[13px] leading-relaxed">
-          Der ausführliche Google-Test ist gerade ausgelastet. Diese Werte
-          haben wir selbst gemessen.
-        </p>
-        <ul className="divide-border/50 mt-6 divide-y">
+        <ul className="divide-border mt-3 divide-y px-5 pb-2 sm:px-8">
           {data.items.map((item) => (
-            <li key={item.label} className="flex items-start gap-3 py-3">
+            <li key={item.label} className="flex items-start gap-3 py-3.5">
               <span
                 aria-hidden="true"
                 className={cn(
-                  "mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
-                  item.ok
-                    ? "bg-emerald-600/15 text-emerald-700 dark:text-emerald-400"
-                    : "bg-red-600/15 text-red-700 dark:text-red-400",
+                  "text-background mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-[2px] text-[11px] font-bold",
+                  item.ok ? "bg-ink-petrol" : "bg-ink-olive",
                 )}
               >
                 {item.ok ? "✓" : "!"}
               </span>
               <span className="min-w-0">
                 <span className="sr-only">{item.ok ? "In Ordnung: " : "Problem: "}</span>
-                <span className="text-foreground block text-[14.5px] font-medium">{item.label}</span>
-                <span className="text-muted-foreground block text-[13px] break-words">{item.detail}</span>
+                <span className="text-foreground block text-[15px] font-semibold">{item.label}</span>
+                <span className="text-muted-foreground block text-[13.5px] break-words">{item.detail}</span>
               </span>
             </li>
           ))}
         </ul>
       </div>
-      <Link
-        href="/audit"
-        className="bg-foreground text-background hover:bg-foreground/90 inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight"
-      >
-        Persönlichen Audit anfordern
-        <ArrowRight className="ml-2 h-4 w-4" />
+      <Link href="/audit" className="btn-signal h-12 text-[15px]">
+        Audit anfordern
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </Link>
     </div>
   );
 }
+
+const SCORE_LABELS: { key: keyof ScoreData["scores"]; label: string; original: string }[] = [
+  { key: "performance", label: "Ladezeit", original: "Performance" },
+  { key: "accessibility", label: "Barrierefreiheit", original: "Accessibility" },
+  { key: "bestPractices", label: "Technik", original: "Best Practices" },
+  { key: "seo", label: "Google-Grundlagen", original: "SEO" },
+];
 
 function ResultPanel({ data }: { data: ScoreData }) {
   const { scores, metrics, analyzedUrl, strategy } = data;
@@ -290,216 +303,175 @@ function ResultPanel({ data }: { data: ScoreData }) {
   const okay = worst >= 50 && worst < 80;
   const great = worst >= 80;
 
+  const vitals = [
+    { code: "LCP", text: "Größter Inhalt sichtbar nach", value: metrics.lcp },
+    { code: "CLS", text: "Verschieben beim Laden", value: metrics.cls },
+    { code: "INP", text: "Reaktion auf Klick oder Tippen", value: metrics.inp },
+  ].filter((v): v is { code: string; text: string; value: string } => v.value != null);
+
   return (
     <div className="animate-fade-up space-y-6">
-      <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-6 ring-1 sm:p-8">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
-          <span
-            aria-hidden="true"
-            className="bg-gold gold-pulse inline-block h-1 w-6"
-          />
-          Ergebnisse · {strategy === "mobile" ? "Mobile" : "Desktop"}
-        </p>
-        <p className="text-foreground mt-3 text-[14px] tabular-nums">
-          {analyzedUrl}
-        </p>
-
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <ScoreRing label="Performance" score={scores.performance} />
-          <ScoreRing label="Accessibility" score={scores.accessibility} />
-          <ScoreRing label="Best Practices" score={scores.bestPractices} />
-          <ScoreRing label="SEO" score={scores.seo} />
+      <div className="bg-card border-border overflow-hidden rounded-[3px] border">
+        <div className="border-border flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b px-5 py-4 sm:px-8">
+          <p className="label-mono text-muted-foreground">
+            Messung {strategy === "mobile" ? "am Handy" : "am Rechner"}
+          </p>
+          <p className="text-foreground min-w-0 font-mono text-[13px] break-all">
+            {analyzedUrl}
+          </p>
         </div>
 
-        {(metrics.lcp || metrics.cls || metrics.inp) && (
-          <div className="border-border/40 mt-8 border-t pt-6">
-            <p className="text-muted-foreground/80 mb-3 text-[13px]">
-              Core Web Vitals
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {metrics.lcp && <MetricPill label="LCP" value={metrics.lcp} />}
-              {metrics.cls && <MetricPill label="CLS" value={metrics.cls} />}
-              {metrics.inp && <MetricPill label="INP" value={metrics.inp} />}
-            </div>
+        <dl className="bg-border grid grid-cols-2 gap-px lg:grid-cols-4">
+          {SCORE_LABELS.map((s) => (
+            <ScoreCell
+              key={s.key}
+              label={s.label}
+              original={s.original}
+              score={scores[s.key]}
+            />
+          ))}
+        </dl>
+
+        {vitals.length > 0 && (
+          <div className="border-border border-t px-5 py-5 sm:px-8">
+            <p className="label-mono text-muted-foreground">Core Web Vitals</p>
+            <dl className="divide-border mt-2 divide-y">
+              {vitals.map((v) => (
+                <div
+                  key={v.code}
+                  className="flex items-baseline justify-between gap-4 py-3"
+                >
+                  <dt className="min-w-0 text-[14.5px]">
+                    <span className="text-foreground mr-3 font-mono text-[12.5px] font-semibold">
+                      {v.code}
+                    </span>
+                    <span className="text-muted-foreground">{v.text}</span>
+                  </dt>
+                  <dd className="serif text-foreground shrink-0 text-[17px]">
+                    {v.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
         )}
       </div>
 
-      {/* Adaptive Take */}
-      <div
-        className={cn(
-          "rounded-2xl border p-6",
-          veryBad && "border-foreground bg-foreground text-background",
-          okay && "border-foreground/15 bg-foreground/[0.04]",
-          great && "border-border/60 bg-card/40",
-        )}
-      >
-        <p
-          className={cn(
-            "text-[13px]",
-            veryBad ? "text-background/65" : "text-muted-foreground",
-          )}
-        >
-          Was das heißt
-        </p>
-        {veryBad && (
-          <>
-            <p className="serif mt-3 text-balance text-2xl leading-snug">
-              Ihre Seite ist{" "}
-              <span className="serif-italic">deutlich zu langsam</span> für
-              das, was Google heute sehen will. Das kostet Sie messbar
-              Sichtbarkeit.
-            </p>
-            <p className="text-background/80 mt-3 text-[14.5px] leading-relaxed">
-              Wir können das in ein paar Tagen begradigen — entweder
-              im Rahmen einer Neuerstellung oder als gezielten
-              Wartungs-Sprint.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                href="/audit"
-                className="bg-background text-foreground hover:bg-background/90 inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight"
-              >
-                Ehrlichen Audit anfordern
-              </Link>
-              <Link
-                href="/wartung"
-                className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-11 items-center rounded-full border px-5 text-[14px] font-medium tracking-tight transition-all"
-              >
-                Wartungs-Sprint
-              </Link>
-            </div>
-          </>
-        )}
-        {okay && (
-          <>
-            <p className="serif mt-3 text-balance text-2xl leading-snug">
-              Solide{" "}
-              <span className="serif-italic text-muted-foreground">
-                Mittelfeld
-              </span>{" "}
-              — aber Luft nach oben.
-            </p>
-            <p className="text-foreground/80 mt-3 text-[14.5px] leading-relaxed">
-              Mit ein paar gezielten Eingriffen ist hier deutlich mehr
-              drin. Wir gucken uns das gerne im persönlichen Audit
-              detailliert an.
-            </p>
-            <Link
-              href="/audit"
-              className="bg-foreground text-background hover:bg-foreground/90 mt-5 inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight"
-            >
-              Persönlichen Audit anfordern
-              <ArrowRight className="ml-2 h-4 w-4" />
+      {veryBad && (
+        <div className="bg-foreground text-background rounded-[3px] p-6 sm:p-8">
+          <p className="label-mono text-stahl-hell">Was das heißt</p>
+          <p className="serif mt-3 max-w-2xl text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.85rem]">
+            Mindestens ein Wert liegt unter 50. Google stuft das als schlecht
+            ein.
+          </p>
+          <p className="text-stahl-hell mt-4 max-w-2xl text-[15px] leading-relaxed">
+            Woran es liegt, schreiben wir Ihnen im Audit auf. Beheben lässt es
+            sich mit einer neuen Seite oder an Ihrer bestehenden über unsere
+            Wartung, auch wenn wir die Seite nicht gebaut haben.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/audit" className="btn-signal h-12 text-[15px]">
+              Audit anfordern
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-          </>
-        )}
-        {great && (
-          <>
-            <p className="serif text-foreground mt-3 text-balance text-2xl leading-snug">
-              Glückwunsch.{" "}
-              <span className="serif-italic text-muted-foreground">
-                Das läuft.
-              </span>
-            </p>
-            <p className="text-foreground/80 mt-3 text-[14.5px] leading-relaxed">
-              Technisch sieht das gut aus. Ob die Seite auch das
-              Richtige für Ihre Kunden tut, sehen automatische Tests
-              allerdings nicht — dafür gibt's unseren persönlichen
-              Audit.
-            </p>
-            <Link
-              href="/audit"
-              className="text-foreground mt-5 inline-flex items-center gap-2 text-[14px] font-medium underline-offset-[6px] hover:underline"
-            >
-              Persönlichen Audit für die Inhalts-Seite
-              <ArrowRight className="h-4 w-4" />
+            <Link href="/wartung" className="btn-line h-12 text-[15px]">
+              Wartung ansehen
             </Link>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
+
+      {okay && (
+        <div className="border-border rounded-[3px] border p-6 sm:p-8">
+          <p className="label-mono text-muted-foreground">Was das heißt</p>
+          <p className="serif text-foreground mt-3 max-w-2xl text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.85rem]">
+            Der schwächste Wert liegt zwischen 50 und 79.
+          </p>
+          <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed">
+            Die Seite funktioniert, lässt aber etwas liegen. Welche Stelle sich
+            zuerst lohnt, schreiben wir Ihnen im Audit auf.
+          </p>
+          <Link href="/audit" className="btn-signal mt-6 h-12 text-[15px]">
+            Audit anfordern
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      )}
+
+      {great && (
+        <div className="border-border rounded-[3px] border p-6 sm:p-8">
+          <p className="label-mono text-muted-foreground">Was das heißt</p>
+          <p className="serif text-foreground mt-3 max-w-2xl text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.85rem]">
+            Alle gemessenen Werte liegen bei 80 oder darüber.
+          </p>
+          <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed">
+            Technisch ist die Seite in Ordnung. Ob Besucher die Telefonnummer
+            finden und verstehen, was Sie anbieten, misst der Test nicht. Das
+            sehen wir uns im Audit an.
+          </p>
+          <Link
+            href="/audit"
+            className="text-foreground decoration-gold mt-5 inline-flex items-center gap-2 text-[15px] font-semibold underline decoration-2 underline-offset-[6px]"
+          >
+            Audit anfordern
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
 
-function ScoreRing({ label, score }: { label: string; score: number | null }) {
-  if (score == null) {
-    return (
-      <div className="text-center">
-        <div className="border-border/60 mx-auto inline-flex h-24 w-24 items-center justify-center rounded-full border">
-          <span className="text-muted-foreground/60 text-2xl font-semibold">
-            —
-          </span>
-        </div>
-        <p className="text-muted-foreground mt-3 text-[12.5px] font-medium tracking-tight">
-          {label}
-        </p>
-      </div>
-    );
-  }
-  const color =
-    score >= 90
-      ? "text-emerald-700 dark:text-emerald-400"
-      : score >= 50
-        ? "text-gold"
-        : "text-red-700 dark:text-red-400";
-  const ringColor =
-    score >= 90
-      ? "stroke-emerald-600 dark:stroke-emerald-400"
-      : score >= 50
-        ? "stroke-gold"
-        : "stroke-red-600 dark:stroke-red-400";
-  const circumference = 2 * Math.PI * 42;
-  const offset = circumference * (1 - score / 100);
+function rating(score: number) {
+  if (score >= 90) return { word: "gut", text: "text-ink-petrol", bar: "bg-ink-petrol" };
+  if (score >= 50) return { word: "mittel", text: "text-gold", bar: "bg-gold" };
+  return { word: "schwach", text: "text-ink-olive", bar: "bg-ink-olive" };
+}
+
+function ScoreCell({
+  label,
+  original,
+  score,
+}: {
+  label: string;
+  original: string;
+  score: number | null;
+}) {
+  const r = score == null ? null : rating(score);
   return (
-    <div className="text-center">
-      <div className="relative mx-auto inline-block h-24 w-24">
-        <svg viewBox="0 0 100 100" className="h-24 w-24 -rotate-90">
-          <circle
-            cx="50"
-            cy="50"
-            r="42"
-            fill="none"
-            strokeWidth="6"
-            className="stroke-border/50"
-          />
-          <circle
-            cx="50"
-            cy="50"
-            r="42"
-            fill="none"
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            className={cn(ringColor, "transition-[stroke-dashoffset] duration-700 ease-out")}
-          />
-        </svg>
+    <div className="bg-card flex min-w-0 flex-col p-4 sm:p-6">
+      <dt>
+        <span className="text-foreground block text-[14.5px] leading-snug font-semibold">
+          {label}
+        </span>
+        <span className="text-muted-foreground block font-mono text-[11.5px]">
+          {original}
+        </span>
+      </dt>
+      <dd className="mt-4 flex items-baseline gap-1.5">
         <span
           className={cn(
-            "absolute inset-0 flex items-center justify-center text-2xl font-semibold tabular-nums tracking-tight",
-            color,
+            "serif text-[2.5rem] leading-none tracking-[-0.03em] sm:text-[2.9rem]",
+            r ? r.text : "text-muted-foreground",
           )}
         >
-          {score}
+          {score ?? "–"}
         </span>
-      </div>
-      <p className="text-foreground mt-3 text-[12.5px] font-medium tracking-tight">
-        {label}
-      </p>
+        {r ? (
+          <span className="text-muted-foreground font-mono text-[12px]">/ 100</span>
+        ) : null}
+      </dd>
+      <dd className="text-muted-foreground mt-2 font-mono text-[12px]">
+        {r ? r.word : "nicht gemessen"}
+      </dd>
+      <dd aria-hidden="true" className="bg-border mt-2.5 h-1.5">
+        {r && score != null ? (
+          <span
+            className={cn("block h-full transition-[width] duration-700 ease-out", r.bar)}
+            style={{ width: `${Math.max(2, Math.min(100, score))}%` }}
+          />
+        ) : null}
+      </dd>
     </div>
-  );
-}
-
-function MetricPill({ label, value }: { label: string; value: string }) {
-  return (
-    <span className="border-border/60 inline-flex items-center gap-2 rounded-full border px-3 py-1.5">
-      <span className="text-muted-foreground text-[13px]">
-        {label}
-      </span>
-      <span className="text-foreground text-[13px] font-medium tabular-nums">
-        {value}
-      </span>
-    </span>
   );
 }

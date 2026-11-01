@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Briefkarte } from "@/components/marketing/vertical-landing";
 import {
   BRANCHEN,
   getAllBrancheSlugs,
@@ -39,7 +40,7 @@ export async function generateMetadata({
   const title = `Website für ${branche.label} erstellen lassen`;
   const lead =
     branche.shortBody.length > 100 ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "." : branche.shortBody;
-  const description = `${lead} Website zum Festpreis ab 499 €, persönlich aus Hamburg.`;
+  const description = `${lead} Website zum Festpreis ab 499 €, gebaut in Hamburg.`;
   return {
     title,
     description,
@@ -156,7 +157,9 @@ export default async function BranchePage({
         <Schwerpunkte branche={branche} />
         <Fragen branche={branche} />
         <Weiter branche={branche} />
-        <Schluss inquiryHref={inquiryHref} />
+        <Briefkarte title="Aus Ihren Stichpunkten schreiben wir die Texte für die Seite." inquiryHref={inquiryHref}>
+          Schicken Sie uns, was Sie anbieten und für wen. Den Festpreis bekommen Sie schriftlich, bevor wir anfangen.
+        </Briefkarte>
       </main>
 
       <MarketingFooter />
@@ -237,7 +240,7 @@ function Einordnung({ branche }: { branche: Branche }) {
   const [root, ...pages] = branche.typicalPages;
   return (
     <section className="border-border border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         <div className="space-y-6 lg:col-span-7">
           {branche.detailIntro.map((p, i) => (
             <p
@@ -275,23 +278,31 @@ function Einordnung({ branche }: { branche: Branche }) {
 }
 
 /* ------------------------------------------------------------------
- * Schwerpunkte als Verzeichnis mit Haarlinien.
+ * Schwerpunkte als Verzeichnis mit Haarlinien, auf dunklem Grund:
+ * der Kern der Seite und die einzige dunkle Fläche vor dem Fuß.
  * ---------------------------------------------------------------- */
 function Schwerpunkte({ branche }: { branche: Branche }) {
   return (
-    <section className="bg-card border-border border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
-        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] hyphens-auto sm:text-5xl lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
-          Was eine Website für {branche.label} braucht
-        </h2>
-        <dl className="border-foreground border-t lg:col-span-8">
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] hyphens-auto sm:text-5xl lg:text-[2.4rem] lg:hyphens-none">
+            Was eine Website für {branche.label} braucht
+          </h2>
+          <p className="text-stahl-hell mt-6 max-w-xs text-[15.5px] leading-relaxed">
+            Welche Teile Ihr Betrieb davon braucht, klären wir im ersten Gespräch. Den Rest lassen wir weg.
+          </p>
+        </div>
+        <dl className="border-background/40 border-t lg:col-span-8">
           {branche.features.map((feat) => (
             <div
               key={feat.title}
-              className="border-border grid gap-2 border-b py-5 sm:grid-cols-[15rem_1fr] sm:gap-8 sm:py-6"
+              className="border-background/15 grid gap-2 border-b py-5 sm:grid-cols-[15rem_1fr] sm:gap-8 sm:py-6"
             >
-              <dt className="text-[17px] font-semibold leading-snug tracking-[-0.01em]">{feat.title}</dt>
-              <dd className="text-muted-foreground text-pretty text-[15.5px] leading-relaxed">{feat.body}</dd>
+              <dt className="text-background text-[17px] font-semibold leading-snug tracking-[-0.01em]">
+                {feat.title}
+              </dt>
+              <dd className="text-stahl-hell text-pretty text-[15.5px] leading-relaxed">{feat.body}</dd>
             </div>
           ))}
         </dl>
@@ -306,7 +317,7 @@ function Schwerpunkte({ branche }: { branche: Branche }) {
 function Fragen({ branche }: { branche: Branche }) {
   return (
     <section className="border-border border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
           Fragen aus der Branche
         </h2>
@@ -338,7 +349,7 @@ function Weiter({ branche }: { branche: Branche }) {
 
   return (
     <section className="bg-card border-border border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-20 md:grid-cols-3 md:gap-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-24 md:grid-cols-3 md:gap-8">
         {post ? (
           <div>
             <h2 className="label-mono text-muted-foreground">Aus dem Journal</h2>
@@ -384,35 +395,6 @@ function Weiter({ branche }: { branche: Branche }) {
               </li>
             ))}
           </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Abschluss: Satz links, Kontaktwege rechts.
- * ---------------------------------------------------------------- */
-function Schluss({ inquiryHref }: { inquiryHref: string }) {
-  return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
-          Aus Ihren Stichpunkten schreiben wir die Texte für die Seite.
-        </h2>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
-            Schicken Sie uns, was Sie anbieten und für wen. Wir antworten meist am selben Werktag. Den Festpreis bekommen
-            Sie schriftlich, bevor wir anfangen.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
-              Anfrage schreiben {ARROW}
-            </Link>
-            <a href="tel:+491607621876" className="btn-line grow tabular-nums sm:grow-0">
-              0160 7621876
-            </a>
-          </div>
         </div>
       </div>
     </section>

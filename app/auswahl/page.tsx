@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { PageHero } from "@/components/marketing/page-hero";
 import { SITE_URL } from "@/lib/site";
 
 const ARTICLE_LD = {
@@ -42,24 +42,25 @@ export const metadata: Metadata = {
 /**
  * `/auswahl` — Aufnahmekriterien.
  *
- * Premium-Positionierung durch Verknappungs-Logik: wir wählen
- * aus, nicht der Kunde. Sehr distinktiv, kein lokaler Wett-
- * bewerber hat sowas.
- *
- * Tonalität strikt editorial — keine FAQ-Liste, keine
- * Bullet-Salat. Drei Sektionen mit serifen Statements, eine
- * Liste mit klaren Ja/Nein-Kriterien, eine Prozess-Beschreibung.
- *
- * Schluss: bewusst kein „Jetzt anfragen"-Hammer. Wer das hier
- * gelesen hat, weiß schon was zu tun ist.
+ * Wir sagen offen, mit wem die Zusammenarbeit gut klappt und wann wir
+ * lieber jemand anderen empfehlen. Aufbau: Kriterien als zweispaltige
+ * Tabelle (passt gut / passt eher nicht), danach die drei Schritte bis
+ * zur Entscheidung, am Ende eine ruhige Notiz mit zwei Wegen statt
+ * eines großen Anfrage-Knopfs.
  */
 export default function AuswahlPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Auswahl" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <Hero />
+        <PageHero
+          crumb="Auswahl"
+          eyebrow="Aufnahmekriterien"
+          title="Wer zu uns kommt und wer nicht"
+        >
+          Jede Seite bauen und betreuen wir selbst, deshalb nehmen wir pro Monat höchstens drei neue Aufträge an. Unten
+          steht, mit wem das gut klappt und wann wir Ihnen lieber jemand anderen empfehlen.
+        </PageHero>
         <CriteriaList />
         <Process />
         <ClosingNote />
@@ -67,7 +68,6 @@ export default function AuswahlPage() {
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([ARTICLE_LD, BREADCRUMB_LD]),
         }}
@@ -76,203 +76,131 @@ export default function AuswahlPage() {
   );
 }
 
-function Hero() {
-  return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28 lg:py-32">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
-          <span
-            aria-hidden="true"
-            className="bg-gold inline-block h-px w-10"
-          />
-          Aufnahmekriterien · Stand Juni 2026
-        </p>
-        <h1 className="serif text-foreground mt-8 text-balance text-5xl font-normal leading-[0.98] tracking-[-0.02em] sm:text-6xl lg:text-7xl">
-          Wer zu uns kommt.
-        </h1>
-        <p className="serif-italic text-muted-foreground mt-4 text-balance text-3xl leading-snug tracking-[-0.01em] sm:text-4xl">
-          Und wer nicht.
-        </p>
+type Criterion = {
+  thema: string;
+  ja: React.ReactNode;
+  nein: string;
+};
 
-        <div className="border-foreground/15 mt-12 border-l-2 pl-6">
-          <p className="text-foreground/85 text-pretty text-[17px] leading-[1.7]">
-            Wir nehmen pro Monat höchstens drei neue Aufträge an. Das ist
-            keine Marketing-Geste, sondern eine arithmetische Realität:
-            ein Atelier mit unserer Arbeitsdichte kann nicht mehr
-            seriös begleiten. Diese Knappheit hat eine Konsequenz —
-            wir können nicht jeden bauen, der anfragt.
-          </p>
-          <p className="text-foreground/85 mt-5 text-pretty text-[17px] leading-[1.7]">
-            Was hier steht, ist keine Sales-Disqualifikations-Liste,
-            sondern eine ehrliche Beschreibung dessen, mit wem wir gut
-            arbeiten — und mit wem wir es lieber nicht versuchen. Wenn
-            Sie sich erkennen, freuen wir uns. Wenn nicht, sparen wir
-            beiden Zeit.
-          </p>
+const CRITERIA: Criterion[] = [
+  {
+    thema: "Standort",
+    ja: "Ein Betrieb mit festem Standort und Kundschaft vor Ort, in Hamburg oder anderswo in Deutschland.",
+    nein: "Start-ups ohne festen Standort, deren Seite vor allem Investoren überzeugen soll.",
+  },
+  {
+    thema: "Entscheidung",
+    ja: "Der Betrieb ist inhabergeführt, und eine Person entscheidet.",
+    nein: "Abstimmungen, bei denen fünf Leute jede Änderung freigeben müssen.",
+  },
+  {
+    thema: "Kundschaft",
+    ja: "Sie wissen ungefähr, wer Ihre Kunden sind und was sie bei Ihnen suchen.",
+    nein: "Der Auftrag lautet nur: Machen Sie mal etwas Kreatives.",
+  },
+  {
+    thema: "Unterlagen",
+    ja: "Sie schicken Logo, Fotos und Stichpunkte. Die Texte schreiben wir daraus.",
+    nein: "Logo-Entwicklung und Fotoshooting erwarten Sie von uns. Dafür nennen wir Ihnen Leute, mit denen wir zusammenarbeiten.",
+  },
+  {
+    thema: "Nach dem Start",
+    ja: "Die Seite soll gepflegt werden. Der Monatsbeitrag läuft mindestens sechs Monate.",
+    nein: "Die Seite wird einmal gebaut und danach nie wieder angefasst.",
+  },
+  {
+    thema: "Branche",
+    ja: (
+      <>
+        Für Ihre Branche gibt es bei uns eine{" "}
+        <Link href="/branchen" className="underline decoration-[var(--gold)] decoration-2 underline-offset-4">
+          eigene Seite
+        </Link>
+        , etwa für Pflegedienste, Praxen, Handwerk oder Gastronomie.
+      </>
+    ),
+    nein: "Branchen mit eigener Regulierung, die wir nicht kennen, etwa Pharma-Direktvertrieb, Versicherungsvertrieb oder Krypto.",
+  },
+];
+
+function CriteriaList() {
+  return (
+    <section>
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <h2 className="max-w-3xl text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+          Was gut passt und was eher nicht
+        </h2>
+
+        <div className="mt-10 lg:mt-12">
+          <div className="border-foreground text-muted-foreground hidden grid-cols-[10rem_minmax(0,1fr)_minmax(0,1fr)] gap-x-10 border-b-[1.5px] pb-3 md:grid">
+            <span aria-hidden="true" />
+            <span className="label-mono">Passt gut</span>
+            <span className="label-mono">Passt eher nicht</span>
+          </div>
+          <dl className="border-foreground border-t-[1.5px] md:border-t-0">
+            {CRITERIA.map((c) => (
+              <div
+                key={c.thema}
+                className="border-border grid gap-x-10 gap-y-3 border-b py-6 md:grid-cols-[10rem_minmax(0,1fr)_minmax(0,1fr)]"
+              >
+                <dt className="md:pt-1">
+                  <span className="text-[17px] font-semibold tracking-[-0.01em] md:hidden">{c.thema}</span>
+                  <span className="label-mono text-muted-foreground hidden text-[11px] md:inline">{c.thema}</span>
+                </dt>
+                <dd className="text-foreground text-pretty text-[16.5px] leading-[1.6]">
+                  <span className="label-mono text-ink-petrol mb-1 block text-[10.5px] md:hidden">Passt gut</span>
+                  {c.ja}
+                </dd>
+                <dd className="text-muted-foreground text-pretty text-[16.5px] leading-[1.6]">
+                  <span className="label-mono mb-1 block text-[10.5px] md:hidden">Passt eher nicht</span>
+                  {c.nein}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
     </section>
   );
 }
 
-type Criterion = {
-  ja: string;
-  nein: string;
-};
-
-const CRITERIA: Criterion[] = [
+const STEPS: { title: string; body: string }[] = [
   {
-    ja: "Lokales Unternehmen mit Geschäft in Hamburg oder Umland.",
-    nein: "Reine Tech-Plays ohne physischen Standort, Investor-getriebene Startups.",
+    title: "Audit oder kurze Anfrage",
+    body: "Wir sehen uns Ihre jetzige Seite an oder lesen, was Sie geschrieben haben, und schicken drei bis fünf Punkte per Mail zurück. Daran sehen Sie, wie wir arbeiten, und wir sehen, worum es geht.",
   },
   {
-    ja: "Inhaber-geführt, klare Entscheidungswege.",
-    nein: "Komitee-Strukturen mit Reviews durch fünf Stakeholder.",
+    title: "Gespräch von 30 Minuten",
+    body: "Wir telefonieren oder treffen uns, wenn Sie in Hamburg sind. Wir fragen, was Sie anbieten, wer Ihre Kunden sind und was der Seite fehlt. Sie fragen, wie wir arbeiten und wann die Seite fertig wäre.",
   },
   {
-    ja: "Eine Vorstellung davon, wer der Kunde ist und was er will.",
-    nein: "Mach-mal-kreativ-Mandate ohne Zielgruppen-Kontur.",
-  },
-  {
-    ja: "Bereitschaft, die drei Sachen (Logo, Texte, Bilder) selbst beizubringen oder begleitet zu erarbeiten.",
-    nein: "Erwartung, dass wir auch Marken-Identität, Texterstellung und Foto-Shooting machen.",
-  },
-  {
-    ja: "Drei bis sechs Monate Horizont für den ersten Aufbau, dann laufende Pflege.",
-    nein: "Übermorgen live, danach nie wieder anfassen.",
-  },
-  {
-    ja: "Branchen, in denen wir Erfahrung haben: Gastronomie, Pflege, Praxen, Friseur, Handwerk, Kanzlei, Fitness.",
-    nein: "Branchen mit Sonderregulierung, die wir nicht kennen (Pharma-Direktvertrieb, Versicherungs-Vertrieb, Krypto).",
-  },
-];
-
-function CriteriaList() {
-  return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
-          <span
-            aria-hidden="true"
-            className="bg-gold inline-block h-px w-10"
-          />
-          Was passt — was nicht
-        </p>
-        <h2 className="serif text-foreground mt-8 text-balance text-4xl font-normal leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-          Sechs Kriterien,
-          <span className="serif-italic text-muted-foreground">
-            {" "}
-            zweispaltig gelesen.
-          </span>
-        </h2>
-
-        <ol className="mt-16 space-y-14 sm:space-y-16">
-          {CRITERIA.map((c, i) => (
-            <li key={i} className="grid gap-6 sm:grid-cols-[3rem_1fr] sm:gap-8">
-              <span
-                aria-hidden="true"
-                className="serif-italic text-gold text-3xl font-normal leading-none tabular-nums sm:text-4xl"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="space-y-5">
-                <CriterionRow icon="ja" text={c.ja} />
-                <CriterionRow icon="nein" text={c.nein} />
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-function CriterionRow({
-  icon,
-  text,
-}: {
-  icon: "ja" | "nein";
-  text: string;
-}) {
-  return (
-    <p className="flex items-start gap-3">
-      <span
-        className={`mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${
-          icon === "ja"
-            ? "border-foreground/30 text-foreground"
-            : "border-muted-foreground/30 text-muted-foreground/70"
-        }`}
-      >
-        {icon === "ja" ? (
-          <Check className="h-3 w-3" aria-hidden="true" />
-        ) : (
-          <X className="h-3 w-3" aria-hidden="true" />
-        )}
-      </span>
-      <span
-        className={`text-pretty text-[16.5px] leading-[1.6] ${
-          icon === "ja" ? "text-foreground/85" : "text-muted-foreground"
-        }`}
-      >
-        {text}
-      </span>
-    </p>
-  );
-}
-
-const STEPS: { roman: string; title: string; body: string }[] = [
-  {
-    roman: "I",
-    title: "Audit-Mail oder kurze Anfrage",
-    body: "Wir gucken uns Ihre aktuelle Seite einmal mit der Hand an oder lesen, was Sie geschrieben haben. Drei bis fünf Punkte zurück per Mail, persönlich. Das ist unsere erste Filterung — und Ihre erste Probe, ob unser Stil passt.",
-  },
-  {
-    roman: "II",
-    title: "30-Minuten-Gespräch",
-    body: "Wir telefonieren oder sitzen kurz zusammen, wenn Sie in Hamburg sind. Kein Sales-Pitch — wir wollen verstehen, was Sie bauen, wer Ihr Kunde ist, was Sie schon haben und was fehlt. Sie wollen verstehen, wie wir arbeiten und ob wir liefern können.",
-  },
-  {
-    roman: "III",
-    title: "Verbindliche Empfehlung — von uns oder zu jemand anderem",
-    body: "Wenn wir glauben, gut passen zu können, schicken wir Ihnen unsere Empfehlung mit Paket-Vorschlag, Zeitplan und Preis. Wenn nicht, sagen wir das offen — und nennen Ihnen jemanden, der besser zu Ihrem Vorhaben passt. Letzteres passiert in etwa einem von vier Fällen.",
+    title: "Zusage oder Empfehlung",
+    body: "Passt es, schicken wir Ihnen Paket, Zeitplan und Festpreis. Passt es nicht, sagen wir das und nennen Ihnen jemanden, der besser zu Ihrem Vorhaben passt.",
   },
 ];
 
 function Process() {
   return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
-          <span
-            aria-hidden="true"
-            className="bg-gold inline-block h-px w-10"
-          />
-          Wie wir entscheiden
-        </p>
-        <h2 className="serif text-foreground mt-8 text-balance text-4xl font-normal leading-[1.05] tracking-[-0.02em] sm:text-5xl">
-          Drei Schritte,
-          <span className="serif-italic text-muted-foreground"> kein Funnel.</span>
-        </h2>
-
-        <ol className="divide-border/40 mt-14 divide-y">
-          {STEPS.map((s) => (
+    <section className="bg-card border-foreground border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-4">
+          <p className="label-mono text-muted-foreground">Wie wir entscheiden</p>
+          <h2 className="mt-4 text-balance text-[1.9rem] leading-[1.04] tracking-[-0.03em] sm:text-[2.3rem]">
+            Drei Schritte bis zur Zu- oder Absage
+          </h2>
+        </div>
+        <ol className="lg:col-span-7 lg:col-start-6">
+          {STEPS.map((s, i) => (
             <li
-              key={s.roman}
-              className="grid items-baseline gap-4 py-10 sm:grid-cols-[3.5rem_1fr] sm:gap-8 sm:py-12"
+              key={s.title}
+              className={`grid grid-cols-[2rem_minmax(0,1fr)] gap-4 border-t py-7 sm:gap-6 ${i === 0 ? "border-foreground" : "border-border"}`}
             >
-              <span
-                aria-hidden="true"
-                className="serif-italic text-gold text-3xl font-normal leading-none tabular-nums sm:text-4xl"
-              >
-                {s.roman}.
+              <span aria-hidden="true" className="font-mono text-[15px] tabular-nums leading-[1.9]">
+                {i + 1}
               </span>
               <div>
-                <h3 className="serif text-foreground text-balance text-2xl font-normal leading-[1.2] tracking-[-0.015em] sm:text-3xl">
-                  {s.title}
-                </h3>
-                <p className="text-muted-foreground mt-4 text-pretty text-[16px] leading-[1.65]">
-                  {s.body}
-                </p>
+                <h3 className="text-[1.35rem] leading-tight tracking-[-0.015em]">{s.title}</h3>
+                <p className="text-muted-foreground mt-2.5 text-pretty text-[16px] leading-[1.65]">{s.body}</p>
               </div>
             </li>
           ))}
@@ -284,36 +212,18 @@ function Process() {
 
 function ClosingNote() {
   return (
-    <section>
-      <div className="mx-auto w-full max-w-3xl px-6 py-20 sm:py-28">
-        <p className="serif text-foreground text-balance text-3xl font-normal leading-[1.25] tracking-[-0.01em] sm:text-4xl">
-          Wenn Sie sich gewünscht haben, dass jemand klar sagt:{" "}
-          <span className="serif-italic text-muted-foreground">
-            wir können das, das andere besser
-          </span>{" "}
-          — dann sind Sie hier richtig.
+    <section className="border-foreground border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <p className="text-balance text-[1.6rem] leading-[1.2] tracking-[-0.02em] lg:col-span-7" style={{ fontStretch: "106%", fontWeight: 650 }}>
+          Beide nächsten Schritte kosten nichts. Wenn hier nichts zu Ihnen passt, erwarten wir keine Anfrage.
         </p>
-
-        <div className="border-border/40 mt-12 flex flex-col gap-4 border-t pt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-          <p className="text-muted-foreground text-[14px] leading-relaxed">
-            Beide möglichen nächsten Schritte sind unverbindlich. Wir
-            erwarten keine Anfrage, wenn das hier nicht zu Ihnen passt.
-          </p>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-            <Link
-              href="/audit"
-              className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-11 items-center rounded-full border px-5 text-[14px] font-medium tracking-tight transition-all"
-            >
-              Audit anfordern
-            </Link>
-            <Link
-              href="/termin"
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center gap-2 rounded-full px-5 text-[14px] font-medium tracking-tight"
-            >
-              30 Minuten reden
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
+        <div className="flex flex-wrap items-center gap-3 lg:col-span-5 lg:justify-end">
+          <Link href="/audit" className="btn-line grow sm:grow-0">
+            Audit anfordern
+          </Link>
+          <Link href="/termin" className="btn-signal grow sm:grow-0">
+            30-Minuten-Termin <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
       </div>
     </section>

@@ -8,9 +8,7 @@
  *   - jeden Eintrag mit dem, was wirklich diese/letzte Woche
  *     im Atelier passiert ist
  *   - Branche + Stadtteil ok, Klar-Namen nur mit Kundenfreigabe
- *   - bei lange keiner Aktivität: auf zwei ehrliche Einträge
- *     reduzieren — lieber knapp als erfunden
- *   - mindestens 2 Einträge, sonst wirkt die Liste einsam
+ *   - bei lange keiner Aktivität: lieber leer als erfunden
  */
 
 export type AtelierNote = {
@@ -31,24 +29,12 @@ export type AtelierNote = {
  */
 export const ATELIER_STAND = "2026-06-14";
 
-export const ATELIER_NOTES: AtelierNote[] = [
-  {
-    when: "Mitte Juni",
-    text: "Pflegedienst aus Wandsbek — Bewerbungsformular und Team-Bereich aufgebaut.",
-  },
-  {
-    when: "Anfang Juni",
-    text: "Café in Eppendorf — Speisekarte selbst pflegbar übergeben.",
-  },
-  {
-    when: "Ende Mai",
-    text: "Friseur Eimsbüttel — Online-Termin-Buchung live geschaltet.",
-  },
-  {
-    when: "Im Juni",
-    text: "Drei Erstgespräche aus Hamburg-Nord, zwei laufen weiter.",
-  },
-];
+/**
+ * Derzeit leer: Die früheren Einträge nannten Kundenprojekte, die sich
+ * nicht belegen ließen. Nur eintragen, was wirklich passiert ist und
+ * vom Kunden freigegeben wurde. Wird zur Zeit auf keiner Seite gezeigt.
+ */
+export const ATELIER_NOTES: AtelierNote[] = [];
 
 /** „Juni 2026" — Monat des Notizen-Stands. */
 export function atelierStandMonth(): string {
@@ -71,20 +57,16 @@ export function atelierStandDate(): string {
 
 /**
  * Was wir gerade lernen/lesen/ausprobieren — der persönlichere
- * Teil der Now-Page. Gleiche Ehrlichkeits-Regel: nur eintragen,
+ * Teil der Now-Page. Gleiche Regel: nur eintragen,
  * was wirklich auf dem Schreibtisch liegt.
  */
 export const ATELIER_GERADE: { label: string; text: string }[] = [
   {
     label: "Auf dem Schreibtisch",
-    text: "Die View-Transitions-API für sanftere Seitenwechsel — vorsichtig, weil sie mit unseren Reveal-Animationen kollidieren kann.",
-  },
-  {
-    label: "Gerade gelernt",
-    text: "Wie Google-Business-Profile von Pflegediensten in Hamburg tatsächlich gepflegt sind — Stichprobe von vierzig Einträgen, zwei von fünf faktisch unsichtbar. Daraus wurde ein Journal-Essay.",
+    text: "Weichere Übergänge beim Wechsel zwischen zwei Seiten. Wir testen das vorsichtig, weil es sich mit Bewegungen beim Scrollen beißen kann.",
   },
   {
     label: "Im Ohr",
-    text: "Beim Bauen meistens Stille oder NDR Info — Hamburg-Klischee, stimmt aber.",
+    text: "Beim Bauen meistens Stille, manchmal NDR Info.",
   },
 ];

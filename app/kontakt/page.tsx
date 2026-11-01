@@ -1,22 +1,30 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { Depth3D } from "@/components/marketing/depth-3d";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SitaloLogo } from "@/components/sitalo-logo";
 import { SITE_URL } from "@/lib/site";
+import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM } from "@/lib/sprechstunde-data";
+import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
   title: "Kontakt — schreiben Sie uns direkt",
   description:
-    "Schreiben Sie uns über Formular oder E-Mail. Wir melden uns persönlich, meist noch am selben Tag.",
+    "Rufen Sie an oder schreiben Sie uns über das Formular oder per E-Mail. Wir antworten meist am selben Werktag.",
   alternates: { canonical: "/kontakt" },
 };
 
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
+
+/**
+ * `/kontakt` — gesetzt wie ein Briefkopf: links die Nummer groß, rechts
+ * die Visitenkarte zum Speichern. Darunter alle Wege als Tabelle und
+ * zum Schluss Treffen in Hamburg mit der Stadtteil-Karte.
+ */
 export default function KontaktPage() {
   // ContactPage-Schema + Breadcrumb. ContactPage signalisiert
   // Google explizit, dass das die kanonische Kontakt-Seite ist
@@ -27,7 +35,7 @@ export default function KontaktPage() {
     "@type": "ContactPage",
     name: "Kontakt — Sitalo Webdesign",
     description:
-      "Schreiben oder anrufen — wir antworten persönlich aus dem Hamburger Atelier, meist noch am selben Tag.",
+      "Anrufen oder schreiben: Sitalo Webdesign in Hamburg antwortet meist am selben Werktag.",
     url: `${SITE_URL}/kontakt`,
     mainEntity: { "@id": `${SITE_URL}/#business` },
   };
@@ -51,220 +59,15 @@ export default function KontaktPage() {
       <MarketingHeader />
       <EditorialMasthead section="Kontakt" />
 
-      <main id="main" tabIndex={-1} className="bg-secondary/40 flex-1">
-        <section className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
-          {/* Editorial letter-style layout */}
-          <p className="text-muted-foreground text-[13px] font-medium">
-            Kontakt · Aus Hamburg
-          </p>
-
-          <h1 className="serif mt-16 text-balance text-4xl font-normal leading-[1.2] tracking-[-0.02em] sm:text-5xl lg:text-6xl">
-            Schreiben Sie uns kurz,{" "}
-            <span className="serif-italic text-muted-foreground">
-              was Sie vorhaben.
-            </span>{" "}
-            Wir melden uns persönlich —{" "}
-            <span className="serif-italic text-muted-foreground">
-              meist noch am selben Tag.
-            </span>
-          </h1>
-
-          {/* Vier Kontaktwege — Formular, Telefon, E-Mail, vCard.
-              Nummer und E-Mail bewusst hinter Buttons versteckt;
-              der CTA löst den Anruf bzw. die Mail aus, ohne den
-              Wert vorher im Klartext anzuzeigen. */}
-          <div className="border-border/60 mt-20 grid divide-y border-t border-b sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
-            <ContactMethod
-              label="Per Formular"
-              detail="Schritt-für-Schritt"
-              href="/anfrage"
-              cta="Website anfragen"
-            />
-            <ContactMethod
-              label="Per Telefon"
-              detail="Direkt zum Atelier"
-              href="tel:+491607621876"
-              cta="Anrufen"
-              external
-            />
-            <ContactMethod
-              label="Per E-Mail"
-              detail="Persönlich, < 24 h"
-              href="mailto:info@sitalo.de"
-              cta="Schreiben"
-              external
-            />
-            <ContactMethod
-              label="Als Visitenkarte"
-              detail="Direkt im Telefonbuch"
-              href="/sitalo-kontakt.vcf"
-              cta="Speichern"
-              download
-            />
-          </div>
-
-          {/* Termin-Hinweis — der fünfte Weg, bewusst nicht als
-              fünfte Grid-Zelle (würde das Vier-Wege-Raster brechen),
-              sondern als ruhige Zeile darunter. */}
-          <p className="text-muted-foreground mt-6 text-[14px] leading-relaxed">
-            Oder Sie überspringen das Hin-und-Her:{" "}
-            <Link
-              href="/termin"
-              className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
-            >
-              30-Minuten-Termin direkt buchen
-            </Link>{" "}
-            — Tag und Uhrzeit selbst wählen, Bestätigung am selben Werktag.
-          </p>
-
-          <div className="mt-16 grid gap-12 sm:mt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-            <div className="space-y-12">
-              <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Antwortzeit
-                </p>
-                <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
-                  Innerhalb von{" "}
-                  <span className="serif-italic">24 Stunden.</span>
-                </p>
-                <p className="text-muted-foreground mt-2 text-sm">
-                  Meist deutlich schneller. Persönlich, von uns, ohne
-                  Ticket-System.{" "}
-                  <Link
-                    href="/erreichbarkeit"
-                    className="text-foreground underline-offset-4 hover:underline"
-                  >
-                    Genaue Fenster
-                  </Link>
-                  .
-                </p>
-              </div>
-              <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Sprechzeiten
-                </p>
-                <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
-                  <span className="serif-italic">Jederzeit.</span>
-                </p>
-                <p className="text-muted-foreground mt-2 text-sm">
-                  Keine festen Bürozeiten — wir antworten, wenn wir
-                  können, was meistens schnell ist. Treffen vor Ort
-                  oder per Video gerne nach kurzer Absprache.
-                </p>
-              </div>
-              <div>
-                <p className="text-muted-foreground text-[13px] font-medium">
-                  Standort
-                </p>
-                <p className="serif text-foreground mt-3 text-2xl tracking-[-0.01em] sm:text-3xl">
-                  Aus{" "}
-                  <span className="serif-italic">Hamburg.</span>{" "}
-                  Deutschlandweit.
-                </p>
-                <p className="text-muted-foreground mt-2 text-sm">
-                  Treffen vor Ort auf Wunsch — Café, Ihr Büro oder
-                  unseres. Sonst läuft alles per Telefon, Video und
-                  Mail. Funktioniert genauso gut.
-                </p>
-              </div>
-              <p className="serif-italic text-foreground/80 text-2xl">
-                — Sitalo, Hamburg
-              </p>
-            </div>
-
-            {/* Drei Hamburg-Aufnahmen übereinander — Speicherstadt
-                (Identität), Eimsbüttel-Café (Alltag), Schreibtisch
-                mit Drucken (Atelier). Statisch, keine externen
-                Embeds. */}
-            <div className="space-y-3 sm:space-y-4">
-              <Depth3D className="relative aspect-[4/3] w-full" maxTilt={8}>
-                <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-                  <Image
-                    src="/images/hamburg-speicherstadt.webp"
-                    alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
-                    fill
-                    sizes="(min-width: 1024px) 500px, 100vw"
-                    className="object-cover"
-                  />
-                  <div
-                    aria-hidden="true"
-                    className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
-                  />
-                  <div className="absolute bottom-4 left-5 right-5 text-background">
-                    <p className="text-[13px] opacity-80">
-                      53.5511° N · 9.9937° E
-                    </p>
-                    <p className="serif mt-1 text-2xl font-normal tracking-[-0.01em]">
-                      Hamburg
-                    </p>
-                  </div>
-                </div>
-              </Depth3D>
-              <Depth3D className="relative aspect-[4/3] w-full" maxTilt={8}>
-                <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-                  <Image
-                    src="/images/cafe-eimsbuettel.webp"
-                    alt="Ruhige Straße in Hamburg-Eimsbüttel am Morgen — Café-Terrasse, Altbau-Fassaden, weicher Nebel."
-                    fill
-                    sizes="(min-width: 1024px) 500px, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-              </Depth3D>
-              <Depth3D className="relative aspect-[4/3] w-full" maxTilt={8}>
-                <div className="relative h-full w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-                  <Image
-                    src="/images/workspace-prints.webp"
-                    alt="Schreibtisch im Sitalo-Atelier mit gerahmten Design-Drucken — Hamburger Tageslicht, ruhige Arbeitsatmosphäre."
-                    fill
-                    sizes="(min-width: 1024px) 500px, 100vw"
-                    className="object-cover"
-                  />
-                  <div
-                    aria-hidden="true"
-                    className="from-foreground/30 absolute inset-0 bg-gradient-to-t to-transparent"
-                  />
-                  <div className="absolute bottom-4 left-5 right-5 text-background">
-                    <p className="serif-italic text-base sm:text-lg">
-                      — Aus dem Atelier
-                    </p>
-                  </div>
-                </div>
-              </Depth3D>
-            </div>
-          </div>
-
-          {/* Hamburg-Karte — die acht Stadtteile, in denen wir am
-              meisten unterwegs sind, klickbar. Verlängert das
-              „Treffen vor Ort"-Versprechen visuell. */}
-          <div className="border-border/60 mt-20 border-t pt-16 sm:mt-24 sm:pt-20">
-            <p className="text-muted-foreground text-[13px] font-medium">
-              Wo wir unterwegs sind
-            </p>
-            <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
-              <div>
-                <p className="serif text-foreground text-balance text-3xl font-normal leading-[1.15] tracking-[-0.02em] sm:text-4xl">
-                  Acht Stadtteile,{" "}
-                  <span className="serif-italic text-muted-foreground">
-                    in denen wir regelmäßig sitzen.
-                  </span>
-                </p>
-                <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[15px] leading-relaxed">
-                  Jeder Pin führt zur Stadtteil-Seite — mit den
-                  Branchen, die dort am häufigsten zu uns kommen, und
-                  den Suchbegriffen, für die wir dort bauen.
-                </p>
-              </div>
-              <Depth3D><HamburgMap /></Depth3D>
-            </div>
-          </div>
-        </section>
+      <main id="main" tabIndex={-1} className="flex-1">
+        <Briefkopf />
+        <Wege />
+        <Treffen />
       </main>
 
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([contactPageLd, breadcrumbLd]),
         }}
@@ -273,51 +76,186 @@ export default function KontaktPage() {
   );
 }
 
-function ContactMethod({
-  label,
-  detail,
-  href,
-  cta,
-  external,
-  download,
-}: {
-  label: string;
-  detail: string;
-  href: string;
-  cta: string;
-  external?: boolean;
-  /** Wenn true: Browser bietet das Ziel als Download an (.vcf etc.). */
-  download?: boolean;
-}) {
-  const inner = (
-    <div className="group flex h-full flex-col justify-between p-8 sm:p-10">
-      <div>
-        <p className="text-muted-foreground text-[13px] font-medium">
-          {label}
-        </p>
-        <p className="text-foreground mt-4 text-2xl font-medium tracking-[-0.015em] sm:text-3xl">
-          {detail}
-        </p>
+/* ------------------------------------------------------------------
+ * Briefkopf: Nummer und Mail groß, daneben die Visitenkarte.
+ * ---------------------------------------------------------------- */
+function Briefkopf() {
+  return (
+    <section>
+      <div className="mx-auto grid w-full max-w-6xl gap-14 px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-24 lg:grid-cols-12 lg:items-center lg:gap-8">
+        <div className="min-w-0 lg:col-span-7">
+          <p className="label-mono text-muted-foreground">Sitalo Webdesign · Hamburg</p>
+          <h1 className="mt-5 text-[3rem] leading-[0.95] tracking-[-0.04em] sm:text-[5rem] lg:text-[5.6rem]">
+            Kontakt
+          </h1>
+          <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-[17px] leading-relaxed">
+            Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Mails beantworten wir meist am selben
+            Werktag.
+          </p>
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold mt-8 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[3.6rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
+          >
+            0160 7621876
+          </a>
+          <div>
+            <a
+              href="mailto:info@sitalo.de"
+              className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[19px] font-semibold"
+            >
+              info@sitalo.de
+            </a>
+          </div>
+        </div>
+
+        <div className="lg:col-span-5">
+          <Visitenkarte />
+        </div>
       </div>
-      <div className="text-foreground mt-10 inline-flex items-center gap-2 text-[15px] font-medium underline-offset-4 group-hover:underline">
-        {cta}
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </div>
-    </div>
+    </section>
   );
-  if (download) {
-    return (
-      <a href={href} download="Sitalo-Webdesign.vcf">
-        {inner}
-      </a>
-    );
-  }
-  if (external) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer">
-        {inner}
-      </a>
-    );
-  }
-  return <Link href={href}>{inner}</Link>;
+}
+
+function Visitenkarte() {
+  return (
+    <figure className="mx-auto w-full max-w-[26rem] lg:mr-0">
+      <div
+        className="bg-card border-border relative flex aspect-[85/55] flex-col justify-between overflow-hidden rounded-[3px] border p-5 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:p-7"
+      >
+        <span aria-hidden="true" className="bg-gold absolute top-0 left-0 h-1.5 w-16" />
+        <SitaloLogo size="sm" />
+        <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[13.5px] sm:text-[14.5px]">
+          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Telefon</span>
+          <span className="font-mono tabular-nums">0160 7621876</span>
+          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Mail</span>
+          <span className="truncate font-mono">info@sitalo.de</span>
+          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Web</span>
+          <span className="font-mono">sitalo.de</span>
+          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Ort</span>
+          <span className="font-mono">Hamburg</span>
+        </div>
+      </div>
+      <figcaption className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+        <span className="text-muted-foreground text-[14px]">Für das Adressbuch im Handy</span>
+        <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="btn-line h-11 text-[14.5px]">
+          <Download className="h-4 w-4" aria-hidden="true" />
+          Visitenkarte speichern
+        </a>
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Alle Wege als Tabelle: was es ist, was Sie erwartet, wohin der Link
+ * führt.
+ * ---------------------------------------------------------------- */
+const WEGE: { name: string; text: string; href: string; link: string; extern?: boolean }[] = [
+  {
+    name: "Formular",
+    text: "Drei Felder für Ihr Vorhaben. Die Antwort kommt meist am selben Werktag.",
+    href: "/anfrage",
+    link: "Anfrage schreiben",
+  },
+  {
+    name: "E-Mail",
+    text: "An info@sitalo.de, gern mit Fotos oder der Adresse Ihrer jetzigen Seite.",
+    href: "mailto:info@sitalo.de",
+    link: "Mail schreiben",
+    extern: true,
+  },
+  {
+    name: "Termin",
+    text: "30 Minuten am Telefon, per Video oder in Hamburg. Tag und Uhrzeit wählen Sie selbst.",
+    href: "/termin",
+    link: "Termin buchen",
+  },
+  {
+    name: "Sprechstunde",
+    text: `Jeden ersten Donnerstag von ${SPRECHSTUNDE_BEGINN_HHMM} bis ${SPRECHSTUNDE_ENDE_HHMM} Uhr am Telefon, offen für alle.`,
+    href: "/sprechstunde",
+    link: "Nächste Termine",
+  },
+  {
+    name: "Erreichbarkeit",
+    text: "Was wir zur Antwortzeit zusagen und was gilt, wenn wir im Urlaub sind.",
+    href: "/erreichbarkeit",
+    link: "Zeiten ansehen",
+  },
+];
+
+function Wege() {
+  return (
+    <section className="bg-card border-border border-t" aria-labelledby="wege-titel">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <h2 id="wege-titel" className="text-balance text-[2rem] leading-[1.0] tracking-[-0.032em] sm:text-[2.75rem]">
+          Weitere Wege zu uns
+        </h2>
+        <ul className="border-foreground mt-10 border-t-2 sm:mt-12">
+          {WEGE.map((w) => (
+            <li
+              key={w.name}
+              className="border-border grid gap-x-8 gap-y-2 border-b py-5 sm:grid-cols-[10rem_minmax(0,1fr)_auto] sm:items-baseline sm:py-6"
+            >
+              <span className="label-mono text-muted-foreground">{w.name}</span>
+              <span className="text-foreground/85 max-w-xl text-pretty text-[16px] leading-relaxed">{w.text}</span>
+              {w.extern ? (
+                <a
+                  href={w.href}
+                  className="inline-flex items-center gap-1.5 text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline"
+                >
+                  {w.link} {ARROW}
+                </a>
+              ) : (
+                <Link
+                  href={w.href}
+                  className="inline-flex items-center gap-1.5 text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline"
+                >
+                  {w.link} {ARROW}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Treffen in Hamburg, daneben die Karte mit den Stadtteil-Seiten.
+ * ---------------------------------------------------------------- */
+function Treffen() {
+  return (
+    <section className="border-border border-t" aria-labelledby="treffen-titel">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-5">
+          <h2
+            id="treffen-titel"
+            className="text-balance text-[2rem] leading-[1.0] tracking-[-0.032em] sm:text-[2.75rem]"
+          >
+            Treffen in Hamburg
+          </h2>
+          <p className="text-foreground/85 mt-5 max-w-md text-pretty text-[16.5px] leading-relaxed">
+            Wer in Hamburg sitzt, kann uns gern treffen: in Ihrem Betrieb, in einem Café oder bei uns. Alle anderen
+            sprechen mit uns am Telefon oder per Video. Die Website wird dieselbe.
+          </p>
+          <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[15px] leading-relaxed">
+            Für {STANDORTE.length} Hamburger Stadtteile gibt es eine eigene Seite. Ein Klick auf den Namen in der
+            Karte führt hin.
+          </p>
+          <Link
+            href="/standorte"
+            className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+          >
+            Alle Stadtteile {ARROW}
+          </Link>
+        </div>
+        <div className="min-w-0 lg:col-span-7">
+          <HamburgMap />
+        </div>
+      </div>
+    </section>
+  );
 }

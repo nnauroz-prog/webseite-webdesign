@@ -5,32 +5,38 @@ import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   BookOpen,
+  CalendarDays,
   Clock,
   Eye,
   FileText,
+  ListChecks,
   Mail,
   MapPin,
   MessageCircle,
   Package,
   Phone,
   Scale,
-  Sparkles,
+  Search,
+  Send,
   Wrench,
   Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 /**
- * Command-Palette — Linear-/Vercel-Style Cmd+K Modal.
+ * Command-Palette — Schnellnavigation per Cmd+K.
  *
  * Tastenkürzel: Cmd+K (Mac) / Ctrl+K (Win/Linux). Öffnet eine
  * schnelle Navigations-Liste mit Filter-Input. Power-User können
  * von überall auf jede wichtige Seite navigieren oder direkt
  * anrufen/schreiben, ohne mit der Maus zu navigieren.
  *
- * Strukturierte Sektionen: Aktionen (Anfrage, Anrufen, …), Seiten
- * (Pakete, Branchen, Standorte, FAQ, …), Branchen (10 dynamisch
- * geladen), Standorte (8 dynamisch).
+ * Strukturierte Sektionen: Direkt (Anfrage, Anrufen, …), Seiten
+ * (Pakete, Branchen, Standorte, FAQ, …), dazu Pakete, Branchen und
+ * Stadtteile aus dem Server-Index.
+ *
+ * Gestaltung: kantiger Kasten mit Haarlinien, Gruppennamen in Mono,
+ * kein Weichzeichner hinter dem Fenster.
  *
  * Klassisches Keyboard-UX: ↑/↓ navigieren, Enter öffnet, Esc
  * schließt. Filter live während Tippen.
@@ -128,42 +134,42 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Website anfragen",
-        description: "Drei Felder, Antwort meist am selben Tag",
+        description: "Formular mit drei Feldern, Antwort meist am selben Werktag",
         href: "/anfrage",
-        icon: Sparkles,
+        icon: Send,
       },
       {
         kind: "link",
         label: "Termin buchen",
-        description: "30 Min Erstgespräch, Bestätigung in 15 Min",
+        description: "Erstgespräch, 30 Minuten, Bestätigung am selben Werktag",
         href: "/termin",
-        icon: Sparkles,
+        icon: CalendarDays,
       },
       {
         kind: "link",
         label: "Sprechstunde",
-        description: "Jeden ersten Donnerstag, 17–18:30 Uhr · Telefon",
+        description: "Erster Donnerstag im Monat, 17 bis 18:30 Uhr, am Telefon",
         href: "/sprechstunde",
         icon: Phone,
       },
       {
         kind: "link",
-        label: "Welches Paket passt? — Quiz",
-        description: "Fünf Fragen, eine ehrliche Empfehlung",
+        label: "Paket-Empfehlung",
+        description: "Fünf Fragen, danach eine Empfehlung mit Begründung",
         href: "/empfehlung",
-        icon: Sparkles,
+        icon: ListChecks,
       },
       {
         kind: "link",
         label: "Kostenlosen Audit anfordern",
-        description: "Drei Punkte zu Ihrer Seite, in 48 h",
+        description: "Drei bis fünf Punkte zu Ihrer Seite per E-Mail, in 48 h",
         href: "/audit",
         icon: Eye,
       },
       {
         kind: "link",
-        label: "Speed-Check live",
-        description: "Lighthouse-Scores in 30 Sekunden",
+        label: "Speed-Check",
+        description: "Ladezeit messen mit Google PageSpeed, 15 bis 30 Sekunden",
         href: "/check",
         icon: Zap,
       },
@@ -187,21 +193,21 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Pakete & Preise",
-        description: "Vier Stufen, ab 499 €",
+        description: "Starter ab 499 €, dazu ab 49 € im Monat",
         href: "/pakete",
         icon: Package,
       },
       {
         kind: "link",
         label: "Honorar",
-        description: "Open-Book — Stundensatz, Aufwand pro Paket.",
+        description: "Stundensatz und Aufwand je Paket, offen vorgerechnet",
         href: "/honorar",
         icon: Package,
       },
       {
         kind: "link",
         label: "3-Jahres-Rechner",
-        description: "Was kostet's wirklich? Mit Eigenzeit.",
+        description: "Kosten über drei Jahre, mit Ihrer eigenen Zeit gerechnet",
         href: "/rechner",
         icon: Package,
       },
@@ -215,84 +221,84 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Erreichbarkeit",
-        description: "Wann wir antworten — offen, mit Grenzen",
+        description: "Wann wir ans Telefon gehen und Mails beantworten",
         href: "/erreichbarkeit",
         icon: Clock,
       },
       {
         kind: "link",
         label: "Vergleich",
-        description: "Sitalo, Wix, Squarespace, Jimdo, KI-Eigenbau",
+        description: "Wix, Squarespace, Jimdo und Eigenbau im Vergleich",
         href: "/vergleich",
         icon: Scale,
       },
       {
         kind: "link",
         label: "Branchen",
-        description: "10 Branchen, jede Seite individuell",
+        description: "Was wir je Branche anders bauen",
         href: "/branchen",
         icon: FileText,
       },
       {
         kind: "link",
         label: "Standorte",
-        description: "8 Hamburger Stadtteile",
+        description: "Webdesign in Hamburger Stadtteilen",
         href: "/standorte",
         icon: MapPin,
       },
       {
         kind: "link",
         label: "Das Atelier",
-        description: "Wer wir sind, was wir glauben",
+        description: "Wer hinter Sitalo steht und wie wir arbeiten",
         href: "/atelier",
         icon: FileText,
       },
       {
         kind: "link",
         label: "Jetzt",
-        description: "Was im Atelier gerade passiert — Now-Page",
+        description: "Woran wir gerade arbeiten",
         href: "/jetzt",
         icon: BookOpen,
       },
       {
         kind: "link",
         label: "Ablauf",
-        description: "Sechs Schritte zur Live-Seite",
+        description: "Vom ersten Anruf bis zur fertigen Seite",
         href: "/ablauf",
         icon: FileText,
       },
       {
         kind: "link",
         label: "Manifest",
-        description: "Acht Sätze. Was wir tun, was wir nicht tun.",
+        description: "Wie wir Websites bauen, in kurzen Sätzen",
         href: "/manifest",
         icon: BookOpen,
       },
       {
         kind: "link",
         label: "Inventar",
-        description: "Was wir verwenden — und bewusst nicht.",
+        description: "Werkzeuge und Dienste, die wir verwenden",
         href: "/inventar",
         icon: BookOpen,
       },
       {
         kind: "link",
         label: "Lexikon",
-        description: "Webbegriffe in Klartext, ohne Einschüchterung",
+        description: "Webbegriffe in Klartext erklärt",
         href: "/lexikon",
         icon: BookOpen,
       },
       {
         kind: "link",
         label: "Auswahl",
-        description: "Wer zu uns kommt — und wer nicht.",
+        description: "Für wen wir bauen und wann wir absagen",
         href: "/auswahl",
         icon: BookOpen,
       },
       {
         kind: "link",
         label: "Journal",
-        description: "Beobachtungen aus dem Atelier",
+        description: "Artikel über Websites für kleine Betriebe",
         href: "/journal",
         icon: BookOpen,
       },
@@ -306,7 +312,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Kontakt",
-        description: "Alle Wege auf einer Seite",
+        description: "Telefon, E-Mail und Formular",
         href: "/kontakt",
         icon: Mail,
       },
@@ -347,7 +353,7 @@ export function CommandPalette({
 
     if (!query.trim()) {
       return [
-        { label: "Sofort", items: direct },
+        { label: "Direkt", items: direct },
         { label: "Seiten", items: pages },
         { label: "Pakete", items: pakete },
         { label: "Branchen", items: branchen.slice(0, 5) },
@@ -389,7 +395,7 @@ export function CommandPalette({
       .slice(0, 5);
 
     return [
-      { label: "Sofort", items: direct.filter(match) },
+      { label: "Direkt", items: direct.filter(match) },
       { label: "Seiten", items: pages.filter(match) },
       { label: "Pakete", items: pakete.filter(match) },
       { label: "Branchen", items: branchen.filter(match) },
@@ -435,16 +441,16 @@ export function CommandPalette({
       {/* Backdrop */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+        className="bg-foreground/60 absolute inset-0"
       />
 
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-card border-border/60 ring-foreground/5 relative w-full max-w-xl overflow-hidden rounded-2xl border shadow-[0_30px_80px_-20px_rgb(0_0_0/0.3)] ring-1"
+        className="bg-card border-foreground/20 relative w-full max-w-xl overflow-hidden rounded-[3px] border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]"
       >
         {/* Input + Hinweis-Kürzel */}
-        <div className="border-border/60 flex items-center gap-3 border-b px-4 py-3">
-          <Sparkles className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
+        <div className="border-border flex items-center gap-3 border-b px-4 py-3.5">
+          <Search className="text-muted-foreground h-4 w-4 shrink-0" aria-hidden="true" />
           <input
             ref={inputRef}
             type="text"
@@ -454,10 +460,11 @@ export function CommandPalette({
               setActiveIndex(0);
             }}
             onKeyDown={onKeyDown}
-            placeholder="Suchen oder springen… (Branche, Stadtteil, Anfrage …)"
-            className="text-foreground placeholder:text-muted-foreground/70 flex-1 bg-transparent text-[15px] outline-none"
+            aria-label="Seite oder Begriff suchen"
+            placeholder="Seite, Branche oder Begriff suchen"
+            className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-[16px] outline-none"
           />
-          <kbd className="border-border/70 text-muted-foreground hidden rounded-md border px-1.5 py-0.5 font-mono text-[10px] sm:inline-block">
+          <kbd className="border-border text-muted-foreground hidden rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px] sm:inline-block">
             Esc
           </kbd>
         </div>
@@ -465,23 +472,23 @@ export function CommandPalette({
         {/* Results */}
         <div className="max-h-[60vh] overflow-y-auto py-2">
           {flat.length === 0 ? (
-            <div className="text-muted-foreground px-4 py-8 text-center text-sm">
-              Nichts gefunden — vielleicht direkt{" "}
+            <div className="text-muted-foreground px-4 py-8 text-center text-[14.5px]">
+              Dazu haben wir nichts gefunden. Schreiben Sie uns eine{" "}
               <Link
                 href="/anfrage"
                 className="text-foreground underline underline-offset-4"
                 onClick={() => setOpen(false)}
               >
-                anfragen
+                Anfrage
               </Link>
-              ?
+              .
             </div>
           ) : (
             (() => {
               let idx = -1;
               return groups.map((g) => (
                 <div key={g.label} className="mb-2">
-                  <p className="text-muted-foreground/80 px-4 pt-3 pb-1 text-[13px]">
+                  <p className="label-mono text-muted-foreground px-4 pt-3 pb-1.5">
                     {g.label}
                   </p>
                   <ul>
@@ -510,21 +517,21 @@ export function CommandPalette({
         </div>
 
         {/* Footer Hint */}
-        <div className="border-border/60 text-muted-foreground/80 flex items-center justify-between gap-2 border-t px-4 py-2.5 text-[13px]">
+        <div className="border-border text-muted-foreground flex items-center justify-between gap-2 border-t px-4 py-2.5 text-[13px]">
           <span className="inline-flex items-center gap-2">
-            <kbd className="border-border/70 rounded-md border px-1.5 py-0.5 normal-case">
+            <kbd className="border-border rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px]">
               ↑↓
             </kbd>
-            navigieren
+            auswählen
           </span>
           <span className="inline-flex items-center gap-2">
-            <kbd className="border-border/70 rounded-md border px-1.5 py-0.5 normal-case">
+            <kbd className="border-border rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px]">
               ↵
             </kbd>
             öffnen
           </span>
-          <span className="hidden sm:inline-flex items-center gap-2">
-            <kbd className="border-border/70 rounded-md border px-1.5 py-0.5 normal-case">
+          <span className="hidden items-center gap-2 sm:inline-flex">
+            <kbd className="border-border rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px]">
               ⌘K
             </kbd>
             schließen
@@ -548,10 +555,10 @@ function CommandItem({
   onHover: () => void;
   onSelect: () => void;
 }) {
-  const className = `flex items-center gap-3 px-4 py-2.5 transition-colors ${
+  const className = `relative flex items-center gap-3 px-4 py-2.5 transition-colors ${
     active
-      ? "bg-accent/60 text-foreground"
-      : "text-foreground/85 hover:bg-accent/40"
+      ? "bg-foreground/[0.06] text-foreground before:bg-gold before:absolute before:inset-y-0 before:left-0 before:w-[3px]"
+      : "text-foreground/85 hover:bg-foreground/[0.03]"
   }`;
 
   const content = (
@@ -563,10 +570,10 @@ function CommandItem({
         aria-hidden="true"
       />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[14.5px] font-medium tracking-tight">
+        <p className="truncate text-[15px] font-semibold">
           {item.label}
         </p>
-        <p className="text-muted-foreground truncate text-[12.5px]">
+        <p className="text-muted-foreground truncate text-[13px]">
           {item.description}
         </p>
       </div>

@@ -5,7 +5,6 @@ import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +17,7 @@ import { track } from "@/lib/track";
  * Vier Felder: URL (Pflicht), Name (Pflicht), E-Mail (Pflicht),
  * Hinweis (optional) + Consent. Bewusst kürzer als das Haupt-
  * Anfrageformular, weil hier nur ein einzelner Mehrwert versprochen
- * wird (ehrlicher Audit innerhalb 48 h), nicht ein ganzes Projekt.
+ * wird (Audit innerhalb 48 h), nicht ein ganzes Projekt.
  *
  * Versand über /api/anfrage (siehe lib/lead-mail.ts), eigener
  * Betreff „Audit-Anfrage …" zum Filtern im Postfach.
@@ -39,6 +38,9 @@ type Status =
   | { kind: "submitting" }
   | { kind: "success" }
   | { kind: "error"; message: string };
+
+const FIELD = "mt-2.5 h-12 rounded-[2px] text-[16px] shadow-none";
+const LABEL = "text-foreground text-[15px] font-semibold";
 
 export function AuditForm() {
   const [data, setData] = useState<FormData>({
@@ -103,55 +105,51 @@ export function AuditForm() {
 
   if (status.kind === "success") {
     return (
-      <div className="border-border/60 bg-card/60 ring-foreground/5 rounded-2xl border p-8 ring-1 sm:p-10">
-        <div className="flex items-start gap-4">
+      <div
+        role="status"
+        className="bg-card border-border rounded-[3px] border"
+      >
+        <div className="flex items-start gap-4 p-6 sm:p-8">
           <span
             aria-hidden="true"
-            className="bg-gold/15 text-foreground inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+            className="bg-ink-petrol text-background inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[2px]"
           >
             <Check className="h-5 w-5" />
           </span>
-          <div>
-            <p className="serif text-foreground text-balance text-2xl leading-snug tracking-[-0.01em] sm:text-3xl">
-              Wir gucken uns das an.
+          <div className="min-w-0">
+            <p className="serif text-foreground text-balance text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]">
+              Die Adresse ist bei uns angekommen.
             </p>
-            <p className="text-muted-foreground mt-3 max-w-xl text-pretty text-[15px] leading-relaxed">
-              Innerhalb von 48 Stunden bekommen Sie eine persönliche
-              E-Mail — drei bis fünf konkrete Punkte, was an Ihrer
-              Seite gut läuft und was wir an Ihrer Stelle als Erstes
-              anfassen würden. Meist schneller.{" "}
+            <p className="text-muted-foreground mt-4 max-w-xl text-pretty text-[15px] leading-relaxed">
+              Innerhalb von 48 Stunden bekommen Sie eine E-Mail mit drei bis
+              fünf Punkten: was an Ihrer Seite funktioniert und was wir zuerst
+              ändern würden. Oft geht es schneller. Wann wir antworten, steht
+              unter{" "}
               <Link
                 href="/erreichbarkeit"
-                className="text-foreground underline-offset-4 hover:underline"
+                className="text-foreground underline underline-offset-4"
               >
-                Antwortzeit-Fenster
+                Erreichbarkeit
               </Link>
               .
             </p>
           </div>
         </div>
-        <div className="border-border/40 mt-8 border-t pt-6">
-          <p className="text-muted-foreground text-[13px] font-medium">
-            Während Sie warten
+        <div className="border-border border-t px-6 py-6 sm:px-8">
+          <p className="text-foreground/85 max-w-xl text-pretty text-[14.5px] leading-relaxed">
+            Wenn Sie vorher sprechen möchten, buchen Sie ein Erstgespräch. Wie
+            unsere Preise zustande kommen, steht auf der Honorar-Seite.
           </p>
-          <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[14.5px] leading-relaxed">
-            Sie können sich darauf einstellen — oder das Honorar-Notizbuch
-            lesen, falls Sie wissen wollen, wie unsere Preise zustande
-            kommen.
-          </p>
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <Link
-              href="/termin"
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight transition-all"
-            >
-              30-Min-Termin vereinbaren
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link href="/termin" className="btn-signal h-12 text-[15px]">
+              Termin wählen
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link
               href="/honorar"
-              className="text-foreground inline-flex h-11 items-center text-[14px] font-medium underline-offset-[6px] hover:underline"
+              className="text-foreground text-[15px] font-semibold underline-offset-4 hover:underline"
             >
-              Honorar offen lesen
+              Honorar lesen
             </Link>
           </div>
         </div>
@@ -163,129 +161,132 @@ export function AuditForm() {
     <form
       onSubmit={submit}
       noValidate
-      className="border-border/60 bg-card/60 ring-foreground/5 space-y-5 rounded-2xl border p-6 ring-1 sm:p-8"
+      className="bg-card border-border rounded-[3px] border"
     >
-      <div>
-        <Label htmlFor="audit-url" className="text-foreground text-sm">
-          Ihre aktuelle Website
-        </Label>
-        <Input
-          id="audit-url"
-          type="text"
-          inputMode="url"
-          autoComplete="url"
-          placeholder="z. B. cafe-nordlicht.de"
-          value={data.websiteUrl}
-          onChange={(e) => setData({ ...data, websiteUrl: e.target.value })}
-          className="mt-2"
-          required
-        />
-        <p className="text-muted-foreground mt-1.5 text-[12.5px]">
-          Mit oder ohne https:// — wir richten das.
-        </p>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="space-y-6 p-5 sm:p-8">
         <div>
-          <Label htmlFor="audit-name" className="text-foreground text-sm">
-            Ihr Name
+          <Label htmlFor="audit-url" className={LABEL}>
+            Ihre Website
           </Label>
           <Input
-            id="audit-name"
+            id="audit-url"
             type="text"
-            autoComplete="name"
-            placeholder="Max Mustermann"
-            value={data.name}
-            onChange={(e) => setData({ ...data, name: e.target.value })}
-            className="mt-2"
+            inputMode="url"
+            autoComplete="url"
+            placeholder="z. B. cafe-nordlicht.de"
+            value={data.websiteUrl}
+            onChange={(e) => setData({ ...data, websiteUrl: e.target.value })}
+            className={FIELD}
             required
           />
+          <p className="text-muted-foreground mt-2 text-[13px]">
+            Mit oder ohne https://, beides geht.
+          </p>
         </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 sm:gap-5">
+          <div className="min-w-0">
+            <Label htmlFor="audit-name" className={LABEL}>
+              Ihr Name
+            </Label>
+            <Input
+              id="audit-name"
+              type="text"
+              autoComplete="name"
+              placeholder="Vor- und Nachname"
+              value={data.name}
+              onChange={(e) => setData({ ...data, name: e.target.value })}
+              className={FIELD}
+              required
+            />
+          </div>
+          <div className="min-w-0">
+            <Label htmlFor="audit-email" className={LABEL}>
+              E-Mail
+            </Label>
+            <Input
+              id="audit-email"
+              type="email"
+              autoComplete="email"
+              placeholder="ihre@adresse.de"
+              value={data.email}
+              onChange={(e) => setData({ ...data, email: e.target.value })}
+              className={FIELD}
+              required
+            />
+          </div>
+        </div>
+
         <div>
-          <Label htmlFor="audit-email" className="text-foreground text-sm">
-            E-Mail
+          <Label htmlFor="audit-note" className={LABEL}>
+            Worauf sollen wir achten?{" "}
+            <span className="text-muted-foreground font-normal">(optional)</span>
           </Label>
-          <Input
-            id="audit-email"
-            type="email"
-            autoComplete="email"
-            placeholder="max@cafe-nordlicht.de"
-            value={data.email}
-            onChange={(e) => setData({ ...data, email: e.target.value })}
-            className="mt-2"
-            required
+          <Textarea
+            id="audit-note"
+            rows={3}
+            placeholder="z. B. „Die Speisekarte ist veraltet“ oder „Am Handy fehlt die Telefonnummer“."
+            value={data.note}
+            onChange={(e) => setData({ ...data, note: e.target.value })}
+            className="mt-2.5 rounded-[2px] text-[16px] shadow-none sm:text-[15px]"
           />
         </div>
-      </div>
 
-      <div>
-        <Label htmlFor="audit-note" className="text-foreground text-sm">
-          Worauf sollen wir besonders gucken? (optional)
-        </Label>
-        <Textarea
-          id="audit-note"
-          rows={3}
-          placeholder="z. B. ‚Die Speisekarte ist veraltet' oder ‚Telefon wird auf Mobil nicht angezeigt'."
-          value={data.note}
-          onChange={(e) => setData({ ...data, note: e.target.value })}
-          className="mt-2"
-        />
-      </div>
+        {/* Honeypot — visuell unsichtbar für Menschen, fängt Bots ab. */}
+        <div className="hidden" aria-hidden="true">
+          <label>
+            Website
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={data.honeypot}
+              onChange={(e) => setData({ ...data, honeypot: e.target.value })}
+            />
+          </label>
+        </div>
 
-      {/* Honeypot — visuell unsichtbar für Menschen, fängt Bots ab. */}
-      <div className="hidden" aria-hidden="true">
-        <label>
-          Website
+        <label className="flex items-start gap-3 text-[13.5px] leading-relaxed">
           <input
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            value={data.honeypot}
-            onChange={(e) => setData({ ...data, honeypot: e.target.value })}
+            type="checkbox"
+            checked={data.consent}
+            onChange={(e) => setData({ ...data, consent: e.target.checked })}
+            className="border-border accent-foreground mt-1 h-4 w-4 shrink-0 rounded-[2px] border"
+            required
           />
+          <span className="text-foreground/80">
+            Ich bin damit einverstanden, dass meine Angaben für die
+            Bearbeitung der Audit-Anfrage gespeichert werden. Details in
+            der{" "}
+            <a
+              href="/datenschutz"
+              className="text-foreground underline underline-offset-4"
+            >
+              Datenschutzerklärung
+            </a>
+            .
+          </span>
         </label>
+
+        {status.kind === "error" && (
+          <Alert variant="destructive" className="rounded-[3px]">
+            <AlertDescription>{status.message}</AlertDescription>
+          </Alert>
+        )}
       </div>
 
-      <label className="flex items-start gap-3 text-[13.5px] leading-relaxed">
-        <input
-          type="checkbox"
-          checked={data.consent}
-          onChange={(e) => setData({ ...data, consent: e.target.checked })}
-          className="border-border accent-foreground mt-1 h-4 w-4 rounded border"
-          required
-        />
-        <span className="text-foreground/80">
-          Ich bin damit einverstanden, dass meine Angaben für die
-          Bearbeitung der Audit-Anfrage gespeichert werden. Details in
-          der{" "}
-          <a
-            href="/datenschutz"
-            className="text-foreground underline underline-offset-4"
-          >
-            Datenschutzerklärung
-          </a>
-          .
-        </span>
-      </label>
-
-      {status.kind === "error" && (
-        <Alert variant="destructive">
-          <AlertDescription>{status.message}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-4">
-        <Button
+      <div className="border-border flex flex-col items-stretch gap-3 border-t px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8">
+        <p className="text-muted-foreground text-[13.5px]">
+          Kostenlos. Die Antwort kommt per E-Mail.
+        </p>
+        <button
           type="submit"
           disabled={!canSubmit}
-          className="bg-foreground text-background hover:bg-foreground/90 group h-12 rounded-full px-6 text-[15px] font-medium tracking-tight"
+          className="btn-signal h-12 shrink-0 text-[15px]"
         >
           {status.kind === "submitting" ? "Wird gesendet…" : "Audit anfordern"}
-          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-        </Button>
-        <p className="text-muted-foreground text-[12.5px]">
-          Kostenlos, einmalig, ohne Vertriebs-Anruf danach.
-        </p>
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </button>
       </div>
     </form>
   );

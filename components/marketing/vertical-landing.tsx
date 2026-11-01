@@ -9,11 +9,12 @@ import type { VertikalLanding } from "@/lib/vertikal-landings";
  * VerticalLanding: Renderer für die Branchen-Landingpages (/pflege,
  * /praxen). Bewusst anders gebaut als /branchen/[slug]:
  *   - Kopf mit Steckbrief (Paket, Preis, Dauer) statt Bild
- *   - typische Probleme als drei Zeitungsspalten
+ *   - typische Probleme als Zeitungsseite: Aufmacher und Spalte
  *   - Bauteile als Verzeichnis mit Haarlinien
  *   - Ablauf als Linie mit drei Halten (echte Reihenfolge)
  *   - Fragen offen gesetzt, Frage links, Antwort rechts
- *   - Abschluss mit Telefonnummer statt Fragesatz
+ *   - Abschluss als Briefkarte (siehe unten, auch von /branchen und
+ *     /standorte genutzt)
  */
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
@@ -37,7 +38,10 @@ export function VerticalLanding({
       <Bauteile data={data} />
       <Process data={data} wochen={wochen} />
       {faq && faq.length > 0 ? <Faq faq={faq} /> : null}
-      <Closer data={data} inquiryHref={inquiryHref} />
+      <Briefkarte title={joinLine(data.schlussZitat, data.schlussZitatItalic)} inquiryHref={inquiryHref}>
+        Für ein erstes Gespräch reicht meist eine Viertelstunde am Telefon. Danach kennen Sie den Festpreis und den
+        Termin, an dem die Seite online geht.
+      </Briefkarte>
     </>
   );
 }
@@ -103,23 +107,42 @@ function Hero({
   );
 }
 
+/**
+ * Typische Probleme wie eine Zeitungsseite gesetzt: das wichtigste als
+ * Aufmacher links, die übrigen als Spalte rechts, getrennt durch eine
+ * Spaltenlinie. So stehen nicht drei gleiche Kästen nebeneinander.
+ */
 function Pains({ data }: { data: VertikalLanding }) {
+  const [lead, ...rest] = data.pains;
+  if (!lead) return null;
   return (
     <section className="border-border border-b">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <h2 className="max-w-3xl text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
           Woran es meistens hakt
         </h2>
-        <ul className="mt-12 grid gap-10 sm:mt-16 md:grid-cols-3 md:gap-8">
-          {data.pains.map((pain) => (
-            <li key={pain.headline} className="border-foreground border-t-2 pt-5">
-              <h3 className="text-balance text-[20px] leading-snug tracking-[-0.015em] sm:text-[21px]">
-                {pain.headline}
-              </h3>
-              <p className="text-muted-foreground mt-3 text-pretty text-[15.5px] leading-relaxed">{pain.body}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="border-foreground mt-12 grid border-t-2 sm:mt-16 lg:grid-cols-12">
+          <article className="pt-6 pb-8 lg:col-span-7 lg:pr-10 lg:pb-2">
+            <h3 className="max-w-xl text-balance text-[26px] leading-[1.06] tracking-[-0.028em] sm:text-[36px] lg:text-[40px]">
+              {lead.headline}
+            </h3>
+            <p className="text-muted-foreground mt-5 max-w-lg text-pretty text-[16.5px] leading-relaxed sm:text-[18px]">
+              {lead.body}
+            </p>
+          </article>
+          {rest.length > 0 ? (
+            <div className="divide-border border-border divide-y border-t lg:col-span-5 lg:border-t-0 lg:border-l lg:pl-10">
+              {rest.map((pain) => (
+                <article key={pain.headline} className="py-6">
+                  <h3 className="text-balance text-[19px] leading-snug tracking-[-0.015em] sm:text-[20px]">
+                    {pain.headline}
+                  </h3>
+                  <p className="text-muted-foreground mt-2.5 text-pretty text-[15.5px] leading-relaxed">{pain.body}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   );
@@ -128,7 +151,7 @@ function Pains({ data }: { data: VertikalLanding }) {
 function Bauteile({ data }: { data: VertikalLanding }) {
   return (
     <section className="bg-card border-border border-b">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
           <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
             Was auf die Seite kommt
@@ -156,13 +179,14 @@ function Bauteile({ data }: { data: VertikalLanding }) {
 function Process({ data, wochen }: { data: VertikalLanding; wochen: string }) {
   return (
     <section className="grain bg-foreground text-background">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
           <h2 className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7">
             In {wochen} Wochen online
           </h2>
           <p className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
-            Den Tag, an dem die Seite online geht, legen wir im ersten Gespräch fest.
+            Gezählt ab dem ersten Gespräch. Wie schnell es danach geht, hängt vor allem davon ab, wann Fotos und
+            Stichpunkte bei uns sind.
           </p>
         </div>
         <ol className="border-background/25 mt-14 grid gap-10 border-l pl-7 sm:mt-20 md:grid-cols-3 md:gap-8 md:border-t md:border-l-0 md:pl-0">
@@ -185,7 +209,7 @@ function Process({ data, wochen }: { data: VertikalLanding; wochen: string }) {
 function Faq({ faq }: { faq: { q: string; a: string }[] }) {
   return (
     <section className="border-border border-b">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
           Fragen vor dem Auftrag
         </h2>
@@ -207,39 +231,76 @@ function Faq({ faq }: { faq: { q: string; a: string }[] }) {
   );
 }
 
-function Closer({ data, inquiryHref }: { data: VertikalLanding; inquiryHref: string }) {
+/**
+ * Briefkarte: gemeinsamer Abschluss der Branchen- und Stadtteilseiten.
+ * Aufgebaut wie eine Karte aus dem Kontor: Briefkopf mit Absender und
+ * Ort, links eine sachliche Aussage zur Seite, rechts die Kontaktwege
+ * wie Adresszeilen. Die Telefonnummer steht groß in Tabellenziffern,
+ * kein Fragesatz.
+ */
+export function Briefkarte({
+  title,
+  children,
+  inquiryHref = "/anfrage",
+}: {
+  /** Aussage der Seite, ein normaler Satz. */
+  title: string;
+  /** Ein, zwei Sätze darunter. */
+  children?: React.ReactNode;
+  inquiryHref?: string;
+}) {
   return (
-    <section className="bg-card border-foreground border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <h2 className="text-balance text-[2.2rem] leading-[1.02] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
-          {joinLine(data.schlussZitat, data.schlussZitatItalic)}
-        </h2>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="label-mono text-muted-foreground">Telefon</p>
-          <a
-            href="tel:+491607621876"
-            className="hover:text-gold-ink mt-2 inline-block text-[2.1rem] leading-none tracking-[-0.03em] whitespace-nowrap tabular-nums transition-colors sm:text-[2.5rem]"
-            style={{ fontStretch: "115%", fontWeight: 760 }}
-          >
-            0160 7621876
-          </a>
-          <p className="text-muted-foreground mt-4 text-[15.5px] leading-relaxed">
-            Wir antworten meist am selben Werktag. Schriftlich geht es an{" "}
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="text-foreground decoration-gold underline decoration-[1.5px] underline-offset-4"
-            >
-              {CONTACT_EMAIL}
-            </a>
-            .
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
-              Anfrage schreiben {ARROW}
-            </Link>
-            <Link href="/termin" className="btn-line grow sm:grow-0">
-              Gesprächstermin buchen
-            </Link>
+    <section className="border-border border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <div className="bg-card border-foreground border">
+          <div className="border-border label-mono text-muted-foreground flex items-center justify-between gap-4 border-b px-5 py-3 sm:px-8">
+            <span>Sitalo Webdesign</span>
+            <span>Hamburg</span>
+          </div>
+          <div className="grid lg:grid-cols-12">
+            <div className="flex flex-col justify-between gap-8 px-5 py-9 sm:px-8 sm:py-12 lg:col-span-7 lg:pr-12">
+              <h2 className="max-w-2xl text-balance text-[1.9rem] leading-[1.04] tracking-[-0.03em] sm:text-[2.6rem] lg:text-[2.85rem]">
+                {title}
+              </h2>
+              {children ? (
+                <p className="text-muted-foreground max-w-lg text-pretty text-[16.5px] leading-relaxed">{children}</p>
+              ) : null}
+            </div>
+            <div className="border-border border-t px-5 py-9 sm:px-8 sm:py-12 lg:col-span-5 lg:border-t-0 lg:border-l">
+              <p className="label-mono text-muted-foreground">Telefon</p>
+              <a
+                href="tel:+491607621876"
+                className="hover:text-gold mt-3 inline-block text-[2.1rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.6rem]"
+                style={{ fontStretch: "118%", fontWeight: 780 }}
+              >
+                0160 7621876
+              </a>
+              <dl className="border-border mt-7 border-t text-[15px]">
+                <div className="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-b py-2.5">
+                  <dt className="text-muted-foreground">E-Mail</dt>
+                  <dd>
+                    <a
+                      href={`mailto:${CONTACT_EMAIL}`}
+                      className="font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
+                    >
+                      {CONTACT_EMAIL}
+                    </a>
+                  </dd>
+                </div>
+                <div className="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-b py-2.5">
+                  <dt className="text-muted-foreground">Antwort</dt>
+                  <dd>meist am selben Werktag</dd>
+                </div>
+              </dl>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
+                  Anfrage schreiben {ARROW}
+                </Link>
+                <Link href="/termin" className="btn-line grow sm:grow-0">
+                  Termin buchen
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

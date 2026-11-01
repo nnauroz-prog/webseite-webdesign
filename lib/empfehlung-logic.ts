@@ -3,11 +3,10 @@
  *
  * Bewusst transparent gehalten — die Regeln sind sichtbar im Code,
  * keine Black-Box. Jede Antwort verteilt Punkte auf die drei Pakete.
- * Höchste Summe gewinnt; bei Gleichstand schlägt das mittlere Paket
- * (Business), weil das in 70 % der Fälle die ehrliche Wahl ist.
+ * Höchste Summe gewinnt; bei Gleichstand gewinnt Business, weil wir
+ * es den meisten lokalen Betrieben empfehlen.
  *
- * Die Begründung wird live aus den getroffenen Antworten gebaut,
- * nicht aus einer Template-Bibliothek — fühlt sich konkret an.
+ * Die Begründung wird aus den getroffenen Antworten zusammengesetzt.
  */
 
 import { getPaketBySlug } from "@/lib/pakete-data";
@@ -73,23 +72,23 @@ export const GROESSE_OPTIONS: { slug: GroesseSlug; label: string; detail: string
 
 export const MATERIAL_OPTIONS: { slug: MaterialSlug; label: string; detail: string }[] = [
   { slug: "logo", label: "Logo", detail: "Datei oder gedrucktes Vorbild" },
-  { slug: "texte", label: "Texte", detail: "Über-uns, Leistungen, sonst was" },
+  { slug: "texte", label: "Texte", detail: "Über uns, Leistungen oder Stichpunkte" },
   { slug: "bilder", label: "Bilder", detail: "Räumlichkeit, Team, Produkte" },
-  { slug: "nichts", label: "Nichts davon", detail: "Wir helfen bei allem" },
+  { slug: "nichts", label: "Nichts davon", detail: "Dann fangen wir bei null an" },
 ];
 
 export const ZEIT_OPTIONS: { slug: ZeitSlug; label: string; detail: string }[] = [
-  { slug: "asap", label: "So schnell wie möglich", detail: "Diese Woche oder nächste" },
+  { slug: "asap", label: "So schnell wie möglich", detail: "Diese oder nächste Woche" },
   { slug: "2wochen", label: "Innerhalb 2 Wochen", detail: "Es brennt nicht, aber bald" },
   { slug: "1monat", label: "Innerhalb 1 Monat", detail: "Planbar" },
-  { slug: "offen", label: "Noch offen", detail: "Wir gucken mal" },
+  { slug: "offen", label: "Noch offen", detail: "Kein fester Termin" },
 ];
 
 export const SITE_OPTIONS: { slug: SiteSlug; label: string; detail: string }[] = [
   { slug: "neu", label: "Nein, ganz neu", detail: "Erste Website überhaupt" },
   { slug: "schlecht", label: "Ja, läuft schlecht", detail: "Veraltet, zu langsam, kaputt" },
   { slug: "ok", label: "Ja, läuft OK", detail: "Funktioniert, aber nicht mehr zeitgemäß" },
-  { slug: "neustart", label: "Will komplett neu starten", detail: "Brand-Refresh, neuer Auftritt" },
+  { slug: "neustart", label: "Ja, aber alles soll neu", detail: "Neues Erscheinungsbild, neue Texte" },
 ];
 
 const COMPLEX_BRANCHEN: Branche[] = [
@@ -139,13 +138,13 @@ export function empfehle(a: Answers): Empfehlung {
       score.business += 2;
       score.premium += 1;
       reasons.push(
-        `Ihre Branche braucht erfahrungsgemäß mehr als eine Onepage-Struktur — Vertrauen entscheidet, Inhalte müssen ordentlich gegliedert sein.`,
+        `In Ihrer Branche lesen Kunden meist mehrere Seiten, bevor sie anrufen. Leistungen, Team und Kontakt sollten deshalb getrennt stehen.`,
       );
     } else if (SIMPLE_BRANCHEN.includes(a.branche)) {
       score.starter += 2;
       score.business += 1;
       reasons.push(
-        `Für Ihre Branche reicht meist ein klarer Onepage-Auftritt — die wichtigsten Fragen Ihrer Kunden lassen sich gut auf einer Seite beantworten.`,
+        `In Ihrer Branche reicht oft eine einzelne Seite. Die wichtigsten Fragen Ihrer Kunden lassen sich dort beantworten.`,
       );
     } else {
       score.business += 1;
@@ -156,25 +155,25 @@ export function empfehle(a: Answers): Empfehlung {
   if (a.groesse === "einzel") {
     score.starter += 2;
     reasons.push(
-      `Als Solo-Selbstständig brauchen Sie keinen großen Auftritt, sondern einen ehrlichen.`,
+      `Wer allein arbeitet, kommt meist mit einer Seite aus: was Sie anbieten, wo Sie arbeiten und wie man Sie erreicht.`,
     );
   } else if (a.groesse === "klein") {
     score.starter += 1;
     score.business += 2;
     reasons.push(
-      `Mit einem kleinen Team gehört eine eigene „Team"-Sektion oder ein „Über uns" dazu — das passt in den Business-Rahmen.`,
+      `Mit einem kleinen Team gehört ein Bereich „Team“ oder „Über uns“ dazu. Dafür hat Business eigene Unterseiten.`,
     );
   } else if (a.groesse === "mittel") {
     score.business += 2;
     score.premium += 1;
     reasons.push(
-      `Bei mittleren Betrieben werden mehrseitige Strukturen sinnvoll — Leistungen, Team, Karriere, Standorte getrennt darstellbar.`,
+      `Bei Betrieben dieser Größe lohnen sich mehrere Seiten, etwa für Leistungen, Team, Stellen und Standorte.`,
     );
   } else if (a.groesse === "gross") {
     score.business += 1;
     score.premium += 3;
     reasons.push(
-      `Größere Betriebe brauchen verwaltbare Inhalte (Termine, Stellenangebote, Standorte) und einen Auftritt, der zur Unternehmensgröße passt.`,
+      `Bei einem größeren Team ändern sich Termine, Stellen und Standorte oft. Mit Premium pflegen Sie diese Bereiche selbst.`,
     );
   }
 
@@ -188,12 +187,12 @@ export function empfehle(a: Answers): Empfehlung {
   if (hatNichts) {
     score.starter += 1;
     reasons.push(
-      `Weil noch nichts vorbereitet ist, hilft ein klar abgegrenzter Einstiegs-Umfang — wir gehen Schritt für Schritt mit Ihnen durch, was wirklich nötig ist.`,
+      `Weil noch nichts vorbereitet ist, passt ein kleiner Umfang für den Anfang. Wir gehen mit Ihnen durch, was die Seite wirklich braucht.`,
     );
   } else if (hatAlles) {
     score.business += 1;
     reasons.push(
-      `Sie haben alle drei Grundsteine zusammen — wir können direkt bauen, ohne lange Vorlauf-Phase.`,
+      `Logo, Texte und Bilder liegen schon vor. Wir können also gleich mit dem Bau anfangen.`,
     );
   }
 
@@ -201,7 +200,7 @@ export function empfehle(a: Answers): Empfehlung {
   if (a.zeit === "asap") {
     score.starter += 1;
     reasons.push(
-      `Bei „so schnell wie möglich" ist ein eng abgegrenzter Umfang realistischer — wir kommen in 1–2 Werktagen live, statt auf Vollausstattung zu warten.`,
+      `Wenn es schnell gehen soll, hilft ein kleiner Umfang. Eine einzelne Seite ist oft in 1–2 Werktagen online.`,
     );
   }
 
@@ -226,7 +225,7 @@ export function empfehle(a: Answers): Empfehlung {
   // Zusatzhinweis aus Site-Status
   let zusatzHinweis: string | null = null;
   if (a.site === "schlecht" || a.site === "ok") {
-    zusatzHinweis = `Hinweis: Ihre bestehende Seite kann währenddessen auf unserem Wartung-Tarif laufen — sicher, schnell, mit kleinen Verbesserungen. Sie ist nicht alleingelassen, bis das Neue steht.`;
+    zusatzHinweis = `Bis die neue Seite fertig ist, können wir Ihre bestehende Seite über einen Wartungstarif betreuen. Dann laufen Updates und kleine Korrekturen weiter.`;
   }
 
   const meta = paketMeta(winner);
@@ -234,7 +233,7 @@ export function empfehle(a: Answers): Empfehlung {
     paket: winner,
     paketLabel: meta.label,
     preisLabel: meta.preis,
-    begruendung: reasons.length > 0 ? reasons : ["Unsere typische Empfehlung für diesen Profil-Mix."],
+    begruendung: reasons.length > 0 ? reasons : ["Business empfehlen wir den meisten lokalen Betrieben."],
     zusatzHinweis,
   };
 }

@@ -1,36 +1,41 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Send } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { PageHero } from "@/components/marketing/page-hero";
+import { LEXIKON } from "@/lib/lexikon-data";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Das Atelier — wer wir sind und warum wir das machen",
+  title: "Über Sitalo — ein kleines Büro für Webdesign in Hamburg",
   description:
-    "Eine kleine Hamburger Werkstatt für Websites. Was wir glauben, wie wir arbeiten, warum „drei Sachen reichen\" mehr ist als ein Slogan.",
+    "Sitalo ist ein kleines Büro für Webdesign in Hamburg: wie ein Auftrag bei uns abläuft, woran wir uns halten und was wir nicht machen.",
   alternates: { canonical: "/atelier" },
 };
 
+const CONTACT_EMAIL = "info@sitalo.de";
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
+
 /* ============================================================
- * Editorial Manifesto-/About-Seite. Bewusst keine Team-Fotos,
- * keine erfundenen Awards, keine Bio. Stattdessen: was wir glauben,
- * wie wir arbeiten, warum. Persönlich als Werkstatt-Stimme, nicht
- * als Einzelperson. Bringt das Vertrauen, das Besucher brauchen
- * bevor sie eine Anfrage abschicken.
+ * Über-uns-Seite als nüchterner Werkstattbericht: wie ein Auftrag
+ * abläuft, woran wir uns halten, was wir ablehnen, warum der Ort
+ * für die lokale Suche zählt. Bewusst ohne Team-Fotos, Awards und
+ * Bio; der Name des Inhabers steht nur im Impressum.
+ *
+ * Rhythmus: dunkler Kopf → Bericht mit Foto (hell) → Grundsätze als
+ * Fließtext (Karte) → Hamburg (dunkel) → Register der übrigen
+ * Seiten → Kontakt (dunkel). Jeder Abschnitt ist anders gebaut.
  * ============================================================ */
 export default function AtelierPage() {
   const aboutPageLd = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    name: "Das Atelier — Sitalo Webdesign",
+    name: "Über Sitalo Webdesign",
     description:
-      "Über das Sitalo-Atelier in Hamburg — Glaubenssätze, Arbeitsweise, warum Hamburg, welche Schriften und Werkzeuge.",
+      "Über Sitalo in Hamburg: wie ein Auftrag abläuft, woran wir uns halten und warum der Ort bei der lokalen Suche zählt.",
     url: `${SITE_URL}/atelier`,
     mainEntity: { "@id": `${SITE_URL}/#business` },
   };
@@ -51,20 +56,21 @@ export default function AtelierPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Das Atelier" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <Hero />
-        <Glaubenssaetze />
-        <WieWirArbeiten />
-        <WarumHamburg />
-        <Schriften />
-        <FinalCta />
+        <PageHero crumb="Atelier" eyebrow="Über Sitalo · Hamburg" title="Sitalo ist ein kleines Büro für Webdesign in Hamburg.">
+          Wer bei uns anruft, spricht mit jemandem, der die Seiten auch selbst baut. Damit das so bleibt, nehmen wir
+          höchstens drei neue Aufträge im Monat an.
+        </PageHero>
+        <Werkstattbericht />
+        <Grundsaetze />
+        <Hamburg />
+        <Register />
+        <Kontakt />
       </main>
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([aboutPageLd, breadcrumbLd]),
         }}
@@ -73,88 +79,159 @@ export default function AtelierPage() {
   );
 }
 
-function Hero() {
+/* ------------------------------------------------------------------
+ * Wie ein Auftrag läuft: Foto mit Bildunterschrift, daneben Fließtext.
+ * ---------------------------------------------------------------- */
+function Werkstattbericht() {
   return (
-    <section className="relative overflow-hidden">
-      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
-        <span />
-        <span />
-        <span />
+    <section>
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <figure className="lg:col-span-5">
+          <div className="border-border relative aspect-[4/3] w-full overflow-hidden rounded-[3px] border">
+            <Image
+              src="/images/workspace-macbook.webp"
+              alt="Blick von oben auf einen Schreibtisch: Hände auf einer Laptop-Tastatur, daneben ein Notizbuch mit Skizzen und eine Tasse Kaffee."
+              fill
+              priority
+              sizes="(min-width: 1024px) 460px, 100vw"
+              className="object-cover contrast-[1.05] grayscale"
+            />
+          </div>
+          <figcaption className="text-muted-foreground border-border mt-3 border-b pb-3 font-mono text-[12px] leading-relaxed">
+            Am Schreibtisch in Hamburg.
+          </figcaption>
+        </figure>
+
+        <div className="lg:col-span-6 lg:col-start-7">
+          <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+            So läuft ein Auftrag bei uns
+          </h2>
+          <div className="text-foreground/85 mt-6 space-y-5 text-[16.5px] leading-[1.7]">
+            <p>
+              Meist beginnt es mit einem Anruf. Wir fragen, was Ihr Betrieb macht und wer Ihre Kunden sind. Danach nennen
+              wir einen Festpreis, und den bekommen Sie schriftlich, bevor wir anfangen.
+            </p>
+            <p>
+              Von Ihnen brauchen wir Handyfotos und ein paar Stichpunkte. Die Texte formulieren wir daraus, Sie streichen,
+              was nicht stimmt. Kleine Seiten stehen oft nach ein bis zwei Werktagen auf einem Test-Link, den Sie in Ruhe
+              auf dem eigenen Handy ansehen.
+            </p>
+            <p>
+              Online geht die Seite erst, wenn Sie sie freigeben. Danach bleiben wir Ihr Ansprechpartner: Kleine Änderungen
+              schicken Sie uns per Mail, sie sind im Monatsbeitrag enthalten.
+            </p>
+          </div>
+          <Link
+            href="/ablauf"
+            className="mt-7 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+          >
+            Der Ablauf im Detail {ARROW}
+          </Link>
+        </div>
       </div>
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 pt-14 pb-12 sm:px-6 sm:pt-20 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
-        <div>
-          <EditorialEyebrow>Wer wir sind</EditorialEyebrow>
-          <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-            Sitalo ist{" "}
-            <span className="serif-italic text-muted-foreground font-normal">eine kleine Werkstatt.</span>
-          </h1>
-          <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-            Kein Konzern, kein Callcenter, kein Verkaufsteam. Ein Atelier in Hamburg, das Websites für
-            Betriebe baut, die ihr Handwerk gut können.
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Grundsätze als Fließtext in großer Schrift, daneben was wir ablehnen.
+ * ---------------------------------------------------------------- */
+function Grundsaetze() {
+  return (
+    <section className="bg-card border-foreground border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-8">
+          <h2 className="label-mono text-muted-foreground">Woran wir uns halten</h2>
+          <p
+            className="mt-6 text-balance text-[1.55rem] leading-[1.25] tracking-[-0.02em] sm:text-[2.1rem] sm:leading-[1.2]"
+            style={{ fontStretch: "108%", fontWeight: 640 }}
+          >
+            Lieber nächste Woche eine gute Seite als im Frühjahr eine perfekte. Einen Platz bei Google sagen wir nicht zu,
+            eine sauber gebaute Seite schon. Und die fertige Seite gehört Ihnen, mit Quellcode und allen Inhalten.
           </p>
         </div>
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-black/5">
-          <Image
-            src="/images/workspace-prints.webp"
-            alt="Sitalo-Atelier in Hamburg — Schreibtisch mit gerahmten Design-Drucken und MacBook."
-            fill
-            priority
-            sizes="(min-width: 1024px) 480px, 100vw"
-            className="object-cover"
-          />
+        <div className="border-border border-t pt-6 lg:col-span-3 lg:col-start-10 lg:border-t-0 lg:border-l lg:pt-1 lg:pl-8">
+          <h2 className="label-mono text-muted-foreground">Was wir nicht machen</h2>
+          <p className="mt-4 text-[16px] leading-relaxed">
+            Werbekampagnen und Newsletter. Dafür gibt es Leute, die das besser können, und an die verweisen wir Sie gern.
+          </p>
         </div>
       </div>
     </section>
   );
 }
 
-const GLAUBENSSATZE = [
-  { n: "01", title: "Eine Website ist Handwerk.", body: "Keine Vorlage, keine zwei Sitalo-Seiten sehen gleich aus." },
-  { n: "02", title: "Tempo vor Perfektion.", body: "Lieber bald eine gute Seite als in drei Monaten eine perfekte." },
-  { n: "03", title: "Lokal vor generisch.", body: "Wir bauen für die Suche Ihrer Kunden in Ihrer Gegend." },
-  { n: "04", title: "Persönlich vor Masse.", body: "Wenige Kunden gleichzeitig, und am Telefon ist ein Mensch." },
-  { n: "05", title: "Ehrlich vor Versprechen.", body: "Kein „Platz 1 bei Google“ — sondern eine sauber gebaute Seite." },
-];
-
-function Glaubenssaetze() {
+/* ------------------------------------------------------------------
+ * Hamburg: ein konkretes Detail aus der lokalen Suche statt Bekenntnis.
+ * ---------------------------------------------------------------- */
+function Hamburg() {
   return (
-    <section className="border-border/40 bg-secondary/30 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <SectionHead label="Grundsätze" title="Was wir glauben." />
-        <ol className={`mt-10 lg:mt-14 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 ${BODY_OFFSET}`}>
-          {GLAUBENSSATZE.map((g) => (
-            <li key={g.n} className="border-border/60 border-t pt-4">
-              <p className="text-gold text-[13px] font-semibold tabular-nums">{g.n}</p>
-              <p className="mt-1 text-[17px] font-semibold tracking-tight">{g.title}</p>
-              <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{g.body}</p>
-            </li>
-          ))}
-        </ol>
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.034em] sm:text-5xl lg:text-[3.4rem]">
+            Ottensen ist nicht Altona-Altstadt
+          </h2>
+          <div
+            aria-hidden="true"
+            className="border-background/25 text-background/85 mt-8 flex max-w-md items-center gap-3 rounded-[2px] border px-4 py-3 font-mono text-[14px]"
+          >
+            <Search className="text-stahl-hell h-4 w-4 shrink-0" />
+            <span className="truncate">physiotherapie ottensen</span>
+          </div>
+        </div>
+        <div className="text-stahl-hell space-y-4 text-[16.5px] leading-relaxed lg:col-span-4 lg:col-start-9">
+          <p>
+            Beide Stadtteile gehören zum Bezirk Altona. Wer aber „Physiotherapie Ottensen“ sucht, will nicht nach
+            Altona-Altstadt. Solche Unterschiede kennen wir, weil wir hier wohnen, und wir schreiben sie in Seitentitel und
+            Texte.
+          </p>
+          <p>
+            Für Betriebe außerhalb Hamburgs machen wir dasselbe mit Ihrem Ort. Besprochen wird dann am Telefon oder per
+            Video.
+          </p>
+        </div>
       </div>
     </section>
   );
 }
 
-const ARBEITSWEISE = [
-  { title: "Wenige Projekte gleichzeitig", body: "Genug, um mit jedem Kunden persönlich zu reden." },
-  { title: "Schnell ein Ergebnis", body: "Kleine Seiten stehen oft nach 1–2 Werktagen." },
-  { title: "Danach bleiben wir da", body: "Fester Ansprechpartner, kleine Änderungen im Monatsbeitrag." },
-  { title: "Was wir nicht machen", body: "Werbekampagnen und Newsletter — dafür empfehlen wir Kolleg:innen." },
+/* ------------------------------------------------------------------
+ * Register der übrigen Seiten, gesetzt wie ein Inhaltsverzeichnis.
+ * ---------------------------------------------------------------- */
+const SEITEN: { href: string; title: string; line: string }[] = [
+  { href: "/manifest", title: "Manifest", line: "Acht Sätze darüber, wie wir arbeiten." },
+  { href: "/auswahl", title: "Auswahl", line: "Welche Aufträge wir annehmen und wie wir das entscheiden." },
+  { href: "/inventar", title: "Inventar", line: "Womit wir bauen und wo wir hosten, jeweils mit Begründung." },
+  { href: "/erreichbarkeit", title: "Erreichbarkeit", line: "Wann wir antworten und was im Urlaub passiert." },
+  { href: "/honorar", title: "Honorar", line: "Unser Stundensatz und wie daraus die Paketpreise entstehen." },
+  { href: "/lexikon", title: "Lexikon", line: `${LEXIKON.length} Webbegriffe, in Alltagsdeutsch erklärt.` },
+  { href: "/journal", title: "Journal", line: "Längere Texte über Preise, Baukästen und die Suche bei Google." },
 ];
 
-function WieWirArbeiten() {
+function Register() {
   return (
-    <section className="border-border/40 border-t">
+    <section>
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <SectionHead label="Arbeitsweise" title="Wie wir arbeiten." />
-        <ul className={`mt-10 lg:mt-14 grid gap-x-8 gap-y-6 sm:grid-cols-2 ${BODY_OFFSET}`}>
-          {ARBEITSWEISE.map((a) => (
-            <li key={a.title} className="flex gap-3">
-              <Check className="text-gold mt-1 h-4 w-4 shrink-0" aria-hidden="true" />
-              <div>
-                <p className="text-[16px] font-semibold tracking-tight">{a.title}</p>
-                <p className="text-muted-foreground mt-0.5 text-[14.5px] leading-relaxed">{a.body}</p>
-              </div>
+        <h2 className="max-w-2xl text-balance text-[1.9rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.4rem]">
+          Was wir sonst noch aufgeschrieben haben
+        </h2>
+        <ul className="border-foreground mt-10 border-t">
+          {SEITEN.map((s) => (
+            <li key={s.href} className="border-border border-b">
+              <Link
+                href={s.href}
+                className="group grid gap-1 py-5 sm:grid-cols-12 sm:items-baseline sm:gap-6"
+              >
+                <span className="text-[1.3rem] font-semibold tracking-[-0.02em] underline-offset-4 group-hover:underline sm:col-span-3 sm:text-[1.45rem]">
+                  {s.title}
+                </span>
+                <span className="text-muted-foreground text-[15.5px] leading-relaxed sm:col-span-7">{s.line}</span>
+                <span className="text-muted-foreground group-hover:text-foreground hidden items-center justify-end gap-1.5 font-mono text-[12px] transition-colors sm:col-span-2 sm:flex">
+                  {s.href}
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </span>
+              </Link>
             </li>
           ))}
         </ul>
@@ -163,142 +240,38 @@ function WieWirArbeiten() {
   );
 }
 
-function WarumHamburg() {
+/* ------------------------------------------------------------------
+ * Kontakt: Telefonnummer groß, daneben Mail und Anfrage.
+ * ---------------------------------------------------------------- */
+function Kontakt() {
   return (
-    <section className="bg-foreground text-background relative overflow-hidden">
-      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-        <div>
-          <p className="text-background/55 text-[13px] font-medium">Warum Hamburg</p>
-          <p className="serif mt-5 text-balance text-3xl leading-[1.2] sm:text-4xl">
-            Hier wohnen und arbeiten wir.{" "}
-            <span className="serif-italic text-background/70">Und kennen die Stadtteile nicht aus dem Lehrbuch.</span>
-          </p>
-          <p className="text-background/75 mt-5 max-w-lg text-[15px] leading-relaxed">
-            Für Kunden außerhalb Hamburgs läuft alles genauso — per Telefon, Video und Mail.
-          </p>
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
+            Eine Viertelstunde am Telefon klärt das meiste.
+          </h2>
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
+          >
+            0160 7621876
+          </a>
         </div>
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-1 ring-white/10">
-          <Image
-            src="/images/hamburg-speicherstadt.webp"
-            alt="Hamburg Speicherstadt zur goldenen Stunde — historische Backsteinspeicher entlang der Kanäle."
-            fill
-            sizes="(min-width: 1024px) 400px, 100vw"
-            className="object-cover"
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Schriften des Ateliers — Quersteg zur Identitäts-Familie.
- * Manifest, Auswahl, Inventar, Lexikon, Journal: fünf Seiten,
- * die zusammen das Selbstverständnis tragen. Hier als ruhiges
- * Register, wie ein Schriftenverzeichnis am Ende eines Katalogs.
- */
-const SCHRIFTEN: { href: string; title: string; line: string }[] = [
-  {
-    href: "/manifest",
-    title: "Manifest",
-    line: "Acht Sätze. Was wir tun, was wir nicht tun.",
-  },
-  {
-    href: "/auswahl",
-    title: "Auswahl",
-    line: "Wer zu uns kommt — und wer nicht. Sechs Kriterien.",
-  },
-  {
-    href: "/inventar",
-    title: "Inventar",
-    line: "Werkzeuge, Hosting, Lieferanten. Offen gelistet, begründet.",
-  },
-  {
-    href: "/lexikon",
-    title: "Lexikon",
-    line: "Sechzehn Webbegriffe in Klartext, ohne Einschüchterung.",
-  },
-  {
-    href: "/honorar",
-    title: "Honorar",
-    line: "Stundensatz, Aufwand pro Paket, was wir nicht abrechnen.",
-  },
-  {
-    href: "/journal",
-    title: "Journal",
-    line: "Essays aus echten Projekten. Beobachtung statt Ratgeber.",
-  },
-];
-
-function Schriften() {
-  return (
-    <section className="border-border/40 border-b">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-24">
-        <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px]">
-          <span aria-hidden="true" className="bg-gold inline-block h-px w-10" />
-          Schriften des Ateliers
-        </p>
-        <h2 className="serif text-foreground mt-6 text-balance text-3xl font-normal leading-[1.1] tracking-[-0.02em] sm:text-4xl">
-          Fünf Seiten, die unser Selbstverständnis tragen.
-        </h2>
-        <ol className="divide-border/40 mt-10 divide-y">
-          {SCHRIFTEN.map((s, i) => (
-            <li key={s.href}>
-              <Link
-                href={s.href}
-                className="group flex flex-col gap-1.5 py-6 sm:flex-row sm:items-baseline sm:justify-between sm:gap-10 sm:py-7"
-              >
-                <span className="flex items-baseline gap-5">
-                  <span
-                    aria-hidden="true"
-                    className="serif-italic text-gold text-xl font-normal leading-none tabular-nums"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-foreground text-xl font-medium tracking-[-0.01em] sm:text-2xl">
-                    {s.title}
-                  </span>
-                </span>
-                <span className="text-muted-foreground pl-10 text-[14.5px] leading-relaxed group-hover:text-foreground sm:pl-0 sm:text-right transition-colors">
-                  {s.line}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-function FinalCta() {
-  return (
-    <section>
-      <div className="border-border/40 mx-auto w-full max-w-6xl border-t px-5 py-14 sm:px-6 sm:py-20">
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="serif text-foreground max-w-2xl text-balance text-3xl leading-[1.2] tracking-[-0.02em] sm:text-4xl">
-            Passt das zu Ihnen?{" "}
-            <span className="serif-italic text-muted-foreground">Schreiben Sie uns kurz.</span>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16px] leading-relaxed">
+            Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag.
           </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/anfrage"
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-            >
-              Website anfragen
-              <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              href="/kontakt"
-              className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-colors"
-            >
-              Kontakt
-              <ArrowRight className="ml-2 h-4 w-4" />
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold"
+          >
+            {CONTACT_EMAIL}
+          </a>
+          <div className="mt-7">
+            <Link href="/anfrage" className="btn-signal">
+              Anfrage schreiben {ARROW}
             </Link>
           </div>
         </div>

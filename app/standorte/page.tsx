@@ -6,6 +6,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Briefkarte } from "@/components/marketing/vertical-landing";
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
@@ -25,7 +26,10 @@ export default function StandortePage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <Hero />
         <Liste />
-        <Schluss />
+        <Briefkarte title="Betriebe außerhalb dieser Stadtteile bekommen dieselbe Website.">
+          Das erste Gespräch führen wir am Telefon oder per Video. In Hamburg kommen wir auf Wunsch auch bei Ihnen
+          vorbei.
+        </Briefkarte>
       </main>
       <MarketingFooter />
     </div>
@@ -42,8 +46,8 @@ function Hero() {
             Website erstellen lassen in Hamburg
           </h1>
           <p className="mt-6 max-w-md text-pretty text-[17px] leading-relaxed text-[#33383a] sm:text-[18px]">
-            Ihre Kunden suchen nicht „Webdesign Hamburg“, sondern „Friseur Eimsbüttel“ oder „Café Ottensen“. Für diese
-            Suchen bauen wir, Stadtteil für Stadtteil.
+            Wer einen Friseur in der Nähe sucht, tippt „Friseur Eimsbüttel“ oder „Friseur Osterstraße“. Auf solche
+            Suchen richten wir Seitentitel und Texte aus.
           </p>
         </div>
         <div className="min-w-0 lg:col-span-7">
@@ -59,7 +63,7 @@ function Liste() {
   const anzahl = ZAHLWORT[STANDORTE.length] ?? String(STANDORTE.length);
   return (
     <section className="bg-card border-border border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-24">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
             {anzahl} Stadtteile mit eigener Seite
@@ -99,32 +103,6 @@ function Liste() {
             </li>
           ))}
         </ul>
-      </div>
-    </section>
-  );
-}
-
-function Schluss() {
-  return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
-          Für Betriebe außerhalb dieser Stadtteile bauen wir genauso.
-        </h2>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
-            Das erste Gespräch führen wir am Telefon, per Video oder bei Ihnen vor Ort in Hamburg. Auf Anfragen antworten
-            wir meist am selben Werktag.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/anfrage" className="btn-signal grow sm:grow-0">
-              Anfrage schreiben <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link href="/termin" className="btn-line grow sm:grow-0">
-              Gesprächstermin buchen
-            </Link>
-          </div>
-        </div>
       </div>
     </section>
   );

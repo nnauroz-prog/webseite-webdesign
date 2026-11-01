@@ -29,7 +29,7 @@ export type Paket = {
 
   /* === Erweiterte Inhalte für /pakete/[slug] === */
 
-  /** Display-Headline, zweite Zeile in Serif-Italic. */
+  /** Kurzer Titel (derzeit nur für interne Zwecke, nicht auf der Seite). */
   detailHeadline: string;
   /** 2–3 Absätze Intro für die Detailseite. */
   detailIntro: string[];
@@ -48,12 +48,12 @@ export const PAKETE: Paket[] = [
     setup: "ab 499 €",
     monthly: "ab 49 € / Monat",
     description:
-      "Eine moderne Seite, alles Wichtige auf einen Blick. Perfekt für Einzelunternehmer und kleine Betriebe.",
+      "Eine Seite mit allem Wichtigen: Leistungen, Öffnungszeiten und Kontakt. Für Selbstständige und kleine Betriebe.",
     whoFor:
-      "Für Selbstständige und kleine Betriebe, die schnell professionell auftreten wollen — ohne mehrseitige Struktur, ohne komplexe Funktionen.",
+      "Für Selbstständige und kleine Betriebe, die schnell eine Website brauchen und mit einer Seite auskommen.",
     contents: [
-      "Moderne Onepage-Website",
-      "Mobil optimiert",
+      "Onepage-Website: alles auf einer Seite",
+      "Fürs Handy gebaut, am Rechner genauso lesbar",
       "Kontaktformular mit Spam-Schutz",
       "Direktwahl-Knopf",
       "Google Maps & Öffnungszeiten",
@@ -68,20 +68,20 @@ export const PAKETE: Paket[] = [
       "Friseur:in mit Galerie und Termin-Anfrage",
     ],
     limits: [
-      "Keine mehrseitige Struktur",
-      "Keine verwaltbaren Inhalte",
-      "Maximal 1 Änderungsrunde pro Monat",
+      "Unterseiten für einzelne Leistungen",
+      "Bereiche, die Sie selbst pflegen",
+      "Mehr als eine kleine Änderung pro Monat",
     ],
-    detailHeadline: "Klein und schnell online.",
+    detailHeadline: "Eine Seite, schnell online.",
     detailIntro: [
-      "Das Starter-Paket ist für alle, die jetzt eine seriöse Online-Präsenz brauchen — ohne über eine fünfseitige Struktur, Bildergalerien oder Online-Buchung nachzudenken. Eine starke Seite, die alles Wichtige enthält und in 1–2 Werktagen live geht.",
-      "Wenn Sie später wachsen wollen, kann jede Starter-Seite zum Business-Paket erweitert werden — Sie zahlen nur die Differenz, kein Neuaufbau nötig.",
+      "Starter ist eine einzelne Seite mit Leistungen, Öffnungszeiten, Anfahrt und Kontakt. Über Unterseiten, Galerien oder Online-Buchung müssen Sie dafür nicht nachdenken. Eine Seite wie diese ist oft in 1–2 Werktagen online.",
+      "Wenn Sie später mehr Platz brauchen, erweitern wir die Seite zum Business-Paket. Sie zahlen dann die Differenz im Einmalpreis, neu gebaut wird nichts.",
     ],
     afterLaunch: [
       "Hosting in der EU mit SSL und automatischen Backups",
       "Eine kleine Änderung pro Monat (Texte, Bilder, Öffnungszeiten)",
       "Sicherheits-Updates und technische Pflege im Hintergrund",
-      "Sie schreiben uns, wir kümmern uns — meist innerhalb von 24 h",
+      "Sie schreiben uns, wir antworten meist am selben Werktag",
     ],
     recommendedFor: [
       { slug: "friseur", label: "Friseure & Kosmetikstudios" },
@@ -91,15 +91,15 @@ export const PAKETE: Paket[] = [
     faq: [
       {
         q: "Reicht eine Onepage-Website wirklich für mein Unternehmen?",
-        a: "In den meisten Fällen ja. Wenn Sie unter 5 Leistungen anbieten und keine separaten Bereiche für Team, News oder Karriere brauchen, ist Onepage übersichtlicher und schneller. Mehrseitig wird relevant, wenn Sie pro Leistung viel zu sagen haben oder SEO-Unterseiten brauchen.",
+        a: "Oft ja. Wenn Sie weniger als fünf Leistungen anbieten und keine eigenen Bereiche für Team, Neuigkeiten oder Stellen brauchen, ist eine Seite übersichtlicher. Mehrere Seiten lohnen sich, wenn Sie zu jeder Leistung viel zu sagen haben oder für einzelne Leistungen bei Google gefunden werden wollen.",
       },
       {
         q: "Kann ich später aufs Business-Paket wechseln?",
         a: "Ja, jederzeit. Sie zahlen nur die Differenz im Setup-Preis. Ihre bestehende Seite wird erweitert, nicht neu gebaut.",
       },
       {
-        q: "Was ist mit Texten — schreibe ich die selbst?",
-        a: "Sie liefern eine grobe Beschreibung, wir strukturieren und formulieren daraus klare Web-Texte. Sie reviewen, ändern was Sie wollen. Bei Kleinunternehmen reicht das meistens — bei sehr fachspezifischen Themen empfehlen wir, dass Sie die Kernaussagen selbst beisteuern.",
+        q: "Muss ich die Texte selbst schreiben?",
+        a: "Nein. Sie schicken uns Stichpunkte, wir formulieren daraus die Texte. Sie lesen gegen und streichen, was nicht stimmt. Bei sehr fachlichen Themen bitten wir Sie, die wichtigsten Aussagen selbst beizusteuern.",
       },
     ],
   },
@@ -111,11 +111,11 @@ export const PAKETE: Paket[] = [
     setup: "ab 899 €",
     monthly: "ab 79 € / Monat",
     description:
-      "Mehrere Sektionen, Team, Leistungen, Galerie. Für lokale Unternehmen, die professionell auftreten wollen.",
+      "Mehrere Seiten für Leistungen, Team und Galerie. Für lokale Betriebe mit mehreren Angeboten.",
     whoFor:
-      "Für etablierte lokale Unternehmen mit mehreren Leistungen, einem Team und dem Bedarf, sich seriös zu präsentieren.",
+      "Für lokale Betriebe mit mehreren Leistungen und einem Team, das sich vorstellen soll.",
     contents: [
-      "Hochwertige Mehrseiten-Website",
+      "Website mit mehreren Seiten",
       "Bis zu 5 Sektionen / Unterseiten",
       "Team-Bereich mit Fotos",
       "Leistungen mit detaillierter Beschreibung",
@@ -131,20 +131,20 @@ export const PAKETE: Paket[] = [
       "Kanzlei mit Rechtsgebieten und Team",
     ],
     limits: [
-      "Verwaltbare Inhalte gehören in Premium",
-      "Online-Buchung gehört in Premium",
+      "Bereiche, die Sie selbst pflegen (ab Premium)",
+      "Online-Buchung (ab Premium)",
     ],
-    detailHeadline: "Die solide Mehrseiten-Lösung.",
+    detailHeadline: "Mehrere Seiten für Leistungen und Team.",
     detailIntro: [
-      "Business ist unser meistgewähltes Paket — und meistens das richtige für etablierte lokale Unternehmen. Sie bekommen eine vollwertige Mehrseiten-Website mit eigenem Bereich für Team, Leistungen, Galerie und Kontakt. Plus eine saubere SEO-Basis, damit Sie für die richtigen Suchen gefunden werden.",
-      "Konkret heißt das: bis zu fünf Unterseiten, professionelle Bildaufbereitung Ihrer Fotos, Sitemap, strukturierte Daten für Google, und drei kleine Änderungen pro Monat in der laufenden Betreuung.",
+      "Business ist das Paket, das wir den meisten lokalen Betrieben empfehlen. Sie bekommen eine Website mit eigenen Seiten für Leistungen, Team, Galerie und Kontakt. Jede Seite bekommt einen eigenen Titel und eine Beschreibung für Google.",
+      "Dazu gehören bis zu fünf Unterseiten, die Aufbereitung Ihrer Fotos, eine Sitemap und strukturierte Daten für Google. Im Monatsbeitrag sind drei kleine Änderungen pro Monat enthalten.",
     ],
     afterLaunch: [
       "Hosting in der EU mit SSL und automatischen Backups",
       "Drei kleine Änderungen pro Monat (Texte, Bilder, Team, …)",
-      "Wartung, Sicherheits-Updates und Performance-Monitoring",
-      "Persönlicher Ansprechpartner — keine Tickets, kein Support-Chat",
-      "Erweiterungen jederzeit möglich (z. B. weitere Unterseite, neue Leistung)",
+      "Updates und eine regelmäßige Prüfung der Ladezeit",
+      "Sie schreiben oder rufen direkt bei uns an, unter 0160 7621876",
+      "Erweiterungen jederzeit, etwa eine weitere Unterseite",
     ],
     recommendedFor: [
       { slug: "pflege", label: "Pflegedienste" },
@@ -155,15 +155,15 @@ export const PAKETE: Paket[] = [
     faq: [
       {
         q: "Was zählt als „kleine Änderung\"?",
-        a: "Texte anpassen, Bilder austauschen, Öffnungszeiten ändern, neuer Team-Eintrag, neuer Service-Block. Etwas, das wir in 15–30 Min erledigen. Größere strukturelle Erweiterungen besprechen wir separat.",
+        a: "Alles, was wir in 15 bis 30 Minuten erledigen: einen Text anpassen, ein Bild tauschen, Öffnungszeiten ändern oder jemanden ins Team aufnehmen. Größere Erweiterungen besprechen wir vorher und nennen Ihnen den Preis.",
       },
       {
         q: "Brauche ich wirklich fünf Unterseiten?",
-        a: "Nein, fünf ist die Obergrenze. Viele Business-Kunden starten mit drei oder vier (Start, Leistungen, Team, Kontakt) und erweitern später. Sie zahlen nicht für ungenutzte Seiten.",
+        a: "Nein, fünf ist die Obergrenze. Oft reichen drei oder vier, etwa Start, Leistungen, Team und Kontakt. Weitere Seiten kommen später dazu, wenn Sie sie brauchen.",
       },
       {
-        q: "Was, wenn ich später Verwaltbare Inhalte will?",
-        a: "Sie können jederzeit aufs Premium-Paket wechseln. Wir erweitern Ihre bestehende Seite um die verwaltbaren Bereiche, kein Neuaufbau.",
+        q: "Was, wenn ich Inhalte später selbst pflegen will?",
+        a: "Dann wechseln Sie zu Premium. Wir ergänzen Ihre Seite um die Bereiche, die Sie selbst pflegen. Neu gebaut wird sie dafür nicht.",
       },
     ],
   },
@@ -173,17 +173,17 @@ export const PAKETE: Paket[] = [
     setup: "ab 2.499 €",
     monthly: "ab 179 € / Monat",
     description:
-      "Individuelle Struktur mit Bereichen, die Sie selbst pflegen — Speisekarte, Wochenangebot, Termine.",
+      "Eine Struktur, die wir für Ihren Betrieb anlegen, mit Bereichen, die Sie selbst pflegen, etwa Speisekarte, Wochenangebot oder Termine.",
     whoFor:
-      "Für Unternehmen mit häufig wechselnden Inhalten oder besonderen Anforderungen — Gastro, Studios, Beratungen mit Online-Buchung.",
+      "Für Betriebe, deren Inhalte sich oft ändern, etwa Gastronomie, Studios oder Beratungen mit Online-Buchung.",
     contents: [
-      "Premium-Design",
+      "Gestaltung für Ihren Betrieb",
       "Individuelle Website-Struktur",
       "Verwaltbare Inhalte auf Wunsch",
       "Speisekarte / Wochenangebot selbst änderbar",
       "Formularsystem (Kontakt, Bewerbung, Buchung)",
-      "Stärkere SEO-Basis",
-      "Erweiterte Wartung",
+      "Mehr Arbeit an den Suchbegriffen",
+      "Regelmäßige Prüfung von Formularen und Ladezeit",
       "Bis zu 6 kleine Änderungen pro Monat",
     ],
     examples: [
@@ -193,20 +193,20 @@ export const PAKETE: Paket[] = [
       "Restaurant mit Speisekarte und Wochenangebot",
     ],
     limits: [
-      "Eigene Apps oder Shop-Systeme werden im Einzelfall besprochen",
+      "Shop oder eigene App (besprechen wir im Einzelfall)",
     ],
-    detailHeadline: "Für alle, die Inhalte selbst pflegen wollen.",
+    detailHeadline: "Inhalte, die Sie selbst pflegen.",
     detailIntro: [
-      "Premium ist das Paket für Unternehmen, deren Website kein statisches Schaufenster ist, sondern täglich oder wöchentlich aktualisiert werden muss. Speisekarte ändern, Wochenangebot pflegen, Kursplan anpassen, neue Termine eintragen — alles selbst, ohne uns anzurufen.",
-      "Die verwaltbaren Bereiche werden individuell auf Ihren Bedarf zugeschnitten. Sie loggen sich auf einer eigenen Adresse ein und sehen direkt, was wo geändert werden kann — keine fünfzig Optionen, sondern nur das, was Sie wirklich brauchen.",
-      "Dazu kommen sechs kleine Änderungen pro Monat in der laufenden Betreuung, eine stärkere SEO-Basis und priorisierter Support.",
+      "Premium passt, wenn sich auf Ihrer Website jede Woche etwas ändert. Die Speisekarte, das Wochenangebot, den Kursplan oder neue Termine tragen Sie selbst ein und müssen dafür nicht bei uns anrufen.",
+      "Welche Bereiche Sie selbst ändern können, legen wir mit Ihnen fest. Sie melden sich unter einer eigenen Adresse an und sehen dort nur die Felder, die Sie brauchen.",
+      "Im Monatsbeitrag sind sechs kleine Änderungen pro Monat enthalten. Ihre Anfragen beantworten wir vorrangig.",
     ],
     afterLaunch: [
       "Verwaltbare Inhalte: Sie pflegen Speisekarte, Angebot, Termine selbst",
       "Sechs kleine Änderungen pro Monat von uns",
-      "Erweiterte SEO-Pflege (Suchbegriff-Monitoring, Optimierungen)",
+      "Wir beobachten Ihre Suchbegriffe und passen die Seite an",
       "Hosting + SSL + Backups in der EU",
-      "Prioritäts-Support — meist Antwort am selben Tag",
+      "Vorrang bei Anfragen, Antwort meist am selben Werktag",
     ],
     recommendedFor: [
       { slug: "gastro", label: "Cafés & Restaurants" },
@@ -216,87 +216,87 @@ export const PAKETE: Paket[] = [
     faq: [
       {
         q: "Wie kompliziert ist die Selbst-Pflege?",
-        a: "Sehr einfach. Sie tippen auf den Bereich, der geändert werden soll, ändern Text oder Bild, klicken Speichern. Funktioniert wie ein Word-Dokument — keine HTML-Kenntnisse, keine Vorbereitung.",
+        a: "Sie klicken auf den Bereich, ändern Text oder Bild und speichern. Das funktioniert ähnlich wie in einem Word-Dokument. HTML müssen Sie dafür nicht können.",
       },
       {
         q: "Was wenn ich was kaputt mache?",
-        a: "Geht praktisch nicht. Sie können nur die Inhalte ändern, die wir für die Bearbeitung freigegeben haben. Struktur und Design bleiben unangetastet. Plus: jede Änderung lässt sich rückgängig machen.",
+        a: "Sie können nur die Inhalte ändern, die wir dafür freigegeben haben. Aufbau und Gestaltung bleiben, wie sie sind. Jede Änderung lässt sich rückgängig machen.",
       },
       {
         q: "Brauche ich Online-Buchung wirklich?",
-        a: "Hängt vom Geschäft ab. Für viele Friseure und Studios spart Online-Buchung 20–30 Telefonate pro Woche. Für eine Kanzlei oder einen Handwerker meistens nicht. Im Erstgespräch klären wir, ob es sich lohnt.",
+        a: "Das hängt vom Betrieb ab. Bei Friseuren und Studios, die viele kurze Termine vergeben, nimmt sie Ihnen Anrufe ab. Für eine Kanzlei oder einen Handwerker lohnt sie sich meistens nicht. Im Erstgespräch klären wir, was bei Ihnen passt.",
       },
       {
         q: "Was kostet eine zusätzliche Anpassung außer der Reihe?",
-        a: "Kleine Sachen meist gar nichts — wir rechnen nicht jede E-Mail ab. Größere Sachen (z. B. neuer Bereich, Funktionserweiterung) bekommen Sie vorher als verbindliches Angebot.",
+        a: "Kleine Sachen meist nichts, wir rechnen nicht jede E-Mail ab. Für Größeres, etwa einen neuen Bereich, bekommen Sie vorher ein verbindliches Angebot.",
       },
     ],
   },
   {
     slug: "studio",
     name: "Sitalo Studio",
-    badge: "Atelier-Stufe",
+    badge: "Eigene Gestaltung",
     setup: "ab 3.490 €",
     monthly: "ab 249 € / Monat",
     description:
-      "Eigenständige Design-Sprache, mehrere Korrekturrunden, Atelier-Besuch vor Ort. Für Inhaber, die eine Marke aufbauen, nicht nur eine Website.",
+      "Eigene Gestaltung, bis zu drei Korrekturrunden und ein Treffen vor Ort. Für Betriebe, die ihr ganzes Erscheinungsbild neu aufstellen.",
     whoFor:
-      "Für Inhaber:innen mit Anspruch — Marken, die sich vom Branchen-Durchschnitt absetzen müssen. Etablierte Praxen, Architekten, Beratungen, Restaurants mit Konzept, Atelier-nahe Gewerke.",
+      "Für Betriebe, die sich in der Gestaltung deutlich von anderen ihrer Branche abheben wollen, etwa Privatpraxen, Architekturbüros, Beratungen oder Restaurants mit eigenem Konzept.",
     contents: [
-      "Eigenständige Design-Sprache, kein Template-Anstrich",
-      "Persönlicher Atelier-Besuch in Hamburg oder bei Ihnen",
-      "Bis zu 3 Korrekturrunden, gesammelt und in Ruhe",
-      "Individuelle Typografie- und Farbentscheidungen",
+      "Gestaltung, die wir nur für Sie entwerfen",
+      "Ein Treffen vor dem Entwurf, in Hamburg oder bei Ihnen",
+      "Bis zu 3 Korrekturrunden",
+      "Schrift und Farben eigens für Ihren Betrieb",
       "Bis zu 12 verwaltbare Bereiche oder Seiten",
       "Mehrsprachigkeit auf Wunsch (Deutsch + eine weitere)",
       "Bis zu 10 kleine Änderungen pro Monat",
-      "Direktdraht: dieselbe Person, die Ihre Seite gebaut hat",
+      "Ihre Fragen beantwortet, wer Ihre Seite gebaut hat",
     ],
     examples: [
-      "Privatpraxis mit eigener Bild- und Tonalitäts-Sprache",
+      "Privatpraxis mit eigener Bildsprache",
       "Architekturbüro mit Portfolio und ruhiger Typografie",
       "Restaurant mit Konzept-Website und mehrsprachiger Karte",
-      "Beratung oder Atelier-nahes Gewerk mit eigener Marke",
+      "Beratung mit eigenem Erscheinungsbild",
     ],
     limits: [
-      "Eigene Shop-Systeme werden separat angeboten",
-      "Eigene App-Entwicklung gehört nicht in dieses Paket",
+      "Shop-Systeme (bieten wir separat an)",
+      "Entwicklung einer eigenen App",
     ],
-    detailHeadline: "Eine Marke, nicht eine Website.",
+    detailHeadline: "Eigene Gestaltung für Ihren Betrieb.",
     detailIntro: [
-      "Sitalo Studio ist die Atelier-Stufe. Wir bauen nicht nur eine Seite, sondern denken Ihren Auftritt vom Briefkopf bis zur OG-Image-Vorschau mit. Eigene Design-Sprache statt Branchenraster — Farben, Typografie, Bildwelt, Ton.",
-      "Der Prozess ist langsamer und persönlicher: ein erster Atelier-Besuch vor Ort, mehrere Korrekturrunden statt einer, individuelle Entscheidungen statt Voreinstellungen. Sie bekommen nicht das, was wir letzte Woche schon gebaut haben, sondern etwas, das nur zu Ihnen passt.",
-      "Nach dem Launch bleibt der persönliche Direktdraht: dieselbe Person, die das Atelier-Konzept gezeichnet hat, kümmert sich auch um die zehn kleinen Änderungen pro Monat. Kein Wechsel von Design zu Support, kein neuer Ansprechpartner nach drei Wochen.",
+      "Bei Sitalo Studio gestalten wir mehr als die Website. Wir legen Schrift, Farben, Bildsprache und Ton für Ihren Betrieb fest und denken dabei an Briefkopf und Vorschaubilder für soziale Netzwerke mit.",
+      "Das dauert länger als bei den anderen Paketen. Vor dem ersten Entwurf treffen wir uns in Hamburg oder bei Ihnen, danach gibt es bis zu drei Korrekturrunden.",
+      "Nach dem Start kümmert sich derselbe Mensch, der die Seite entworfen hat, um die zehn kleinen Änderungen pro Monat.",
     ],
     afterLaunch: [
       "Verwaltbare Bereiche (bis zu 12), individuell zugeschnitten",
       "Zehn kleine Änderungen pro Monat",
-      "Quartalsweise Sprechstunde — wir gucken gemeinsam drauf, was sich verändert hat",
-      "Vorrang bei kurzfristigen Anfragen, meist Antwort am selben Tag",
-      "Direktdraht zur Person, die Ihre Seite gebaut hat — kein Ticket-System",
-      "Hosting + SSL + Backups in der EU, Performance-Monitoring",
+      "Einmal im Quartal ein Gespräch über das, was sich geändert hat",
+      "Vorrang bei kurzfristigen Anfragen, Antwort meist am selben Werktag",
+      "Sie sprechen mit dem, der Ihre Seite gebaut hat",
+      "Hosting, SSL und Backups in der EU, Prüfung der Ladezeit",
     ],
     recommendedFor: [
-      { slug: "praxis", label: "Privatpraxen mit Anspruch" },
-      { slug: "kanzlei", label: "Kanzleien mit eigener Note" },
+      { slug: "praxis", label: "Privatpraxen" },
+      { slug: "kanzlei", label: "Kanzleien" },
       { slug: "gastro", label: "Restaurants mit Konzept" },
     ],
     faq: [
       {
         q: "Wo liegt der Unterschied zu Premium?",
-        a: "Premium nimmt unsere bewährte Struktur und passt sie auf Ihren Bedarf an. Studio fängt mit einem leeren Blatt an: eigene Typografie, eigene Bildsprache, eigene Tonalität. Premium ist solide; Studio hat eine Note. Wenn Sie einen Branchen-Durchschnitt ablösen wollen, ist Studio richtig.",
+        a: "Bei Premium geht es vor allem um Bereiche, die Sie selbst pflegen. Bei Studio legen wir zusätzlich Schrift, Farben und Bildsprache eigens für Ihren Betrieb fest, mit einem Treffen vor Ort und bis zu drei Korrekturrunden.",
       },
       {
-        q: "Lohnt sich das wirklich?",
-        a: "Für die meisten lokalen Unternehmen reicht Business oder Premium völlig — Studio empfehlen wir nur, wenn Sie sich aktiv vom Durchschnitt Ihrer Branche absetzen wollen oder einen Auftritt brauchen, der Patient:innen, Mandant:innen oder Gäste vor dem ersten Kontakt überzeugt. Im Erstgespräch sagen wir ehrlich, ob's bei Ihnen passt.",
+        q: "Brauche ich Studio?",
+        a: "Den meisten lokalen Betrieben reicht Business oder Premium. Studio lohnt sich, wenn Sie Ihr Erscheinungsbild ohnehin neu aufstellen. Wenn ein kleineres Paket reicht, sagen wir Ihnen das im Erstgespräch.",
       },
       {
         q: "Wie lange dauert der Bau?",
-        a: "Drei bis fünf Wochen, je nach Umfang. Schneller wollten wir hier nicht — das wären verschenkte Korrekturrunden. Wenn's eilig ist, machen Sie Business mit späterem Upgrade.",
+        a: "Drei bis fünf Wochen, je nach Umfang. Wenn es eilig ist, starten Sie mit Business und wechseln später.",
       },
       {
         q: "Was, wenn ich später wechseln will?",
-        a: "Sie können jederzeit zwischen Monatsbeitrag pausieren oder kündigen. Die Seite gehört Ihnen, der Quellcode ebenso. Wir übergeben sauber.",
+        a: "Den Monatsbeitrag können Sie nach der Mindestlaufzeit kündigen. Die Seite und der Quellcode gehören Ihnen, wir übergeben beides an Sie oder Ihren neuen Anbieter.",
       },
     ],
   },

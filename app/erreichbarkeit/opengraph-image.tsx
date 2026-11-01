@@ -1,19 +1,16 @@
 import { editorialOgImage, OG_SIZE } from "@/lib/og-editorial";
 
 export const runtime = "nodejs";
-export const alt =
-  "Sitalo Erreichbarkeit — Wir gehen ans Telefon. So oft wir können.";
+export const alt = "Sitalo Erreichbarkeit: Antwortzeiten, Urlaub und Vertretung.";
 export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default async function Image() {
   return editorialOgImage({
-    variant: "cream",
-    eyebrow: "SITALO · ANTWORT-VERSPRECHEN",
-    headlineBold: "Wir gehen ans Telefon.",
-    headlineItalic: "So oft wir können.",
-    subline:
-      "Werktags meist innerhalb 4 Stunden. Wochenende Montag. Drei Wochen Urlaub im Jahr mit Vertretung für Akutfälle.",
-    urlPill: "sitalo.de/erreichbarkeit",
+    variant: "hell",
+    eyebrow: "Sitalo · Erreichbarkeit",
+    headline: "Werktags antworten wir meist am selben Tag.",
+    subline: "Hier steht, wann wir antworten, was im Urlaub gilt und wer im Notfall einspringt.",
+    url: "sitalo.de/erreichbarkeit",
   });
 }

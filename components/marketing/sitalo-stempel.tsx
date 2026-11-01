@@ -1,17 +1,15 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Sitalo-Wachssiegel — wiederkehrendes Brand-Element wie ein
- * altes Manufaktur-Stempel auf Briefen. Hand-gezeichneter SVG-
- * Look mit serif „S" zentriert und umlaufendem Text-Pfad
- * („SITALO · HAMBURG · MMXXVI").
+ * Sitalo-Stempel — runder Firmenstempel wie auf einem Frachtbrief:
+ * zwei exakte Ringe, dazwischen die Umschrift in Mono
+ * („SITALO WEBDESIGN · HAMBURG“), in der Mitte ein breites „S“ aus
+ * der Hausschrift. Einfarbig über `currentColor`, die Farbe setzt
+ * die Seite (z. B. `text-ink-olive` für Stempelrot).
  *
- * Bewusst unregelmäßige Kurven (Cubic-Bezier mit leichten Wackel-
- * Stops) — sieht nach Tinte/Wachs aus, nicht nach Logo-Maker.
- *
- * Drei Größen über `size`-Prop. Animation: sehr langsame Rotation
- * (~40 Sekunden), atmosphärisch nicht aufdringlich. Respektiert
- * prefers-reduced-motion.
+ * Bewusst ohne Dauerrotation und Hover-Effekt: ein Stempel liegt
+ * still auf dem Papier. Eine leichte Schräglage gibt die Seite per
+ * `className` (z. B. `-rotate-6`).
  */
 type Props = {
   size?: "sm" | "md" | "lg";
@@ -24,87 +22,49 @@ const SIZE_PX: Record<NonNullable<Props["size"]>, number> = {
   lg: 140,
 };
 
+/** Umfang des Textpfads (r = 47,5) — die Umschrift wird auf diese
+ *  Länge gesperrt, damit Anfang und Ende sauber aneinanderstoßen. */
+const RING_LENGTH = 297;
+
 export function SitaloStempel({ size = "md", className }: Props) {
   const px = SIZE_PX[size];
+  // Eigene id je Größe, damit zwei Stempel auf einer Seite sich
+  // nicht denselben Pfad teilen.
+  const pathId = `sitalo-stempel-ring-${size}`;
   return (
     <span
       aria-hidden="true"
-      className={cn(
-        "stempel inline-block shrink-0 text-foreground/55",
-        className,
-      )}
+      className={cn("inline-block shrink-0 text-foreground", className)}
       style={{ width: px, height: px }}
     >
       <svg viewBox="0 0 120 120" fill="none" className="h-full w-full">
         <defs>
-          {/* Pfad für umlaufenden Text — leicht innen vom Außenring */}
-          <path
-            id="stempel-ring-text"
-            d="M 60 22
-               a 38 38 0 1 1 -0.01 0"
-            fill="none"
-          />
+          {/* Kreis im Uhrzeigersinn, Start oben: die Umschrift steht
+              aufrecht auf der Außenseite des Pfads. */}
+          <path id={pathId} d="M 60 12.5 a 47.5 47.5 0 1 1 -0.01 0" />
         </defs>
 
-        {/* Äußerer Ring — leicht unregelmäßig, wie mit Tinte gezogen */}
-        <path
-          d="M 60 8
-             C 32 9, 11 28, 10 60
-             C 9 90, 30 110, 60 112
-             C 90 111, 110 90, 111 60
-             C 112 30, 90 9, 60 8 Z"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <circle cx="60" cy="60" r="57" stroke="currentColor" strokeWidth="2.2" />
+        <circle cx="60" cy="60" r="44" stroke="currentColor" strokeWidth="0.9" />
 
-        {/* Innerer Ring — dünner */}
-        <path
-          d="M 60 17
-             C 36 18, 20 34, 19 60
-             C 18 84, 36 101, 60 102
-             C 84 101, 101 85, 102 60
-             C 102 35, 84 17, 60 17 Z"
-          stroke="currentColor"
-          strokeWidth="0.9"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.55"
-        />
-
-        {/* Umlaufender Text — typografische Geste mit Sperrsatz */}
-        <text
-          fontSize="6.2"
-          letterSpacing="2.4"
-          className="font-mono uppercase"
-          fill="currentColor"
-          opacity="0.75"
-        >
-          <textPath href="#stempel-ring-text" startOffset="0%">
-            SITALO · HAMBURG · MMXXVI · ATELIER · SITALO · HAMBURG ·
+        <text fontSize="7.4" fontWeight="500" className="font-mono" fill="currentColor">
+          <textPath href={`#${pathId}`} textLength={RING_LENGTH} lengthAdjust="spacing">
+            {/* Geschütztes Leerzeichen am Ende: sonst stößt der Punkt
+                ohne Abstand an den Anfang der Umschrift. */}
+            {"SITALO WEBDESIGN · HAMBURG · SITALO WEBDESIGN · HAMBURG ·\u00a0"}
           </textPath>
         </text>
 
-        {/* Großes serif „S" im Zentrum — Sitalos Markenzeichen */}
         <text
           x="60"
-          y="80"
-          fontSize="68"
+          y="78"
+          fontSize="52"
           textAnchor="middle"
-          className="serif-italic"
-          fontWeight="500"
           fill="currentColor"
+          style={{ fontStretch: "125%", fontWeight: 800 }}
         >
           S
         </text>
-
-        {/* Vier dezente Ornament-Punkte im inneren Ring,
-            wie Kompass-Marken auf alten Siegeln */}
-        <circle cx="60" cy="28" r="1" fill="currentColor" opacity="0.5" />
-        <circle cx="92" cy="60" r="1" fill="currentColor" opacity="0.5" />
-        <circle cx="60" cy="92" r="1" fill="currentColor" opacity="0.5" />
-        <circle cx="28" cy="60" r="1" fill="currentColor" opacity="0.5" />
       </svg>
     </span>
   );

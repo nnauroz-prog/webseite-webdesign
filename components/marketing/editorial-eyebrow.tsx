@@ -1,47 +1,32 @@
 import { cn } from "@/lib/utils";
 
 /**
- * EditorialEyebrow — die wiederkehrende kleine Mast-Zeile oberhalb
- * der H1: vorne ein Gold-Akzent (Pulse-Strich oder Hairline-Linie),
- * dahinter der Eyebrow-Text in Mono-Caps mit Sperrsatz.
+ * EditorialEyebrow — kleine Kopfzeile über einer Überschrift, im
+ * Hafen-Stil als Mono-Beschriftung (`label-mono`) ohne Zierstrich.
+ * Das orange Quadrat gibt es nur im Seitenkopf (PageHero/Startseite).
  *
- * Vorher 25-fach inline dupliziert auf jeder Page; bei jeder Stil-
- * Anpassung (z. B. Tracking, Bar-Länge, Pulse-Verhalten) müssten
- * alle gleichzeitig nachgezogen werden. Jetzt eine Stelle.
- *
- * Zwei Varianten:
- *   - "bar" (default): kurzer goldener Pulse-Strich (h-1 w-6).
- *     Standard für Marketing-Pages und Sektions-Header.
- *   - "rule": dünnere Hairline-Linie (h-px w-10), ohne Pulse.
- *     Für ruhigere Editorial-Pages (Honorar, Sprechstunde, Jetzt).
+ * `variant` bleibt aus Kompatibilität erhalten, ändert aber nichts
+ * mehr am Aussehen. `tone="dark"` für dunkle Flächen.
  */
 export function EditorialEyebrow({
   children,
-  variant = "bar",
+  tone = "light",
   className,
 }: {
   children: React.ReactNode;
+  /** @deprecated Ohne Wirkung, beide Varianten sehen gleich aus. */
   variant?: "bar" | "rule";
+  tone?: "light" | "dark";
   className?: string;
 }) {
-  // Ruhige Satzschreibung statt gesperrter Mono-Versalien — liest sich
-  // wie Typografie, nicht wie eine Vorlage.
-  const sizeClass = variant === "rule" ? "text-[13px]" : "text-[13px] font-medium";
   return (
     <p
       className={cn(
-        "text-muted-foreground inline-flex items-center gap-2.5 tracking-normal",
-        sizeClass,
+        "label-mono",
+        tone === "dark" ? "text-stahl-hell" : "text-muted-foreground",
         className,
       )}
     >
-      <span
-        aria-hidden="true"
-        className={cn(
-          "inline-block",
-          variant === "rule" ? "bg-gold h-px w-10" : "bg-gold gold-pulse h-1 w-6",
-        )}
-      />
       {children}
     </p>
   );

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
+import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
@@ -39,57 +41,54 @@ export const metadata: Metadata = {
 };
 
 /**
- * `/manifest` — bewusst karger Stand-alone-Artefakt.
+ * `/manifest` — ein einzelnes Blatt, gesetzt wie ein Aushang im
+ * Kontor: Papierfläche mit kräftiger Oberkante, acht Sätze, am Fuß
+ * der Firmenstempel. Die Sätze haben keine Reihenfolge, deshalb
+ * keine Nummern; links steht in Mono, worum es jeweils geht.
  *
- * Kein Editorial-Masthead, kein üblicher Hero-Pattern, kein CTA-
- * Lärm. Acht durchnumerierte Sätze im Serif, viel Weißraum, am
- * Ende der Sitalo-Stempel als Siegel. Soll sich anfühlen wie eine
- * gedruckte Broadside — ein Wandblatt, kein Marketing.
- *
- * Bewusst weglassen: Navigations-Kontext zwischen den Sätzen,
- * Erklärungen, Verweise. Wer das hier liest, soll es als
- * Erklärung von uns selbst nehmen, nicht als Verkaufstext.
+ * Jede Aussage muss sich mit dem Rest der Seite decken (Festpreis,
+ * Test-Link, Monatsbeitrag, Übergabe beim Wechsel, Antwortzeit).
  */
-
-const DECLARATIONS: { roman: string; lead: string; coda?: string }[] = [
+const SAETZE: { thema: string; lead: string; coda: string }[] = [
   {
-    roman: "I",
-    lead: "Wir bauen Websites für lokale Unternehmen.",
-    coda: "Aus Hamburg, persönlich, aus einer Hand.",
+    thema: "Für wen",
+    lead: "Wir bauen Websites für kleine Betriebe.",
+    coda: "Wir sitzen in Hamburg. Wo Ihr Betrieb ist, spielt für die Arbeit keine Rolle.",
   },
   {
-    roman: "II",
-    lead: "Drei Sachen reichen.",
-    coda: "Den Rest bauen wir.",
+    thema: "Preis",
+    lead: "Den Festpreis bekommen Sie schriftlich, bevor wir anfangen.",
+    coda: "Kommt später etwas dazu, sprechen wir vorher darüber.",
   },
   {
-    roman: "III",
-    lead: "Wir nehmen pro Monat höchstens drei neue Aufträge an.",
-    coda: "Das ist keine Geste, sondern eine arithmetische Realität.",
+    thema: "Unterlagen",
+    lead: "Von Ihnen brauchen wir Handyfotos und ein paar Stichpunkte.",
+    coda: "Den Text schreiben wir. Sie streichen, was nicht stimmt.",
   },
   {
-    roman: "IV",
-    lead: "Wir versprechen keine Plätze bei Google, die niemand halten kann.",
-    coda: "Wir bauen die Basis sauber. Den Rest macht Zeit und Konsistenz.",
+    thema: "Test-Link",
+    lead: "Ihre Seite sehen Sie auf einem Test-Link, bevor sie online geht.",
+    coda: "Was Sie dort freigeben, geht genau so online.",
   },
   {
-    roman: "V",
-    lead: "Wir bauen direkt das Echte.",
-    coda: "Keine Mockups, die anders aussehen als das, was am Ende live geht.",
+    thema: "Kapazität",
+    lead: "Wir nehmen höchstens drei neue Aufträge im Monat an.",
+    coda: "So bleibt für jeden Auftrag die Zeit, die er braucht.",
   },
   {
-    roman: "VI",
-    lead: "Wenn wir nachts schlafen, sagen wir das.",
-    coda: "Wir antworten meist am selben Tag. Nicht in derselben Sekunde.",
+    thema: "Google",
+    lead: "Einen Platz bei Google versprechen wir nicht.",
+    coda: "Wir bauen die Seite so, dass Google sie gut lesen kann. Die Reihenfolge der Treffer kann niemand zusagen.",
   },
   {
-    roman: "VII",
-    lead: "Wir kennen die Praxen, die Pflegedienste, die Cafés und die Handwerker, für die wir bauen — weil wir hier leben.",
+    thema: "Antwortzeit",
+    lead: "Wir antworten meist am selben Werktag.",
+    coda: "Nachts schlafen wir, und am Wochenende bleibt die Mail bis Montag liegen.",
   },
   {
-    roman: "VIII",
-    lead: "Was wir tun, gehört Ihnen.",
-    coda: "Hosting, Code, Inhalte. Sie sind nicht in unserer Mietwohnung.",
+    thema: "Eigentum",
+    lead: "Die Seite gehört Ihnen.",
+    coda: "Wechseln Sie später den Anbieter, bekommen Sie Quellcode und Inhalte vollständig übergeben.",
   },
 ];
 
@@ -97,77 +96,71 @@ export default function ManifestPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
+      <EditorialMasthead section="Manifest" />
       <main id="main" tabIndex={-1} className="flex-1">
         <section>
-          <div className="mx-auto w-full max-w-2xl px-6 pt-20 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
-            <p className="text-muted-foreground inline-flex items-center gap-3 text-[13px]">
-              <span
-                aria-hidden="true"
-                className="bg-gold inline-block h-px w-10"
-              />
-              Sitalo Atelier · Hamburg · MMXXVI
-              <span
-                aria-hidden="true"
-                className="bg-gold inline-block h-px w-10"
-              />
-            </p>
-            <h1 className="serif mt-8 text-balance text-6xl font-normal leading-[0.94] tracking-[-0.02em] sm:text-7xl lg:text-[5.5rem]">
-              Manifest.
-            </h1>
-            <p className="text-muted-foreground mx-auto mt-7 max-w-md text-pretty text-[15px] leading-relaxed">
-              Acht Sätze. Eine Erklärung darüber, was wir tun und was wir
-              nicht tun. Geschrieben für Inhaber, denen Verbindlichkeit
-              wichtiger ist als Verkaufstext.
-            </p>
-          </div>
-        </section>
-
-        <section className="border-border/40 border-t border-b">
-          <ol className="divide-border/30 mx-auto w-full max-w-2xl divide-y px-6">
-            {DECLARATIONS.map((d) => (
-              <li
-                key={d.roman}
-                className="grid items-baseline gap-5 py-16 sm:grid-cols-[4.5rem_1fr] sm:gap-8 sm:py-20"
-              >
-                <span
-                  aria-hidden="true"
-                  className="serif-italic text-gold text-3xl font-normal leading-none tabular-nums sm:text-4xl"
-                >
-                  {d.roman}.
-                </span>
+          <div className="mx-auto w-full max-w-6xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-24">
+            <article className="bg-card border-border mx-auto max-w-4xl border border-t-foreground border-t-[3px] shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]">
+              <header className="border-border grid gap-6 border-b px-5 pt-8 pb-8 sm:px-10 sm:pt-12 sm:pb-10 md:grid-cols-[1fr_auto] md:items-end">
                 <div>
-                  <p className="serif text-foreground text-balance text-2xl font-normal leading-[1.25] tracking-[-0.01em] sm:text-3xl">
-                    {d.lead}
-                  </p>
-                  {d.coda && (
-                    <p className="serif-italic text-muted-foreground mt-4 text-balance text-xl leading-snug sm:text-2xl">
-                      {d.coda}
-                    </p>
-                  )}
+                  <p className="label-mono text-muted-foreground">Sitalo Webdesign · Hamburg</p>
+                  <h1 className="mt-5 text-[3.2rem] leading-[0.9] tracking-[-0.045em] sm:text-[5rem] lg:text-[5.75rem]">
+                    Manifest
+                  </h1>
                 </div>
-              </li>
-            ))}
-          </ol>
-        </section>
+                <p className="text-muted-foreground max-w-xs text-pretty text-[15.5px] leading-relaxed">
+                  Acht Sätze darüber, wie wir arbeiten. Wir haben sie aufgeschrieben, damit Sie uns daran messen
+                  können.
+                </p>
+              </header>
 
-        <section>
-          <div className="mx-auto w-full max-w-2xl px-6 py-20 text-center sm:py-28">
-            <div className="text-muted-foreground/55 inline-flex flex-col items-center gap-4">
-              <SitaloStempel size="md" />
-              <p className="text-[13px]">
-                Sitalo Atelier · Hamburg
-              </p>
-            </div>
-            <div className="text-muted-foreground/65 mt-10 inline-flex flex-col items-center gap-3 text-[13px]">
-              <p>
-                Wer dieses Manifest gelesen hat, weiß genug, um eine
-                Anfrage zu schicken.
-              </p>
+              <ul>
+                {SAETZE.map((s) => (
+                  <li
+                    key={s.thema}
+                    className="border-border grid gap-3 border-b px-5 py-7 sm:grid-cols-[9.5rem_1fr] sm:gap-8 sm:px-10 sm:py-9"
+                  >
+                    <span className="label-mono text-muted-foreground sm:pt-2.5">{s.thema}</span>
+                    <div>
+                      <p
+                        className="text-balance text-[1.45rem] leading-[1.18] tracking-[-0.022em] sm:text-[1.9rem]"
+                        style={{ fontStretch: "110%", fontWeight: 720 }}
+                      >
+                        {s.lead}
+                      </p>
+                      <p className="text-muted-foreground mt-3 max-w-xl text-pretty text-[16.5px] leading-relaxed">
+                        {s.coda}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              <footer className="flex flex-wrap items-center justify-between gap-6 px-5 py-8 sm:px-10 sm:py-10">
+                <p className="text-muted-foreground font-mono text-[12px] leading-relaxed">
+                  Sitalo Webdesign, Hamburg
+                  <br />
+                  <a href="tel:+491607621876" className="hover:text-foreground underline-offset-4 hover:underline">
+                    0160 7621876
+                  </a>
+                  {" · "}
+                  <a href="mailto:info@sitalo.de" className="hover:text-foreground underline-offset-4 hover:underline">
+                    info@sitalo.de
+                  </a>
+                </p>
+                <SitaloStempel size="md" className="text-ink-olive -rotate-6 opacity-90" />
+              </footer>
+            </article>
+
+            <div className="mx-auto mt-10 flex max-w-4xl flex-wrap items-center gap-x-8 gap-y-4">
+              <Link href="/anfrage" className="btn-signal">
+                Website anfragen <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
               <Link
-                href="/anfrage"
-                className="text-foreground inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] hover:underline"
+                href="/atelier"
+                className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
               >
-                Website anfragen
+                Wie ein Auftrag bei uns läuft <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -176,7 +169,6 @@ export default function ManifestPage() {
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([ARTICLE_LD, BREADCRUMB_LD]),
         }}

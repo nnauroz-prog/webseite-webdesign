@@ -11,243 +11,264 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Erreichbarkeit — wann wir antworten",
   description:
-    "Antwortzeit-Versprechen ohne Marketing-Geschwurbel. Was wir wann zusagen, was bewusst nicht, und was passiert, wenn wir im Urlaub sind.",
+    "Unsere Antwortzeiten: was wir wann zusagen, was bewusst nicht, und was gilt, wenn wir im Urlaub sind.",
   alternates: { canonical: "/erreichbarkeit" },
   openGraph: {
     type: "website",
     title: "Erreichbarkeit — wann wir antworten",
     description:
-      "Antwortzeit-Versprechen ohne Marketing-Geschwurbel.",
+      "Unsere Antwortzeiten, und was im Urlaub gilt.",
     url: `${SITE_URL}/erreichbarkeit`,
   },
 };
 
-/**
- * /erreichbarkeit — die unsichtbaren Verträge offen hinlegen.
- *
- * Aus der L7-Analyse: die größte Brand-Falle ist das implizite
- * „wir-gehen-immer-ans-Telefon", das nirgends einklagbar ist und
- * trotzdem als Versprechen wirkt. Diese Seite macht's einklagbar —
- * mit drei konkreten Zahlen (Antwortzeit-Fenster, Urlaubswochen,
- * Vertretungs-Scope) und einem ehrlichen Schlusssatz: was wir nicht
- * versprechen.
- *
- * Stilistisch geleant an /promises: editorial Long-Form-Prosa, keine
- * Feature-Karten-Reflex. Eyebrow oben, Headline, dann ein Fließtext
- * mit Drop-Cap, dann Marginalia. Numerische Werte aus
- * lib/erreichbarkeit.ts; alles dazwischen ist Hand-gepflegte Voice.
- */
+const CONTACT_EMAIL = "info@sitalo.de";
 
+/** Nur den ersten Buchstaben klein, damit „Eine Hamburger
+ *  Webentwicklerin …“ mitten im Satz richtig geschrieben bleibt. */
+function klein(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
+/** Erster Buchstabe groß, für Tabellenzellen („Meist in vier Stunden“). */
+function gross(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/**
+ * /erreichbarkeit — wann wir antworten, schriftlich.
+ *
+ * Oben die Antwortzeiten als Fahrplan-Tabelle (Werte aus
+ * lib/erreichbarkeit.ts), darunter Fließtext zu Feierabend, Urlaub
+ * und Vertretung, dann die Schritte, wenn keine Antwort kommt (echte
+ * Reihenfolge, deshalb nummeriert). Am Schluss die Telefonnummer.
+ */
 export default function ErreichbarkeitPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Erreichbarkeit" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <Article />
+        <Kopf />
+        <Text />
+        <WennNichtsKommt />
+        <Kontakt />
       </main>
       <MarketingFooter />
     </div>
   );
 }
 
-function Article() {
+/* ------------------------------------------------------------------
+ * Kopf: Überschrift links, Antwortzeiten als Fahrplan rechts.
+ * ---------------------------------------------------------------- */
+function Kopf() {
+  const fenster = ERREICHBARKEIT.fenster;
+  return (
+    <section>
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-5">
+          <p className="label-mono text-muted-foreground">Erreichbarkeit</p>
+          <h1 className="mt-6 text-balance text-[2.5rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[3.6rem]">
+            Werktags antworten wir meist am selben Tag
+          </h1>
+          <p className="text-muted-foreground mt-6 max-w-md text-pretty text-[16.5px] leading-relaxed sm:text-lg">
+            Wir sind ein kleines Büro in Hamburg und antworten in festen Zeitfenstern, nicht rund um die Uhr. Hier steht,
+            was Sie wann erwarten können.
+          </p>
+        </div>
+
+        <div className="min-w-0 lg:col-span-6 lg:col-start-7 lg:pt-2">
+          <table className="w-full border-collapse text-left">
+            <caption className="label-mono text-muted-foreground pb-3 text-left">Antwortzeiten</caption>
+            <thead>
+              <tr className="border-foreground border-b-2">
+                <th scope="col" className="label-mono text-muted-foreground w-[48%] py-2 pr-4 text-[11px] font-medium">
+                  Sie melden sich
+                </th>
+                <th scope="col" className="label-mono text-muted-foreground py-2 text-[11px] font-medium">
+                  Wir antworten
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {fenster.map((f) => (
+                <tr key={f.label} className="border-border border-b align-baseline">
+                  <th scope="row" className="py-4 pr-4 text-[15px] font-normal leading-snug sm:text-[16px]">
+                    {f.label}
+                  </th>
+                  <td
+                    className="py-4 text-[1.05rem] leading-snug tracking-[-0.01em] sm:text-[1.2rem]"
+                    style={{ fontStretch: "108%", fontWeight: 680 }}
+                  >
+                    {gross(f.zeit)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Fließtext: Feierabend, Wochenende, Urlaub, was wir nicht zusagen.
+ * ---------------------------------------------------------------- */
+function Text() {
   const f = ERREICHBARKEIT.fenster;
   const u = ERREICHBARKEIT.urlaub;
   const v = ERREICHBARKEIT.vertretung;
 
   return (
-    <article className="relative">
-      {/* Marginalia rechts — wie ein Kapitel-Marker am Buchrand. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-[40%] right-6 hidden -translate-y-1/2 lg:block"
-      >
-        <p
-          className="text-muted-foreground/45 text-[13px]"
-          style={{ writingMode: "vertical-rl" }}
-        >
-          § 07 · Antwort-Versprechen
-        </p>
-      </div>
+    <section className="bg-card border-foreground border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <div className="grid gap-x-8 gap-y-14 lg:grid-cols-12">
+          <Absatz titel="Feierabend und Wochenende">
+            <p>
+              Werktags zwischen 9 und 18 Uhr lesen wir laufend Mails und antworten {f[0].zeit}. Anrufe nehmen wir oft
+              direkt an. Wenn nicht, rufen wir am selben Tag zurück.
+            </p>
+            <p>
+              Um 18 Uhr machen wir Feierabend, denn wer nachts arbeitet, baut am nächsten Tag schlechtere Seiten. Was abends
+              ankommt, beantworten wir {f[1].zeit}. Nachts geht das Telefon auf die Mailbox.
+            </p>
+            <p>
+              Am Wochenende bleibt die Mail liegen. Reguläre Anfragen vom Samstag oder Sonntag beantworten wir{" "}
+              {f[2].zeit}. Ausnahme: Ihre Seite ist nicht mehr erreichbar. Dafür gibt es eine Notfall-Nummer, die
+              auch am Samstag klingelt.
+            </p>
+          </Absatz>
 
-      <div className="mx-auto w-full max-w-3xl px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
-        {/* Headline — bewusst keine Eyebrow, bricht das Schema der
-            anderen Seiten und signalisiert: das hier ist ein
-            Versprechen, kein Service. */}
-        <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02]">
-          Wir gehen ans Telefon.
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            So oft wir können.
-          </span>
-        </h1>
-
-        {/* Lead mit Drop-Cap — gleiches Pattern wie auf /promises,
-            damit die beiden Seiten als Schwester-Texte erkennbar
-            sind: Promises = was wir liefern, Erreichbarkeit = wann
-            wir antworten. */}
-        <p className="text-foreground/85 mt-12 text-pretty text-lg leading-[1.6] sm:text-xl sm:leading-[1.55]">
-          <span className="drop-cap-3d serif text-ink-petrol float-left mr-3 text-[5.5rem] leading-[0.85] font-normal tracking-[-0.04em] sm:text-[6.5rem]">
-            S
-          </span>
-          italo ist ein kleines Atelier, kein Konzern mit
-          Schichtbetrieb. Wer in Hamburg arbeitet, hat einen Tag —
-          nicht zwei, nicht drei in Schichten. Das heißt: wir
-          antworten in Fenstern, nicht rund um die Uhr. Und damit
-          das Versprechen „wir gehen ans Telefon" nicht zur leeren
-          Marketing-Zeile wird, schreiben wir hier auf, was Sie wann
-          erwarten dürfen.
-        </p>
-
-        {/* § I — Antwortzeit-Fenster */}
-        <Roman num="I" title="Vier Fenster, sonst nichts" />
-
-        <p className="text-foreground/80 mt-6 text-pretty text-[16.5px] leading-[1.7]">
-          Im Werktagsfenster zwischen neun und achtzehn Uhr sind wir
-          an der Mail — die meiste Antwort kommt {f[0].zeit.toLowerCase()}.
-          Anrufe gehen oft direkt durch; wenn nicht, rufen wir noch
-          am selben Tag zurück. Wir versprechen nicht „sofort". Aber
-          „bis zum Abend".
-        </p>
-
-        <p className="text-foreground/80 mt-5 text-pretty text-[16.5px] leading-[1.7]">
-          Nach achtzehn Uhr machen wir bewusst zu. Das ist nicht
-          Faulheit, das ist Selbstschutz: wer nachts arbeitet, baut
-          am Tag schlechter. Was abends reinkommt, beantworten wir{" "}
-          {f[1].zeit.toLowerCase()}. Anrufe nachts gehen auf die
-          Mailbox, mit klarer Ansage.
-        </p>
-
-        <p className="text-foreground/80 mt-5 text-pretty text-[16.5px] leading-[1.7]">
-          Samstag und Sonntag bleibt die Mail liegen, ehrlich gesagt.
-          Reguläre Anfragen vom Wochenende lesen wir{" "}
-          {f[2].zeit.toLowerCase()}. Die einzige Ausnahme: Ihre Seite
-          ist live runter. Dafür gibt es eine Notfall-Nummer, die
-          auch am Samstag klingelt — niemand sagt freitags um drei,
-          dass das Kontaktformular jetzt bis Montag streiken darf.
-        </p>
-
-        {/* § II — Urlaub */}
-        <Roman num="II" title={`${u.wochenProJahr} Wochen im Jahr`} />
-
-        <p className="text-foreground/80 mt-6 text-pretty text-[16.5px] leading-[1.7]">
-          Wir sind {u.wochenProJahr} Wochen im Jahr komplett weg, in
-          maximal {u.maxAmStueck}-Wochen-Blöcken am Stück. Im
-          Auto-Reply steht das konkrete Rückkehr-Datum, nicht der
-          übliche „bald wieder da"-Satz, der für den Lesenden nichts
-          bedeutet. Wenn Sie wissen, wann wir antworten, können Sie
-          planen — das ist der ganze Unterschied.
-        </p>
-
-        <p className="text-foreground/80 mt-5 text-pretty text-[16.5px] leading-[1.7]">
-          Im Akutfall — Live-Seite kippt, Domain reagiert nicht,
-          Mailserver schweigt — liest in dieser Zeit{" "}
-          {v.rolle.toLowerCase()} mit. Sie kann technisch handeln,
-          wenn etwas wirklich brennt. Sie schreibt nicht im
-          Sitalo-Ton, sie führt keine Strategie-Gespräche, und sie
-          baut keine neuen Layouts. Aber Ihre Seite ist wieder oben,
-          bevor jemand auffällt.
-        </p>
-
-        {/* Pull-Quote als visueller Bruch */}
-        <div className="border-ink-petrol/60 mt-16 border-l-2 pl-6 sm:pl-10">
-          <p className="serif text-foreground text-balance text-2xl leading-[1.25] tracking-[-0.015em] sm:text-3xl lg:text-[2.5rem] lg:leading-[1.15]">
-            Lieber weniger versprechen
-            <br />
-            <span className="serif-italic text-muted-foreground">
-              und das halten.
-            </span>
-          </p>
+          <Absatz titel={`Urlaub: ${u.wochenProJahr} Wochen im Jahr`}>
+            <p>
+              Wir sind {u.wochenProJahr} Wochen im Jahr nicht da, höchstens {u.maxAmStueck} Wochen am Stück. In der
+              automatischen Antwort steht dann das Datum, an dem wir zurück sind, damit Sie planen können.
+            </p>
+            <p>
+              Fällt in dieser Zeit Ihre Seite aus oder reagiert die Domain nicht, liest {klein(v.rolle)} mit. Sie kann
+              technisch eingreifen und bringt die Seite wieder ans Laufen. Texte, Beratung und neue Seiten warten, bis wir
+              zurück sind.
+            </p>
+          </Absatz>
         </div>
 
-        {/* § III — Was wir nicht versprechen */}
-        <Roman num="III" title="Was wir bewusst nicht zusagen" />
+        <div className="border-border mt-14 grid gap-6 border-t pt-10 lg:grid-cols-12 lg:gap-8">
+          <h2 className="text-balance text-[1.6rem] leading-[1.1] tracking-[-0.025em] sm:text-[2rem] lg:col-span-5">
+            Wir sagen nur zu, was in der Tabelle oben steht.
+          </h2>
+          <div className="text-foreground/85 space-y-4 text-[16.5px] leading-[1.7] lg:col-span-6 lg:col-start-7">
+            <p>
+              Eine Antwort innerhalb von Minuten zum Beispiel wäre ein Versprechen, das ein kleines Büro nicht halten
+              kann. Wir nennen lieber eine Frist, die wir auch an einem vollen Tag einhalten.
+            </p>
+            <p>Dafür sprechen Sie jedes Mal mit denselben Leuten, und die kennen Ihre Seite.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-        <p className="text-foreground/80 mt-6 text-pretty text-[16.5px] leading-[1.7]">
-          Wir versprechen keine Antwort in Minuten. Wir versprechen
-          keine 24/7-Erreichbarkeit. Wir versprechen keine Hotline
-          mit mehreren Personen, die Sie abwechselnd betreuen. Und
-          wir versprechen keine garantierte Reaktion am Wochenende
-          auf eine reguläre Anfrage.
-        </p>
+function Absatz({ titel, children }: { titel: string; children: React.ReactNode }) {
+  return (
+    <div className="lg:col-span-6">
+      <h2 className="text-balance text-[1.6rem] leading-[1.1] tracking-[-0.025em] sm:text-[2rem]">{titel}</h2>
+      <div className="text-foreground/85 mt-5 space-y-4 text-[16.5px] leading-[1.7]">{children}</div>
+    </div>
+  );
+}
 
-        <p className="text-foreground/80 mt-5 text-pretty text-[16.5px] leading-[1.7]">
-          Andere Anbieter versprechen das alles in den Verkaufstexten
-          — und brechen es lautlos in der Realität. Wir machen's
-          umgekehrt. Weniger im Marketing-Text, mehr im Alltag. Die
-          Rechnung geht für beide Seiten besser auf.
-        </p>
+/* ------------------------------------------------------------------
+ * Wenn keine Antwort kommt: drei Schritte in fester Reihenfolge.
+ * ---------------------------------------------------------------- */
+const SCHRITTE: { titel: string; text: string }[] = [
+  {
+    titel: "Zweite Mail mit „dringend“ im Betreff",
+    text: "Solche Mails sortieren wir nach oben.",
+  },
+  {
+    titel: "Nach einem Tag: die Notfall-Nummer anrufen",
+    text: "Auch wenn Sie sonst lieber schreiben.",
+  },
+  {
+    titel: "Niemand nimmt ab: eine SMS schicken",
+    text: "An dieselbe Nummer, mit Ihrem Namen und einer Rückrufnummer.",
+  },
+];
 
-        {/* § IV — Fallback */}
-        <Roman num="IV" title="Wenn doch mal nichts kommt" />
-
-        <p className="text-foreground/80 mt-6 text-pretty text-[16.5px] leading-[1.7]">
-          Falls die Antwort innerhalb des oben genannten Fensters
-          ausbleibt, ist das nie Absicht. Wir sind kein Konzern, der
-          Tickets im System untergehen lässt — wir sind ein
-          Atelier, in dem entweder Krankheit oder ein technisches
-          Problem auf unserer Seite zugeschlagen hat. Beides
-          passiert; bei einem von zehntausend Tagen ist die
-          ehrliche Quote.
-        </p>
-
-        <p className="text-foreground/80 mt-5 text-pretty text-[16.5px] leading-[1.7]">
-          Schreiben Sie in dem Fall eine zweite Mail mit dem Wort
-          „dringend" im Betreff — das filtern wir prioritär raus.
-          Wenn auch das nach einem Tag nichts ergibt, rufen Sie auf
-          der Notfall-Nummer an, auch wenn Sie sonst nur per Mail
-          schreiben würden. Wenn niemand abnimmt: eine SMS mit
-          Ihrem Namen und einer Rückrufnummer auf dieselbe Nummer.
-          Bei jedem dieser Schritte hat sich noch jemand gemeldet.
-        </p>
-
-        {/* Schluss */}
-        <div className="mt-20 sm:mt-24">
-          <p className="serif text-foreground text-balance text-3xl leading-[1.2] tracking-[-0.015em] sm:text-4xl">
-            Wir können nicht überall sein.
-            <br />
-            <span className="serif-italic text-muted-foreground">
-              Aber Sie wissen, wo Sie uns kriegen.
-            </span>
+function WennNichtsKommt() {
+  return (
+    <section className="border-border border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-4">
+          <h2 className="text-balance text-[1.9rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.4rem]">
+            Wenn keine Antwort kommt
+          </h2>
+          <p className="text-muted-foreground mt-5 text-[16px] leading-relaxed">
+            Bleibt die Antwort im genannten Zeitfenster aus, ist meist jemand krank oder bei uns streikt die Technik.
+            Dann hilft diese Reihenfolge.
           </p>
+        </div>
+        <ol className="border-foreground border-t lg:col-span-7 lg:col-start-6">
+          {SCHRITTE.map((s, i) => (
+            <li key={s.titel} className="border-border grid grid-cols-[2.5rem_1fr] gap-x-4 border-b py-6 sm:grid-cols-[3.5rem_1fr]">
+              <span className="text-gold font-mono text-[13px] font-medium tabular-nums">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <p className="text-[1.15rem] font-semibold leading-snug tracking-[-0.015em] sm:text-[1.25rem]">{s.titel}</p>
+                <p className="text-muted-foreground mt-1.5 text-[15.5px] leading-relaxed">{s.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
 
-          <div className="mt-12 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <Link
-              href="/kontakt"
-              className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight transition-all"
-            >
-              Zum Kontakt
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+/* ------------------------------------------------------------------
+ * Kontakt: die Nummer groß.
+ * ---------------------------------------------------------------- */
+function Kontakt() {
+  return (
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <p className="label-mono text-stahl-hell">{ERREICHBARKEIT.fenster[0].label}</p>
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
+          >
+            0160 7621876
+          </a>
+        </div>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16px] leading-relaxed">
+            Wer lieber schreibt, schickt eine Mail. Für ein längeres Gespräch gibt es die Sprechstunde.
+          </p>
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold"
+          >
+            {CONTACT_EMAIL}
+          </a>
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Link href="/kontakt" className="btn-signal">
+              Zum Kontakt <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link
               href="/sprechstunde"
-              className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
+              className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
             >
-              Lieber zur Sprechstunde
+              Zur Sprechstunde
             </Link>
           </div>
         </div>
       </div>
-    </article>
-  );
-}
-
-/**
- * Numerierte H2 mit Roman-Ziffer im Italic-Serif — gleiches Pattern
- * wie auf den /journal-Essays. Visueller Beat zwischen Prosa-Blöcken,
- * ohne dass es sich wie ein Feature-Grid anfühlt.
- */
-function Roman({ num, title }: { num: string; title: string }) {
-  return (
-    <h2 className="mt-16 flex items-baseline gap-5 text-balance text-2xl font-semibold leading-snug tracking-[-0.02em] sm:mt-20 sm:text-3xl">
-      <span
-        aria-hidden="true"
-        className="serif-italic text-muted-foreground/70 shrink-0 text-2xl font-normal tracking-tight sm:text-3xl"
-      >
-        {num}.
-      </span>
-      <span className="text-foreground">{title}</span>
-    </h2>
+    </section>
   );
 }

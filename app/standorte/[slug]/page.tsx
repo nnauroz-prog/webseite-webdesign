@@ -7,6 +7,7 @@ import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Briefkarte } from "@/components/marketing/vertical-landing";
 import { formatDate, getPost, JOURNAL_BY_STANDORT } from "@/lib/journal-data";
 import {
   STANDORTE,
@@ -33,7 +34,7 @@ export async function generateMetadata({
   if (!standort) return {};
 
   const title = `Website erstellen lassen ${standort.name} · Hamburg`;
-  const description = `Website erstellen lassen in Hamburg-${standort.name}: individuell gestaltet, für Handy und Google optimiert, Festpreis ab 499 €. Persönlich betreut.`;
+  const description = `Website erstellen lassen in Hamburg-${standort.name}: individuell gestaltet, für Handy und Google optimiert, Festpreis ab 499 €, Test-Link vor dem Start.`;
   return {
     title,
     description,
@@ -119,7 +120,12 @@ export default async function StandortPage({
         <Viertel standort={standort} />
         <Branchen standort={standort} />
         <Weiter standort={standort} />
-        <Schluss standort={standort} />
+        <Briefkarte
+          title={`Das erste Gespräch führen wir am Telefon oder bei Ihnen in ${standort.name}.`}
+          inquiryHref={`/anfrage?ort=${standort.slug}`}
+        >
+          Den Festpreis bekommen Sie schriftlich, bevor wir anfangen. Vor dem Start schicken wir Ihnen einen Test-Link.
+        </Briefkarte>
       </main>
       <MarketingFooter />
       <script
@@ -168,7 +174,7 @@ function Hero({ standort }: { standort: Standort }) {
 function Viertel({ standort }: { standort: Standort }) {
   return (
     <section className="border-border border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
           <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
             Webdesign für {standort.name}
@@ -208,27 +214,39 @@ function Viertel({ standort }: { standort: Standort }) {
 }
 
 /* ------------------------------------------------------------------
- * Passende Branchen als Zeitungsspalten.
+ * Passende Branchen als Register auf dunklem Grund: Überschrift
+ * links, je Branche eine Zeile mit Begründung und Link.
  * ---------------------------------------------------------------- */
 function Branchen({ standort }: { standort: Standort }) {
   const n = standort.empfohleneBranchen.length;
   return (
-    <section className="bg-card border-border border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
-        <h2 className="max-w-3xl text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
-          {ZAHLWORT[n] ?? n} Branchen, die zu {standort.name} passen
-        </h2>
-        <ul className="mt-12 grid gap-10 sm:mt-14 md:grid-cols-3 md:gap-8">
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-4">
+          <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+            {ZAHLWORT[n] ?? n} Branchen, die zu {standort.name} passen
+          </h2>
+          <p className="text-stahl-hell mt-6 max-w-xs text-[15.5px] leading-relaxed">
+            Zu jeder Branche gibt es eine eigene Seite mit Musterseite und typischem Seitenplan.
+          </p>
+        </div>
+        <ul className="border-background/40 border-t lg:col-span-8">
           {standort.empfohleneBranchen.map((b) => (
-            <li key={b.slug} className="border-foreground border-t-2 pt-5">
-              <Link href={`/branchen/${b.slug}`} className="group block">
-                <h3 className="text-balance text-[20px] leading-snug tracking-[-0.015em] underline-offset-4 group-hover:underline">
-                  Website für {b.label}
+            <li key={b.slug} className="border-background/15 border-b">
+              <Link
+                href={`/branchen/${b.slug}`}
+                className="group grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 py-6 sm:grid-cols-[14rem_1fr_auto] sm:gap-x-8"
+              >
+                <h3 className="text-background text-[19px] leading-snug tracking-[-0.015em] underline-offset-4 group-hover:underline sm:text-[20px]">
+                  {b.label}
                 </h3>
-                <p className="text-muted-foreground mt-3 text-pretty text-[15.5px] leading-relaxed">{b.warum}</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-[14.5px] font-semibold">
-                  Zur Branchenseite {ARROW}
-                </span>
+                <ArrowRight
+                  className="mt-1 h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1 sm:order-last"
+                  aria-hidden="true"
+                />
+                <p className="text-stahl-hell col-span-2 text-pretty text-[15.5px] leading-relaxed sm:col-span-1">
+                  {b.warum}
+                </p>
               </Link>
             </li>
           ))}
@@ -248,8 +266,8 @@ function Weiter({ standort }: { standort: Standort }) {
   const andere = STANDORTE.filter((s) => s.slug !== standort.slug);
 
   return (
-    <section className="border-border border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-20 lg:grid-cols-12 lg:gap-8">
+    <section className="bg-card">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         {post ? (
           <div className="lg:col-span-5">
             <h2 className="label-mono text-muted-foreground">Aus dem Journal · {formatDate(post.publishedAt)}</h2>
@@ -284,32 +302,6 @@ function Weiter({ standort }: { standort: Standort }) {
               </li>
             ))}
           </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Schluss({ standort }: { standort: Standort }) {
-  return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
-          Das erste Gespräch führen wir am Telefon oder bei Ihnen in {standort.name}.
-        </h2>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
-            Auf Anfragen antworten wir meist am selben Werktag. Den Festpreis bekommen Sie schriftlich, bevor wir
-            anfangen.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href={`/anfrage?ort=${standort.slug}`} className="btn-signal grow sm:grow-0">
-              Anfrage schreiben {ARROW}
-            </Link>
-            <a href="tel:+491607621876" className="btn-line grow tabular-nums sm:grow-0">
-              0160 7621876
-            </a>
-          </div>
         </div>
       </div>
     </section>

@@ -2,7 +2,7 @@ import { editorialOgImage, OG_SIZE } from "@/lib/og-editorial";
 import { formatDate, getAllPostSlugs, getPost } from "@/lib/journal-data";
 
 export const runtime = "nodejs";
-export const alt = "Sitalo Journal — Essay aus dem Hamburger Atelier.";
+export const alt = "Sitalo Journal: Beitrag aus Hamburg.";
 export const size = OG_SIZE;
 export const contentType = "image/png";
 
@@ -10,11 +10,7 @@ export async function generateStaticParams() {
   return getAllPostSlugs().map((slug) => ({ slug }));
 }
 
-/**
- * Per-Post-OG: Essay-Titel als Italic-Hauptzeile (die Titel sind
- * Thesen, keine Keywords — sie tragen die Serif gut), Journal-
- * Marker als Bold-Zeile darüber.
- */
+/** Vorschaubild je Beitrag: Titel als Überschrift, Vorspann darunter. */
 export default async function Image({
   params,
 }: {
@@ -24,20 +20,18 @@ export default async function Image({
   const post = getPost(slug);
   if (!post) {
     return editorialOgImage({
-      variant: "espresso",
-      eyebrow: "SITALO · JOURNAL",
-      headlineBold: "Journal.",
-      headlineItalic: "Aus dem Atelier.",
-      subline: "Essays aus echten Hamburger Projekten.",
-      urlPill: "sitalo.de/journal",
+      variant: "dunkel",
+      eyebrow: "Sitalo · Journal",
+      headline: "Journal",
+      subline: "Texte über Preise, Baukästen und die Suche bei Google.",
+      url: "sitalo.de/journal",
     });
   }
   return editorialOgImage({
-    variant: "espresso",
-    eyebrow: `SITALO · JOURNAL · ${formatDate(post.publishedAt).toUpperCase()}`,
-    headlineBold: "Journal.",
-    headlineItalic: post.title,
+    variant: "dunkel",
+    eyebrow: `Sitalo · Journal · ${formatDate(post.publishedAt)}`,
+    headline: post.title,
     subline: post.dek,
-    urlPill: `sitalo.de/journal`,
+    url: `sitalo.de/journal/${post.slug}`,
   });
 }

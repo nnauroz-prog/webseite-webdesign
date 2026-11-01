@@ -42,7 +42,7 @@ export function GET() {
     <title>Sitalo Journal</title>
     <link>${SITE_URL}/journal</link>
     <atom:link href="${SITE_URL}/journal/feed.xml" rel="self" type="application/rss+xml"/>
-    <description>Essays aus dem Hamburger Atelier — Beobachtungen aus echten Projekten mit lokalen Unternehmen.</description>
+    <description>Texte von Sitalo Webdesign aus Hamburg über Preise, Arbeitsweise und die Suche bei Google.</description>
     <language>de-DE</language>
 ${items}
   </channel>

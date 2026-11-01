@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 /**
- * Shortcut-Help-Overlay — "?" öffnet ein Modal, das alle aktiven
- * Tastenkürzel auflistet. Klassisch Linear-Style „cheatsheet on demand".
+ * Shortcut-Help-Overlay — "?" öffnet ein Fenster, das alle aktiven
+ * Tastenkürzel auflistet. Gesetzt wie eine Tabelle mit Haarlinien,
+ * Tasten als kantige Kappen in Mono.
  *
  * "?" wird nur als Trigger erkannt, wenn der Fokus nicht in einem
  * Eingabefeld ist. Esc schließt.
@@ -15,15 +16,15 @@ type Shortcut = { keys: string[]; label: string };
 
 const SHORTCUTS: { group: string; items: Shortcut[] }[] = [
   {
-    group: "Global",
+    group: "Überall",
     items: [
       { keys: ["⌘", "K"], label: "Schnellnavigation öffnen" },
       { keys: ["?"], label: "Diese Übersicht" },
-      { keys: ["Esc"], label: "Modal schließen" },
+      { keys: ["Esc"], label: "Fenster schließen" },
     ],
   },
   {
-    group: "Springen (G + Taste)",
+    group: "Springen: erst G, dann die Taste",
     items: [
       { keys: ["G", "H"], label: "Startseite" },
       { keys: ["G", "L"], label: "Leistungen" },
@@ -100,26 +101,24 @@ export function ShortcutHelp() {
     >
       <div
         aria-hidden="true"
-        className="bg-foreground/40 absolute inset-0 backdrop-blur-sm"
+        className="bg-foreground/60 absolute inset-0"
       />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-card border-border/60 ring-foreground/5 relative w-full max-w-2xl overflow-hidden rounded-2xl border shadow-[0_30px_80px_-20px_rgb(0_0_0/0.3)] ring-1"
+        className="bg-card border-foreground/20 relative w-full max-w-2xl overflow-hidden rounded-[3px] border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]"
       >
-        <div className="border-border/60 flex items-center justify-between border-b px-5 py-4">
-          <div>
-            <p className="text-muted-foreground text-[13px]">
-              Tastenkürzel
-            </p>
-            <p className="text-foreground mt-1 text-base font-medium tracking-tight">
-              Was geht hier so per Tastatur
+        <div className="border-border flex items-center justify-between gap-4 border-b px-5 py-4">
+          <div className="min-w-0">
+            <p className="label-mono text-muted-foreground">Tastatur</p>
+            <p className="text-foreground mt-1.5 text-[17px] font-semibold tracking-tight">
+              Tastenkürzel dieser Website
             </p>
           </div>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Schließen"
-            className="border-border text-muted-foreground hover:bg-secondary hover:text-foreground inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
+            className="border-border text-muted-foreground hover:border-foreground hover:text-foreground inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[2px] border transition-colors"
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -128,10 +127,10 @@ export function ShortcutHelp() {
         <div className="max-h-[70vh] overflow-y-auto px-5 py-5">
           {SHORTCUTS.map((group) => (
             <section key={group.group} className="mb-5 last:mb-0">
-              <p className="text-muted-foreground/80 mb-3 text-[13px]">
+              <p className="label-mono text-muted-foreground mb-2">
                 {group.group}
               </p>
-              <ul className="divide-border/40 divide-y">
+              <ul className="border-foreground divide-border divide-y border-t">
                 {group.items.map((item, i) => (
                   <li
                     key={i}
@@ -144,7 +143,7 @@ export function ShortcutHelp() {
                       {item.keys.map((k, ki) => (
                         <kbd
                           key={ki}
-                          className="border-border/70 bg-background text-foreground/80 inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-md border px-1.5 font-mono text-[11px]"
+                          className="border-border bg-background text-foreground inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-[2px] border border-b-2 px-1.5 font-mono text-[11.5px]"
                         >
                           {k}
                         </kbd>
@@ -157,9 +156,10 @@ export function ShortcutHelp() {
           ))}
         </div>
 
-        <div className="border-border/60 text-muted-foreground/80 border-t px-5 py-3 text-[13px]">
-          Drücke <kbd className="border-border/70 mx-1 rounded border px-1 normal-case">?</kbd>{" "}
-          jederzeit für diese Übersicht
+        <div className="border-border text-muted-foreground border-t px-5 py-3 text-[13px]">
+          Mit{" "}
+          <kbd className="border-border mx-0.5 rounded-[2px] border px-1 font-mono text-[11.5px]">?</kbd>{" "}
+          öffnen Sie diese Übersicht jederzeit.
         </div>
       </div>
     </div>

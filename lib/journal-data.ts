@@ -1,14 +1,13 @@
 /**
  * Journal-Datenmodell für /journal und /journal/[slug].
  *
- * Editorial-Anspruch: jeder Beitrag liest sich wie ein Kurz-Essay,
- * nicht wie ein Blogpost. Kein Reportage-Kitsch, keine fiktiven
- * Anekdoten, keine 10-Tipps-Listen. Stattdessen: eine klare These,
- * konkrete Beobachtungen aus eigener Arbeit, zurückhaltende Zahlen.
+ * Jeder Beitrag ist ein kurzer Text mit einer klaren Aussage: was wir
+ * beobachten, wie wir arbeiten, was Inhaber daraus machen können.
+ * Keine erfundenen Kunden, keine unbelegten Zahlen, keine Statistiken.
+ * Preise und Leistungen kommen aus lib/pakete-data.ts.
  *
- * Form pro Beitrag: 500–800 Wörter, drei bis fünf H2-Sektionen
- * (auf der Detailseite mit Roman-Numerals beschriftet), ein
- * pointiertes Schluss-Zitat.
+ * Form pro Beitrag: drei bis fünf Zwischenüberschriften und ein
+ * Schluss-Zitat.
  *
  * Reihenfolge im Array bestimmt Reihenfolge auf /journal — neuester
  * Post nach oben.
@@ -39,80 +38,80 @@ const POSTS: JournalPost[] = [
   {
     slug: "die-zweite-frage",
     title: "Die zweite Frage",
-    dek: "Was Inhaber am Telefon eigentlich wissen wollen — und warum sie die erste Frage stellen, statt die zweite.",
+    dek: "Was Anrufer im Erstgespräch eigentlich wissen wollen, und warum sie zuerst nach dem Preis fragen.",
     publishedAt: "2026-06-15",
-    readingMinutes: 6,
-    tags: ["Beratung", "Sprechstunde", "Vertrauen"],
+    readingMinutes: 4,
+    tags: ["Beratung", "Sprechstunde", "Erstgespräch"],
     body: [
       {
         kind: "p",
-        text: "Bei den meisten Erstgesprächen kommt zuerst eine Frage, die keine Frage ist. Was kostet eine Website. Wie lange dauert das. Können Sie auch SEO. Das sind Hülsen, die der Anrufer benutzt, weil er glaubt, sie seien angemessen für ein erstes Telefonat — so wie man im Hotel zuerst nach dem WLAN fragt, obwohl einen das eigentlich nicht interessiert.",
+        text: "Im Erstgespräch kommt zuerst meist die Frage, die man eben stellt. Was kostet eine Website? Wie lange dauert das? Machen Sie auch SEO? Diese Fragen sind berechtigt. Der Grund für den Anruf sind sie selten.",
       },
       {
         kind: "p",
-        text: "Die echte Frage kommt etwa drei Minuten später, manchmal erst nach zehn. Sie ist meistens kleiner und gleichzeitig wichtiger als die erste.",
+        text: "Der eigentliche Grund kommt oft erst ein paar Minuten später. Er ist kleiner als die erste Frage und gleichzeitig dringender.",
       },
       {
         kind: "h2",
-        text: "Was wir tatsächlich hören",
+        text: "Wie so eine zweite Frage klingt",
       },
       {
         kind: "p",
-        text: "Eine Inhaberin einer kleinen Schneiderei in Eppendorf fragt nach den Kosten einer neuen Website. Drei Sätze später kommt heraus: ihr Sohn hat ihr vor zwei Jahren eine Wix-Seite gemacht, der Sohn ist jetzt in Berlin und antwortet nicht mehr, das Passwort ist weg, die Seite zeigt seit Monaten die Sommerkollektion, und nächste Woche kommt ein Reporter vom Hamburger Wochenblatt zum Interview. Die eigentliche Frage war nie der Preis. Die eigentliche Frage war: bekomme ich diese Seite bis Mittwoch wieder unter Kontrolle.",
+        text: "Angenommen, eine Schneiderei fragt nach dem Preis einer neuen Website. Ein paar Sätze später zeigt sich: Die alte Baukasten-Seite hat ein Verwandter gebaut, der nicht mehr erreichbar ist. Das Passwort ist weg, und auf der Startseite steht seit Monaten die Sommerkollektion. Die eigentliche Frage lautet: Wie bekomme ich meine Seite wieder in die Hand?",
       },
       {
         kind: "p",
-        text: "Ein Pflegedienstleiter aus Wandsbek fragt, ob wir auch SEO machen. Vier Sätze später: seine Kassiererin hat letzte Woche eine schlechte Google-Bewertung von jemandem bekommen, der niemals Kunde war, er weiß nicht, wie er reagieren soll, das beschäftigt ihn nachts. Die eigentliche Frage war nie SEO. Die eigentliche Frage war: wie gehe ich mit einer ungerechten Bewertung um, ohne mich strafbar zu machen.",
+        text: "Oder ein Pflegedienst fragt, ob wir SEO machen. Dahinter steckt eine schlechte Google-Bewertung von jemandem, der nie Kunde war. Die eigentliche Frage lautet: Wie antworte ich darauf, ohne mir Ärger einzuhandeln?",
       },
       {
         kind: "h2",
-        text: "Warum die erste Frage gestellt wird",
+        text: "Warum zuerst nach dem Preis gefragt wird",
       },
       {
         kind: "p",
-        text: "Sie ist eine Eintrittskarte. Wer einen Anbieter anruft und sofort mit der eigentlichen Frage einsteigt, fühlt sich nackt — als gäbe es kein Skript für dieses Gespräch, das ihm Sicherheit gibt. Also fragt er, was man halt fragt: Preise, Dauer, Leistungen. Das funktioniert wie das WLAN-Passwort im Hotel: man wollte es nicht wirklich wissen, aber jetzt hat man eine Position eingenommen, von der aus weiterzureden möglich ist.",
+        text: "Wer bei einem fremden Anbieter anruft, beginnt mit dem, was man üblicherweise fragt. Preis, Dauer und Leistungen sind ein sicherer Einstieg. Erst wenn das Gespräch angenehm läuft, kommt das, was einen wirklich beschäftigt.",
       },
       {
         kind: "p",
-        text: "Unsere Aufgabe ist es nicht, die erste Frage besonders gründlich zu beantworten. Unsere Aufgabe ist es, in den ersten zwei Minuten so glaubwürdig zu antworten, dass die zweite Frage hörbar werden darf. Das geht nicht über Sales-Skripte. Das geht nur, wenn der Anrufer spürt, dass wir zuhören wollen, nicht verkaufen.",
+        text: "Wir beantworten die erste Frage deshalb kurz und lassen danach Platz für die zweite.",
       },
       {
         kind: "h2",
-        text: "Wie das praktisch aussieht",
+        text: "Wie das am Telefon aussieht",
       },
       {
         kind: "p",
-        text: "Wir antworten auf Preisfragen in einem Satz, nicht in fünf. Starter ab vierhundertneunundneunzig, Business ab achthundertneunundneunzig, Premium ab vierzehnhundertneunundneunzig — Endpreis je nach Umfang. Punkt. Dann eine Pause. In dieser Pause kommt die zweite Frage.",
+        text: "Auf die Preisfrage antworten wir in einem Satz: Starter ab 499 €, Business ab 899 €, Premium ab 2.499 €, Studio ab 3.490 €, den genauen Festpreis bekommen Sie schriftlich. Dann machen wir eine Pause. In dieser Pause kommt oft die zweite Frage.",
       },
       {
         kind: "p",
-        text: "Wir versuchen nicht, die erste Frage zu instrumentalisieren — keine Rückfragen vom Typ was-Ihnen-denn-wichtiger-sei-Geschwindigkeit-oder-Preis, die der Anrufer als Verkaufstaktik erkennt, weil er sie schon hundertmal gehört hat. Wir sagen, was wir nehmen, schweigen kurz, und warten. Das verlangt mehr Selbstvertrauen als jede Argumentationskette.",
+        text: "Gegenfragen wie „Was ist Ihnen wichtiger, Tempo oder Preis?“ stellen wir nicht. Solche Fragen kennt jeder aus Verkaufsgesprächen, und sie helfen niemandem weiter.",
       },
       {
         kind: "h2",
-        text: "Warum wir das beschreiben",
+        text: "Warum wir das aufschreiben",
       },
       {
         kind: "p",
-        text: "Weil wir seit ein paar Wochen eine monatliche Sprechstunde anbieten, in der es ausschließlich um zweite Fragen geht. Niemand muss sich für ein Erstgespräch melden, niemand muss ein Vorhaben skizzieren, niemand muss seine Branche und sein Budget nennen, um eingelassen zu werden. Die Schwelle ist absichtlich auf Null. Das ist die einzige Bauart, in der zweite Fragen früh genug kommen, um nicht unbeantwortet zu bleiben.",
+        text: "Für solche Fragen gibt es unsere Sprechstunde: jeden ersten Donnerstag im Monat von 17 bis 18:30 Uhr am Telefon. Eine Anmeldung brauchen Sie nicht, und Sie müssen weder ein Vorhaben beschreiben noch ein Budget nennen. Je niedriger die Schwelle, desto früher kommt die Frage, um die es eigentlich geht.",
       },
       {
         kind: "quote",
-        text: "Die erste Frage ist Höflichkeit. Die zweite Frage ist Vertrauen. Eine Werkstatt, die die erste richtig stellt, hört die zweite oft nie.",
+        text: "Oft ist die zweite Frage der eigentliche Grund für den Anruf.",
       },
     ],
   },
   {
     slug: "wann-eine-website-warten-kann",
     title: "Wann eine Website warten kann",
-    dek: "Drei Lagen, in denen es ehrlicher ist, nicht zu bauen — und was wir denen sagen, die uns trotzdem fragen.",
+    dek: "Drei Fälle, in denen wir raten, mit der eigenen Website noch zu warten.",
     publishedAt: "2026-06-12",
-    readingMinutes: 6,
+    readingMinutes: 4,
     tags: ["Beratung", "Entscheidung", "Lokales Geschäft"],
     body: [
       {
         kind: "p",
-        text: "Es ist nicht das, was eine Webdesign-Werkstatt naheliegend schreibt: dass es Momente gibt, in denen eine eigene Website nicht das Erste sein sollte. Aber wir haben in den vergangenen anderthalb Jahren mit dreien gesessen, denen wir am Schluss von einem Auftrag abgeraten haben — und in allen drei Fällen war es die richtige Empfehlung. Hier ist, warum.",
+        text: "Von einer Webdesign-Firma erwartet man diesen Satz nicht: Manchmal sollte eine eigene Website nicht das Erste sein. Wenn wir so einen Fall vor uns haben, sagen wir das im Erstgespräch, auch wenn dabei kein Auftrag herauskommt. Drei Fälle sind typisch.",
       },
       {
         kind: "h2",
@@ -120,11 +119,11 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Ein Inhaber kommt mit einer guten Geschäftsidee, aber ohne ersten Kunden. Er glaubt, die Website sei der erste Schritt. Wir glauben, sie ist der dritte. Erst kommt die Frage, was genau verkauft wird und an wen. Dann das erste, zweite, dritte Gespräch mit echten Interessenten, bei denen sich Begriffe schärfen und Versprechen zurechtschleifen lassen. Erst danach eine Website, die diese geschärften Begriffe trägt.",
+        text: "Jemand hat eine gute Geschäftsidee, aber noch keinen ersten Kunden. Die Website scheint der erste Schritt zu sein. Wir halten sie für den dritten. Zuerst muss klar sein, was Sie genau anbieten und für wen. Danach kommen die ersten Gespräche mit Interessenten, in denen Sie merken, welche Begriffe verstanden werden. Erst dann lohnt sich eine Website, die genau diese Begriffe verwendet.",
       },
       {
         kind: "p",
-        text: "Wer es umgekehrt macht, baut eine Seite für eine Vorstellung des Geschäfts, nicht für das Geschäft selbst. Nach sechs Monaten ist klar, dass die ersten zehn Kunden anders sind, als sie auf der Website erscheinen — und die Seite muss neu gebaut werden, bevor sie irgendetwas verdient hat. Das ist Zeit und Geld zweimal.",
+        text: "Wer es umgekehrt macht, baut eine Seite für eine Vorstellung vom Geschäft. Nach ein paar Monaten zeigt sich, dass die ersten Kunden anders sind als gedacht, und die Texte müssen neu geschrieben werden. Dann bezahlen Sie Zeit und Geld zweimal.",
       },
       {
         kind: "h2",
@@ -132,11 +131,11 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Für manche lokale Geschäfte ist die Wahrheit unbequem: ihr eigentlicher Markt findet auf Instagram statt. Eine kleine Konditorei in Eppendorf, deren Stammkundschaft den nächsten Sonntagskuchen am Donnerstagabend aus der Story erfährt. Ein Boutique-Tattoostudio in Sternschanze, dessen verfügbare Termine über DM laufen.",
+        text: "Manche lokalen Betriebe verkaufen vor allem über Instagram. Eine Konditorei kündigt den Sonntagskuchen am Donnerstag in der Story an. Ein Tattoostudio vergibt Termine per Direktnachricht.",
       },
       {
         kind: "p",
-        text: "In solchen Fällen verlangt eine Website Aufmerksamkeit, die der Inhaberin am Vertriebskanal fehlt. Wenn die Wahl heißt zwischen einer mittelmäßig gepflegten Website plus mittelmäßig gepflegtem Instagram und einem hervorragend gepflegten Instagram allein, ist die Antwort offensichtlich. Wir empfehlen dann ein leichtes Visitenkarten-Setup: eine einzelne Linktree-ähnliche Landung mit den drei wichtigsten Antworten, und alle Energie zurück in den Kanal, der die Anfragen bringt. Das kostet weniger als ein Wochenendbrunch.",
+        text: "Eine aufwendige Website kostet dann Aufmerksamkeit, die beim eigentlichen Vertriebskanal fehlt. Wir empfehlen in so einem Fall eine schlichte Visitenkarten-Seite mit Adresse, Öffnungszeiten und einem Link zum Profil. Die übrige Zeit gehört dem Kanal, über den die Anfragen kommen.",
       },
       {
         kind: "h2",
@@ -144,11 +143,11 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Eine Eisdiele im April, ein Weihnachtsmarkt-Stand im November, ein Skiverleih im Januar — wer mitten in der Saison fragt, hat keine Zeit, neben dem Tagesgeschäft drei bis sechs Wochen Aufbau zu begleiten. Saubere Texte schreiben, Bilder sortieren, Korrekturrunden abnehmen, all das verlangt Konzentration, die in der heißen Phase nicht da ist.",
+        text: "Eine Eisdiele im April, ein Stand auf dem Weihnachtsmarkt im November, ein Skiverleih im Januar: Wer mitten in der Saison anfragt, hat neben dem Tagesgeschäft kaum Zeit. Stichpunkte für die Texte schicken, Fotos aussuchen und den Test-Link durchsehen braucht aber ein paar ruhige Stunden.",
       },
       {
         kind: "p",
-        text: "Unsere Empfehlung lautet in solchen Fällen ohne Ausnahme: warten Sie auf die Nachsaison. Drei Wochen im Februar bringen mehr als drei Monate parallel zum Hochbetrieb. Wer trotzdem im Juli starten will, weil im August die Saison kommt, baut eine Seite, die ungetestet live geht — und stellt im Hochbetrieb fest, dass das Kontaktformular streikt.",
+        text: "Wir raten dann, auf die ruhigere Zeit zu warten. Eine Seite, die kurz vor dem Ansturm ungeprüft online geht, macht im Hochbetrieb Ärger, etwa wenn das Kontaktformular nicht funktioniert. Und genau dann hat niemand Zeit, sich darum zu kümmern.",
       },
       {
         kind: "h2",
@@ -156,95 +155,95 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Eine Werkstatt, die nur baut, wenn gebaut werden soll, gewinnt mit jedem dieser Absagen vermutlich kein Auftrag und durchaus etwas Achtung. Wir glauben, das ist der bessere Tausch. Eine Empfehlung gegen den eigenen Umsatz ist das stärkste Vertrauenssignal, das eine Dienstleistung geben kann — und es ist auch der seltenste Moment, in dem ein Kunde später zurückkommt, mit dem Auftrag, den er beim ersten Mal nicht hatte.",
+        text: "Wenn wir von einem Auftrag abraten, verdienen wir an diesem Tag nichts. Wir halten es trotzdem für richtig. Wer gut beraten wurde, ruft wieder an, wenn der Zeitpunkt passt.",
       },
       {
         kind: "quote",
-        text: "Das beste Webdesign-Atelier ist nicht das, das jeden Auftrag annimmt. Es ist das, das weiß, wann es nein sagt — und es ehrlich begründet.",
+        text: "Zu einer guten Beratung gehört auch der Satz: Warten Sie damit noch.",
       },
     ],
   },
   {
     slug: "der-preis-einer-website",
     title: "Der Preis, einmal offen hingelegt",
-    dek: "Was eine Website in Deutschland tatsächlich kostet, wo unsere Zahlen herkommen — und welche Posten in den meisten Angeboten unsichtbar bleiben.",
+    dek: "Was eine Website kostet, wie unsere Preise entstehen und welcher Posten in vielen Angeboten fehlt.",
     publishedAt: "2026-06-08",
-    readingMinutes: 7,
+    readingMinutes: 4,
     tags: ["Preise", "Transparenz", "Entscheidung"],
     body: [
       {
         kind: "p",
-        text: "Preise für Websites sind in unserer Branche eine merkwürdige Geheimwissenschaft. Agenturen schreiben auf Anfrage, Freelancer rechnen nach Bauchgefühl, Baukästen werben mit Null Euro und meinen etwas anderes. Wir legen unsere Zahlen seit dem ersten Tag offen auf die Seite — und wollen hier einmal erklären, wie sie zustande kommen.",
+        text: "Über Website-Preise erfährt man oft erst etwas, wenn man anfragt. Agenturen schreiben Angebote, Freelancer schätzen nach Aufwand, und Baukästen werben mit null Euro und meinen den Einstieg. Unsere Preise stehen auf der Website. Hier erklären wir, wie sie zustande kommen.",
       },
       {
         kind: "h2",
-        text: "Die Spannweite des Marktes",
+        text: "Was andere Wege kosten",
       },
       {
         kind: "p",
-        text: "Eine mehrseitige Unternehmens-Website kostet bei einer klassischen deutschen Agentur zwischen dreitausend und zwölftausend Euro, je nach Stadt, Selbstbild und Anzahl der Workshops, die man vorher absitzt. Freelancer liegen meist zwischen achthundert und dreitausend. Baukästen kosten nominal fünfzehn bis dreißig Euro im Monat — plus dreißig bis sechzig Stunden der eigenen Zeit, die in keiner Rechnung auftaucht, aber bezahlt wird wie jede andere Arbeitszeit auch: mit Abenden und Wochenenden.",
+        text: "Eine Website für einen kleinen Betrieb kostet bei einer Agentur meist ab etwa 5.000 €. Freelancer liegen oft zwischen 800 und 5.000 €. Ein Baukasten kostet etwa 10 bis 40 € im Monat. Dazu kommt Ihre eigene Zeit für Gestaltung, Texte und Technik. Sie steht in keiner Rechnung, fällt aber trotzdem an, meist abends und am Wochenende.",
       },
       {
         kind: "p",
-        text: "Unsere Pakete beginnen bei vierhundertneunundneunzig Euro für eine Onepage und gehen bis vierzehnhundertneunundneunzig für ein individuelles System mit pflegbaren Inhalten. Das ist im Marktvergleich die untere Mitte. Es ist kein Kampfpreis und keine Premium-Geste — es ist das Ergebnis einer einfachen Rechnung.",
+        text: "Unsere Pakete beginnen bei 499 € für eine einzelne Seite. Business kostet ab 899 €, Premium mit Bereichen, die Sie selbst pflegen, ab 2.499 € und Studio mit eigener Gestaltung ab 3.490 €.",
       },
       {
         kind: "h2",
-        text: "Wie unsere Zahl entsteht",
+        text: "Wie unser Preis entsteht",
       },
       {
         kind: "p",
-        text: "Eine Starter-Seite kostet uns netto etwa zwei Arbeitstage: ein halber Tag Struktur und Inhalts-Sichtung, ein Tag Bau, ein halber Tag Tests auf echten Geräten und Feinschliff. Dazu der Anteil an Werkzeugen, Lizenzen und dem Hosting-Setup. Wer deutlich weniger verlangt, spart an einer dieser Stellen — meist am Testen, was der Kunde erst Monate später merkt. Wer deutlich mehr verlangt, bezahlt damit in der Regel Büroflächen und Hierarchie-Ebenen, nicht bessere Arbeit.",
+        text: "Für eine Starter-Seite rechnen wir mit etwa zwei Arbeitstagen: einem halben Tag für den Aufbau und die Sichtung Ihrer Inhalte, einem Tag für den Bau und einem halben Tag für Tests auf echten Handys und letzte Korrekturen. Dazu kommen Werkzeuge, Lizenzen und die Einrichtung des Hostings. Wer deutlich weniger verlangt, spart meist an einer dieser Stellen, oft beim Testen. Das merken Sie erst Monate später.",
       },
       {
         kind: "h2",
-        text: "Der unsichtbare Posten",
+        text: "Der Posten, der oft fehlt",
       },
       {
         kind: "p",
-        text: "Der eigentliche Unterschied zwischen Angeboten liegt selten im Einmalpreis, sondern in dem, was danach kommt. Eine Website ist kein Möbelstück, sondern eher ein Schaufenster: es muss geputzt werden. Sicherheits-Updates, Backups, das SSL-Zertifikat, die kleine Änderung im November, wenn sich die Öffnungszeiten ändern. Bei vielen Angeboten ist dieser Posten schlicht nicht vorgesehen — die Seite veraltet ab Tag eins, und nach drei Jahren beginnt das Spiel von vorn.",
+        text: "Der größte Unterschied zwischen zwei Angeboten liegt selten im Einmalpreis. Er liegt in dem, was danach kommt: Sicherheits-Updates, Backups, das SSL-Zertifikat und die kleine Änderung im November, wenn sich die Öffnungszeiten ändern. In vielen Angeboten ist dafür nichts vorgesehen. Dann veraltet die Seite vom ersten Tag an.",
       },
       {
         kind: "p",
-        text: "Unser monatlicher Beitrag — ab neunundvierzig Euro — ist genau dieser Posten, offen ausgewiesen. Er ist kein verstecktes Abo und keine Marge-Maschine. Er ist die ehrliche Antwort auf die Frage, wer sich kümmert, wenn morgen etwas ist.",
+        text: "Unser Monatsbeitrag ab 49 € deckt genau diesen Posten ab, und er steht im Angebot. Darin sind Hosting in der EU, Updates, Backups und je nach Paket eine bis zehn kleine Änderungen pro Monat enthalten.",
       },
       {
         kind: "h2",
-        text: "Was Sie mit dieser Information tun können",
+        text: "Wie Sie Angebote vergleichen",
       },
       {
         kind: "p",
-        text: "Vergleichen Sie Angebote nicht am Einmalpreis, sondern an drei Fragen. Erstens: was kostet das dritte Jahr, alles eingerechnet? Zweitens: wem gehört am Ende die Seite — Ihnen oder dem System des Anbieters? Drittens: wer geht ans Telefon, wenn das Kontaktformular an einem Freitagnachmittag streikt? Wer diese drei Fragen stellt, sortiert neunzig Prozent der schlechten Angebote aus, bevor Geld fließt.",
+        text: "Vergleichen Sie Angebote nicht nur am Einmalpreis. Fragen Sie, was das dritte Jahr kostet, wenn alles eingerechnet ist. Fragen Sie, wem die Seite am Ende gehört. Und fragen Sie, wer ans Telefon geht, wenn das Kontaktformular an einem Freitagnachmittag nicht funktioniert.",
       },
       {
         kind: "quote",
-        text: "Ein Preis, der erklärt werden kann, ist ein Preis. Ein Preis, der verteidigt werden muss, ist ein Verdachtsmoment.",
+        text: "Einen Preis, den man erklären kann, muss man nicht verteidigen.",
       },
     ],
   },
   {
     slug: "warum-wir-keine-mockups-zeigen",
     title: "Das Echte zuerst",
-    dek: "Warum bei uns kein Photoshop-Entwurf den Anfang macht, sondern eine lauffähige Seite — und was das mit Vertrauen zu tun hat.",
+    dek: "Warum wir statt eines Entwurfsbilds gleich eine Seite bauen, die Sie auf dem Handy öffnen können.",
     publishedAt: "2026-06-05",
-    readingMinutes: 5,
-    tags: ["Arbeitsweise", "Design", "Transparenz"],
+    readingMinutes: 3,
+    tags: ["Arbeitsweise", "Test-Link", "Transparenz"],
     body: [
       {
         kind: "p",
-        text: "In den meisten Webprojekten beginnt die Zusammenarbeit mit einer Inszenierung: ein Entwurfsbild, sorgfältig komponiert, mit idealem Beispieltext und Fotografien, die später niemand liefert. Der Kunde sagt begeistert zu. Wochen später geht eine Seite live, die dem Bild ähnelt wie ein Passfoto dem Urlaub. Wir haben uns gegen dieses Ritual entschieden — bei uns gibt es keine Mockups.",
+        text: "Viele Webprojekte beginnen mit einem Entwurfsbild. Es ist sorgfältig zusammengestellt, mit passendem Beispieltext und Fotos, die später niemand liefert. Wochen später geht eine Seite online, die dem Bild nur noch ähnlich sieht. Wir fangen anders an: Statt eines Bildes bekommen Sie einen Test-Link.",
       },
       {
         kind: "h2",
-        text: "Was ein Mockup verschweigt",
+        text: "Was ein Entwurfsbild nicht zeigt",
       },
       {
         kind: "p",
-        text: "Ein statisches Entwurfsbild zeigt den besten denkbaren Moment einer Seite: perfekte Bildausschnitte, Text in genau passender Länge, ein Bildschirm in genau einer Breite. Es verschweigt alles, was eine Website tatsächlich ausmacht — wie sie lädt, wie sie auf einem drei Jahre alten Android-Gerät umbricht, was passiert, wenn die Überschrift zwei Wörter länger ist, wie sich der Menüpunkt unter dem Daumen anfühlt.",
+        text: "Ein Entwurfsbild zeigt eine Seite im besten Moment. Die Bildausschnitte passen, jeder Text hat genau die richtige Länge, und der Bildschirm hat genau eine Breite. Es zeigt nicht, wie schnell die Seite lädt, wie sie auf einem drei Jahre alten Android-Handy umbricht oder was passiert, wenn eine Überschrift zwei Wörter länger ist.",
       },
       {
         kind: "p",
-        text: "Genau in diesen verschwiegenen Details entscheidet sich, ob eine Seite arbeitet oder nur aussieht. Ein Mockup zu genehmigen heißt, ein Versprechen zu genehmigen — nicht ein Produkt.",
+        text: "Gerade diese Punkte entscheiden aber, ob eine Seite im Alltag funktioniert. Wer ein Entwurfsbild freigibt, gibt eine Absicht frei und noch keine Website.",
       },
       {
         kind: "h2",
@@ -252,135 +251,131 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Wir bauen vom ersten Tag an das Echte. Nach wenigen Tagen bekommen Sie keinen Bildanhang, sondern einen Link: eine lauffähige Vorschau-Seite mit Ihren echten Inhalten, auf Ihrem eigenen Telefon zu öffnen, an Ihre Frau, Ihren Steuerberater oder Ihre Stammkundin weiterzuleiten. Was Sie dort sehen, ist nicht eine Idee der Seite. Es ist die Seite.",
+        text: "Wir bauen von Anfang an die echte Seite. Nach wenigen Tagen schicken wir Ihnen einen Link zu einer Vorschau mit Ihren Inhalten. Sie öffnen sie auf Ihrem eigenen Handy und können sie an Familie, Mitarbeiter oder Ihren Steuerberater weiterleiten. Was Sie dort sehen, geht so online.",
       },
       {
         kind: "p",
-        text: "Änderungswünsche besprechen wir an diesem lebenden Objekt. Den Knopf größer, die Reihenfolge anders, das Bild gegen ein anderes — jede Korrektur ist am nächsten Tag sichtbar, im echten Kontext, auf echten Geräten. Es gibt keinen Moment der Enthüllung, an dem das Bild der Wirklichkeit weichen muss, weil es nie ein Bild gab.",
+        text: "Änderungswünsche besprechen wir an dieser Vorschau. Der Knopf soll größer werden, die Reihenfolge anders, ein Foto soll raus: Jede Korrektur sehen Sie meist am nächsten Tag unter demselben Link.",
       },
       {
         kind: "h2",
-        text: "Der ehrliche Nachteil",
+        text: "Was das von Ihnen verlangt",
       },
       {
         kind: "p",
-        text: "Diese Arbeitsweise hat eine Voraussetzung, die wir offen benennen: sie funktioniert nur mit Inhalten. Ein Mockup kann man mit Blindtext füllen, eine echte Seite nicht sinnvoll. Deshalb beginnt jedes Projekt bei uns mit den drei Sachen — Logo, Texte, Bilder — und deshalb helfen wir beim Beschaffen, wenn etwas fehlt, statt mit Platzhaltern zu bauen. Das verlangt vom Kunden in der ersten Woche etwas mehr als eine Unterschrift. Es erspart ihm dafür die Enttäuschung in der letzten.",
+        text: "Diese Arbeitsweise funktioniert nur mit echten Inhalten. Ein Entwurfsbild lässt sich mit Blindtext füllen, eine echte Seite nicht. Deshalb brauchen wir am Anfang Ihr Logo, ein paar Stichpunkte und Fotos, gern vom Handy. Den Text formulieren wir daraus. Fehlt etwas, helfen wir beim Beschaffen, statt mit Platzhaltern zu bauen.",
       },
       {
         kind: "quote",
-        text: "Wir zeigen nichts, was wir nicht gebaut haben. Was Sie freigeben, ist das, was live geht — Pixel für Pixel.",
+        text: "Was Sie auf dem Test-Link freigeben, geht genau so online.",
       },
     ],
   },
   {
     slug: "cafe-website-hamburg-2026",
-    title: "Acht Sekunden vor der Tür",
-    dek: "Was über den Zugang zu einem Hamburger Café tatsächlich entscheidet — und warum es nicht der Kaffee ist.",
+    title: "Die paar Sekunden vor der Tür",
+    dek: "Was ein Gast vor einem Hamburger Café auf dem Handy sucht, und was eine Café-Website deshalb oben zeigen sollte.",
     publishedAt: "2026-06-01",
-    readingMinutes: 6,
+    readingMinutes: 4,
     tags: ["Gastronomie", "Lokales SEO", "Mobile"],
     body: [
       {
         kind: "p",
-        text: "Acht Sekunden. So lange schaut ein Gast, der vor Ihrem Eingang steht, auf sein Telefon, bevor er sich entscheidet, ob er hineinkommt oder weitergeht. In dieser Spanne entscheidet sich für viele Hamburger Cafés mehr Umsatz, als jede Speisekarten-Innovation jemals beibringen kann.",
+        text: "Ein Gast steht vor Ihrem Café und schaut kurz aufs Handy. Danach geht er hinein oder weiter. In diesen Sekunden zählt nicht die Gestaltung der Website, sondern ob er findet, was er sucht.",
       },
       {
         kind: "p",
-        text: "Die Zahl ist keine Schätzung, sondern eine wiederkehrende Beobachtung aus unserer Arbeit mit gastronomischen Auftraggebern in Eppendorf, Ottensen und Eimsbüttel über die vergangenen zwölf Monate. Was Gäste in diesen Sekunden suchen, ist erstaunlich konstant: drei Antworten, in einer festen Reihenfolge.",
+        text: "Gesucht wird in diesem Moment fast immer dasselbe: drei Antworten.",
       },
       {
         kind: "h2",
-        text: "Drei Fragen, drei Sekunden",
+        text: "Drei Fragen vor der Tür",
       },
       {
         kind: "p",
-        text: "Erstens, ist heute geöffnet. Nicht Montag bis Freitag von neun bis achtzehn — sondern verbindlich: heute, jetzt, ja oder nein. Zweitens, was kostet es. Nicht ein PDF-Anhang mit dem Druckstand von 2021, sondern eine sichtbare Auswahl, die sich auf einem fünfeinhalb Zoll großen Bildschirm in einer Bewegung erfassen lässt. Drittens, wie komme ich hinein. Adresse, klickbare Rufnummer, ein Knopf für den Routenplaner — alles ohne zu scrollen.",
+        text: "Erstens: Ist heute geöffnet? Gemeint ist nicht „Montag bis Freitag 9 bis 18 Uhr“, sondern heute, jetzt, ja oder nein. Zweitens: Was gibt es, und was kostet es? Gemeint ist eine Karte, die man auf dem Handy lesen kann, und kein PDF mit dem Druckstand von 2021. Drittens: Wie komme ich hin? Dafür braucht es die Adresse, eine Telefonnummer zum Antippen und einen Knopf für den Routenplaner.",
       },
       {
         kind: "p",
-        text: "Wenn diese drei Antworten nicht im ersten sichtbaren Bereich liegen, hat das Café verloren — bevor der Gast überhaupt erwogen hat, einzutreten. Es ist ein stiller Verlust, der sich in keiner Statistik niederschlägt, weil die verlorenen Gäste nirgendwo registriert werden. Sie gehen einfach nebenan.",
+        text: "Stehen diese Antworten nicht oben auf der Seite, geht der Gast oft einfach nebenan. In keiner Auswertung taucht das auf, weil niemand zählt, wer nicht hereinkommt.",
       },
       {
         kind: "h2",
-        text: "Das PDF-Problem",
+        text: "Das Problem mit der PDF-Karte",
       },
       {
         kind: "p",
-        text: "Die Speisekarte als PDF-Anhang ist verständlich. Ein Mitarbeiter kann sie selbst ändern, ohne Fremdhilfe, mit Word und einem Druck-zu-PDF-Knopf. Was diese Praxis übersieht: ein PDF auf einem Telefon ist ein Übergriff. Es lädt langsam, gerade in U-Bahn-nahen Lagen, in denen Empfang nichts garantiert. Es zwingt zum Hineinzoomen mit Fingergesten, die im Stehen schwer fallen. Es ist für Suchmaschinen unsichtbar, also keine Hilfe für die Mutter aus Eppendorf, die nach Frühstücksoptionen im Hamburg-Norden sucht.",
+        text: "Die Speisekarte als PDF ist verständlich. Jemand im Team kann sie in Word ändern und neu hochladen. Auf dem Handy ist sie aber unpraktisch. Sie lädt bei schlechtem Empfang langsam, man muss mit zwei Fingern hineinzoomen, und in den Suchergebnissen erscheint sie als einzelne Datei statt als Teil Ihrer Seite.",
       },
       {
         kind: "p",
-        text: "Eine ordentlich gegliederte HTML-Karte mit klaren Kategorien — Frühstück, Tageskarte, Kuchen, Getränke — kostet bei der Übergabe etwa eine Stunde Einrichtung und ist von dann an genauso pflegbar wie das alte PDF. Wer bei uns ein gastronomisches Projekt beginnt, fängt damit an. Layout und Design folgen.",
+        text: "Eine Karte als normale Webseite mit Abschnitten für Frühstück, Mittagstisch, Kuchen und Getränke richten wir in etwa einer Stunde ein. Änderungen schicken Sie uns als kleine Änderung im Monatsbeitrag, mit Premium tragen Sie sie selbst ein. Bei Cafés fangen wir mit der Karte an, die Gestaltung kommt danach.",
       },
       {
         kind: "h2",
-        text: "Anrufen ist nicht optional",
+        text: "Die Telefonnummer gehört nach oben",
       },
       {
         kind: "p",
-        text: "Die letzte Beobachtung ist die wichtigste. Wenn ein Gast schon zum Telefon greift, will er keine Mailadresse, die er erst markieren und kopieren muss. Er will einen Knopf. Groß, oben, daumengerecht. In den gastronomischen Projekten, die wir in den letzten anderthalb Jahren begleitet haben, kostet das Fehlen dieses Knopfes erfahrungsgemäß zwanzig bis dreißig Prozent der spontanen Anfragen.",
-      },
-      {
-        kind: "p",
-        text: "Eine Telefonnummer als Klartext, irgendwo unten im Footer, rettet diese Anrufe nicht. Der Daumen will einmal tippen. Das Telefon soll wählen. Alles dazwischen ist Verlust.",
+        text: "Wer vor der Tür zum Telefon greift, will nicht erst eine Nummer markieren und kopieren. Er will tippen, und das Handy soll wählen. Eine Telefonnummer als Klartext unten auf der Seite hilft dabei wenig. Wir setzen sie oben als Knopf.",
       },
       {
         kind: "h2",
-        text: "Was wir bauen, was wir bewusst auslassen",
+        text: "Was wir bauen und was wir weglassen",
       },
       {
         kind: "p",
-        text: "Wir bauen für Café-Auftraggeber meist eine einzige Seite mit fünf klaren Abschnitten: heute geöffnet (oben, groß), Adresse mit Routenplaner, gegliederte Karte, drei bis fünf Bilder vom Raum, Kontakt. Kein eigenes Reservierungs-System — das machen OpenTable oder Quandoo besser, falls es überhaupt nötig ist. Kein Online-Shop. Keine zwanzig Unterseiten.",
+        text: "Für ein Café bauen wir meist eine einzige Seite mit fünf Abschnitten: heute geöffnet, Adresse mit Routenplaner, die Karte, ein paar Bilder vom Raum und Kontakt. Ein eigenes Reservierungssystem bauen wir in der Regel nicht. Wenn Sie Reservierungen brauchen, verlinken wir auf einen Dienst wie OpenTable oder Quandoo.",
       },
       {
         kind: "p",
-        text: "Wenn das stimmt, hat der Gast in den ersten Sekunden alle Antworten — und kommt herein. Wenn es nicht stimmt, geht er nebenan. Es gibt nicht viel dazwischen.",
+        text: "Wenn diese Seite stimmt, hat der Gast seine Antworten, bevor er die Klinke anfasst.",
       },
       {
         kind: "quote",
-        text: "Drei Sekunden Ladezeit, drei sichtbare Antworten, drei Klicks bis zum Telefon. Mehr braucht eine Hamburger Café-Website nicht.",
+        text: "Eine Café-Website muss vor allem eine Frage beantworten: Ist heute geöffnet?",
       },
     ],
   },
   {
     slug: "pflegedienst-google-maps-hamburg",
     title: "Wer auf der Karte fehlt, ist nicht im Gespräch",
-    dek: "Wie Hamburger Familien heute nach ambulanter Pflege suchen — und welche Anbieter dabei systematisch übersehen werden.",
+    dek: "Wie Angehörige in Hamburg nach ambulanter Pflege suchen, und was ein vollständiger Google-Eintrag dafür braucht.",
     publishedAt: "2026-05-26",
-    readingMinutes: 5,
+    readingMinutes: 3,
     tags: ["Pflegedienst", "Lokales SEO", "Google Maps"],
     body: [
       {
         kind: "p",
-        text: "Ein Pflegedienst, der bei Google Maps nicht erscheint, existiert für die Angehörigen, die ihn brauchen, nicht. Das ist keine Übertreibung, sondern die nüchterne Konsequenz daraus, wie Familien in Hamburg heute nach ambulanter Pflege suchen.",
+        text: "Ein Pflegedienst, der bei Google Maps nicht erscheint, wird von vielen Angehörigen gar nicht erst gefunden. Das liegt daran, wie sie suchen.",
       },
       {
         kind: "p",
-        text: "Wenn die Diagnose eines pflegebedürftigen Vaters frisch ist, der Krankenhausaufenthalt zur Entlassung drängt und eine Tochter abends am Küchentisch sucht, dann tippt sie nicht den abstrakten Begriff ein — Hamburger Pflegedienste schlechthin — sondern einen Stadtteil. Eimsbüttel, Wandsbek, Barmbek. Und schaut, was auf der Karte erscheint. Was dort nicht steht, ist auch nicht im Gespräch.",
+        text: "Wenn der Vater aus dem Krankenhaus entlassen wird und die Tochter abends einen Pflegedienst sucht, tippt sie selten nur „Pflegedienst Hamburg“. Sie tippt ihren Stadtteil dazu, etwa Eimsbüttel, Wandsbek oder Barmbek, und schaut, was auf der Karte erscheint.",
       },
       {
         kind: "h2",
-        text: "Die Lücke ist groß",
+        text: "Wo es oft hakt",
       },
       {
         kind: "p",
-        text: "Wir haben kürzlich eine Stichprobe von vierzig ambulanten Pflegediensten in Hamburg auf Google Maps angesehen. Keine repräsentative Studie, eine eigene Bestandsaufnahme. Vier dieser Pflegedienste hatten keinen Eintrag. Sechzehn weitere hatten einen halbleeren — keine Fotos, keine aktuellen Öffnungszeiten, keine Beschreibung der Leistungsschwerpunkte. Zusammen genommen: zwei von fünf Einträgen waren faktisch unsichtbar.",
+        text: "Viele Einträge auf der Karte sind unvollständig. Es fehlen Fotos, die Öffnungszeiten sind veraltet, und es steht nicht da, welche Leistungen der Dienst anbietet. Manche Pflegedienste haben gar keinen Eintrag, den sie selbst verwalten.",
       },
       {
         kind: "p",
-        text: "Das ist keine Bagatelle. Pflege ist ein Markt der lokalen Suche. Ein Angehöriger, der eine Pflegekraft sucht, vergleicht nicht zehn Anbieter — er vergleicht die drei oder vier, die ihm in den ersten zehn Sekunden auf seinem Smartphone erscheinen. Wer dort nicht erscheint, ist nicht im Vergleich, ist nicht im Anruf, ist nicht im Auftrag.",
+        text: "Wer auf dem Handy sucht, vergleicht meist nur die ersten Einträge, die erscheinen. Wer dort fehlt oder nur eine Adresse zeigt, bekommt den Anruf nicht.",
       },
       {
         kind: "h2",
-        text: "Warum die Lücke besteht",
+        text: "Warum das so ist",
       },
       {
         kind: "p",
-        text: "Drei Ursachen, in der Reihenfolge ihrer Häufigkeit. Der Eintrag wurde von Google selbst aus einem alten Telefonbuch importiert und seitdem nie gepflegt — niemand hat die Inhaberschaft beansprucht. Oder: der Inhaber hat einen Account, hält ihn aber für eine bloße Adress-Anzeige, nicht für die wichtigste Marketing-Fläche, die er besitzt. Oder: in der internen Aufgabenteilung zwischen Pflegedienstleitung und externer IT ist niemand für die Google-Pflege zuständig — also passiert nichts.",
+        text: "Meist steckt eine von drei Ursachen dahinter. Google hat den Eintrag aus alten Verzeichnissen angelegt, und niemand hat ihn je übernommen. Oder der Eintrag gehört zwar dem Betrieb, gilt intern aber nur als Adressangabe. Oder zwischen Pflegedienstleitung und externer IT fühlt sich niemand zuständig.",
       },
       {
         kind: "p",
-        text: "Alle drei Ursachen sind banal. Keine ist schwer zu beheben. Gerade das macht die Lücke so teuer: sie kostet kein Geld, sie zu schließen — aber jede Woche, die sie offen bleibt, kostet Anfragen, die nie kommen.",
+        text: "Keine dieser Ursachen ist schwer zu beheben. Ein vollständiger Eintrag kostet nichts außer Zeit.",
       },
       {
         kind: "h2",
@@ -388,65 +383,65 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Ein vollständiger Google-Business-Eintrag hat fünf Bestandteile, die wir bei jeder Pflegedienst-Übernahme als Erstes nachholen. Inhaberschaft beansprucht und verifiziert. Fünf bis acht Fotos — Eingang, Auto, Team in Uniform, Versorgungssituation neutral und respektvoll dargestellt. Öffnungszeiten exakt, einschließlich der telefonischen Erreichbarkeit außerhalb der Bürozeiten. Beschreibung mit Versorgungsschwerpunkten: Behandlungspflege, Grundpflege, Hauswirtschaft, Demenz, Wundversorgung. Und Bewertungen — aktiv eingeladen, höflich und individuell beantwortet.",
+        text: "Zuerst bestätigen Sie den Eintrag im Google-Unternehmensprofil als Inhaber. Dazu kommen einige Fotos von Eingang, Fahrzeug und Team, genaue Öffnungszeiten mit der telefonischen Erreichbarkeit außerhalb der Bürozeiten und eine Beschreibung der Schwerpunkte, etwa Behandlungspflege, Grundpflege, Hauswirtschaft oder Demenzbetreuung. Bewertungen beantworten Sie einzeln und sachlich.",
       },
       {
         kind: "p",
-        text: "Das ist ein halber Tag Arbeit, einmalig, ohne externe Kosten. In einem unserer Wandsbeker Pflegedienst-Projekte haben sich die Anfragen über Google nach einer solchen Einrichtung innerhalb von drei Monaten verdoppelt — von ungefähr vier auf acht pro Woche. Bei einem durchschnittlichen Jahresumsatz pro neuem Klienten in vierstelliger Höhe ist das eine Rendite, die jede SEO-Agentur überbietet — und sie wird einmal getan, nicht laufend bezahlt.",
+        text: "Für die Einrichtung rechnen wir etwa einen halben Tag. Wenn wir die Website eines Pflegedienstes bauen, prüfen wir den Eintrag als Erstes.",
       },
       {
         kind: "quote",
-        text: "Ein gepflegter Google-Eintrag ist für lokale Pflegedienste die ehrlichste Marketing-Maßnahme, die es gibt. Sie kostet einen halben Tag, nicht dreißig Prozent Provision pro Neukunden.",
+        text: "Ein gepflegter Google-Eintrag kostet einen halben Tag Arbeit und keine Provision.",
       },
     ],
   },
   {
     slug: "was-wir-an-wix-migrationen-lernen",
     title: "Die Mietwohnung mit dem goldenen Schlüssel",
-    dek: "Drei Probleme, die in jedem zweiten Wix-Umzug auftauchen — und was sie über die Architektur von Baukasten-Systemen verraten.",
+    dek: "Drei Dinge, die beim Umzug von einem Baukasten fast immer Arbeit machen, und wie wir sie angehen.",
     publishedAt: "2026-05-18",
-    readingMinutes: 5,
-    tags: ["Migration", "Wix", "Baukasten"],
+    readingMinutes: 4,
+    tags: ["Umzug", "Wix", "Baukasten"],
     body: [
       {
         kind: "p",
-        text: "Etwa ein Drittel unserer neuen Projekte sind Umzüge — meistens von Wix, manchmal von Squarespace, gelegentlich von Jimdo. Drei Probleme tauchen dabei wiederkehrend auf. Sie sind kein Zufall, sondern eine Folge davon, wie Baukasten-Systeme architektonisch gedacht sind.",
+        text: "Wer von einem Baukasten wie Wix, Squarespace oder Jimdo zu einer eigenen Website wechselt, stößt fast immer auf dieselben drei Dinge. Das liegt weniger am einzelnen Anbieter als daran, wie Baukästen aufgebaut sind.",
       },
       {
         kind: "h2",
-        text: "Texte, die in Slots gequetscht wurden",
+        text: "Texte, die in feste Flächen gepresst wurden",
       },
       {
         kind: "p",
-        text: "Wix-Templates haben fest definierte Text-Slots — eine Hero-Überschrift mit maximal sechzig Zeichen, eine Subline mit maximal hundertzwanzig, ein Über-uns-Abschnitt mit dreihundert. Inhaber haben über Monate hinweg ihre Texte in diese Slots gequetscht. Wenn wir migrieren, sind die Sätze entweder abgehackt, weil das Limit voll war, oder krampfhaft gestreckt, weil die Slot-Fläche gefüllt werden musste.",
+        text: "Die Gestaltungen im Baukasten geben für Überschriften und Absätze feste Flächen vor. Viele Inhaber haben ihre Texte über Jahre in diese Flächen eingepasst. Beim Umzug sind die Sätze dann entweder abgehackt, weil der Platz nicht reichte, oder gestreckt, weil eine Fläche gefüllt werden musste.",
       },
       {
         kind: "p",
-        text: "Das heißt: bei jedem Umzugs-Projekt schreiben wir dreißig bis sechzig Prozent der Texte neu. Nicht aus Eitelkeit, sondern weil die alten Sätze schlicht nicht zum neuen Layout passen — und nebenbei oft auch nicht zum echten Geschäft des Inhabers. Wer Jahre lang nach Slot-Maßen geschrieben hat, hat irgendwann verlernt, frei zu formulieren.",
+        text: "Deshalb schreiben wir beim Umzug einen Teil der Texte neu. Grundlage sind die alte Seite und Ihre Stichpunkte. Sie lesen gegen und streichen, was nicht stimmt.",
       },
       {
         kind: "h2",
-        text: "Bilder, die im fremden CDN gefangen sind",
+        text: "Bilder ohne Originaldateien",
       },
       {
         kind: "p",
-        text: "Wix hostet Bilder auf einem eigenen Auslieferungs-Netzwerk. Wenn man die Seite kündigt oder migriert, werden diese Bild-URLs nach kurzer Zeit ungültig. Inhaber haben aber selten die Original-Dateien — die Wix-Editor-Galerie war ihr einziger Speicher, und der ist weg, sobald die Karte gekündigt wird.",
+        text: "Baukästen speichern Bilder auf ihren eigenen Servern. Nach einer Kündigung sind sie dort irgendwann nicht mehr abrufbar. Viele Inhaber haben die Originaldateien nicht mehr, weil die Galerie im Baukasten ihr einziger Speicher war.",
       },
       {
         kind: "p",
-        text: "Deshalb beginnen wir jede Wix-Migration mit einem Bilder-Sweep: alle vorhandenen Bilder von der bestehenden Seite herunterladen, prüfen, welche brauchbar sind (oft die Hälfte ist zu klein oder zu stark komprimiert), den Rest neu anfordern oder selbst neu fotografieren. Planzeit: ein halber Tag, manchmal mehr.",
+        text: "Deshalb sichern wir vor dem Umzug alle Bilder der bestehenden Seite und prüfen, welche sich weiter verwenden lassen. Was zu klein oder zu stark komprimiert ist, ersetzen Sie durch neue Fotos, gern vom Handy. Dafür planen wir etwa einen halben Tag ein.",
       },
       {
         kind: "h2",
-        text: "Eine Suchmaschinen-Historie, die niemand kennt",
+        text: "Unterseiten, die bei Google gefunden werden",
       },
       {
         kind: "p",
-        text: "Wix gibt seinen Auftraggebern keine vernünftige Analyse darüber, welche Unterseiten in den letzten zwölf Monaten Traffic bekommen haben. Wenn wir migrieren, brauchen wir aber genau diese Information — sonst riskieren wir, dass eine Unterseite, die monatlich fünfzig Besucher von Google bringt, einfach verschwindet und niemand bemerkt es, bis sechs Monate später die Anfragen einbrechen.",
+        text: "Oft weiß niemand genau, welche Unterseiten über Google Besucher bringen. Fällt so eine Seite beim Umzug weg, merkt man es erst Monate später an weniger Anfragen.",
       },
       {
         kind: "p",
-        text: "Die Lösung beginnt vor der Migration: Google Search Console aufsetzen, falls noch nicht vorhanden, vier Wochen mitlaufen lassen, danach einen Strukturplan erstellen — welche URLs bleiben, welche werden umgeleitet, welche fallen weg. Das ist aufwändig. Es ist auch der Unterschied zwischen einer Migration, die funktioniert, und einer, die monatelang stillen SEO-Schaden anrichtet.",
+        text: "Deshalb richten wir vor dem Umzug die Google Search Console ein, falls sie noch fehlt, und lassen sie ein paar Wochen mitlaufen. Danach legen wir fest, welche Adressen bleiben, welche weitergeleitet werden und welche wegfallen.",
       },
       {
         kind: "h2",
@@ -454,11 +449,11 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Baukästen sind nicht falsch. Für Solo-Selbstständige, die ihre Seite eigenhändig pflegen wollen, sind sie eine vollkommen vernünftige Wahl. Aber sie sind eine Mietwohnung, kein Eigentum. Wer ausziehen will, muss Möbel, Wände, manchmal sogar die Heizung zurücklassen. Das ist ein hoher Preis — und die meisten Inhaber zahlen ihn erst, wenn er fällig wird.",
+        text: "Ein Baukasten ist keine schlechte Wahl. Für Selbstständige, die ihre Seite selbst pflegen wollen, passt er oft gut. Man sollte nur wissen, dass er einer Mietwohnung gleicht: Wer auszieht, nimmt nicht alles mit. Das merken viele erst beim Umzug.",
       },
       {
         kind: "quote",
-        text: "Eine ordentlich gebaute eigene Seite gehört Ihnen. Eine Baukasten-Seite ist eine Mietwohnung mit goldenem Schlüssel — solange Sie zahlen.",
+        text: "Eine eigene Website nehmen Sie mit, wenn Sie den Anbieter wechseln.",
       },
     ],
   },
@@ -497,20 +492,10 @@ export const JOURNAL_BY_STANDORT: Record<string, string> = {
 };
 
 /**
- * Kontextueller Schluss-CTA pro Essay. Ohne diese Map kriegt die
- * Essay-Seite den Default-CTA (Audit + Termin). Mit Eintrag wird der
- * Hook und das Ziel auf das Thema des Essays geschärft — z. B. ein
- * Preis-Essay leitet auf /pakete, ein Gastro-Essay auf /branchen/gastro.
- *
- * Strukturell bewusst flach: `eyebrow` ist der gold-pulse-Eyebrow,
- * `hook` die seriöse Zwei-Satz-Frage, dann ein primärer + optionaler
- * sekundärer Link. Auf der Seite wird das Schluss-Modul aus diesem
- * Satz gebaut — fällt zurück, wenn kein Eintrag vorhanden ist.
+ * Weiterführende Links am Ende eines Beitrags. Ohne Eintrag zeigt
+ * die Beitragsseite einen Standard (Website-Audit und Termin).
  */
 export type JournalCta = {
-  eyebrow: string;
-  hook: string;
-  hookItalic?: string;
   primaryHref: string;
   primaryLabel: string;
   secondaryHref?: string;
@@ -519,67 +504,46 @@ export type JournalCta = {
 
 export const JOURNAL_CTAS: Record<string, JournalCta> = {
   "die-zweite-frage": {
-    eyebrow: "Anrufen reicht",
-    hook: "Sie haben auch so eine zweite Frage?",
-    hookItalic: "Sagen Sie's einfach ins Telefon.",
     primaryHref: "/sprechstunde",
-    primaryLabel: "Sprechstunde buchen",
+    primaryLabel: "Zur Sprechstunde",
     secondaryHref: "/anfrage",
     secondaryLabel: "Schriftlich anfragen",
   },
   "wann-eine-website-warten-kann": {
-    eyebrow: "Lage einschätzen",
-    hook: "Unsicher, ob jetzt der richtige Moment ist?",
-    hookItalic: "Wir gucken uns das ehrlich an.",
     primaryHref: "/audit",
-    primaryLabel: "Kostenlosen Audit anfordern",
+    primaryLabel: "Kostenloser Website-Audit",
     secondaryHref: "/sprechstunde",
-    secondaryLabel: "Kurz telefonieren",
+    secondaryLabel: "Zur Sprechstunde",
   },
   "der-preis-einer-website": {
-    eyebrow: "Preise offen",
-    hook: "Welches Paket passt zu Ihnen?",
-    hookItalic: "Drei Stufen, alle mit Endpreis.",
     primaryHref: "/pakete",
-    primaryLabel: "Pakete ansehen",
+    primaryLabel: "Pakete und Preise",
     secondaryHref: "/honorar",
-    secondaryLabel: "Honorar im Detail",
+    secondaryLabel: "Wie sich der Preis zusammensetzt",
   },
   "warum-wir-keine-mockups-zeigen": {
-    eyebrow: "Atelier statt Pitch",
-    hook: "Lieber direkt sehen, wie wir arbeiten?",
-    hookItalic: "Im Atelier liegt alles offen.",
-    primaryHref: "/atelier",
-    primaryLabel: "Atelier besuchen",
+    primaryHref: "/ablauf",
+    primaryLabel: "Der Ablauf im Einzelnen",
     secondaryHref: "/anfrage",
     secondaryLabel: "Website anfragen",
   },
   "cafe-website-hamburg-2026": {
-    eyebrow: "Für Gastronomie",
-    hook: "Café, Bar, Bistro?",
-    hookItalic: "Da wissen wir, worauf es ankommt.",
     primaryHref: "/branchen/gastro",
-    primaryLabel: "Gastronomie-Websites ansehen",
+    primaryLabel: "Websites für Gastronomie",
     secondaryHref: "/audit",
-    secondaryLabel: "Audit für Ihre Seite",
+    secondaryLabel: "Website-Audit für Ihre Seite",
   },
   "pflegedienst-google-maps-hamburg": {
-    eyebrow: "Für Pflegedienste",
-    hook: "Ihre Pflegestation steht nicht auf der Karte?",
-    hookItalic: "Wir bringen Sie drauf.",
     primaryHref: "/branchen/pflege",
-    primaryLabel: "Pflegedienst-Websites ansehen",
+    primaryLabel: "Websites für Pflegedienste",
     secondaryHref: "/audit",
-    secondaryLabel: "Audit für Ihre Seite",
+    secondaryLabel: "Website-Audit für Ihre Seite",
   },
   "was-wir-an-wix-migrationen-lernen": {
-    eyebrow: "Raus aus dem Baukasten",
-    hook: "Sitzen Sie auch in einer Mietwohnung?",
-    hookItalic: "Wir holen Sie da raus.",
     primaryHref: "/anfrage",
-    primaryLabel: "Migration anfragen",
+    primaryLabel: "Umzug anfragen",
     secondaryHref: "/vergleich",
-    secondaryLabel: "Vergleich Baukasten vs. Sitalo",
+    secondaryLabel: "Baukasten und Sitalo im Vergleich",
   },
 };
 
@@ -602,27 +566,4 @@ export function formatDate(iso: string): string {
     month: "long",
     year: "numeric",
   });
-}
-
-/**
- * Roman-Numeral-Helper für H2-Sektions-Beschriftung auf den
- * Detailseiten. Bis XX reicht für unsere editoriale Form locker.
- */
-export function toRoman(n: number): string {
-  const map: [number, string][] = [
-    [10, "X"],
-    [9, "IX"],
-    [5, "V"],
-    [4, "IV"],
-    [1, "I"],
-  ];
-  let result = "";
-  let remaining = n;
-  for (const [value, numeral] of map) {
-    while (remaining >= value) {
-      result += numeral;
-      remaining -= value;
-    }
-  }
-  return result;
 }
