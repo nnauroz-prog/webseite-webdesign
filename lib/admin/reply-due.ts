@@ -18,6 +18,7 @@
 import type { LeadKind } from "@/lib/leads-meta";
 
 import {
+  addWorkdays,
   berlinDateIso,
   berlinMinutes,
   berlinWallToUtc,
@@ -40,7 +41,9 @@ export function replyDue(kind: LeadKind, createdAt: Date): ReplyDue {
   const workday = isWorkday(iso);
 
   if (kind === "audit") {
-    const due = new Date(createdAt.getTime() + 48 * HOUR);
+    // Die Website verspricht die Durchsicht „meist innerhalb von zwei
+    // Werktagen“: Ende des zweiten Werktags nach Eingang, 18:00 Uhr.
+    const due = berlinWallToUtc(addWorkdays(iso, 2), "18:00");
     return { ziel: due, spaetestens: due };
   }
 

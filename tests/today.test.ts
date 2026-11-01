@@ -23,7 +23,7 @@ describe("buildToday", () => {
 
   const a = makeLead({ created_at: "2026-10-30T08:30:00.000Z" }); // Fr 9:30 → Mo 12:00
   const b = makeLead({ created_at: "2026-10-29T18:00:00.000Z" }); // Do 19:00 → Fr 12:00
-  const c = makeLead({ kind: "audit", created_at: "2026-10-29T09:00:00.000Z" }); // → Sa 10:00
+  const c = makeLead({ kind: "audit", created_at: "2026-10-29T09:00:00.000Z" }); // → zwei Werktage → Mo 18:00
   const erledigt = makeLead({
     status: "erledigt",
     created_at: "2026-10-20T09:00:00.000Z",
@@ -84,14 +84,14 @@ describe("buildToday", () => {
         !ids.includes(wvAlt.id),
     );
     // wvNochSpaeter (Eingang 1.10.), die beiden neuen Termine (Mi 28.10.
-    // 18:00), dann b (Fr 12:00), c (Sa 10:00), a (Mo 12:00)
+    // 18:00), dann b (Fr 12:00), a (Mo 12:00), c (Mo 18:00)
     assert.deepEqual(ids, [
       wvNochSpaeter.id,
       heute.id,
       mittwoch.id,
       b.id,
-      c.id,
       a.id,
+      c.id,
     ]);
   });
 

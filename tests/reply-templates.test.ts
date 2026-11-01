@@ -160,7 +160,7 @@ describe("templatesFor: Audit", () => {
     const lead = makeLead({
       kind: "audit",
       subject: "Audit-Anfrage von Max für https://example.de",
-      created_at: "2026-10-30T09:15:00.000Z", // Fr 10:15 → So 1.11. 10:15
+      created_at: "2026-10-30T09:15:00.000Z", // Fr 10:15 → zwei Werktage → Di 3.11.
       fields: [
         ["Audit-URL", "https://example.de"],
         ["Name", "Max Muster"],
@@ -172,11 +172,12 @@ describe("templatesFor: Audit", () => {
       list.map((t) => t.id),
       ["audit_eingang", "absage", "leer"],
     );
-    assert.ok(list[0].body.includes("für https://example.de"));
+    assert.ok(list[0].body.includes("Durchsicht von https://example.de"));
+    assert.ok(!list[0].body.includes("Audit"));
     // Auf den Tag gerundet, ohne Uhrzeit.
     assert.ok(
       list[0].body.includes(
-        "Ihre Einschätzung bekommen Sie bis Sonntag, 1. November.",
+        "Ihre Einschätzung bekommen Sie bis Dienstag, 3. November.",
       ),
     );
     assertClean(lead);
@@ -185,22 +186,22 @@ describe("templatesFor: Audit", () => {
   it("nennt keine Frist mitten in der Nacht und keine vergangene", () => {
     const nachts = makeLead({
       kind: "audit",
-      created_at: "2026-10-31T00:28:00.000Z", // Sa 01:28 → Mo 2.11. 01:28
+      created_at: "2026-10-31T00:28:00.000Z", // Sa 01:28 → Mo, Di → Di 3.11.
       fields: [["Name", "Max Muster"]],
     });
     const body = templatesFor(nachts, new Date("2026-10-31T10:00:00Z"))[0].body;
-    assert.ok(body.includes("bis Montag, 2. November."), body);
+    assert.ok(body.includes("bis Dienstag, 3. November."), body);
     assert.ok(!/\d{2}:\d{2} Uhr/.test(body), body);
 
     const alt = makeLead({
       kind: "audit",
-      created_at: "2026-10-30T09:00:00.000Z", // Fr 10:00 → So 1.11. 10:00
+      created_at: "2026-10-30T09:00:00.000Z", // Fr 10:00 → Di 3.11. 18:00
       fields: [["Name", "Max Muster"]],
     });
-    // Mo 2.11. 9:00: Frist vorbei → nächster Werktag (Di 3.11.).
-    const spaet = templatesFor(alt, new Date("2026-11-02T08:00:00Z"))[0].body;
-    assert.ok(spaet.includes("bis Dienstag, 3. November."), spaet);
-    assert.ok(!spaet.includes("Sonntag"), spaet);
+    // Mi 4.11. 9:00: Frist vorbei → nächster Werktag (Do 5.11.).
+    const spaet = templatesFor(alt, new Date("2026-11-04T08:00:00Z"))[0].body;
+    assert.ok(spaet.includes("bis Donnerstag, 5. November."), spaet);
+    assert.ok(!spaet.includes("Dienstag"), spaet);
   });
 });
 

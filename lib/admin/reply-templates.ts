@@ -141,8 +141,8 @@ function nachfassen(lead: LeadRow): string {
 }
 
 /**
- * Zusage für das Audit, auf den Tag gerundet (keine Uhrzeit mitten in
- * der Nacht). Ist die 48-h-Frist schon vorbei, gilt der nächste Werktag.
+ * Zusage für die Durchsicht, auf den Tag gerundet (zwei Werktage nach
+ * Eingang). Ist die Frist schon vorbei, gilt der nächste Werktag.
  */
 export function auditPromiseDay(lead: Pick<LeadRow, "created_at">, now: Date): string {
   const due = replyDue("audit", new Date(lead.created_at)).spaetestens;
@@ -155,7 +155,7 @@ function auditEingang(lead: LeadRow, now: Date): string {
   const url = fieldValue(lead, "Audit-URL");
   return compose(
     lead,
-    `vielen Dank für Ihre Audit-Anfrage${url ? ` für ${url}` : ""}. Wir sehen uns die Website jetzt in Ruhe an.`,
+    `vielen Dank für Ihre Anfrage zur kostenlosen Durchsicht${url ? ` von ${url}` : ""}. Wir sehen uns die Website jetzt in Ruhe an.`,
     `Ihre Einschätzung bekommen Sie bis ${formatLongDay(auditPromiseDay(lead, now))}.`,
   );
 }
