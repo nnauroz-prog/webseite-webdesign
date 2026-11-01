@@ -4,10 +4,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Vorher/Nachher-Regler: dieselbe (fiktive) Tischlerei, links als
- * typische in die Jahre gekommene Betriebsseite, rechts so, wie wir
- * sie bauen. Der Griff lässt sich ziehen, tippen oder per Tastatur
- * bewegen (unsichtbarer range-Input liegt darüber).
+ * Vorher/Nachher-Regler für die Startseite: dieselbe (frei erfundene)
+ * Tischlerei, links als typische in die Jahre gekommene Betriebsseite,
+ * rechts so, wie wir sie bauen. Der Griff lässt sich ziehen, tippen oder
+ * per Tastatur bewegen (unsichtbarer range-Input liegt darüber).
+ *
+ * Abgeleitet von components/marketing/before-after.tsx (dort nur lesen).
+ * Unterschied: Das Nachher-Beispiel spricht dieselbe Sprache wie die
+ * übrige Startseite. Teer für Schrift, Hafengrün als einziger Akzent,
+ * kantige Knöpfe, keine weichen Schatten, kein Braun und kein Marineblau.
  *
  * Beide Seiten sind in 960 × 600 gesetzt und werden auf die
  * Containerbreite skaliert, wie in der Live-Vorschau.
@@ -16,7 +21,7 @@ import { useEffect, useRef, useState } from "react";
 const W = 960;
 const H = 600;
 
-export function BeforeAfter() {
+export function VorherNachher() {
   const frameRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
   const [pos, setPos] = useState(38);
@@ -24,16 +29,14 @@ export function BeforeAfter() {
   useEffect(() => {
     const el = frameRef.current;
     if (!el) return;
-    const update = () => setScale(el.clientWidth / W);
-    update();
-    const ro = new ResizeObserver(update);
+    const ro = new ResizeObserver(([e]) => setScale(e.contentRect.width / W));
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Einmaliger Hinweis beim ersten Sichtkontakt: Griff schwingt kurz
-  // nach links und rechts, damit klar ist, dass man ziehen kann —
-  // aber nur, solange niemand selbst angefasst hat.
+  // Einmaliger Hinweis beim ersten Sichtkontakt: Der Griff schwingt kurz
+  // nach links und rechts, damit klar ist, dass man ziehen kann. Nur,
+  // solange niemand selbst angefasst hat.
   const touched = useRef(false);
   const [dragging, setDragging] = useState(false);
   useEffect(() => {
@@ -64,7 +67,7 @@ export function BeforeAfter() {
         <span className="label-mono text-muted-foreground text-[11px]">← So oft gesehen</span>
         <span className="label-mono text-[11px]">So bauen wir →</span>
       </div>
-      <div className="overflow-hidden rounded-[2px] shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] ring-1 ring-black/15">
+      <div className="border-foreground/20 overflow-hidden rounded-[2px] border">
         <div className="bg-foreground flex items-center gap-2 px-3 py-2">
           <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
             <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
@@ -103,10 +106,10 @@ export function BeforeAfter() {
             className={`pointer-events-none absolute inset-y-0 ${dragging ? "" : "transition-[left] duration-500 ease-out"}`}
             style={{ left: `${pos}%` }}
           >
-            <div className="absolute inset-y-0 -left-px w-0.5 bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.15)]" />
-            <div className="bg-foreground text-background absolute top-1/2 left-0 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full shadow-lg ring-4 ring-white">
+            <div className="bg-foreground absolute inset-y-0 -left-px w-0.5" />
+            <div className="bg-foreground text-background absolute top-1/2 left-0 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[2px] ring-2 ring-white">
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 6l-6 6 6 6M15 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M9 6l-6 6 6 6M15 6l6 6-6 6" strokeLinecap="square" />
               </svg>
             </div>
           </div>
@@ -122,7 +125,12 @@ export function BeforeAfter() {
               setPos(Number(e.target.value));
             }}
             aria-label="Vorher und nachher vergleichen"
-            className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+            className="peer absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+          />
+          {/* Fokus des unsichtbaren Reglers sichtbar machen. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 hidden outline-2 -outline-offset-4 outline-[var(--gold)] peer-focus-visible:block"
           />
         </div>
       </div>
@@ -139,7 +147,7 @@ function Vorher() {
     <div className="relative h-full w-full bg-white text-[#666]" style={{ fontFamily: "'Open Sans', Arial, sans-serif" }}>
       <div className="flex h-12 items-center justify-between bg-[#f4f4f4] px-8 text-[12px]">
         <span className="text-[15px] tracking-[0.18em] text-[#555] uppercase">Tischlerei Nordholz</span>
-        <span className="flex gap-5 uppercase tracking-[0.08em]">
+        <span className="flex gap-5 tracking-[0.08em] uppercase">
           <span className="text-[#c0392b]">Home</span>
           <span>Über uns</span>
           <span>Leistungen</span>
@@ -149,7 +157,13 @@ function Vorher() {
         </span>
       </div>
       <div className="relative h-[230px] overflow-hidden">
-        <Image src="/images/atmosphere/handwerker-werkbank.webp" alt="" fill sizes="960px" className="object-cover brightness-75 saturate-50" />
+        <Image
+          src="/images/atmosphere/handwerker-werkbank.webp"
+          alt=""
+          fill
+          sizes="960px"
+          className="object-cover brightness-75 saturate-50"
+        />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
           <p className="text-[34px] font-light tracking-[0.04em]">Willkommen</p>
           <p className="mt-1 text-[13px] font-light">bei Ihrer Tischlerei im Hamburger Raum</p>
@@ -182,20 +196,23 @@ function Vorher() {
   );
 }
 
-/** Dieselbe Tischlerei, wie wir sie bauen. */
+/** Dieselbe Tischlerei, wie wir sie bauen: Teer, Hafengrün, kantig. */
 function Nachher() {
-  const accent = "#b4572a";
+  const teer = "#1b1d1e";
+  const gruen = "#2e5c4d";
+  const neben = "#565b5d";
   return (
-    <div className="flex h-full w-full flex-col bg-white text-[#1b2333]" style={{ fontFamily: "var(--font-brand-sans)" }}>
-      <div className="flex h-16 items-center justify-between border-b border-black/5 px-10">
-        <span className="text-[22px] font-semibold tracking-[-0.02em]">
-          Nordholz<span style={{ color: accent }}>.</span>
+    <div className="flex h-full w-full flex-col bg-white" style={{ color: teer, fontFamily: "var(--font-brand-sans)" }}>
+      <div className="flex h-16 items-center justify-between border-b border-black/10 px-10">
+        <span className="text-[22px] tracking-[-0.02em]" style={{ fontStretch: "112%", fontWeight: 740 }}>
+          Nordholz
+          <span className="ml-1 inline-block h-2 w-2" style={{ background: gruen }} />
         </span>
-        <span className="flex items-center gap-7 text-[14px] text-[#4b5563]">
+        <span className="flex items-center gap-7 text-[14px]" style={{ color: neben }}>
           <span>Leistungen</span>
           <span>Referenzen</span>
           <span>Über uns</span>
-          <span className="rounded-full px-4 py-2 text-[13px] font-medium text-white" style={{ background: accent }}>
+          <span className="rounded-[2px] px-4 py-2 text-[13px] font-semibold text-white" style={{ background: gruen }}>
             Angebot anfragen
           </span>
         </span>
@@ -204,25 +221,28 @@ function Nachher() {
         <div className="relative">
           <Image src="/images/atmosphere/handwerker-werkbank.webp" alt="" fill sizes="520px" className="object-cover" />
         </div>
-        <div className="flex flex-col justify-center px-10" style={{ background: "#f8f3ee" }}>
-          <p className="text-[13px] font-semibold" style={{ color: accent }}>
+        <div className="flex flex-col justify-center bg-[#f1f1ee] px-10">
+          <p className="font-mono text-[12px] tracking-[0.12em] uppercase" style={{ color: gruen }}>
             Tischlerei in Hamburg · seit 1987
           </p>
-          <h3 className="mt-3 text-[42px] font-semibold leading-[1.02] tracking-[-0.035em]">
+          <h3
+            className="mt-3 text-[40px] leading-[1.02] tracking-[-0.035em]"
+            style={{ fontStretch: "112%", fontWeight: 740 }}
+          >
             Möbel, Treppen und Innenausbau aus eigener Werkstatt.
           </h3>
-          <p className="mt-4 text-[16px] leading-relaxed text-[#4b5563]">
+          <p className="mt-4 text-[16px] leading-relaxed" style={{ color: neben }}>
             Festes Angebot nach Aufmaß vor Ort, meist innerhalb von zwei Werktagen.
           </p>
           <div className="mt-6 flex gap-3">
-            <span className="rounded-full px-5 py-2.5 text-[14px] font-medium text-white" style={{ background: accent }}>
-              Kostenloses Angebot
+            <span className="rounded-[2px] px-5 py-2.5 text-[14px] font-semibold text-white" style={{ background: gruen }}>
+              Aufmaß vereinbaren
             </span>
-            <span className="rounded-full border border-black/15 bg-white px-5 py-2.5 text-[14px] font-medium">
+            <span className="rounded-[2px] border border-black/25 bg-white px-5 py-2.5 text-[14px] font-semibold">
               040 123 45 67
             </span>
           </div>
-          <div className="mt-8 flex gap-6 text-[13px] text-[#4b5563]">
+          <div className="mt-8 flex gap-6 border-t border-black/10 pt-4 text-[13px]" style={{ color: neben }}>
             <span>Meisterbetrieb</span>
             <span>Mo–Fr 7–16 Uhr</span>
             <span>Einsatz bis 40 km</span>

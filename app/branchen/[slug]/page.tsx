@@ -2,79 +2,22 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
 import {
   BRANCHEN,
   getAllBrancheSlugs,
   getBrancheBySlug,
+  type Branche,
 } from "@/lib/branchen-data";
 import { getPost, JOURNAL_BY_BRANCHE } from "@/lib/journal-data";
+import { getPaketBySlug } from "@/lib/pakete-data";
 import { getStandorteForBranche } from "@/lib/standorte-data";
 
-function JournalHinweis({ brancheSlug }: { brancheSlug: string }) {
-  const postSlug = JOURNAL_BY_BRANCHE[brancheSlug];
-  if (!postSlug) return null;
-  const post = getPost(postSlug);
-  if (!post) return null;
-
-  return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
-        <Link href={`/journal/${post.slug}`} className="group block max-w-3xl">
-          <p className="text-muted-foreground text-[12px] font-medium">
-            Aus dem Journal · {post.readingMinutes} Min
-          </p>
-          <h2 className="serif text-foreground mt-3 text-2xl leading-[1.2] tracking-[-0.01em] text-balance group-hover:underline sm:text-3xl">
-            {post.title}
-          </h2>
-        </Link>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Stadtteil-Hinweise: zeigt Hamburger Standorte, in denen diese
- * Branche zu den `empfohleneBranchen` gehört. Bidirektionales
- * Cross-Linking — Standort-Seiten zeigen ihre Top-Branchen, hier
- * laufen die Branchen-Seiten zurück auf passende Stadtteile.
- *
- * Wird nicht gerendert, wenn keine Standorte diese Branche im
- * `empfohleneBranchen`-Feld haben. So bleiben Branchen ohne
- * lokale Konzentration sauber.
- */
-function StandortHinweise({ brancheSlug }: { brancheSlug: string }) {
-  const standorte = getStandorteForBranche(brancheSlug);
-  if (standorte.length === 0) return null;
-
-  return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
-        <h2 className="text-muted-foreground text-[12px] font-medium">
-          In Hamburg besonders gefragt in
-        </h2>
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {standorte.map((st) => (
-            <li key={st.slug}>
-              <Link
-                href={`/standorte/${st.slug}`}
-                className="border-border/70 hover:border-foreground/40 inline-flex rounded-full border px-4 py-1.5 text-[14px] transition-colors"
-              >
-                {st.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 /**
  * Pre-render every branche page statically. Adding a new branche to
@@ -134,7 +77,7 @@ export default async function BranchePage({
   const branche = getBrancheBySlug(slug);
   if (!branche) notFound();
 
-  const otherBranchen = BRANCHEN.filter((b) => b.slug !== branche.slug);
+  const inquiryHref = `/anfrage?branche=${branche.inquirySlug}&paket=${branche.recommendedPackage}`;
 
   /* JSON-LD: Service-Schema + BreadcrumbList als Array. Service
    * beschreibt das branche-spezifische Angebot, BreadcrumbList
@@ -185,9 +128,8 @@ export default async function BranchePage({
     ],
   };
 
-  /* FAQPage-Schema aus den branche-spezifischen FAQs — schaltet
-   * auf der SERP-Seite expandable FAQ-Snippets unter dem normalen
-   * Treffer frei. */
+  /* FAQPage-Schema aus den branche-spezifischen FAQs. Die Fragen
+   * stehen auf der Seite offen, Schema und Text stimmen überein. */
   const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -209,212 +151,270 @@ export default async function BranchePage({
       <EditorialMasthead section={`Branchen › ${branche.label}`} />
 
       <main id="main" tabIndex={-1} className="flex-1">
-        <section className="relative overflow-hidden">
-          <div
-            aria-hidden="true"
-            className="aurora pointer-events-none absolute inset-0 -z-10"
-          >
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 pt-12 pb-12 sm:px-6 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
-            <div>
-              <EditorialEyebrow>Branche</EditorialEyebrow>
-              <h1 className="mt-5 text-4xl leading-[1.02] font-semibold tracking-[-0.035em] text-balance sm:text-6xl">
-                Website für{" "}
-                <span className="serif-italic text-muted-foreground font-normal">
-                  {branche.label}.
-                </span>
-              </h1>
-              <p className="text-muted-foreground mt-5 max-w-xl text-base leading-relaxed text-pretty sm:text-lg">
-                {branche.detailHeadline}
-              </p>
-              <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2">
-                <Link
-                  href={`/anfrage?branche=${branche.inquirySlug}&paket=${branche.recommendedPackage}`}
-                  className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-                >
-                  Diese Seite anfragen
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  href="/website-erstellen-lassen"
-                  className="text-foreground inline-flex h-12 items-center text-[15px] font-medium underline-offset-[6px] hover:underline"
-                >
-                  Kosten & Ablauf
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-            {branche.image ? (
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-[0_30px_60px_-30px_rgb(15_25_50/0.4)] ring-1 ring-black/5">
-                <Image
-                  src={branche.image.src}
-                  alt={branche.image.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 520px, 100vw"
-                  className="object-cover"
-                />
-              </div>
-            ) : null}
-          </div>
-        </section>
-
-        {/* Einordnung: ein Absatz, darunter typischer Aufbau als Chips */}
-        <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-            <p className="serif text-foreground max-w-3xl text-2xl leading-[1.35] tracking-[-0.01em] text-balance sm:text-3xl">
-              {branche.detailIntro[0]}
-            </p>
-            <h2 className="text-muted-foreground mt-10 text-[12px] font-medium">
-              Typischer Aufbau
-            </h2>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {branche.typicalPages.map((page) => (
-                <li
-                  key={page}
-                  className="border-border/70 bg-card rounded-full border px-4 py-1.5 text-[14px]"
-                >
-                  {page}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Was dabei wichtig ist */}
-        <section className="border-border/40 bg-secondary/30 border-t">
-          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-            <SectionHead label="Schwerpunkte" title="Worauf es ankommt." />
-            <ul
-              className={`mt-10 grid gap-4 sm:grid-cols-2 lg:mt-14 ${BODY_OFFSET}`}
-            >
-              {branche.features.map((feat) => (
-                <li
-                  key={feat.title}
-                  className="border-border/70 bg-card rounded-2xl border p-5 sm:p-6"
-                >
-                  <h3 className="flex gap-2.5 text-[17px] font-semibold tracking-tight">
-                    <Check
-                      className="text-gold mt-1 h-4 w-4 shrink-0"
-                      aria-hidden="true"
-                    />
-                    {feat.title}
-                  </h3>
-                  <p className="text-muted-foreground mt-2 text-[14.5px] leading-relaxed">
-                    {feat.body}
-                  </p>
-                </li>
-              ))}
-            </ul>
-            <div className={`mt-6 ${BODY_OFFSET}`}>
-              <div className="border-border/70 bg-card flex flex-col items-start gap-4 rounded-2xl border p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-                <p className="text-[15px]">
-                  Für {branche.label} empfehlen wir meist das{" "}
-                  <span className="font-semibold capitalize">
-                    {branche.recommendedPackage}
-                  </span>
-                  -Paket.
-                </p>
-                <Link
-                  href={`/pakete#${branche.recommendedPackage}`}
-                  className="text-foreground inline-flex items-center gap-1.5 text-[14px] font-medium underline-offset-4 hover:underline"
-                >
-                  Paket ansehen{" "}
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Branchen-FAQ */}
-        <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-            <SectionHead label="Fragen" title="Häufige Fragen." />
-            <div
-              className={`divide-border/60 mt-10 divide-y lg:mt-14 ${BODY_OFFSET}`}
-            >
-              {branche.faq.map((item) => (
-                <details key={item.q} className="group py-4">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[16px] font-medium">
-                    {item.q}
-                    <span
-                      aria-hidden="true"
-                      className="text-muted-foreground text-xl transition-transform group-open:rotate-45"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <p className="text-muted-foreground mt-3 text-[14.5px] leading-relaxed">
-                    {item.a}
-                  </p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <JournalHinweis brancheSlug={branche.slug} />
-        <StandortHinweise brancheSlug={branche.slug} />
-
-        {/* Weitere Branchen */}
-        <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-6">
-            <h2 className="text-muted-foreground text-[12px] font-medium">
-              Weitere Branchen
-            </h2>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {otherBranchen.map((other) => (
-                <li key={other.slug}>
-                  <Link
-                    href={`/branchen/${other.slug}`}
-                    className="border-border/70 hover:border-foreground/40 inline-flex rounded-full border px-4 py-1.5 text-[14px] transition-colors"
-                  >
-                    {other.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section className="bg-foreground text-background relative overflow-hidden">
-          <div
-            aria-hidden="true"
-            className="aurora aurora-dark pointer-events-none absolute inset-0"
-          >
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
-            <h2 className="serif text-3xl leading-tight text-balance sm:text-5xl">
-              Klingt nach Ihrem Betrieb?{" "}
-              <span className="serif-italic text-background/70">
-                Schreiben Sie uns.
-              </span>
-            </h2>
-            <Link
-              href={`/anfrage?branche=${branche.inquirySlug}&paket=${branche.recommendedPackage}`}
-              className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-            >
-              Website anfragen
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-        </section>
+        <Hero branche={branche} inquiryHref={inquiryHref} />
+        <Einordnung branche={branche} />
+        <Schwerpunkte branche={branche} />
+        <Fragen branche={branche} />
+        <Weiter branche={branche} />
+        <Schluss inquiryHref={inquiryHref} />
       </main>
 
       <MarketingFooter />
 
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Kopf: links Überschrift und Einordnung, rechts die Musterseite.
+ * ---------------------------------------------------------------- */
+function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string }) {
+  const paket = getPaketBySlug(branche.recommendedPackage);
+  return (
+    <section>
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:grid-cols-12 lg:gap-8">
+        <div className="min-w-0 lg:col-span-6">
+          <p className="label-mono text-muted-foreground">Website erstellen lassen</p>
+          <h1 className="mt-6 text-balance text-[2.3rem] leading-[0.98] tracking-[-0.038em] hyphens-auto sm:text-[3.4rem] lg:text-[3.75rem]">
+            Website für {branche.label}
+          </h1>
+          <p className="mt-6 max-w-xl text-pretty text-[17px] leading-relaxed text-[#33383a] sm:text-[18px]">
+            {branche.shortBody}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <Link href="/website-erstellen-lassen" className="btn-line grow sm:grow-0">
+              Kosten und Ablauf
+            </Link>
+          </div>
+          {paket ? (
+            <p className="text-muted-foreground mt-6 text-[14.5px] leading-relaxed">
+              Meist empfohlen:{" "}
+              <Link
+                href={`/pakete#${paket.slug}`}
+                className="text-foreground font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
+              >
+                {paket.name}
+              </Link>
+              , <span className="tabular-nums">{paket.setup}</span> einmalig und{" "}
+              <span className="tabular-nums">{paket.monthly.replace(/\s*\/\s*Monat$/, "")}</span> im Monat.
+            </p>
+          ) : null}
+        </div>
+        {branche.image ? (
+          <figure className="lg:col-span-6 lg:col-start-7">
+            <div className="bg-secondary border-border relative aspect-[4/3] w-full overflow-hidden border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]">
+              <Image
+                src={branche.image.src}
+                alt={branche.image.alt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 560px, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <figcaption className="label-mono text-muted-foreground mt-3 text-[11px]">
+              Musterseite · {branche.label}
+            </figcaption>
+          </figure>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Einordnung als Fließtext, daneben der typische Seitenplan als
+ * kleiner Strukturbaum.
+ * ---------------------------------------------------------------- */
+function Einordnung({ branche }: { branche: Branche }) {
+  const [root, ...pages] = branche.typicalPages;
+  return (
+    <section className="border-border border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="space-y-6 lg:col-span-7">
+          {branche.detailIntro.map((p, i) => (
+            <p
+              key={i}
+              className={
+                i === 0
+                  ? "text-pretty text-[21px] leading-[1.45] tracking-[-0.01em] sm:text-[24px]"
+                  : "text-muted-foreground text-pretty text-[16.5px] leading-relaxed sm:text-[17px]"
+              }
+            >
+              {p}
+            </p>
+          ))}
+        </div>
+        <div className="bg-card border-border self-start border p-5 sm:p-6 lg:col-span-4 lg:col-start-9">
+          <h2 className="label-mono text-muted-foreground">Typischer Seitenplan</h2>
+          <p className="mt-5 flex items-center gap-3 text-[15.5px] font-semibold">
+            <span aria-hidden="true" className="bg-foreground inline-block h-[9px] w-[9px] shrink-0" />
+            {root}
+          </p>
+          <ul className="border-foreground/35 mt-1 ml-[4px] border-l">
+            {pages.map((page) => (
+              <li
+                key={page}
+                className="before:bg-foreground/35 last:after:bg-card relative py-1.5 pl-5 text-[15px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
+              >
+                {page}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Schwerpunkte als Verzeichnis mit Haarlinien.
+ * ---------------------------------------------------------------- */
+function Schwerpunkte({ branche }: { branche: Branche }) {
+  return (
+    <section className="bg-card border-border border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
+        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] hyphens-auto sm:text-5xl lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+          Was eine Website für {branche.label} braucht
+        </h2>
+        <dl className="border-foreground border-t lg:col-span-8">
+          {branche.features.map((feat) => (
+            <div
+              key={feat.title}
+              className="border-border grid gap-2 border-b py-5 sm:grid-cols-[15rem_1fr] sm:gap-8 sm:py-6"
+            >
+              <dt className="text-[17px] font-semibold leading-snug tracking-[-0.01em]">{feat.title}</dt>
+              <dd className="text-muted-foreground text-pretty text-[15.5px] leading-relaxed">{feat.body}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Fragen offen gesetzt, zweispaltig.
+ * ---------------------------------------------------------------- */
+function Fragen({ branche }: { branche: Branche }) {
+  return (
+    <section className="border-border border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+          Fragen aus der Branche
+        </h2>
+        <dl className="mt-12 grid gap-x-10 gap-y-10 sm:mt-14 md:grid-cols-2">
+          {branche.faq.map((item) => (
+            <div key={item.q} className="border-foreground border-t pt-5">
+              <dt className="text-[18px] font-semibold leading-snug tracking-[-0.01em]">{item.q}</dt>
+              <dd className="text-muted-foreground mt-3 text-pretty text-[15.5px] leading-relaxed">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Weiterlesen: Journal, Stadtteilseiten und die übrigen Branchen als
+ * schlichtes Register in drei Spalten.
+ * ---------------------------------------------------------------- */
+function Weiter({ branche }: { branche: Branche }) {
+  const postSlug = JOURNAL_BY_BRANCHE[branche.slug];
+  const post = postSlug ? getPost(postSlug) : undefined;
+  const standorte = getStandorteForBranche(branche.slug);
+  const andere = BRANCHEN.filter((b) => b.slug !== branche.slug);
+
+  const linkRow =
+    "border-border flex items-center justify-between gap-4 border-b py-2.5 text-[15.5px] hover:underline underline-offset-4";
+
+  return (
+    <section className="bg-card border-border border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-20 md:grid-cols-3 md:gap-8">
+        {post ? (
+          <div>
+            <h2 className="label-mono text-muted-foreground">Aus dem Journal</h2>
+            <Link href={`/journal/${post.slug}`} className="group border-foreground mt-4 block border-t pt-4">
+              <span className="block text-[21px] leading-tight tracking-[-0.02em] group-hover:underline underline-offset-4" style={{ fontStretch: "108%", fontWeight: 680 }}>
+                {post.title}
+              </span>
+              <span className="text-muted-foreground mt-2 block text-[14.5px] leading-relaxed">{post.dek}</span>
+              <span className="mt-3 inline-flex items-center gap-1.5 text-[14.5px] font-semibold">
+                Lesen, {post.readingMinutes} Min {ARROW}
+              </span>
+            </Link>
+          </div>
+        ) : null}
+        {standorte.length > 0 ? (
+          <div>
+            <h2 className="label-mono text-muted-foreground">Stadtteilseiten Hamburg</h2>
+            <ul className="border-foreground mt-4 border-t">
+              {standorte.map((st) => (
+                <li key={st.slug}>
+                  <Link href={`/standorte/${st.slug}`} className={linkRow}>
+                    {st.name}
+                    <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        <div className={!post && standorte.length === 0 ? "md:col-span-3" : !post || standorte.length === 0 ? "md:col-span-2" : ""}>
+          <h2 className="label-mono text-muted-foreground">Weitere Branchen</h2>
+          <ul
+            className={`border-foreground mt-4 border-t ${
+              !post || standorte.length === 0 ? "sm:columns-2 sm:gap-8" : ""
+            }`}
+          >
+            {andere.map((other) => (
+              <li key={other.slug} className="break-inside-avoid">
+                <Link href={`/branchen/${other.slug}`} className={linkRow}>
+                  {other.label}
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Abschluss: Satz links, Kontaktwege rechts.
+ * ---------------------------------------------------------------- */
+function Schluss({ inquiryHref }: { inquiryHref: string }) {
+  return (
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
+          Aus Ihren Stichpunkten schreiben wir die Texte für die Seite.
+        </h2>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
+            Schicken Sie uns, was Sie anbieten und für wen. Wir antworten meist am selben Werktag. Den Festpreis bekommen
+            Sie schriftlich, bevor wir anfangen.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
+              Anfrage schreiben {ARROW}
+            </Link>
+            <a href="tel:+491607621876" className="btn-line grow tabular-nums sm:grow-0">
+              0160 7621876
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

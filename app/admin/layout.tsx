@@ -1,8 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 
-import { logout } from "@/app/admin/actions";
+import { AdminLifecycle } from "@/app/admin/admin-lifecycle";
+import { LogoutButton } from "@/app/admin/logout-button";
+import { RefreshButton } from "@/app/admin/refresh-button";
+import { RenderKick } from "@/app/admin/render-kick";
 import { getAdminEmail } from "@/lib/admin/auth";
+import { ADMIN_THEME_COLOR } from "@/lib/admin/theme";
 
 // Immer pro Request rendern — das Root-Layout setzt revalidate = 3600
 // (ISR) für die Marketing-Seiten; hier darf nichts zwischengespeichert
@@ -10,8 +14,19 @@ import { getAdminEmail } from "@/lib/admin/auth";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin",
+  // absolute: sonst hängt das Root-Template „ · Sitalo“ noch einmal an.
+  title: { absolute: "Sitalo Admin", template: "%s · Sitalo Admin" },
   robots: { index: false, follow: false },
+  // Home-Bildschirm-App: appleWebApp.capable erzeugt in Next 16 nur
+  // „mobile-web-app-capable“; iOS vor 26 braucht zusätzlich die
+  // apple-Variante, sonst öffnet das Symbol nicht als eigene App.
+  appleWebApp: { capable: true, title: "Sitalo", statusBarStyle: "default" },
+  other: { "apple-mobile-web-app-capable": "yes" },
+};
+
+export const viewport: Viewport = {
+  themeColor: ADMIN_THEME_COLOR,
+  viewportFit: "cover",
 };
 
 export default async function AdminLayout({
@@ -22,35 +37,44 @@ export default async function AdminLayout({
   const email = await getAdminEmail();
 
   return (
-    <div className="bg-background flex min-h-screen flex-col">
-      <header className="border-border/60 bg-background/90 sticky top-0 z-30 border-b backdrop-blur">
-        <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
-          <Link href="/admin" className="flex items-baseline gap-2">
-            <span className="serif text-lg tracking-tight">Sitalo</span>
-            <span className="text-muted-foreground text-[13px]">
-              Anfragen
-            </span>
+    <div
+      data-admin=""
+      // Unten Platz für Kontakt-/Rückgängig-Streifen (--strip-h) und,
+      // auf der Detailseite, für die feste Daumenleiste.
+      className="bg-background flex min-h-dvh flex-col pb-[var(--strip-h,0px)] has-[[data-thumb-bar]]:pb-[calc(env(safe-area-inset-bottom)+3.5rem+var(--strip-h,0px))]"
+    >
+      <AdminLifecycle />
+      <RenderKick />
+      <header className="bg-foreground text-background pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto flex h-12 w-full max-w-2xl items-center justify-between gap-3 pr-1 pl-4">
+          <Link
+            href="/admin"
+            // Startseite frisch: eine offene Suche wird geschlossen.
+            data-admin-home=""
+            className="inline-flex h-11 items-center text-[15px] font-semibold tracking-tight"
+          >
+            Sitalo · Admin
           </Link>
-          {email ? (
-            <div className="flex items-center gap-3">
-              <span className="text-muted-foreground hidden text-[13px] sm:inline">
-                {email}
-              </span>
-              <form action={logout}>
-                <button
-                  type="submit"
-                  className="border-border text-foreground/80 hover:text-foreground hover:border-foreground/40 h-9 rounded-full border px-4 text-[13px] font-medium transition-colors"
-                >
-                  Abmelden
-                </button>
-              </form>
-            </div>
-          ) : null}
+          {email ? <RefreshButton /> : null}
         </div>
       </header>
-      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
+      <main
+        id="main"
+        tabIndex={-1}
+        className="mx-auto w-full max-w-2xl flex-1 px-4 pt-4 pb-8"
+      >
         {children}
       </main>
+      {email ? (
+        <footer className="border-border mx-auto w-full max-w-2xl border-t px-4 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-muted-foreground min-w-0 truncate text-[13px]">
+              Angemeldet als {email}
+            </span>
+            <LogoutButton />
+          </div>
+        </footer>
+      ) : null}
     </div>
   );
 }

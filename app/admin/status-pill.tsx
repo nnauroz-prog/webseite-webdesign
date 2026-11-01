@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const STYLES: Record<LeadStatus, string> = {
   neu: "bg-gold/20 text-foreground",
   in_arbeit: "bg-ink-petrol/15 text-ink-petrol",
-  erledigt: "bg-ink-olive/15 text-ink-olive",
+  erledigt: "border border-foreground/25 text-foreground",
   archiviert: "bg-muted text-muted-foreground",
 };
 

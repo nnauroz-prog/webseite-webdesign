@@ -4,6 +4,7 @@ import {
   SPRECHSTUNDE_ENDE_HHMM,
   SPRECHSTUNDE_RUFNUMMER,
 } from "@/lib/sprechstunde-data";
+import { icsDocument, icsEscape, VTIMEZONE_BERLIN } from "@/lib/ics";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -28,30 +29,6 @@ export const dynamic = "force-static";
 // Stündlich neu erzeugen, sonst friert der Build die „nächsten drei"
 // Termine ein und die Datei liefert nach Wochen vergangene Events.
 export const revalidate = 3600;
-
-function icsEscape(s: string): string {
-  return s
-    .replaceAll("\\", "\\\\")
-    .replaceAll(";", "\\;")
-    .replaceAll(",", "\\,")
-    .replaceAll("\n", "\\n");
-}
-
-/** Faltung nach RFC 5545: Zeilen max. 75 Oktette, Fortsetzung
- *  mit führendem Leerzeichen. Wir falten konservativ bei 70
- *  Zeichen — bei rein lateinischem Inhalt sicher unter 75 Bytes. */
-function foldLine(line: string): string {
-  if (line.length <= 70) return line;
-  const parts: string[] = [];
-  let rest = line;
-  parts.push(rest.slice(0, 70));
-  rest = rest.slice(70);
-  while (rest.length > 0) {
-    parts.push(" " + rest.slice(0, 69));
-    rest = rest.slice(69);
-  }
-  return parts.join("\r\n");
-}
 
 export function GET() {
   const termine = nextSprechstunden(3);
@@ -85,30 +62,14 @@ export function GET() {
     "PRODID:-//Sitalo Webdesign//Sprechstunde//DE",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
-    // Europe/Berlin VTIMEZONE — Standard-Definition mit beiden
-    // Übergängen, damit jeder Client die lokale Zeit korrekt hält.
-    "BEGIN:VTIMEZONE",
-    "TZID:Europe/Berlin",
-    "BEGIN:DAYLIGHT",
-    "TZOFFSETFROM:+0100",
-    "TZOFFSETTO:+0200",
-    "TZNAME:CEST",
-    "DTSTART:19700329T020000",
-    "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU",
-    "END:DAYLIGHT",
-    "BEGIN:STANDARD",
-    "TZOFFSETFROM:+0200",
-    "TZOFFSETTO:+0100",
-    "TZNAME:CET",
-    "DTSTART:19701025T030000",
-    "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU",
-    "END:STANDARD",
-    "END:VTIMEZONE",
+    // Europe/Berlin VTIMEZONE (lib/ics.ts), damit jeder Client die
+    // lokale Zeit korrekt hält.
+    ...VTIMEZONE_BERLIN,
     ...events,
     "END:VCALENDAR",
   ];
 
-  const body = lines.map(foldLine).join("\r\n") + "\r\n";
+  const body = icsDocument(lines);
 
   return new Response(body, {
     headers: {

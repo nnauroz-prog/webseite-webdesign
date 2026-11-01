@@ -1,0 +1,543 @@
+/* ==================================================================
+   Kopf der Startseite: Bühne, Überschrift, Zeichnung, Licht.
+
+   Bewegt wird die Zeichnung von hero-buehne.tsx (Zeitleiste, Parallax,
+   Zeiger). Hier stehen Layout, die ruhigen Dauer-Animationen (Wellen,
+   Lichtreflexe, Fähre, Warnlicht), die Tageszeit-Stimmungen und die
+   Endzustände für prefers-reduced-motion.
+   ================================================================== */
+
+.hero {
+  --art-w: 100%;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f4f4f1 0%, var(--background) 60%);
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    --art-w: min(1040px, 60vw, calc((100svh - 4rem) * 1.24));
+    min-height: min(max(680px, calc(100svh - 4rem)), 940px);
+  }
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Überschrift: Wörter steigen aus einer Maske ---------- */
+
+.wort {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Luft für Umlaut-Punkte und Unterlängen, ohne die Zeile zu verschieben */
+  padding: 0.12em 0.04em 0.16em;
+  margin: -0.12em -0.04em -0.16em;
+}
+.wortIn {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wortIn {
+    animation: wort-auf 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(40ms + var(--i, 0) * 65ms);
+  }
+  .folgt {
+    animation: folgt 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--d, 480ms);
+  }
+}
+@keyframes wort-auf {
+  from {
+    transform: translateY(112%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes folgt {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Zeichnung ---------- */
+
+.art {
+  position: relative;
+  width: var(--art-w);
+  margin-top: 0.5rem;
+}
+@media (min-width: 640px) {
+  .art {
+    margin-top: 1.5rem;
+  }
+}
+.art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+@media (min-width: 1024px) {
+  .art {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+  }
+}
+
+.dach {
+  fill: #cfd1cd;
+}
+.wahrzeichen {
+  fill: #bec1bd;
+}
+.wasser {
+  fill: #d3d6d3;
+}
+
+/* Lichter (Fenster, Positionslichter, Flutlicht) liegen ganz oben. Sie
+   gehen an (einmal kurz aufblenden) und stehen dann voll deckend: eine
+   dauerhaft halbtransparente Ebene über einer Szene, die jeden Frame neu
+   zeichnet, kostet sonst die halbe Bildrate. Gedimmt wird nur über
+   fill-opacity, das kostet nichts extra. */
+.art .lichter {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* ---------- Tageszeit (data-licht setzt hero-buehne.tsx) ---------- */
+
+/* Himmel: eine ruhende Farbschicht hinter Zeichnung und Text. Keine
+   Mischmodi über der laufenden Szene, damit jeder Frame billig bleibt.
+   Die Zeichnung selbst wechselt nur die Farben von Stadt und Wasser; das
+   Terminal (Kran, Schiff, Container) ist angestrahlt und bleibt, wie es
+   ist. Über der Textspalte bleibt der Himmel so hell, dass alle Texte
+   AA-Kontrast behalten. */
+.licht {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.licht > i {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 2.4s ease;
+}
+.lichtMorgen {
+  background:
+    radial-gradient(70% 46% at 66% 94%, rgb(238 186 174 / 0.42), rgb(238 186 174 / 0) 72%),
+    linear-gradient(180deg, rgb(244 214 206 / 0.12) 0%, rgb(242 204 194 / 0.22) 78%, rgb(242 204 194 / 0.18) 100%);
+}
+.lichtAbend {
+  background:
+    radial-gradient(70% 46% at 64% 94%, rgb(242 178 108 / 0.42), rgb(242 178 108 / 0) 72%),
+    linear-gradient(180deg, rgb(246 218 180 / 0.12) 0%, rgb(244 204 150 / 0.24) 78%, rgb(244 206 156 / 0.2) 100%);
+}
+/* Nacht: eine gleichmäßige Dämpfung von oben nach unten. Am Rechner
+   nur hinter der Zeichnung (Maske), die Textspalte bleibt hell. */
+.lichtNacht {
+  background: linear-gradient(180deg, rgb(27 29 30 / 0.03) 0%, rgb(27 29 30 / 0.035) 58%, rgb(27 29 30 / 0.16) 74%, rgb(27 29 30 / 0.2) 100%);
+}
+@media (min-width: 1024px) {
+  .lichtNacht {
+    background: linear-gradient(180deg, rgb(27 29 30 / 0.06) 0%, rgb(27 29 30 / 0.22) 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 45%, #000 60%);
+    mask-image: linear-gradient(90deg, transparent 45%, #000 60%);
+  }
+}
+
+.dach,
+.wahrzeichen,
+.wasser {
+  transition: fill 2.4s ease;
+}
+.hero[data-licht="morgen"] .dach {
+  fill: #d8cfcc;
+}
+.hero[data-licht="morgen"] .wahrzeichen {
+  fill: #c9bfbc;
+}
+.hero[data-licht="morgen"] .wasser {
+  fill: #dcd5d2;
+}
+.hero[data-licht="abend"] .dach {
+  fill: #d9cebf;
+}
+.hero[data-licht="abend"] .wahrzeichen {
+  fill: #c9bcab;
+}
+.hero[data-licht="abend"] .wasser {
+  fill: #ded3c4;
+}
+.hero[data-licht="nacht"] .dach {
+  fill: #a7aba9;
+}
+.hero[data-licht="nacht"] .wahrzeichen {
+  fill: #959a98;
+}
+.hero[data-licht="nacht"] .wasser {
+  fill: #a9aeab;
+}
+
+.hero[data-licht="morgen"] .lichtMorgen,
+.hero[data-licht="abend"] .lichtAbend,
+.hero[data-licht="nacht"] .lichtNacht {
+  opacity: 1;
+}
+.hero[data-licht="abend"] .lichter,
+.hero[data-licht="nacht"] .lichter {
+  visibility: visible;
+  animation: licht-an 1.8s ease both;
+}
+/* Fenster: Helligkeit je Gruppe aus --o (containerbruecke.tsx). Nachts
+   leuchten sie kräftiger, damit Elbphilharmonie und Landungsbrücken
+   als Lichter lesbar sind. */
+.fenster {
+  fill-opacity: var(--o, 0.7);
+}
+.hero[data-licht="nacht"] .fenster {
+  fill-opacity: min(1, calc(var(--o, 0.7) + 0.2));
+}
+/* Abends: Flutlicht schwächer, ein Teil der Fenster noch dunkel. */
+.hero[data-licht="abend"] .flut path {
+  fill-opacity: 0.45;
+}
+.hero[data-licht="abend"] .spaet {
+  visibility: hidden;
+}
+@keyframes licht-an {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- Beschriftung am abgesetzten Container ---------- */
+
+.schild {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  padding-bottom: 4px;
+  text-align: right;
+  pointer-events: none;
+}
+.schild::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--foreground);
+  transform-origin: 100% 50%;
+}
+.schildNr {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: #33383a;
+  white-space: nowrap;
+}
+.schildText {
+  font-size: 13px;
+  font-weight: 640;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+@media (min-width: 1024px) {
+  .schildText {
+    font-size: 15px;
+  }
+}
+
+.schild > span,
+.schild::after {
+  transition:
+    opacity 0.3s ease,
+    transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* Die alte Beschriftung geht zügig, die neue setzt sich danach von oben
+   auf ihre Linie, so wie der Container gerade aufgesetzt hat. */
+.schild[data-on="0"] > span,
+.schild[data-on="0"]::after {
+  transition-duration: 0.18s, 0.3s;
+}
+.schild[data-on="0"] > span {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.schild[data-on="0"]::after {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.schild[data-on="1"]::after {
+  transition-delay: 0.16s;
+}
+.schild[data-on="1"] > .schildNr {
+  transition-delay: 0.26s;
+}
+.schild[data-on="1"] > .schildText {
+  transition-delay: 0.34s;
+}
+
+.leader path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.45s ease;
+}
+.leader circle {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.leader[data-on="1"] path {
+  stroke-dashoffset: 0;
+}
+.leader[data-on="1"] circle {
+  opacity: 1;
+  transition-delay: 0.3s;
+}
+
+/* ---------- Bildunterschrift mit Pegel ---------- */
+
+.unterschrift {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0.5rem;
+  z-index: 3;
+  pointer-events: none;
+}
+.caption {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  max-width: 82%;
+  padding: 3px 8px;
+  background: #d3d6d3;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: #33383a;
+}
+@media (min-width: 640px) {
+  .caption {
+    flex-direction: row;
+    gap: 0 0.9em;
+    max-width: none;
+  }
+}
+.pegel {
+  color: var(--foreground);
+  pointer-events: auto;
+}
+.pegelPunkt {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--ink-petrol);
+  vertical-align: 0.05em;
+}
+
+/* ---------- Ruhige Dauerbewegung ---------- */
+
+.funkeln {
+  opacity: 0.35;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .welle {
+    animation: drift linear infinite;
+  }
+  .funkeln {
+    opacity: 0;
+    animation: funkeln ease-in-out infinite;
+  }
+  .blink {
+    animation: blink 2.6s steps(1) infinite;
+  }
+  .faehre {
+    animation:
+      faehre-fahrt 56s linear infinite,
+      faehre-sicht 56s linear infinite;
+  }
+  .kielwasser {
+    animation: kielwasser 56s linear infinite;
+  }
+}
+/* Schmale Bildschirme (meist Handys): weniger gleichzeitige Bewegung im
+   Wasser. Jeder Wellenstrich und jeder Reflex, der läuft, zwingt das
+   ganze Szenen-SVG zum Neumalen. Die übrigen stehen ruhig da. */
+@media (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+  .welle:nth-of-type(even) {
+    animation: none;
+  }
+  .funkeln:nth-of-type(n + 9) {
+    display: none;
+  }
+}
+/* Außerhalb des Bildes und in Hintergrund-Tabs steht alles still. */
+.hero[data-kb-pause] .art * {
+  animation-play-state: paused !important;
+}
+
+@keyframes drift {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+@keyframes funkeln {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.18;
+  }
+}
+/* Fähre: legt an der Elbphilharmonie ab, hält an den Landungsbrücken,
+   läuft weiter elbabwärts und verschwindet im Dunst. Einheiten der viewBox. */
+@keyframes faehre-fahrt {
+  0% {
+    transform: translateX(0);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1);
+  }
+  38% {
+    transform: translateX(-262px);
+  }
+  54% {
+    transform: translateX(-262px);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.85, 0.65);
+  }
+  92%,
+  100% {
+    transform: translateX(-700px);
+  }
+}
+@keyframes faehre-sicht {
+  0% {
+    opacity: 0;
+  }
+  6%,
+  80% {
+    opacity: 1;
+  }
+  92%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes kielwasser {
+  0%,
+  3% {
+    opacity: 0;
+    transform: scaleX(0.3);
+  }
+  12%,
+  30% {
+    opacity: 0.9;
+    transform: none;
+  }
+  38%,
+  56% {
+    opacity: 0;
+    transform: scaleX(0.3);
+  }
+  70%,
+  88% {
+    opacity: 0.9;
+    transform: none;
+  }
+  92%,
+  100% {
+    opacity: 0;
+  }
+}
+.kielwasser {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+}
+
+/* ---------- Reduzierte Bewegung: ein ruhiges, vollständiges Bild ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .platz {
+    visibility: visible;
+  }
+  .last {
+    visibility: hidden;
+  }
+  .kielwasser {
+    opacity: 0;
+  }
+  .schild > span,
+  .schild::after,
+  .leader path,
+  .leader circle,
+  .licht > i,
+  .dach,
+  .wahrzeichen,
+  .wasser {
+    transition: none;
+  }
+  .schild:nth-of-type(1) > span {
+    opacity: 1;
+    transform: none;
+  }
+  .schild:nth-of-type(1)::after {
+    opacity: 1;
+    transform: none;
+  }
+  .schild:not(:nth-of-type(1)) > span,
+  .schild:not(:nth-of-type(1))::after {
+    opacity: 0;
+  }
+  .leader:nth-of-type(1) path {
+    stroke-dashoffset: 0;
+  }
+  .leader:nth-of-type(1) circle {
+    opacity: 1;
+  }
+  .leader:not(:nth-of-type(1)) {
+    visibility: hidden;
+  }
+  .hero[data-licht] .lichter {
+    animation: none;
+  }
+}

@@ -1,6 +1,6 @@
-"use client";
+import type { CSSProperties } from "react";
 
-import { useEffect, useRef, useState } from "react";
+import { SkylineMotor } from "@/components/marketing/hamburg-skyline-motor";
 
 /**
  * Hamburg-Silhouette als feine Linienzeichnung mit Spiegelung in der
@@ -15,8 +15,18 @@ import { useEffect, useRef, useState } from "react";
  * Rathaus, St. Petri, St. Jacobi, Speicherstadt. Abstände gestaucht.
  *
  * Bewegung: die Linien zeichnen sich beim ersten Sichtkontakt einmal
- * nacheinander, Flächen und Spiegelung blenden danach ein — dann steht
- * das Bild. Bei prefers-reduced-motion sofort fertig.
+ * nacheinander, Flächen und Spiegelung blenden danach ein. Mit
+ * lights gehen danach nacheinander kleine Lichter an: Fenster der
+ * Elbphilharmonie, Uhren von Michel und Pegelturm, Kranlichter, zuletzt
+ * das Hindernisfeuer auf dem Fernsehturm. Nur dieses blinkt danach
+ * langsam weiter, und nur solange die Skyline im Bild ist.
+ * Ohne Script, bei prefers-reduced-motion oder wenn die Skyline beim
+ * Laden schon im Bild ist: sofort fertig, alle Lichter an, nichts blinkt
+ * (Styles: app/globals.css, Block „Hamburg-Silhouette“).
+ *
+ * Server-Komponente: Alle Pfade werden auf dem Server gerechnet. Die
+ * kleine Client-Hülle SkylineMotor (hamburg-skyline-motor.tsx) stellt nur
+ * das <svg> mit Beobachtern und Zustandsklassen bereit.
  */
 
 const W = 1600;
@@ -166,38 +176,93 @@ const ELPHI_SEAMS =
   arches(956, 1178, 175, 8, 3, 4) +
   arches(952, 1178, 192, 8, 3, 4);
 
-export function HamburgSkyline({ className = "" }: { className?: string }) {
-  const ref = useRef<SVGSVGElement>(null);
-  const [drawn, setDrawn] = useState(false);
+/* ------------------------------------------------------------------
+ * Lichter. t = Einschaltzeit in ms nach Beginn des Zeichnens; die
+ * Linien brauchen etwa fünf Sekunden, die Lichter folgen ab 3,6 s.
+ * ---------------------------------------------------------------- */
 
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setDrawn(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setDrawn(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.3 },
-    );
-    io.observe(node);
-    return () => io.disconnect();
-  }, []);
+/** Fenster im Glasaufbau der Elbphilharmonie, zwischen den Glasfugen. */
+const ELPHI_LIGHTS: [number, number][] = [
+  [984, 193], [1112, 176], [1040, 157], [960, 193], [1168, 193], [1072, 176],
+  [1008, 157], [1056, 193], [992, 137], [1136, 193], [968, 176], [1120, 157],
+  [1024, 176], [1088, 193], [1152, 157], [1048, 137], [1000, 193], [1160, 176],
+  [976, 157], [1104, 176], [1032, 193], [960, 137], [1096, 157], [1128, 176],
+  [1016, 137], [1064, 157], [1048, 176], [1112, 193],
+];
 
+type Lamp = { x: number; y: number; t: number; kind: "warm" | "rot" | "blink" };
+
+const LAMPS: Lamp[] = [
+  // Kranlichter: Hindernisfeuer auf dem A-Bock, Arbeitslichter an den Auslegerspitzen
+  { x: 395, y: 129, t: 5700, kind: "rot" },
+  { x: 477, y: 129, t: 5820, kind: "rot" },
+  { x: 331, y: 166, t: 6000, kind: "warm" },
+  { x: 461, y: 166, t: 6080, kind: "warm" },
+  { x: 413, y: 166, t: 6160, kind: "warm" },
+  { x: 543, y: 166, t: 6240, kind: "warm" },
+  // Heinrich-Hertz-Turm: Hindernisfeuer an der Spitze, blinkt weiter
+  { x: 905, y: 31, t: 6700, kind: "blink" },
+];
+
+function Lights() {
   return (
-    <svg
-      ref={ref}
+    <g className="hh-lights" stroke="none">
+      {/* Elbphilharmonie: warme Fenster, eins nach dem anderen */}
+      <g className="hh-windows">
+        {ELPHI_LIGHTS.map(([x, y], i) => (
+          <rect
+            key={`${x}-${y}`}
+            className="hh-light"
+            x={x - 1.4}
+            y={y - 0.9}
+            width="2.8"
+            height="1.8"
+            fill="#ffd9a6"
+            style={{ "--t": 3600 + i * 60 } as CSSProperties}
+          />
+        ))}
+      </g>
+      {/* Uhren: Michel und Pegelturm der Landungsbrücken, beleuchtet */}
+      <g className="hh-light" style={{ "--t": 5300 } as CSSProperties}>
+        <circle cx="856" cy="196" r="9" fill="url(#hh-glow)" />
+        <circle cx="856" cy="196" r="4.3" fill="#ffe4b8" />
+        <path d="M856 196V192.6M856 196H858.8" stroke="#1b1d1e" strokeWidth="0.8" strokeLinecap="round" />
+      </g>
+      <g className="hh-light" style={{ "--t": 5480 } as CSSProperties}>
+        <circle cx="758" cy="186" r="6" fill="url(#hh-glow)" />
+        <circle cx="758" cy="186" r="2.4" fill="#ffe4b8" />
+        <path d="M758 186V184.3" stroke="#1b1d1e" strokeWidth="0.6" strokeLinecap="round" />
+      </g>
+      {LAMPS.map((l) => (
+        <g
+          key={`${l.x}-${l.y}`}
+          className={l.kind === "blink" ? "hh-light hh-blink" : "hh-light"}
+          style={{ "--t": l.t } as CSSProperties}
+        >
+          <circle
+            cx={l.x}
+            cy={l.y}
+            r={l.kind === "warm" ? 5 : l.kind === "blink" ? 11 : 7}
+            fill={l.kind === "warm" ? "url(#hh-glow)" : "url(#hh-glow-rot)"}
+          />
+          <circle
+            cx={l.x}
+            cy={l.y}
+            r={l.kind === "warm" ? 1 : l.kind === "blink" ? 1.8 : 1.3}
+            fill={l.kind === "warm" ? "#fff1d6" : "#ff6a55"}
+          />
+        </g>
+      ))}
+    </g>
+  );
+}
+
+export function HamburgSkyline({ className = "", lights = false }: { className?: string; lights?: boolean }) {
+  return (
+    <SkylineMotor
       viewBox={`0 0 ${W} 320`}
-      preserveAspectRatio="xMidYMax slice"
-      role="img"
-      aria-label="Silhouette von Hamburg mit Spiegelung in der Elbe: Köhlbrandbrücke, Containerbrücken, Dancing Towers, Landungsbrücken, Michel, Fernsehturm, Elbphilharmonie, St. Katharinen, St. Nikolai, Rathaus, St. Petri, St. Jacobi und Speicherstadt"
-      className={`hh-skyline ${drawn ? "is-drawn" : ""} ${className}`}
+      label="Silhouette von Hamburg mit Spiegelung in der Elbe: Köhlbrandbrücke, Containerbrücken, Dancing Towers, Landungsbrücken, Michel, Fernsehturm, Elbphilharmonie, St. Katharinen, St. Nikolai, Rathaus, St. Petri, St. Jacobi und Speicherstadt"
+      className={className}
     >
       <defs>
         <linearGradient id="hh-fill" x1="0" y1="0" x2="0" y2="1">
@@ -225,6 +290,14 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
         <clipPath id="hh-elphi-glass">
           <path d={ELPHI_GLASS} />
         </clipPath>
+        <radialGradient id="hh-glow">
+          <stop offset="0" stopColor="#ffd9a6" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#ffd9a6" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="hh-glow-rot">
+          <stop offset="0" stopColor="#ff4d3a" stopOpacity="0.6" />
+          <stop offset="1" stopColor="#ff4d3a" stopOpacity="0" />
+        </radialGradient>
       </defs>
 
       <g id="hh-city" fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round">
@@ -237,10 +310,12 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
             pathLength={1}
             strokeWidth={s.fine ? 0.7 : 1.25}
             className={s.fill ? "hh-draw hh-fill" : s.fine ? "hh-draw hh-fine" : "hh-draw"}
-            style={{ "--i": i } as React.CSSProperties}
+            style={{ "--i": i } as CSSProperties}
           />
         ))}
         <path d={ELPHI_SEAMS} clipPath="url(#hh-elphi-glass)" strokeWidth={0.6} className="hh-detail" />
+        {/* Lichter liegen in der Stadt-Gruppe: so spiegeln sie sich mit. */}
+        {lights ? <Lights /> : null}
       </g>
 
       {/* Wasserlinie */}
@@ -250,6 +325,6 @@ export function HamburgSkyline({ className = "" }: { className?: string }) {
       <g mask="url(#hh-reflect-mask)" className="hh-reflection">
         <use href="#hh-city" transform={`matrix(1 0 0 -0.5 0 ${WATER * 1.5})`} filter="url(#hh-ripple)" />
       </g>
-    </svg>
+    </SkylineMotor>
   );
 }

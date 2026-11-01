@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { PageHero } from "@/components/marketing/page-hero";
 import { BRANCHEN } from "@/lib/branchen-data";
+import { getPaketBySlug } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
   title: "Branchen — Websites für Ihren Betrieb",
@@ -16,98 +16,127 @@ export const metadata: Metadata = {
   alternates: { canonical: "/branchen" },
 };
 
+const ZAHLWORT: Record<number, string> = { 8: "Acht", 9: "Neun", 10: "Zehn", 11: "Elf", 12: "Zwölf" };
+
 export default function BranchenPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Branchen" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <Hero />
-        <Sections />
-        <FinalCta />
+        <PageHero
+          crumb="Branchen"
+          eyebrow={`${ZAHLWORT[BRANCHEN.length] ?? BRANCHEN.length} Branchen`}
+          title="Websites für Ihre Branche"
+        >
+          Eine Praxis braucht anderes als ein Café. Für jede Branche haben wir aufgeschrieben, worauf Ihre Kunden zuerst
+          schauen, und eine Musterseite gebaut.
+        </PageHero>
+        <Register />
+        <Schluss />
       </main>
       <MarketingFooter />
     </div>
   );
 }
 
-function Hero() {
+/**
+ * Branchen als Register: eine Zeile je Branche mit Musterseite, kurzer
+ * Einordnung und dem Paket, das wir meistens empfehlen. Details stehen
+ * auf /branchen/[slug].
+ */
+function Register() {
   return (
-    <section className="relative overflow-hidden">
-      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
-        <EditorialEyebrow>10 Branchen · jede Seite neu gebaut</EditorialEyebrow>
-        <h1 className="mt-5 max-w-3xl text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-          Websites, die zu Ihrem{" "}
-          <span className="serif-italic text-muted-foreground font-normal">Alltag passen.</span>
-        </h1>
-        <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-          Eine Praxis braucht anderes als ein Café. Pro Branche zeigen wir, worauf es ankommt.
+    <section>
+      <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20">
+        <div className="label-mono text-muted-foreground hidden pb-3 lg:grid lg:grid-cols-12 lg:gap-8">
+          <span className="lg:col-span-3">Musterseite</span>
+          <span className="lg:col-span-6">Branche</span>
+          <span className="text-right lg:col-span-3">Meist empfohlen</span>
+        </div>
+        <ul className="border-foreground border-t">
+          {BRANCHEN.map((b) => {
+            const paket = getPaketBySlug(b.recommendedPackage);
+            return (
+              <li key={b.slug} id={b.slug} className="border-border scroll-mt-24 border-b">
+                <Link
+                  href={`/branchen/${b.slug}`}
+                  className="group grid grid-cols-[6.5rem_1fr] items-start gap-x-4 gap-y-3 py-5 sm:grid-cols-[11rem_1fr] sm:gap-x-6 sm:py-6 lg:grid-cols-12 lg:gap-8"
+                >
+                  <div className="bg-secondary relative aspect-[4/3] w-full overflow-hidden lg:col-span-3">
+                    {b.image ? (
+                      <Image
+                        src={b.image.src}
+                        alt={b.image.alt}
+                        fill
+                        sizes="(min-width: 1024px) 260px, (min-width: 640px) 176px, 104px"
+                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="min-w-0 lg:col-span-6 lg:pt-1">
+                    <h2 className="text-[19px] leading-tight tracking-[-0.02em] underline-offset-4 group-hover:underline sm:text-[26px]">
+                      {b.label}
+                    </h2>
+                    <p className="text-muted-foreground mt-2 hidden max-w-xl text-pretty text-[15.5px] leading-relaxed sm:block">
+                      {b.shortBody}
+                    </p>
+                    {paket ? (
+                      <p className="text-muted-foreground mt-2 text-[14px] lg:hidden">
+                        Meist {paket.name}, {paket.setup}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="hidden items-start justify-end gap-5 lg:col-span-3 lg:flex lg:pt-2">
+                    {paket ? (
+                      <p className="text-right">
+                        <span className="block text-[16px] font-semibold">{paket.name}</span>
+                        <span className="text-muted-foreground mt-0.5 block text-[14.5px] tabular-nums">
+                          {paket.setup}
+                        </span>
+                      </p>
+                    ) : null}
+                    <ArrowRight
+                      className="mt-1 h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+        <p className="text-muted-foreground mt-4 font-mono text-[12px] leading-relaxed">
+          Preise sind Einmalpreise, dazu kommt ein Monatsbeitrag je Paket.{" "}
+          <Link href="/pakete" className="hover:text-foreground underline underline-offset-4">
+            Alle Pakete
+          </Link>
         </p>
       </div>
     </section>
   );
 }
 
-/** Zehn Branchen als Karten. Details stehen auf /branchen/[slug]. */
-function Sections() {
+function Schluss() {
   return (
-    <section className="border-border/40 border-t">
-      <ul className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-3 gap-y-7 px-5 py-10 sm:gap-x-5 sm:gap-y-10 sm:px-6 sm:py-16 lg:grid-cols-3">
-        {BRANCHEN.map((b) => (
-          <li key={b.slug} id={b.slug} className="scroll-mt-24">
-            <Link href={`/branchen/${b.slug}`} className="group block">
-              <div className="bg-secondary/40 relative aspect-[16/10] w-full overflow-hidden rounded-xl ring-1 ring-black/5">
-                {b.image ? (
-                  <Image
-                    src={b.image.src}
-                    alt={b.image.alt}
-                    fill
-                    sizes="(min-width: 1024px) 360px, 50vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
-                ) : null}
-              </div>
-              <h2 className="mt-3 text-[15px] font-semibold leading-snug tracking-tight sm:mt-4 sm:text-xl">{b.label}</h2>
-              <p className="text-muted-foreground mt-1.5 hidden text-[14.5px] leading-relaxed sm:block">
-                {b.shortBody.split(". ")[0].replace(/\.$/, "")}.
-              </p>
-              <span className="text-foreground mt-3 hidden items-center sm:inline-flex gap-1.5 text-[14px] font-medium underline-offset-4 group-hover:underline">
-                Mehr erfahren
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function FinalCta() {
-  return (
-    <section className="bg-foreground text-background relative overflow-hidden">
-      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
-        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
-          Ihre Branche nicht dabei?{" "}
-          <span className="serif-italic text-background/70">Fragen Sie trotzdem.</span>
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
+          Wir bauen auch für Betriebe, die hier nicht stehen.
         </h2>
-        <Link
-          href="/anfrage"
-          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-        >
-          Website anfragen
-          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-        </Link>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
+            Schreiben Sie uns zwei, drei Sätze zu Ihrem Betrieb. Wir antworten meist am selben Werktag. Den Festpreis
+            bekommen Sie schriftlich, bevor wir anfangen.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href="/anfrage" className="btn-signal grow sm:grow-0">
+              Anfrage schreiben <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <a href="tel:+491607621876" className="btn-line grow tabular-nums sm:grow-0">
+              0160 7621876
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

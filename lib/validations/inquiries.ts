@@ -30,6 +30,19 @@ export const INQUIRY_PACKAGES = [
 export type InquiryPackage = (typeof INQUIRY_PACKAGES)[number];
 
 /**
+ * Paket-Labels, wie sie das Anfrage-Formular als „Paket-Wunsch“
+ * sendet. Liegt hier (statt in inquiry-form.tsx), damit die
+ * Antwort-Vorlagen im Admin Label → Paket sicher zurückübersetzen.
+ */
+export const PACKAGE_LABELS: Record<InquiryPackage, string> = {
+  starter: "Starter-Projekt",
+  business: "Business-Auftritt",
+  premium: "Premium-System",
+  studio: "Sitalo Studio",
+  unsicher: "Empfehlung gewünscht",
+};
+
+/**
  * Optional functional add-ons asked about after the package pick. Some
  * (Verwaltbare Inhalte, Speisekarte, Bewerbungsformular) overlap with
  * the `INQUIRY_NEEDS` list because customers often want to emphasise

@@ -8,14 +8,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function LoginForm() {
-  const [state, action, pending] = useActionState<ActionState, FormData>(login, {});
+export function LoginForm({ next }: { next: string }) {
+  const [state, action, pending] = useActionState<ActionState, FormData>(
+    login,
+    {},
+  );
 
   return (
     <form action={action} className="space-y-5">
+      <input type="hidden" name="next" value={next} />
       <div className="space-y-2">
         <Label htmlFor="admin-email">E-Mail</Label>
-        <Input id="admin-email" name="email" type="email" autoComplete="username" required />
+        <Input
+          // key + defaultValue: Nach einem Fehler setzt React das Formular
+          // zurück; so bleibt die E-Mail stehen, nur das Passwort ist leer.
+          key={state.email ?? ""}
+          defaultValue={state.email}
+          id="admin-email"
+          name="email"
+          type="email"
+          autoComplete="username"
+          required
+          className="h-12 text-base"
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="admin-password">Passwort</Label>
@@ -25,6 +40,7 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password"
           required
+          className="h-12 text-base"
         />
       </div>
       {state.error ? (
@@ -32,7 +48,11 @@ export function LoginForm() {
           <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       ) : null}
-      <Button type="submit" disabled={pending} className="h-11 w-full rounded-full">
+      <Button
+        type="submit"
+        disabled={pending}
+        className="h-12 w-full rounded-full text-base"
+      >
         {pending ? "Anmelden …" : "Anmelden"}
       </Button>
     </form>

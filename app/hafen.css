@@ -9,54 +9,10 @@
 
 @layer components {
 /* ------------------------------------------------------------------
-   Kopf: Copy links, Zeichnung unten rechts am Bildrand.
+   Kopf: Layout, Ladebetrieb, Licht und Bewegung stehen im CSS-Modul
+   components/marketing/hafen/hero.module.css. Hier bleibt nur die
+   Bildunterschrift, die auch die Hamburg-Karte nutzt.
    ------------------------------------------------------------------ */
-.hafen-hero {
-  --art-w: 100%;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(180deg, #f4f4f1 0%, var(--background) 60%);
-}
-
-.hafen-art {
-  position: relative;
-  width: var(--art-w);
-  margin-top: 1.5rem;
-}
-.hafen-art svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-@media (min-width: 1024px) {
-  .hafen-hero {
-    --art-w: min(1040px, 60vw, calc((100svh - 4rem) * 1.24));
-    min-height: min(max(680px, calc(100svh - 4rem)), 940px);
-  }
-  .hafen-art {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin: 0;
-  }
-}
-
-/* Beschriftung am abgesetzten Container: HTML statt SVG-Text, damit
-   sie auch auf dem Handy lesbar bleibt. Position in Prozent der
-   Zeichnung (viewBox -160 0 960 760). */
-.hafen-note {
-  position: absolute;
-  right: 57.1%;
-  bottom: 46.6%;
-  padding-bottom: 3px;
-  border-bottom: 1px solid var(--foreground);
-  text-align: right;
-  white-space: nowrap;
-  line-height: 1.3;
-}
-
 .hafen-caption {
   display: inline-block;
   padding: 2px 8px;
@@ -67,85 +23,30 @@
   color: rgb(27 29 30 / 0.78);
 }
 
-/* Bewegung im Kopf: Katze fährt vom Kai über das Schiff, dann senkt
-   sich der Container in die Lücke. Grundstellung ist der Endzustand,
-   die Animation spielt nur den Weg dorthin (fill-mode: both). */
-@media (prefers-reduced-motion: no-preference) {
-  .kb-move {
-    animation: kb-move 1050ms cubic-bezier(0.65, 0, 0.35, 1) 300ms both;
-  }
-  .kb-drop {
-    animation: kb-drop 850ms cubic-bezier(0.33, 1, 0.68, 1) 1430ms both;
-  }
-  .kb-rope {
-    transform-box: fill-box;
-    transform-origin: 50% 0;
-    animation: kb-rope 850ms cubic-bezier(0.33, 1, 0.68, 1) 1430ms both;
-  }
-  .kb-note {
-    animation: kb-fade 600ms ease 2300ms both;
-  }
-  .kb-blink {
-    animation: kb-blink 2.6s steps(1) infinite;
-  }
-  .kb-wave {
-    animation: kb-drift linear infinite;
-  }
-}
-@keyframes kb-move {
-  from {
-    transform: translateX(400px);
-  }
-  to {
-    transform: none;
-  }
-}
-@keyframes kb-drop {
-  from {
-    transform: translateY(-121px);
-  }
-  to {
-    transform: none;
-  }
-}
-@keyframes kb-rope {
-  from {
-    transform: scaleY(0.154);
-  }
-  to {
-    transform: none;
-  }
-}
-@keyframes kb-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes kb-blink {
-  0% {
-    opacity: 1;
-  }
-  55% {
-    opacity: 0.18;
-  }
-}
-@keyframes kb-drift {
-  to {
-    stroke-dashoffset: -240;
-  }
-}
-
 /* ------------------------------------------------------------------
    Leistungen: Containerstapel. 40 Fuß für das Kerngeschäft, 20 Fuß
    für Zusätze. Wellblech-Rippen, Eckbeschläge, Ober- und Unterholm.
+
+   Bewegung (components/marketing/hafen/container-stack.tsx):
+   - Einlaufen: Jeder Container hängt am Spreader, wird abgesenkt und
+     setzt weich auf. Danach lösen die Twistlocks (Eckbeschläge gehen
+     aus) und der Spreader fährt wieder hoch. Am Rechner der ganze
+     Stapel, untere Reihe zuerst; mobil Reihe für Reihe.
+   - Zeiger und Tastatur: Der Spreader fährt aus (Teleskop auf 20 oder
+     40 Fuß), kommt herunter, dockt an, die Eckbeschläge leuchten und
+     der Container hebt sich ein paar Pixel. Beim Verlassen setzt er ab.
    ------------------------------------------------------------------ */
 .box {
   --c: var(--gold);
   --ink: var(--foreground);
+  --lock: var(--gold);
+  --lift: -4px;
+  --ease-hub: cubic-bezier(0.45, 0, 0.25, 1);
   position: relative;
+  /* Was weiter oben im Stapel steht, liegt vorn: ein Spreader, der von
+     einer unteren Reihe hochfährt, verschwindet hinter dem Container
+     darüber (am Rechner wie mobil). --z setzt die Komponente. */
+  z-index: var(--z, 0);
   display: flex;
   min-height: 15rem;
   flex-direction: column;
@@ -164,6 +65,8 @@
     inset 0 -8px 0 rgb(0 0 0 / 0.16),
     inset 8px 0 0 rgb(0 0 0 / 0.06),
     inset -8px 0 0 rgb(0 0 0 / 0.06);
+  /* Absetzen: weich abbremsen. */
+  transition: transform 0.42s cubic-bezier(0.3, 0.7, 0.4, 1);
 }
 .box::after {
   content: "";
@@ -178,6 +81,8 @@
 }
 .box-signal {
   --c: var(--gold);
+  /* Orange auf Orange wäre unsichtbar: hier leuchten die Beschläge hell. */
+  --lock: #ffe1cf;
 }
 .box-teer {
   --c: var(--teer-2);
@@ -190,6 +95,7 @@
 .box-rost {
   --c: var(--ink-olive);
   --ink: #f7f3f0;
+  --lock: #ff8a4d;
 }
 .box-zink {
   --c: var(--zink);
@@ -222,27 +128,316 @@
   color: var(--gold);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .stack-drop .box {
-    opacity: 0;
-    transform: translateY(-28px);
+/* Ganzer Container ist klickbar, der Linkname bleibt die Überschrift. */
+.box-link {
+  color: inherit;
+}
+.box-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+/* Der Fokusring wandert an den ganzen Container. Nur wo der Browser
+   :has() kennt; sonst bleibt der Ring am Link. */
+@supports selector(:has(*)) {
+  .box-link:focus-visible {
+    outline: none;
   }
-  .stack-drop.is-in .box {
+}
+/* Dunkleres Orange: hält auf dem hellen Grund 3:1 (Fokus-Kontrast). */
+.box:has(.box-link:focus-visible) {
+  outline: 2px solid var(--gold-ink);
+  outline-offset: 3px;
+}
+/* Unter 768 px liegt unten die feste Leiste „Website anfragen“
+   (mobile-cta-bar). Fokus und Ankersprünge halten Abstand zu ihr. */
+@media (max-width: 767px) {
+  html {
+    scroll-padding-bottom: 5.5rem;
+  }
+}
+
+/* Eckbeschläge im verriegelten Zustand: leuchten in --lock. */
+.box-locks {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(var(--lock), var(--lock)) top 0 left 0 / 18px 12px no-repeat,
+    linear-gradient(var(--lock), var(--lock)) top 0 right 0 / 18px 12px no-repeat,
+    radial-gradient(closest-side, color-mix(in srgb, var(--lock) 55%, transparent), transparent) top -10px left -12px / 42px 34px no-repeat,
+    radial-gradient(closest-side, color-mix(in srgb, var(--lock) 55%, transparent), transparent) top -10px right -12px / 42px 34px no-repeat;
+  transition: opacity 0.22s ease 0.28s;
+}
+
+/* Schatten auf dem Deck, sichtbar nur wenn der Container hängt. */
+.box-shade {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 100%;
+  height: 12px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(closest-side, rgb(27 29 30 / 0.34), transparent);
+  transition:
+    opacity 0.42s ease,
+    transform 0.42s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+/* Spreader mit Kopfstück und zwei Hubseilen. Sitzt über dem Container
+   und reicht 3 px auf den Oberholm (dort greifen die Twistlocks). */
+.box-gear {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 3px);
+  height: 8.5rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-2.6rem);
+  /* Abfahrt nach oben: anfahren, dann ausblenden. */
+  transition:
+    transform 0.55s cubic-bezier(0.55, 0, 0.8, 0.35) 0.34s,
+    opacity 0.3s linear 0.6s;
+  -webkit-mask-image: linear-gradient(to top, #000 45%, transparent 98%);
+  mask-image: linear-gradient(to top, #000 45%, transparent 98%);
+}
+.box-rope {
+  position: absolute;
+  top: 0;
+  bottom: 13px;
+  width: 1.5px;
+  background: #6c7375;
+}
+.box-rope:first-child {
+  left: calc(50% - 15px);
+}
+.box-rope:nth-child(2) {
+  left: calc(50% + 13.5px);
+}
+.box-head {
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  width: 52px;
+  height: 7px;
+  margin-left: -26px;
+  background: #3a3f41;
+  clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%);
+}
+.box-spreader {
+  position: absolute;
+  inset: auto 0 0;
+  height: 11px;
+}
+.box-beam {
+  position: absolute;
+  inset: 2px 10px 2px;
+  border-radius: 1px;
+  background: linear-gradient(#8b9294, #5c6366);
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.35);
+  transform: scaleX(0.66);
+  transition: transform 0.38s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+/* Teleskop: je eine Hälfte trägt einen Endträger. 30 % der halben
+   Breite = 15 % des Containers. */
+.box-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  transition: transform 0.38s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+.box-half:first-of-type {
+  left: 0;
+  transform: translateX(30%);
+}
+.box-half:last-of-type {
+  right: 0;
+  transform: translateX(-30%);
+}
+.box-half i {
+  position: absolute;
+  top: 0;
+  width: 18px;
+  height: 11px;
+  background: #26292b;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+}
+.box-half:first-of-type i {
+  left: 0;
+}
+.box-half:last-of-type i {
+  right: 0;
+}
+/* Kontrollleuchte am Endträger: an, sobald verriegelt. */
+.box-half i::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 6px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 6px 1px rgb(244 91 30 / 0.7);
+  opacity: 0;
+  transition: opacity 0.2s ease 0.3s;
+}
+
+/* Aktiv: Zeiger (nur echte Maus) oder Tastaturfokus. */
+@media (hover: hover) and (pointer: fine) {
+  .box:hover {
+    transform: translateY(var(--lift));
+    transition: transform 0.5s var(--ease-hub) 0.4s;
+  }
+  .box:hover .box-gear {
     opacity: 1;
     transform: none;
     transition:
-      opacity 0.5s ease,
-      transform 0.7s cubic-bezier(0.2, 0.8, 0.25, 1);
-    transition-delay: var(--drop-delay, 0ms);
+      transform 0.38s cubic-bezier(0.2, 0.75, 0.3, 1),
+      opacity 0.12s linear;
+  }
+  .box:hover :is(.box-beam, .box-half) {
+    transform: none;
+    transition-delay: 0.04s;
+  }
+  .box:hover .box-locks,
+  .box:hover .box-half i::after {
+    opacity: 1;
+    transition: opacity 0.2s ease 0.36s;
+  }
+  .box:hover .box-shade {
+    opacity: 1;
+    transform: translateY(calc(var(--lift) * -1));
+    transition:
+      opacity 0.5s ease 0.4s,
+      transform 0.5s var(--ease-hub) 0.4s;
+  }
+}
+.box:has(.box-link:focus-visible) {
+  transform: translateY(var(--lift));
+  transition: transform 0.5s var(--ease-hub) 0.4s;
+}
+.box:has(.box-link:focus-visible) .box-gear {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 0.38s cubic-bezier(0.2, 0.75, 0.3, 1),
+    opacity 0.12s linear;
+}
+.box:has(.box-link:focus-visible) :is(.box-beam, .box-half) {
+  transform: none;
+  transition-delay: 0.04s;
+}
+.box:has(.box-link:focus-visible) .box-locks,
+.box:has(.box-link:focus-visible) .box-half i::after {
+  opacity: 1;
+  transition: opacity 0.2s ease 0.36s;
+}
+.box:has(.box-link:focus-visible) .box-shade {
+  opacity: 1;
+  transform: translateY(calc(var(--lift) * -1));
+  transition:
+    opacity 0.5s ease 0.4s,
+    transform 0.5s var(--ease-hub) 0.4s;
+}
+
+/* Einlaufen am Spreader (data-phase="in" setzt das Script). */
+@media (prefers-reduced-motion: no-preference) {
+  .stack[data-armed] .box:not([data-phase]):not(:focus-within) {
+    opacity: 0;
+  }
+  .box[data-phase="in"] {
+    animation: box-lower 1.05s cubic-bezier(0.22, 0.7, 0.32, 1) var(--drop-delay, 0ms) backwards;
+  }
+  .box[data-phase="in"] .box-gear {
+    animation: gear-release 2s linear var(--drop-delay, 0ms) backwards;
+  }
+  .box[data-phase="in"] :is(.box-beam, .box-half) {
+    animation: gear-extended 2s linear var(--drop-delay, 0ms) backwards;
+  }
+  .box[data-phase="in"] .box-locks,
+  .box[data-phase="in"] .box-half i::after {
+    animation: locks-release 2s linear var(--drop-delay, 0ms) backwards;
+  }
+}
+@keyframes box-lower {
+  from {
+    translate: 0 -3.4rem;
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+/* 0–52 %: hängt am Container und sinkt mit ihm. 58 %: Twistlocks
+   offen. Danach fährt der Spreader an und verschwindet nach oben. */
+@keyframes gear-release {
+  0%,
+  58% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.8, 0.35);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-2.6rem);
+  }
+}
+@keyframes gear-extended {
+  0%,
+  100% {
+    transform: none;
+  }
+}
+@keyframes locks-release {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  58%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Reduzierte Bewegung: Rückmeldung nur über Licht, nichts bewegt sich. */
+@media (prefers-reduced-motion: reduce) {
+  .box,
+  .box-gear,
+  .box-shade,
+  .box-beam,
+  .box-half {
+    transition: none !important;
+  }
+  .box:hover,
+  .box:has(.box-link:focus-visible) {
+    transform: none !important;
+  }
+  .box-gear {
+    display: none;
   }
 }
 
 /* ------------------------------------------------------------------
    Ablauf: Fährlinie. Die Fähre fährt beim Scrollen die Linie entlang
-   (--p wird per Script gesetzt, 0 bis 1).
+   (--p wird per Script gesetzt, 0 bis 1). Hinter ihr läuft die
+   Heckwelle, stärker, solange sie Fahrt macht (--v, 0 bis 1). Erreicht
+   die Linie einen Halt, füllt sich der Kreis, ein Ring läuft einmal
+   aus und Titel und Text blenden auf (data-reached am <li>).
    ------------------------------------------------------------------ */
 .route {
   --p: 1;
+  --v: 0;
   position: relative;
   padding-top: 4.75rem;
 }
@@ -256,35 +451,159 @@
 }
 .route-line i {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: calc(var(--p) * 100%);
+  inset: 0;
   background: var(--gold);
+  transform: scaleX(var(--p));
+  transform-origin: left center;
 }
+/* Fahrrinne über die volle Breite; der Schlitten ist 84 px (Fähre)
+   schmaler und wird um --p seiner eigenen Breite verschoben. So
+   bewegt sich nur transform, und ohne Script steht die Fähre am
+   Endhalt. overflow: hidden schneidet die Heckwelle am Anleger ab. */
 .route-ferry {
   position: absolute;
   top: 2.35rem;
-  left: calc(var(--p) * (100% - 84px));
+  left: 0;
+  right: 0;
+  height: 52px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.route-slide {
+  position: relative;
+  width: calc(100% - 84px);
+  height: 100%;
+  transform: translateX(calc(var(--p) * 100%));
+}
+.route-boat {
+  position: relative;
+  display: block;
   width: 84px;
   height: 52px;
+  transform-origin: 50% 80%;
 }
+.route-wake {
+  position: absolute;
+  right: calc(100% - 8px);
+  top: 29px;
+  width: 170px;
+  height: 22px;
+  overflow: visible;
+  transform-origin: right center;
+  transform: scaleX(calc(0.25 + var(--v) * 0.75));
+  opacity: var(--v);
+}
+.route-foam {
+  stroke-dasharray: 5 9;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .route[data-run="true"] .route-boat {
+    animation: ferry-roll 6.5s ease-in-out infinite;
+  }
+  .route[data-run="true"] .route-foam {
+    animation: wake-foam 0.9s linear infinite;
+  }
+}
+@keyframes ferry-roll {
+  0%,
+  100% {
+    transform: none;
+  }
+  30% {
+    transform: translateY(-0.8px) rotate(-0.7deg);
+  }
+  70% {
+    transform: translateY(0.4px) rotate(0.5deg);
+  }
+}
+@keyframes wake-foam {
+  to {
+    stroke-dashoffset: 14;
+  }
+}
+
 .stop {
   position: relative;
   padding-top: 2.4rem;
 }
-.stop::before {
-  content: "";
+.stop-dot {
   position: absolute;
   left: 0;
   top: -9px;
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 4px solid var(--gold);
   background: var(--foreground);
+  box-shadow: inset 0 0 0 4px rgb(238 238 235 / 0.24);
 }
-.stop:last-child::before {
+/* Orange Kontur, Füllung und einmal auslaufender Ring. */
+.stop-dot::before,
+.stop-dot::after,
+.stop-dot i {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.stop-dot::before {
+  box-shadow: inset 0 0 0 4px var(--gold);
+}
+.stop-dot i {
+  inset: 5px;
   background: var(--gold);
 }
+.stop-dot::after {
+  box-shadow: 0 0 0 2px var(--gold);
+  opacity: 0;
+}
+.stop-body {
+  display: block;
+}
+
+/* Mit Script: Halte warten, bis die Linie sie erreicht. Der Text bleibt
+   dabei lesbar (0,8 Deckkraft hält AA auf Teer); nur Punkt und Ring
+   kommen erst mit der Linie. */
+.route[data-armed] .stop-dot::before {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.route[data-armed] .stop-dot i {
+  transform: scale(0);
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+.route[data-armed] .stop-body {
+  opacity: 0.8;
+  transform: translateY(8px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+.route[data-armed] .stop[data-reached] .stop-dot::before {
+  opacity: 1;
+}
+.route[data-armed] .stop[data-reached] .stop-dot i {
+  transform: none;
+  transition-delay: 0.08s;
+}
+.route[data-armed] .stop[data-reached] .stop-body {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.12s;
+}
+.route[data-armed] .stop[data-reached] .stop-dot::after {
+  animation: stop-ring 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) 0.1s;
+}
+@keyframes stop-ring {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
 @media (max-width: 767px) {
   .route {
     padding-top: 0;
@@ -294,14 +613,13 @@
     left: 8px;
     right: auto;
     top: 6px;
-    bottom: 6px;
+    bottom: var(--line-bottom, 6px);
     width: 4px;
     height: auto;
   }
   .route-line i {
-    inset: 0 0 auto 0;
-    width: 100%;
-    height: calc(var(--p) * 100%);
+    transform: scaleY(var(--p));
+    transform-origin: center top;
   }
   .route-ferry {
     display: none;
@@ -309,14 +627,18 @@
   .stop {
     padding-top: 0;
   }
-  .stop::before {
+  .stop-dot {
     left: -2.25rem;
     top: 2px;
   }
 }
 
 /* ------------------------------------------------------------------
-   Preise: Abfahrtstafel mit Punktmatrix-Schrift.
+   Preise: Abfahrtstafel mit Punktmatrix-Schrift. Paketnamen stehen in
+   Fallblatt-Modulen und blättern beim ersten Sichtkontakt einmal durch.
+   Der Doppelpunkt der Uhr blinkt im Sekundentakt, eine Zeile unter dem
+   Zeiger bekommt einen LED-Pfeil. Dauerbewegung nur unter
+   [data-run="true"] (sichtbar und Tab im Vordergrund).
    ------------------------------------------------------------------ */
 .board {
   border: 1px solid #0b0c0d;
@@ -345,19 +667,99 @@
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
 }
+.led-gruen {
+  color: #5fe39a;
+  text-shadow:
+    0 0 6px rgb(60 220 130 / 0.5),
+    0 0 1px rgb(150 255 190 / 0.9);
+}
+.board-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+.board-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px 1px rgb(60 220 130 / 0.6);
+}
+.board-colon {
+  display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .board[data-run="true"] .board-colon {
+    animation: led-colon 1s steps(1, end) infinite;
+    animation-delay: var(--colon-delay, 0ms);
+  }
+}
+@keyframes led-colon {
+  50% {
+    opacity: 0.18;
+  }
+}
 .board-row {
+  position: relative;
   display: grid;
-  grid-template-columns: 2.75rem 10.5rem minmax(0, 1fr) 7.5rem;
+  grid-template-columns: 2.6rem 9rem minmax(0, 1fr) 6.5rem;
   gap: 1.25rem;
   align-items: center;
   padding: 1.15rem 1.35rem;
   border-bottom: 1px solid #24272a;
 }
-a.board-row {
-  transition: background-color 0.2s;
+/* Zeile minimal heller unter dem Zeiger oder mit Tastaturfokus. */
+a.board-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(255 255 255 / 0.045);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
-a.board-row:hover {
-  background-color: rgb(255 255 255 / 0.035);
+a.board-row:focus-visible {
+  outline-offset: -3px;
+}
+/* LED-Pfeil links in der Zeile, die Spalten leuchten nacheinander auf. */
+.board-arrow {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  width: 7px;
+  height: 11px;
+  margin-top: -5.5px;
+  overflow: visible;
+  pointer-events: none;
+}
+.board-arrow circle {
+  fill: #ff7a2f;
+  opacity: 0;
+  transition: opacity 0.12s linear;
+}
+.board-arrow .c2 {
+  transition-delay: 0.05s;
+}
+.board-arrow .c3 {
+  transition-delay: 0.1s;
+}
+.board-arrow g {
+  filter: drop-shadow(0 0 2px rgb(255 110 40 / 0.8));
+}
+@media (hover: hover) and (pointer: fine) {
+  a.board-row:hover::before {
+    opacity: 1;
+  }
+  a.board-row:hover .board-arrow circle {
+    opacity: 1;
+  }
+}
+a.board-row:focus-visible::before,
+a.board-row:focus-visible .board-arrow circle {
+  opacity: 1;
 }
 .board-linie {
   display: grid;
@@ -378,6 +780,59 @@ a.board-row:hover {
   font-weight: 600;
   margin: 0 -0.08em;
 }
+
+/* Fallblatt-Modul: ein Feld pro Zeichen. Obere und untere Hälfte sind
+   getrennte Blätter; beim Blättern klappt die obere Hälfte des alten
+   Zeichens nach unten, danach fällt die untere des neuen herab. */
+.flap {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+}
+.flap-cell {
+  position: relative;
+  display: inline-block;
+  width: 0.86em;
+  height: 1.3em;
+  border-radius: 2px;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.05), 0 2px 3px rgb(0 0 0 / 0.5);
+  perspective: 7em;
+}
+.flap-cell > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  border-radius: 2px;
+  backface-visibility: hidden;
+}
+.flap-cell .ft,
+.flap-cell .ff {
+  background: linear-gradient(#2a2e31, #23272a);
+  clip-path: inset(0 0 50% 0);
+}
+.flap-cell .fb,
+.flap-cell .fl {
+  background: linear-gradient(#1f2225, #1a1d1f);
+  clip-path: inset(50% 0 0 0);
+}
+.flap-cell .ff {
+  transform: rotateX(-90deg);
+  filter: brightness(0.75);
+}
+/* Scharnier: feine dunkle Fuge in der Mitte. */
+.flap-cell::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  background: rgb(8 9 10 / 0.85);
+  z-index: 2;
+}
+
 .board-ticker {
   overflow: hidden;
   white-space: nowrap;
@@ -394,7 +849,11 @@ a.board-row:hover {
 }
 @media (prefers-reduced-motion: no-preference) {
   .board-ticker > div {
-    animation: board-tick 40s linear infinite;
+    animation: board-tick 60s linear infinite;
+    animation-play-state: paused;
+  }
+  .board[data-run="true"] .board-ticker > div {
+    animation-play-state: running;
   }
 }
 @keyframes board-tick {
@@ -425,5 +884,202 @@ a.board-row:hover {
     grid-column: 3;
     grid-row: 1;
   }
+  .board-arrow {
+    left: 3px;
+    width: 5px;
+    height: 9px;
+    margin-top: -4.5px;
+  }
 }
+}
+
+/* ==================================================================
+   Elbe-Linie im Fuß (components/marketing/hafen/elbe-linie.tsx). Global
+   statt als CSS-Modul: Der Fuß steckt auch in app/not-found.tsx, und
+   ein eigenes Modul würde dort auf jeder Seite vorgeladen, ohne gebraucht
+   zu werden. Die Pfade sind doppelt so breit wie die Zeichenfläche;
+   -50 % ihrer eigenen Breite ist genau eine Bildbreite, die Schleife
+   läuft deshalb ohne Sprung. Nur unter [data-run="true"].
+   ================================================================== */
+.elbe-linie {
+  overflow: hidden;
+}
+.elbe-a,
+.elbe-b {
+  transform-box: fill-box;
+}
+.elbe-b {
+  transform: translateX(-50%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .elbe-a {
+    animation: elbe-drift-a 56s linear infinite paused;
+  }
+  .elbe-b {
+    animation: elbe-drift-b 44s linear infinite paused;
+  }
+  .elbe-linie[data-run="true"] .elbe-a,
+  .elbe-linie[data-run="true"] .elbe-b {
+    animation-play-state: running;
+  }
+}
+@keyframes elbe-drift-a {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes elbe-drift-b {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ==================================================================
+   Reveal — Einblenden beim Scrollen (components/marketing/hafen/
+   reveal.tsx, API dort oben). Der Startzustand gilt nur unter
+   html.js-reveal; die Klasse setzt <RevealRoot/> beim Mount und nie
+   bei reduzierter Bewegung. Ohne Layer, damit Utilities den
+   Startzustand nicht versehentlich aufheben.
+   ================================================================== */
+html.js-reveal [data-reveal]:not([data-reveal-state]):not(:focus-within) {
+  opacity: 0;
+}
+
+/* Überschrift steigt aus einer Maske: Text und Maske laufen gegenläufig,
+   die Kante bleibt dabei an der Unterkante der Überschrift stehen. */
+html.js-reveal [data-reveal="rise"][data-reveal-state="in"] {
+  animation: rv-rise 0.7s cubic-bezier(0.25, 0.85, 0.25, 1) var(--reveal-delay, 0ms) both;
+}
+@keyframes rv-rise {
+  from {
+    transform: translateY(100%);
+    clip-path: inset(-100% -0.3em 100% -0.3em);
+  }
+  to {
+    transform: none;
+    clip-path: inset(-0.3em -0.3em -0.3em -0.3em);
+  }
+}
+
+/* Absatz: kurz nach der Überschrift, weich von unten. */
+html.js-reveal [data-reveal="fade"][data-reveal-state="in"] {
+  animation: rv-fade 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0ms) + 80ms) both;
+}
+@keyframes rv-fade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Bild: Containertüren öffnen von der Mitte nach außen. */
+html.js-reveal [data-reveal="doors"][data-reveal-state="in"] {
+  animation: rv-doors 0.9s cubic-bezier(0.77, 0, 0.18, 1) var(--reveal-delay, 0ms) both;
+}
+/* img-fade-in (globals.css, Laden von next/image) bleibt in der Liste:
+   Fiele es während „in“ weg, startete es beim Wechsel auf „done“ neu,
+   und das Bild würde nach dem Öffnen ein zweites Mal blass einblenden. */
+html.js-reveal [data-reveal="doors"][data-reveal-state="in"] > img {
+  animation:
+    rv-doors-img 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms) both,
+    img-fade-in 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes rv-doors {
+  from {
+    clip-path: inset(0 50% 0 50%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes rv-doors-img {
+  from {
+    transform: scale(1.1);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Liste/Raster: Kinder nacheinander. */
+html.js-reveal [data-reveal="stagger"][data-reveal-state="in"] > * {
+  animation: rv-item 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0ms) + var(--rv-i, 0) * 60ms) both;
+}
+[data-reveal="stagger"] > :nth-child(2) { --rv-i: 1; }
+[data-reveal="stagger"] > :nth-child(3) { --rv-i: 2; }
+[data-reveal="stagger"] > :nth-child(4) { --rv-i: 3; }
+[data-reveal="stagger"] > :nth-child(5) { --rv-i: 4; }
+[data-reveal="stagger"] > :nth-child(6) { --rv-i: 5; }
+[data-reveal="stagger"] > :nth-child(7) { --rv-i: 6; }
+[data-reveal="stagger"] > :nth-child(8) { --rv-i: 7; }
+[data-reveal="stagger"] > :nth-child(n + 9) { --rv-i: 8; }
+@keyframes rv-item {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal [data-reveal],
+  html.js-reveal [data-reveal] > * {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+@media print {
+  html.js-reveal [data-reveal],
+  html.js-reveal [data-reveal] > * {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+
+/* ==================================================================
+   Später rendern (app/page.tsx). Der Browser überspringt Stil, Layout
+   und Malen eines Abschnitts, bis er in die Nähe des Bildes kommt; das
+   entlastet das erste Bild, das Hydrieren auf dem Handy und jedes Bild
+   des Ladebetriebs im Kopf (weniger zu ordnen pro Bild).
+
+   .spaeter          ab dem ersten Bild (Abschnitte nach den Preisen).
+                     Startgröße --spaeter-h, ab 1024 px --spaeter-h-lg,
+                     nahe an der echten Höhe; „auto“ merkt sich danach
+                     die gemessene.
+   .spaeter-geladen  erst, wenn die Seite geladen ist und <html> die
+                     Klasse .seite-geladen trägt (setzt RevealRoot). Bis
+                     dahin ist jeder Abschnitt einmal gelegt, „auto“
+                     kennt also seine echte Höhe. So landen die Sprünge
+                     zu #preise und #ladeliste genau, obwohl die
+                     Abschnitte dazwischen übersprungen werden.
+   ================================================================== */
+.spaeter,
+.spaeter-geladen {
+  contain-intrinsic-block-size: auto var(--spaeter-h, 1000px);
+}
+@media (min-width: 1024px) {
+  .spaeter,
+  .spaeter-geladen {
+    contain-intrinsic-block-size: auto var(--spaeter-h-lg, var(--spaeter-h, 1000px));
+  }
+}
+.spaeter,
+html.seite-geladen .spaeter-geladen {
+  content-visibility: auto;
+}
+@media print {
+  .spaeter,
+  html.seite-geladen .spaeter-geladen {
+    content-visibility: visible;
+  }
 }

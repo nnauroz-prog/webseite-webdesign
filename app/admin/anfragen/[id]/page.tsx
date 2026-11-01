@@ -1,25 +1,56 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Mail, Phone } from "lucide-react";
 
-import { LeadEditor } from "@/app/admin/anfragen/[id]/lead-editor";
+import type { CardLead } from "@/lib/admin/card-model";
+import type { LeadRow } from "@/lib/leads-meta";
+
+import { DeleteLead } from "@/app/admin/anfragen/[id]/delete-lead";
+import { FollowUpCard } from "@/app/admin/anfragen/[id]/follow-up-card";
+import { NotesPanel } from "@/app/admin/anfragen/[id]/notes-panel";
+import { BackLink, ResultLine } from "@/app/admin/anfragen/[id]/small-parts";
+import { TerminBox } from "@/app/admin/anfragen/[id]/termin-box";
+import { ThumbBar } from "@/app/admin/anfragen/[id]/thumb-bar";
+import { Timeline } from "@/app/admin/anfragen/[id]/timeline";
+import { DbProblem } from "@/app/admin/db-problem";
+import { DueChip } from "@/app/admin/due-chip";
+import { SchemaNotice } from "@/app/admin/schema-notice";
 import { StatusPill } from "@/app/admin/status-pill";
 import { requireAdmin } from "@/lib/admin/auth";
+import {
+  berlinDateIso,
+  berlinTime,
+  formatLongDay,
+  formatShortDay,
+  nextWorkday,
+  relativeTime,
+} from "@/lib/admin/berlin-time";
+import { relativeDay } from "@/lib/admin/card-model";
+import { followUpChips, followUpView } from "@/lib/admin/follow-up";
+import { safeEmail, safeHttpUrl, telHref } from "@/lib/admin/links";
+import { dueState } from "@/lib/admin/reply-due";
+import { checkSchema } from "@/lib/admin/schema";
+import { relatedLeads } from "@/lib/admin/search";
+import { freeSlotChoices, parseTerminSlot } from "@/lib/admin/termin-slot";
+import { hasOutcomeEvent, outcomeText } from "@/lib/admin/timeline";
+import { parseId } from "@/lib/admin/validate";
 import { explainDeliveryError } from "@/lib/lead-mail";
-import { getLead, KIND_LABELS, leadField } from "@/lib/leads-store";
+import { fieldValue, KIND_LABELS, STATUS_LABELS } from "@/lib/leads-meta";
+import { getLead, listEvents, listLeads } from "@/lib/leads-store";
 
-const DATE = new Intl.DateTimeFormat("de-DE", {
-  weekday: "short",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-  timeZone: "Europe/Berlin",
-});
+// Bewusst generisch: Name oder Firma im <title> landeten im Safari-
+// Verlauf, in iCloud-Tabs und im App-Umschalter.
+export const metadata: Metadata = { title: "Anfrage" };
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+async function load(id: string) {
+  const [lead, schema, events, all] = await Promise.all([
+    getLead(id),
+    checkSchema(),
+    listEvents(id),
+    listLeads(),
+  ]);
+  return { lead, schema, events, all };
+}
 
 export default async function AdminLeadPage({
   params,
@@ -27,76 +58,210 @@ export default async function AdminLeadPage({
   params: Promise<{ id: string }>;
 }) {
   await requireAdmin();
-  const { id } = await params;
-  if (!UUID_RE.test(id)) notFound();
-  const lead = await getLead(id);
+  const id = parseId((await params).id);
+  if (!id) notFound();
+  const now = new Date();
+  const nowIso = now.toISOString();
+
+  let data: Awaited<ReturnType<typeof load>>;
+  try {
+    data = await load(id);
+  } catch (err) {
+    // Direktlink aus der Mail bei pausiertem Projekt: erklären statt
+    // einer leeren Fehlerseite.
+    return (
+      <div>
+        <BackLink />
+        <DbProblem error={err} retryHref={`/admin/anfragen/${id}`} />
+      </div>
+    );
+  }
+  const { lead, schema, events, all } = data;
   if (!lead) notFound();
 
-  const name = leadField(lead, "Name") ?? lead.reply_to;
-  const phone = leadField(lead, "Telefon");
-  const replySubject = `Re: ${lead.subject}`;
+  const v2 = schema.leadsV2 === "ok";
+  const today = berlinDateIso(now);
+  const name = fieldValue(lead, "Name") ?? (lead.reply_to || "Ohne Namen");
+  const firma = fieldValue(lead, "Firma");
+  const created = new Date(lead.created_at);
+  const due = lead.status === "neu" ? dueState(lead.kind, created, now) : null;
+  const tel = telHref(fieldValue(lead, "Telefon"));
+  const replyTo = safeEmail(lead.reply_to);
+  // Weder Nummer noch (irgendeine) Adresse: Eine Antwort ist nicht möglich.
+  const unreachable = !tel && !lead.reply_to;
+  const open = lead.status === "neu" || lead.status === "in_arbeit";
+  const slot = lead.kind === "termin" ? parseTerminSlot(lead) : null;
+  const related = relatedLeads(lead, all);
+  const nextDay = nextWorkday(today);
+
+  // Ohne interne Notizen an den Client (Vorlagen brauchen sie nicht).
+  const clientLead: CardLead = { ...lead };
+  delete clientLead.notes;
+
+  const relatedLabel = (r: LeadRow) =>
+    `${formatShortDay(berlinDateIso(new Date(r.created_at)))} · ${KIND_LABELS[r.kind]} · ${STATUS_LABELS[r.status]}`;
+
+  // Ergebnis-Zeile bei erledigt (und archiviert mit Ergebnis).
+  let result: { text: string; action: string } | null = null;
+  if (lead.status === "erledigt" || (lead.status === "archiviert" && lead.outcome)) {
+    if (lead.outcome) {
+      result = { text: `Ergebnis: ${outcomeText(lead.outcome, lead.lost_reason)}`, action: "Ändern" };
+    } else if (hasOutcomeEvent(events)) {
+      result = { text: "Ergebnis: ohne Angabe", action: "Ändern" };
+    } else if (lead.kind !== "audit") {
+      result = { text: "Ergebnis fehlt", action: "nachtragen" };
+    }
+  }
 
   return (
     <div>
-      <Link
-        href="/admin"
-        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-[13px]"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Alle Anfragen
-      </Link>
+      <BackLink />
 
-      <div className="mt-5 flex flex-wrap items-center gap-2">
+      <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13.5px]">
         <StatusPill status={lead.status} />
-        <span className="text-muted-foreground text-[13px]">
-          {KIND_LABELS[lead.kind]}
+        <span className="text-muted-foreground">{KIND_LABELS[lead.kind]}</span>
+        <span className="text-muted-foreground" aria-hidden="true">
+          ·
         </span>
+        <time dateTime={lead.created_at} className="text-muted-foreground">
+          {relativeTime(created, now)}
+        </time>
+        {due && !unreachable ? <DueChip due={due} /> : null}
       </div>
-      <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{name}</h1>
-      <p className="text-muted-foreground mt-1 text-[14px]">
-        <time dateTime={lead.created_at}>{DATE.format(new Date(lead.created_at))}</time>
-      </p>
+      <h1 className="mt-2 text-[24px] leading-tight font-semibold tracking-tight break-words">
+        {name}
+      </h1>
+      {firma ? <p className="text-muted-foreground mt-0.5 text-[15px]">{firma}</p> : null}
+      <p className="text-muted-foreground mt-1 text-[13px]">Stand {berlinTime(now)}</p>
 
-      {/* Direkt-Kontakt — auf dem Handy die wichtigsten zwei Knöpfe. */}
-      <div className="mt-5 flex flex-wrap gap-2">
-        <a
-          href={`mailto:${lead.reply_to}?subject=${encodeURIComponent(replySubject)}`}
-          className="bg-foreground text-background inline-flex h-10 items-center gap-2 rounded-full px-5 text-[14px] font-medium"
-        >
-          <Mail className="h-4 w-4" aria-hidden="true" />
-          Antworten
-        </a>
-        {phone ? (
-          <a
-            href={`tel:${phone.replace(/[^\d+]/g, "")}`}
-            className="border-border inline-flex h-10 items-center gap-2 rounded-full border px-5 text-[14px] font-medium"
-          >
-            <Phone className="h-4 w-4" aria-hidden="true" />
-            Anrufen
-          </a>
-        ) : null}
-      </div>
+      <SchemaNotice schema={schema} />
+
+      {lead.kind === "termin" ? (
+        slot ? (
+          <TerminBox
+            leadId={lead.id}
+            when={`${formatLongDay(slot.dateIso)} · ${slot.time}–${berlinTime(slot.end)}`}
+            relative={
+              slot.end.getTime() < now.getTime() ? `vorbei (${relativeDay(slot.dateIso, now)})` : relativeDay(slot.dateIso, now)
+            }
+            icsHref={`/admin/anfragen/${lead.id}/kalender.ics`}
+            askDone={open && slot.end.getTime() < now.getTime()}
+          />
+        ) : (
+          <p className="border-border bg-card mt-4 rounded-2xl border p-4 text-[15px]">
+            Termin: siehe Wunsch-Slot
+          </p>
+        )
+      ) : null}
 
       {lead.delivery_error ? (
-        <p className="mt-5 rounded-xl bg-red-50 p-4 text-[13px] leading-relaxed text-red-900">
-          <strong>Die Benachrichtigungs-Mail ist nicht rausgegangen.</strong> Die
-          Anfrage ist trotzdem hier gespeichert. Grund: {explainDeliveryError(lead.delivery_error)}
+        <p className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-[14px] leading-relaxed text-red-900">
+          <strong>Die Benachrichtigungs-Mail ist nicht rausgegangen.</strong> Die Anfrage ist
+          trotzdem hier gespeichert. Grund: {explainDeliveryError(lead.delivery_error)}
         </p>
       ) : null}
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <dl className="border-border bg-card divide-border divide-y rounded-2xl border">
-          {lead.fields.map(([label, value]) => (
-            <div key={label} className="grid gap-1 p-4 sm:grid-cols-[9rem_1fr] sm:gap-4">
-              <dt className="text-muted-foreground text-[13px]">{label}</dt>
-              <dd className="text-[15px] leading-relaxed break-words whitespace-pre-wrap">
-                {value}
-              </dd>
-            </div>
-          ))}
+      {lead.reply_to && !replyTo ? (
+        <div className="border-gold bg-card mt-4 rounded-2xl border-2 p-4 text-[15px] leading-relaxed">
+          <p className="font-mono text-[14px] break-all">{lead.reply_to}</p>
+          <p className="mt-1">Adresse sieht ungewöhnlich aus. Bitte von Hand prüfen.</p>
+        </div>
+      ) : null}
+
+      {lead.fields.length === 0 || unreachable ? (
+        <p className="border-border bg-card mt-4 rounded-2xl border p-4 text-[15px] leading-relaxed">
+          {lead.fields.length === 0 ? "Keine Angaben übermittelt. " : null}
+          {unreachable
+            ? "Keine Kontaktdaten vorhanden, eine Antwort ist nicht möglich."
+            : null}
+        </p>
+      ) : null}
+
+      {lead.fields.length > 0 ? (
+        <dl className="border-border bg-card divide-border mt-4 divide-y rounded-2xl border">
+          {lead.fields.map(([label, value], i) => {
+            const url = label === "Audit-URL" ? safeHttpUrl(value) : null;
+            return (
+              <div key={`${label}-${i}`} className="px-4 py-3">
+                <dt className="text-muted-foreground text-[13px]">{label}</dt>
+                <dd className="mt-0.5 text-[16px] leading-relaxed break-words whitespace-pre-wrap">
+                  {url ? (
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="break-all underline underline-offset-4"
+                    >
+                      {value}
+                    </a>
+                  ) : (
+                    value
+                  )}
+                </dd>
+              </div>
+            );
+          })}
         </dl>
-        <LeadEditor id={lead.id} status={lead.status} notes={lead.notes} />
-      </div>
+      ) : null}
+
+      {related.length > 0 ? (
+        <section className="border-border bg-card mt-4 rounded-2xl border p-4">
+          <h2 className="text-[16px] font-semibold">Schon einmal angefragt ({related.length})</h2>
+          <p className="text-muted-foreground text-[13px]">Gleiche E-Mail oder Telefonnummer</p>
+          <ul className="mt-1">
+            {related.slice(0, 20).map((r) => (
+              <li key={r.id}>
+                <Link
+                  href={`/admin/anfragen/${r.id}`}
+                  className="flex min-h-11 items-center text-[15px] underline underline-offset-4"
+                >
+                  {relatedLabel(r)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {result ? <ResultLine text={result.text} actionLabel={result.action} enabled={v2} /> : null}
+
+      {open ? (
+        <FollowUpCard
+          leadId={lead.id}
+          view={lead.follow_up_on ? followUpView(lead.follow_up_on, now) : null}
+          chips={followUpChips(now)}
+          todayIso={today}
+          enabled={v2}
+        />
+      ) : null}
+
+      <NotesPanel leadId={lead.id} notes={lead.notes ?? ""} />
+
+      <Timeline events={events} lead={lead} />
+
+      {lead.status === "archiviert" ? (
+        <DeleteLead
+          leadId={lead.id}
+          related={related.map((r) => ({ id: r.id, label: relatedLabel(r) }))}
+        />
+      ) : null}
+
+      <ThumbBar
+        lead={clientLead}
+        name={name}
+        status={lead.status}
+        tel={tel}
+        canReply={replyTo !== null}
+        v2={v2}
+        nowIso={nowIso}
+        slotDays={freeSlotChoices(now, 5).map((d) => ({
+          dateIso: d.dateIso,
+          label: formatLongDay(d.dateIso),
+          times: d.times,
+        }))}
+        nextWorkdayIso={nextDay}
+        nextWorkdayLabel={formatShortDay(nextDay)}
+      />
     </div>
   );
 }

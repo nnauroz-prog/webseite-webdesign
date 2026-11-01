@@ -81,6 +81,13 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Admin-Bereich nie in Suchmaschinen, auch nicht die
+        // Kalender-Dateien und Weiterleitungen (zusätzlich zu den
+        // robots-Metadaten im Admin-Layout).
+        source: "/admin/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
     ];
   },
 };
