@@ -22,7 +22,7 @@ export function CallButton({
       href={href}
       onClick={() => markContact({ leadId, kanal: "anruf", name })}
       aria-label={`${name} anrufen`}
-      className="border-border bg-background hover:border-foreground/40 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors"
+      className="border-border bg-background hover:border-foreground/40 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[3px] border transition-colors"
     >
       <Phone className="h-5 w-5" aria-hidden="true" />
     </a>

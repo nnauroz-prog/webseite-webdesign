@@ -223,7 +223,7 @@ export function ThumbBar({
               type="button"
               onClick={undo}
               disabled={undoing}
-              className="inline-flex h-11 items-center gap-2 rounded-full px-3 text-[15px] font-semibold underline underline-offset-4 disabled:opacity-60"
+              className="inline-flex h-11 items-center gap-2 rounded-[3px] px-3 text-[15px] font-semibold underline underline-offset-4 disabled:opacity-60"
             >
               {undoing ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
               {stripError ? "Nochmal" : "Rückgängig"}

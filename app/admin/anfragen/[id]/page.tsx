@@ -148,28 +148,28 @@ export default async function AdminLeadPage({
             askDone={open && slot.end.getTime() < now.getTime()}
           />
         ) : (
-          <p className="border-border bg-card mt-4 rounded-2xl border p-4 text-[15px]">
+          <p className="border-border bg-card mt-4 rounded-[4px] border p-4 text-[15px]">
             Termin: siehe Wunsch-Slot
           </p>
         )
       ) : null}
 
       {lead.delivery_error ? (
-        <p className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-[14px] leading-relaxed text-red-900">
+        <p className="mt-4 rounded-[4px] border border-red-200 bg-red-50 p-4 text-[14px] leading-relaxed text-red-900">
           <strong>Die Benachrichtigungs-Mail ist nicht rausgegangen.</strong> Die Anfrage ist
           trotzdem hier gespeichert. Grund: {explainDeliveryError(lead.delivery_error)}
         </p>
       ) : null}
 
       {lead.reply_to && !replyTo ? (
-        <div className="border-gold bg-card mt-4 rounded-2xl border-2 p-4 text-[15px] leading-relaxed">
+        <div className="border-gold bg-card mt-4 rounded-[4px] border-2 p-4 text-[15px] leading-relaxed">
           <p className="font-mono text-[14px] break-all">{lead.reply_to}</p>
           <p className="mt-1">Adresse sieht ungewöhnlich aus. Bitte von Hand prüfen.</p>
         </div>
       ) : null}
 
       {lead.fields.length === 0 || unreachable ? (
-        <p className="border-border bg-card mt-4 rounded-2xl border p-4 text-[15px] leading-relaxed">
+        <p className="border-border bg-card mt-4 rounded-[4px] border p-4 text-[15px] leading-relaxed">
           {lead.fields.length === 0 ? "Keine Angaben übermittelt. " : null}
           {unreachable
             ? "Keine Kontaktdaten vorhanden, eine Antwort ist nicht möglich."
@@ -178,7 +178,7 @@ export default async function AdminLeadPage({
       ) : null}
 
       {lead.fields.length > 0 ? (
-        <dl className="border-border bg-card divide-border mt-4 divide-y rounded-2xl border">
+        <dl className="border-border bg-card divide-border mt-4 divide-y rounded-[4px] border">
           {lead.fields.map(([label, value], i) => {
             const url = label === "Audit-URL" ? safeHttpUrl(value) : null;
             return (
@@ -205,7 +205,7 @@ export default async function AdminLeadPage({
       ) : null}
 
       {related.length > 0 ? (
-        <section className="border-border bg-card mt-4 rounded-2xl border p-4">
+        <section className="border-border bg-card mt-4 rounded-[4px] border p-4">
           <h2 className="text-[16px] font-semibold">Schon einmal angefragt ({related.length})</h2>
           <p className="text-muted-foreground text-[13px]">Gleiche E-Mail oder Telefonnummer</p>
           <ul className="mt-1">

@@ -127,13 +127,13 @@ export function LeadSearch({
             autoCorrect="off"
             spellCheck={false}
             maxLength={100}
-            className="border-border bg-card focus:border-foreground/50 h-12 w-full rounded-full border pr-4 pl-11 text-base outline-none"
+            className="border-border bg-card focus:border-foreground/50 h-12 w-full rounded-[3px] border pr-4 pl-11 text-base outline-none"
           />
         </div>
         <button
           type="submit"
           disabled={pending}
-          className="bg-foreground text-background inline-flex h-12 shrink-0 items-center justify-center rounded-full px-5 text-[15px] font-medium disabled:opacity-70"
+          className="bg-foreground text-background inline-flex h-12 shrink-0 items-center justify-center rounded-[3px] px-5 text-[15px] font-medium disabled:opacity-70"
         >
           {pending ? (
             <Loader2 className="h-5 w-5 animate-spin" aria-label="Sucht" />
@@ -159,7 +159,7 @@ export function LeadSearch({
             <button
               type="button"
               onClick={clear}
-              className="border-border inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-[14px] font-medium"
+              className="border-border inline-flex h-11 shrink-0 items-center gap-1.5 rounded-[3px] border px-4 text-[14px] font-medium"
             >
               <X className="h-4 w-4" aria-hidden="true" />
               Suche löschen

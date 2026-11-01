@@ -7,6 +7,7 @@ import { RefreshButton } from "@/app/admin/refresh-button";
 import { RenderKick } from "@/app/admin/render-kick";
 import { getAdminEmail } from "@/lib/admin/auth";
 import { ADMIN_THEME_COLOR } from "@/lib/admin/theme";
+import { SitaloLogo } from "@/components/sitalo-logo";
 
 // Immer pro Request rendern — das Root-Layout setzt revalidate = 3600
 // (ISR) für die Marketing-Seiten; hier darf nichts zwischengespeichert
@@ -51,9 +52,11 @@ export default async function AdminLayout({
             href="/admin"
             // Startseite frisch: eine offene Suche wird geschlossen.
             data-admin-home=""
-            className="inline-flex h-11 items-center text-[15px] font-semibold tracking-tight"
+            aria-label="Sitalo Admin, Übersicht"
+            className="inline-flex h-11 items-center gap-3"
           >
-            Sitalo · Admin
+            <SitaloLogo size="sm" tone="light" hideTaglineOnMobile />
+            <span className="label-mono text-stahl-hell text-[11px]">Admin</span>
           </Link>
           {email ? <RefreshButton /> : null}
         </div>

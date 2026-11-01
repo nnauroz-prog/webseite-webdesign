@@ -39,7 +39,7 @@ export function HomeScreenTip() {
   return (
     <aside
       aria-label="Tipp"
-      className="border-border bg-card mt-6 flex items-start gap-2 rounded-2xl border py-2 pr-1 pl-4 text-[14px] leading-relaxed"
+      className="border-border bg-card mt-6 flex items-start gap-2 rounded-[4px] border py-2 pr-1 pl-4 text-[14px] leading-relaxed"
     >
       <p className="py-1.5">
         Tipp: Teilen → „Zum Home-Bildschirm“, dann öffnet sich /admin wie eine
@@ -50,7 +50,7 @@ export function HomeScreenTip() {
         type="button"
         onClick={dismiss}
         aria-label="Tipp ausblenden"
-        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[3px]"
       >
         <X className="h-5 w-5" aria-hidden="true" />
       </button>

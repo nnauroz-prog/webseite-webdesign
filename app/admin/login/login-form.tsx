@@ -51,7 +51,7 @@ export function LoginForm({ next }: { next: string }) {
       <Button
         type="submit"
         disabled={pending}
-        className="h-12 w-full rounded-full text-base"
+        className="h-12 w-full rounded-[3px] text-base"
       >
         {pending ? "Anmelden …" : "Anmelden"}
       </Button>

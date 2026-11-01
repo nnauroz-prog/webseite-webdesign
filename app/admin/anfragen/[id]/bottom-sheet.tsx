@@ -38,7 +38,7 @@ export function BottomSheet({
         // Nur der Hintergrund (das <dialog> selbst, nicht der Inhalt).
         if (e.target === e.currentTarget) e.currentTarget.close();
       }}
-      className="bg-card text-foreground backdrop:bg-foreground/40 mx-auto mt-auto mb-0 max-h-[85dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-3xl p-0"
+      className="bg-card text-foreground backdrop:bg-foreground/40 mx-auto mt-auto mb-0 max-h-[85dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-[6px] p-0"
     >
       <div className="px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+1rem)]">
         <div className="flex items-center justify-between gap-2">
@@ -49,7 +49,7 @@ export function BottomSheet({
             type="button"
             onClick={() => ref.current?.close()}
             aria-label="Schließen"
-            className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full"
+            className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-[3px]"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>

@@ -88,7 +88,7 @@ export function ReplySheet({
                 <a
                   href={href}
                   onClick={() => sent(t.id)}
-                  className="border-border bg-background flex min-h-13 items-center gap-3 rounded-2xl border px-4 py-2.5"
+                  className="border-border bg-background flex min-h-13 items-center gap-3 rounded-[4px] border px-4 py-2.5"
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block text-[16px] font-medium">{t.label}</span>
@@ -106,7 +106,7 @@ export function ReplySheet({
           const ready = isOpen && picks.length === needed;
           const pickedHref = ready ? mailtoHref(lead.reply_to, filled.subject, filled.body) : null;
           return (
-            <li key={t.id} className="border-border bg-background rounded-2xl border">
+            <li key={t.id} className="border-border bg-background rounded-[4px] border">
               <button
                 type="button"
                 aria-expanded={isOpen}
@@ -143,7 +143,7 @@ export function ReplySheet({
                                 aria-pressed={on}
                                 onClick={() => toggle(day.dateIso, time, needed)}
                                 className={cn(
-                                  "inline-flex h-11 min-w-16 items-center justify-center rounded-full border px-3 text-[15px] tabular-nums",
+                                  "inline-flex h-11 min-w-16 items-center justify-center rounded-[3px] border px-3 text-[15px] tabular-nums",
                                   on
                                     ? "border-foreground bg-foreground text-background"
                                     : "border-border bg-card",
@@ -159,12 +159,12 @@ export function ReplySheet({
                   </div>
                   {/* Fußzeile klebt am unteren Rand des Sheets: „Mail öffnen“
                       ist sofort sichtbar, auch bei vielen Tagen darüber. */}
-                  <div className="bg-background border-border sticky bottom-0 -mx-4 mt-3 rounded-b-2xl border-t px-4 pt-2 pb-[env(safe-area-inset-bottom)]">
+                  <div className="bg-background border-border sticky bottom-0 -mx-4 mt-3 rounded-b-[4px] border-t px-4 pt-2 pb-[env(safe-area-inset-bottom)]">
                     {pickedHref ? (
                       <a
                         href={pickedHref}
                         onClick={() => sent(t.id)}
-                        className="bg-foreground text-background flex h-12 items-center justify-center gap-2 rounded-full text-[16px] font-medium"
+                        className="bg-foreground text-background flex h-12 items-center justify-center gap-2 rounded-[3px] text-[16px] font-medium"
                       >
                         <Mail className="h-5 w-5" aria-hidden="true" />
                         Mail öffnen
@@ -172,7 +172,7 @@ export function ReplySheet({
                     ) : (
                       <p
                         aria-live="polite"
-                        className="border-border text-muted-foreground flex h-12 items-center justify-center rounded-full border border-dashed text-[15px]"
+                        className="border-border text-muted-foreground flex h-12 items-center justify-center rounded-[3px] border border-dashed text-[15px]"
                       >
                         {missingText(needed - picks.length)}
                       </p>
