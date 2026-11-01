@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { MusterFenster } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Briefkarte } from "@/components/marketing/vertical-landing";
@@ -49,22 +49,11 @@ export async function generateMetadata({
       type: "article",
       title,
       description,
-      images: branche.image
-        ? [
-            {
-              url: branche.image.src,
-              width: 1600,
-              height: 1000,
-              alt: branche.image.alt,
-            },
-          ]
-        : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: branche.image ? [branche.image.src] : undefined,
     },
   };
 }
@@ -210,23 +199,12 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
             </p>
           ) : null}
         </div>
-        {branche.image ? (
-          <figure className="lg:col-span-6 lg:col-start-7">
-            <div className="bg-secondary border-border relative aspect-[4/3] w-full overflow-hidden border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]">
-              <Image
-                src={branche.image.src}
-                alt={branche.image.alt}
-                fill
-                priority
-                sizes="(min-width: 1024px) 560px, 100vw"
-                className="object-cover"
-              />
-            </div>
-            <figcaption className="label-mono text-muted-foreground mt-3 text-[11px]">
-              Musterseite · {branche.label}
-            </figcaption>
-          </figure>
-        ) : null}
+        <figure className="lg:col-span-6 lg:col-start-7">
+          <MusterFenster branche={branche.slug} className="shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]" />
+          <figcaption className="label-mono text-muted-foreground mt-3 text-[11px]">
+            Skizze einer Musterseite · {branche.label}
+          </figcaption>
+        </figure>
       </div>
     </section>
   );

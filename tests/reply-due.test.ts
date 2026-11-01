@@ -57,9 +57,9 @@ describe("replyDue: Anfrage", () => {
 });
 
 describe("replyDue: Audit und Termin", () => {
-  it("Audit: + 48 h über die Zeitumstellung (Sa 27.3. 10:00 MEZ → Mo 29.3. 11:00 MESZ)", () => {
+  it("Audit: zwei Werktage, Ostermontag übersprungen, über die Zeitumstellung (Sa 27.3. → Mi 31.3. 18:00 MESZ)", () => {
     const r = replyDue("audit", Z("2027-03-27T09:00:00Z"));
-    assert.equal(iso(r.spaetestens), "2027-03-29T09:00:00.000Z");
+    assert.equal(iso(r.spaetestens), "2027-03-31T16:00:00.000Z");
     assert.equal(iso(r.ziel), iso(r.spaetestens));
   });
 

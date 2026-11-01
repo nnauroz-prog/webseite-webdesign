@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { MusterFenster } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
@@ -66,16 +66,8 @@ function Register() {
                   href={`/branchen/${b.slug}`}
                   className="group grid grid-cols-[6.5rem_1fr] items-start gap-x-4 gap-y-3 py-5 sm:grid-cols-[11rem_1fr] sm:gap-x-6 sm:py-6 lg:grid-cols-12 lg:gap-8"
                 >
-                  <div className="bg-secondary relative aspect-[4/3] w-full overflow-hidden lg:col-span-3">
-                    {b.image ? (
-                      <Image
-                        src={b.image.src}
-                        alt={b.image.alt}
-                        fill
-                        sizes="(min-width: 1024px) 260px, (min-width: 640px) 176px, 104px"
-                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                      />
-                    ) : null}
+                  <div className="w-full lg:col-span-3">
+                    <MusterFenster branche={b.slug} rahmen={false} />
                   </div>
                   <div className="min-w-0 lg:col-span-6 lg:pt-1">
                     <h2 className="text-[19px] leading-tight tracking-[-0.02em] underline-offset-4 group-hover:underline sm:text-[26px]">

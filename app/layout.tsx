@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Doto, IBM_Plex_Mono, Mona_Sans } from "next/font/google";
 
-import { CommandPalette } from "@/components/marketing/command-palette";
+import { GlobalExtras } from "@/components/marketing/global-extras";
 import { buildSearchIndex } from "@/lib/search-index";
-import { KeyboardChords } from "@/components/marketing/keyboard-chords";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PlausibleScript } from "@/components/marketing/plausible-script";
-import { ShortcutHelp } from "@/components/marketing/shortcut-help";
 import "./globals.css";
 import "./hafen.css";
 import { SITE_URL } from "@/lib/site";
@@ -158,9 +156,7 @@ export default function RootLayout({
           Direkt zum Inhalt
         </a>
         {children}
-        <CommandPalette searchIndex={buildSearchIndex()} />
-        <KeyboardChords />
-        <ShortcutHelp />
+        <GlobalExtras searchIndex={buildSearchIndex()} />
         <MobileCtaBar />
         <PlausibleScript />
         <script

@@ -150,6 +150,53 @@ const PRESETS: Preset[] = [
   },
 ];
 
+/** Zusätzliche Musterseiten nur für die Branchenseiten (ohne Chip in der
+ *  Live-Vorschau der Startseite). */
+const EXTRA_PRESETS: Preset[] = [
+  {
+    key: "kosmetik",
+    chip: "Kosmetik",
+    inquiry: "kosmetik",
+    defaultName: "Studio Hautnah",
+    accent: "#7a4e5c",
+    tint: "#f6eff1",
+    image: "/images/atmosphere/friseur-stuhl.webp",
+    headline: "Gesichtsbehandlung, Wimpern, Maniküre.",
+    sub: "Termine online buchen, Preise stehen auf der Seite.",
+    nav: ["Behandlungen", "Preise", "Gutscheine", "Termin"],
+    cta: "Termin buchen",
+    features: ["Behandlungen", "Preisliste", "Gutscheine"],
+  },
+  {
+    key: "hotel",
+    chip: "Hotel",
+    inquiry: "hotel",
+    defaultName: "Hotel am Fleet",
+    accent: "#2e5c4d",
+    tint: "#eef3f1",
+    image: "/images/hamburg-speicherstadt.webp",
+    headline: "Zwölf Zimmer, fünf Minuten zur Speicherstadt.",
+    sub: "Direkt bei uns buchen, Frühstück inklusive.",
+    nav: ["Zimmer", "Lage", "Frühstück", "Buchen"],
+    cta: "Zimmer anfragen",
+    features: ["Zimmer und Preise", "Anreise", "Direkt buchen"],
+  },
+];
+
+/** Branchen-Slug (lib/branchen-data.ts) → Musterseite. */
+const BRANCHE_PRESET: Record<string, string> = {
+  pflege: "pflege",
+  praxis: "praxis",
+  friseur: "friseur",
+  gastro: "gastro",
+  handwerker: "handwerk",
+  reinigung: "reinigung",
+  kanzlei: "kanzlei",
+  fitness: "fitness",
+  kosmetik: "kosmetik",
+  hotel: "hotel",
+};
+
 const SITE_W = 960;
 const SITE_H = 600;
 
@@ -260,6 +307,66 @@ export function LivePreview() {
           Mit dieser Skizze anfragen
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Musterseite einer Branche als verkleinerte, echte HTML-Skizze im
+ * Browserrahmen (statt eines Fotos). Für die Branchenseiten.
+ * `rahmen={false}` lässt die Adresszeile weg (kleine Vorschaubilder).
+ */
+export function MusterFenster({
+  branche,
+  rahmen = true,
+  className = "",
+}: {
+  branche: string;
+  rahmen?: boolean;
+  className?: string;
+}) {
+  const key = BRANCHE_PRESET[branche] ?? "handwerk";
+  const preset = [...PRESETS, ...EXTRA_PRESETS].find((p) => p.key === key) ?? PRESETS[0];
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0);
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
+    const update = () => setScale(el.clientWidth / SITE_W);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div className={`overflow-hidden rounded-[2px] bg-white ring-1 ring-black/15 ${className}`}>
+      {rahmen ? (
+        <div className="bg-foreground flex items-center gap-2 px-3 py-2">
+          <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
+            <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+            <rect x="1.5" y="6" width="9" height="7" rx="1" fill="currentColor" />
+          </svg>
+          <span className="text-background/85 min-w-0 truncate font-mono text-[11.5px]">
+            {domainFor(preset.defaultName)}
+          </span>
+        </div>
+      ) : null}
+      <div
+        ref={frameRef}
+        role="img"
+        aria-label={`Musterseite für ${preset.chip}: ${preset.defaultName}`}
+        className="relative w-full overflow-hidden"
+        style={{ aspectRatio: `${SITE_W}/${SITE_H}` }}
+      >
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-0 origin-top-left transition-opacity duration-300"
+          style={{ width: SITE_W, height: SITE_H, transform: `scale(${scale || 0.5})`, opacity: scale ? 1 : 0 }}
+        >
+          <MiniSite preset={preset} name={preset.defaultName} />
+        </div>
       </div>
     </div>
   );
