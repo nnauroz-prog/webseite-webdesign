@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 /**
  * Wrapper für Karten, die beim Hover dezent in 3D kippen.
  *
- * Der Effekt ist bewusst zurückhaltend (max ~5° Neigung), nicht das
- * laute "Awwwards"-Tilt. Pointer-Position wird in CSS-Variablen
+ * Der Effekt ist bewusst zurückhaltend (höchstens 4° Neigung je Achse),
+ * passend zur ruhigen Hafen-Gestaltung. Pointer-Position wird in CSS-Variablen
  * geschrieben — die eigentliche Transformation läuft in einer
  * CSS-Transition, das verhindert ruckelige rAF-Loops.
  *
@@ -39,8 +39,8 @@ export function TiltCard({
     const rect = el.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width; // 0..1
     const y = (event.clientY - rect.top) / rect.height; // 0..1
-    const rotateY = (x - 0.5) * 18; // max ~9° pro Seite — sichtbar
-    const rotateX = (0.5 - y) * 18;
+    const rotateY = (x - 0.5) * 8; // höchstens 4° je Seite
+    const rotateX = (0.5 - y) * 8;
     el.style.setProperty("--tilt-x", `${rotateX}deg`);
     el.style.setProperty("--tilt-y", `${rotateY}deg`);
     el.style.setProperty("--tilt-shine-x", `${x * 100}%`);

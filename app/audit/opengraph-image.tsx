@@ -1,19 +1,16 @@
 import { editorialOgImage, OG_SIZE } from "@/lib/og-editorial";
 
 export const runtime = "nodejs";
-export const alt =
-  "Sitalo Mini-Audit — Wir gucken uns Ihre Seite an. Ehrlich. Kostenlos.";
+export const alt = "Sitalo Website-Audit: drei bis fünf konkrete Punkte per Mail, kostenlos.";
 export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default async function Image() {
   return editorialOgImage({
-    variant: "cream",
-    eyebrow: "SITALO · MINI-AUDIT · 48 H",
-    headlineBold: "Wir gucken uns",
-    headlineItalic: "Ihre Seite an.",
-    subline:
-      "Drei bis fünf konkrete Punkte per Mail. Kein Lighthouse-Report, kein Vertriebs-Anruf danach. Persönlich, aus Hamburg.",
-    urlPill: "sitalo.de/audit",
+    variant: "hell",
+    eyebrow: "Sitalo · Website-Audit · 48 h",
+    headline: "Wir sehen uns Ihre Website an.",
+    subline: "Sie bekommen drei bis fünf konkrete Punkte per Mail, kostenlos und innerhalb von 48 Stunden.",
+    url: "sitalo.de/audit",
   });
 }

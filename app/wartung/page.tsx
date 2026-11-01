@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
-import { SITE_URL } from "@/lib/site";
+import { PageHero } from "@/components/marketing/page-hero";
+import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Wartung & Werkbank",
   description:
-    "Hosting, Updates, kleine Änderungen — und auf Wunsch echte Werkbank-Stunden für Design, Dev und Strategie. Auch für Websites, die wir nicht selbst gebaut haben.",
+    "Hosting, Updates und kleine Änderungen, auf Wunsch auch Werkbank-Stunden für Gestaltung, Technik und Beratung. Auch für Websites, die wir nicht selbst gebaut haben.",
   alternates: { canonical: "/wartung" },
 };
 
@@ -22,20 +20,26 @@ export const metadata: Metadata = {
  *
  * Zielgruppe: Inhaber existierender Websites (nicht von uns gebaut),
  * die einen verlässlichen Wartungs-Partner suchen, statt jedes Mal
- * jemand neuen zu beauftragen. Bei Bedarf mit echten Atelier-Stunden
- * für Design/Dev/Strategie als Werkbank On-Demand (dritter Plan).
+ * jemand neuen zu beauftragen. Bei Bedarf mit festen Stunden für
+ * Gestaltung und Technik als Werkbank (dritter Tarif).
  *
  * Ausdrücklich kein Re-Launch-Pitch — wer den Anlass für einen
  * Neubau sucht, landet auf /anfrage. Hier geht es um den ruhigen
  * Hintergrund-Dienst plus optional die Werkbank.
+ *
+ * Aufbau: Tarife als Zeilen (kein Kartentrio), Anlässe als Liste,
+ * Fragen offen gesetzt, Abschluss mit Telefonnummer und Audit.
  */
+
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 type Plan = {
   slug: string;
+  /** Name wie im Anfrage-Link (?vorhaben=Wartung+…), nicht ändern. */
   name: string;
-  monthly: string;
+  /** Betrag ohne „ab“ und Zeiteinheit. */
+  price: string;
   description: string;
-  highlight?: boolean;
   contents: string[];
   limits: string[];
 };
@@ -44,63 +48,56 @@ const PLANS: Plan[] = [
   {
     slug: "basis",
     name: "Basis",
-    monthly: "ab 49 € / Monat",
-    description:
-      "Damit Ihre Seite läuft, sicher ist und immer auf dem aktuellen Stand bleibt.",
+    price: "49 €",
+    description: "Für Seiten, die vor allem sicher und aktuell bleiben sollen.",
     contents: [
-      "Hosting in Deutschland (Umzug auf Wunsch inklusive)",
-      "SSL-Zertifikat, automatisch verlängert",
-      "Sicherheits- und Software-Updates monatlich",
-      "Tägliche Backups, 30 Tage rückrollbar",
-      "Eine kleine Inhalts-Änderung pro Monat",
-      "Antwort auf Mails meist am selben Tag",
+      "Hosting auf einem Server in der EU, Umzug auf Wunsch inklusive",
+      "SSL-Zertifikat, das sich selbst verlängert",
+      "Sicherheits- und Software-Updates jeden Monat",
+      "Tägliche Backups, 30 Tage zurück abrufbar",
+      "Eine kleine Änderung am Inhalt pro Monat",
+      "Antwort auf Mails meist am selben Werktag",
     ],
-    limits: [
-      "Keine größeren Layout-Umbauten",
-      "Maximal eine Änderungsrunde pro Monat",
-      "Keine Neuentwicklung von Funktionen",
-    ],
+    limits: ["Größere Umbauten der Gestaltung", "Mehr als eine Änderungsrunde im Monat", "Neue Funktionen"],
   },
   {
     slug: "plus",
     name: "Plus",
-    monthly: "ab 99 € / Monat",
-    description:
-      "Wenn die Seite öfter atmet — neue Speisekarte, neue Aktion, neue Mitarbeiter.",
-    highlight: true,
+    price: "99 €",
+    description: "Für Seiten, auf denen sich öfter etwas ändert, etwa die Speisekarte, eine Aktion oder das Team.",
     contents: [
       "Alles aus Basis",
       "Bis zu drei kleine Änderungen pro Monat",
-      "Monatlicher Health-Check (Performance, Mobile, Formulare)",
-      "Priorisierte Antwort, meist innerhalb von 4 Stunden",
-      "Saisonale Anpassungen (Weihnachten, Sommerpause) inklusive",
-      "Telefonischer Direktdraht bei Notfällen",
+      "Monatliche Prüfung von Ladezeit, Handy-Ansicht und Formularen",
+      "Antwort meist innerhalb von 4 Stunden",
+      "Saisonale Anpassungen, etwa zu Weihnachten oder zur Sommerpause",
+      "Eine direkte Telefonnummer für Notfälle",
     ],
     limits: [
-      "Keine SEO-Kampagnen, keine bezahlten Anzeigen",
-      "Maximal drei Änderungsrunden pro Monat",
-      "Neue Bereiche (eigene Seite) auf Stundenbasis dazu",
+      "SEO-Kampagnen und bezahlte Anzeigen",
+      "Mehr als drei Änderungsrunden im Monat",
+      "Neue Bereiche mit eigener Seite, die rechnen wir nach Stunden ab",
     ],
   },
   {
     slug: "werkbank",
     name: "Werkbank On-Demand",
-    monthly: "ab 299 € / Monat",
+    price: "299 €",
     description:
-      "Wartung plus echte Atelier-Stunden für Design, Dev, Strategie — nutzbar wofür Sie wollen, ohne neues Projekt aufzusetzen.",
+      "Wartung plus feste Stunden für Gestaltung und Technik, ohne für jede Kleinigkeit ein neues Projekt aufzusetzen.",
     contents: [
       "Alles aus Plus",
       "Zwei Werkbank-Stunden pro Monat, frei einsetzbar",
-      "Übertragbar in den Folgemonat (bis maximal vier Stunden Speicher)",
-      "Stunden nutzbar für Design, Dev, Content, Strategie-Sparring",
-      "Auch für neuen Bereich, A/B-Test, Performance-Tuning, Re-Strukturierung",
-      "Quartalsweise Sprechstunde — wir gucken gemeinsam drauf",
+      "Ungenutzte Stunden gehen in den Folgemonat mit, bis zu vier",
+      "Für Gestaltung, Technik, Texte oder eine Beratung",
+      "Etwa für einen neuen Bereich, kürzere Ladezeiten oder eine neue Gliederung",
+      "Einmal im Quartal ein Termin, bei dem wir gemeinsam auf die Seite schauen",
       "Vorrang bei kurzfristigen Anfragen",
     ],
     limits: [
-      "Größere Neubauten (komplette Seite, Shop ab 30 Artikeln) brauchen ein eigenes Projekt",
-      "Nicht-genutzte Stunden verfallen nach zwei Monaten",
-      "Stunden nicht in Geld auszahlbar",
+      "Größere Neubauten wie eine komplette Seite oder ein Shop ab 30 Artikeln, dafür gibt es ein eigenes Projekt",
+      "Stunden, die zwei Monate liegen bleiben, verfallen",
+      "Eine Auszahlung der Stunden",
     ],
   },
 ];
@@ -116,7 +113,7 @@ export default function WartungPage() {
     "@type": "Service",
     name: "Website-Wartung & Werkbank On-Demand",
     description:
-      "Hosting, Updates, kleine Änderungen und auf Wunsch echte Atelier-Stunden für Design, Dev und Strategie — auch für Websites, die wir nicht selbst gebaut haben.",
+      "Hosting, Updates, kleine Änderungen und auf Wunsch Stunden für Gestaltung, Technik und Beratung, auch für Websites, die wir nicht selbst gebaut haben.",
     provider: {
       "@type": "LocalBusiness",
       "@id": `${SITE_URL}/#business`,
@@ -193,133 +190,149 @@ export default function WartungPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Wartung & Pflege" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <Hero />
+        <PageHero
+          crumb="Wartung"
+          eyebrow="Wartung und Pflege"
+          title="Website-Wartung für Seiten, die schon laufen"
+          meta={
+            <span className="text-stahl-hell font-mono text-[12px]">
+              Ab 49 € im Monat · nach 6 Monaten monatlich kündbar
+            </span>
+          }
+        >
+          Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das
+          geht mit WordPress genauso wie mit Wix oder Squarespace.
+        </PageHero>
         <Plans />
-        <ForWhom />
+        <Anlaesse />
         <Faq />
-        <FinalCta />
+        <Abschluss />
       </main>
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
     </div>
   );
 }
 
-function Hero() {
+/* ------------------------------------------------------------------
+ * Tarife als Zeilen: Name und Preis links, Inhalt in der Mitte,
+ * Abgrenzung und Knopf rechts.
+ * ---------------------------------------------------------------- */
+function Plans() {
   return (
-    <section className="relative overflow-hidden">
-      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
-        <span />
-        <span />
-        <span />
+    <section id="tarife" className="scroll-mt-20">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+          <h2 className="max-w-2xl text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+            Drei Tarife für die laufende Pflege
+          </h2>
+          <p className="text-muted-foreground max-w-sm text-[14.5px] leading-relaxed">
+            Preise zzgl. MwSt. Das Onboarding kostet einmalig ab 199 € und entfällt, wenn Sie auf unser Hosting umziehen.
+          </p>
+        </div>
+
+        <div className="border-foreground mt-10 border-b lg:mt-12">
+          {PLANS.map((plan) => (
+            <PlanRow key={plan.slug} plan={plan} />
+          ))}
+        </div>
       </div>
-      <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
-        <EditorialEyebrow>Wartung & Werkbank</EditorialEyebrow>
-        <h1 className="mt-5 max-w-3xl text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-          Für die Seite,{" "}
-          <span className="serif-italic text-muted-foreground font-normal">die schon läuft.</span>
-        </h1>
-        <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-base leading-relaxed sm:text-lg">
-          Hosting, Updates und kleine Änderungen — auch wenn wir die Seite nicht selbst gebaut haben.
+    </section>
+  );
+}
+
+function PlanRow({ plan }: { plan: Plan }) {
+  // „Alles aus Basis" steht als Vorzeile über der Liste, nicht als Punkt darin.
+  const basis = plan.contents[0]?.startsWith("Alles aus") ? plan.contents[0] : null;
+  const items = basis ? plan.contents.slice(1) : plan.contents;
+  return (
+    <article
+      id={plan.slug}
+      className="border-foreground grid scroll-mt-24 gap-6 border-t-[3px] py-8 lg:grid-cols-12 lg:gap-8 lg:py-10"
+    >
+      <div className="lg:col-span-3">
+        <h3 className="text-[1.5rem] leading-tight tracking-[-0.02em]">{plan.name}</h3>
+        <p className="mt-3 flex items-baseline gap-2">
+          <span className="text-muted-foreground text-[13px]">ab</span>
+          <span className="serif text-[2.4rem] leading-none tracking-[-0.03em]">{plan.price}</span>
+          <span className="text-muted-foreground text-[13px]">im Monat</span>
         </p>
-        <ul className="text-foreground/80 mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[14px]">
-          {["Auch für WordPress, Wix, Squarespace", "Umzug aufs Sitalo-Hosting kostenlos", "Nach 6 Monaten monatlich kündbar"].map((t) => (
-            <li key={t} className="inline-flex items-center gap-2">
-              <Check className="text-gold h-4 w-4" aria-hidden="true" />
-              {t}
+      </div>
+
+      <div className="min-w-0 lg:col-span-6">
+        <p className="text-foreground/85 max-w-xl text-[16px] leading-relaxed">{plan.description}</p>
+        {basis ? <p className="label-mono text-muted-foreground mt-5 text-[11px]">{basis}, dazu</p> : null}
+        <ul className={`${basis ? "mt-2" : "mt-5"} grid gap-x-6 text-[14.5px] leading-snug sm:grid-cols-2`}>
+          {items.map((item) => (
+            <li key={item} className="border-border border-t py-2.5">
+              {item}
             </li>
           ))}
         </ul>
       </div>
-    </section>
-  );
-}
 
-function Plans() {
-  return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <div className="grid gap-4 md:grid-cols-3">
-          {PLANS.map((plan) => (
-            <PlanCard key={plan.slug} plan={plan} />
-          ))}
+      <div className="flex min-w-0 flex-col gap-6 lg:col-span-3">
+        <div>
+          <p className="label-mono text-muted-foreground text-[11px]">Nicht enthalten</p>
+          <ul className="text-muted-foreground mt-2 space-y-1.5 text-[13.5px] leading-snug">
+            {plan.limits.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
         </div>
-        <p className="text-muted-foreground mt-6 text-[13px]">
-          Preise zzgl. MwSt. Einmaliges Onboarding ab 199 € — entfällt beim Umzug auf unser Hosting.
-        </p>
+        <Link
+          href={`/anfrage?vorhaben=Wartung+${plan.name}`}
+          className="btn-line mt-auto h-11 self-start px-4 text-[14.5px] lg:self-stretch"
+        >
+          {plan.name === "Werkbank On-Demand" ? "Werkbank" : plan.name} anfragen {ARROW}
+        </Link>
       </div>
-    </section>
-  );
-}
-
-function PlanCard({ plan }: { plan: Plan }) {
-  const dark = plan.highlight;
-  return (
-    <article
-      className={`relative flex flex-col rounded-3xl border p-6 ${
-        dark ? "bg-foreground text-background border-foreground" : "border-border/70 bg-card"
-      }`}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold tracking-tight">{plan.name}</h2>
-        {dark ? (
-          <span className="bg-gold text-foreground whitespace-nowrap rounded-full px-2.5 py-1 text-[12px] font-semibold">
-            Häufigste Wahl
-          </span>
-        ) : null}
-      </div>
-      <p className="serif mt-5 text-4xl lining-nums leading-none tracking-[-0.03em]">{plan.monthly}</p>
-      <p className={`mt-4 text-[14px] leading-relaxed ${dark ? "text-background/80" : "text-foreground/75"}`}>
-        {plan.description}
-      </p>
-      <ul className={`mt-5 space-y-2 border-t pt-5 text-[14px] ${dark ? "border-background/15" : "border-border/60"}`}>
-        {plan.contents.slice(0, 4).map((item) => (
-          <li key={item} className="flex gap-2.5">
-            <Check className="text-gold mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className={dark ? "text-background/90" : "text-foreground/85"}>{item}</span>
-          </li>
-        ))}
-      </ul>
-      <p className={`mt-4 mb-6 text-[12.5px] leading-relaxed ${dark ? "text-background/55" : "text-muted-foreground"}`}>
-        Nicht enthalten: {plan.limits.join(" · ")}
-      </p>
-      <Link
-        href={`/anfrage?vorhaben=Wartung+${plan.name}`}
-        className={`mt-auto inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-[14px] font-medium tracking-tight transition-colors ${
-          dark ? "bg-background text-foreground hover:bg-background/90" : "bg-foreground text-background hover:bg-foreground/90"
-        }`}
-      >
-        {plan.name} anfragen
-        <ArrowRight className="h-4 w-4" aria-hidden="true" />
-      </Link>
     </article>
   );
 }
 
+/* ------------------------------------------------------------------
+ * Anlässe: warum jemand mit einer fertigen Seite zu uns kommt.
+ * ---------------------------------------------------------------- */
 const CASES = [
-  { title: "Der Vorgänger ist weg", body: "Wir übernehmen, sichern den Bestand und führen weiter." },
-  { title: "Die Seite altert", body: "Updates, Zertifikate, Plugins — wir bringen alles auf Stand, ohne Neustart." },
-  { title: "Jemand, der ans Telefon geht", body: "Formular streikt am Freitag? Kein Ticket, sondern eine Person." },
-  { title: "Hände statt neues Projekt", body: "Mit der Werkbank zwei Stunden im Monat für Kleines, ohne Angebot." },
+  {
+    title: "Der Vorgänger ist nicht mehr erreichbar",
+    body: "Wir übernehmen die Zugänge, sichern den Bestand und pflegen die Seite weiter.",
+  },
+  {
+    title: "Die Seite ist lange nicht gepflegt worden",
+    body: "Wir bringen Software, Zertifikat und Plugins auf den aktuellen Stand, ohne die Seite neu aufzusetzen.",
+  },
+  {
+    title: "Das Formular geht am Freitag nicht",
+    body: "Im Tarif Plus rufen Sie direkt an. Am Telefon ist jemand, der Ihre Seite kennt.",
+  },
+  {
+    title: "Kleine Arbeiten ohne eigenes Angebot",
+    body: "Mit der Werkbank haben Sie zwei Stunden im Monat, ohne jedes Mal ein Angebot einzuholen.",
+  },
 ];
 
-function ForWhom() {
+function Anlaesse() {
   return (
-    <section className="border-border/40 bg-secondary/30 border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <SectionHead label="Für wen" title="Wann das hilft." />
-        <ul className={`mt-10 lg:mt-14 grid gap-x-8 gap-y-6 sm:grid-cols-2 ${BODY_OFFSET}`}>
+    <section className="bg-card border-foreground border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-4">
+          <p className="label-mono text-muted-foreground">Typische Anlässe</p>
+          <h2 className="mt-4 text-balance text-[1.9rem] leading-[1.04] tracking-[-0.03em] sm:text-[2.3rem]">
+            Wann eine Übergabe sinnvoll ist
+          </h2>
+        </div>
+        <ul className="grid gap-x-10 sm:grid-cols-2 lg:col-span-8">
           {CASES.map((c) => (
-            <li key={c.title} className="border-border/60 border-t pt-4">
-              <p className="text-[16px] font-semibold tracking-tight">{c.title}</p>
-              <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{c.body}</p>
+            <li key={c.title} className="border-border border-t py-5">
+              <h3 className="text-[17px] leading-snug tracking-[-0.01em]">{c.title}</h3>
+              <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">{c.body}</p>
             </li>
           ))}
         </ul>
@@ -333,77 +346,94 @@ function ForWhom() {
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Können Sie auch Wix oder Squarespace warten?",
-    a: "Ja. Wir machen Inhalts-Pflege, Backups (per Export), Performance-Checks und kleinere Layout-Anpassungen auch auf den Baukasten-Systemen. Den Hosting-Teil bezahlt in dem Fall weiterhin Wix bzw. Squarespace direkt.",
+    a: "Ja. Wir pflegen Inhalte, sichern per Export, prüfen die Ladezeit und passen kleinere Dinge an der Gestaltung an, auch auf diesen Baukästen. Das Hosting bezahlen Sie in dem Fall weiter direkt bei Wix oder Squarespace.",
   },
   {
     q: "Was passiert mit meiner Domain?",
-    a: "Die Domain bleibt auf Ihren Namen registriert — wir verwalten nur die DNS-Einträge auf Wunsch. Sie behalten jederzeit die volle Kontrolle.",
+    a: "Die Domain bleibt auf Ihren Namen registriert. Auf Wunsch verwalten wir die DNS-Einträge, die Kontrolle behalten Sie.",
   },
   {
     q: "Kann ich kündigen, wenn ich nicht zufrieden bin?",
-    a: "Ja, zum Ende eines jeden Monats nach den ersten sechs Monaten. Wir liefern Ihnen den kompletten Bestand (Seite, Datenbank, Inhalte) als Export für einen sauberen Übergang.",
+    a: "Ja, nach den ersten sechs Monaten zum Ende jedes Monats. Sie bekommen den kompletten Bestand mit Seite, Datenbank und Inhalten als Export.",
   },
   {
-    q: "Was kostet die Aufstockung von Basis auf Plus?",
-    a: "Differenz monatlich, anteilig. Sie können jederzeit hoch oder runter wechseln — ohne neue Mindestlaufzeit.",
+    q: "Was kostet der Wechsel von Basis auf Plus?",
+    a: "Die Differenz, monatlich und anteilig. Sie können jederzeit hoch- oder herunterwechseln, eine neue Mindestlaufzeit beginnt dadurch nicht.",
   },
   {
-    q: "Übernehmen Sie auch Sites mit Online-Shop?",
-    a: "Bis ungefähr 30 Artikel ja. Größere Shops mit Lagerverwaltung, Versand-APIs oder ähnlichem empfehlen wir lieber an spezialisierte Shop-Wartungs-Partner weiter.",
+    q: "Übernehmen Sie auch Seiten mit Online-Shop?",
+    a: "Bis etwa 30 Artikel ja. Für größere Shops mit Lagerverwaltung oder angebundenem Versand empfehlen wir Anbieter, die sich auf Shops spezialisiert haben.",
   },
   {
     q: "Wofür kann ich die Werkbank-Stunden nutzen?",
-    a: "Für alles, was im Atelier sonst auch passiert — Design-Anpassungen, neuer Bereich, Performance-Tuning, Texte feilen, A/B-Test einrichten, Schema-Markup nachbessern, Strategie-Sparring zur Conversion-Rate. Keine eigene Layout-Welt, kein neuer Shop, kein App-Bau — dafür braucht's ein Projekt.",
+    a: "Für Arbeiten an der Gestaltung, einen neuen Bereich, kürzere Ladezeiten, Texte, strukturierte Daten für Google oder eine Beratung dazu, was auf der Seite mehr Anfragen bringen könnte. Für einen neuen Shop oder eine App braucht es ein eigenes Projekt.",
   },
   {
     q: "Was passiert mit nicht genutzten Werkbank-Stunden?",
-    a: "Sie verfallen nicht sofort: bis zu vier Stunden Speicher übertragen sich in den Folgemonat. Was darüber liegt oder zwei Monate lang nicht genutzt wurde, verfällt — sonst sammeln sich Reste, die wir nie aufholen.",
+    a: "Bis zu vier Stunden nehmen Sie in den Folgemonat mit. Was darüber liegt oder zwei Monate ungenutzt bleibt, verfällt. Sonst sammeln sich Reste an, die wir nie abarbeiten könnten.",
   },
 ];
 
+/* ------------------------------------------------------------------
+ * Fragen offen gesetzt: Frage links, Antwort rechts.
+ * ---------------------------------------------------------------- */
 function Faq() {
   return (
-    <section className="border-border/40 border-t">
+    <section className="border-border border-t">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <SectionHead label="Fragen" title="Häufige Fragen." />
-        <div className={`divide-border/60 mt-10 lg:mt-14 divide-y ${BODY_OFFSET}`}>
+        <h2 className="text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">Fragen zur Wartung</h2>
+        <dl className="border-foreground mt-10 border-b lg:mt-12">
           {FAQ_ITEMS.map((item) => (
-            <details key={item.q} className="group py-4">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[16px] font-medium">
-                {item.q}
-                <span aria-hidden="true" className="text-muted-foreground text-xl transition-transform group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="text-muted-foreground mt-3 text-[14.5px] leading-relaxed">{item.a}</p>
-            </details>
+            <div key={item.q} className="border-border grid gap-2 border-t py-6 first:border-foreground lg:grid-cols-12 lg:gap-8">
+              <dt className="text-[17.5px] font-semibold leading-snug tracking-[-0.01em] lg:col-span-5">{item.q}</dt>
+              <dd className="text-muted-foreground text-[15.5px] leading-relaxed lg:col-span-7">{item.a}</dd>
+            </div>
           ))}
-        </div>
+        </dl>
       </div>
     </section>
   );
 }
 
-function FinalCta() {
+/* ------------------------------------------------------------------
+ * Abschluss: Telefonnummer groß, daneben Audit und Mail.
+ * ---------------------------------------------------------------- */
+function Abschluss() {
   return (
-    <section className="bg-foreground text-background relative overflow-hidden">
-      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
-        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
-          Erst ansehen,{" "}
-          <span className="serif-italic text-background/70">dann entscheiden.</span>
-        </h2>
-        <Link
-          href="/audit"
-          className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight"
-        >
-          Kostenlosen Audit anfordern
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-        </Link>
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
+            Bevor Sie einen Tarif wählen, sehen wir uns Ihre Seite an.
+          </h2>
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
+          >
+            0160 7621876
+          </a>
+        </div>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16px] leading-relaxed">
+            Schicken Sie uns die Adresse Ihrer Seite. Innerhalb von 48 Stunden bekommen Sie drei bis fünf Punkte per Mail,
+            kostenlos.
+          </p>
+          <a href={`mailto:${CONTACT_EMAIL}`} className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold">
+            {CONTACT_EMAIL}
+          </a>
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Link href="/audit" className="btn-signal">
+              Audit anfordern {ARROW}
+            </Link>
+            <Link
+              href="/anfrage?vorhaben=Wartung"
+              className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+            >
+              Anfrage schreiben
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );

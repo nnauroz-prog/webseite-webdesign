@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 /**
- * Global Error-Boundary. Server-Fehler werden in `error` serialisiert;
- * wir geben bewusst keine internen Details an Besucher weiter. Voice
- * wie auf der restlichen Seite (Sie-Form, Hamburg-Verdichtung) und
- * mit echter Kontakt-Adresse statt anonymem „Support".
+ * Globale Fehlerseite. Server-Fehler werden in `error` serialisiert;
+ * interne Details geben wir bewusst nicht an Besucher weiter, nur die
+ * Referenz (digest), damit wir den Fehler im Log wiederfinden.
+ * Gestaltet wie der Kopf einer Unterseite: Mono-Kopfzeile, breite
+ * Überschrift, Hafen-Knöpfe.
  */
 export default function GlobalError({
   error,
@@ -20,7 +20,7 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     // Server-seitig hat Next.js den Fehler schon geloggt. Hier lokal
-    // im Browser-Console für Debugging, ohne Internals an User leak.
+    // in der Browser-Konsole für die Fehlersuche.
     if (typeof console !== "undefined") {
       console.error("[sitalo] Global-Error:", error);
     }
@@ -30,36 +30,33 @@ export default function GlobalError({
     <main
       id="main"
       tabIndex={-1}
-      className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center focus:outline-none"
+      className="bg-background mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-5 py-24 focus:outline-none sm:px-6"
     >
-      <p className="text-muted-foreground text-[13px]">
-        Fehler
-      </p>
-      <h1 className="mt-4 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-        Hier hat was geklemmt.
+      <p className="label-mono text-muted-foreground">Fehler</p>
+      <h1 className="mt-6 max-w-3xl text-balance text-[2.4rem] leading-[0.98] tracking-[-0.036em] sm:text-6xl">
+        Die Seite ließ sich gerade nicht laden.
       </h1>
-      <p className="text-muted-foreground mt-4 max-w-md text-pretty leading-relaxed">
-        Die Seite konnte gerade nicht geladen werden. Versuchen Sie's
-        nochmal — wenn's bleibt, schreiben Sie uns kurz an{" "}
+      <p className="text-muted-foreground mt-6 max-w-xl text-pretty text-[16.5px] leading-relaxed sm:text-lg">
+        Versuchen Sie es bitte noch einmal. Bleibt der Fehler, schreiben Sie uns an{" "}
         <a
           href="mailto:info@sitalo.de"
-          className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+          className="text-foreground font-semibold underline decoration-[var(--gold)] decoration-2 underline-offset-4"
         >
           info@sitalo.de
         </a>
-        , wir gucken nach.
+        , dann sehen wir nach.
       </p>
-      <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-        <Button onClick={() => reset()}>Erneut versuchen</Button>
-        <Button asChild variant="outline">
-          <Link href="/">Zur Startseite</Link>
-        </Button>
+      <div className="mt-9 flex flex-wrap items-center gap-3">
+        <button type="button" onClick={() => reset()} className="btn-signal">
+          Erneut versuchen <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </button>
+        <Link href="/" className="btn-line">
+          Zur Startseite
+        </Link>
       </div>
-      {error?.digest && (
-        <p className="text-muted-foreground/55 mt-8 font-mono text-[10.5px]">
-          Ref: {error.digest}
-        </p>
-      )}
+      {error?.digest ? (
+        <p className="text-muted-foreground mt-10 font-mono text-[12px]">Referenz: {error.digest}</p>
+      ) : null}
     </main>
   );
 }

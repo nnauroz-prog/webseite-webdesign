@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Eye, FileText, Mail } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { AuditForm } from "@/components/marketing/audit-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -11,20 +11,48 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Kostenloser Website-Audit",
   description:
-    "Drei bis fünf konkrete Punkte zu Ihrer aktuellen Seite, persönlich aus Hamburg. Keine generische SEO-Score-Karte, kein Vertriebs-Anruf danach.",
+    "Drei bis fünf konkrete Punkte zu Ihrer aktuellen Website, per Mail innerhalb von 48 Stunden. Kostenlos, aus Hamburg.",
   alternates: { canonical: "/audit" },
 };
+
+/** Was nach dem Absenden passiert. Echte Reihenfolge, daher nummeriert. */
+const SCHRITTE: { title: string; body: string }[] = [
+  {
+    title: "Sie schicken die Adresse",
+    body: "Das Formular hat drei Pflichtfelder.",
+  },
+  {
+    title: "Wir sehen uns die Seite an",
+    body: "Am Handy und am Rechner, so wie Ihre Kunden sie sehen.",
+  },
+  {
+    title: "Sie bekommen eine E-Mail",
+    body: "Innerhalb von 48 Stunden, mit drei bis fünf Punkten.",
+  },
+];
+
+/**
+ * Muster einer Audit-Mail. Der Betrieb ist die erfundene Tischlerei
+ * Nordholz aus dem Vorher-Nachher der Startseite; die Punkte passen
+ * zu deren „Vorher“-Seite (Willkommen-Titel, Öffnungszeiten als PDF,
+ * Cookie-Banner über dem Inhalt).
+ */
+const MUSTER_PUNKTE = [
+  "Die Startseite beginnt mit „Willkommen“. Dass Sie Möbel und Treppen bauen, steht erst im kleinen Text darunter. Das gehört in die erste Zeile.",
+  "Die Öffnungszeiten stecken in einem PDF mit 1,2 MB. Am Handy startet dafür erst ein Download. Als Text auf der Startseite sind sie sofort lesbar.",
+  "Eine Telefonnummer gibt es nur unter „Kontakt“. Oben auf der Startseite, als Anruf-Link, wäre sie am Handy mit einem Tipp gewählt.",
+];
 
 /**
  * `/audit` — Lead-Magnet-Seite.
  *
- * Versprechen: ein ehrlicher Mini-Audit per Mail innerhalb 48 h.
- * Keine generischen Lighthouse-Reports, keine Score-Karten —
- * stattdessen 3–5 konkrete Punkte aus echter Auge-drauf-Sicht.
+ * Versprechen: ein Mini-Audit per Mail innerhalb 48 h. Keine
+ * Lighthouse-Reports, keine Score-Karten, sondern 3–5 konkrete
+ * Punkte, von Hand geschrieben. Statt das zu beschreiben, zeigt die
+ * Seite eine Muster-Mail.
  *
- * Bewusst eigenständig (nicht in /anfrage gewurschtelt), weil
- * das Versprechen ein anderes ist: hier wird noch keine Anfrage
- * gestellt, hier wird zuerst Vertrauen aufgebaut.
+ * Bewusst eigenständig (nicht in /anfrage), weil das Versprechen ein
+ * anderes ist: hier wird noch keine Anfrage gestellt.
  */
 export default function AuditPage() {
   // Service + BreadcrumbList JSON-LD — der kostenlose Mini-Audit ist
@@ -35,7 +63,7 @@ export default function AuditPage() {
     "@type": "Service",
     name: "Kostenloser Website-Audit",
     description:
-      "Persönlicher Audit-Report Ihrer aktuellen Website. Drei bis fünf konkrete Verbesserungspunkte per Mail innerhalb 48 Stunden — kein Lighthouse-Score, kein Vertriebs-Anruf.",
+      "Audit Ihrer aktuellen Website: drei bis fünf konkrete Verbesserungspunkte per Mail innerhalb von 48 Stunden.",
     provider: {
       "@type": "LocalBusiness",
       "@id": `${SITE_URL}/#business`,
@@ -78,97 +106,148 @@ export default function AuditPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Mini-Audit"
-          eyebrow="Kostenlos · persönlich · 48 h"
-          title="Wir sehen uns Ihre Seite an."
-          accent="Ehrlich."
+          eyebrow="Kostenloser Website-Audit"
+          title="Wir sehen uns Ihre Website an."
         >
-          Drei bis fünf konkrete Punkte: was gut läuft und was wir an Ihrer
-          Stelle zuerst angehen würden. Kein Vertriebsanruf danach.
+          Sie bekommen innerhalb von 48 Stunden eine E-Mail mit drei bis fünf
+          Punkten: was an Ihrer Seite funktioniert und was wir zuerst ändern
+          würden. Ob Sie sich danach melden, entscheiden Sie.
         </PageHero>
 
-        <section>
-          <div className="mx-auto w-full max-w-4xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
-            <div>
-              <AuditForm />
+        <section aria-label="Audit anfordern">
+          <div className="mx-auto w-full max-w-6xl px-5 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-20">
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+              <div className="min-w-0 lg:col-span-7">
+                <AuditForm />
+              </div>
+              <aside className="lg:col-span-4 lg:col-start-9 lg:pt-2">
+                <h2 className="label-mono text-muted-foreground">So geht es weiter</h2>
+                <ol className="border-foreground mt-5 border-t">
+                  {SCHRITTE.map((s, i) => (
+                    <li
+                      key={s.title}
+                      className="border-border grid grid-cols-[2.5rem_1fr] border-b py-4"
+                    >
+                      <span className="text-gold pt-0.5 font-mono text-[12.5px] font-semibold tabular-nums">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-foreground text-[15.5px] font-semibold">
+                          {s.title}
+                        </p>
+                        <p className="text-muted-foreground mt-1 text-[14px] leading-relaxed">
+                          {s.body}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </aside>
             </div>
           </div>
         </section>
 
-        <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-24">
-            <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
-              <div>
-                <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-                  <span
-                    aria-hidden="true"
-                    className="bg-gold gold-pulse inline-block h-1 w-6"
-                  />
-                  Was Sie bekommen
-                </p>
-                <h2 className="mt-6 text-3xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance sm:text-4xl lg:text-5xl">
-                  Eine E-Mail.
-                  <br />
-                  <span className="serif-italic text-muted-foreground font-normal">
-                    Mehr nicht.
-                  </span>
+        <section className="bg-card border-border border-y">
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+              <div className="lg:col-span-5">
+                <p className="label-mono text-muted-foreground">Was Sie bekommen</p>
+                <h2 className="mt-5 text-balance text-[2rem] leading-[1.04] tracking-[-0.032em] sm:text-[2.6rem]">
+                  Eine E-Mail, die wir selbst schreiben.
                 </h2>
-                <p className="text-foreground/75 mt-6 max-w-md text-[15.5px] leading-relaxed text-pretty">
-                  Kein PDF-Report, kein automatisches Tool. Wir öffnen Ihre
-                  Seite, gucken sie uns am Schreibtisch in Hamburg an und
-                  schreiben Ihnen, was uns aufgefallen ist — in einer Sprache,
-                  die nicht nach Marketing klingt.
-                </p>
+                <div className="text-muted-foreground mt-6 max-w-md space-y-4 text-[15.5px] leading-relaxed text-pretty">
+                  <p>
+                    Wir öffnen Ihre Seite am Handy und am Rechner und notieren,
+                    was einem Kunden auffällt. Zu jedem Punkt nennen wir die
+                    Stelle und was wir dort ändern würden.
+                  </p>
+                  <p>
+                    Einen PDF-Bericht mit Punktzahlen gibt es nicht. Wer die
+                    Technik messen will, nimmt den{" "}
+                    <Link
+                      href="/check"
+                      className="text-foreground underline underline-offset-4"
+                    >
+                      Speed-Check
+                    </Link>
+                    . Wenn Sie auf die Mail antworten, antworten wir Ihnen
+                    selbst.
+                  </p>
+                </div>
               </div>
 
-              <ul className="space-y-5">
-                <AuditItem
-                  icon={Eye}
-                  title="Erster Eindruck auf dem Smartphone"
-                  body="Was sieht ein Kunde in den ersten drei Sekunden? Ist die Telefonnummer erreichbar? Funktioniert der Speisekarten-Link? Sind die Öffnungszeiten zu finden?"
-                />
-                <AuditItem
-                  icon={FileText}
-                  title="Konkretes vor Generischem"
-                  body="Wir nennen die Stelle, die uns aufgefallen ist — nicht abstraktes Meta-Tag-Geblubber. Sondern: auf der Startseite steht ein Willkommen, das Ihre Kunden über Sie nichts erfahren lässt — und genau das fehlt da."
-                />
-                <AuditItem
-                  icon={Mail}
-                  title="Persönlich, nicht automatisch"
-                  body="Sie bekommen die Mail direkt aus dem Atelier — von einem Menschen geschrieben, nicht von einem Tool. Wenn Sie zurück schreiben, antwortet auch ein Mensch. Kein Funnel, kein Drip, kein Auto-Responder."
-                />
-              </ul>
+              <figure className="min-w-0 lg:col-span-7">
+                <div className="bg-background border-border rounded-[3px] border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]">
+                  <dl className="border-border space-y-1.5 border-b px-5 py-4 font-mono text-[12.5px] sm:px-7">
+                    <div className="flex gap-3">
+                      <dt className="text-muted-foreground w-16 shrink-0">Von</dt>
+                      <dd className="text-foreground min-w-0">info@sitalo.de</dd>
+                    </div>
+                    <div className="flex gap-3">
+                      <dt className="text-muted-foreground w-16 shrink-0">An</dt>
+                      <dd className="text-foreground min-w-0">Tischlerei Nordholz</dd>
+                    </div>
+                    <div className="flex gap-3">
+                      <dt className="text-muted-foreground w-16 shrink-0">Betreff</dt>
+                      <dd className="text-foreground min-w-0">Ihre Website, drei Punkte</dd>
+                    </div>
+                  </dl>
+                  <div className="text-foreground/90 space-y-4 px-5 py-6 text-[15px] leading-relaxed sm:px-7 sm:py-7">
+                    <p>Guten Tag,</p>
+                    <p>
+                      wir haben uns Ihre Seite am Handy und am Rechner
+                      angesehen. Diese drei Stellen würden wir zuerst ändern:
+                    </p>
+                    <ol className="space-y-3">
+                      {MUSTER_PUNKTE.map((p, i) => (
+                        <li key={i} className="grid grid-cols-[1.5rem_1fr]">
+                          <span className="text-muted-foreground font-mono text-[13px] tabular-nums">
+                            {i + 1}.
+                          </span>
+                          <span className="min-w-0">{p}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    <p>
+                      Gut gelöst ist das Foto aus der Werkstatt. Das würden wir
+                      behalten.
+                    </p>
+                    <p>
+                      Viele Grüße aus Hamburg
+                      <br />
+                      Sitalo Webdesign
+                    </p>
+                  </div>
+                </div>
+                <figcaption className="text-muted-foreground mt-3 font-mono text-[12px]">
+                  Muster. Die Tischlerei Nordholz haben wir erfunden.
+                </figcaption>
+              </figure>
             </div>
           </div>
         </section>
 
-        <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-3xl px-6 py-16 text-center sm:py-20">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
+        <section>
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <h2 className="label-mono text-muted-foreground">Andere Wege</h2>
+            <ul className="border-foreground mt-5 border-t">
+              <WegZeile
+                href="/check"
+                title="Speed-Check"
+                body="Nur die Technik messen. Ergebnis nach 15 bis 30 Sekunden, ohne Kontaktdaten."
               />
-              Klare Ansage
-            </p>
-            <p className="serif text-foreground mt-6 text-2xl leading-snug text-balance sm:text-3xl">
-              Es kommt kein Vertriebs-Anruf danach.{" "}
-              <span className="serif-italic text-muted-foreground">
-                Wenn Sie Lust haben, melden Sie sich. Wenn nicht, auch gut.
-              </span>
-            </p>
-            <p className="text-muted-foreground mt-6 text-[14.5px] leading-relaxed">
-              Wir machen das, weil wir gut darin sind, kurze ehrliche Audits zu
-              schreiben — und weil sich daraus immer wieder schöne Projekte
-              ergeben. Ihre Zeit nehmen wir nicht in Anspruch, wenn Sie sie
-              nicht hergeben.
-            </p>
-            <Link
-              href="/anfrage"
-              className="text-foreground mt-8 inline-flex items-center gap-2 text-[14.5px] font-medium underline-offset-[6px] hover:underline"
-            >
-              Lieber direkt anfragen
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+              <WegZeile
+                href="/anfrage"
+                title="Website anfragen"
+                body="Sie wissen schon, dass eine neue Seite her soll. Antwort meist am selben Werktag."
+              />
+              <WegZeile
+                href="tel:+491607621876"
+                title="0160 7621876"
+                body="Für alle, die lieber gleich sprechen. Ans Telefon gehen wir selbst."
+                external
+              />
+            </ul>
           </div>
         </section>
       </main>
@@ -176,7 +255,6 @@ export default function AuditPage() {
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([serviceLd, breadcrumbLd]),
         }}
@@ -185,28 +263,42 @@ export default function AuditPage() {
   );
 }
 
-function AuditItem({
-  icon: Icon,
+function WegZeile({
+  href,
   title,
   body,
+  external = false,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  href: string;
   title: string;
   body: string;
+  external?: boolean;
 }) {
-  return (
-    <li className="border-border/40 flex items-start gap-4 border-b pb-5 last:border-b-0">
-      <span className="border-border/60 text-foreground/70 mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border">
-        <Icon className="h-4 w-4" aria-hidden="true" />
+  const className =
+    "group border-border grid gap-1 border-b py-5 sm:grid-cols-[16rem_1fr_auto] sm:items-baseline sm:gap-8";
+  const content = (
+    <>
+      <span className="text-foreground text-[1.25rem] leading-tight font-bold tracking-[-0.015em] tabular-nums [font-stretch:110%] group-hover:underline group-hover:underline-offset-4">
+        {title}
       </span>
-      <div>
-        <p className="text-foreground text-lg font-medium tracking-[-0.01em]">
-          {title}
-        </p>
-        <p className="text-muted-foreground mt-1.5 text-[14.5px] leading-relaxed">
-          {body}
-        </p>
-      </div>
+      <span className="text-muted-foreground text-[15px] leading-relaxed">{body}</span>
+      <ArrowRight
+        className="text-foreground hidden h-4 w-4 transition-transform group-hover:translate-x-1 sm:block"
+        aria-hidden="true"
+      />
+    </>
+  );
+  return (
+    <li>
+      {external ? (
+        <a href={href} className={className}>
+          {content}
+        </a>
+      ) : (
+        <Link href={href} className={className}>
+          {content}
+        </Link>
+      )}
     </li>
   );
 }

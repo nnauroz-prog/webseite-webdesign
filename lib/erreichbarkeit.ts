@@ -1,5 +1,5 @@
 /**
- * Antwortzeit-Versprechen, zentral und ehrlich.
+ * Antwortzeit-Versprechen, zentral an einer Stelle.
  *
  * Aus der L7-Wahrheits-Analyse (§ 03 — die unsichtbaren Verträge):
  * das implizite Versprechen „wir gehen ans Telefon" wird ohne
@@ -44,6 +44,6 @@ export const ERREICHBARKEIT = {
   vertretung: {
     rolle: "Eine Hamburger Webentwicklerin aus unserem Netzwerk",
     kann: "technisch handeln, wenn die Live-Seite kippt",
-    kannNicht: "Sitalo-Ton, Strategie-Gespräche, neue Layouts",
+    kannNicht: "Texte, Beratung und neue Gestaltung",
   },
 } as const;

@@ -7,11 +7,10 @@ export const contentType = "image/png";
 
 export default async function Image() {
   return editorialOgImage({
-    variant: "cream",
-    eyebrow: "RATGEBER",
-    headlineBold: "Was kostet",
-    headlineItalic: "eine Website?",
-    subline: "Baukasten, Freelancer, Agentur im Vergleich. Laufende Kosten und sechs Fragen an jedes Angebot.",
-    urlPill: "sitalo.de/website-kosten",
+    variant: "hell",
+    eyebrow: "Ratgeber",
+    headline: "Was kostet eine Website?",
+    subline: "Baukasten, Freelancer und Agentur im Vergleich, dazu die laufenden Kosten und sechs Fragen an jedes Angebot.",
+    url: "sitalo.de/website-kosten",
   });
 }

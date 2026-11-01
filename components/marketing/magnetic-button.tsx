@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
  * maximal ~6px in jede Richtung. Beim Verlassen federt er zurück.
  *
  * Bewusst klein gehalten: zu starkes Magnetisieren wirkt
- * verspielt; ein Hauch genügt für den Apple-Premium-Feel.
+ * verspielt. Für Knöpfe mit .btn-signal/.btn-line gedacht.
  *
  * Auf Touch / reduced-motion: 100 % normaler Button.
  */

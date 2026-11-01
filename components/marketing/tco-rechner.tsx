@@ -24,8 +24,8 @@ import { cn } from "@/lib/utils";
  * die Gesamtkosten verschieben, wenn er seinen Stunden-Wert
  * anpasst.
  *
- * Ehrlich: bei Stunden-Wert 0 €/h gewinnt der Baukasten — das ist
- * Teil des Bildes, nicht ein Bug.
+ * Bei einem Stundenwert von 0 € gewinnt der günstigste Baukasten.
+ * Das ist gewollt und kein Fehler.
  *
  * Persistenz: bewusst keine — der Rechner ist ein Spiel-Tool, das
  * man durchklickt; State über Session hinaus zu halten würde
@@ -36,17 +36,17 @@ const PROFILES: { slug: Profile; label: string; detail: string }[] = [
   {
     slug: "neu",
     label: "Ganz neu",
-    detail: "Erste Website überhaupt",
+    detail: "Die erste Website für den Betrieb",
   },
   {
     slug: "umzug",
     label: "Umzug",
-    detail: "Bestehende Seite wird ersetzt",
+    detail: "Eine bestehende Seite wird ersetzt",
   },
   {
     slug: "eigenbau",
     label: "Code-affin",
-    detail: "Sie selbst können mit Code umgehen",
+    detail: "Sie können selbst mit Code umgehen",
   },
 ];
 
@@ -75,175 +75,139 @@ export function TcoRechner() {
       : 0;
 
   return (
-    <div className="border-border/60 bg-card/70 ring-foreground/5 rounded-3xl border p-6 ring-1 sm:p-10">
-      {/* Inputs */}
-      <div className="grid gap-8 sm:grid-cols-3">
-        <div>
-          <Label>Ihr Profil</Label>
-          <div className="mt-3 space-y-2">
-            {PROFILES.map((p) => (
-              <button
-                key={p.slug}
-                type="button"
-                onClick={() => setProfile(p.slug)}
-                aria-pressed={profile === p.slug}
-                className={cn(
-                  "w-full rounded-2xl border p-3 text-left transition-all",
-                  profile === p.slug
-                    ? "border-foreground bg-foreground/[0.04]"
-                    : "border-border/60 hover:border-foreground/40",
-                )}
-              >
-                <p className="text-foreground text-[14px] font-medium">
-                  {p.label}
-                </p>
-                <p className="text-muted-foreground mt-0.5 text-[12.5px]">
-                  {p.detail}
-                </p>
-              </button>
-            ))}
+    <div className="bg-card border-border border-t-foreground border border-t-[3px] px-5 py-7 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:px-9 sm:py-9">
+      {/* Eingaben */}
+      <div className="grid gap-9 md:grid-cols-3 md:gap-8">
+        <fieldset className="min-w-0">
+          <legend className="label-mono text-muted-foreground">Ihre Ausgangslage</legend>
+          <div className="mt-4 space-y-2">
+            {PROFILES.map((p) => {
+              const active = profile === p.slug;
+              return (
+                <button
+                  key={p.slug}
+                  type="button"
+                  onClick={() => setProfile(p.slug)}
+                  aria-pressed={active}
+                  className={cn(
+                    "flex w-full items-start gap-3 rounded-[2px] border px-3.5 py-3 text-left transition-colors",
+                    active ? "border-foreground bg-background" : "border-border hover:border-foreground/50",
+                  )}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "mt-[3px] inline-block h-3 w-3 shrink-0 border-[1.5px]",
+                      active ? "border-foreground bg-gold" : "border-foreground/40",
+                    )}
+                  />
+                  <span>
+                    <span className="text-foreground block text-[14.5px] font-semibold">{p.label}</span>
+                    <span className="text-muted-foreground mt-0.5 block text-[13px] leading-snug">{p.detail}</span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
-        </div>
+        </fieldset>
 
-        <div>
-          <Label>Updates pro Monat</Label>
-          <p className="text-foreground mt-3 text-3xl font-semibold tracking-[-0.02em] tabular-nums">
-            {updates}
-          </p>
-          <p className="text-muted-foreground text-[12.5px]">
-            Speisekarte, Angebote, Team-Änderungen …
+        <div className="min-w-0">
+          <label htmlFor="tco-updates" className="label-mono text-muted-foreground block">
+            Änderungen pro Monat
+          </label>
+          <p className="serif text-foreground mt-3 text-[2.4rem] leading-none tracking-[-0.03em]">{updates}</p>
+          <p className="text-muted-foreground mt-2 text-[13.5px] leading-snug">
+            Neue Speisekarte, geänderte Öffnungszeiten, ein neuer Name im Team
           </p>
           <input
+            id="tco-updates"
             type="range"
             min={0}
             max={10}
             step={1}
             value={updates}
             onChange={(e) => setUpdates(parseInt(e.target.value, 10))}
-            className="accent-foreground mt-4 w-full"
-            aria-label="Updates pro Monat"
+            className="accent-gold mt-5 w-full"
           />
-          <div className="text-muted-foreground/60 mt-1 flex justify-between text-[13px]">
+          <div className="text-muted-foreground mt-1 flex justify-between font-mono text-[12px]">
             <span>0</span>
             <span>10</span>
           </div>
         </div>
 
-        <div>
-          <Label>Ihre Stunde wert in €</Label>
-          <p className="text-foreground mt-3 text-3xl font-semibold tracking-[-0.02em] tabular-nums">
-            {hourly} €
-          </p>
-          <p className="text-muted-foreground text-[12.5px]">
-            Was kostet Sie eine Stunde Zeit?
+        <div className="min-w-0">
+          <label htmlFor="tco-hourly" className="label-mono text-muted-foreground block">
+            Wert Ihrer Stunde
+          </label>
+          <p className="serif text-foreground mt-3 text-[2.4rem] leading-none tracking-[-0.03em]">{hourly} €</p>
+          <p className="text-muted-foreground mt-2 text-[13.5px] leading-snug">
+            Bei 0 € zählt nur, was Sie an Anbieter zahlen.
           </p>
           <input
+            id="tco-hourly"
             type="range"
             min={0}
             max={150}
             step={5}
             value={hourly}
             onChange={(e) => setHourly(parseInt(e.target.value, 10))}
-            className="accent-foreground mt-4 w-full"
-            aria-label="Stunden-Wert in Euro"
+            className="accent-gold mt-5 w-full"
           />
-          <div className="text-muted-foreground/60 mt-1 flex justify-between text-[13px]">
+          <div className="text-muted-foreground mt-1 flex justify-between font-mono text-[12px]">
             <span>0 €</span>
             <span>150 €</span>
           </div>
         </div>
       </div>
 
-      {/* Results */}
-      <div className="border-border/40 mt-10 border-t pt-8">
-        <p className="text-muted-foreground text-[13px]">
-          Gesamtkosten über 36 Monate
-        </p>
-        <p className="text-foreground mt-2 text-[15px]">
-          Euro-Kosten plus Ihre Eigenzeit, umgerechnet zu Ihrem
-          Stunden-Wert.
-        </p>
+      {/* Ergebnis */}
+      <div className="border-foreground mt-10 border-t pt-7">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+          <h2 className="label-mono text-foreground">Gesamtkosten über 36 Monate</h2>
+          <p className="text-muted-foreground text-[13.5px]">Euro an den Anbieter plus Ihre Arbeitszeit</p>
+        </div>
 
-        <ul className="mt-6 space-y-3">
+        <ul className="mt-6 space-y-5" aria-live="polite">
           {results
             .slice()
             .sort((a, b) => a.totalEur - b.totalEur)
             .map((r) => (
-              <ResultBar
-                key={r.slug}
-                result={r}
-                maxTotal={maxTotal}
-                isCheapest={r.slug === cheapest.slug}
-              />
+              <ResultBar key={r.slug} result={r} maxTotal={maxTotal} isCheapest={r.slug === cheapest.slug} />
             ))}
         </ul>
 
+        {/* Ergebnis als Summenzeile, wie unter einer Rechnung */}
         {sitalo && (
-          <div
-            className={cn(
-              "mt-8 rounded-2xl border p-5",
-              sitaloWins
-                ? "border-foreground bg-foreground text-background"
-                : "border-foreground/15 bg-foreground/[0.04]",
-            )}
-          >
-            <p
-              className={cn(
-                "text-[13px]",
-                sitaloWins ? "text-background/65" : "text-muted-foreground",
+          <div className="border-foreground mt-9 grid gap-2 border-t-2 pt-5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6">
+            <p className="label-mono text-muted-foreground sm:pt-2">Unterm Strich</p>
+            <p className="text-balance text-[1.35rem] leading-snug font-semibold tracking-[-0.015em] sm:text-[1.55rem]">
+              {sitaloWins ? (
+                <>
+                  Mit diesen Angaben ist Sitalo über drei Jahre am günstigsten, weil bei den anderen Wegen Ihre eigene
+                  Arbeitszeit mitzählt.
+                </>
+              ) : (
+                <>
+                  Sitalo kostet über drei Jahre {formatEur(sitaloDelta)} mehr als {cheapest.label}. Dafür sparen Sie{" "}
+                  {formatHours(cheapest.hoursCost - sitalo.hoursCost)} eigene Arbeit.
+                </>
               )}
-            >
-              Was das für Sie heißt
             </p>
-            {sitaloWins ? (
-              <p className="serif mt-3 text-balance text-2xl leading-snug">
-                Mit Ihren Inputs ist Sitalo{" "}
-                <span className="serif-italic">die günstigste Option</span> —
-                trotz höherem Preisschild. Weil Ihre Eigenzeit es macht.
-              </p>
-            ) : (
-              <p className="serif mt-3 text-balance text-2xl leading-snug">
-                Sitalo kostet Sie über 3 Jahre{" "}
-                <span className="serif-italic">{formatEur(sitaloDelta)} mehr</span>{" "}
-                als die billigste Option — dafür sparen Sie sich{" "}
-                <span className="serif-italic">
-                  {formatHours(cheapest.hoursCost - sitalo.hoursCost)}
-                </span>{" "}
-                Eigenarbeit.
-              </p>
-            )}
           </div>
         )}
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-muted-foreground/80 text-[12.5px] leading-relaxed">
-            Vergleich basiert auf realen Tarifen Stand{" "}
-            {new Date().toLocaleDateString("de-DE", {
-              month: "long",
-              year: "numeric",
-              timeZone: "Europe/Berlin",
-            })}
-            . Eigenzeit-Schätzungen aus Erfahrung mit Hamburger Lokal-
-            Kunden, die von einer dieser Optionen zu uns gewechselt sind.
+        <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-muted-foreground max-w-xl text-[13px] leading-relaxed">
+            Die Tarife sind gerundete Monatspreise der Anbieter, die Stunden sind unsere Schätzung. Alle Annahmen stehen
+            unter dem Rechner.
           </p>
-          <Link
-            href="/anfrage?paket=business"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 shrink-0 items-center gap-2 rounded-full px-5 text-[14px] font-medium tracking-tight"
-          >
-            Mit Sitalo starten
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          <Link href="/anfrage?paket=business" className="btn-signal h-12 shrink-0 text-[15px]">
+            Business anfragen
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
       </div>
     </div>
-  );
-}
-
-function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-muted-foreground text-[13px]">
-      {children}
-    </p>
   );
 }
 
@@ -260,46 +224,23 @@ function ResultBar({
   return (
     <li>
       <div className="flex items-baseline justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "text-foreground text-[14.5px] font-medium tracking-tight",
-              isCheapest && "font-semibold",
-            )}
-          >
-            {result.label}
-          </span>
-          {isCheapest && (
-            <span className="bg-gold text-foreground inline-flex h-5 items-center rounded-full px-2 text-[9px]">
-              Billiger
-            </span>
-          )}
-          {result.highlight && !isCheapest && (
-            <span className="border-foreground/30 text-muted-foreground inline-flex h-5 items-center rounded-full border px-2 text-[9px]">
-              Sitalo
-            </span>
-          )}
+        <div className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 gap-y-1">
+          <span className="text-foreground text-[15px] font-semibold tracking-tight">{result.label}</span>
+          {isCheapest && <span className="label-mono text-gold text-[10.5px]">am günstigsten</span>}
         </div>
-        <span className="text-foreground font-mono text-[14px] font-medium tabular-nums">
-          {formatEur(result.totalEur)}
-        </span>
+        <span className="serif text-foreground shrink-0 text-[17px]">{formatEur(result.totalEur)}</span>
       </div>
-      <div className="bg-border/40 mt-2 h-2 w-full overflow-hidden rounded-full">
+      <div className="bg-border mt-2 h-2.5 w-full overflow-hidden">
         <div
           className={cn(
-            "h-full transition-[width] duration-500 ease-out",
-            result.highlight
-              ? "bg-foreground"
-              : isCheapest
-                ? "bg-gold"
-                : "bg-muted-foreground/40",
+            "h-full transition-[width] duration-500 ease-out motion-reduce:transition-none",
+            result.highlight ? "bg-foreground" : isCheapest ? "bg-gold" : "bg-zink",
           )}
           style={{ width: `${widthPct}%` }}
         />
       </div>
-      <p className="text-muted-foreground mt-1.5 text-[12px]">
-        davon Euro: {formatEur(result.euroCost)} · Eigenzeit:{" "}
-        {formatHours(result.hoursCost)} ({formatEur(result.hoursEur)})
+      <p className="text-muted-foreground mt-1.5 font-mono text-[11.5px]">
+        Euro {formatEur(result.euroCost)} · Eigenzeit {formatHours(result.hoursCost)} ({formatEur(result.hoursEur)})
       </p>
     </li>
   );

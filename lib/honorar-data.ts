@@ -1,14 +1,14 @@
 /**
- * Datenmodell für /honorar — Open-Book-Honorar-Modell.
+ * Datenmodell für /honorar, die offen vorgerechnete Kalkulation.
  *
- * Wir legen offen, wie unsere Pakete-Preise zustande kommen:
- * Stundensatz, Aufwand pro Paket, was im Stundensatz enthalten
- * ist, was nicht abgerechnet wird, was zusätzlich kostet.
+ * Wir zeigen, wie die Paketpreise zustande kommen: Stundensatz,
+ * Aufwand je Paket, was nicht abgerechnet wird, was zusätzlich kostet.
+ * Wer weiß, dass wir 99 € pro Stunde nehmen und Business etwa neun
+ * Stunden Aufbau braucht, kann die 899 € selbst nachrechnen.
  *
- * Bewusst keine Aufschläge oder Versteck-Marge. Wenn man weiß,
- * dass wir ungefähr 99 € pro Stunde nehmen, und Business etwa
- * neun Stunden Aufbau braucht, ergibt sich die 899-€-Zahl
- * öffentlich nachvollziehbar.
+ * Monatliche Posten folgen lib/pakete-data.ts (Änderungen pro Monat,
+ * Hosting in der EU, Antwortzeiten). Ändert sich dort etwas, hier
+ * nachziehen.
  */
 
 import { getPaketBySlug, type Paket } from "@/lib/pakete-data";
@@ -21,8 +21,7 @@ export type HonorarPaket = {
   setup: string;
   /** Geschätzter netto-Aufwand in Stunden bis Live-Schaltung. */
   stundenSetup: number;
-  /** Was in diesen Stunden steckt — als Posten-Liste, jede Zeile
-   *  eine konkrete Tätigkeit. */
+  /** Was in diesen Stunden steckt, jede Zeile eine konkrete Tätigkeit. */
   setupPosten: { label: string; stunden: number }[];
   monthly: string;
   /** Was im monatlichen Betrag wirklich drinsteckt. */
@@ -33,11 +32,9 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
   const p = getPaketBySlug(slug);
   if (!p) return null;
 
-  // Stunden-Schätzungen sind unsere durchschnittlichen Werte
-  // aus laufender Arbeit, gerundet auf halbe Stunden. Sie ergeben
-  // multipliziert mit STUNDENSATZ_EUR ungefähr die offiziellen
-  // Setup-Preise — ohne exakt aufzugehen, weil wir bei jedem
-  // Projekt anders investieren.
+  // Stunden sind Richtwerte je Paket, gerundet auf halbe Stunden.
+  // Mal STUNDENSATZ_EUR ergeben sie ungefähr die Paketpreise, ohne
+  // exakt aufzugehen, weil jedes Projekt etwas anders verläuft.
   const profiles: Record<
     Paket["slug"],
     { stundenSetup: number; setupPosten: HonorarPaket["setupPosten"]; monatlichPosten: string[] }
@@ -45,71 +42,71 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
     starter: {
       stundenSetup: 5,
       setupPosten: [
-        { label: "Strukturplan und Inhalts-Sichtung", stunden: 1 },
-        { label: "Bau der Onepage-Sektionen", stunden: 2 },
-        { label: "Bildoptimierung und Mobile-Tests", stunden: 1 },
-        { label: "Hosting-Setup, Domain, SSL", stunden: 1 },
+        { label: "Seitenplan und Sichtung Ihrer Unterlagen", stunden: 1 },
+        { label: "Bau der Seite mit allen Abschnitten", stunden: 2 },
+        { label: "Bilder aufbereiten, Test auf echten Handys", stunden: 1 },
+        { label: "Hosting einrichten, Domain, SSL", stunden: 1 },
       ],
       monatlichPosten: [
-        "Hosting in der EU, SSL, Backups, Monitoring",
-        "Sicherheits- und Plattform-Updates",
+        "Hosting in der EU, SSL, automatische Backups, Überwachung",
+        "Sicherheits- und Software-Updates",
         "Eine kleine Änderung pro Monat",
-        "Antwort auf Mails meist am selben Tag",
+        "Antwort meist am selben Werktag",
       ],
     },
     business: {
       stundenSetup: 9,
       setupPosten: [
-        { label: "Strukturplan, Inhalts-Architektur, Stadtteil-SEO", stunden: 1.5 },
-        { label: "Bau mehrseitiger Struktur (Leistungen, Team, Kontakt)", stunden: 4 },
-        { label: "Bildoptimierung, Galerie, Mobile-Tests", stunden: 1.5 },
-        { label: "Google-Business-Profil, lokale SEO-Basis", stunden: 1 },
-        { label: "Hosting-Setup, Domain, SSL, Übergabe", stunden: 1 },
+        { label: "Seitenplan, Gliederung, Suchbegriffe für Ihren Ort", stunden: 1.5 },
+        { label: "Bau der Unterseiten (Leistungen, Team, Kontakt)", stunden: 4 },
+        { label: "Bilder aufbereiten, Galerie, Test auf echten Handys", stunden: 1.5 },
+        { label: "Google-Unternehmensprofil, Grundlagen für die lokale Suche", stunden: 1 },
+        { label: "Hosting einrichten, Domain, SSL, Übergabe", stunden: 1 },
       ],
       monatlichPosten: [
-        "Hosting in der EU, SSL, Backups, Monitoring",
-        "Sicherheits- und Plattform-Updates",
+        "Hosting in der EU, SSL, automatische Backups, Überwachung",
+        "Sicherheits- und Software-Updates",
         "Drei kleine Änderungen pro Monat",
-        "Monatlicher Performance-Check",
-        "Antwort auf Mails meist am selben Tag",
+        "Ladezeit-Prüfung einmal im Monat",
+        "Antwort meist am selben Werktag",
       ],
     },
     premium: {
       stundenSetup: 25,
       setupPosten: [
-        { label: "Strukturplan, Inhalts-Architektur, lokale SEO", stunden: 3 },
-        { label: "Bau mehrseitiger Struktur mit eigener Note", stunden: 10 },
-        { label: "Verwaltbare Inhalte (Speisekarte, Termine, Aktuelles)", stunden: 5 },
-        { label: "Bildbearbeitung, Galerie, Mobile-Tests, Tonalität", stunden: 3 },
-        { label: "Google-Business-Profil, lokale SEO-Basis", stunden: 2 },
-        { label: "Hosting-Setup, Domain, SSL, persönliche Übergabe", stunden: 2 },
+        { label: "Seitenplan, Gliederung, Suchbegriffe für Ihren Ort", stunden: 3 },
+        { label: "Bau der Unterseiten, auf Ihren Bedarf angepasst", stunden: 10 },
+        { label: "Bereiche zum Selbstpflegen (Speisekarte, Termine, Aktuelles)", stunden: 5 },
+        { label: "Bilder bearbeiten, Galerie, Texte, Test auf echten Handys", stunden: 3 },
+        { label: "Google-Unternehmensprofil, Grundlagen für die lokale Suche", stunden: 2 },
+        { label: "Hosting, Domain, SSL, Übergabe mit Einweisung", stunden: 2 },
       ],
       monatlichPosten: [
-        "Hosting in der EU, SSL, Backups, Monitoring",
-        "Sicherheits- und Plattform-Updates",
+        "Hosting in der EU, SSL, automatische Backups, Überwachung",
+        "Sicherheits- und Software-Updates",
         "Sechs kleine Änderungen pro Monat",
-        "Wöchentlicher Performance-Check",
-        "Vorrangige Antwort, meist innerhalb von 4 Stunden",
-        "Telefonischer Direktdraht bei Notfällen",
+        "Ladezeit-Prüfung jede Woche",
+        "Vorrang bei Anfragen, Antwort meist am selben Werktag",
+        "Bei einem Notfall erreichen Sie uns direkt am Telefon",
       ],
     },
     studio: {
       stundenSetup: 35,
       setupPosten: [
-        { label: "Atelier-Besuch, Briefing, Marken-Verständnis", stunden: 3 },
-        { label: "Konzept und eigenständige Design-Sprache", stunden: 6 },
-        { label: "Bau der individuellen Struktur (bis 12 Bereiche)", stunden: 14 },
-        { label: "Verwaltbare Inhalte, individuelle Bedienung", stunden: 5 },
-        { label: "Bildwelt, Typografie, Tonalität, Korrekturrunden", stunden: 4 },
-        { label: "Google-Business-Profil, lokale SEO, Übergabe", stunden: 3 },
+        { label: "Treffen vor Ort, Briefing, Gespräch über Ihre Marke", stunden: 3 },
+        { label: "Konzept und eigene Gestaltung von Grund auf", stunden: 6 },
+        { label: "Bau der Seiten (bis zu 12 Bereiche)", stunden: 14 },
+        { label: "Bereiche zum Selbstpflegen, auf Ihren Ablauf zugeschnitten", stunden: 5 },
+        { label: "Bilder, Schrift, Texte, bis zu drei Korrekturrunden", stunden: 4 },
+        { label: "Google-Unternehmensprofil, lokale Suche, Übergabe", stunden: 3 },
       ],
       monatlichPosten: [
-        "Hosting in der EU, SSL, Backups, Monitoring",
-        "Sicherheits- und Plattform-Updates",
+        "Hosting in der EU, SSL, automatische Backups, Überwachung",
+        "Sicherheits- und Software-Updates",
         "Zehn kleine Änderungen pro Monat",
-        "Quartalsweise Sprechstunde (60 Min, persönlich)",
-        "Vorrang bei kurzfristigen Anfragen — meist Antwort am selben Tag",
-        "Direktdraht zur Person, die das Atelier-Konzept gezeichnet hat",
+        "Einmal im Quartal ein Gespräch über die Seite (60 Minuten)",
+        "Vorrang bei kurzfristigen Anfragen, Antwort meist am selben Werktag",
+        "Direkter Draht zu der Person, die Ihre Seite gebaut hat",
       ],
     },
   };
@@ -127,31 +124,31 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
 }
 
 export const NICHT_ABGERECHNET: string[] = [
-  "Erstgespräch (30–60 Minuten), persönlich oder per Video",
-  "Audit Ihrer aktuellen Seite, drei bis fünf konkrete Punkte per Mail",
-  "Kurze Beratungs-Fragen per Mail oder Telefon, wenn Sie schon Kunde sind",
-  "Empfehlung an einen anderen Anbieter, wenn wir glauben, jemand passt besser",
+  "Das erste Gespräch (30 bis 60 Minuten), vor Ort, am Telefon oder per Video",
+  "Der Check Ihrer bisherigen Seite: drei bis fünf konkrete Punkte per Mail",
+  "Kurze Fragen per Mail oder Telefon, wenn Sie schon Kunde sind",
+  "Der Hinweis auf einen anderen Anbieter, wenn der besser zu Ihnen passt",
 ];
 
 export const ZUSATZ_ABGERECHNET: { posten: string; preis: string }[] = [
   {
-    posten: "Größere Erweiterungen (neuer Bereich, neue Funktion)",
-    preis: "Stundensatz, vorab verbindlich beziffert",
+    posten: "Größere Erweiterungen, etwa ein neuer Bereich oder eine neue Funktion",
+    preis: "Nach Stundensatz, den Betrag nennen wir vorher verbindlich",
   },
   {
-    posten: "Saisonale Aktionen, Eventseiten, Sonderkampagnen",
-    preis: "Projektbezogen, kein Aufschlag auf den monatlichen Beitrag",
+    posten: "Saisonale Aktionen und Seiten für einzelne Veranstaltungen",
+    preis: "Als eigenes kleines Projekt, der Monatsbeitrag bleibt gleich",
   },
   {
-    posten: "Texterstellung von Grund auf",
-    preis: "Wir empfehlen eine Hamburger Lektorin und vermitteln",
+    posten: "Texte von Grund auf, ohne Stichpunkte von Ihnen",
+    preis: "Wir vermitteln an eine Lektorin aus Hamburg",
   },
   {
     posten: "Foto-Shooting",
-    preis: "Wir empfehlen einen Hamburger Fotografen und vermitteln",
+    preis: "Wir vermitteln an einen Fotografen aus Hamburg",
   },
   {
-    posten: "Logo-Entwicklung",
-    preis: "Wir empfehlen eine Designerin aus unserem Netzwerk",
+    posten: "Ein neues Logo",
+    preis: "Wir vermitteln an eine Grafikdesignerin, mit der wir zusammenarbeiten",
   },
 ];

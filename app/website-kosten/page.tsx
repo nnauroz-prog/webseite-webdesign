@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { BODY_OFFSET, SectionHead } from "@/components/marketing/home-sections";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { PAKETE } from "@/lib/pakete-data";
+import { PageHero } from "@/components/marketing/page-hero";
+import { PAKETE, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -28,6 +27,21 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   alternates: { canonical: "/website-kosten" },
   openGraph: { type: "article", title: TITLE, description: DESCRIPTION, url: `${SITE_URL}/website-kosten` },
+};
+
+const STARTER = getPaketBySlug("starter");
+const STARTER_SETUP = STARTER?.setup ?? "ab 499 €";
+/** „ab 49 € / Monat" → „ab 49 €" */
+const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49 € / Monat").replace(/\s*\/\s*Monat$/, "");
+
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
+
+/** Was im Paket steckt, in einem Satz. Angaben aus lib/pakete-data.ts. */
+const PAKET_KURZ: Record<Paket["slug"], string> = {
+  starter: "Eine Seite mit Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten.",
+  business: "Bis zu fünf Unterseiten mit Team, Leistungen und Galerie. Ihre Fotos bereiten wir mit auf.",
+  premium: "Eine eigene Struktur für Ihren Betrieb. Auf Wunsch pflegen Sie Speisekarte, Angebote oder Termine selbst.",
+  studio: "Eigene Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden und ein Besuch vor Ort.",
 };
 
 const WEGE = [
@@ -55,7 +69,7 @@ const FAKTOREN = [
   { title: "Umfang", text: "Eine Seite mit allem Wichtigen ist günstiger als zehn Unterseiten mit Team, Galerie und Leistungen." },
   { title: "Texte und Bilder", text: "Liegen gute Inhalte vor, geht es schneller. Müssen Texte erst geschrieben werden, steigt der Aufwand." },
   { title: "Funktionen", text: "Terminbuchung, Bewerbungsformular, mehrere Sprachen oder ein Shop kosten jeweils extra." },
-  { title: "Gestaltung", text: "Eine angepasste Vorlage ist günstiger als ein eigenes Design, das sich klar von der Konkurrenz abhebt." },
+  { title: "Gestaltung", text: "Eine angepasste Vorlage ist günstiger als eine Gestaltung, die eigens für Ihren Betrieb entworfen wird." },
   { title: "Google-Sichtbarkeit", text: "Saubere Struktur, Titel, Beschreibungen und lokale Suchbegriffe gehören dazu, werden aber nicht überall mitgeliefert." },
   { title: "Betreuung danach", text: "Hosting, Updates, Sicherheit und kleine Änderungen fallen jeden Monat an, auch wenn das im Angebot nicht steht." },
 ];
@@ -72,7 +86,7 @@ const CHECKLISTE = [
 const FAQ = [
   {
     q: "Was kostet eine einfache Website für ein kleines Unternehmen?",
-    a: `Eine professionelle Onepage-Website kostet je nach Anbieter meist zwischen einigen hundert und wenigen tausend Euro. Bei uns beginnt sie bei ${PAKETE[0].setup}, dazu kommt ein Monatsbeitrag ab 49 € für Hosting und Pflege.`,
+    a: `Eine professionelle Onepage-Website kostet je nach Anbieter meist zwischen einigen hundert und wenigen tausend Euro. Bei uns beginnt sie bei ${STARTER_SETUP.replace(/^ab\s*/, "")}, dazu kommt ein Monatsbeitrag ${STARTER_MONTHLY} für Hosting und Pflege.`,
   },
   {
     q: "Welche laufenden Kosten hat eine Website?",
@@ -84,7 +98,7 @@ const FAQ = [
   },
   {
     q: "Warum unterscheiden sich Angebote so stark?",
-    a: "Weil sehr Unterschiedliches enthalten ist. Vergleichen Sie Angebote anhand der Checkliste oben: Festpreis, Inhalte, Rechtstexte, Betreuung und wem die Seite am Ende gehört.",
+    a: "Weil sehr Unterschiedliches enthalten ist. Vergleichen Sie Angebote anhand der Checkliste auf dieser Seite. Am meisten verraten der Festpreis, die enthaltenen Rechtstexte und die Frage, wem die Seite am Ende gehört.",
   },
 ];
 
@@ -115,160 +129,210 @@ export default function WebsiteKostenPage() {
       ],
     },
   ];
-  const SECTION = "border-border/50 border-t";
-  const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
-
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Website-Kosten" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
+        <PageHero crumb="Website-Kosten" eyebrow="Ratgeber · Stand November 2026" title="Was kostet eine Website?">
+          Zwischen null Euro und mehreren zehntausend, je nachdem, wer sie baut und was sie können muss. Für kleine
+          Betriebe liegt eine professionell gebaute Website meist bei einigen hundert bis wenigen tausend Euro, dazu kommen
+          laufende Kosten. Hier steht, wovon der Preis abhängt und was Sie im Angebot prüfen sollten.
+        </PageHero>
+
+        {/* Drei Wege als Tabelle */}
         <section>
-          <div className="mx-auto w-full max-w-6xl px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-20">
-            <p className="text-muted-foreground flex items-center gap-2.5 text-[13px] font-medium">
-              <span aria-hidden="true" className="bg-gold inline-block h-px w-8" />
-              Ratgeber · Stand November 2026
-            </p>
-            <h1 className="mt-5 max-w-4xl text-balance text-[2.6rem] font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">
-              Was kostet eine Website?
-            </h1>
-            <p className="text-muted-foreground mt-6 max-w-2xl text-pretty text-base leading-relaxed sm:text-lg">
-              Die ehrliche Antwort: zwischen null Euro und mehreren zehntausend. Für kleine Unternehmen liegt eine
-              professionelle Website meist im Bereich von einigen hundert bis wenigen tausend Euro, dazu kommen
-              laufende Kosten. Hier sehen Sie, wovon der Preis abhängt und worauf Sie beim Angebot achten sollten.
-            </p>
-          </div>
-        </section>
-
-        <section className={SECTION}>
-          <div className={INNER}>
-            <SectionHead label="Überblick" title="Drei Wege zur Website im Vergleich." />
-            <p className={`text-muted-foreground mt-6 max-w-2xl text-[15px] leading-relaxed ${BODY_OFFSET}`}>
-              Grobe Erfahrungswerte für kleine Betriebe in Deutschland, ohne Shop. Einzelne Angebote können deutlich
-              abweichen.
-            </p>
-            <div className={`mt-10 overflow-x-auto lg:mt-12 ${BODY_OFFSET}`}>
-              <table className="w-full min-w-[36rem] border-collapse text-left text-[14.5px]">
-                <thead>
-                  <tr className="border-border border-b">
-                    <th scope="col" className="py-3 pr-4 font-semibold">Weg</th>
-                    <th scope="col" className="py-3 pr-4 font-semibold">Einmalig</th>
-                    <th scope="col" className="py-3 pr-4 font-semibold">Laufend</th>
-                    <th scope="col" className="py-3 font-semibold">Passt, wenn …</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {WEGE.map((w) => (
-                    <tr key={w.name} className="border-border border-b align-top">
-                      <th scope="row" className="py-4 pr-4 font-medium">{w.name}</th>
-                      <td className="py-4 pr-4 whitespace-nowrap">{w.einmalig}</td>
-                      <td className="text-muted-foreground py-4 pr-4">{w.laufend}</td>
-                      <td className="text-muted-foreground py-4">{w.passt}</td>
-                    </tr>
-                  ))}
-                  <tr className="border-border bg-secondary/40 border-b align-top">
-                    <th scope="row" className="py-4 pr-4 pl-2 font-semibold">Sitalo</th>
-                    <td className="py-4 pr-4 font-medium whitespace-nowrap">ab {PAKETE[0].setup.replace("ab ", "")}</td>
-                    <td className="py-4 pr-4">ab 49 € / Monat, inkl. Hosting und Änderungen</td>
-                    <td className="py-4 pr-2">Sie möchten Festpreis, eigenes Design und einen festen Ansprechpartner.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section className={`${SECTION} bg-secondary/30`}>
-          <div className={INNER}>
-            <SectionHead label="Preisfaktoren" title="Wovon der Preis abhängt." />
-            <ol className={`mt-10 grid gap-x-8 sm:grid-cols-2 lg:mt-14 ${BODY_OFFSET}`}>
-              {FAKTOREN.map((f, i) => (
-                <li key={f.title} className="border-border border-t py-5">
-                  <p className="text-gold text-[13px] font-semibold tabular-nums">0{i + 1}</p>
-                  <h3 className="mt-1 text-[17px] font-semibold tracking-tight">{f.title}</h3>
-                  <p className="text-muted-foreground mt-1 text-[14.5px] leading-relaxed">{f.text}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        <section className={SECTION}>
-          <div className={INNER}>
-            <SectionHead label="Unsere Preise" title="Was eine Website bei uns kostet." link={{ href: "/pakete", text: "Alle Pakete" }} />
-            <div className={`mt-10 lg:mt-12 ${BODY_OFFSET}`}>
-              <ul className="border-border border-t">
-                {PAKETE.map((p) => (
-                  <li key={p.slug} className="border-border border-b">
-                    <Link href={`/pakete/${p.slug}`} className="group flex items-baseline justify-between gap-6 py-5">
-                      <span>
-                        <span className="block text-[17px] font-semibold tracking-tight group-hover:underline">{p.name}</span>
-                        <span className="text-muted-foreground mt-1 block text-[14.5px]">{p.description}</span>
-                      </span>
-                      <span className="serif shrink-0 text-right text-2xl lining-nums">
-                        {p.setup}
-                        <span className="text-muted-foreground block font-sans text-[12.5px]">+ {p.monthly}</span>
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <p className="text-muted-foreground mt-6 text-[14px]">
-                Festpreis vor Auftrag, Preise zzgl. MwSt.{" "}
-                <Link href="/rechner" className="text-foreground underline underline-offset-4">
-                  Im 3-Jahres-Rechner
-                </Link>{" "}
-                vergleichen Sie die Gesamtkosten mit Baukasten und Agentur.
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+              <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem] lg:col-span-7">
+                Baukasten, Freelancer oder Agentur
+              </h2>
+              <p className="text-muted-foreground max-w-md text-[15.5px] leading-relaxed lg:col-span-4 lg:col-start-9">
+                Grobe Erfahrungswerte für kleine Betriebe in Deutschland, ohne Shop. Einzelne Angebote können deutlich
+                abweichen.
               </p>
             </div>
+
+            <table className="mt-10 hidden w-full border-collapse text-left text-[15px] sm:table lg:mt-12">
+              <thead>
+                <tr className="border-foreground border-t-[3px]">
+                  <th scope="col" className="label-mono text-muted-foreground py-3 pr-4 text-[11px] font-medium">Weg</th>
+                  <th scope="col" className="label-mono text-muted-foreground py-3 pr-4 text-[11px] font-medium">Einmalig</th>
+                  <th scope="col" className="label-mono text-muted-foreground py-3 pr-4 text-[11px] font-medium">Laufend</th>
+                  <th scope="col" className="label-mono text-muted-foreground py-3 text-[11px] font-medium">Passt, wenn …</th>
+                </tr>
+              </thead>
+              <tbody>
+                {WEGE.map((w) => (
+                  <tr key={w.name} className="border-border border-t align-top">
+                    <th scope="row" className="py-5 pr-4 text-[16px] font-semibold">{w.name}</th>
+                    <td className="py-5 pr-4 whitespace-nowrap">{w.einmalig}</td>
+                    <td className="text-muted-foreground py-5 pr-4">{w.laufend}</td>
+                    <td className="text-muted-foreground py-5">{w.passt}</td>
+                  </tr>
+                ))}
+                <tr className="border-foreground bg-card border-y-2 align-top">
+                  <th scope="row" className="py-5 pr-4 pl-3 text-[16px] font-semibold">
+                    Sitalo
+                  </th>
+                  <td className="py-5 pr-4 font-semibold whitespace-nowrap">{STARTER_SETUP}</td>
+                  <td className="py-5 pr-4">{STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen</td>
+                  <td className="py-5 pr-3">Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie dieselben Leute erreichen.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Mobil: je Weg ein Block */}
+            <dl className="border-foreground mt-10 border-t-[3px] sm:hidden">
+              {[
+                ...WEGE,
+                {
+                  name: "Sitalo",
+                  einmalig: STARTER_SETUP,
+                  laufend: `${STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen`,
+                  passt: "Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie dieselben Leute erreichen.",
+                },
+              ].map((w) => (
+                <div key={w.name} className={`border-border border-b py-5 ${w.name === "Sitalo" ? "bg-card -mx-5 px-5" : ""}`}>
+                  <dt className="flex items-baseline justify-between gap-4">
+                    <span className="text-[17px] font-semibold">{w.name}</span>
+                    <span className="text-[15px] font-semibold">{w.einmalig}</span>
+                  </dt>
+                  <dd className="text-muted-foreground mt-1 text-[14.5px]">Laufend: {w.laufend}</dd>
+                  <dd className="mt-2 text-[14.5px] leading-relaxed">{w.passt}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
 
-        <section className={`${SECTION} bg-secondary/30`}>
-          <div className={INNER}>
-            <SectionHead label="Checkliste" title="Sechs Fragen an jedes Angebot." />
-            <ul className={`mt-10 grid gap-x-8 sm:grid-cols-2 lg:mt-14 ${BODY_OFFSET}`}>
-              {CHECKLISTE.map((c) => (
-                <li key={c} className="border-border flex gap-3 border-t py-4 text-[15.5px]">
-                  <span aria-hidden="true" className="text-gold">✓</span>
-                  {c}
+        {/* Preisfaktoren als Glossar */}
+        <section className="bg-card border-foreground border-t">
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-4">
+              <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">Wovon der Preis abhängt</h2>
+              <p className="text-muted-foreground mt-5 text-[15.5px] leading-relaxed">
+                Liegen zwei Angebote weit auseinander, steckt der Grund meistens in einem dieser sechs Punkte.
+              </p>
+            </div>
+            <dl className="lg:col-span-8">
+              {FAKTOREN.map((f) => (
+                <div key={f.title} className="border-border grid gap-1 border-t py-5 first:border-foreground sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-6">
+                  <dt className="text-[17px] font-semibold tracking-[-0.01em]">{f.title}</dt>
+                  <dd className="text-muted-foreground text-[15.5px] leading-relaxed">{f.text}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* Eigene Preise als Preisliste */}
+        <section className="border-border border-t">
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+              <h2 className="max-w-2xl text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+                Was eine Website bei uns kostet
+              </h2>
+              <Link href="/pakete" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
+                Pakete im Vergleich {ARROW}
+              </Link>
+            </div>
+            <ul className="border-foreground mt-10 border-t lg:mt-12">
+              {PAKETE.map((p) => (
+                <li key={p.slug} className="border-border border-b">
+                  <Link
+                    href={`/pakete/${p.slug}`}
+                    className="group grid gap-x-8 gap-y-2 py-6 sm:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[14rem_minmax(0,1fr)_auto]"
+                  >
+                    <span className="text-[1.3rem] leading-tight tracking-[-0.02em] group-hover:underline group-hover:underline-offset-4" style={{ fontStretch: "110%", fontWeight: 700 }}>
+                      {p.name}
+                    </span>
+                    <span className="text-muted-foreground max-w-xl text-[15px] leading-relaxed sm:col-start-1 lg:col-start-2 lg:row-start-1">
+                      {PAKET_KURZ[p.slug]}
+                    </span>
+                    <span className="text-left sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:text-right lg:col-start-3 lg:row-span-1">
+                      <span className="serif block text-[1.6rem] leading-none whitespace-nowrap">{p.setup}</span>
+                      <span className="text-muted-foreground mt-1.5 block text-[13px] whitespace-nowrap">+ {p.monthly}</span>
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
+            <p className="text-muted-foreground mt-6 text-[14.5px] leading-relaxed">
+              Alle Preise zzgl. MwSt. Im{" "}
+              <Link href="/rechner" className="text-foreground underline underline-offset-4">
+                3-Jahres-Rechner
+              </Link>{" "}
+              sehen Sie die Gesamtkosten neben Wix, Squarespace und Jimdo, Ihre eigene Arbeitszeit eingerechnet.
+            </p>
           </div>
         </section>
 
-        <section className={SECTION}>
-          <div className={INNER}>
-            <SectionHead label="Fragen" title="Häufige Fragen zu Website-Kosten." />
-            <div className={`divide-border/60 border-border/60 mt-10 divide-y border-y lg:mt-14 ${BODY_OFFSET}`}>
-              {FAQ.map((f) => (
-                <details key={f.q} className="group py-4">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6">
-                    <h3 className="text-[16px] font-medium leading-snug sm:text-[17px]">{f.q}</h3>
-                    <span aria-hidden="true" className="text-muted-foreground text-xl transition-transform group-open:rotate-45">
-                      +
-                    </span>
-                  </summary>
-                  <p className="text-muted-foreground mt-3 max-w-2xl text-[15px] leading-relaxed">{f.a}</p>
-                </details>
-              ))}
+        {/* Checkliste wie ein Zettel zum Abhaken */}
+        <section className="border-border border-t">
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-4">
+              <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+                Sechs Fragen an jedes Angebot
+              </h2>
+              <p className="text-muted-foreground mt-5 text-[15.5px] leading-relaxed">
+                Legen Sie die Liste neben jedes Angebot, das Sie bekommen. Auch neben unseres.
+              </p>
+            </div>
+            <div className="bg-card border-border border px-5 py-6 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:px-9 sm:py-9 lg:col-span-7 lg:col-start-6">
+              <p className="label-mono text-muted-foreground flex flex-wrap justify-between gap-x-4 gap-y-1">
+                <span>Checkliste</span>
+                <span>Angebot von ________</span>
+              </p>
+              <ul className="mt-5">
+                {CHECKLISTE.map((c) => (
+                  <li key={c} className="border-border flex gap-4 border-b py-4 text-[16px] leading-snug last:border-b-0">
+                    <span aria-hidden="true" className="border-foreground mt-0.5 inline-block h-[18px] w-[18px] shrink-0 rounded-[2px] border-[1.5px]" />
+                    {c}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
 
-        <section className="bg-foreground text-background">
-          <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
-            <h2 className="text-balance text-3xl font-semibold leading-tight tracking-[-0.03em] sm:text-5xl">
-              Ihr Festpreis, schriftlich. <span className="text-background/65">Kostenlos anfragen.</span>
-            </h2>
-            <Link
-              href="/anfrage"
-              className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 shrink-0 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
-            >
-              Angebot anfragen
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Link>
+        {/* Fragen: offen gesetzt */}
+        <section className="bg-card border-border border-t">
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-4">
+              <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+                Häufige Fragen zu Website-Kosten
+              </h2>
+            </div>
+            <dl className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
+              {FAQ.map((f) => (
+                <div key={f.q} className="border-foreground border-t pt-5">
+                  <dt className="text-[17.5px] leading-snug font-semibold tracking-[-0.01em]">{f.q}</dt>
+                  <dd className="text-muted-foreground mt-3 text-[15.5px] leading-relaxed">{f.a}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* Abschluss */}
+        <section className="grain bg-foreground text-background">
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+            <div className="lg:col-span-7">
+              <h2 className="text-balance text-[2rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.9rem]">
+                Ihren Festpreis bekommen Sie schriftlich, bevor wir anfangen.
+              </h2>
+              <p className="text-stahl-hell mt-6 max-w-xl text-[16.5px] leading-relaxed">
+                Schreiben Sie uns, was die Seite können soll. Wir antworten meist am selben Werktag. Telefon:{" "}
+                <a href="tel:+491607621876" className="text-background font-semibold whitespace-nowrap underline-offset-4 hover:underline">
+                  0160 7621876
+                </a>
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 lg:col-span-4 lg:col-start-9 lg:justify-end">
+              <Link href="/anfrage" className="btn-signal grow sm:grow-0">
+                Angebot anfragen {ARROW}
+              </Link>
+            </div>
           </div>
         </section>
       </main>

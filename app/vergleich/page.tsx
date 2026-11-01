@@ -2,30 +2,23 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, Minus, X } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { EditorialEyebrow } from "@/components/marketing/editorial-eyebrow";
+import { PageHero } from "@/components/marketing/page-hero";
+import { getPaketBySlug } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Vergleich — Wix, Squarespace, Jimdo, Eigenbau mit KI",
   description:
-    "Ehrlicher Vergleich: Wann lohnt sich ein Baukasten, wann KI-Eigenbau, wann ein Atelier wie Sitalo. Für lokale Unternehmen in Deutschland.",
+    "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Eigenbau mit KI, wann ein Webdesign-Büro wie Sitalo.",
   alternates: { canonical: "/vergleich" },
 };
 
 /**
- * `/vergleich` — ausgebaute Vergleichsseite.
- *
- * Tiefer als die alte BaukastenComparison-Komponente: vergleicht
- * Sitalo gegen Wix, Squarespace, Jimdo UND „Selbst mit ChatGPT/
- * Cursor". Letzteres ist der zeitgenössische Wettbewerber, den
- * andere Agenturen ignorieren.
- *
- * Ehrlich gerahmt: wir sind nicht für jeden besser. Wir sagen
- * jedem Profil ehrlich, welche Option zu ihm passt — auch wenn
- * das Sitalo ist nicht ist.
+ * `/vergleich` — Sitalo neben Wix, Squarespace, Jimdo und dem
+ * Selbstbau mit ChatGPT oder Cursor. Jede Option bekommt die Fälle,
+ * in denen sie passt, auch wenn das gegen uns spricht.
  */
 export default function VergleichPage() {
   // Article-Schema für die Vergleichs-Page + Breadcrumb. Article
@@ -35,9 +28,9 @@ export default function VergleichPage() {
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Wix, Squarespace, Jimdo, KI-Eigenbau oder Atelier?",
+    headline: "Wix, Squarespace, Jimdo, Eigenbau mit KI oder Webdesign-Büro?",
     description:
-      "Ehrlicher Vergleich für lokale Unternehmen in Deutschland: wann lohnt sich ein Baukasten, wann KI-Eigenbau, wann ein Atelier wie Sitalo.",
+      "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Eigenbau mit KI, wann ein Webdesign-Büro wie Sitalo.",
     author: {
       "@type": "Organization",
       name: "Sitalo Webdesign",
@@ -70,11 +63,13 @@ export default function VergleichPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Vergleich" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <Hero />
-        <QuickGuide />
+        <PageHero crumb="Vergleich" eyebrow="Baukasten · Selbstbau · Webdesign" title="Wix, Squarespace, Jimdo und Selbstbau im Vergleich">
+          Für manche Betriebe reicht ein Baukasten, und wer gern tüftelt, kommt mit ChatGPT inzwischen weit. Hier steht,
+          wann welcher Weg passt und wann es sich lohnt, uns zu beauftragen.
+        </PageHero>
+        <Faustregel />
         <DeepDives />
         <TableSummary />
         <FinalCta />
@@ -82,7 +77,6 @@ export default function VergleichPage() {
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([articleLd, breadcrumbLd]),
         }}
@@ -91,98 +85,63 @@ export default function VergleichPage() {
   );
 }
 
-function Hero() {
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
+const STARTER_MONTHLY = (getPaketBySlug("starter")?.monthly ?? "ab 49 € / Monat").replace(/\s*\/\s*Monat$/, "");
+
+/* ------------------------------------------------------------------
+ * Faustregel: drei Zeilen, wer womit am besten fährt.
+ * ---------------------------------------------------------------- */
+const FAUSTREGEL = [
+  {
+    weg: "Wix oder Squarespace",
+    wann: "Sie haben Zeit und Freude am Selbstbauen.",
+    detail:
+      "Günstig, solange Sie die Stunden für Texte, Bilder, die Ansicht am Handy und Google selbst aufbringen.",
+  },
+  {
+    weg: "ChatGPT oder Cursor",
+    wann: "Sie sind technisch interessiert und basteln gern.",
+    detail:
+      "Damit kommen Sie heute weiter als vor zwei Jahren. Domain, Hosting, Datenschutz, Tests am Handy und Updates bleiben trotzdem bei Ihnen.",
+  },
+  {
+    weg: "Sitalo",
+    wann: "Sie haben für die eigene Website keine freien Abende.",
+    detail:
+      "Sie schicken Stichpunkte und Fotos, wir schreiben die Texte und bauen die Seite. Hosting, Updates und kleine Änderungen laufen danach über den Monatsbeitrag.",
+    sitalo: true,
+  },
+];
+
+function Faustregel() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-12 text-center sm:pt-28 sm:pb-16 lg:pt-36">
-        <EditorialEyebrow>Ehrlicher Vergleich</EditorialEyebrow>
-        <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-semibold leading-[1.0] tracking-[-0.04em] sm:text-7xl lg:text-[5.5rem]">
-          Was passt zu Ihnen,
-          <br />
-          <span className="serif-italic text-muted-foreground font-normal">
-            was nicht.
-          </span>
-        </h1>
-        <p className="text-muted-foreground mx-auto mt-8 max-w-2xl text-pretty text-lg leading-relaxed sm:text-xl">
-          Wir sind nicht für jeden die richtige Wahl. Hier steht
-          ehrlich, wann ein Baukasten reicht, wann ChatGPT-Eigenbau
-          eine Option ist — und wann ein Atelier wie unseres
-          tatsächlich Sinn ergibt.
-        </p>
+    <section>
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">Die Faustregel</h2>
+        <ul className="border-foreground mt-10 border-t-[3px] lg:mt-12">
+          {FAUSTREGEL.map((f) => (
+            <li
+              key={f.weg}
+              className={`border-border grid gap-2 border-b py-6 sm:py-7 lg:grid-cols-12 lg:gap-8 ${f.sitalo ? "bg-card -mx-5 px-5 sm:-mx-6 sm:px-6" : ""}`}
+            >
+              <p className={`label-mono lg:col-span-3 lg:pt-2 ${f.sitalo ? "text-foreground" : "text-muted-foreground"}`}>
+                {f.weg}
+              </p>
+              <p className="text-[1.3rem] leading-snug tracking-[-0.015em] sm:text-[1.5rem] lg:col-span-4" style={{ fontStretch: "106%", fontWeight: 650 }}>
+                {f.wann}
+              </p>
+              <p className="text-foreground/80 text-[15.5px] leading-relaxed lg:col-span-5">{f.detail}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
-  );
-}
-
-function QuickGuide() {
-  return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <QuickCard
-            label="Wix oder Squarespace"
-            condition="Wenn Sie viel Zeit haben und es Spaß macht."
-            detail="Werkzeuge zum Selbstbauen. Günstig, wenn Sie Stunden investieren wollen — auf Mobile, SEO, Texten, Bildern."
-          />
-          <QuickCard
-            label="ChatGPT oder Cursor"
-            condition="Wenn Sie technisch sind und gerne basteln."
-            detail="Mit KI kommen Sie weiter als noch vor zwei Jahren. Sie brauchen aber jemanden, der Domains, Hosting, DSGVO, Mobile-Tests und Updates macht."
-          />
-          <QuickCard
-            label="Sitalo (wir)"
-            highlight
-            condition="Wenn Sie Ihren Laden führen wollen, nicht Ihre Seite."
-            detail="Drei Sachen schicken, fertig. Person für Person, kein Funnel. Mobile, SEO, Updates, Hosting — alles aus einer Hand."
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function QuickCard({
-  label,
-  condition,
-  detail,
-  highlight,
-}: {
-  label: string;
-  condition: string;
-  detail: string;
-  highlight?: boolean;
-}) {
-  return (
-    <article
-      className={`flex flex-col gap-4 rounded-3xl border p-7 ${
-        highlight
-          ? "bg-foreground text-background border-foreground"
-          : "border-border/60 bg-card/60"
-      }`}
-    >
-      <p
-        className={`text-[13px] ${
-          highlight ? "text-background/65" : "text-muted-foreground"
-        }`}
-      >
-        {label}
-      </p>
-      <p className="serif text-2xl leading-snug tracking-[-0.01em]">
-        {condition}
-      </p>
-      <p
-        className={`text-[14.5px] leading-relaxed ${
-          highlight ? "text-background/75" : "text-foreground/75"
-        }`}
-      >
-        {detail}
-      </p>
-    </article>
   );
 }
 
 type DeepDive = {
   id: string;
+  kategorie: string;
   label: string;
   tagline: string;
   goodFor: string[];
@@ -193,97 +152,95 @@ type DeepDive = {
 const DEEP_DIVES: DeepDive[] = [
   {
     id: "wix",
+    kategorie: "Baukasten",
     label: "Wix",
-    tagline: "Baukasten mit großer Vorlagen-Bibliothek.",
+    tagline: "Baukasten mit großer Auswahl an Vorlagen.",
     goodFor: [
-      "Einzelpersonen, die ihre Seite selbst bauen wollen",
-      "Sehr einfache Visitenkarten-Seiten",
-      "Wenn Sie SEO und Mobil-Optimierung selbst lernen möchten",
+      "Sehr einfache Visitenkarten-Seiten, die Sie selbst bauen wollen",
+      "Wenn Sie lernen möchten, wie Handy-Ansicht und Suchmaschinen funktionieren",
     ],
     watchOut: [
-      "Migration weg von Wix ist aufwändig — Sie sind langfristig gebunden",
-      "Performance auf Mobile oft Mittelmaß, was lokale SEO bremst",
-      "Templates sehen schnell nach Wix-Template aus",
+      "Eine Wix-Seite lässt sich nicht zu einem anderen Anbieter mitnehmen. Wer wechselt, baut neu",
+      "Die Ladezeit am Handy hängt stark von Vorlage, Bildern und Zusatz-Apps ab",
     ],
     realCost:
-      "Ab ca. 15 € / Monat. Realistischer Mehraufwand: 10–40 Stunden Eigenarbeit für Aufbau, Pflege monatlich 1–3 Stunden — je nachdem wie oft sich was ändert.",
+      "Ab ca. 15 € im Monat. Dazu realistisch 10 bis 40 Stunden für den Aufbau und 1 bis 3 Stunden Pflege im Monat, je nachdem, wie oft sich etwas ändert.",
   },
   {
     id: "squarespace",
+    kategorie: "Baukasten",
     label: "Squarespace",
-    tagline: "Visuell stärker als Wix, schwächer in DE-Spezifika.",
+    tagline: "Baukasten mit Schwerpunkt auf Bildern und Gestaltung.",
     goodFor: [
-      "Portfolios (Fotografen, Designer, Architekten)",
-      "Wenn Ihnen Optik wichtiger ist als Konfigurierbarkeit",
-      "Wenn Sie mit englischen Hilfe-Artikeln klarkommen",
+      "Portfolios von Fotografen, Designern und Architekten",
+      "Wenn Ihnen die Optik wichtiger ist als viele Einstellungen",
     ],
     watchOut: [
-      "Deutsche Lokalisierung lückenhaft (Impressum, AGB, Datenschutz)",
-      "Support komplett auf Englisch, Zeitzone US",
-      "Mobile-Eingaben (Telefon, Routen, Speisekarten) erfordern Eigenleistung",
+      "Impressum und Datenschutzerklärung nach deutschem Recht müssen Sie selbst erstellen und einbinden",
+      "Telefon-Knopf, Anfahrt oder Speisekarte am Handy richten Sie selbst ein",
     ],
     realCost:
-      "Ab ca. 16 € / Monat. Im Vergleich zu Wix etwas weniger Pflegeaufwand, aber dafür höherer Initialaufwand für die deutsche Rechts-Konformität.",
+      "Ab ca. 16 € im Monat. Etwas weniger Pflege als bei Wix, dafür mehr Aufwand am Anfang, bis die Rechtstexte für Deutschland stimmen.",
   },
   {
     id: "jimdo",
+    kategorie: "Baukasten",
     label: "Jimdo",
-    tagline: "Deutschestes Baukasten-System, aber technisch eingeschränkt.",
+    tagline: "Baukasten aus Hamburg, bewusst einfach gehalten.",
     goodFor: [
-      "Sehr kleine lokale Betriebe (Friseur, Bäckerei) mit einfachem Bedarf",
-      "Wenn Sie DSGVO-Standardtexte direkt aus dem System brauchen",
-      "Wenn Sie KI-gestützten Aufbau ausprobieren möchten",
+      "Sehr kleine Betriebe wie Friseur oder Bäckerei mit einfachem Bedarf",
+      "Wenn Sie Datenschutz-Standardtexte direkt aus dem System brauchen",
+      "Wenn Sie einen Aufbau mit KI-Hilfe ausprobieren möchten",
     ],
     watchOut: [
-      "Layouts wirken oft veraltet, Mobile-Erlebnis weniger ausgereift",
-      "Wenig Spielraum für eigene Identität — alle Jimdo-Seiten ähneln sich",
-      "Migration weg ist schwer, Code-Export limitiert",
+      "Wenig Spielraum für eine eigene Gestaltung, viele Jimdo-Seiten sehen sich ähnlich",
+      "Der Export ist begrenzt. Bei einem Wechsel wird die Seite meist neu gebaut",
     ],
-    realCost:
-      "Ab ca. 9 € / Monat. Günstigster Einstieg, aber begrenzte Decke nach oben.",
+    realCost: "Ab ca. 9 € im Monat. Der günstigste Einstieg, aber nach oben schnell begrenzt.",
   },
   {
     id: "ki-eigenbau",
-    label: "ChatGPT oder Cursor (KI-Eigenbau)",
-    tagline: "Die ehrliche Neue: Sie schreiben Prompts, KI baut.",
+    kategorie: "Selbstbau",
+    label: "ChatGPT oder Cursor",
+    tagline: "Sie beschreiben, was Sie wollen, das Programm schreibt den Code.",
     goodFor: [
-      "Tech-affine Inhaber, die Spaß am Basteln haben",
-      "Schnelle Prototypen, MVP-Phase",
-      "Wenn Sie Code lesen können oder lernen wollen",
+      "Inhaber mit Technik-Interesse, die gern basteln",
+      "Schnelle Entwürfe, um eine Idee auszuprobieren",
+      "Wenn Sie Code lesen können oder es lernen wollen",
     ],
     watchOut: [
-      "Domain, Hosting, SSL, DSGVO, E-Mail-Routing — alles weiterhin manuell",
-      "Updates und Security-Patches sind Ihre Verantwortung",
-      "KI-Output ist oft Bauchgefühl ohne Mobil- und SEO-Reflex; Tests fehlen meist",
-      "Wenn die Seite live geht und etwas bricht, gibt es niemanden, den Sie anrufen können",
+      "Domain, Hosting, SSL, Datenschutz und E-Mail richten Sie weiterhin selbst ein",
+      "Updates und Sicherheitslücken sind Ihre Sache",
+      "Der erzeugte Code ist selten auf Handy und Suchmaschinen geprüft, Tests fehlen meist",
+      "Wenn nach dem Start etwas kaputtgeht, gibt es niemanden, den Sie anrufen können",
     ],
     realCost:
-      "Tool-Kosten ca. 0–30 € / Monat. Realistisch: 30–80 Stunden Lernzeit + laufender Pflegeaufwand. Risiko-Faktor: hoch, wenn die Seite kritisch fürs Geschäft ist.",
+      "Werkzeuge ca. 0 bis 30 € im Monat. Dazu realistisch 30 bis 80 Stunden Einarbeitung und laufende Pflege. Riskant, wenn der Betrieb auf die Seite angewiesen ist.",
   },
 ];
 
 function DeepDives() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
-        <div className="mb-12 max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
-            />
-            Die vier Alternativen im Detail
-          </p>
-          <h2 className="mt-6 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl">
-            Wie wir die Konkurrenz
-            <br />
-            <span className="serif-italic text-muted-foreground font-normal">
-              ehrlich einschätzen.
-            </span>
+    <section className="bg-card border-foreground border-t">
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+          <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem] lg:col-span-7">
+            Die vier Alternativen im Einzelnen
           </h2>
+          <nav aria-label="Alternativen auf dieser Seite" className="lg:col-span-5">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[12.5px] lg:justify-end">
+              {DEEP_DIVES.map((d) => (
+                <li key={d.id}>
+                  <a href={`#${d.id}`} className="text-muted-foreground hover:text-foreground underline decoration-[var(--border)] underline-offset-4 hover:decoration-current">
+                    {d.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
-        <div className="space-y-16 sm:space-y-20">
+        <div className="mt-12 lg:mt-14">
           {DEEP_DIVES.map((d) => (
             <DeepDiveBlock key={d.id} d={d} />
           ))}
@@ -295,276 +252,191 @@ function DeepDives() {
 
 function DeepDiveBlock({ d }: { d: DeepDive }) {
   return (
-    <article id={d.id} className="scroll-mt-24">
-      <div className="grid gap-8 lg:grid-cols-[1fr_2fr] lg:gap-16">
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <p className="text-muted-foreground text-[13px]">
-            Alternative
-          </p>
-          <h3 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-            {d.label}
-          </h3>
-          <p className="text-foreground/75 mt-3 text-pretty text-[15.5px] leading-relaxed">
-            {d.tagline}
-          </p>
+    <article id={d.id} className="border-foreground grid scroll-mt-24 gap-8 border-t-2 py-10 first:pt-8 lg:grid-cols-12 lg:gap-8 lg:py-12">
+      <div className="lg:col-span-4">
+        <p className="label-mono text-muted-foreground">{d.kategorie}</p>
+        <h3 className="mt-3 text-[1.9rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.3rem]">{d.label}</h3>
+        <p className="text-foreground/75 mt-3 max-w-sm text-[15.5px] leading-relaxed text-pretty">{d.tagline}</p>
+      </div>
+      <div className="grid gap-8 sm:grid-cols-2 lg:col-span-8">
+        <div>
+          <h4 className="label-mono text-muted-foreground border-border border-b pb-2">Passt für</h4>
+          <ul className="mt-3 space-y-2.5">
+            {d.goodFor.map((p) => (
+              <li key={p} className="flex items-start gap-3 text-[15px] leading-snug">
+                <Check className="text-ink-petrol mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="space-y-6">
-          <Block title="Wofür gut" icon="check">
-            <ul className="space-y-2.5">
-              {d.goodFor.map((p) => (
-                <li
-                  key={p}
-                  className="text-foreground/85 flex items-start gap-3 text-[14.5px] leading-relaxed"
-                >
-                  <Check className="text-foreground/70 mt-1 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-          </Block>
-          <Block title="Worauf achten" icon="minus">
-            <ul className="space-y-2.5">
-              {d.watchOut.map((p) => (
-                <li
-                  key={p}
-                  className="text-foreground/75 flex items-start gap-3 text-[14.5px] leading-relaxed"
-                >
-                  <Minus className="text-muted-foreground/70 mt-1 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-          </Block>
-          <Block title="Realistische Kosten">
-            <p className="text-foreground/80 text-[14.5px] leading-relaxed">
-              {d.realCost}
-            </p>
-          </Block>
+        <div>
+          <h4 className="label-mono text-muted-foreground border-border border-b pb-2">Darauf achten</h4>
+          <ul className="mt-3 space-y-2.5">
+            {d.watchOut.map((p) => (
+              <li key={p} className="text-foreground/85 flex items-start gap-3 text-[15px] leading-snug">
+                <Minus className="text-ink-olive mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="border-foreground grid gap-1.5 border-t pt-4 sm:col-span-2 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
+          <p className="label-mono text-muted-foreground text-[11px] sm:pt-[3px]">Kosten</p>
+          <p className="text-[15px] leading-relaxed">{d.realCost}</p>
         </div>
       </div>
     </article>
   );
 }
 
-function Block({
-  title,
-  children,
-}: {
-  title: string;
-  icon?: "check" | "minus";
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="border-border/50 border-l-2 pl-5">
-      <p className="text-muted-foreground/80 mb-3 text-[13px]">
-        {title}
-      </p>
-      {children}
-    </div>
-  );
-}
+type Wert = "yes" | "partial" | "no";
 
 type TableRow = {
   feature: string;
-  wix: "yes" | "partial" | "no";
-  squarespace: "yes" | "partial" | "no";
-  jimdo: "yes" | "partial" | "no";
-  ki: "yes" | "partial" | "no";
-  sitalo: "yes" | "partial" | "no";
+  wix: Wert;
+  squarespace: Wert;
+  jimdo: Wert;
+  ki: Wert;
+  sitalo: Wert;
 };
 
 const TABLE: TableRow[] = [
-  {
-    feature: "Persönlicher Ansprechpartner",
-    wix: "no",
-    squarespace: "no",
-    jimdo: "no",
-    ki: "no",
-    sitalo: "yes",
-  },
-  {
-    feature: "Mobile sauber out-of-the-box",
-    wix: "partial",
-    squarespace: "partial",
-    jimdo: "partial",
-    ki: "no",
-    sitalo: "yes",
-  },
-  {
-    feature: "Lokale SEO-Basis korrekt",
-    wix: "partial",
-    squarespace: "no",
-    jimdo: "partial",
-    ki: "no",
-    sitalo: "yes",
-  },
-  {
-    feature: "DSGVO-Konformität in DE",
-    wix: "partial",
-    squarespace: "partial",
-    jimdo: "yes",
-    ki: "no",
-    sitalo: "yes",
-  },
-  {
-    feature: "Sie schreiben Texte selbst",
-    wix: "yes",
-    squarespace: "yes",
-    jimdo: "yes",
-    ki: "yes",
-    sitalo: "no",
-  },
-  {
-    feature: "Sie kümmern sich um Updates",
-    wix: "no",
-    squarespace: "no",
-    jimdo: "no",
-    ki: "yes",
-    sitalo: "no",
-  },
-  {
-    feature: "Migration weg möglich",
-    wix: "no",
-    squarespace: "partial",
-    jimdo: "no",
-    ki: "yes",
-    sitalo: "yes",
-  },
-  {
-    feature: "Antwort auf E-Mail innerhalb 4 h",
-    wix: "no",
-    squarespace: "no",
-    jimdo: "no",
-    ki: "no",
-    sitalo: "yes",
-  },
+  { feature: "Fester Ansprechpartner, der Ihre Seite kennt", wix: "no", squarespace: "no", jimdo: "no", ki: "no", sitalo: "yes" },
+  { feature: "Handy-Ansicht ohne Nacharbeit", wix: "partial", squarespace: "partial", jimdo: "partial", ki: "no", sitalo: "yes" },
+  { feature: "Grundlagen für die lokale Suche", wix: "partial", squarespace: "no", jimdo: "partial", ki: "no", sitalo: "yes" },
+  { feature: "Datenschutz nach deutschem Recht", wix: "partial", squarespace: "partial", jimdo: "yes", ki: "no", sitalo: "yes" },
+  { feature: "Texte werden für Sie geschrieben", wix: "no", squarespace: "no", jimdo: "no", ki: "no", sitalo: "yes" },
+  { feature: "Updates laufen ohne Ihr Zutun", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "no", sitalo: "yes" },
+  { feature: "Umzug zu anderem Anbieter möglich", wix: "no", squarespace: "partial", jimdo: "no", ki: "yes", sitalo: "yes" },
+  { feature: "Bis 30 € im Monat", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
+];
+
+const SPALTEN: { key: Exclude<keyof TableRow, "feature">; label: string }[] = [
+  { key: "wix", label: "Wix" },
+  { key: "squarespace", label: "Squarespace" },
+  { key: "jimdo", label: "Jimdo" },
+  { key: "ki", label: "Selbstbau" },
+  { key: "sitalo", label: "Sitalo" },
 ];
 
 function TableSummary() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 sm:py-24">
-        <div className="max-w-3xl">
-          <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-            <span
-              aria-hidden="true"
-              className="bg-gold gold-pulse inline-block h-1 w-6"
-            />
-            Kurz-Übersicht
-          </p>
-          <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-4xl">
-            Acht Kriterien, fünf Optionen.
+    <section>
+      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+          <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem] lg:col-span-7">
+            Die Kurzfassung als Tabelle
           </h2>
+          <p className="text-muted-foreground max-w-md text-[15.5px] leading-relaxed lg:col-span-5">
+            Beim Preis liegen die Baukästen vorn. Sitalo kostet {STARTER_MONTHLY} im Monat, dazu kommt der Aufbau.
+          </p>
         </div>
 
-        <div className="mt-10 -mx-6 overflow-x-auto px-6 sm:mx-0 sm:px-0">
-          <table className="w-full min-w-[720px] border-collapse text-left text-[13.5px]">
+        <div className="mt-10 overflow-x-auto lg:mt-12">
+          <table className="w-full border-collapse text-left text-[14px] sm:min-w-[640px] sm:text-[14.5px]">
+            <caption className="sr-only">Vergleich von Wix, Squarespace, Jimdo, Selbstbau und Sitalo</caption>
             <thead>
-              <tr className="border-border/40 border-b">
-                <th className="text-muted-foreground py-3 pr-4 text-[13px]">
+              <tr className="border-foreground border-t-[3px]">
+                <th scope="col" className="label-mono text-muted-foreground py-3 pr-3 align-bottom text-[11px] font-medium sm:pr-4">
                   Kriterium
                 </th>
-                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
-                  Wix
-                </th>
-                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
-                  Squarespace
-                </th>
-                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
-                  Jimdo
-                </th>
-                <th className="text-muted-foreground py-3 px-3 text-center text-[13px]">
-                  KI-Eigenbau
-                </th>
-                <th className="text-foreground bg-foreground/[0.03] py-3 px-3 text-center text-[13px]">
-                  Sitalo
-                </th>
+                {SPALTEN.map((c) => (
+                  <th
+                    key={c.key}
+                    scope="col"
+                    className={`label-mono w-10 px-1 py-3 text-center align-bottom text-[11px] font-medium sm:w-auto sm:px-2 ${
+                      c.key === "sitalo" ? "bg-card text-foreground border-gold border-t-[3px]" : "text-muted-foreground"
+                    }`}
+                  >
+                    {/* Mobil senkrecht gesetzt, damit alle fünf Spalten auf den Schirm passen */}
+                    <span className="inline-block rotate-180 [writing-mode:vertical-rl] sm:rotate-0 sm:[writing-mode:horizontal-tb]">
+                      {c.label}
+                    </span>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {TABLE.map((row) => (
-                <tr key={row.feature} className="border-border/30 border-b">
-                  <td className="text-foreground/85 py-3 pr-4">{row.feature}</td>
-                  <Cell value={row.wix} />
-                  <Cell value={row.squarespace} />
-                  <Cell value={row.jimdo} />
-                  <Cell value={row.ki} />
-                  <Cell value={row.sitalo} highlight />
+                <tr key={row.feature} className="border-border border-t">
+                  <th scope="row" className="py-3.5 pr-3 leading-snug font-medium sm:pr-4">
+                    {row.feature}
+                  </th>
+                  {SPALTEN.map((c) => (
+                    <Cell key={c.key} value={row[c.key]} highlight={c.key === "sitalo"} />
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <p className="text-muted-foreground mt-6 max-w-2xl text-[13px] leading-relaxed">
-          ✓ erfüllt · ~ bedingt · — fehlt typisch. Bewertung aus unserer
-          eigenen Arbeit mit Hamburger Lokal-Kunden, die von einer
-          dieser Optionen zu uns gewechselt sind. Stand:{" "}
-          {new Date().toLocaleDateString("de-DE", {
-            month: "long",
-            year: "numeric",
-            timeZone: "Europe/Berlin",
-          })}
-          .
+        <p className="text-muted-foreground mt-6 flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 text-[13px] leading-relaxed">
+          <span className="inline-flex items-center gap-1.5">
+            <Check className="text-foreground h-4 w-4" aria-hidden="true" /> erfüllt
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Minus className="h-4 w-4" aria-hidden="true" /> bedingt
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <X className="h-3.5 w-3.5" aria-hidden="true" /> fehlt meistens
+          </span>
+          <span>
+            Unsere Einschätzung. Tarife und Funktionen der Anbieter ändern sich, im Zweifel lohnt ein Blick auf deren Seite.
+          </span>
         </p>
       </div>
     </section>
   );
 }
 
-function Cell({
-  value,
-  highlight,
-}: {
-  value: "yes" | "partial" | "no";
-  highlight?: boolean;
-}) {
-  const cls = highlight ? "bg-foreground/[0.03]" : "";
+function Cell({ value, highlight }: { value: Wert; highlight?: boolean }) {
+  const cls = `px-1 py-3.5 text-center sm:px-2 ${highlight ? "bg-card" : ""}`;
   if (value === "yes") {
     return (
-      <td className={`text-foreground py-3 px-3 text-center ${cls}`}>
+      <td className={`text-foreground ${cls}`}>
         <Check className="mx-auto h-4 w-4" aria-label="erfüllt" />
       </td>
     );
   }
   if (value === "partial") {
     return (
-      <td className={`text-muted-foreground/70 py-3 px-3 text-center ${cls}`}>
+      <td className={`text-muted-foreground ${cls}`}>
         <Minus className="mx-auto h-4 w-4" aria-label="bedingt" />
       </td>
     );
   }
   return (
-    <td className={`text-muted-foreground/40 py-3 px-3 text-center ${cls}`}>
-      <X className="mx-auto h-3.5 w-3.5" aria-label="fehlt" />
+    <td className={`text-muted-foreground/70 ${cls}`}>
+      <X className="mx-auto h-3.5 w-3.5" aria-label="fehlt meistens" />
     </td>
   );
 }
 
+/* ------------------------------------------------------------------
+ * Abschluss: aktuelle Seite prüfen lassen.
+ * ---------------------------------------------------------------- */
 function FinalCta() {
   return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-28">
-        <div className="flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-muted-foreground text-[13px] font-medium">
-              Unsicher, was zu Ihnen passt?
-            </p>
-            <h2 className="mt-6 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
-              Schicken Sie uns Ihre aktuelle Seite.
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                Wir sagen ehrlich, was Sinn ergibt.
-              </span>
-            </h2>
-          </div>
-          <Link
-            href="/audit"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-12 items-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight"
-          >
-            Kostenlosen Audit anfordern
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-balance text-[2rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.9rem]">
+            Schicken Sie uns den Link zu Ihrer jetzigen Seite.
+          </h2>
+          <p className="text-stahl-hell mt-6 max-w-xl text-[16.5px] leading-relaxed">
+            Sie bekommen drei bis fünf konkrete Punkte per Mail, kostenlos. Darin steht auch, ob sich ein Neubau lohnt oder ob
+            Ihr Baukasten reicht.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-4 lg:col-start-9 lg:justify-end">
+          <Link href="/audit" className="btn-signal grow sm:grow-0">
+            Seite prüfen lassen {ARROW}
           </Link>
+          <a href="tel:+491607621876" className="text-background text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
+            0160 7621876
+          </a>
         </div>
       </div>
     </section>

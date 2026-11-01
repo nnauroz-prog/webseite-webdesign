@@ -13,9 +13,35 @@ import {
 export const metadata: Metadata = {
   title: "Website anfragen",
   description:
-    "Drei Felder, fertig. Wir melden uns persönlich aus dem Hamburger Atelier — meist noch am selben Tag.",
+    "Das Formular hat drei Felder. Wir antworten aus Hamburg, meist am selben Werktag.",
   alternates: { canonical: "/anfrage" },
 };
+
+/**
+ * Hafen-Formen für das Anfrageformular. inquiry-form.tsx ist gesperrt
+ * (Lead-Logik); diese Regeln greifen nur, solange dort noch die alten
+ * Klassen stehen: große Rundungen werden kantig, der weiche Schatten
+ * fällt weg, Pillen-Knöpfe werden zu 2 px. Wird das Formular selbst
+ * umgestellt, laufen die Regeln ins Leere.
+ */
+const FORM_HAFEN =
+  "[&_.rounded-3xl]:rounded-[3px] [&_.rounded-2xl]:rounded-[3px] [&_.shadow-xl]:shadow-none [&_.ring-1]:ring-0 [&_.h-12.rounded-full]:rounded-[2px] [&_.h-11.rounded-full]:rounded-[2px] [&_.shadow-md]:shadow-none";
+
+/** Was nach dem Absenden passiert. Echte Reihenfolge, daher nummeriert. */
+const DANACH: { title: string; body: string }[] = [
+  {
+    title: "Wir antworten",
+    body: "Meist am selben Werktag, per Mail oder am Telefon.",
+  },
+  {
+    title: "Eine Viertelstunde Gespräch",
+    body: "Am Telefon oder per Video. Danach kennen Sie Umfang und Termin.",
+  },
+  {
+    title: "Festpreis schriftlich",
+    body: "Sie bekommen den Preis, bevor wir anfangen. Erst dann entscheiden Sie.",
+  },
+];
 
 /**
  * Read the `?paket=` query parameter and clamp it to a valid
@@ -53,54 +79,88 @@ export default async function AnfragePage({
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Anfrage"
-          eyebrow="Drei Felder · ein Klick"
-          title="Anfrage senden."
-          accent="Persönlich beantwortet."
+          eyebrow="Website anfragen"
+          title="Erzählen Sie uns, was Sie vorhaben."
         >
-          Antwort meist am selben Werktag, persönlich aus Hamburg. Kostenlos und
-          unverbindlich.
+          Das Formular hat drei Felder. Ob Sie danach bei uns bauen lassen,
+          entscheiden Sie, wenn das Angebot vorliegt.
         </PageHero>
 
-        <section>
-          <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
-            <div className="mb-8">
-              <AvailabilitySlot variant="inline" />
-            </div>
-            <div>
-              <InquiryForm
-                initialPackage={initialPackage}
-                initialIndustry={initialIndustry}
-                initialMessage={initialMessage}
-              />
-            </div>
-
-            {/* Lieber-direkt-Strip unterhalb — sekundärer Weg, nicht
-                den Hero blockierend. */}
-            <div className="border-border/60 mt-10 flex flex-col items-center gap-4 border-t pt-8 text-center sm:flex-row sm:justify-center sm:gap-3">
-              <p className="text-muted-foreground text-[13px] font-medium">
-                Lieber direkt
-              </p>
-              <div className="flex flex-wrap justify-center gap-2.5">
-                <a
-                  href="tel:+491607621876"
-                  className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-                >
-                  Anrufen
-                </a>
-                <a
-                  href="mailto:info@sitalo.de"
-                  className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-                >
-                  Schreiben
-                </a>
-                <a
-                  href="/sitalo-kontakt.vcf"
-                  download="Sitalo-Webdesign.vcf"
-                  className="border-foreground/30 text-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-medium tracking-tight transition-all"
-                >
-                  Speichern
-                </a>
+        <section aria-label="Anfrageformular">
+          <div className="mx-auto w-full max-w-6xl px-5 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-24">
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+              <div className="min-w-0 lg:col-span-7">
+                <AvailabilitySlot variant="inline" className="mb-5" />
+                <div className={FORM_HAFEN}>
+                  <InquiryForm
+                    initialPackage={initialPackage}
+                    initialIndustry={initialIndustry}
+                    initialMessage={initialMessage}
+                  />
+                </div>
               </div>
+
+              <aside className="space-y-12 lg:col-span-4 lg:col-start-9 lg:pt-10">
+                <div>
+                  <h2 className="label-mono text-muted-foreground">Danach</h2>
+                  <ol className="border-foreground mt-5 border-t">
+                    {DANACH.map((s, i) => (
+                      <li
+                        key={s.title}
+                        className="border-border grid grid-cols-[2.5rem_1fr] border-b py-4"
+                      >
+                        <span className="text-gold pt-0.5 font-mono text-[12.5px] font-semibold tabular-nums">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="text-foreground text-[15.5px] font-semibold">
+                            {s.title}
+                          </p>
+                          <p className="text-muted-foreground mt-1 text-[14px] leading-relaxed">
+                            {s.body}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div>
+                  <h2 className="label-mono text-muted-foreground">Lieber direkt</h2>
+                  <a
+                    href="tel:+491607621876"
+                    className="text-foreground hover:text-gold mt-4 block text-[2rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.25rem]"
+                    style={{ fontStretch: "118%", fontWeight: 780 }}
+                  >
+                    0160 7621876
+                  </a>
+                  <dl className="mt-6 space-y-2.5 text-[14.5px]">
+                    <div className="flex gap-3">
+                      <dt className="label-mono text-muted-foreground w-20 shrink-0 pt-0.5">Mail</dt>
+                      <dd className="min-w-0">
+                        <a
+                          href="mailto:info@sitalo.de"
+                          className="text-foreground font-semibold underline-offset-4 hover:underline"
+                        >
+                          info@sitalo.de
+                        </a>
+                      </dd>
+                    </div>
+                    <div className="flex gap-3">
+                      <dt className="label-mono text-muted-foreground w-20 shrink-0 pt-0.5">Kontakt</dt>
+                      <dd className="min-w-0">
+                        <a
+                          href="/sitalo-kontakt.vcf"
+                          download="Sitalo-Webdesign.vcf"
+                          className="text-foreground font-semibold underline-offset-4 hover:underline"
+                        >
+                          Im Adressbuch speichern
+                        </a>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </aside>
             </div>
           </div>
         </section>

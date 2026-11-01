@@ -1,13 +1,15 @@
 /**
  * Branchen-Datenmodell. Eine einzige Quelle für die /branchen-Übersicht
- * und alle /branchen/[slug]-Detailseiten.
+ * und alle /branchen/[slug]-Detailseiten. Die Fragen erscheinen außerdem
+ * auf /pflege und /praxen, Kurztext und Stichpunkte im Assistenten.
  *
  * Jeder Eintrag liefert:
- *   - kurze Übersichtsdaten für die /branchen-Karte und den Industry-Picker
- *   - längere, branchen-spezifische Inhalte für die Detail-Landingpage
+ *   - kurze Übersichtsdaten für die /branchen-Liste
+ *   - längere, branchen-spezifische Inhalte für die Detailseite
  *
- * Bewusst eng gehalten — wir liefern echte Substanz pro Branche, statt
- * austauschbarer Marketing-Floskeln.
+ * Textregeln: Sie-Form, kurze Sätze, keine Prozentwerte oder Statistiken,
+ * keine Aussagen über frühere Kunden. Paket-Angaben (Änderungen pro Monat,
+ * selbst pflegbare Inhalte erst ab Premium) folgen lib/pakete-data.ts.
  */
 
 export type Branche = {
@@ -15,29 +17,29 @@ export type Branche = {
   slug: string;
   /** Anzeigename, z. B. "Pflegedienste". */
   label: string;
-  /** Kurze Beschreibung (1–2 Sätze) für Übersicht & Picker. */
+  /** Kurze Beschreibung (2 Sätze) für Übersicht, Kopf der Detailseite und
+   *  Meta-Description (dort nur der erste Satz). */
   shortBody: string;
-  /** Bullet-Features für die Übersicht. */
+  /** Stichpunkte, was wir für die Branche bauen (Assistent). */
   bullets: string[];
   /** Vorgeschlagener ?branche=... Wert im Anfrageformular. */
   inquirySlug: string;
-  /** Hero-Foto für Übersicht + Detail-Hero (Laptop-Mockup). */
+  /** Bild der Musterseite für Übersicht und Detailkopf. */
   image?: { src: string; alt: string };
-  /** Optionales Atmosphäre-Bild — wird auf der Detailseite
-   *  als emotional anchor zwischen Hero und Intro gezeigt. */
+  /** Optionales Stimmungsbild aus der Branche. */
   atmosphere?: { src: string; alt: string };
 
   /* === Erweiterte Inhalte für /branchen/[slug] === */
 
-  /** Editoriale Headline-Zeile (zweiter Teil des Hero in Serif-Italic). */
+  /** Ein Satz für das Vorschaubild beim Teilen (Open Graph). */
   detailHeadline: string;
-  /** 2–3 Absätze als Intro auf der Detailseite. */
+  /** Zwei Absätze als Einordnung auf der Detailseite. */
   detailIntro: string[];
-  /** Typische Seitenstruktur, die wir für diese Branche bauen. */
+  /** Typischer Seitenplan; der erste Eintrag ist die Startseite. */
   typicalPages: string[];
-  /** Konkrete Funktionen / Bausteine. */
+  /** Konkrete Teile der Seite. */
   features: { title: string; body: string }[];
-  /** Branchen-spezifische FAQ. */
+  /** Fragen aus der Branche, offen gesetzt und als FAQPage-Schema. */
   faq: { q: string; a: string }[];
   /** Empfohlenes Paket-Slug aus PACKAGES. */
   recommendedPackage: "starter" | "business" | "premium";
@@ -50,68 +52,68 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "pflege",
     image: {
       src: "/images/sitalo-pflege-laptop.webp",
-      alt: "Pflegedienst-Website von Sitalo auf einem Laptop, im warmen Tageslicht eines Büros mit Pflanzen und Notizbuch.",
+      alt: "Musterseite für einen Pflegedienst auf einem Laptop in einem Büro, daneben Pflanzen und ein Notizbuch.",
     },
     atmosphere: {
       src: "/images/atmosphere/pflege-eingang.webp",
-      alt: "Ruhiger Empfangsbereich eines Pflegedienstes — warmes Tageslicht, Holzkommode mit Pflanze, Wartezimmer im Hintergrund.",
+      alt: "Empfangsbereich eines Pflegedienstes mit Holzkommode und Pflanze, im Hintergrund das Wartezimmer.",
     },
     shortBody:
-      "Pflegedienste verkaufen Vertrauen. Die Website muss Leistungen, Einzugsgebiet und Bewerbungsweg auf einen Blick zeigen.",
+      "Angehörige wollen schnell wissen, was Sie leisten und ob Sie bis zu ihnen nach Hause fahren. Pflegekräfte suchen auf derselben Seite den Weg zur Bewerbung.",
     bullets: [
-      "Leistungen klar strukturiert (Grund-, Behandlungs-, Verhinderungspflege …)",
-      "Einsatzgebiet auf Karte oder als Liste",
-      "Notfall- und Direktkontakt prominent",
-      "Bewerbungsformular für Pflegekräfte",
-      "Vertrauensaufbau über Team, Werte und Zertifikate",
+      "Leistungen getrennt erklärt: Grundpflege, Behandlungspflege, Verhinderungspflege",
+      "Einsatzgebiet als Karte oder Liste der Orte",
+      "Notfallnummer in der Kopfleiste",
+      "Bewerbungsformular für Pflegekräfte, am Handy ausfüllbar",
+      "Team mit Fotos, Zertifikate und Prüfbericht",
     ],
-    detailHeadline: "Eine Seite, die Vertrauen aufbaut — und Bewerbungen bringt.",
+    detailHeadline: "Eine Seite, über die Angehörige anrufen und Pflegekräfte sich bewerben.",
     detailIntro: [
-      "Angehörige wählen einen Pflegedienst selten leichtfertig. Sie googeln, vergleichen, lesen Bewertungen und schauen sich Teams an. Wenn Ihre Seite seriös wirkt, die Leistungen klar erklärt und der Anruf nur einen Tipp entfernt ist, gewinnen Sie das Telefonat — sonst der nächste Eintrag in der Liste.",
-      "Gleichzeitig ist die teuerste Ressource im Pflegedienst nicht die Website, sondern fehlendes Personal. Eine Seite ohne sichtbares Bewerbungsformular verschenkt täglich Chancen.",
+      "Wer einen Pflegedienst sucht, sucht meist für die Mutter oder den Vater und hat wenig Zeit. Angehörige vergleichen mehrere Dienste am Handy. Steht oben, welche Leistungen Sie anbieten und in welche Orte Sie fahren, und lässt sich die Nummer antippen, rufen sie bei Ihnen an.",
+      "Die zweite Gruppe auf Ihrer Seite sind Pflegekräfte. Für sie gibt es eine eigene Unterseite mit den offenen Stellen und einem kurzen Formular. Den Lebenslauf können sie später nachreichen, für ein erstes Gespräch reicht die Nachricht.",
     ],
     typicalPages: [
       "Startseite mit Leistungsüberblick",
-      "Leistungen (Grundpflege, Behandlungspflege, …)",
-      "Über uns / Team",
-      "Bewerben (für Pflegekräfte)",
-      "Einzugsgebiet & Anfahrt",
-      "Kontakt mit 24-h-Erreichbarkeit",
+      "Leistungen: Grundpflege, Behandlungspflege und mehr",
+      "Team",
+      "Stellen und Bewerbung",
+      "Einsatzgebiet und Anfahrt",
+      "Kontakt mit Notfallnummer",
     ],
     features: [
       {
-        title: "Leistungen verständlich erklärt",
-        body: "Grund-, Behandlungs-, Verhinderungspflege — was bedeuten die Pflegegrade für Angehörige? Klar in Alltagssprache, ohne Fachchinesisch.",
+        title: "Leistungen in Alltagssprache",
+        body: "Was ist Behandlungspflege, was zahlt die Pflegekasse, was bedeutet der Pflegegrad? Wir schreiben es so, dass Angehörige es beim ersten Lesen verstehen.",
       },
       {
-        title: "Bewerbungsformular für Pflegekräfte",
-        body: "Eigenes, gut sichtbares Formular für Pflegekräfte. Optional mit Datei-Upload für den Lebenslauf.",
+        title: "Bewerbung vom Handy",
+        body: "Ein eigenes Formular für Pflegekräfte mit wenigen Pflichtfeldern. Wer möchte, hängt den Lebenslauf als Datei an.",
       },
       {
-        title: "Einsatzgebiet sofort sichtbar",
-        body: "Karte oder klare Liste der Stadtteile — Anrufer:innen wissen sofort, ob Sie zu ihnen kommen.",
+        title: "Einsatzgebiet",
+        body: "Eine Karte oder eine Liste der Stadtteile und Orte, in die Sie fahren. Anrufer sehen vorher, ob Sie zu ihnen kommen.",
       },
       {
-        title: "Vertrauenssignale prominent",
-        body: "Team mit Fotos, Pflegegrade-Erklärung, Zertifikate, Kassen-Hinweise und ein deutlicher Notfallkontakt.",
+        title: "Team und Nachweise",
+        body: "Fotos vom eigenen Team, Ihre Zertifikate, Hinweise zur Abrechnung mit der Pflegekasse und eine Notfallnummer, die man nicht suchen muss.",
       },
     ],
     faq: [
       {
-        q: "Können Pflege-Spezifika wie MDK-Prüfungen mit auf die Seite?",
-        a: "Ja — Transparenz-Berichte, Pflegenoten und Zertifikate gehören sichtbar auf die Seite. Wir strukturieren das so, dass es Vertrauen aufbaut, ohne überladen zu wirken.",
+        q: "Gehören Prüfbericht und Zertifikate auf die Seite?",
+        a: "Ja, und zwar so, dass man sie findet. Auf der Startseite steht ein kurzer Hinweis, die Dokumente selbst liegen auf einer eigenen Unterseite.",
       },
       {
-        q: "Brauchen wir ein Bewerber-Portal mit Login?",
-        a: "Nein. Ein gut platziertes Bewerbungsformular reicht. Die Bewerbung landet direkt in Ihrem Postfach — kein Portal, kein Login.",
+        q: "Brauchen wir ein Bewerberportal mit Login?",
+        a: "Nein. Ein gut sichtbares Formular reicht. Die Bewerbung kommt als E-Mail in Ihrem Postfach an.",
       },
       {
-        q: "Wie schnell können wir live gehen?",
-        a: "Bei einer Pflegedienst-Seite mittlerer Größe rechnen Sie mit 5–10 Werktagen ab kompletter Datenlieferung. Eine reine Onepager-Visitenkarte kann schon nach 1–2 Tagen stehen.",
+        q: "Wie schnell kann die Seite online sein?",
+        a: "Eine Pflegedienst-Seite mit mehreren Unterseiten steht meist 5 bis 10 Werktage, nachdem Texte und Fotos bei uns sind. Eine einzelne Seite als Visitenkarte ist oft in 1 bis 2 Werktagen fertig.",
       },
       {
-        q: "Kann unsere Pflegekassen-Vergütungsvereinbarung oder MDK-Bericht direkt verlinkt werden?",
-        a: "Ja. PDF-Downloads werden auf einer eigenen Unterseite gesammelt, mit kurzem Hinweis, was die Dokumente bedeuten. Pflegekassen-Vereinbarung, MDK-Prüfbericht, Hygiene-Konzept — alles wird so platziert, dass Angehörige es ohne Suche finden.",
+        q: "Können wir Dokumente zum Herunterladen anbieten?",
+        a: "Ja. Den Bericht der Qualitätsprüfung durch den Medizinischen Dienst, das Hygienekonzept oder Vereinbarungen mit der Pflegekasse sammeln wir auf einer Seite. Zu jedem Dokument steht ein Satz, was darin steht.",
       },
     ],
     recommendedPackage: "business",
@@ -122,69 +124,69 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "praxis",
     image: {
       src: "/images/sitalo-praxis-laptop.webp",
-      alt: 'Zahnarztpraxis-Website von Sitalo („Moderne Zahnmedizin für Ihr schönstes Lächeln.") auf einem Laptop im hellen Praxisempfang.',
+      alt: "Musterseite für eine Zahnarztpraxis auf einem Laptop im hellen Praxisempfang.",
     },
     atmosphere: {
       src: "/images/atmosphere/praxis-raum.webp",
-      alt: "Ruhiger, moderner Behandlungsraum mit Holzschreibtisch, Tablet und botanischem Wandbild — seriöse Atmosphäre.",
+      alt: "Behandlungsraum mit Holzschreibtisch, Tablet und einem Pflanzenbild an der Wand.",
     },
     shortBody:
-      "Patient:innen recherchieren vor dem ersten Termin. Die Seite muss seriös wirken, Sprechzeiten liefern und Termin-Anfragen reibungslos machen.",
+      "Vor dem ersten Termin suchen Patient:innen nach Sprechzeiten, Anfahrt und Behandlungen. Ihre Seite zeigt das ohne Suchen und nimmt Terminanfragen an.",
     bullets: [
-      "Sprechzeiten, Notdienst und Anfahrt prominent",
-      "Behandlungen verständlich erklärt",
-      "Team-Bereich mit Qualifikationen",
-      "Online-Termin-Anfrage",
-      "Seriöser, ruhiger Auftritt",
+      "Sprechzeiten, Notdienst und Anfahrt oben auf jeder Seite",
+      "Behandlungen in Alltagssprache",
+      "Team mit Qualifikationen",
+      "Terminanfrage per Formular",
+      "Ruhige, sachliche Gestaltung",
     ],
-    detailHeadline: "Eine Praxis-Seite, die seriös wirkt — und Termine bringt.",
+    detailHeadline: "Eine ruhige Praxis-Seite mit den Sprechzeiten ganz oben.",
     detailIntro: [
-      "Über 80% aller Patient:innen schauen vor dem ersten Termin online nach. Wenn Ihre Praxis-Seite veraltet wirkt oder Sprechzeiten und Adresse umständlich zu finden sind, entscheiden sie sich für die Praxis um die Ecke — auch wenn Ihre Behandlung besser wäre.",
-      "Eine moderne Praxis-Seite muss zwei Dinge gleichzeitig leisten: seriös und kompetent wirken und gleichzeitig den nächsten Schritt — Termin-Anfrage, Anruf, Navigation — so reibungslos wie möglich machen.",
+      "Wer eine neue Praxis sucht, schaut vorher im Netz nach. Findet man Sprechzeiten und Adresse erst nach mehreren Klicks, oder sieht die Seite seit Jahren gleich aus, ruft man eben die Praxis zwei Straßen weiter an.",
+      "Ihre Seite muss deshalb zwei Dinge können. Sie soll sachlich und gepflegt aussehen, und der nächste Schritt soll leicht sein: anrufen oder einen Termin anfragen, am Handy mit einem Tipp.",
     ],
     typicalPages: [
       "Startseite",
-      "Behandlungen / Leistungen",
+      "Behandlungen",
       "Team mit Qualifikationen",
-      "Praxis-Tour (Bilder)",
-      "Sprechzeiten & Notdienst",
-      "Termin-Anfrage",
-      "Anfahrt & Parken",
+      "Praxisräume in Bildern",
+      "Sprechzeiten und Notdienst",
+      "Terminanfrage",
+      "Anfahrt und Parken",
     ],
     features: [
       {
-        title: "Online-Termin-Anfrage",
-        body: "Formular mit Wunschtermin, Anliegen und Kontaktdaten. Sie erhalten die Anfrage per E-Mail und bestätigen telefonisch oder per Antwort-Mail.",
+        title: "Terminanfrage",
+        body: "Ein Formular für Wunschtermin, Anliegen und Kontaktdaten. Die Anfrage kommt als E-Mail in der Praxis an, Sie bestätigen per Anruf oder Antwortmail.",
       },
       {
-        title: "Sprechzeiten + Notdienst sichtbar",
-        body: "Reguläre Sprechzeiten, Sommerferien und ein klar markierter Notdienst-Bereich — alles auf einen Blick.",
+        title: "Sprechzeiten und Notdienst",
+        body: "Reguläre Sprechzeiten, Urlaubszeiten und der Notdienst stehen getrennt und gut lesbar. Ändern sich die Zeiten, genügt eine kurze Mail an uns.",
       },
       {
         title: "Behandlungen verständlich",
-        body: "Komplexe Behandlungen in patientenverständlicher Sprache. Mit kurzen Erklärungen, Kosten-Hinweisen und Kassen-Informationen.",
+        body: "Jede Behandlung in den Worten, die Patient:innen selbst benutzen. Dazu ein Hinweis, was die Kasse zahlt und was privat abgerechnet wird.",
       },
       {
-        title: "Team mit Vita",
-        body: "Foto, Spezialisierung, Werdegang. Patient:innen wollen wissen, wer sie behandelt — gerade vor dem ersten Termin.",
+        title: "Team mit Werdegang",
+        body: "Foto, Schwerpunkt und Werdegang zu jeder Ärztin und jedem Arzt. Vor dem ersten Termin möchte man wissen, wer einen behandelt.",
       },
     ],
     faq: [
       {
-        q: "Brauche ich ein Online-Buchungs-Tool?",
-        a: "Nicht zwingend. Eine gut gestaltete Termin-Anfrage per Formular reicht für die meisten Praxen. Wenn Sie ein Online-Buchungssystem wie Doctolib oder Jameda nutzen, integrieren wir das nahtlos in Ihre Seite.",
+        q: "Brauche ich ein Online-Buchungssystem?",
+        a: "Nicht unbedingt. Für viele Praxen reicht eine Terminanfrage per Formular. Nutzen Sie schon Doctolib, Jameda oder ein anderes System, binden wir es in die Seite ein.",
       },
       {
-        q: "Was ist mit Heilmittelwerbegesetz (HWG)?",
-        a: "Wir kennen die Grundlagen und sorgen dafür, dass Heilversprechen und vergleichende Werbung vermieden werden. Den finalen HWG-Check übernehmen aber Sie oder Ihre Standesvertretung.",
+        q: "Was ist mit dem Heilmittelwerbegesetz (HWG)?",
+        a: "Wir kennen die Grundregeln und verzichten in den Texten auf Heilversprechen und vergleichende Werbung. Die rechtliche Prüfung im Einzelfall liegt bei Ihnen oder Ihrer Kammer.",
       },
       {
         q: "Können Patientenbewertungen eingebunden werden?",
-        a: "Ja — Google-Bewertungen können automatisch angezeigt werden. Jameda-Bewertungen sind technisch komplizierter, aber möglich.",
+        a: "Ja. Google-Bewertungen lassen sich auf der Seite anzeigen. Bei Jameda ist das technisch aufwendiger, geht aber auch.",
       },
       {
-        q: "Wie ist das mit Datenschutz, gerade bei Kontaktformularen für Patienten?",
-        a: "Patienten-Daten gehören nicht ins Web-Formular. Wir bauen das Formular so, dass nur unkritische Anliegen (Termin-Wunsch, Anfahrt, Sprechzeiten) abgefragt werden — diagnostische Inhalte werden bewusst nicht erfasst. Plus: Hosting in Deutschland, SSL überall, Datenschutzerklärung praxis-spezifisch formuliert.",
+        q: "Wie steht es mit dem Datenschutz beim Kontaktformular?",
+        a: "Gesundheitsdaten gehören nicht in ein Website-Formular. Wir fragen deshalb nur ab, was für einen Termin nötig ist: Wunschtermin, Name und Rückrufnummer. Die Server stehen in der EU, die Verbindung ist verschlüsselt, und die Datenschutzerklärung passen wir an Ihre Praxis an.",
       },
     ],
     recommendedPackage: "business",
@@ -195,68 +197,68 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "friseur",
     image: {
       src: "/images/sitalo-friseur-mobile.webp",
-      alt: 'Friseur-Website von Sitalo auf einem iPhone, daneben gedruckte Visitenkarten und ein Flyer für „Friseur am Markt".',
+      alt: "Musterseite für einen Friseur auf einem Smartphone, daneben Visitenkarten und ein Flyer für „Friseur am Markt“.",
     },
     atmosphere: {
       src: "/images/atmosphere/friseur-stuhl.webp",
-      alt: "Vintage Friseur-Stuhl vor einem großen runden Spiegel, warme Holztöne, Produkte auf einem Regal — hochwertige Salon-Atmosphäre.",
+      alt: "Alter Friseurstuhl vor einem runden Spiegel, dahinter ein Regal mit Pflegeprodukten.",
     },
     shortBody:
-      "Bilder verkaufen. Die Seite lebt von hochwertigen Aufnahmen, klaren Preisen und einem direkten Weg zur Termin-Anfrage.",
+      "Wer einen neuen Salon sucht, schaut zuerst auf die Bilder und dann auf die Preise. Danach soll der Termin mit einem Tipp angefragt sein.",
     bullets: [
-      "Galerie mit Lightbox",
-      "Leistungen und Preise transparent",
-      "Termin-Anfrage per Formular",
-      "Online-Reservierung auf Wunsch",
-      "Ruhige, hochwertige Atmosphäre",
+      "Galerie mit Ihren Arbeiten",
+      "Leistungen mit Preisen",
+      "Terminanfrage per Formular",
+      "Online-Buchung auf Wunsch",
+      "Telefonnummer zum Antippen",
     ],
-    detailHeadline: "Eine Seite, auf der man sehen will, was Sie können.",
+    detailHeadline: "Eine Seite, auf der Ihre Arbeit zu sehen ist.",
     detailIntro: [
-      "Im Friseur- und Kosmetik-Geschäft wird die Entscheidung über Augen getroffen. Wer Ihre Arbeit nicht sieht, ruft auch nicht an. Deshalb sind die Bilder auf Ihrer Seite kein Schmuck, sondern das wichtigste Verkaufsargument.",
-      "Genauso wichtig: transparente Preise und ein direkter Weg zur Buchung. Die meisten Anfragen kommen heute übers Handy — wer die Telefonnummer nicht in zwei Sekunden findet, ruft den Konkurrenten an.",
+      "Beim Friseur und im Kosmetikstudio entscheiden Kund:innen mit den Augen. Wer Ihre Arbeit nicht sieht, ruft nicht an. Die Bilder auf Ihrer Seite sind deshalb das wichtigste Argument, wichtiger als jeder Satz darüber.",
+      "Gleich danach kommen die Preise und der Weg zum Termin. Gesucht wird oft unterwegs am Handy. Die Telefonnummer steht deshalb oben und lässt sich antippen, die Terminanfrage ist ein kurzes Formular.",
     ],
     typicalPages: [
       "Startseite mit Galerie",
-      "Leistungen + Preise",
-      "Bilder / Vorher-Nachher",
-      "Termin-Anfrage",
-      "Team & Stylist:innen",
-      "Standort + Öffnungszeiten",
+      "Leistungen und Preise",
+      "Vorher und nachher",
+      "Terminanfrage",
+      "Team",
+      "Adresse und Öffnungszeiten",
     ],
     features: [
       {
-        title: "Hochwertige Bildergalerie",
-        body: "Lightbox-Galerie mit Ihren besten Arbeiten. Optional Vorher-Nachher-Vergleiche, Kategorisierung nach Service oder Stylist.",
+        title: "Galerie",
+        body: "Ihre besten Arbeiten in großen Bildern, die man antippen und vergrößern kann. Auf Wunsch nach Leistung oder nach Stylist:in sortiert, auch mit Vorher-Nachher.",
       },
       {
-        title: "Transparente Preisliste",
-        body: "Klar strukturierte Preise nach Service. Können Sie selbst aktualisieren, ohne uns zu kontaktieren.",
+        title: "Preisliste",
+        body: "Preise nach Leistung geordnet. Neue Preise tragen wir im Rahmen der kleinen Änderungen ein, mit Premium pflegen Sie die Liste selbst.",
       },
       {
-        title: "Direkter Buchungsweg",
-        body: "Tippen-zum-Anrufen aufs Handy, Termin-Anfrage per Formular. Auf Wunsch auch Anbindung an Online-Buchungssysteme.",
+        title: "Termin vom Handy",
+        body: "Die Telefonnummer lässt sich antippen, die Terminanfrage geht per Formular. Auf Wunsch binden wir ein Buchungssystem an.",
       },
       {
-        title: "Team-Vorstellung",
-        body: "Foto, Spezialisierung, Werdegang Ihrer Stylist:innen — Stammkund:innen suchen ihren Stylisten gezielt aus.",
+        title: "Team",
+        body: "Foto, Schwerpunkt und Werdegang Ihrer Stylist:innen. Stammkund:innen wollen oft zu einer bestimmten Person.",
       },
     ],
     faq: [
       {
-        q: "Soll ich Preise wirklich öffentlich zeigen?",
-        a: "Ja, unbedingt. Kund:innen, die nach Preisen suchen, finden sie sonst woanders. Transparente Preise filtern außerdem Anfragen vor — Sie sparen Telefonate über Preise.",
+        q: "Sollen die Preise wirklich auf die Seite?",
+        a: "Ja. Wer Preise sucht und keine findet, schaut beim nächsten Salon. Außerdem sparen Sie sich Anrufe, in denen es nur um den Preis geht.",
       },
       {
         q: "Welche Online-Buchung passt zu mir?",
-        a: "Für kleine Studios reicht oft eine gute Termin-Anfrage. Bei größeren Salons mit Stylist-Auswahl und Kalender-Slots lohnt sich ein System wie Treatwell, Booksy oder Shore. Wir binden das passende nahtlos ein.",
+        a: "Für kleine Salons reicht oft eine Terminanfrage per Formular. Arbeiten mehrere Stylist:innen mit eigenen Kalendern, lohnt sich ein System wie Treatwell, Booksy oder Shore. Wir binden das ein, das Sie schon nutzen oder nutzen wollen.",
       },
       {
-        q: "Wie werden meine Bilder professionell?",
-        a: "Wenn Sie eigene Fotos haben, bereiten wir diese auf (Beschnitt, Farbe, Optimierung). Wenn keine vorhanden sind, empfehlen wir einen lokalen Fotografen — das ist eine Investition, die sich um ein Vielfaches auszahlt.",
+        q: "Wie werden meine Bilder gut genug?",
+        a: "Ihre eigenen Fotos bereiten wir auf: Ausschnitt, Farbe, Dateigröße. Gibt es keine brauchbaren Bilder, empfehlen wir einen Fotografen aus Ihrer Gegend. Gute Bilder sind bei Ihnen das Erste, was Kund:innen sehen.",
       },
       {
-        q: "Können Gutscheine direkt über die Seite verkauft werden?",
-        a: "Ja — vom einfachen Print-Gutschein zum Download bis hin zur Online-Zahlung über Stripe. Bei Volumen unter 30 Verkäufen pro Monat reicht meist die einfache Variante; bei mehr lohnt sich ein richtiger Shop, der in unser Premium-Paket integriert wird.",
+        q: "Können wir Gutscheine über die Seite verkaufen?",
+        a: "Ja. Am einfachsten ist ein Gutschein als PDF, den Kund:innen nach der Zahlung über Stripe herunterladen. Wer viele Gutscheine oder auch Produkte verkauft, braucht einen kleinen Shop. Den besprechen wir im Rahmen von Premium.",
       },
     ],
     recommendedPackage: "business",
@@ -267,68 +269,68 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "gastro",
     image: {
       src: "/images/sitalo-cafe-mobile.webp",
-      alt: "Café-Website von Sitalo auf einem iPhone, vor einem Café im Hintergrund — daneben eine Sitalo-Webdesign-Visitenkarte.",
+      alt: "Musterseite für ein Café auf einem Smartphone, im Hintergrund das Café, daneben eine Visitenkarte von Sitalo Webdesign.",
     },
     atmosphere: {
       src: "/images/atmosphere/gastro-cafe.webp",
-      alt: "Stilvolles Café-Interieur vor Öffnung — Holztische, kupferne Espresso-Maschine, weiche Morgensonne durch die Fenster.",
+      alt: "Café vor der Öffnung mit Holztischen und Espressomaschine im Morgenlicht.",
     },
     shortBody:
-      "Die meisten Gäste googeln vorm Besuch. Speisekarte, Öffnungszeiten und Anfahrt müssen sofort sichtbar sein — und änderbar.",
+      "Gäste schauen vor dem Besuch nach Karte, Öffnungszeiten und Anfahrt. Auf Ihrer Seite steht das ganz oben und lässt sich ohne Umweg ändern.",
     bullets: [
-      "Speisekarte als verwaltbarer Inhalt",
-      "Wochenangebot oder Mittagstisch änderbar",
-      "Öffnungszeiten und Feiertage prominent",
-      "Reservierungs-Anfrage",
-      "Google Maps + Direktwahl-Telefon",
+      "Speisekarte als Text statt als PDF",
+      "Mittagstisch oder Wochenangebot änderbar",
+      "Öffnungszeiten und Feiertage gut sichtbar",
+      "Reservierungsanfrage",
+      "Karte und Telefonnummer zum Antippen",
     ],
-    detailHeadline: "Speisekarte. Öffnungszeiten. Anfahrt. Direkt sichtbar.",
+    detailHeadline: "Karte, Öffnungszeiten und Anfahrt stehen ganz oben.",
     detailIntro: [
-      "Ein Gast, der am Handy nach Ihrem Café sucht, hat in den meisten Fällen genau drei Fragen: Was kostet's? Haben Sie heute auf? Wie komme ich hin? Wenn diese drei Antworten nicht innerhalb von Sekunden zu finden sind, geht er ins nächste Lokal.",
-      "Genauso wichtig: Ihre Speisekarte muss aktuell sein. Eine veraltete PDF vom letzten Jahr vermittelt sofort den Eindruck, dass die Küche genauso unkonzentriert läuft. Deshalb empfehlen wir für Gastro-Seiten immer verwaltbare Inhalte — Sie aktualisieren Mittagskarte oder Wochenangebot selbst, ohne uns anzurufen.",
+      "Wer am Handy nach Ihrem Café sucht, will wissen, ob heute geöffnet ist und was es gibt. Danach kommt die Frage nach dem Weg. Findet man das nicht auf den ersten Blick, geht man eben ins Lokal nebenan.",
+      "Die Karte muss stimmen. Ein PDF vom letzten Jahr lässt vermuten, dass es in der Küche ähnlich aussieht. Wir setzen die Karte deshalb als Text auf die Seite. Mit Premium ändern Sie Mittagstisch und Wochenangebot selbst, bei den anderen Paketen schicken Sie uns die Änderung per Mail.",
     ],
     typicalPages: [
       "Startseite mit Tagesangebot",
-      "Speisekarte (selbst pflegbar)",
-      "Über uns / Geschichte",
-      "Galerie",
+      "Speisekarte",
+      "Über uns",
+      "Bilder",
       "Reservierung",
-      "Öffnungszeiten & Anfahrt",
+      "Öffnungszeiten und Anfahrt",
     ],
     features: [
       {
-        title: "Selbst-pflegbare Speisekarte",
-        body: "Sie ändern Mittagstisch oder Wochenangebot direkt auf der Seite — ohne uns anzurufen. Premium-Funktion, lohnt sich praktisch immer.",
+        title: "Karte zum Selbstpflegen",
+        body: "Mittagstisch und Wochenangebot ändern Sie direkt auf der Seite. Das gehört zu Premium, und bei Gastro-Seiten empfehlen wir es fast immer, weil sich die Karte oft ändert.",
       },
       {
-        title: "Reservierungs-Anfrage",
-        body: "Schlankes Formular mit Datum, Uhrzeit, Personenzahl. Sie bestätigen per Mail oder Anruf. Bei größerem Bedarf binden wir Online-Reservierungs-Systeme an.",
+        title: "Reservierungsanfrage",
+        body: "Ein kurzes Formular mit Datum, Uhrzeit und Personenzahl. Sie bestätigen per Mail oder Anruf. Kommen viele Reservierungen, binden wir ein Reservierungssystem an.",
       },
       {
-        title: "Standort + Öffnungszeiten",
-        body: "Karte, Adresse, Öffnungszeiten und Feiertagsregelungen prominent. Tippen-zum-Anrufen aufs Handy.",
+        title: "Öffnungszeiten und Anfahrt",
+        body: "Adresse, Karte, Öffnungszeiten und Feiertage stehen weit oben. Die Telefonnummer lässt sich am Handy antippen.",
       },
       {
-        title: "Visuell schmackhaft",
-        body: "Bilder von Gerichten, Atmosphäre, Team. Gute Fotos verkaufen einen Restaurantbesuch besser als jeder Text.",
+        title: "Bilder vom Essen",
+        body: "Gerichte, Gastraum und Team. Ein gutes Foto vom Mittagstisch sagt mehr als jede Beschreibung.",
       },
     ],
     faq: [
       {
-        q: "Brauche ich einen Online-Lieferservice-Bestellprozess?",
-        a: "Für reine Bestell-Abwicklung sind Lieferando und Co. effizienter als eine eigene Lösung. Was wir sinnvoll machen: einen direkten Bestell-Knopf auf Ihrer Seite, der zu Ihrem Lieferando-Profil führt — keine Provisionen für die Klick-Strecke.",
+        q: "Brauche ich eine eigene Bestellfunktion für Lieferungen?",
+        a: "Meist nicht. Für die Abwicklung von Lieferungen sind Lieferando und ähnliche Dienste eingerichtet. Wir setzen einen Bestellknopf auf Ihre Seite, der zu Ihrem Profil dort führt.",
       },
       {
         q: "Wie oft kann ich die Speisekarte ändern?",
-        a: "So oft Sie wollen — bei einer Premium-Seite ist das ein Werkzeug, das Sie selbst bedienen. Bei Starter und Business gehört das zur monatlichen Betreuung (1, 3 oder 6 Änderungen je nach Paket).",
+        a: "Mit Premium so oft Sie wollen, denn Sie ändern sie selbst. Bei Starter und Business ändern wir die Karte für Sie, im Rahmen der kleinen Änderungen im Monatsbeitrag: eine im Monat bei Starter, drei bei Business.",
       },
       {
-        q: "Können wir auch eine englische Version anbieten?",
-        a: "Ja — gerade in Hamburg sehr sinnvoll für Cafés und Restaurants in Touri-Lagen. Mehrsprachigkeit besprechen wir im Erstgespräch.",
+        q: "Können wir die Seite auch auf Englisch anbieten?",
+        a: "Ja. Für Cafés und Restaurants mit vielen Gästen von außerhalb ist das sinnvoll. Den Umfang klären wir im ersten Gespräch.",
       },
       {
-        q: "Tischreservierung über die Seite — geht das?",
-        a: "Ja. Bei niedrigem Volumen reicht ein Formular mit Wunschtermin und Personenzahl, das direkt in Ihr Postfach geht. Bei Restaurants mit konstantem Tischbelegungs-Druck binden wir Quandoo, OpenTable oder eine vergleichbare Lösung ein — kein paralleles Tabellenbuch mehr.",
+        q: "Geht eine Tischreservierung über die Seite?",
+        a: "Ja. Bei wenigen Reservierungen reicht ein Formular mit Wunschtermin und Personenzahl, das direkt in Ihr Postfach geht. Ist das Restaurant abends regelmäßig voll, binden wir Quandoo, OpenTable oder ein ähnliches System ein. Dann führen Sie kein zweites Reservierungsbuch mehr.",
       },
     ],
     recommendedPackage: "premium",
@@ -339,68 +341,68 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "handwerker",
     image: {
       src: "/images/sitalo-handwerker-laptop.webp",
-      alt: 'Tischlerei-Website von Sitalo („Maßarbeit mit Tradition und Leidenschaft") auf einem Laptop auf einer Werkbank.',
+      alt: "Musterseite für eine Tischlerei auf einem Laptop, der auf einer Werkbank steht.",
     },
     atmosphere: {
       src: "/images/atmosphere/handwerker-werkbank.webp",
-      alt: "Werkbank eines Tischlers mit Handhobel, Holzspänen und Kaffeebecher — warmes Sonnenlicht, ehrliche Handarbeit.",
+      alt: "Werkbank eines Tischlers mit Handhobel, Hobelspänen und Kaffeebecher.",
     },
     shortBody:
-      "Im Handwerk kommt der Auftrag oft vor dem ersten Telefonat. Eine Seite mit Leistungen, Referenzen und kurzem Anfrageweg gewinnt Aufträge.",
+      "Im Handwerk entscheidet sich vieles, bevor jemand anruft. Kund:innen sehen sich Ihre Leistungen und fertige Arbeiten an und suchen dann die Nummer.",
     bullets: [
-      "Leistungen und Einsatzgebiet klar",
-      "Galerie mit umgesetzten Projekten",
-      "Rückruf-Anfrage und Direktwahl",
-      "Notfall- und Direktkontakt",
-      "Vertrauen durch Team, Innung, Zertifikate",
+      "Leistungen und Einsatzgebiet",
+      "Galerie mit fertigen Projekten",
+      "Rückrufbitte und Telefonnummer zum Antippen",
+      "Notdienstnummer, falls Sie einen anbieten",
+      "Meisterbrief, Innung und Versicherung",
     ],
-    detailHeadline: "Eine Seite, die Aufträge bringt — nicht nur Visitenkarte ist.",
+    detailHeadline: "Eine Seite, über die Aufträge hereinkommen.",
     detailIntro: [
-      "Im Handwerk entscheiden sich Kund:innen häufig nach drei Klicks: Galerie geöffnet, ein Referenzprojekt angeschaut, Kontaktnummer notiert. Wenn Ihre Seite diese drei Schritte nicht reibungslos liefert, verlieren Sie an die Konkurrenz — oft an Konkurrenz, deren handwerkliche Arbeit nicht besser ist.",
-      "Gleichzeitig sind Sie selten am Schreibtisch. Eine Website, die das berücksichtigt, hat eine prominente Rückruf-Anfrage, klar erreichbare Telefonnummer und Direktwahl-Knopf — und ein Layout, das auf der Baustelle am Handy lesbar bleibt.",
+      "Bevor jemand einen Handwerker anruft, sieht er sich Bilder an. Ein, zwei fertige Projekte, dann wird die Nummer gewählt. Fehlen die Bilder oder ist die Nummer schwer zu finden, bekommt den Auftrag oft ein Betrieb, der nicht besser arbeitet, aber leichter zu erreichen ist.",
+      "Sie selbst sitzen selten am Schreibtisch. Deshalb gibt es auf der Seite eine Rückrufbitte mit drei Feldern, und die Telefonnummer lässt sich auf jeder Unterseite antippen. Alles bleibt am Handy lesbar, auch auf der Baustelle.",
     ],
     typicalPages: [
-      "Startseite mit Leistungs-Überblick",
-      "Leistungen im Detail",
-      "Referenzen / Galerie",
-      "Über uns / Werkstatt-Einblicke",
+      "Startseite mit Leistungsüberblick",
+      "Leistungen im Einzelnen",
+      "Referenzen",
+      "Über uns und die Werkstatt",
       "Einsatzgebiet",
-      "Anfrage / Rückruf",
+      "Anfrage und Rückruf",
     ],
     features: [
       {
-        title: "Referenz-Galerie",
-        body: "Ihre besten Projekte mit Vorher-Nachher, Beschreibung und Standort. Stärkstes Verkaufsargument im Handwerk.",
+        title: "Referenzen",
+        body: "Fertige Projekte mit Bildern, ein paar Sätzen und dem Ort, auf Wunsch mit Vorher-Nachher. Für Handwerksbetriebe ist das der wichtigste Teil der Seite.",
       },
       {
-        title: "Rückruf-Anfrage",
-        body: "Schlankes Formular: Name, Nummer, kurze Beschreibung. Sie rufen zurück, wenn die Hände frei sind. Funktioniert besser als ein langes Kontaktformular.",
+        title: "Rückrufbitte",
+        body: "Name, Telefonnummer und kurz, worum es geht. Sie rufen zurück, wenn die Hände frei sind. Das füllt man lieber aus als ein langes Kontaktformular.",
       },
       {
-        title: "Telefon + Anfrageformular",
-        body: "Tippen-zum-Anrufen aufs Handy, schnelle Anfrage per Formular oder E-Mail.",
+        title: "Einsatzgebiet",
+        body: "Die Orte und Stadtteile, in denen Sie arbeiten, als Liste oder Karte. So rufen weniger Leute an, zu denen Sie gar nicht fahren.",
       },
       {
-        title: "Vertrauen durch Details",
-        body: "Innungsmitgliedschaft, Meisterbrief, Versicherungen, Erfahrungsjahre. Was Sie bereits haben, gehört sichtbar auf die Seite.",
+        title: "Nachweise",
+        body: "Innung, Meisterbrief, Versicherungen, Jahre im Betrieb. Was Sie vorweisen können, gehört sichtbar auf die Seite.",
       },
     ],
     faq: [
       {
         q: "Brauche ich eine Online-Terminbuchung?",
-        a: "Im Handwerk eher nicht. Ein Anruf oder eine Rückruf-Anfrage funktionieren besser, weil Sie vor der Termin-Zusage oft kurz nachfragen müssen. Das Telefon bleibt im Handwerk der direkteste Kanal.",
+        a: "Im Handwerk selten. Vor einer Zusage müssen Sie meist kurz nachfragen, deshalb funktionieren Anruf und Rückrufbitte besser.",
       },
       {
         q: "Wie viele Bilder brauche ich?",
-        a: "Mindestens 10–15 gute Referenzbilder. Wenn Sie weniger haben, machen wir sie in den nächsten Wochen — oder wir empfehlen einen lokalen Fotografen, der für 200–400 € einen kompletten Foto-Tag macht.",
+        a: "Zehn bis fünfzehn gute Bilder von fertigen Arbeiten sind ein guter Anfang. Haben Sie weniger, fotografieren Sie die nächsten Aufträge, bevor die Seite online geht, oder Sie beauftragen einen Fotografen aus der Gegend.",
       },
       {
-        q: "Können wir Werkstatt-Videos einbinden?",
-        a: "Ja, sehr gerne. Kurze Videos (15–30 Sek.) von Arbeitsschritten oder fertigen Projekten ziehen die Aufmerksamkeit deutlich. Aufnahmen über Handy reichen aus — Hauptsache stabil und hell.",
+        q: "Können wir Videos aus der Werkstatt zeigen?",
+        a: "Ja. Kurze Clips von 15 bis 30 Sekunden, etwa von einem Arbeitsschritt oder einem fertigen Stück, reichen. Mit dem Handy aufgenommen ist das in Ordnung, wenn das Bild ruhig und hell ist.",
       },
       {
-        q: "Wie zeigen wir unseren Notdienst sinnvoll auf der Seite?",
-        a: "Notdienst-Nummer prominent im Header — sichtbar auf jeder Unterseite. Plus eine eigene Notdienst-Sektion mit Uhrzeiten und Verfügbarkeitsgebiet. Wer den Notdienst-Anker sucht, soll innerhalb von zwei Sekunden anrufen können, nicht erst ein Formular ausfüllen.",
+        q: "Wie zeigen wir den Notdienst auf der Seite?",
+        a: "Die Notdienstnummer steht in der Kopfleiste, auf jeder Unterseite. Dazu kommt ein eigener Abschnitt mit Zeiten und Gebiet. Wer einen Wasserschaden hat, soll sofort anrufen können und nicht erst ein Formular ausfüllen.",
       },
     ],
     recommendedPackage: "business",
@@ -411,68 +413,68 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "reinigung",
     image: {
       src: "/images/sitalo-reinigung-laptop.webp",
-      alt: 'Reinigungs-Website von Sitalo („Saubere Räume. Besseres Arbeiten.") auf einem Laptop, daneben gefaltetes Mikrofasertuch und Sprühflasche.',
+      alt: "Musterseite für eine Reinigungsfirma auf einem Laptop, daneben ein Mikrofasertuch und eine Sprühflasche.",
     },
     atmosphere: {
       src: "/images/atmosphere/reinigung-flur.webp",
-      alt: "Gepflegter, sauberer Bürogang mit poliertem Boden und einem Reinigungswagen — Eindruck professioneller Sauberkeit.",
+      alt: "Sauberer Büroflur mit glänzendem Boden und einem Reinigungswagen.",
     },
     shortBody:
-      "Reinigung wird über Service-Pakete verkauft. Die Seite muss Pakete vergleichbar machen und Vertrauen aufbauen.",
+      "Reinigung wird in Leistungspaketen verkauft. Die Seite stellt Ihre Pakete nebeneinander und zeigt, warum man Ihrem Team den Schlüssel geben kann.",
     bullets: [
-      "Service-Pakete im direkten Vergleich",
-      "Angebot anfragen mit konfigurierbarer Auswahl",
-      "Einsatzgebiet und Objektarten klar",
-      "Versicherungs- und DSGVO-Hinweise",
-      "24/7-Notdienst (falls angeboten)",
+      "Leistungspakete im Vergleich",
+      "Anfrageformular mit Objektart, Fläche und Turnus",
+      "Einsatzgebiet und Objektarten",
+      "Versicherung und Umgang mit Schlüsseln",
+      "Notdienst, falls angeboten",
     ],
-    detailHeadline: "Pakete vergleichbar. Vertrauen sichtbar. Anfrage schnell.",
+    detailHeadline: "Ihre Pakete nebeneinander und eine Anfrage in wenigen Schritten.",
     detailIntro: [
-      "Der Reinigungs-Markt ist preissensitiv und vertrauenssensitiv zugleich. Wer in fremde Räume gelassen wird, muss schnell vermitteln, dass die Mitarbeiter:innen geschult, versichert und zuverlässig sind. Eine klare Website mit transparenten Paketen erspart Ihnen Telefonate über Selbstverständlichkeiten.",
-      "Gleichzeitig kommt fast jede Anfrage von Auftraggebenden, die Pakete vergleichen wollen — Privatreinigung, Büroreinigung, Grundreinigung, Glasreinigung. Wenn diese Pakete auf Ihrer Seite nicht klar nebeneinanderstehen, vergleichen sie auf der Seite der Konkurrenz.",
+      "Wer eine Reinigungsfirma beauftragt, schaut auf den Preis und muss fremden Leuten seine Räume überlassen. Ihre Seite sollte deshalb früh zeigen, dass Ihre Mitarbeiter:innen eingewiesen und versichert sind. Das erspart Ihnen viele Fragen am Telefon.",
+      "Viele Anfragende vergleichen Angebote: Unterhaltsreinigung im Büro, Privathaushalt, Grundreinigung, Fenster. Stehen Ihre Pakete klar nebeneinander, vergleichen sie gleich auf Ihrer Seite und nicht bei der Konkurrenz.",
     ],
     typicalPages: [
       "Startseite",
-      "Pakete & Leistungen",
-      "Objekte & Branchen",
-      "Über uns / Mitarbeiter",
+      "Pakete und Leistungen",
+      "Objektarten",
+      "Über uns und das Team",
       "Einsatzgebiet",
       "Angebot anfragen",
     ],
     features: [
       {
-        title: "Paket-Vergleichstabelle",
-        body: "Mehrere Pakete (z. B. Büro, Privat, Grundreinigung) nebeneinander mit Leistungen, Häufigkeit, Mindestumfang.",
+        title: "Pakete im Vergleich",
+        body: "Büro, Privat und Grundreinigung nebeneinander, jeweils mit Leistungen, Turnus und Mindestumfang.",
       },
       {
-        title: "Angebot-Konfigurator",
-        body: "Multistep-Formular: Objektart, Größe, Häufigkeit, Sonderwünsche. Sie erhalten eine strukturierte Anfrage und antworten mit einem konkreten Angebot.",
+        title: "Anfrage in Schritten",
+        body: "Ein Formular in kurzen Schritten: Objektart, Fläche, Turnus, Sonderwünsche. Sie bekommen eine vollständige Anfrage und können direkt ein Angebot schreiben.",
       },
       {
-        title: "Vertrauenssignale",
-        body: "Versicherungsnachweis, geschulte Mitarbeiter:innen, DSGVO-konforme Schlüsselverwaltung, Referenzen.",
+        title: "Nachweise",
+        body: "Versicherung, Einweisung des Personals, Umgang mit Schlüsseln und mit Daten. Das sind die Fragen, die Auftraggeber zuerst stellen.",
       },
       {
-        title: "Bewertungen / Referenzen",
-        body: "Stimmen zufriedener Kunden — gerade im Reinigungsgewerbe stärkster Vertrauensbaustein.",
+        title: "Stimmen von Auftraggebern",
+        body: "Echte Rückmeldungen Ihrer Kunden, mit deren Einverständnis. In der Reinigung schauen Interessenten besonders genau darauf.",
       },
     ],
     faq: [
       {
-        q: "Sollen Preise direkt auf der Seite stehen?",
-        a: 'Im Reinigungsgewerbe selten exakt, weil zu viele Faktoren reinspielen (Fläche, Häufigkeit, Sonderwünsche). Sinnvoll ist eine klare Preisspanne („Büroreinigung ab 22 €/Std netto") und ein Angebot-Konfigurator.',
+        q: "Sollen Preise auf die Seite?",
+        a: "Genaue Preise selten, weil Fläche, Turnus und Sonderwünsche den Preis bestimmen. Sinnvoll ist ein Einstiegspreis pro Stunde oder Quadratmeter und daneben das Anfrageformular.",
       },
       {
-        q: "Brauche ich einen separaten Bereich für Auftraggeber:innen vs. Bewerber:innen?",
-        a: "Ja — zwei klar getrennte CTAs, einer für Auftrag, einer für Bewerbung. Beides ist im Reinigungsgewerbe wichtig.",
+        q: "Brauchen Auftraggeber und Bewerber getrennte Bereiche?",
+        a: "Ja. Zwei klar getrennte Knöpfe, einer für Aufträge und einer für Bewerbungen. In der Reinigung suchen die meisten Betriebe beides: Kunden und Personal.",
       },
       {
-        q: "Können wir Hygiene-Zertifikate einbinden?",
-        a: "Ja, gerne. ISO-Zertifikate, RAL-Gütezeichen, Brancheninnungs-Mitgliedschaften sind Vertrauenssignale, die direkt aufs Logo-Format auf die Seite kommen.",
+        q: "Können wir Zertifikate zeigen?",
+        a: "Ja. ISO-Zertifikate, RAL-Gütezeichen oder die Mitgliedschaft in der Innung zeigen wir mit Logo und einer kurzen Erklärung auf der Seite.",
       },
       {
-        q: "Wie können wir verschiedene Reinigungs-Segmente (Büro, Privat, Industrie) übersichtlich präsentieren?",
-        a: "Jedes Segment bekommt eine eigene Unterseite mit klarer Zielgruppen-Ansprache, eigenen Preisspannen und eigenem Anfrage-Anker. Die Startseite bündelt drei kurze Einstiegs-Karten und führt jeweils tiefer. So filtert sich die Anfrage selbst — eingehende Mails landen schon vor-segmentiert in Ihrem Postfach.",
+        q: "Wie zeigen wir Büro, Privat und Industrie übersichtlich?",
+        a: "Jeder Bereich bekommt eine eigene Unterseite mit eigenen Preisangaben und eigenem Formular. Auf der Startseite stehen drei kurze Einstiege. So wissen Sie bei jeder Mail sofort, um welchen Bereich es geht.",
       },
     ],
     recommendedPackage: "business",
@@ -483,68 +485,68 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "kanzlei",
     image: {
       src: "/images/sitalo-kanzlei-laptop.webp",
-      alt: 'Kanzlei-Website von Sitalo („Recht, das Klarheit schafft.") auf einem Laptop mit Messing-Schreibtischlampe und Lederbüchern.',
+      alt: "Musterseite für eine Kanzlei auf einem Laptop, daneben eine Schreibtischlampe aus Messing und gebundene Bücher.",
     },
     atmosphere: {
       src: "/images/atmosphere/kanzlei-buecher.webp",
-      alt: "Detail aus einer Kanzlei-Bücherwand: Reihen Leder-gebundener Rechtsbücher in Dunkelgrün, Messing-Schreibtischlampe, warmes Glühlampenlicht.",
+      alt: "Bücherwand einer Kanzlei mit dunkelgrün gebundenen Gesetzbüchern und einer Messinglampe.",
     },
     shortBody:
-      "Bei Kanzleien zählt Seriosität. Klare Rechtsgebiete, ruhiger Auftritt, vertrauliche Erstkontakt-Anfrage.",
+      "Mandant:innen suchen nach einem Rechtsgebiet und einem Ort. Die Seite nennt Ihre Schwerpunkte klar und bietet einen diskreten Weg zur ersten Anfrage.",
     bullets: [
-      "Rechtsgebiete übersichtlich",
-      "Team mit Spezialisierungen",
-      "Vertrauliche Erstberatungs-Anfrage",
-      "Seriöse Typografie, ruhiges Schema",
-      "Klare Sprech- und Rückrufzeiten",
+      "Rechtsgebiete auf eigenen Seiten",
+      "Anwältinnen und Anwälte mit Schwerpunkten",
+      "Diskrete Mandatsanfrage",
+      "Ruhige, sachliche Gestaltung",
+      "Sprech- und Rückrufzeiten",
     ],
-    detailHeadline: "Eine Seite, die so seriös wirkt wie Ihre Akte.",
+    detailHeadline: "Eine sachliche Seite mit einem diskreten Weg zur Mandatsanfrage.",
     detailIntro: [
-      "Mandant:innen suchen Kanzleien nicht über Werbeknall, sondern über Präzision. Eine Kanzlei-Seite muss durch Ruhe und Klarheit signalisieren: hier wird sauber gearbeitet, hier wird mein Fall ernst genommen.",
-      'Genauso wichtig: Wer sich an eine Kanzlei wendet, hat oft ein Anliegen, das er nicht öffentlich diskutieren möchte. Die Erstkontakt-Anfrage muss diskret wirken — kein lautes „Jetzt kostenlos beraten lassen!", sondern ein sachlicher Schritt zur Mandatsanfrage.',
+      "Wer einen Anwalt sucht, hat meist ein konkretes Problem, etwa eine Kündigung oder einen Streit ums Erbe. Gesucht wird nach dem Rechtsgebiet und dem Ort. Ihre Seite muss zeigen, dass Sie genau dafür zuständig sind, und das ohne laute Werbung.",
+      "Viele schreiben ungern über ihr Anliegen in ein Formular. Die erste Anfrage soll deshalb kurz sein und sachlich klingen. Ein Knopf wie „Jetzt kostenlos beraten lassen!“ passt nicht zu einer Kanzlei, „Mandat anfragen“ schon.",
     ],
     typicalPages: [
       "Startseite",
-      "Rechtsgebiete (eines pro Schwerpunkt)",
-      "Team mit Vita",
+      "Rechtsgebiete, je eine Seite",
+      "Anwältinnen und Anwälte",
       "Mandatsanfrage",
-      "Kosten & Honorar (transparent)",
-      "Kanzlei & Anfahrt",
+      "Kosten und Honorar",
+      "Kanzlei und Anfahrt",
     ],
     features: [
       {
-        title: "Rechtsgebiete strukturiert",
-        body: "Eine eigene Seite pro Schwerpunkt (Familienrecht, Arbeitsrecht, …). Jede gut formuliert, suchmaschinen-relevant — Mandant:innen googeln „Anwalt Familienrecht Eimsbüttel\".",
+        title: "Rechtsgebiete einzeln",
+        body: "Eine Seite pro Schwerpunkt, etwa Familienrecht oder Arbeitsrecht. So wird die Kanzlei auch bei Suchen wie „Anwalt Familienrecht Eimsbüttel“ gefunden.",
       },
       {
-        title: "Vertrauliche Erstkontakt-Anfrage",
-        body: "Diskret formuliertes Formular mit minimalen Pflichtfeldern. Optional verschlüsselte Übertragung. Keine reißerischen CTAs.",
+        title: "Diskrete Anfrage",
+        body: "Wenige Pflichtfelder und ein sachlicher Ton. Die Anfrage geht verschlüsselt an Ihre Kanzlei.",
       },
       {
-        title: "Team mit Spezialisierungen",
-        body: "Fachanwalts-Titel, Veröffentlichungen, Mitgliedschaften. Vita-Format wie in einer seriösen Branchen-Publikation.",
+        title: "Profile der Anwälte",
+        body: "Fachanwaltstitel, Veröffentlichungen, Mitgliedschaften. Kurz gefasst, wie ein Lebenslauf in einer Fachzeitschrift.",
       },
       {
-        title: "BRAO- und RDG-konform",
-        body: "Pflichtangaben, sachliche Tonalität, keine vergleichende Werbung. Die anwaltsrechtlichen Vorgaben kennen wir im Detail.",
+        title: "Nach den Regeln des Berufsrechts",
+        body: "Pflichtangaben, sachlicher Ton, keine Werbung um das einzelne Mandat. Wir kennen die Vorgaben der BRAO, die Prüfung im Einzelfall bleibt bei Ihnen.",
       },
     ],
     faq: [
       {
         q: "Was darf eine Kanzlei-Website werblich überhaupt?",
-        a: "Mehr als viele denken — sachliche Information ist erlaubt, nur reklamehafte und vergleichende Werbung ist tabu. Wir kennen BRAO § 43b und die typischen Stolperfallen.",
+        a: "Mehr, als viele denken. Erlaubt ist sachliche Information über Ihre Arbeit. Reklamehafte Werbung und Werbung um ein Mandat im Einzelfall sind es nicht. Wir kennen § 43b BRAO und die üblichen Stolperstellen.",
       },
       {
         q: "Können Mandantenbewertungen auf die Seite?",
-        a: "Im Standesrecht heikel. Anonymisierte Falldarstellungen und sachliche Referenz-Hinweise sind möglich. Sterne-Bewertungen wie bei Restaurants empfehlen wir nicht.",
+        a: "Das ist berufsrechtlich heikel. Möglich sind anonymisierte Fallbeispiele und sachliche Hinweise auf Referenzen. Sternebewertungen wie beim Restaurant empfehlen wir nicht.",
       },
       {
         q: "Welcher Stil passt zu meiner Kanzlei?",
-        a: "Klassisch-konservativ (Serif, gedeckte Farben) für etablierte Boutique-Kanzleien. Modern-reduziert (Sans-Serif, viel Weiß) für junge Wirtschaftskanzleien. Wir entscheiden nach Ihrer Mandantenstruktur.",
+        a: "Eine eingesessene Kanzlei verträgt eine klassische Schrift und gedeckte Farben. Eine junge Wirtschaftskanzlei wirkt mit einer klaren, schlichten Gestaltung glaubwürdiger. Entscheidend ist, wer zu Ihnen kommt.",
       },
       {
-        q: "Was machen wir mit der Erstberatung — frei, kostenpflichtig, oder gar nicht erwähnen?",
-        a: "Drei Modelle, alle drei sehen wir regelmäßig: Erstberatung kostenlos (für klassische Familien-/Verbraucher-Mandate), pauschal abgerechnet (Wirtschaftskanzleien) oder nach Stundensatz ab Minute eins. Die Website sollte das Modell offen nennen — Mandantinnen, die das vorher wissen, kommen mit klareren Erwartungen.",
+        q: "Soll die Erstberatung auf der Seite stehen?",
+        a: "Ja, mit dem Modell, das Sie anbieten. Üblich sind drei: kostenlos, zu einem festen Betrag oder nach Stundensatz ab der ersten Minute. Wer das vorher weiß, kommt mit klareren Erwartungen.",
       },
     ],
     recommendedPackage: "business",
@@ -555,68 +557,68 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "fitness",
     image: {
       src: "/images/sitalo-fitness-laptop.webp",
-      alt: 'Fitnessstudio-Website von Sitalo („Stronger Every Day. Premium Training.") auf einem Laptop im Studio.',
+      alt: "Musterseite für ein Fitnessstudio auf einem Laptop im Studio.",
     },
     atmosphere: {
       src: "/images/atmosphere/fitness-studio.webp",
-      alt: "Ruhiges Studio mit Reihe von Kettlebells, hohen Fenstern und sanftem Morgenlicht — minimalistische Premium-Atmosphäre.",
+      alt: "Studio mit einer Reihe Kettlebells und hohen Fenstern im Morgenlicht.",
     },
     shortBody:
-      "Studios verkaufen Mitgliedschaften. Probetraining und Kursplan müssen ohne Hürden zu finden sein.",
+      "Ein Studio gewinnt Mitglieder über das Probetraining. Auf Ihrer Seite sind Probetraining und Kursplan deshalb ohne Suchen zu finden.",
     bullets: [
-      "Kursplan und Trainer:innen sichtbar",
-      "Probetraining mit einer Anfrage gebucht",
-      "Mitgliedschaftsanfrage per Formular",
-      "Öffnungszeiten und Standort prominent",
-      "Bildergalerie der Räumlichkeiten",
+      "Kursplan und Trainer:innen",
+      "Probetraining mit einem kurzen Formular",
+      "Mitgliedschaft anfragen",
+      "Öffnungszeiten und Adresse",
+      "Bilder vom Studio",
     ],
-    detailHeadline: "Eine Seite, die das Probetraining buchen lässt.",
+    detailHeadline: "Eine Seite, über die man ein Probetraining bucht.",
     detailIntro: [
-      "Die Kaufentscheidung im Fitness-Studio läuft fast immer über das Probetraining. Wer es nicht ausprobiert hat, schließt keinen Vertrag. Ihre Seite hat also genau eine Hauptaufgabe: das Probetraining so einfach wie möglich machen.",
-      "Drumherum braucht es ein paar Vertrauenssignale — Kursplan, Trainer:innen, Räumlichkeiten — und einen ruhigen Auftritt, der nicht nach Discount-Studio schreit (außer Sie sind eines).",
+      "Die Entscheidung für ein Studio fällt meist beim Probetraining. Wer nicht ausprobiert hat, unterschreibt keinen Vertrag. Ihre Seite hat deshalb eine Hauptaufgabe: Das Probetraining soll schnell angefragt sein.",
+      "Dazu kommen Kursplan, Trainer:innen und Bilder vom Studio. Die Gestaltung bleibt ruhig, damit Ihr Studio nicht nach Discounter aussieht. Es sei denn, Sie sind einer.",
     ],
     typicalPages: [
-      "Startseite mit Probetraining-CTA",
-      "Kursplan / Trainingsangebot",
+      "Startseite mit Probetraining",
+      "Kursplan",
       "Trainer:innen",
-      "Mitgliedschaften / Preise",
-      "Probetraining buchen",
-      "Studio-Galerie",
+      "Mitgliedschaften und Preise",
+      "Probetraining anfragen",
+      "Bilder vom Studio",
     ],
     features: [
       {
-        title: "Probetraining im Mittelpunkt",
-        body: "Auf jeder Seite sichtbar, primärer CTA. Schlankes Formular mit Wunschtermin und einer Rückfrage — keine 12 Pflichtfelder.",
+        title: "Probetraining vorne",
+        body: "Der Knopf steht auf jeder Seite. Das Formular fragt nur Name, Kontakt und Wunschtag ab.",
       },
       {
-        title: "Kursplan dynamisch",
-        body: "Auf Wunsch selbst pflegbar. Sie ändern Kurs-Zeiten oder Trainer:in-Zuteilung ohne uns.",
+        title: "Kursplan",
+        body: "Mit Premium pflegen Sie den Plan selbst und ändern Zeiten oder Trainer:innen ohne uns. Sonst schicken Sie uns die Änderung.",
       },
       {
-        title: "Mitgliedschafts-Pakete vergleichbar",
-        body: "Drei bis vier Mitgliedschafts-Optionen mit klaren Leistungen. Keine versteckten Kosten, keine kleingedruckten Mindestlaufzeiten.",
+        title: "Mitgliedschaften nebeneinander",
+        body: "Drei oder vier Tarife mit Leistungen, Preis und Laufzeit. Was im Vertrag steht, steht auch auf der Seite.",
       },
       {
-        title: "Atmosphäre über Bilder",
-        body: "Gute Studio-Aufnahmen, die nicht nach Stock-Foto aussehen. Echte Trainer:innen, echte Geräte, echtes Licht.",
+        title: "Echte Bilder",
+        body: "Fotos aus Ihrem Studio, mit Ihren Trainer:innen und Ihren Geräten. Bilder aus einer Bilddatenbank sehen in jedem Studio gleich aus.",
       },
     ],
     faq: [
       {
         q: "Brauche ich eine Trainer-Buchung mit Kalender?",
-        a: "Für Personal-Training: ja, lohnt sich. Für Gruppenkurse: meistens nicht, ein Kursplan und Anwesenheit reichen. Bei Personal-Training binden wir z. B. Calendly oder ein vergleichbares System ein.",
+        a: "Für Personal Training lohnt sie sich, dafür binden wir zum Beispiel Calendly oder ein ähnliches System ein. Für Gruppenkurse reichen meist der Kursplan und eine Anmeldung vor Ort.",
       },
       {
-        q: "Können Mitglieds-Karten / Check-in eingebunden werden?",
-        a: "Das macht in der Regel Ihr Studio-Verwaltungssystem (Magicline, Aidoo, …). Wir binden die Schnittstelle ein, falls vorhanden.",
+        q: "Lassen sich Mitgliedskarten und Check-in einbinden?",
+        a: "Das läuft über Ihre Studioverwaltung, etwa Magicline oder Aidoo. Hat sie eine Schnittstelle, binden wir sie ein.",
       },
       {
-        q: "Wie wichtig sind Trainer-Bios?",
-        a: "Sehr. Personal Trainer werden gezielt gesucht. Wenn Trainer:innen auf Ihrer Seite mit Spezialisierung, Foto und persönlicher Note auftauchen, gewinnen Sie auch deren persönliches Netzwerk.",
+        q: "Wie wichtig sind Profile der Trainer:innen?",
+        a: "Sehr. Personal Trainer werden gezielt gesucht. Stehen Ihre Trainer:innen mit Schwerpunkt und Foto auf der Seite, teilen sie den Link auch selbst.",
       },
       {
-        q: "Wie konvertiert ein Probetraining-Anker am besten?",
-        a: `Knapper Button im Header („Kostenloses Probetraining"), Formular mit nur drei Feldern (Name, Mail, Wunsch-Tag), Bestätigung innerhalb 24 h. Wir haben Verbesserungen von 25-40 % der Probetraining-Buchungen gesehen, wenn statt eines langen Anfrage-Formulars dieser knappe Trichter steht.`,
+        q: "Wie sollte die Anfrage fürs Probetraining aussehen?",
+        a: "Ein kurzer Knopf in der Kopfleiste, ein Formular mit drei Feldern (Name, E-Mail, Wunschtag) und eine Bestätigung innerhalb von 24 Stunden. Ein langes Anfrageformular schreckt eher ab.",
       },
     ],
     recommendedPackage: "business",
@@ -627,64 +629,64 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "kosmetik",
     image: {
       src: "/images/sitalo-kosmetik-laptop.webp",
-      alt: 'Kosmetikstudio-Website von Sitalo („Pflege, die berührt.") auf einem Laptop, daneben getrocknetes Pampasgras und kleine Pflegeprodukte.',
+      alt: "Musterseite für ein Kosmetikstudio auf einem Laptop, daneben getrocknetes Pampasgras und kleine Pflegeprodukte.",
     },
     shortBody:
-      "Beauty wird über Atmosphäre verkauft. Hochwertige Bilder, klare Behandlungen und ein direkter Buchungs-Weg machen den Unterschied.",
+      "Kund:innen wählen ein Kosmetikstudio nach dem, was sie sehen. Die Seite zeigt Ihre Räume und Behandlungen und führt direkt zur Terminanfrage.",
     bullets: [
-      "Behandlungen elegant präsentiert",
-      "Vorher/Nachher-Galerie",
-      "Termin-Anfrage per Formular",
-      "Online-Buchung optional",
-      "Atmosphäre durch Bildqualität",
+      "Behandlungen mit Dauer und Preis",
+      "Vorher-Nachher-Galerie mit Einwilligung",
+      "Terminanfrage per Formular",
+      "Online-Buchung auf Wunsch",
+      "Bilder aus Ihren Räumen",
     ],
-    detailHeadline: "Eine Seite, die Atmosphäre verkauft.",
+    detailHeadline: "Eine Seite, die Ihre Räume und Ihre Arbeit zeigt.",
     detailIntro: [
-      "Kosmetik-Kundinnen entscheiden über Bilder. Wer Ihre Behandlungsräume nicht sieht, kommt nicht — selbst wenn Ihre Behandlung exzellent ist. Eine Kosmetik-Seite lebt von hochwertigen Aufnahmen, dezenten Farben und einem direkten Weg zur Termin-Anfrage.",
-      "Gleichzeitig zählt Vertrauen: Behandlungen werden am eigenen Körper gemacht, das ist intim. Eine seriös und ruhig gestaltete Seite signalisiert Professionalität, ohne Effekthascherei.",
+      "Wer Ihre Räume nicht gesehen hat, bucht zögerlicher, auch wenn Ihre Behandlungen gut sind. Ihre Seite braucht deshalb gute Bilder, ruhige Farben und einen kurzen Weg zur Terminanfrage.",
+      "Behandlungen finden am eigenen Körper statt. Eine aufgeräumte, sachliche Seite zeigt, dass bei Ihnen sorgfältig gearbeitet wird. Effekte braucht es dafür nicht.",
     ],
     typicalPages: [
-      "Startseite mit Atmosphäre",
-      "Behandlungen + Preise",
-      "Vorher/Nachher-Galerie",
-      "Über mich / Team",
-      "Termin-Anfrage",
-      "Standort & Öffnungszeiten",
+      "Startseite",
+      "Behandlungen und Preise",
+      "Vorher und nachher",
+      "Über mich und das Team",
+      "Terminanfrage",
+      "Adresse und Öffnungszeiten",
     ],
     features: [
       {
-        title: "Atmosphäre in Bild",
-        body: "Großzügige Bildflächen, dezente Farben, ruhige Typografie — entspricht der Atmosphäre eines guten Kosmetikstudios.",
+        title: "Bilder aus Ihrem Studio",
+        body: "Große Bildflächen, zurückhaltende Farben und eine ruhige Schrift. Die Seite soll aussehen wie Ihr Studio und nicht wie ein Prospekt.",
       },
       {
-        title: "Behandlungen + Preise transparent",
-        body: "Klare Liste der Behandlungen mit Dauer und Preisspanne. Filtert Anfragen vor — Sie sparen sich Telefonate über Selbstverständliches.",
+        title: "Behandlungen und Preise",
+        body: "Jede Behandlung mit Dauer und Preis oder Preisspanne. Damit sind viele Fragen schon vor dem ersten Anruf beantwortet.",
       },
       {
-        title: "Vorher/Nachher-Galerie",
-        body: "Optional mit Datenschutz-Einwilligung der Kund:innen. Stärkstes Verkaufsargument für Behandlungen wie Permanent-Make-Up oder HydraFacial.",
+        title: "Vorher und nachher",
+        body: "Nur mit schriftlicher Einwilligung der Kundin. Bei Permanent Make-up oder HydraFacial zeigen solche Bilder mehr als jede Beschreibung.",
       },
       {
-        title: "Termin-Anfrage einfach",
-        body: "Formular mit Wunschbehandlung, Wunschtermin und kurzer Nachricht. Auf Wunsch auch Online-Buchungs-System wie Treatwell.",
+        title: "Terminanfrage",
+        body: "Wunschbehandlung, Wunschtermin und eine kurze Nachricht. Auf Wunsch binden wir ein Buchungssystem wie Treatwell an.",
       },
     ],
     faq: [
       {
-        q: "Brauche ich Online-Buchung?",
-        a: "Für kleine Studios reicht meist eine gut gestaltete Termin-Anfrage. Bei Studios mit mehreren Behandlerinnen und vollem Kalender lohnt sich ein System wie Treatwell oder Shore — wir binden das passend ein.",
+        q: "Brauche ich eine Online-Buchung?",
+        a: "Für kleine Studios reicht meist eine Terminanfrage per Formular. Arbeiten mehrere Behandlerinnen mit vollem Kalender, lohnt sich ein System wie Treatwell oder Shore. Das binden wir ein.",
       },
       {
-        q: "Was mit Vorher/Nachher-Bildern und Datenschutz?",
-        a: "Bevor Bilder online gehen, brauchen Sie eine schriftliche Einwilligung der jeweiligen Kundin. Vorlagen können wir Ihnen empfehlen. Anonymisierte Detail-Aufnahmen (z. B. nur Augenpartie) sind ebenfalls möglich.",
+        q: "Was gilt für Vorher-Nachher-Bilder?",
+        a: "Bevor ein Bild online geht, braucht es die schriftliche Einwilligung der Kundin. Ein Muster für diese Einwilligung können wir Ihnen empfehlen. Möglich sind auch Ausschnitte, auf denen man niemanden erkennt, etwa nur die Augenpartie.",
       },
       {
         q: "Lohnt sich ein Instagram-Feed auf der Seite?",
-        a: "Für Beauty-Studios ja — die Seite bleibt lebendig auch zwischen Updates. Wir integrieren Ihren Feed datenschutzkonform (keine direkten Embeds von Instagram, sondern Bild-Caching).",
+        a: "Für Beauty-Studios oft ja, weil die Seite zwischen zwei Änderungen lebendig bleibt. Wir binden die Bilder so ein, dass beim Laden der Seite keine Daten an Instagram gehen.",
       },
       {
-        q: "Können Gutscheine über die Seite verkauft werden?",
-        a: "Ja, und gerade vor Weihnachten/Muttertag/Valentinstag lohnt sich das deutlich. Einfache Variante: PDF-Gutschein nach Stripe-Zahlung. Aufwändigere Variante: personalisierter Gutschein mit Wert und Empfänger-Name. Beides binden wir ohne externe Shop-Plattform direkt in die Seite ein.",
+        q: "Können wir Gutscheine verkaufen?",
+        a: "Ja, und vor Weihnachten oder Muttertag lohnt sich das. Am einfachsten kommt nach der Zahlung über Stripe ein Gutschein als PDF. Aufwendiger ist ein Gutschein mit Betrag und dem Namen der Beschenkten. Beides läuft direkt über Ihre Seite, ohne eigene Shop-Plattform.",
       },
     ],
     recommendedPackage: "business",
@@ -695,64 +697,64 @@ export const BRANCHEN: Branche[] = [
     inquirySlug: "hotel",
     image: {
       src: "/images/sitalo-hotel-laptop.webp",
-      alt: 'Boutique-Hotel-Website von Sitalo („Hamburg, neu erlebt") auf einem Laptop, Messing-Klingel und Blumenstrauß auf einem polierten Empfangstresen.',
+      alt: "Musterseite für ein kleines Hotel auf einem Laptop, auf dem Empfangstresen eine Klingel aus Messing und ein Blumenstrauß.",
     },
     shortBody:
-      "Gäste googeln vor jeder Buchung. Eine starke Seite mit Atmosphäre, klaren Preisen und direktem Buchungsweg gewinnt direkte Buchungen statt Booking-Kommissionen.",
+      "Gäste sehen sich vor der Buchung die Website des Hauses an. Wer Zimmer und Preise sieht und direkt anfragen kann, bucht eher bei Ihnen als über ein Portal.",
     bullets: [
-      "Atmosphärische Zimmer-Galerie",
-      "Direkte Buchungs-Anfrage",
-      "Anfahrt + Umgebung",
-      "Mehrsprachig (DE/EN) auf Wunsch",
-      "Bewertungen sichtbar",
+      "Zimmer in großen Bildern",
+      "Buchungsanfrage direkt beim Haus",
+      "Anfahrt und Umgebung",
+      "Deutsch und Englisch auf Wunsch",
+      "Bewertungen auf der Seite",
     ],
-    detailHeadline: "Eine Seite, die direkt bucht — ohne Booking-Provision.",
+    detailHeadline: "Eine Seite, über die Gäste direkt bei Ihnen buchen.",
     detailIntro: [
-      "Booking.com nimmt 15–18 % Kommission auf jede Buchung. Eine eigene Hotel-Seite, die wirklich überzeugt, holt 20–40 % der Buchungen direkt zurück. Das macht in einem Jahr schnell vier- bis fünfstellige Beträge aus.",
-      "Was direkte Buchungen treibt: starke Bilder, transparente Preise, klare Verfügbarkeits-Anzeige, mehrsprachige Inhalte (DE + EN reichen meist) und eine direkte Buchungs-Anfrage ohne Umweg. Plus: Ihre Geschichte. Boutique-Hotels verkaufen Atmosphäre, nicht Sterne.",
+      "Für jede Buchung über ein Portal wie Booking.com zahlen Sie Provision, für jede Direktbuchung nicht. Wer schon einmal bei Ihnen war, sucht beim nächsten Mal oft nach dem Namen des Hauses. Dann muss die eigene Seite überzeugen.",
+      "Direkt gebucht wird, wenn die Seite gute Bilder zeigt, die Preise nennt und eine Anfrage ohne Umweg möglich ist. In vielen Häusern gehört eine englische Fassung dazu. Und ein kleines Haus hat eine Geschichte, die auf keinem Portal steht.",
     ],
     typicalPages: [
-      "Startseite mit Hero-Bild",
-      "Zimmer & Suiten",
-      "Über das Haus / Geschichte",
-      "Umgebung & Anfahrt",
+      "Startseite mit großem Bild",
+      "Zimmer",
+      "Das Haus",
+      "Umgebung und Anfahrt",
       "Bewertungen",
-      "Direkt-Buchungs-Anfrage",
+      "Buchungsanfrage",
     ],
     features: [
       {
-        title: "Atmosphärische Bilder",
-        body: "Großzügige Zimmer-Galerien mit Hover-Details, Außenansicht, Frühstücksraum. Investition in professionelle Fotos lohnt sich hier am stärksten von allen Branchen.",
+        title: "Bilder",
+        body: "Zimmer, Frühstücksraum und Außenansicht in großen Galerien. Ein Tag mit einem Fotografen lohnt sich bei einem Hotel besonders.",
       },
       {
-        title: "Direkte Buchungs-Anfrage",
-        body: "Formular mit Datum, Personen, Zimmer-Wunsch. Kein Channel-Manager nötig — Bestätigung läuft per E-Mail. Auf Wunsch Anbindung an Cloudbeds, Mews oder lite Booking-Tools.",
+        title: "Direkte Anfrage",
+        body: "Ein Formular für Datum, Personen und Zimmerwunsch. Die Bestätigung läuft per E-Mail, einen Channel-Manager brauchen Sie dafür nicht. Auf Wunsch binden wir Cloudbeds, Mews oder ein ähnliches System an.",
       },
       {
-        title: "Mehrsprachig (DE + EN)",
-        body: "Für Hamburg-Hotels mit internationalem Publikum praktisch Pflicht. Beide Sprachen sauber gepflegt, nicht maschinen-übersetzt.",
+        title: "Deutsch und Englisch",
+        body: "Beide Sprachen sorgfältig übersetzt und gleich gut gepflegt. Für Häuser mit vielen Gästen aus dem Ausland gehört das dazu.",
       },
       {
-        title: "Echte Bewertungen integriert",
-        body: "Google- und HolidayCheck-Bewertungen ohne Tracker-Last. Datenschutzkonform, kein Cookie-Banner-Problem.",
+        title: "Bewertungen",
+        body: "Bewertungen von Google und HolidayCheck auf der Seite, eingebunden ohne Tracking. Ein Cookie-Banner brauchen Sie dafür nicht.",
       },
     ],
     faq: [
       {
-        q: "Konkurriert eine eigene Seite mit Booking.com?",
-        a: "Nein — sie ergänzt. Booking bleibt der Akquise-Kanal für Erst-Gäste. Eine starke eigene Seite holt diese Gäste beim zweiten Besuch direkt zurück (Booking-Gäste, die zufrieden sind, suchen oft nach dem Hotelnamen).",
+        q: "Konkurriert die eigene Seite mit Booking.com?",
+        a: "Sie ergänzt das Portal. Über Booking finden neue Gäste zu Ihnen. Wer zufrieden war, sucht beim nächsten Mal nach Ihrem Namen und bucht direkt, wenn Ihre Seite es leicht macht.",
       },
       {
-        q: "Brauche ich eine Verfügbarkeits-Anzeige in Echtzeit?",
-        a: "Nicht zwingend. Für kleine Hotels reicht oft die schlichte Anfrage. Wenn Sie Cloudbeds, Mews oder ein vergleichbares PMS nutzen, integrieren wir die Live-Verfügbarkeit.",
+        q: "Brauche ich eine Verfügbarkeitsanzeige in Echtzeit?",
+        a: "Nicht unbedingt. Kleinen Häusern reicht oft die Anfrage per Formular. Nutzen Sie Cloudbeds, Mews oder ein anderes Hotelprogramm, zeigen wir die Verfügbarkeit direkt auf der Seite an.",
       },
       {
-        q: "Wie wichtig ist die englische Version?",
-        a: "Sehr — vor allem in Hamburg. Etwa 30–40 % der Hamburg-Hotel-Sucher kommen aus dem Ausland. Eine saubere englische Version verdoppelt oft die Anfrage-Quote.",
+        q: "Wie wichtig ist die englische Fassung?",
+        a: "Das hängt von Ihren Gästen ab. Kommen viele aus dem Ausland, gehört sie dazu. Ein Blick in Ihre Buchungen der letzten Monate zeigt, wie viele es sind.",
       },
       {
-        q: "Wie schaffen wir die Direktbuchung gegen die Booking-Convenience?",
-        a: "Drei Hebel zusammen: Best-Price-Garantie auf der eigenen Seite sichtbar, knapper Buchungs-Pfad (max. drei Klicks bis zur Reservierungs-Anfrage), und ein Hinweis bei der Booking-Bestätigungs-Mail, dass die nächste Buchung über Sie direkt 8-12 % günstiger ist. Wir bauen den Mechanismus, die Provisions-Reduktion ist die Belohnung.",
+        q: "Wie gewinnen wir Direktbuchungen gegen den Komfort der Portale?",
+        a: "Mit einem kurzen Buchungsweg, höchstens drei Klicks bis zur Anfrage, und einem gut sichtbaren Hinweis, welchen Vorteil Gäste bei einer Direktbuchung haben. Den Weg bauen wir, den Vorteil legen Sie fest.",
       },
     ],
     recommendedPackage: "premium",

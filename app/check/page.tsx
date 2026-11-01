@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Eye, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { PageHero } from "@/components/marketing/page-hero";
@@ -43,17 +43,52 @@ export const metadata: Metadata = {
 };
 
 /**
+ * Gegenüberstellung Speed-Check und Audit. Als Zeilen gesetzt wie ein
+ * Frachtbrief: links die Frage, rechts die beiden Antworten. Am Handy
+ * steht die Frage über den zwei Spalten.
+ */
+const VERGLEICH: { frage: string; check: string; audit: string }[] = [
+  {
+    frage: "Wer prüft",
+    check: "Google PageSpeed Insights, automatisch",
+    audit: "Wir, von Hand",
+  },
+  {
+    frage: "Was geprüft wird",
+    check: "Ladezeit, Barrierefreiheit, Technik und Google-Grundlagen, je von 0 bis 100",
+    audit: "Erster Eindruck am Handy, Telefonnummer, Öffnungszeiten und Texte",
+  },
+  {
+    frage: "Was Sie angeben",
+    check: "Nur die Adresse",
+    audit: "Adresse, Name und E-Mail",
+  },
+  {
+    frage: "Dauer",
+    check: "15 bis 30 Sekunden",
+    audit: "Antwort innerhalb von 48 Stunden",
+  },
+  {
+    frage: "Ergebnis",
+    check: "Vier Werte hier auf der Seite",
+    audit: "Drei bis fünf Punkte per E-Mail",
+  },
+  {
+    frage: "Kosten",
+    check: "Keine",
+    audit: "Keine",
+  },
+];
+
+/**
  * `/check` — Live-PageSpeed-Test.
  *
  * Abgrenzung zu /audit:
- *   - /check: automatisch, sofort, technische Scores
- *   - /audit: persönlich, 48 h, inhaltliche Perspektive
+ *   - /check: automatisch, sofort, technische Werte
+ *   - /audit: von Hand, 48 h, inhaltliche Sicht
  *
- * Beide haben Wert. /check ist niedrigschwellig (URL reicht, kein
- * Kontaktdatum), /audit zahlt auf Vertrauensaufbau und Lead-Qualität.
- *
- * Die UI verlinkt nach erfolgter Analyse adaptiv weiter — bei
- * schlechten Scores prominent auf /audit + /wartung, bei guten
+ * Die UI verlinkt nach erfolgter Analyse je nach Ergebnis weiter —
+ * bei schlechten Werten deutlich auf /audit + /wartung, bei guten
  * dezent auf /audit als Ergänzung.
  */
 export default function CheckPage() {
@@ -63,142 +98,112 @@ export default function CheckPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Speed-Check"
-          eyebrow="Live · automatisch · kostenlos"
-          title="Wie schnell ist"
-          accent="Ihre Seite?"
+          eyebrow="Speed-Check · gemessen mit Google PageSpeed"
+          title="Testen Sie, wie schnell Ihre Website lädt."
         >
-          Ergebnis in etwa 30 Sekunden, ohne Kontaktdaten. Kein PDF-Report,
-          keine E-Mail-Pflicht.
+          Sie geben die Adresse ein, nach 15 bis 30 Sekunden stehen die Werte
+          da. Kontaktdaten brauchen wir dafür nicht.
         </PageHero>
 
-        <section>
-          <div className="mx-auto w-full max-w-4xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20">
-            <div>
-              <SpeedCheck />
-            </div>
+        <section aria-label="Test">
+          <div className="mx-auto w-full max-w-6xl px-5 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-20">
+            <SpeedCheck />
           </div>
         </section>
 
-        <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-5xl px-6 py-20 sm:py-24">
-            <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
-              <div>
-                <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-                  <span
-                    aria-hidden="true"
-                    className="bg-gold gold-pulse inline-block h-1 w-6"
-                  />
-                  Zwei Wege
-                </p>
-                <h2 className="mt-6 text-3xl leading-[1.05] font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
-                  Speed-Check
-                  <br />
-                  <span className="serif-italic text-muted-foreground font-normal">
-                    oder Persönlicher Audit?
-                  </span>
+        <section className="bg-card border-border border-t">
+          <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+            <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+              <div className="lg:col-span-4">
+                <p className="label-mono text-muted-foreground">Speed-Check und Audit</p>
+                <h2 className="mt-5 text-balance text-[2rem] leading-[1.04] tracking-[-0.032em] sm:text-[2.5rem]">
+                  Der Test misst die Technik, den Rest sehen wir uns an.
                 </h2>
-                <p className="text-foreground/75 mt-6 max-w-md text-[15.5px] leading-relaxed text-pretty">
-                  Beide haben Sinn — und sie ergänzen sich. Der Speed- Check
-                  sagt Ihnen, ob die Technik stimmt. Der Audit sagt Ihnen, ob
-                  die Seite das Richtige für Ihre Kunden tut.
+                <p className="text-muted-foreground mt-5 max-w-sm text-[15.5px] leading-relaxed text-pretty">
+                  Ob die Telefonnummer am Handy antippbar ist und die
+                  Startseite sagt, was Sie anbieten, prüft kein automatischer
+                  Test. Dafür gibt es den Audit.
                 </p>
               </div>
 
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Card
-                  icon={Zap}
-                  title="Speed-Check"
-                  badge="Sofort"
-                  body="Automatisch, technisch, anonym. Vier Lighthouse-Scores plus Core Web Vitals. Sagt: ist die Technik in Ordnung?"
-                  cta="Auf dieser Seite"
-                  href="#main"
-                />
-                <Card
-                  icon={Eye}
-                  title="Persönlicher Audit"
-                  badge="48 h"
-                  body="Menschlich, inhaltlich, ehrlich. Drei bis fünf konkrete Punkte per Mail aus unserer Hand-drauf-Sicht. Sagt: ist die Seite die richtige?"
-                  cta="Zum Audit"
-                  href="/audit"
-                />
+              <div className="min-w-0 lg:col-span-8">
+                <div className="border-foreground grid grid-cols-2 gap-x-5 border-b-2 pb-3 sm:grid-cols-[11rem_1fr_1fr] sm:gap-x-8">
+                  <span aria-hidden="true" className="hidden sm:block" />
+                  <h3 className="text-[1.15rem] tracking-[-0.01em] sm:text-[1.3rem]">Speed-Check</h3>
+                  <h3 className="text-[1.15rem] tracking-[-0.01em] sm:text-[1.3rem]">Audit</h3>
+                </div>
+                <dl>
+                  {VERGLEICH.map((row) => (
+                    <div
+                      key={row.frage}
+                      className="border-border grid grid-cols-2 gap-x-5 gap-y-1.5 border-b py-4 sm:grid-cols-[11rem_1fr_1fr] sm:gap-x-8"
+                    >
+                      <dt className="label-mono text-muted-foreground col-span-2 sm:col-span-1 sm:pt-1">
+                        {row.frage}
+                      </dt>
+                      <dd className="text-foreground min-w-0 text-[14.5px] leading-snug sm:text-[15px]">
+                        <span className="sr-only">Speed-Check: </span>
+                        {row.check}
+                      </dd>
+                      <dd className="text-foreground min-w-0 text-[14.5px] leading-snug sm:text-[15px]">
+                        <span className="sr-only">Audit: </span>
+                        {row.audit}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="grid grid-cols-2 gap-x-5 pt-5 sm:grid-cols-[11rem_1fr_1fr] sm:gap-x-8">
+                  <span aria-hidden="true" className="hidden sm:block" />
+                  <a
+                    href="#check-url"
+                    className="text-foreground inline-flex items-center gap-1.5 self-start text-[14.5px] font-semibold underline-offset-4 hover:underline"
+                  >
+                    Zum Test oben
+                  </a>
+                  <Link
+                    href="/audit"
+                    className="text-foreground inline-flex items-center gap-1.5 self-start text-[14.5px] font-semibold underline-offset-4 hover:underline"
+                  >
+                    Audit anfordern
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="border-border/40 border-t">
-          <div className="mx-auto w-full max-w-3xl px-6 py-16 text-center sm:py-20">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Lieber gleich reden
-            </p>
-            <p className="serif text-foreground mt-6 text-2xl leading-snug text-balance sm:text-3xl">
-              30 Minuten, Hamburg-Zeit.{" "}
-              <span className="serif-italic text-muted-foreground">
-                Wir gucken zusammen drauf.
-              </span>
-            </p>
-            <Link
-              href="/termin"
-              className="bg-foreground text-background hover:bg-foreground/90 group mt-8 inline-flex h-12 items-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-tight"
-            >
-              Termin direkt buchen
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
+        <section className="border-border border-t">
+          <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+            <div className="lg:col-span-7">
+              <p className="label-mono text-muted-foreground">Erstgespräch</p>
+              <p className="text-foreground mt-4 max-w-xl text-balance text-[1.4rem] leading-snug font-semibold tracking-[-0.015em] sm:text-[1.65rem]">
+                Im Erstgespräch gehen wir die Werte mit Ihnen durch. Es dauert
+                30 Minuten und kostet nichts.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-5 lg:justify-end">
+              <Link href="/termin" className="btn-line h-12 text-[15px]">
+                Termin wählen
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <a
+                href="tel:+491607621876"
+                className="text-foreground text-[15px] font-semibold tabular-nums underline-offset-4 hover:underline"
+              >
+                0160 7621876
+              </a>
+            </div>
           </div>
         </section>
       </main>
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([WEBAPP_LD, BREADCRUMB_LD]),
         }}
       />
     </div>
-  );
-}
-
-function Card({
-  icon: Icon,
-  title,
-  badge,
-  body,
-  cta,
-  href,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  badge: string;
-  body: string;
-  cta: string;
-  href: string;
-}) {
-  return (
-    <article className="border-border/60 bg-card/40 ring-foreground/5 flex flex-col gap-4 rounded-3xl border p-6 ring-1">
-      <div className="flex items-center justify-between gap-3">
-        <span className="border-border/60 text-foreground/70 inline-flex h-9 w-9 items-center justify-center rounded-full border">
-          <Icon className="h-4 w-4" aria-hidden="true" />
-        </span>
-        <span className="text-muted-foreground text-[13px]">{badge}</span>
-      </div>
-      <h3 className="text-foreground text-xl font-semibold tracking-tight">
-        {title}
-      </h3>
-      <p className="text-muted-foreground text-[14px] leading-relaxed">
-        {body}
-      </p>
-      <Link
-        href={href}
-        className="text-foreground mt-auto inline-flex items-center gap-2 text-[14px] font-medium underline-offset-[6px] hover:underline"
-      >
-        {cta}
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-    </article>
   );
 }

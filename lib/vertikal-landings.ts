@@ -1,16 +1,17 @@
 /**
- * Vertikal-Landing-Daten. Schlanker als BRANCHEN — diese Routen
- * (/pflege, /praxen) sind konversion-orientierte Single-Vertical-
- * Landings für Paid-Traffic und Direkt-Empfehlungen, nicht das
- * editoriale /branchen-Archiv.
+ * Vertikal-Landing-Daten für /pflege und /praxen. Schlanker als
+ * BRANCHEN: diese Seiten sind auf Anfragen ausgelegt (Probleme der
+ * Branche, Bauteile, drei Wochen Ablauf), nicht das Archiv unter
+ * /branchen. Die Fragen kommen aus BRANCHEN (über `brancheSlug`).
  *
- * Bewusst eigener Datentopf, nicht aus BRANCHEN abgeleitet — der
- * Inhalt ist verschärft (Pain-first, Stadtteil-Anker, knappe
- * Bauteil-Liste), nicht remixed. Damit keine Duplicate-Content-
- * Strafe gegenüber /branchen/[slug].
+ * Bewusst eigener Datentopf mit eigenen Texten, damit /pflege und
+ * /branchen/pflege nicht dasselbe sagen.
  *
- * Erweiterung: neue Vertikale dazunehmen heißt: hier Eintrag bauen,
- * `app/<slug>/page.tsx` als Dünnschicht-Mantel anlegen, fertig.
+ * Textregeln: keine Prozentwerte, keine Liste angeblich betreuter
+ * Stadtteile, keine Aussagen über frühere Kunden.
+ *
+ * Erweiterung: neue Vertikale heißt hier Eintrag bauen und
+ * `app/<slug>/page.tsx` als dünne Hülle anlegen.
  */
 
 export type VertikalLanding = {
@@ -20,31 +21,29 @@ export type VertikalLanding = {
   seoTitle: string;
   /** SEO-Description. */
   seoDescription: string;
-  /** Verbindung zum Archive — für canonical und Cross-Link. */
+  /** Verbindung zum Archiv /branchen/[slug] und zu den Fragen. */
   brancheSlug: string;
-  /** Verbindung zum Inquiry-Form via ?branche= Param. */
+  /** Verbindung zum Anfrageformular über ?branche=. */
   inquirySlug: string;
-  /** Empfohlenes Paket fürs Anfrage-Preset. */
+  /** Empfohlenes Paket fürs Anfrage-Preset und den Steckbrief. */
   recommendedPackage: "starter" | "business" | "premium";
-  /** Eyebrow im Hero (klein, mono). */
+  /** Kleine Zeile über der Überschrift (label-mono). */
   eyebrow: string;
-  /** Hero-Headline, kurz. */
+  /** H1 mit Suchbegriff. */
   headline: string;
-  /** Hero-Headline-Italic-Hälfte (optional). */
+  /** Optionaler Zusatz zur H1, wird als ein Satz angehängt. */
   headlineItalic?: string;
-  /** Hero-Subhead, 1 Satz. */
+  /** Einleitung unter der H1, zwei Sätze. */
   subhead: string;
-  /** Pain-Points: drei konkrete Probleme aus dieser Branche. */
+  /** Drei typische Probleme der Branche; das erste ist der Aufmacher. */
   pains: { headline: string; body: string }[];
-  /** Was wir konkret bauen — 4–6 Bauteile, sehr konkret. */
+  /** Was auf die Seite kommt, vier bis sechs Teile. */
   bauteile: { name: string; what: string }[];
-  /** Prozess-Wochen: knapp, beobachtbar. */
+  /** Ablauf in Wochen. Die Anzahl ergibt die Dauer im Steckbrief. */
   process: { woche: string; what: string }[];
-  /** Hamburg-Anker: Stadtteile, in denen wir schon was gemacht haben. */
-  stadtteile: string[];
-  /** Schluss-Zitat im Serif-Stil. */
+  /** Aussage der Abschluss-Briefkarte, ein normaler Satz. */
   schlussZitat: string;
-  /** Schluss-Zitat-Italic-Hälfte (optional). */
+  /** Optionaler Zusatz zur Aussage, wird angehängt. */
   schlussZitatItalic?: string;
 };
 
@@ -53,157 +52,138 @@ export const VERTIKAL_LANDINGS: VertikalLanding[] = [
     slug: "pflege",
     seoTitle: "Pflegedienst-Website aus Hamburg — Sitalo",
     seoDescription:
-      "Websites für Pflegedienste in Hamburg. Klar strukturiert, mit Bewerbungsformular, Leistungsbereichen und Direkt-Kontakt. Persönlich gemacht, festes Honorar.",
+      "Websites für Pflegedienste. Leistungen und Einsatzgebiet klar erklärt, mit Bewerbungsformular für Pflegekräfte und Notfallnummer. Gebaut in Hamburg, Festpreis vorab.",
     brancheSlug: "pflege",
     inquirySlug: "pflege",
     recommendedPackage: "business",
-    eyebrow: "Für Pflegedienste in Hamburg",
-    headline: "Eine Pflege-Website,",
-    headlineItalic: "die Bewerbungen bringt.",
+    eyebrow: "Pflegedienst-Website aus Hamburg",
+    headline: "Websites für Pflegedienste",
     subhead:
-      "Klar strukturiert, mit Bewerbungsformular und Leistungsbereichen. Damit Familien die richtige Entscheidung treffen und Pflegekräfte sich tatsächlich bewerben.",
+      "Angehörige sollen auf den ersten Blick sehen, was Sie leisten und in welche Stadtteile Sie fahren. Pflegekräfte sollen sich vom Handy aus bei Ihnen bewerben können.",
     pains: [
       {
-        headline: "Die Seite zeigt nicht, was Sie wirklich tun.",
-        body: `Pflegedienste mit allgemeinen „Wir kümmern uns um Sie"-Sätzen fallen aus dem Auswahlprozess. Familien suchen konkret nach Grundpflege, Behandlungspflege, 24-Stunden-Versorgung — wenn das nicht im ersten Bildschirm steht, geht der Anruf an die nächste Adresse.`,
+        headline: "Die Leistungen stehen nicht auf der Startseite.",
+        body: "Familien suchen nach Grundpflege, Behandlungspflege oder 24-Stunden-Versorgung. Steht oben nur ein allgemeiner Satz wie „Wir kümmern uns um Sie“, rufen sie beim nächsten Dienst an.",
       },
       {
-        headline: "Bewerbungen kommen nicht an.",
-        body: "PDF-Bewerbung per Mail ist 2010-Logik. Wer als Pflegekraft heute drei offene Stellen prüft, geht die durch, die ein Formular auf dem Handy haben. Ohne das verlieren Sie qualifizierte Bewerber, die Sie nie zu Gesicht bekommen.",
+        headline: "Bewerben geht nur per Mail mit PDF.",
+        body: "Wer als Pflegekraft mehrere Stellen vergleicht, bewirbt sich dort, wo es auf dem Handy schnell geht. Für ein erstes Gespräch reicht ein kurzes Formular.",
       },
       {
-        headline: "Vertrauen wird nicht aufgebaut.",
-        body: `Eine Pflegeseite ohne Team-Bereich, ohne Zertifikate, ohne Hinweis auf Notdienst-Erreichbarkeit signalisiert „Lager mit Pflegern". Pflegedienste verkaufen Vertrauen — und das muss man auch sehen.`,
+        headline: "Man sieht nicht, wer kommt.",
+        body: "Angehörige wollen wissen, wer morgens vor der Tür steht. Dafür braucht die Seite Fotos vom Team, Ihre Zertifikate und einen Hinweis, wie Sie im Notfall erreichbar sind.",
       },
     ],
     bauteile: [
       {
         name: "Startseite",
-        what: "Was Sie tun, für wen, in welchem Gebiet — auf einen Blick. Notfallnummer in der Header-Leiste, immer sichtbar.",
+        what: "Was Sie leisten, für wen und in welchem Gebiet. Die Notfallnummer steht oben in der Kopfleiste, auf jeder Seite.",
       },
       {
-        name: "Leistungsbereiche",
-        what: "Grundpflege, Behandlungspflege, Verhinderungspflege, Beratung nach §37.3 — eine Seite je Leistung mit klarem Vokabular für Familien und Pflegekassen.",
+        name: "Leistungen",
+        what: "Grundpflege, Behandlungspflege, Verhinderungspflege und Beratungsbesuche nach § 37 Abs. 3 SGB XI, klar getrennt. In Worten, die Familien verstehen und die Pflegekassen kennen.",
       },
       {
         name: "Bewerbungsformular",
-        what: "Auf dem Handy in 90 Sekunden ausfüllbar. CV-Upload optional, weil ohne Upload trotzdem viele schreiben — und das ist erstmal genug, um ins Gespräch zu kommen.",
+        what: "Wenige Felder, auf dem Handy schnell ausgefüllt. Einen Lebenslauf kann man anhängen, muss es aber nicht.",
       },
       {
-        name: "Team & Werte",
-        what: "Echte Fotos vom Team. Drei Sätze zu jeder Person. Keine Stockbilder. Pflegedienste verlieren Vertrauen schneller als jede andere Branche, wenn die Seite generisch aussieht.",
+        name: "Team",
+        what: "Fotos vom eigenen Team statt Bildern aus einer Datenbank, zu jeder Person ein paar Sätze.",
       },
       {
         name: "Einsatzgebiet",
-        what: "Hamburg-Karte mit Ihren Stadtteilen oder Tabellenliste der PLZ-Gebiete. Familien sortieren schon vorher aus, ob Sie überhaupt zu ihnen rauskommen.",
+        what: "Eine Karte mit Ihren Stadtteilen oder eine Liste der Postleitzahlen. So sehen Familien gleich, ob Sie zu ihnen kommen.",
       },
       {
-        name: "Google-Maps-Eintrag",
-        what: "Wir richten den Google-Maps-Eintrag (Google Business Profile) im selben Atemzug mit ein. Pflegedienste werden zu 70 % über die Map gefunden, nicht über klassische Suche.",
+        name: "Google-Eintrag",
+        what: "Ihr Unternehmensprofil bei Google Maps richten wir mit ein. Gibt es schon einen Eintrag, bringen wir ihn auf den Stand der neuen Seite.",
       },
     ],
     process: [
       {
         woche: "Woche 1",
-        what: "Erstgespräch (Telefon oder vor Ort), Inhalts-Sammlung, Sichtung Ihrer alten Seite / PDF-Materialien. Sie schicken, wir sortieren.",
+        what: "Erstes Gespräch am Telefon oder bei Ihnen vor Ort. Sie schicken, was schon da ist: alte Seite, Flyer, PDFs. Wir sortieren es.",
       },
       {
         woche: "Woche 2",
-        what: "Wir bauen die Seite. Sie sehen einen Zwischenstand am Ende der Woche, gehen drüber.",
+        what: "Wir bauen die Seite. Zum Ende der Woche bekommen Sie einen Test-Link und schauen sich alles in Ruhe an.",
       },
       {
         woche: "Woche 3",
-        what: "Eine gesammelte Korrekturrunde, dann Live-Schaltung. Google-Maps-Eintrag wird parallel optimiert.",
+        what: "Eine Korrekturrunde, in der wir alle Anmerkungen gesammelt umsetzen. Danach geht die Seite online, der Google-Eintrag wird parallel angepasst.",
       },
     ],
-    stadtteile: [
-      "Wandsbek",
-      "Eimsbüttel",
-      "Altona",
-      "Bergedorf",
-      "Harburg",
-      "Eppendorf",
-    ],
-    schlussZitat: "Eine Pflegedienst-Website darf nicht hübsch sein.",
-    schlussZitatItalic: "Sie muss arbeiten.",
+    schlussZitat: "Am Ende zählt, ob Familien anrufen und Pflegekräfte sich bewerben.",
   },
   {
     slug: "praxen",
     seoTitle: "Praxis-Website aus Hamburg — Sitalo",
     seoDescription:
-      "Websites für Arzt- und Zahnarztpraxen in Hamburg. Seriös, mit Sprechzeiten, Online-Termin-Anfrage und Team-Bereich. Persönlich gemacht, festes Honorar.",
+      "Websites für Arzt- und Zahnarztpraxen. Sprechzeiten oben auf jeder Seite, Terminanfrage per Formular, Team und Anfahrt. Gebaut in Hamburg, Festpreis vorab.",
     brancheSlug: "praxis",
     inquirySlug: "praxis",
     recommendedPackage: "business",
-    eyebrow: "Für Praxen in Hamburg",
-    headline: "Eine Praxis-Seite,",
-    headlineItalic: "die Termine bringt.",
+    eyebrow: "Praxis-Website aus Hamburg",
+    // ­: weiche Trennung, damit das lange Wort am Handy umbrechen kann.
+    headline: "Websites für Arzt- und Zahnarzt­praxen",
     subhead:
-      "Seriös, klar, mobil. Patient:innen prüfen vor dem ersten Termin, ob Ihre Praxis seriös wirkt — wenn die Seite das nicht signalisiert, ruft niemand an.",
+      "Vor dem ersten Termin schauen Patient:innen nach Sprechzeiten, Anfahrt und Behandlungen. Auf Ihrer Seite finden sie das ohne Suchen und können gleich einen Termin anfragen.",
     pains: [
       {
-        headline: "Die Sprechzeiten sind nicht zu finden.",
-        body: `Patient:innen suchen vor dem Anruf zuerst nach Sprechzeiten und Notdienst. Wenn die in einer PDF unter „Praxisinfo" stecken oder in fünf Klicks erreichbar sind, wird das die nächste Praxis. Sprechzeiten gehören in den Header, nicht in einen Unterordner.`,
+        headline: "Die Sprechzeiten sind schwer zu finden.",
+        body: "Vor dem Anruf suchen Patient:innen nach Sprechzeiten und Notdienst. Stecken die in einem PDF unter „Praxisinfo“, wählen sie die nächste Praxis. Sprechzeiten gehören oben auf jede Seite.",
       },
       {
-        headline: "Die Seite wirkt nicht seriös.",
-        body: `Bilderfreie Layouts, generische Schriftarten, fehlerhafte Mobile-Darstellung — alles Signale, die unbewusst „nicht vertrauenswürdig" sagen. Bei einer Praxis ist das fatal, weil der Patient noch nichts erlebt hat, woran er die Qualität sonst festmachen kann.`,
+        headline: "Die Seite wirkt veraltet.",
+        body: "Wenn eine Seite am Handy verrutscht oder seit Jahren gleich aussieht, schließen Patient:innen daraus auf die Praxis. Vor dem ersten Besuch haben sie nichts anderes, woran sie sich halten können.",
       },
       {
-        headline: "Termin-Anfragen scheitern am Telefon-Engpass.",
-        body: "Eine Praxis ohne Online-Termin-Anfrage zwingt jeden Erstkontakt durch die Telefon-Sekretärin. Das ist Engpass und Hürde gleichzeitig. Ein einfaches Online-Formular mit Wunschtermin-Auswahl fängt 30–40 % der Anfragen ab, die sonst aufgegeben hätten.",
+        headline: "Jeder Termin läuft über das Telefon.",
+        body: "Ohne Online-Anfrage muss jeder Erstkontakt über die Anmeldung, und dort ist die Leitung oft belegt. Ein Formular mit Wunschterminen nimmt dem Telefon einen Teil der Anfragen ab.",
       },
     ],
     bauteile: [
       {
-        name: "Sprechzeiten im Header",
-        what: "Immer sichtbar, mit Notdienst-Hinweis. Patient:innen brauchen drei Sekunden, um zu wissen ob Sie heute offen sind.",
+        name: "Sprechzeiten oben",
+        what: "Auf jeder Seite sichtbar, mit Hinweis auf den Notdienst. Wer die Seite öffnet, sieht sofort, ob heute geöffnet ist.",
       },
       {
-        name: "Online-Termin-Anfrage",
-        what: "Formular mit drei Wunschterminen, das direkt in Ihren Kalender oder als E-Mail an die Praxis geht. Optional Doctolib- oder Jameda-Integration.",
+        name: "Terminanfrage",
+        what: "Ein Formular mit drei Wunschterminen. Die Anfrage kommt als E-Mail in der Praxis an. Auf Wunsch binden wir Doctolib oder Jameda ein.",
       },
       {
-        name: "Behandlungen verständlich",
-        what: "Ihre Leistungen in normalem Deutsch, nicht in Fachsprache. Patient:innen vergleichen, was Sie tun mit dem, was sie suchen — wenn die Worte nicht passen, vermuten sie, dass Sie es nicht anbieten.",
+        name: "Behandlungen",
+        what: "Ihre Leistungen in Alltagssprache. Patient:innen suchen mit ihren eigenen Worten. Finden sie die nicht, nehmen sie an, dass Sie es nicht anbieten.",
       },
       {
-        name: "Team-Bereich",
-        what: "Echte Porträts der Ärzt:innen und des Praxispersonals. Drei Sätze zu jeder Person. Patient:innen wollen sehen, zu wem sie da gehen.",
+        name: "Team",
+        what: "Porträts von Ärzt:innen und Praxisteam, zu jeder Person ein paar Sätze. Man möchte wissen, zu wem man geht.",
       },
       {
-        name: "Anfahrt & Parken",
-        what: "Karte mit Hinweisen zu Parkplätzen, ÖPNV-Haltestellen, Aufzug ja/nein. Klingt nebensächlich — entscheidet bei älteren Patient:innen oft die Auswahl.",
+        name: "Anfahrt und Parken",
+        what: "Karte, Haltestellen, Parkplätze und ob es einen Aufzug gibt. Für ältere Patient:innen gibt das oft den Ausschlag.",
       },
       {
-        name: "Datenschutz-Sauberkeit",
-        what: "Praxis-Websites werden öfter abgemahnt als andere Branchen. Wir richten Cookie-Banner, Datenschutzerklärung, Impressum so ein, dass die Abmahnanwälte keine Angriffsfläche finden.",
+        name: "Datenschutz",
+        what: "Impressum, Datenschutzerklärung und Cookie-Hinweis richten wir vor dem Start passend zu den Funktionen der Seite ein, also auch zu Terminformular und Karte.",
       },
     ],
     process: [
       {
         woche: "Woche 1",
-        what: "Erstgespräch, Sichtung der bestehenden Seite, Inhalts-Sammlung (Texte, Bilder, Team-Daten). Wir schreiben mit, wenn Texte fehlen.",
+        what: "Erstes Gespräch und ein Blick auf Ihre bisherige Seite. Sie schicken Texte, Fotos und Angaben zum Team. Wo Texte fehlen, schreiben wir sie.",
       },
       {
         woche: "Woche 2",
-        what: "Wir bauen die Seite. Sie kriegen einen Zwischenstand, gehen drüber.",
+        what: "Wir bauen die Seite. Sie bekommen einen Test-Link und schauen sie in Ruhe durch.",
       },
       {
         woche: "Woche 3",
-        what: "Eine gesammelte Korrekturrunde, dann Live-Schaltung. Termin-Formular wird mit Ihrem Sekretariat getestet.",
+        what: "Eine gesammelte Korrekturrunde, dann geht die Seite online. Das Terminformular testen wir vorher mit Ihrer Anmeldung.",
       },
     ],
-    stadtteile: [
-      "Eppendorf",
-      "Altona",
-      "Eimsbüttel",
-      "Winterhude",
-      "Harvestehude",
-      "Rotherbaum",
-    ],
-    schlussZitat: "Eine Praxis-Seite muss seriös wirken,",
-    schlussZitatItalic: "bevor der Patient die Klingel drückt.",
+    schlussZitat: "Eine Praxis-Seite muss seriös wirken, bevor jemand bei Ihnen klingelt.",
   },
 ];
 

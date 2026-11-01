@@ -1,31 +1,33 @@
 /**
- * Hamburger Standorte / Stadtteile — Long-Tail-SEO-Schicht.
+ * Hamburger Standorte / Stadtteile, die lokale Schicht der Seite.
  *
  * Jeder Eintrag bekommt eine eigene Seite unter /standorte/[slug]
  * und zielt auf lokale Suchen wie "Webdesign Eimsbüttel" ab. Für
- * diese Phrasen ist die Konkurrenz deutlich kleiner als für
- * "Webdesign Hamburg", die Klick-Wahrscheinlichkeit höher und die
- * Anfrage-Qualität besser (lokale Suchende konvertieren).
+ * diese Suchbegriffe ist die Konkurrenz kleiner als für
+ * "Webdesign Hamburg".
  *
- * Bewusst keine Doorway-Pages: jeder Standort hat eigenen,
- * substanziellen Text über das Viertel, die typischen Betriebe
- * dort und welche Branchen wir für die Gegend empfohlen.
+ * Bewusst keine Doorway-Pages: jeder Standort hat eigenen Text über
+ * das Viertel, die Betriebe dort und die Branchen, die dazu passen.
+ *
+ * Textregeln: keine Prozentwerte oder Statistiken, keine Aussagen über
+ * frühere Kunden im Viertel, keine Ranking-Versprechen. Straßen und
+ * Orte müssen wirklich im jeweiligen Stadtteil oder Bezirk liegen.
  */
 
 export type Standort = {
   slug: string;
   name: string;
-  /** Subtitle für Hero + OG. */
+  /** Ein, zwei Sätze für Kopf, Übersichtstabelle, Suche und OG-Bild. */
   tagline: string;
-  /** Kurze Charakterisierung des Viertels. */
+  /** Kurze Beschreibung des Viertels (großer Einstiegsabsatz). */
   intro: string;
-  /** 2–3 Absätze: was läuft dort gerade, wer braucht eine Website. */
+  /** Zwei Absätze: wie dort gesucht wird und wie wir die Seite bauen. */
   body: string[];
-  /** Typische Anker-Straßen / Orte (für lokale Konkretheit). */
+  /** Straßen und Orte im Viertel (Liste „Orte im Viertel“). */
   anker: string[];
-  /** Welche Sitalo-Branchen passen besonders zu dem Stadtteil. */
+  /** Welche Sitalo-Branchen besonders zu dem Stadtteil passen. */
   empfohleneBranchen: { slug: string; label: string; warum: string }[];
-  /** Pull-Quote für Editorial-Akzent. */
+  /** Randnotiz „Beobachtung“: eine konkrete Arbeitsnotiz, kein Slogan. */
   pullQuote: string;
 };
 
@@ -34,11 +36,11 @@ export const STANDORTE: Standort[] = [
     slug: "eimsbuettel",
     name: "Eimsbüttel",
     tagline:
-      "Cafés, kleine Praxen, kreative Werkstätten — und überraschend wenig sichtbar.",
-    intro: `Eimsbüttel ist eines der lebendigsten Hamburger Viertel — Osterstraße, Eppendorfer Weg, Heußweg. Dichte Mischung aus Gastro, kleinen Praxen, Friseuren und Boutiquen. Auf 100 Metern findet man drei Cafés, zwei Heilpraktiker und einen Buchladen. Aber: wenn man bei Google „Friseur Eimsbüttel" tippt, sieht man fünf Einträge mit veralteten Websites — und alle bekommen Termine.`,
+      "Rund um Osterstraße und Eppendorfer Weg liegen Cafés, Salons und kleine Praxen dicht beieinander. Gesucht wird hier nach der Straße, nicht nach der Stadt.",
+    intro: `Eimsbüttel ist dicht bebaut und dicht bewohnt. An Osterstraße, Eppendorfer Weg und Heußweg liegen Cafés, Friseure, Buchläden und Praxen oft nur ein paar Hausnummern auseinander. Wer hier etwas sucht, tippt meist den Straßennamen mit ein: „Friseur Osterstraße“ statt „Friseur Hamburg“.`,
     body: [
-      `Die meisten Eimsbüttler Betriebe sind klein, persönlich geführt und qualitativ stark — aber online unterrepräsentiert. Eine 2017er-Website mit PDF-Speisekarte ist hier eher Norm als Ausnahme. Das ist eine Chance: für lokale Suchen reicht eine moderne, schnelle Seite, um direkt im Top-3 zu landen.`,
-      `Wir kennen das Viertel. Wir haben hier viel Zeit verbracht. Bei einer Sitalo-Website für Eimsbüttel bauen wir nicht nur die Seite — wir wählen die Suchbegriffe so, dass Sie für „Friseur Osterstraße" oder „Café Eppendorfer Weg" gefunden werden, nicht nur für allgemeines „Webdesign Hamburg".`,
+      "Viele Betriebe im Viertel sind klein und werden vom Inhaber selbst geführt. Die Website ist manchmal Jahre alt, die Speisekarte liegt als PDF daneben. Für die Suche im Viertel braucht es keine große Seite. Es reicht eine schnelle, aktuelle Seite mit Adresse, Öffnungszeiten und dem richtigen Straßennamen im Text.",
+      "Für einen Betrieb in Eimsbüttel wählen wir die Suchbegriffe nach der Lage, also Osterstraße, Eppendorfer Weg oder Hoheluft. Diese Namen stehen im Seitentitel und im Text, damit Google Ihre Seite der richtigen Ecke zuordnet.",
     ],
     anker: [
       "Osterstraße",
@@ -50,34 +52,34 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "friseur",
-        label: "Friseure & Salons",
+        label: "Friseure und Salons",
         warum:
-          "Hohe Dichte, viele junge Kunden, Optik entscheidet. Mit guter Galerie + Online-Termin gewinnt man die Stadtteil-Suche.",
+          "Viele Salons auf engem Raum. Wer seine Arbeit in einer Galerie zeigt und eine Terminanfrage anbietet, hebt sich von der Nachbarschaft ab.",
       },
       {
         slug: "gastro",
-        label: "Cafés & Restaurants",
-        warum: `Speisekarte muss aktuell sein. Eimsbüttler suchen gezielt nach „heute geöffnet" — wer das nicht zeigt, wird übersprungen.`,
+        label: "Cafés und Restaurants",
+        warum:
+          "Gesucht wird oft kurzfristig, ob heute geöffnet ist. Öffnungszeiten und Tageskarte stehen deshalb ganz oben.",
       },
       {
         slug: "praxis",
-        label: "Arztpraxen & Heilpraktiker",
+        label: "Praxen und Heilpraktiker",
         warum:
-          "Patienten googeln vor jedem Erstbesuch. Saubere Sprechzeiten + Anfahrt + Spezialisierung sind hier wichtiger als Hochglanz-Design.",
+          "Vor dem ersten Besuch werden Sprechzeiten, Anfahrt und Schwerpunkt geprüft. Das ist hier wichtiger als eine aufwendige Gestaltung.",
       },
     ],
-    pullQuote:
-      "Wer in Eimsbüttel online sichtbar ist, gewinnt — auch wenn der bessere Anbieter zwei Straßen weiter sitzt.",
+    pullQuote: `Im Viertel sucht man nach „Osterstraße“, nicht nach „Hamburg“. Deshalb gehört der Straßenname in den Seitentitel.`,
   },
   {
     slug: "altona",
     name: "Altona",
-    tagline: `Urban, gemischt, lebendig. Vom Bahnhof Altona bis nach Ottensen — und niemand sucht „Webdesign", alle suchen „Restaurant Ottensen".`,
-    intro:
-      "Altona ist Hamburg im Konzentrat: vom Bahnhof bis Ottensen mischen sich Gastro, Werkstätten, Boutiquen, Kanzleien und Kreativ-Studios auf engstem Raum. Ottensen hat den Boutique-Charakter, der Bahnhofsbereich die Hektik. Beide Lagen bedeuten: dichte Suche pro Quadratmeter, hoher Wettbewerb in der echten Welt — und überraschend offene Suchergebnisse online.",
+    tagline:
+      "Ottensen, Altona-Altstadt und Altona-Nord liegen nah beieinander, werden aber getrennt gesucht. Ihre Seite sollte den richtigen Namen tragen.",
+    intro: `Zum Bezirk Altona gehören sehr unterschiedliche Ecken. Ottensen hat kleine Läden und viele Cafés, rund um den Bahnhof Altona und die Große Bergstraße ist es geschäftiger. Für die Suche zählt das: Ein Café in Ottensen wird eher unter „Café Ottensen“ gesucht als unter „Café Altona“.`,
     body: [
-      `Für Altonaer Betriebe ist die wichtigste Frage nicht „brauche ich eine Website?", sondern „werde ich für meine Straße gefunden?". Jemand sucht nach „Tattoo Ottensen", „Friseur Bahrenfelder Straße", „Frühstück Altona". Wenn Sie für genau diese Begriffe nicht erscheinen, sind Sie raus — selbst wenn Sie das beste Angebot in der Gegend haben.`,
-      `Wir bauen Altonaer Websites genau darauf zugeschnitten: lokale Keywords pro Stadtteilteil, Google-Business-Profil-optimiert, mobile First (weil 80 % der Suchen unterwegs passieren). Anfragen kommen über das Handy in der Bahn oder auf der Reeperbahn, nicht vom Bürorechner.`,
+      `Für einen Betrieb in Altona ist die Frage deshalb weniger, ob er eine Website braucht, sondern ob er für seine Ecke gefunden wird. Gesucht wird zum Beispiel nach „Frühstück Ottensen“ oder „Friseur Bahrenfelder Straße“. Taucht Ihr Betrieb dort nicht auf, fällt er aus der Auswahl, auch wenn das Angebot gut ist.`,
+      "Wir richten die Website und Ihr Google-Unternehmensprofil auf den genauen Ortsteil aus. Gebaut wird zuerst die Ansicht fürs Handy, weil in Altona viel unterwegs gesucht wird, in der S-Bahn oder auf dem Weg zum Termin.",
     ],
     anker: [
       "Ottensen",
@@ -89,39 +91,39 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "gastro",
-        label: "Gastro, Bars & Cafés",
+        label: "Gastro, Bars und Cafés",
         warum:
-          "Höchste Dichte in Hamburg. Wer die Wochenkarte selbst pflegen kann, gewinnt — wir bauen das ohne CMS-Bürokratie.",
+          "Viele Lokale auf engem Raum. Wer Wochenkarte und Öffnungszeiten schnell ändern kann, ist auf der eigenen Seite aktueller als auf jedem Portal.",
       },
       {
         slug: "friseur",
-        label: "Friseure & Studios",
+        label: "Friseure und Studios",
         warum:
-          "Optik-getrieben, jung. Eine hochwertige Galerie plus Termin-Anfrage hebt Sie aus der Masse.",
+          "Hier wird nach Bildern entschieden. Eine gute Galerie und eine einfache Terminanfrage tragen den größten Teil der Seite.",
       },
       {
         slug: "kanzlei",
-        label: "Kleine Kanzleien",
+        label: "Kanzleien",
         warum:
-          "Altona ist Anwaltsdichte-Spitze. Ein klares Rechtsgebiet, seriöses Design und Erstberatungs-Anker reichen, um lokal sichtbar zu sein.",
+          "Ein klar benanntes Rechtsgebiet, eine sachliche Seite und ein Hinweis zur Erstberatung. Mehr braucht es für die Suche im Bezirk selten.",
       },
     ],
-    pullQuote: `Altonaer Suchen sind hyperlokal. Wer nur „Hamburg" optimiert hat, verliert gegen den Betrieb, der „Ottensen" optimiert hat.`,
+    pullQuote: `Wer in Ottensen sitzt, sollte „Ottensen“ auf der Seite stehen haben. „Altona“ allein ist für die Suche zu ungenau.`,
   },
   {
     slug: "eppendorf",
     name: "Eppendorf",
     tagline:
-      "Gehoben, ruhig, viele Praxen — und ein Publikum, das genau hinschaut.",
+      "Viele Praxen rund um das UKE, dazu Studios und kleine Läden. Die Kundschaft vergleicht genau, bevor sie einen Termin macht.",
     intro:
-      "Eppendorf ist Hamburgs Praxis-Bezirk. Mit dem UKE als Anker konzentrieren sich Ärzte, Heilpraktiker, Beauty-Studios und Boutiquen entlang Eppendorfer Baum und Klosterstern. Der typische Kunde hier ist kaufkräftig, anspruchsvoll und vergleicht — bevor er einen Termin macht, bevor er bestellt.",
+      "In Eppendorf sitzen viele Arztpraxen, nicht zuletzt wegen des Universitätsklinikums an der Martinistraße. Dazu kommen Heilpraktiker, Kosmetikstudios und Läden entlang Eppendorfer Baum und Eppendorfer Landstraße. Wer hier einen Termin sucht, sieht sich mehrere Websites an, bevor er anruft.",
     body: [
-      "Für Eppendorfer Anbieter zählt der erste Eindruck mehr als anderswo. Die 75 %-Regel von Stanford (drei Viertel beurteilen einen Anbieter nach dem Website-Design) trifft hier doppelt — eine billige Seite kostet hier nicht nur Vertrauen, sondern ist auch wirtschaftlich teuer, weil das Eppendorfer Publikum gut zahlt.",
-      "Wir bauen für Eppendorfer Praxen, Boutiquen und Studios bewusst leise: ruhige Typografie, saubere Buchung, weniger Marketing-Lärm. Das passt zum Stadtteil und signalisiert genau die Diskretion, die hier erwartet wird.",
+      "Der erste Eindruck von der Website zählt deshalb viel. Eine Seite, die am Handy verrutscht oder lieblos wirkt, lässt auf die Praxis oder das Studio dahinter schließen. Bei einer Kundschaft, die auf Qualität achtet, kostet das Termine.",
+      "Für Praxen, Studios und Läden in Eppendorf bauen wir eher leise Seiten: ruhige Schrift, viel Platz, eine einfache Terminanfrage. Das passt zum Viertel und zu Menschen, die Zurückhaltung schätzen.",
     ],
     anker: [
       "Eppendorfer Baum",
-      "Klosterstern",
+      "Eppendorfer Marktplatz",
       "Eppendorfer Landstraße",
       "Lehmweg",
       "Martinistraße (UKE)",
@@ -131,74 +133,74 @@ export const STANDORTE: Standort[] = [
         slug: "praxis",
         label: "Arzt- und Zahnarztpraxen",
         warum:
-          "Eppendorf-Praxen suchen Patienten, die online recherchieren. Eine seriöse Seite mit klarer Spezialisierung gewinnt.",
+          "Neue Patient:innen informieren sich vorher im Netz. Eine sachliche Seite mit klarem Schwerpunkt und den Sprechzeiten ganz oben hilft hier am meisten.",
       },
       {
         slug: "kosmetik",
-        label: "Kosmetik & Beauty",
+        label: "Kosmetik und Beauty",
         warum:
-          "Hier zählt Atmosphäre. Wir bauen Galerien mit Vorher/Nachher, ruhige Termin-Buchung, kein Schnickschnack.",
+          "Hier zählt der Eindruck der Räume. Wir zeigen sie in einer ruhigen Galerie, auf Wunsch mit Vorher-Nachher und einer einfachen Terminanfrage.",
       },
       {
         slug: "kanzlei",
         label: "Kanzleien",
         warum:
-          "Diskret, sachlich, kompetent. Eppendorfer Kanzleien wollen vor allem nicht aufdringlich wirken — wir bauen genau das.",
+          "Sachlich und diskret. Die Seite nennt Rechtsgebiete und Ansprechpartner und drängt sich nicht auf.",
       },
     ],
     pullQuote:
-      "In Eppendorf signalisiert eine billig wirkende Website: hier ist auch sonst nichts auf der Höhe. Das Publikum zieht weiter.",
+      "In Eppendorf liegt die nächste Praxis oft nur ein paar Häuser weiter. Den Vergleich ziehen Patient:innen auf der Website, vor dem ersten Anruf.",
   },
   {
     slug: "st-pauli",
     name: "St. Pauli",
     tagline:
-      "Bunt, laut, eigen. Tattoo-Studios, Bars, Hostels, Restaurants — und Suchanfragen, die nie schlafen.",
-    intro: `St. Pauli funktioniert online anders als andere Hamburger Viertel. Touristen, Wochenend-Hamburger, Stammgäste, Kiez-Insider — alle suchen unterschiedliche Begriffe, oft auf dem Handy, oft nachts. „Bar mit Live-Musik St. Pauli", „Tattoo-Studio Reeperbahn", „Frühstück nach Reeperbahn-Tour" sind reale Queries.`,
+      "Bars, Tattoo-Studios, Hostels und Restaurants rund um Reeperbahn und Hamburger Berg. Gesucht wird oft abends und meistens am Handy.",
+    intro: `Auf St. Pauli suchen sehr verschiedene Leute: Gäste von außerhalb, Hamburger am Wochenende, Stammgäste aus dem Viertel. Gesucht wird oft spät und unterwegs, zum Beispiel nach „Bar mit Livemusik St. Pauli“, „Tattoo Reeperbahn“ oder „Frühstück Hamburger Berg“.`,
     body: [
-      "St. Pauli-Betriebe sind oft persönlichkeitsgetrieben — Inhaber sind Persönlichkeiten, Stil ist eigenwillig, Branding ist nicht austauschbar. Genau das soll die Website transportieren: keine Stock-Bilder, keine 0815-Vorlage, kein Corporate-Speak. Wir setzen darauf, dass der Charakter Ihres Ladens auf der Seite spürbar wird.",
-      "Technisch zählt auf St. Pauli vor allem: Mobile First (alle suchen unterwegs), schnelle Ladezeiten (3G mitten zwischen Reeperbahn-Häusern ist Realität), Direktwahl-Knopf, Google-Maps. Wir bauen die Seiten so, dass sie auch im schlechtesten Netz funktionieren.",
+      "Viele Läden hier leben von den Leuten, die sie führen. Die Website soll das zeigen, mit eigenen Fotos und Texten, die so klingen, wie hinter dem Tresen gesprochen wird. Bilder aus einer Bilddatenbank passen nicht zu einem Laden mit eigenem Gesicht.",
+      "Technisch zählt vor allem, dass die Seite am Handy schnell lädt, auch wenn das Netz abends voll ist. Telefonnummer und Wegbeschreibung lassen sich antippen. Wir halten die Bilder klein und die Seite schlank.",
     ],
     anker: [
       "Reeperbahn",
       "Hamburger Berg",
       "Talstraße",
       "Hafenrand",
-      "Schanzenviertel-Grenze",
+      "Grenze zum Schanzenviertel",
     ],
     empfohleneBranchen: [
       {
         slug: "gastro",
-        label: "Bars, Restaurants & Cafés",
+        label: "Bars, Restaurants und Cafés",
         warum:
-          "Hier entscheiden Bilder und Atmosphäre. Speisekarte muss tagesaktuell sein, sonst klickt der Kiez-Tourist weiter.",
+          "Bilder und Stimmung entscheiden. Karte und Öffnungszeiten müssen stimmen, sonst geht der Gast zur nächsten Tür.",
       },
       {
         slug: "hotel",
-        label: "Boutique-Hotels & Hostels",
+        label: "Hotels und Hostels",
         warum:
-          "Direktbuchung ohne Booking.com-Provision spart 15–18 %. Wir bauen die Seite so, dass Gäste direkt anfragen.",
+          "Jede Direktbuchung spart die Provision des Portals. Die Seite macht es Gästen leicht, direkt bei Ihnen anzufragen.",
       },
       {
         slug: "kosmetik",
-        label: "Tattoo & Beauty-Studios",
+        label: "Tattoo- und Beauty-Studios",
         warum:
-          "Portfolio ist alles. Wir bauen Galerien, die laden — auch wenn das Bild 4 MB groß ist, soll's flüssig wirken.",
+          "Das Portfolio ist das Wichtigste. Wir bauen Galerien, die auch mit großen Bildern am Handy flüssig laden.",
       },
     ],
     pullQuote:
-      "Auf St. Pauli zählt Persönlichkeit. Eine Template-Website signalisiert: hier ist eigentlich nichts Besonderes.",
+      "Wer auf St. Pauli einen Laden mit eigenem Stil führt, braucht eine Seite in diesem Stil. Eigene Fotos tragen dazu mehr bei als jede Schrift.",
   },
   {
     slug: "winterhude",
     name: "Winterhude",
     tagline:
-      "Boutique-Charakter zwischen Stadtpark und Goldbekkanal. Familien, Selbstständige, kleine Geschäfte.",
+      "Wohnviertel zwischen Stadtpark und Goldbekkanal. Kleine Läden, Praxen und Cafés liegen am Mühlenkamp und rund um den Winterhuder Marktplatz.",
     intro:
-      "Winterhude ist der Stadtteil zwischen Hochschicht und Studentenmilieu — gehoben, aber nicht abgehoben. Mühlenkamp und Sierichstraße sind die Handelsachsen, dazwischen ruhige Wohnstraßen mit kleinen Praxen, Boutiquen, Coaching-Räumen, Cafés.",
+      "Winterhude ist gutbürgerlich, ohne steif zu sein. Am Mühlenkamp und an der Sierichstraße liegen die Geschäfte, in den ruhigen Seitenstraßen kleine Praxen, Studios, Coaching-Räume und Cafés.",
     body: [
-      `Winterhude-Kunden recherchieren gründlich. Sie googeln drei Anbieter, schauen sich alle drei Websites an, lesen das „Über uns", checken Bewertungen — und entscheiden dann. Wer mit einer hingeworfenen Wix-Seite antritt, verliert hier zuverlässig gegen den Wettbewerber, der eine echte Geschichte erzählt.`,
-      `Wir bauen für Winterhuder Anbieter Seiten, die Substanz haben: klare Spezialisierung, persönliche Tonalität, lokale Anker (Mühlenkamp, Sierichstraße, Stadtpark) in den Texten. Das macht den Unterschied zwischen „könnte irgendwo sein" und „kennen wir aus dem Viertel".`,
+      `Wer in Winterhude einen Anbieter sucht, sieht sich meist mehrere Websites an, liest die Seite über das Team und die Bewertungen und entscheidet dann. Eine schnell zusammengeklickte Baukasten-Seite verliert dabei gegen den Mitbewerber, der erklärt, wer er ist und was er anders macht.`,
+      `Die Texte für Betriebe in Winterhude schreiben wir deshalb ausführlicher: was Sie genau anbieten, wer dahintersteht und wo man Sie findet. Orte wie Mühlenkamp oder Stadtpark stehen im Text, damit die Seite nach dem Viertel klingt und auch so gefunden wird.`,
     ],
     anker: [
       "Mühlenkamp",
@@ -210,35 +212,35 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "praxis",
-        label: "Praxen & Coaching",
+        label: "Praxen und Coaching",
         warum:
-          "Winterhuder Kunden suchen Substanz, nicht Marketing. Wir bauen Seiten mit Tiefe statt Schaufenster-Charakter.",
+          "Hier wird genau gelesen. Wir bauen Seiten mit ausführlichen Texten zu Schwerpunkt und Arbeitsweise.",
       },
       {
         slug: "kosmetik",
-        label: "Kosmetik-Studios",
+        label: "Kosmetikstudios",
         warum:
-          "Hier zählt das Atmosphäre-Bild fast mehr als der Service. Wir bauen ruhige, hochwertige Galerien.",
+          "Die Räume verkaufen mit. Wir zeigen sie in einer ruhigen, hochwertigen Galerie.",
       },
       {
         slug: "gastro",
-        label: "Cafés mit Charakter",
-        warum: `Winterhuder Cafés profitieren von „Geheimtipp"-Charakter. Wir transportieren das in den Texten, nicht in Sterne-Werbung.`,
+        label: "Cafés mit Stammgästen",
+        warum: `Viele Cafés leben hier von Empfehlungen. Wir schreiben in den Texten, was Ihr Café ausmacht, und werben nicht mit Sternen.`,
       },
     ],
     pullQuote:
-      "In Winterhude verliert man gegen den Wettbewerber, der eine echte Geschichte erzählt — nicht gegen den mit dem größten Werbe-Budget.",
+      "In Winterhude wird die Seite „Über uns“ tatsächlich gelesen. Ein paar echte Sätze über Sie wirken dort mehr als jedes Werbeversprechen.",
   },
   {
     slug: "bergedorf",
     name: "Bergedorf",
     tagline:
-      "Hamburgs südöstliches Tor — solide Familienbetriebe, Handwerk, kleine Praxen. Hier wirkt eine ordentliche Website wie ein Wettbewerbsvorteil.",
+      "Hamburgs Südosten mit eigenem Zentrum am Sachsentor. Viele Betriebe sind familiengeführt, und eine gut gemachte Website fällt hier auf.",
     intro:
-      "Bergedorf hat den Charakter einer kleinen eigenständigen Stadt — Sachsentor, Bergedorfer Schloss, eigener S-Bahnhof. Die Wirtschaft ist familiengeführt: Handwerker, Pflegedienste, Steuerberater, eine handvoll Praxen. Hier sind 2015er-Websites die Norm. Wer eine moderne Seite hat, sticht sofort heraus.",
+      "Bergedorf liegt im Südosten Hamburgs und wirkt wie eine eigene Kleinstadt, mit dem Sachsentor als Einkaufsstraße, dem Bergedorfer Schloss und einem eigenen S-Bahnhof. Die Wirtschaft ist familiengeführt: Handwerksbetriebe, Pflegedienste, Steuerberater, einige Praxen.",
     body: [
-      `Bergedorfer Kunden bleiben lokal — sie googeln nicht „Hamburg", sie googeln „Bergedorf". Das macht die Konkurrenz im Suchergebnis überschaubar, aber die Kunden-Loyalität bemerkenswert hoch: wer einmal als seriöser Anbieter wahrgenommen wird, bekommt Empfehlungen über mehrere Generationen.`,
-      "Wir bauen Bergedorfer Seiten bewusst klar und vertrauensbildend. Keine Hipster-Optik, keine ausufernden Animationen — sondern saubere Struktur, sichtbare Telefonnummer, klare Leistungsbeschreibung. Das passt zur Klientel und gewinnt die lokale Suche.",
+      `Wer hier etwas sucht, sucht nach „Bergedorf“ und selten nach „Hamburg“. Damit ist die Auswahl in den Suchergebnissen kleiner als in der Innenstadt. Wer einmal als verlässlicher Betrieb gilt, wird im Ort weiterempfohlen, und auch dann sehen sich die Leute die Website noch an.`,
+      "Seiten für Bergedorfer Betriebe bauen wir klar und sachlich. Die Telefonnummer steht sichtbar oben, die Leistungen sind kurz beschrieben, das Einsatzgebiet ist genannt. Aufwendige Animationen lassen wir weg, sie passen nicht zur Kundschaft.",
     ],
     anker: [
       "Sachsentor",
@@ -250,36 +252,36 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "handwerker",
-        label: "Handwerker & Betriebe",
+        label: "Handwerk und Betriebe",
         warum:
-          "Hier wird viel über Mund-zu-Mund vergeben, aber neue Kunden googeln. Eine seriöse Seite mit Referenzbildern + Einsatzgebiet-Karte gewinnt sofort.",
+          "Viele Aufträge kommen über Empfehlungen, neue Kund:innen schauen trotzdem online nach. Referenzbilder und ein klar genanntes Einsatzgebiet beantworten ihre ersten Fragen.",
       },
       {
         slug: "pflege",
         label: "Pflegedienste",
         warum:
-          "Angehörige in Bergedorf suchen lokal. Bewerbungsformular für Pflegekräfte + sichtbare Notfall-Nummer machen den Unterschied.",
+          "Angehörige suchen im Ort. Eine sichtbare Notfallnummer und ein Bewerbungsformular für Pflegekräfte gehören auf die Seite.",
       },
       {
         slug: "kanzlei",
-        label: "Steuer- & Anwaltskanzleien",
+        label: "Steuer- und Anwaltskanzleien",
         warum:
-          "Familienbetriebe brauchen Steuerberater vor Ort. Eine klare Spezialisierung und Erreichbarkeit zeigen, dass man der Richtige ist.",
+          "Familienbetriebe suchen Beratung vor Ort. Eine Seite mit klarem Schwerpunkt und Sprechzeiten zeigt, dass Sie zuständig sind.",
       },
     ],
     pullQuote:
-      "Bergedorfer Kunden vergleichen drei Anbieter — und nehmen den mit dem solidesten Auftritt. Hochglanz schadet eher.",
+      "Hochglanz wirkt in Bergedorf schnell fremd. Eine sachliche Seite mit der Telefonnummer oben passt besser zu den Betrieben hier.",
   },
   {
     slug: "harburg",
     name: "Harburg",
     tagline:
-      "Süd-Hamburg, eigenständig, industriell geprägt. Werkstätten, Handwerk, Logistik — und ein Markt, in dem man mit einer guten Seite weit kommt.",
+      "Südlich der Elbe, mit Binnenhafen, Phoenix-Viertel und der TU Hamburg. Viele Handwerks- und Gewerbebetriebe arbeiten von hier aus für den ganzen Süden.",
     intro:
-      "Harburg ist Hamburgs südlicher Anker — Phoenix-Viertel, Sandtorpark, Binnenhafen. Der Stadtteil hat eine eigene Identität, eine eigene TU (TU Hamburg-Harburg) und eine starke industrielle Tradition. Hier sitzen viele mittelständische Betriebe und Handwerker, die online noch kaum sichtbar sind.",
+      "Harburg hat eine eigene Mitte mit der Lüneburger Straße, dem Phoenix-Viertel und dem Binnenhafen. An der Schwarzenbergstraße sitzt die Technische Universität Hamburg. Dazu kommen viele mittelständische Betriebe und Handwerker, die den Hamburger Süden und das Umland bedienen.",
     body: [
-      `Harburger Suchen sind oft B2B-getrieben oder lokal-praktisch: „Schlosser Harburg", „Werkstatt Phoenix-Viertel", „Steuerberater Heimfeld". Für diese Begriffe gibt es selten ernste Suchergebnisse — vier von fünf Treffern sind Branchenbuch-Einträge oder Wix-Seiten ohne klare Botschaft.`,
-      "Wir bauen Harburger Seiten mit Fokus auf konkretes Leistungsangebot, Einsatzgebiet (oft Süd-Hamburg + Speckgürtel), und schnelle Kontaktwege. Mobile First, weil 70 % der Anfragen vom Handy aus dem Auto kommen. Direktwahl-Knopf prominent, Adresse auf Maps.",
+      `Gesucht wird in Harburg oft ganz praktisch: „Schlosser Harburg“, „Werkstatt Phoenix-Viertel“, „Steuerberater Heimfeld“. Unter den Treffern stehen dann häufig Branchenbuch-Einträge und Seiten, aus denen nicht klar wird, was der Betrieb eigentlich macht.`,
+      "Seiten für Betriebe in Harburg bauen wir mit klar beschriebenen Leistungen, einem genannten Einsatzgebiet und kurzen Wegen zum Kontakt. Das Einsatzgebiet reicht oft über die Stadtgrenze in den Landkreis Harburg. Die Telefonnummer lässt sich am Handy antippen, die Adresse öffnet die Karte.",
     ],
     anker: [
       "Phoenix-Viertel",
@@ -291,39 +293,39 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "handwerker",
-        label: "Handwerker & Werkstätten",
+        label: "Handwerk und Werkstätten",
         warum:
-          "Harburger Handwerker bedienen Süd-Hamburg + Speckgürtel. Eine klare Einsatzgebiet-Karte plus Rückruf-Anfrage spart Telefon-Zeit und gewinnt Aufträge.",
+          "Viele arbeiten im ganzen Süden Hamburgs und im Umland. Eine Karte mit dem Einsatzgebiet und eine Rückrufbitte sparen Telefonate mit Leuten, zu denen Sie nicht fahren.",
       },
       {
         slug: "reinigung",
         label: "Reinigungsfirmen",
         warum:
-          "Industrie- und Büroreinigung ist im Süden gefragt. Mit klaren Service-Paketen und Notdienst-Hinweis hebt man sich vom Branchenbuch-Mittelmaß ab.",
+          "Büro- und Gewerbereinigung wird im Süden viel gesucht. Klar beschriebene Pakete und ein Hinweis auf den Notdienst heben Sie vom Branchenbuch ab.",
       },
       {
         slug: "fitness",
-        label: "Fitness- & Sportstudios",
+        label: "Fitness- und Sportstudios",
         warum:
-          "TU Harburg + junge Familien sorgen für Bedarf. Eine moderne Seite mit Probetraining-Anker konvertiert besser als die übliche Studio-Vorlage.",
+          "Studierende und junge Familien suchen ein Studio in der Nähe. Eine Seite mit der Anfrage fürs Probetraining auf der Startseite passt dazu.",
       },
     ],
     pullQuote:
-      "Harburger Kunden googeln pragmatisch. Wer klar sagt, was er macht und wo er hinkommt, gewinnt — auch ohne Hochglanz.",
+      "In Harburg zählt, was Sie machen und wohin Sie fahren. Steht beides oben auf der Seite, ist das Wichtigste gesagt.",
   },
   {
     slug: "wandsbek",
     name: "Wandsbek",
     tagline:
-      "Großer Wandsbeker Bezirk — von Marienthal bis Rahlstedt. Mittelschicht-Hamburg, sehr lokaler Suchverhalten, viele kleine Familienbetriebe.",
+      "Großer Bezirk von Marienthal bis Rahlstedt, mit vielen kleinen Familienbetrieben. Gesucht wird nach dem eigenen Stadtteil, nicht nach dem Bezirk.",
     intro:
-      "Wandsbek ist Hamburgs flächenmäßig größter Bezirk und gleichzeitig der unterrepräsentierteste online. Wandsbeker Marktplatz, Markt, Marienthal, Rahlstedt — überall sitzen Friseure, kleine Praxen, Reinigungsfirmen, Steuerberater. Die meisten haben entweder gar keine Website oder eine Wix-Seite von 2018.",
+      "Wandsbek ist der Bezirk mit den meisten Einwohnern in Hamburg und reicht vom Wandsbeker Markt bis nach Rahlstedt. In jedem Stadtteil gibt es eigene Friseure, Praxen, Reinigungsfirmen und Steuerberater. Viele davon sind kleine Familienbetriebe.",
     body: [
-      `Wandsbeker Kunden sind extrem lokal — sie suchen „Friseur Marienthal" oder „Praxis Rahlstedt", nicht „Hamburg". Das macht den Markt aufgesplittert in kleine, sehr gewinnbare Sub-Märkte. Wer für drei dieser Mikro-Phrasen sichtbar ist, hat seine Auftragsbücher voll.`,
-      `Wir bauen Wandsbeker Seiten gezielt auf Sub-Stadtteile zugeschnitten. Eine Friseur-Seite, die nicht „Friseur Hamburg" optimiert, sondern „Friseur Marienthal" + „Friseur Wandsbeker Marktplatz", gewinnt die richtigen Kunden — die, die wirklich in der Nähe wohnen und kommen.`,
+      `Gesucht wird in Wandsbek sehr lokal, nach „Friseur Marienthal“ oder „Praxis Rahlstedt“. Der Bezirk zerfällt damit in viele kleine Suchgebiete, und in jedem davon ist die Auswahl überschaubar.`,
+      `Wir richten die Seite deshalb auf den Stadtteil aus, in dem Sie sitzen. Eine Friseur-Seite in Marienthal nennt „Marienthal“ und „Wandsbek Markt“ im Text und nicht nur „Hamburg“. So finden Sie die Kund:innen, die wirklich in der Nähe wohnen.`,
     ],
     anker: [
-      "Wandsbeker Marktplatz",
+      "Wandsbeker Marktstraße",
       "Wandsbek Markt",
       "Marienthal",
       "Rahlstedt",
@@ -332,79 +334,79 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "friseur",
-        label: "Friseure & Salons",
+        label: "Friseure und Salons",
         warum:
-          "Sehr viele kleine Familien-Salons. Eine moderne Seite mit Online-Termin gewinnt die Marienthal/Rahlstedt-Suche fast automatisch.",
+          "Viele kleine Salons in den Stadtteilen. Eine Seite mit Terminanfrage und dem richtigen Stadtteilnamen hilft bei der Suche im Viertel.",
       },
       {
         slug: "praxis",
         label: "Arzt- und Zahnarztpraxen",
         warum:
-          "Wandsbeker Praxen sind oft etablierte Familienpraxen mit Stammpatienten. Die Online-Sichtbarkeit für Neupatienten ist ausbaufähig.",
+          "Viele Praxen haben einen festen Stamm an Patient:innen. Für neue braucht es eine Seite mit Sprechzeiten, Anfahrt und Schwerpunkten.",
       },
       {
         slug: "reinigung",
         label: "Reinigungsfirmen",
         warum:
-          "Büro- und Praxisreinigung im Bezirk ist gefragt. Mit klaren Preispaketen + Anfrage-Formular sticht man aus der Wix-Konkurrenz heraus.",
+          "Büro- und Praxisreinigung wird im Bezirk gesucht. Klare Preisangaben und ein gutes Anfrageformular heben Sie ab.",
       },
     ],
-    pullQuote: `Wandsbek ist nicht „ein Markt", sondern zwanzig kleine. Wer das versteht, gewinnt sie einzeln.`,
+    pullQuote: `Wandsbek ist kein einzelner Markt, sondern viele kleine. Jeder Stadtteil wird für sich gesucht, also bekommt er auf Ihrer Seite seinen Namen.`,
   },
   {
     slug: "barmbek",
     name: "Barmbek",
     tagline:
-      "Dichte Familien-Wohngegend zwischen Stadtpark und U-Bahn Habichtstraße — Bäcker, Friseure, Praxen, sehr lokale Suchmuster.",
+      "Dichtes Wohngebiet zwischen Stadtpark und Osterbekkanal. Bäcker, Friseure und Praxen werden hier in der eigenen Straße gesucht.",
     intro:
-      "Barmbek-Nord und Barmbek-Süd zusammen sind eines der dichtbesiedeltsten Wohngebiete Hamburgs. Hamburger Straße als Einkaufsachse, Hartzloh-Quartier mit alteingesessenen Familienbetrieben, Dehnhaide mit jüngerem Gastro-Mix. Die typische Anfrage ist hyperlokal: man sucht den Friseur in der eigenen Straße, nicht in der Stadt.",
+      "Barmbek-Nord und Barmbek-Süd sind dicht bewohnt. Die Hamburger Straße ist die große Einkaufsachse, an Fuhlsbüttler Straße, Habichtstraße und Dehnhaide liegen viele kleine Geschäfte. Gesucht wird sehr nah: der Friseur in der eigenen Straße, nicht irgendwo in der Stadt.",
     body: [
-      `Barmbeker Betriebe leiden besonders unter „Wir-haben-keine-Website"-Realität — viele Stamm-Familien-Betriebe (Bäcker, Schuster, kleine Praxen) verlassen sich noch auf Schaufenster und Mund-zu-Mund. Wer hier eine moderne Seite hat, gewinnt nicht nur Online-Suchen, sondern wird auch von den Nachbar-Empfehlern leichter weitergeleitet.`,
-      "Wir bauen Barmbeker Seiten ohne Hipster-Filter: klare Öffnungszeiten, sichtbare Telefonnummer, klare Leistungen. Die Klientel ist preisbewusst und schätzt Klarheit mehr als Coolness — was perfekt zum Sitalo-Stil passt.",
+      `Viele alteingesessene Betriebe in Barmbek, ob Bäcker, Schuster oder Hausarztpraxis, setzen auf Schaufenster und Empfehlungen. Eine eigene Website fehlt oft ganz. Wer eine hat, wird bei der Suche gefunden und lässt sich leichter weiterempfehlen, weil man einfach einen Link schicken kann.`,
+      "Seiten für Barmbeker Betriebe bauen wir schlicht: Öffnungszeiten, Telefonnummer und Leistungen gut sichtbar. Die Kundschaft achtet auf den Preis und will schnell wissen, woran sie ist. Effekte braucht es dafür nicht.",
     ],
     anker: [
       "Hamburger Straße",
+      "Fuhlsbüttler Straße",
       "Habichtstraße",
       "Dehnhaide",
-      "Hartzloh-Quartier",
       "Mundsburger Damm",
     ],
     empfohleneBranchen: [
       {
         slug: "friseur",
-        label: "Friseure & Salons",
+        label: "Friseure und Salons",
         warum:
-          "Sehr hohe Dichte, viele Stamm-Kunden. Eine Seite mit Online-Termin macht den Unterschied bei Neukunden, die spontan einen Termin suchen.",
+          "Viele Salons mit Stammkundschaft. Für neue Kund:innen, die kurzfristig einen Termin suchen, macht die Terminanfrage auf der Seite den Unterschied.",
       },
       {
         slug: "praxis",
-        label: "Hausärzte & Zahnarztpraxen",
+        label: "Hausarzt- und Zahnarztpraxen",
         warum:
-          "Familien-Klientel sucht ortsnah. Klare Sprechzeiten, Anfahrt, Spezialisierung — mehr braucht es nicht, aber das fehlt bei vielen Konkurrenz-Praxen.",
+          "Familien suchen in der Nähe. Sprechzeiten, Anfahrt und Schwerpunkte reichen, solange man sie leicht findet.",
       },
       {
         slug: "gastro",
-        label: "Bäcker, Cafés & Imbisse",
-        warum: `Lokale Suchanfragen nach „Bäcker Barmbek" oder „Café Habichtstraße" sind real und schwach besetzt. Ein einfacher Onepager genügt für die Top-3-Position.`,
+        label: "Bäcker, Cafés und Imbisse",
+        warum: `Gesucht wird nach „Bäcker Barmbek“ oder „Café Habichtstraße“. Für kleine Betriebe reicht dafür oft eine einzelne, gut gemachte Seite.`,
       },
     ],
     pullQuote:
-      "In Barmbek gewinnt nicht das beste Marketing, sondern die ehrlichste Seite — weil die Nachbarn das merken.",
+      "In Barmbek kennt man sich. Eine Seite, die mehr verspricht, als der Laden hält, fällt hier schnell auf.",
   },
   {
     slug: "bramfeld",
     name: "Bramfeld",
     tagline:
-      "Hamburger Nordosten — Wohngegend mit eigener Geschäftsachse, viel Handwerk, etablierte Familienpraxen.",
+      "Wohngegend im Hamburger Nordosten mit der Bramfelder Chaussee als Hauptstraße. Viele Handwerksbetriebe und Familienpraxen sind seit Langem am Ort.",
     intro:
-      "Bramfeld ist klassisches Hamburger Wohngebiet im Nordosten, mit Bramfelder Chaussee als Lebensader. Hartzlohplatz, Steilshooper Straße, Fabriciusstraße — entlang dieser Straßen sitzen Handwerker, kleine Werkstätten, Friseure und etablierte Praxen. Die Klientel ist mittelständisch, eher älter, sehr loyal — und googelt zunehmend, gerade beim Generationswechsel.",
+      "Bramfeld ist Wohngebiet im Nordosten Hamburgs, mit der Bramfelder Chaussee als Hauptstraße. Entlang der Chaussee, der Fabriciusstraße und der Steilshooper Straße sitzen Handwerksbetriebe, Werkstätten, Friseure und Praxen. Die Kundschaft ist eher älter und bleibt ihren Betrieben treu. Mit jeder neuen Generation wird aber mehr online gesucht.",
     body: [
-      `Bramfelder Suchverhalten ist pragmatisch: „Schlosser Bramfeld", „Praxis Bramfelder Chaussee", „Friseur Hartzlohplatz". Die Konkurrenz im Suchergebnis ist überschaubar — meistens Branchenbuch-Einträge oder zwei Jahre alte Wix-Seiten. Eine moderne, klare Seite landet hier verlässlich auf Platz 1-3.`,
-      "Wir bauen für Bramfelder Betriebe eher zurückhaltend: solide Typografie, klare Strukturen, sichtbare Erreichbarkeit. Keine ausufernden Animationen — das wirkt hier eher fremd als hochwertig. Substance statt Show, und genau das hebt die Seite ab.",
+      `Gesucht wird in Bramfeld pragmatisch: „Schlosser Bramfeld“, „Praxis Bramfelder Chaussee“, „Friseur Bramfeld“. Unter den Treffern finden sich viele Branchenbuch-Einträge und ältere Baukasten-Seiten. Eine klare, aktuelle Seite hat hier gute Chancen, weit oben zu stehen.`,
+      "Für Bramfelder Betriebe bauen wir zurückhaltend: solide Schrift, klare Gliederung, die Telefonnummer gut sichtbar. Viel Bewegung auf der Seite wirkt hier eher fremd als hochwertig.",
     ],
     anker: [
       "Bramfelder Chaussee",
-      "Hartzlohplatz",
+      "Bramfelder See",
       "Fabriciusstraße",
       "Steilshooper Straße",
       "Bramfelder Dorfplatz",
@@ -412,77 +414,77 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "handwerker",
-        label: "Handwerker & Werkstätten",
+        label: "Handwerk und Werkstätten",
         warum:
-          "Hohe Dichte, oft seit Jahrzehnten am Ort. Eine Seite mit Einsatzgebiet, Notfall-Erreichbarkeit und Referenz-Galerie gewinnt Neukunden, die googeln statt zu fragen.",
+          "Viele Betriebe sind lange am Ort. Neue Kund:innen fragen nicht mehr den Nachbarn, sondern suchen online. Einsatzgebiet, Notdienst und Referenzbilder beantworten ihre ersten Fragen.",
       },
       {
         slug: "praxis",
         label: "Familien- und Zahnarztpraxen",
         warum:
-          "Stammpatienten sind treu, aber Neupatienten googeln. Klare Sprechzeiten, Notdienst-Vertretung und Anfahrt-Info reichen, um die richtigen anzuziehen.",
+          "Stammpatient:innen bleiben, neue suchen online. Sprechzeiten, Vertretung im Notdienst und Anfahrt reichen dafür.",
       },
       {
         slug: "friseur",
-        label: "Friseure & Kosmetik",
+        label: "Friseure und Kosmetik",
         warum:
-          "Hier zählt Verlässlichkeit. Eine Seite mit Online-Termin, Galerie und ehrlicher Beschreibung gewinnt gegen die unklare Konkurrenz-Wix-Seite.",
+          "Hier zählt Verlässlichkeit. Eine Seite mit Terminanfrage, Galerie und einer klaren Beschreibung des Salons genügt.",
       },
     ],
     pullQuote:
-      "Bramfelder Kunden vergeben Aufträge nach Vertrauen, nicht nach Hype. Die Website darf das nicht kaputtmachen.",
+      "In Bramfeld zählt der Ruf im Ort. Die Website soll ihn bestätigen und ihm nicht mit Effekten im Weg stehen.",
   },
   {
     slug: "niendorf",
     name: "Niendorf",
     tagline:
-      "Hamburgs Nordwesten — Tibarg, Niendorfer Markt, gehobenes Wohngebiet mit Kaufkraft und gründlichem Vergleichsverhalten.",
+      "Ruhiges Wohnviertel im Nordwesten mit dem Tibarg als Einkaufsstraße. Hier wird gründlich verglichen, bevor jemand einen Termin macht.",
     intro:
-      "Niendorf ist Hamburgs gehobene Vorstadt-Ecke mit Tibarg als Einkaufsachse und Niendorfer Markt als Wochenend-Anker. Familien, viele Selbstständige, eine bemerkenswerte Dichte an Praxen, Kosmetik-Studios und kleinen Anwaltskanzleien. Die Klientel ist anspruchsvoll, kaufkraftstark und vergleicht intensiv vor jeder Buchung.",
+      "Niendorf liegt im Nordwesten Hamburgs. Der Tibarg ist die Einkaufsstraße, rund um den Niendorfer Markt liegt der alte Ortskern. Hier wohnen viele Familien und Selbstständige, und es gibt viele Praxen, Kosmetikstudios und kleine Kanzleien.",
     body: [
-      `Niendorfer Suchverhalten ist langsam und gründlich: drei Anbieter werden auf der Website verglichen, Bewertungen gelesen, „Über uns" gecheckt. Eine bilderfreie Seite oder eine offensichtliche Vorlage scheidet hier sofort aus — auch wenn der Anbieter eigentlich gut wäre.`,
-      `Wir bauen für Niendorfer Betriebe bewusst ruhig und detailreich: ordentliche Team-Seiten, lokale Anker (Tibarg, Niendorfer Markt, Garstedter Weg) in den Texten, klare Anfahrt mit Parkplatz-Hinweis. Hier zahlen die Kunden für Substanz — die Seite muss das signalisieren.`,
+      `Wer in Niendorf einen Anbieter sucht, nimmt sich Zeit. Man vergleicht zwei, drei Websites, liest Bewertungen und die Seite über das Team. Eine Seite ohne Bilder oder eine, der man den Baukasten ansieht, scheidet dabei früh aus, auch wenn der Betrieb gut ist.`,
+      `Für Niendorfer Betriebe bauen wir ruhige Seiten mit vielen Details: eine ordentliche Teamseite, Orte wie Tibarg oder Garstedter Weg im Text und eine Anfahrt mit Hinweis auf Parkplätze.`,
     ],
     anker: [
       "Tibarg",
       "Niendorfer Markt",
       "Garstedter Weg",
-      "Niendorfer Wochenmarkt",
+      "Niendorfer Gehege",
       "Sootbörn",
     ],
     empfohleneBranchen: [
       {
         slug: "praxis",
-        label: "Privatpraxen & Spezialisten",
+        label: "Privatpraxen und Fachärzte",
         warum:
-          "Niendorfer Patienten suchen Spezialisten und vergleichen Qualifikationen. Eine klare Seite mit Schwerpunkten, Team-Fotos und Anfahrt gewinnt Privat- und Kassen-Patienten.",
+          "Patient:innen vergleichen hier Qualifikationen. Eine klare Seite mit Schwerpunkten, Fotos vom Team und Anfahrt spricht Privat- und Kassenpatient:innen an.",
       },
       {
         slug: "kosmetik",
-        label: "Kosmetik & Beauty-Studios",
+        label: "Kosmetik- und Beauty-Studios",
         warum:
-          "Hohe Beauty-Affinität, gute Zahlungsbereitschaft. Wir bauen ruhige Galerien mit Vorher/Nachher, klare Behandlungs-Beschreibungen und einfache Termin-Anfrage.",
+          "Ruhige Galerien, auf Wunsch mit Vorher-Nachher, verständliche Beschreibungen der Behandlungen und eine einfache Terminanfrage.",
       },
       {
         slug: "kanzlei",
-        label: "Steuer- & Anwaltskanzleien",
+        label: "Steuer- und Anwaltskanzleien",
         warum:
-          "Viele Selbstständige und Erbschafts-Themen brauchen Beratung vor Ort. Eine seriöse Seite mit klarer Rechtsgebiets-Spezialisierung sticht im Wettbewerb hervor.",
+          "Selbstständige und Familien mit Erbschaftsfragen suchen Beratung vor Ort. Eine sachliche Seite nennt klar, wofür Sie zuständig sind.",
       },
     ],
     pullQuote:
-      "In Niendorf entscheidet die Website über den ersten Termin — bevor irgendjemand miteinander gesprochen hat.",
+      "In Niendorf liest man die Teamseite, bevor man anruft. Fotos und ein paar Sätze zu jeder Person gehören hier dazu.",
   },
   {
     slug: "hafencity",
     name: "HafenCity",
     tagline:
-      "Hamburgs jüngster Stadtteil — Beratungen, Architekturbüros, Restaurants mit Hafenblick. Klein, premium, sichtbar.",
+      "Hamburgs jüngster Stadtteil, vom Sandtorhafen bis zum Überseequartier. Hier sitzen Beratungen, Architekturbüros und Restaurants am Wasser.",
     intro:
-      "HafenCity ist anders als der Rest Hamburgs: neu gebaut, dicht, mit klarer Premium-Identität. Magellan-Terrassen, Marco-Polo-Tower, Überseequartier, Elbphilharmonie. Die hier ansässigen Betriebe sind oft Beratungen, Architekten, Spezialärzte, gehobene Gastronomie und einige Boutique-Hotels. Der Markt ist klein, aber jeder Auftrag ist substanziell.",
+      "Die HafenCity ist neu gebaut und dicht. Neben Beratungen und Architekturbüros sitzen hier Fachärzte, gehobene Restaurants und einige kleine Hotels. Die Zahl der Betriebe ist überschaubar, die Ansprüche an ihren Auftritt sind hoch.",
     body: [
-      `HafenCity-Suchverhalten ist B2B-getrieben und qualitäts-sensibel: „Architekt HafenCity", „Steuerberater Speicherstadt", „Restaurant Hafenkante". Die Konkurrenz im Suchergebnis ist überschaubar (der Stadtteil ist neu), aber die Erwartung an die Website ist überdurchschnittlich hoch — die Klientel ist gewohnt, mit Hochglanz-Material zu arbeiten.`,
-      `Wir bauen für HafenCity-Betriebe Seiten mit klarer Premium-Anmutung: ruhige Typografie, hochwertige Bildwelt (gerne mit Hafenmotiven), präzise Sprache. Mehr Sitalo Studio als Standard-Business — das passt zum Stadtteil und zur Klientel.`,
+      `Gesucht wird hier oft von Unternehmen: „Architekt HafenCity“, „Steuerberater Speicherstadt“, „Restaurant Hafenkante“. Weil der Stadtteil jung ist, gibt es noch nicht viele Treffer. Wer aber gefunden wird, wird an gut gemachten Unterlagen gemessen, denn die ist die Kundschaft gewohnt.`,
+      `Für Betriebe in der HafenCity bauen wir Seiten mit ruhiger Schrift, guten Bildern und präzisen Texten. Hier passt oft Sitalo Studio, die Stufe mit eigener Gestaltung von Grund auf.`,
     ],
     anker: [
       "Magellan-Terrassen",
@@ -494,25 +496,25 @@ export const STANDORTE: Standort[] = [
     empfohleneBranchen: [
       {
         slug: "kanzlei",
-        label: "Kanzleien & Beratungen",
+        label: "Kanzleien und Beratungen",
         warum:
-          "Viele Wirtschaftskanzleien und Beratungen sitzen hier. Ein klares Profil mit Spezialisierungen und Team-Vorstellung gewinnt Mandate, die per Web-Empfehlung kommen.",
+          "Viele Wirtschaftskanzleien und Beratungen sitzen hier. Ein klares Profil mit Schwerpunkten und Team hilft, wenn Mandant:innen nach einer Empfehlung nachsehen.",
       },
       {
         slug: "gastro",
-        label: "Restaurants & Bars mit Hafenblick",
+        label: "Restaurants und Bars am Wasser",
         warum:
-          "Premium-Gastronomie mit Direktbuchungs-Bedarf. Hier zählt die Bildwelt mehr als jeder Speisekarten-Text — wir bauen entsprechend.",
+          "Gehobene Gastronomie mit Reservierungen. Die Bilder tragen hier mehr als jeder Text auf der Karte.",
       },
       {
         slug: "hotel",
-        label: "Boutique-Hotels & Apartments",
+        label: "Hotels und Apartments",
         warum:
-          "Direktbuchung statt Booking.com spart 15-18 % Provision. Eine schnelle, klare Seite mit gutem Bildmaterial macht das technisch und visuell möglich.",
+          "Jede Direktbuchung spart die Provision des Portals. Dafür braucht es eine schnelle Seite mit guten Bildern und einer einfachen Anfrage.",
       },
     ],
     pullQuote:
-      "In der HafenCity erwartet die Klientel Premium — die Website muss das schon signalisieren, bevor jemand reinkommt.",
+      "In der HafenCity wird oft am Schreibtisch gesucht, nicht nur am Handy. Die Seite muss auf dem großen Bildschirm genauso sorgfältig aussehen.",
   },
 ];
 
@@ -526,10 +528,8 @@ export function getAllStandortSlugs(): string[] {
 
 /**
  * Stadtteile finden, in denen die übergebene Branche zu den
- * `empfohleneBranchen` zählt. Wird für die bidirektionale
- * Branche-↔-Standort-Verlinkung auf /branchen/[slug] genutzt —
- * eine Pflege-Detailseite zeigt z. B. die Hamburger Stadtteile,
- * in denen wir Pflegedienste typischerweise sehen.
+ * `empfohleneBranchen` zählt. Wird für die Verlinkung von
+ * /branchen/[slug] auf die Stadtteilseiten genutzt.
  */
 export function getStandorteForBranche(brancheSlug: string): Standort[] {
   return STANDORTE.filter((s) =>

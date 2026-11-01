@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { PageHero } from "@/components/marketing/page-hero";
 
 export const metadata: Metadata = {
   title: "Häufige Fragen rund um Ihre neue Website",
@@ -14,140 +14,147 @@ export const metadata: Metadata = {
 };
 
 type Group = {
+  id: string;
   label: string;
   items: { q: string; a: string }[];
 };
 
 const GROUPS: Group[] = [
   {
-    label: "Anfrage & Ablauf",
+    id: "anfrage",
+    label: "Anfrage und Ablauf",
     items: [
       {
         q: "Muss ich mich irgendwo registrieren?",
-        a: "Nein. Schicken Sie uns einfach das Formular oder eine E-Mail — kein Account, kein Login, nichts dergleichen.",
+        a: "Nein. Sie schicken uns das Formular oder eine E-Mail, ein Konto brauchen Sie dafür nicht.",
       },
       {
         q: "Wie schnell ist meine Seite fertig?",
-        a: "Wenn Sie uns alle Unterlagen geschickt haben, dauert eine einfache Seite bei uns oft nur 1–2 Werktage. Größere Projekte besprechen wir vorher in Ruhe und nennen Ihnen einen verbindlichen Termin — wir versprechen nichts, was wir nicht halten können.",
+        a: "Liegen alle Unterlagen vor, ist eine einfache Seite oft nach ein bis zwei Werktagen fertig. Für größere Projekte nennen wir Ihnen vorab einen verbindlichen Termin.",
       },
       {
         q: "Was brauchen Sie von mir?",
-        a: "Drei Sachen: Ihr Logo (egal welches Format — sogar Schnappschuss vom Briefpapier reicht), 5–10 Bilder von Ihnen oder Ihrem Betrieb (Handy-Fotos sind ok), eine kurze Beschreibung Ihrer Leistungen plus Öffnungszeiten und Kontakt. Wenn etwas fehlt, sagen wir Bescheid — und empfehlen einen Hamburger Fotografen für 200–400 €, falls Bilder ein Problem sind.",
+        a: "Ihr Logo in irgendeinem Format, notfalls fotografiert vom Briefpapier. Dazu fünf bis zehn Bilder von Ihnen oder Ihrem Betrieb, Handyfotos reichen. Außerdem Stichpunkte zu Ihren Leistungen, Öffnungszeiten und Kontaktdaten. Fehlt etwas, sagen wir Bescheid. Sind Bilder ein Problem, nennen wir Ihnen einen Fotografen in Hamburg.",
       },
       {
         q: "Können wir uns persönlich in Hamburg treffen?",
-        a: "Gerne. Café in Eppendorf, auf einen Kaffee am Mühlenkamp, in der Schanze — wo Sie wollen. 15 Minuten reichen meistens, um zu klären, ob wir zusammen passen. Geht auch per Telefon oder Video — am schnellsten über die Termin-Seite: Tag und Uhrzeit selbst wählen, Bestätigung in 15 Minuten.",
+        a: "Ja, in Ihrem Betrieb oder in einem Café. Eine Viertelstunde reicht meistens, um zu klären, ob wir zusammenpassen. Telefon oder Video geht genauso. Über die Termin-Seite wählen Sie Tag und Uhrzeit selbst, die Bestätigung kommt am selben Werktag per Mail.",
       },
       {
-        q: "Kann ich erstmal eine ehrliche Einschätzung meiner aktuellen Seite bekommen?",
-        a: "Ja, kostenlos und ohne Vertriebs-Anruf danach. Über die Audit-Seite schicken Sie uns Ihre URL, wir gucken mit der Hand drauf und schreiben Ihnen innerhalb von 48 Stunden drei bis fünf konkrete Punkte. Wer es eilig hat: der Speed-Check liefert die technischen Werte automatisch in 30 Sekunden.",
+        q: "Kann ich erst einmal eine Einschätzung meiner aktuellen Seite bekommen?",
+        a: "Ja, kostenlos. Über die Audit-Seite schicken Sie uns die Adresse Ihrer Seite. Wir sehen sie uns selbst an und schreiben Ihnen innerhalb von 48 Stunden drei bis fünf konkrete Punkte. Einen Vertriebsanruf gibt es danach nicht. Die technischen Messwerte liefert der Speed-Check automatisch in etwa 30 Sekunden.",
       },
       {
         q: "Was passiert nach meiner Anfrage?",
-        a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Wir schauen uns Ihre Angaben in Ruhe an und melden uns innerhalb von 24 Stunden — meist deutlich schneller — persönlich bei Ihnen. Kein Vertrag, keine Kosten, kein Druck.",
+        a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Danach lesen wir Ihre Angaben und melden uns, meist am selben Werktag. Bis Sie ein Angebot unterschreiben, kostet Sie das nichts.",
       },
       {
         q: "Was, wenn ich noch gar nichts vorbereitet habe?",
-        a: "Macht nichts. Schicken Sie uns einfach eine kurze Notiz, was Sie vorhaben — wir helfen beim Sortieren. Sie müssen nicht erst alles fertig haben, bevor wir reden können. Im Gegenteil: je früher wir mitdenken, desto besser passt das Ergebnis am Ende.",
+        a: "Dann schicken Sie uns eine kurze Notiz, was Sie vorhaben, und wir sortieren es gemeinsam. Je früher wir mitdenken, desto weniger muss später umgebaut werden.",
       },
       {
         q: "Kann ich auch per E-Mail anfragen?",
-        a: "Ja, schreiben Sie uns direkt an info@sitalo.de. Für eine vollständige Projekt-Aufnahme ist das Formular allerdings praktischer — dann haben wir alles strukturiert auf einen Blick und können schneller antworten.",
+        a: "Ja, an info@sitalo.de. Das Formular ist etwas praktischer, weil wir dann alle Angaben an einer Stelle haben und schneller antworten können.",
       },
     ],
   },
   {
-    label: "Preise & Betreuung",
+    id: "preise",
+    label: "Preise und Betreuung",
     items: [
       {
         q: "Was kostet das Ganze?",
-        a: "Wir arbeiten mit vier Stufen: Starter ab 499 €, Business ab 899 €, Premium ab 2.499 € und Sitalo Studio ab 3.490 € — jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag von 49 € / 79 € / 179 € / 249 € für Hosting, Pflege und kleine Änderungen. Den genauen Endpreis nennen wir Ihnen nach Ihrer Anfrage — verbindlich, kein böses Erwachen.",
+        a: "Es gibt vier Pakete: Starter ab 499 €, Business ab 899 €, Premium ab 2.499 € und Sitalo Studio ab 3.490 €, jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ab 49 €, 79 €, 179 € oder 249 € für Hosting, Pflege und kleine Änderungen. Den Endpreis nennen wir Ihnen nach Ihrer Anfrage, schriftlich und verbindlich.",
       },
       {
         q: "Warum gibt es nur Einstiegspreise?",
-        a: "Weil ehrlich gesagt jedes Projekt anders ist. Manche schicken uns komplette Unterlagen, andere brauchen mehr Hilfe. Manche wollen eine Seite, andere fünf. Die Einstiegspreise zeigen Ihnen, wo es losgeht — den endgültigen Preis vereinbaren wir vorher, schwarz auf weiß.",
+        a: "Weil die Projekte unterschiedlich groß sind. Manche schicken uns fertige Unterlagen, andere brauchen mehr Hilfe. Manche wollen eine Seite, andere fünf. Der Einstiegspreis zeigt, wo es losgeht. Den endgültigen Preis bekommen Sie schriftlich, bevor wir anfangen.",
       },
       {
-        q: "Kann ich später noch Sachen ändern lassen?",
-        a: "Klar. Kleine Änderungen sind in der monatlichen Betreuung dabei (1, 3 oder 6 pro Monat, je nach Paket). Sie schreiben uns kurz, was geändert werden soll — wir melden uns, setzen es um und sagen Bescheid, sobald es online ist.",
+        q: "Kann ich später noch etwas ändern lassen?",
+        a: "Ja. Kleine Änderungen sind im Monatsbeitrag enthalten, je nach Paket eine, drei, sechs oder zehn pro Monat. Sie schreiben uns kurz, was sich ändern soll. Wir setzen es um und sagen Bescheid, sobald es online ist.",
       },
       {
         q: "Kann ich bestimmte Inhalte selbst pflegen?",
-        a: "Wenn Sie möchten, ja. Im Premium-Paket bauen wir Ihnen Bereiche ein, die Sie selbst aktualisieren können — Öffnungszeiten, Wochenangebot, Speisekarte, Bilder. Wenn Sie das nicht wollen, übernehmen wir das. Sie entscheiden.",
+        a: "Wenn Sie möchten, ja. Im Premium-Paket bauen wir Bereiche ein, die Sie selbst ändern können, etwa Öffnungszeiten, Wochenangebot, Speisekarte oder Bilder. Wollen Sie das nicht, übernehmen wir es.",
       },
       {
         q: "Bin ich an einen langen Vertrag gebunden?",
-        a: "Die einmalige Erstellung ist einmalig. Die monatliche Betreuung hat eine Mindestlaufzeit von sechs Monaten und ist danach jederzeit zum Monatsende kündbar. Beim Ausstieg bekommen Sie den kompletten Bestand (Seite, Inhalte, Domain-Zugang) sauber übergeben — wir halten niemanden als Geisel.",
+        a: "Die Erstellung zahlen Sie einmal. Der Monatsbeitrag hat eine Mindestlaufzeit von sechs Monaten und ist danach zum Monatsende kündbar. Wenn Sie gehen, übergeben wir Ihnen alles: die Seite, die Inhalte und den Zugang zur Domain.",
       },
       {
         q: "Was kostet eine spätere Erweiterung?",
-        a: "Kleine Erweiterungen sind in der monatlichen Pflege dabei. Größere Sachen (z. B. ein neuer Bereich, Online-Buchung, ein zweites Sprachset) bekommen Sie vorher als verbindliches Angebot. Typischer Rahmen: 150–500 €, je nach Aufwand.",
+        a: "Kleine Erweiterungen sind in der monatlichen Pflege enthalten. Für Größeres, etwa einen neuen Bereich, eine Online-Buchung oder eine zweite Sprache, bekommen Sie vorher ein verbindliches Angebot nach Stundensatz.",
       },
       {
-        q: "Meine Seite wurde woanders gebaut — übernehmen Sie die Pflege?",
-        a: "Ja. Hosting, Updates, Backups und kleine Änderungen machen wir auch für Seiten, die nicht von uns stammen — sogar für Wix- und Squarespace-Seiten. Drei Stufen offen auf der Wartungs-Seite: Basis ab 49 €/Monat, Plus ab 99 €/Monat, Werkbank On-Demand ab 299 €/Monat (mit zwei freien Atelier-Stunden pro Monat). Einmaliges Onboarding ab 199 €.",
+        q: "Meine Seite wurde woanders gebaut. Übernehmen Sie die Pflege?",
+        a: "Ja. Hosting, Updates, Backups und kleine Änderungen übernehmen wir auch für fremde Seiten, auch für Wix und Squarespace. Auf der Wartungs-Seite stehen drei Stufen: Basis ab 49 €, Plus ab 99 € und Werkbank On-Demand ab 299 € im Monat, die letzte mit zwei Arbeitsstunden pro Monat. Das Onboarding kostet einmalig ab 199 €.",
       },
     ],
   },
   {
-    label: "Sichtbarkeit & SEO",
+    id: "sichtbarkeit",
+    label: "Sichtbarkeit und SEO",
     items: [
       {
         q: "Werde ich für meinen Stadtteil gefunden?",
-        a: `Das ist genau unser Ansatz. Wir optimieren nicht nur auf „Webdesign Hamburg" (zu generisch), sondern auf konkrete Phrasen wie „Friseur Eimsbüttel", „Pflegedienst Wandsbek", „Café Ottensen". Wir haben eigene Stadtteil-Seiten für die wichtigsten Hamburger Lagen — schauen Sie sich /standorte an.`,
+        a: `Darauf bauen wir die Seite aus. Statt auf „Webdesign Hamburg" zielen wir auf Suchen wie „Friseur Eimsbüttel", „Pflegedienst Wandsbek" oder „Café Ottensen". Für mehrere Hamburger Stadtteile gibt es bei uns eigene Seiten, zu finden unter /standorte. Für Betriebe in anderen Städten gehen wir genauso vor.`,
       },
       {
-        q: "Lohnt sich ein Google Business Profile?",
-        a: "Absolut. Das ist kostenlos und der größte Hebel für lokale Sichtbarkeit. Im Premium-Paket richten wir Ihnen das mit ein, beim Business-Paket auf Wunsch gegen kleinen Aufpreis (~ 80 €). Sie verwalten es danach selbst oder lassen es uns pflegen.",
+        q: "Lohnt sich ein Google-Unternehmensprofil?",
+        a: "Ja. Das Profil ist kostenlos und entscheidet mit, ob Sie bei Google Maps und in der lokalen Suche auftauchen. Ab dem Business-Paket richten wir es mit Ihnen ein. Danach pflegen Sie es selbst oder überlassen es uns.",
       },
       {
         q: "Was bringt mir SEO konkret?",
-        a: `Für lokale Anbieter sehr viel. 46 % aller Google-Suchen sind lokal, 76 % der lokalen Suchenden besuchen den Anbieter binnen 24 Stunden. Wer für „Friseur in [Ihrem Stadtteil]" auf Seite 1 steht, hat ein verlässliches Anfrage-Volumen — auch ohne Anzeigen.`,
+        a: `Für lokale Betriebe vor allem Anfragen von Leuten, die gerade suchen. Wer bei „Friseur" plus Stadtteil auf der ersten Seite steht, wird angerufen, ohne für Anzeigen zu bezahlen. Dafür sorgen saubere Seitentitel, die richtigen Suchbegriffe und ein gepflegtes Google-Profil.`,
       },
       {
-        q: "Schalten Sie auch Google-Ads für mich?",
-        a: "Nein. Wir bauen Websites, keine Werbe-Kampagnen — das ist eine eigene Disziplin. Wenn Sie Ads schalten wollen, empfehlen wir Ihnen gerne eine spezialisierte Hamburger Agentur. Ehrlich gesagt: für die meisten lokalen Anbieter ist gute SEO + Google Business Profile billiger und nachhaltiger als Ads.",
+        q: "Schalten Sie auch Google-Anzeigen für mich?",
+        a: "Nein, Werbekampagnen sind ein eigenes Fach. Wenn Sie Anzeigen schalten wollen, nennen wir Ihnen eine Agentur, die darauf spezialisiert ist. Für die meisten lokalen Betriebe sind eine gut gebaute Seite und ein gepflegtes Google-Profil auf Dauer günstiger als Anzeigen.",
       },
     ],
   },
   {
-    label: "Technik & Rechtliches",
+    id: "technik",
+    label: "Technik und Rechtliches",
     items: [
       {
         q: "Ist Hosting dabei?",
-        a: "Ja, alles inklusive. Server stehen in der EU, SSL ist Pflicht, Backups laufen automatisch. Sie müssen sich um nichts kümmern — auch nicht um Updates oder Sicherheit. Das ist unser Job.",
+        a: "Ja, im Monatsbeitrag. Die Server stehen in der EU, das SSL-Zertifikat ist Pflicht, Backups laufen automatisch. Updates und Sicherheit übernehmen wir.",
       },
       {
         q: "Funktioniert die Seite auch auf dem Handy?",
-        a: "Ja, immer. Die meisten Ihrer Kunden schauen heute zuerst aufs Handy — also bauen wir auch zuerst für das Handy. Vor dem Live-Gang testen wir auf echten Geräten, nicht nur im Simulator.",
+        a: "Ja. Wir bauen zuerst die Ansicht fürs Handy und danach die für den Rechner. Vor dem Start prüfen wir die Seite auf echten Geräten, nicht nur im Simulator.",
       },
       {
         q: "Wird man die Seite bei Google finden?",
-        a: "Wir legen die Basis sauber: Titel, Beschreibungen, klare Struktur, schnelle Ladezeiten, lokale Suchbegriffe, Sitemap. Garantieren kann Ihnen Platz 1 niemand seriös — aber das Fundament passt, und für lokale Suchen („Friseur Eimsbüttel\", „Pflegedienst Altona\") sind die Chancen sehr gut.",
+        a: `Die Grundlage legen wir sauber an: Seitentitel, Beschreibungen, eine klare Struktur, kurze Ladezeiten, lokale Suchbegriffe und eine Sitemap. Platz 1 kann Ihnen niemand seriös versprechen. Bei lokalen Suchen wie „Friseur Eimsbüttel" oder „Pflegedienst Altona" ist die Konkurrenz aber oft überschaubar.`,
       },
       {
         q: "Sind Impressum und Datenschutz dabei?",
-        a: "Die Seiten legen wir technisch an. Den juristisch sicheren Text dazu sollten Sie aber von einer geeigneten Quelle beziehen — Generator, Anwalt oder Verband. Wir empfehlen Ihnen gerne, was zu Ihrem Fall passt.",
+        a: "Die Seiten legen wir technisch an. Den rechtlich geprüften Text sollten Sie aus einer geeigneten Quelle beziehen, etwa einem Generator, einer Anwältin oder Ihrem Verband. Was zu Ihrem Fall passt, sagen wir Ihnen gern.",
       },
       {
-        q: "Ich habe schon eine Website — kann die modernisiert werden?",
-        a: 'Ja, schauen wir uns gerne an. Im Formular wählen Sie „Redesign" und schicken uns die URL. Wir melden uns nach einer ersten Sichtung mit ehrlicher Einschätzung — manchmal lohnt sich ein Update, manchmal ein Neuaufbau. Wir sagen Ihnen, was sinnvoller ist.',
+        q: "Ich habe schon eine Website. Kann die modernisiert werden?",
+        a: `Ja. Im Formular wählen Sie „Redesign" und schicken uns die Adresse. Nach einer ersten Sichtung sagen wir Ihnen, ob sich ein Umbau lohnt oder ein Neubau sinnvoller ist.`,
       },
       {
         q: "Für welche Branchen arbeiten Sie?",
-        a: "Vor allem für lokale Unternehmen in und um Hamburg: Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios, Boutique-Hotels. Wenn Sie nicht sicher sind, ob Ihre Branche passt — fragen Sie einfach.",
+        a: "Für kleine Betriebe in ganz Deutschland, zum Beispiel Pflegedienste, Arzt- und Zahnarztpraxen, Friseure, Kosmetikstudios, Cafés und Restaurants, Handwerker, Reinigungsfirmen, Kanzleien, Fitnessstudios und kleine Hotels. Steht Ihre Branche nicht dabei, fragen Sie einfach.",
       },
       {
-        q: "Was wenn ich meine Domain woanders habe?",
-        a: "Kein Problem. Wir übernehmen die Verbindung — Sie behalten die Domain in Ihrem Account (z. B. bei IONOS, Strato, GoDaddy), wir zeigen sie nur auf unseren Server. Falls Sie wollen, können wir auch die Domain komplett zu uns transferieren. Beides geht.",
+        q: "Was, wenn meine Domain woanders liegt?",
+        a: "Dann bleibt sie in Ihrem Konto, etwa bei IONOS, Strato oder GoDaddy, und wir richten sie auf unseren Server. Wenn Sie wollen, ziehen wir die Domain auch ganz zu uns um.",
       },
       {
-        q: "Was wenn ich später woanders hin will?",
-        a: "Dann übergeben wir sauber. Sie bekommen den vollständigen Quellcode Ihrer Seite, alle Inhalte und können bei einem anderen Anbieter weitermachen. Wir bauen keine Vendor-Lock-ins. Das ist ein Wettbewerbsvorteil, kein Risiko.",
+        q: "Was, wenn ich später woanders hin will?",
+        a: "Dann übergeben wir sauber. Sie bekommen den vollständigen Quellcode Ihrer Seite und alle Inhalte und können bei einem anderen Anbieter weitermachen.",
       },
     ],
   },
 ];
+
+const QUESTION_COUNT = GROUPS.reduce((n, g) => n + g.items.length, 0);
 
 export default function FaqPage() {
   const faqLd = {
@@ -163,66 +170,74 @@ export default function FaqPage() {
   };
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Häufige Fragen" />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <Hero />
-        {GROUPS.map((g) => (
-          <Group key={g.label} group={g} />
+        <PageHero
+          crumb="Fragen"
+          eyebrow={`FAQ · ${QUESTION_COUNT} Antworten`}
+          title="Häufige Fragen"
+          meta={
+            <nav aria-label="Themen" className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[12.5px]">
+              {GROUPS.map((g) => (
+                <a
+                  key={g.id}
+                  href={`#${g.id}`}
+                  className="text-background/80 hover:text-background underline-offset-4 hover:underline"
+                >
+                  {g.label}
+                </a>
+              ))}
+            </nav>
+          }
+        >
+          Nach Themen sortiert. Steht Ihre Frage nicht dabei, rufen Sie an oder schreiben Sie uns.
+        </PageHero>
+        {GROUPS.map((g, i) => (
+          <GroupSection key={g.id} group={g} first={i === 0} />
         ))}
         <Closer />
       </main>
       <MarketingFooter />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
     </div>
   );
 }
 
-function Hero() {
+/* ------------------------------------------------------------------
+ * Eine Themengruppe: links Name und Zahl der Fragen (auf breiten
+ * Schirmen mitlaufend), rechts die Fragen zum Aufklappen.
+ * ---------------------------------------------------------------- */
+function GroupSection({ group, first }: { group: Group; first: boolean }) {
   return (
-    <section className="relative overflow-hidden">
-      <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="mx-auto w-full max-w-3xl px-5 pt-14 pb-8 sm:px-6 sm:pt-20 sm:pb-10">
-        <h1 className="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-          Häufige <span className="serif-italic text-muted-foreground font-normal">Fragen.</span>
-        </h1>
-        <p className="text-muted-foreground mt-5 text-base leading-relaxed sm:text-lg">
-          Eine Antwort fehlt?{" "}
-          <Link href="/kontakt" className="text-foreground underline underline-offset-4">
-            Schreiben Sie uns.
-          </Link>
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function Group({ group }: { group: Group }) {
-  return (
-    <section className="border-border/40 border-t">
-      <div className="mx-auto w-full max-w-3xl px-5 py-10 sm:px-6 sm:py-12">
-        <h2 className="text-muted-foreground text-[12px] font-medium">{group.label}</h2>
-        <div className="divide-border/60 mt-4 divide-y">
-          {group.items.map((item) => (
-            <details key={item.q} className="group py-4">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6">
-                <h3 className="text-[17px] font-medium leading-snug tracking-tight sm:text-lg">{item.q}</h3>
+    <section id={group.id} aria-labelledby={`${group.id}-titel`} className={`scroll-mt-20 ${first ? "" : "border-border border-t"}`}>
+      <div className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-14 sm:px-6 sm:py-20 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:sticky lg:top-24 lg:col-span-4 lg:self-start">
+          <p className="label-mono text-muted-foreground">{group.items.length} Fragen</p>
+          <h2
+            id={`${group.id}-titel`}
+            className="mt-3 text-balance text-[1.75rem] leading-[1.05] tracking-[-0.028em] sm:text-[2.2rem]"
+          >
+            {group.label}
+          </h2>
+        </div>
+        <div className="border-foreground divide-border min-w-0 divide-y border-t border-b lg:col-span-8">
+          {group.items.map((item, i) => (
+            <details key={item.q} className="group" open={i === 0}>
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
+                <h3 className="text-[17px] leading-snug tracking-[-0.01em] sm:text-[18.5px]">{item.q}</h3>
                 <span
                   aria-hidden="true"
-                  className="border-border/70 text-muted-foreground group-open:bg-foreground group-open:text-background group-open:border-foreground inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-lg transition-all group-open:rotate-45"
+                  className="border-foreground/70 group-open:bg-foreground group-open:text-background group-open:border-foreground mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[2px] border font-mono text-[15px] leading-none transition-colors"
                 >
-                  +
+                  <span className="transition-transform group-open:rotate-45">+</span>
                 </span>
               </summary>
-              <p className="text-muted-foreground mt-3 max-w-2xl text-pretty text-[15px] leading-relaxed">{item.a}</p>
+              <p className="text-foreground/80 max-w-2xl pb-6 text-pretty text-[15.5px] leading-relaxed sm:pr-12">
+                {item.a}
+              </p>
             </details>
           ))}
         </div>
@@ -231,33 +246,52 @@ function Group({ group }: { group: Group }) {
   );
 }
 
+/* ------------------------------------------------------------------
+ * Schluss: keine Frage als Überschrift, sondern die Wege, auf denen
+ * eine fehlende Antwort am schnellsten kommt.
+ * ---------------------------------------------------------------- */
 function Closer() {
   return (
-    <section className="bg-foreground text-background relative overflow-hidden">
-      <div aria-hidden="true" className="aurora aurora-dark pointer-events-none absolute inset-0">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-20">
-        <h2 className="serif text-balance text-3xl leading-tight sm:text-5xl">
-          Etwas fehlt?{" "}
-          <span className="serif-italic text-background/70">Fragen Sie direkt.</span>
-        </h2>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="/anfrage"
-            className="bg-background text-foreground hover:bg-background/90 group inline-flex h-12 items-center rounded-full px-7 text-[15px] font-medium tracking-tight"
+    <section className="bg-card border-foreground border-t">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-6">
+          <h2 className="text-balance text-[1.9rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.6rem]">
+            Ihre Frage war nicht dabei
+          </h2>
+          <p className="text-muted-foreground mt-5 max-w-md text-[16.5px] leading-relaxed">
+            Dann fragen Sie uns direkt. Mails beantworten wir meist am selben Werktag. Am ersten Donnerstag im Monat
+            gibt es außerdem eine{" "}
+            <Link href="/sprechstunde" className="text-foreground underline underline-offset-4">
+              offene Telefonsprechstunde
+            </Link>
+            .
+          </p>
+        </div>
+        <div className="lg:col-span-5 lg:col-start-8">
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold block text-[2.1rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[3rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
           >
-            Website anfragen
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link
-            href="/kontakt"
-            className="border-background/30 text-background hover:bg-background hover:text-foreground inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium tracking-tight transition-colors"
+            0160 7621876
+          </a>
+          <a
+            href="mailto:info@sitalo.de"
+            className="border-gold mt-4 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold"
           >
-            Kontakt
-          </Link>
+            info@sitalo.de
+          </a>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Link href="/anfrage" className="btn-signal">
+              Website anfragen <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <Link
+              href="/kontakt"
+              className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+            >
+              Alle Kontaktwege <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>

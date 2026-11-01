@@ -6,111 +6,85 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 /**
- * 404-Seite im Brand-Stil. Statt einer trockenen „Page Not Found"-
- * Meldung eine kurze editoriale Notiz mit dem typischen Sitalo-Layout
- * (Masthead, Gold-Pulse-Eyebrow, dunkler Pull-Quote-Block) plus 4
- * sinnvolle Wege zurück.
+ * 404-Seite: links die Meldung, rechts vier Wege weiter, jeweils mit
+ * Ziel-Adresse in Mono. Darunter die Bitte, kaputte Links zu melden.
  */
+const WEGE: { href: string; label: string; detail: string }[] = [
+  {
+    href: "/",
+    label: "Startseite",
+    detail: "Was wir bauen und was es kostet.",
+  },
+  {
+    href: "/branchen",
+    label: "Branchen",
+    detail: "Was auf die Website Ihrer Branche gehört.",
+  },
+  {
+    href: "/standorte",
+    label: "Hamburger Stadtteile",
+    detail: "Eimsbüttel, Altona, Eppendorf, St. Pauli und weitere.",
+  },
+  {
+    href: "/anfrage",
+    label: "Website anfragen",
+    detail: "Zum Formular. Wir antworten meist am selben Werktag.",
+  },
+];
+
 export default function NotFound() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
       <EditorialMasthead section="Fehler 404" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <section className="border-border/40 relative overflow-hidden border-b">
-          <div className="mx-auto w-full max-w-5xl px-6 py-24 sm:py-32 lg:py-40">
-            <p className="text-muted-foreground inline-flex items-center gap-2 text-[13px] font-medium">
-              <span
-                aria-hidden="true"
-                className="bg-gold gold-pulse inline-block h-1 w-6"
-              />
-              Seite nicht gefunden · 404
-            </p>
-            <h1 className="mt-6 max-w-3xl text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-[5.5rem]">
-              Hier ist nichts.
-              <br />
-              <span className="serif-italic text-muted-foreground font-normal">
-                Aber gleich um die Ecke schon.
-              </span>
-            </h1>
-            <p className="text-foreground/80 mt-8 max-w-xl text-pretty text-lg leading-relaxed">
-              Die Seite, die Sie suchen, existiert nicht — oder nicht
-              mehr. Vier Wege zurück, die irgendwohin führen:
-            </p>
+        <section>
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8 lg:py-28">
+            <div className="lg:col-span-5">
+              <p className="label-mono text-muted-foreground">Fehler 404</p>
+              <h1 className="mt-6 text-balance text-[2.5rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[4rem]">
+                Diese Seite gibt es nicht.
+              </h1>
+              <p className="text-muted-foreground mt-6 max-w-md text-pretty text-[16.5px] leading-relaxed sm:text-lg">
+                Vielleicht hat sich die Adresse geändert, oder im Link steckt ein Tippfehler. Einer dieser Wege führt
+                weiter.
+              </p>
+            </div>
 
-            <ul className="divide-border/60 mt-12 divide-y border-y">
-              <NotFoundLink
-                href="/"
-                label="Zurück zur Startseite"
-                detail="Was wir machen, für wen, zu welchem Preis."
-              />
-              <NotFoundLink
-                href="/branchen"
-                label="Branchen ansehen"
-                detail="Zehn Branchen — worauf es bei Ihrer ankommt."
-              />
-              <NotFoundLink
-                href="/standorte"
-                label="Nach Hamburger Stadtteil"
-                detail="Eimsbüttel, Altona, Eppendorf, St. Pauli und mehr."
-              />
-              <NotFoundLink
-                href="/anfrage"
-                label="Website anfragen"
-                detail="Drei Felder, zwei Minuten — wir melden uns persönlich."
-              />
-            </ul>
-
-            <p className="serif-italic text-foreground/80 mt-12 max-w-xl text-pretty text-xl leading-snug">
-              Falls Sie hier gelandet sind, weil ein Link auf
-              sitalo.de kaputt ist —{" "}
-              <a
-                href="mailto:info@sitalo.de"
-                className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
-              >
-                schreiben Sie uns kurz
-              </a>
-              , wir fixen es noch heute.
-            </p>
+            <nav aria-label="Wege weiter" className="lg:col-span-6 lg:col-start-7 lg:pt-2">
+              <ul className="border-foreground border-t">
+                {WEGE.map((w) => (
+                  <li key={w.href} className="border-border border-b">
+                    <Link href={w.href} className="group flex items-center justify-between gap-6 py-5 sm:py-6">
+                      <span className="min-w-0">
+                        <span className="block text-[1.25rem] font-semibold leading-snug tracking-[-0.015em] underline-offset-4 group-hover:underline sm:text-[1.4rem]">
+                          {w.label}
+                        </span>
+                        <span className="text-muted-foreground mt-1 block text-[15px] leading-relaxed">{w.detail}</span>
+                      </span>
+                      <span className="text-muted-foreground group-hover:text-foreground flex shrink-0 items-center gap-1.5 font-mono text-[12px] transition-colors">
+                        <span className="hidden sm:inline">{w.href}</span>
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-[15.5px] leading-relaxed">
+                Führt ein Link auf sitalo.de ins Leere, schreiben Sie uns kurz an{" "}
+                <a
+                  href="mailto:info@sitalo.de"
+                  className="text-foreground font-semibold underline decoration-[var(--gold)] decoration-2 underline-offset-4"
+                >
+                  info@sitalo.de
+                </a>
+                . Dann reparieren wir ihn.
+              </p>
+            </nav>
           </div>
         </section>
       </main>
       <MarketingFooter />
     </div>
-  );
-}
-
-function NotFoundLink({
-  href,
-  label,
-  detail,
-}: {
-  href: string;
-  label: string;
-  detail: string;
-}) {
-  return (
-    <li>
-      <Link
-        href={href}
-        className="group flex flex-col gap-1 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-7"
-      >
-        <div className="flex items-baseline gap-4">
-          <span className="bg-ink-olive inline-block h-1 w-1 shrink-0 translate-y-[-0.2em] rounded-full" />
-          <div>
-            <p className="text-foreground text-xl font-medium tracking-[-0.015em] sm:text-2xl">
-              {label}
-            </p>
-            <p className="text-muted-foreground mt-1 text-[15px] leading-relaxed">
-              {detail}
-            </p>
-          </div>
-        </div>
-        <span className="text-muted-foreground group-hover:text-foreground inline-flex items-center gap-2 text-sm font-medium transition-colors">
-          Öffnen
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-        </span>
-      </Link>
-    </li>
   );
 }

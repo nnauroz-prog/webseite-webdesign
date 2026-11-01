@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
+import { Briefkarte } from "@/components/marketing/vertical-landing";
 import { BRANCHEN } from "@/lib/branchen-data";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
@@ -32,7 +33,10 @@ export default function BranchenPage() {
           schauen, und eine Musterseite gebaut.
         </PageHero>
         <Register />
-        <Schluss />
+        <Briefkarte title="Wir bauen auch für Betriebe, die hier nicht stehen.">
+          Schreiben Sie uns zwei, drei Sätze zu Ihrem Betrieb. Den Festpreis bekommen Sie schriftlich, bevor wir
+          anfangen.
+        </Briefkarte>
       </main>
       <MarketingFooter />
     </div>
@@ -111,32 +115,6 @@ function Register() {
             Alle Pakete
           </Link>
         </p>
-      </div>
-    </section>
-  );
-}
-
-function Schluss() {
-  return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
-          Wir bauen auch für Betriebe, die hier nicht stehen.
-        </h2>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16.5px] leading-relaxed">
-            Schreiben Sie uns zwei, drei Sätze zu Ihrem Betrieb. Wir antworten meist am selben Werktag. Den Festpreis
-            bekommen Sie schriftlich, bevor wir anfangen.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/anfrage" className="btn-signal grow sm:grow-0">
-              Anfrage schreiben <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <a href="tel:+491607621876" className="btn-line grow tabular-nums sm:grow-0">
-              0160 7621876
-            </a>
-          </div>
-        </div>
       </div>
     </section>
   );
