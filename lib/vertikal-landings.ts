@@ -54,7 +54,7 @@ export type VertikalLanding = {
 export const VERTIKAL_LANDINGS: VertikalLanding[] = [
   {
     slug: "pflege",
-    seoTitle: "Pflegedienst-Website aus Hamburg — Sitalo",
+    seoTitle: "Website für Pflegedienste erstellen lassen · Festpreis",
     seoDescription:
       "Websites für Pflegedienste. Leistungen und Einsatzgebiet klar erklärt, mit Bewerbungsformular für Pflegekräfte und Notfallnummer. Gebaut in Hamburg, Festpreis vorab.",
     brancheSlug: "pflege",
@@ -122,7 +122,7 @@ export const VERTIKAL_LANDINGS: VertikalLanding[] = [
   },
   {
     slug: "praxen",
-    seoTitle: "Praxis-Website aus Hamburg — Sitalo",
+    seoTitle: "Praxis-Website erstellen lassen · Arzt und Zahnarzt",
     seoDescription:
       "Websites für Arzt- und Zahnarztpraxen. Sprechzeiten oben auf jeder Seite, Terminanfrage per Formular, Team und Anfahrt. Gebaut in Hamburg, Festpreis vorab.",
     brancheSlug: "praxis",

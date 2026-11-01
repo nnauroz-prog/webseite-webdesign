@@ -6,7 +6,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
 import { getPaketBySlug } from "@/lib/pakete-data";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Webdesign-Leistungen für lokale Unternehmen",
@@ -54,15 +54,8 @@ const SERVICES_LD = {
     "@type": "Service",
     name: s.name,
     description: s.description,
-    provider: {
-      "@type": "LocalBusiness",
-      name: "Sitalo Webdesign",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Hamburg",
-        addressCountry: "DE",
-      },
-    },
+    // Verweist auf die Firmenangaben im Layout (ein Eintrag für Google).
+    provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "Country", name: "Deutschland" },
     serviceType: "Webdesign",
   })),

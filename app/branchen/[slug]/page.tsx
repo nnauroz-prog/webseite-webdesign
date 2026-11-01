@@ -17,6 +17,7 @@ import {
 import { getPost, JOURNAL_BY_BRANCHE } from "@/lib/journal-data";
 import { getPaketBySlug } from "@/lib/pakete-data";
 import { getStandorteForBranche } from "@/lib/standorte-data";
+import { SITE_URL } from "@/lib/site";
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
@@ -80,6 +81,7 @@ export default async function BranchePage({
     description: branche.shortBody,
     provider: {
       "@type": "LocalBusiness",
+      "@id": `${SITE_URL}/#business`,
       name: "Sitalo Webdesign",
       areaServed: "DE",
       address: {

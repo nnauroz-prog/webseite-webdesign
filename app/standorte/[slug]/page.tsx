@@ -9,6 +9,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Briefkarte } from "@/components/marketing/vertical-landing";
 import { formatDate, getPost, JOURNAL_BY_STANDORT } from "@/lib/journal-data";
+import { SITE_URL } from "@/lib/site";
 import {
   STANDORTE,
   getAllStandortSlugs,
@@ -66,22 +67,19 @@ export default async function StandortPage({
    * Hierarchie für Rich-Results-Breadcrumbs in den SERPs. */
   const localBusinessLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: `Sitalo Webdesign — ${standort.name}`,
+    // Dienstleistung mit Einsatzgebiet statt eines eigenen Firmeneintrags
+    // je Stadtteil: Sitalo hat dort kein Büro, das Büro ist eines.
+    "@type": "Service",
+    name: `Website erstellen lassen in ${standort.name}`,
     description: standort.tagline,
-    url: `https://www.sitalo.de/standorte/${standort.slug}`,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Hamburg",
-      addressRegion: standort.name,
-      addressCountry: "DE",
-    },
+    url: `${SITE_URL}/standorte/${standort.slug}`,
+    serviceType: "Webdesign",
+    provider: { "@id": `${SITE_URL}/#business` },
     areaServed: {
       "@type": "Place",
-      name: `Hamburg ${standort.name}`,
+      name: `Hamburg-${standort.name}`,
+      containedInPlace: { "@type": "City", name: "Hamburg" },
     },
-    telephone: "+491607621876",
-    email: "info@sitalo.de",
   };
 
   const breadcrumbLd = {

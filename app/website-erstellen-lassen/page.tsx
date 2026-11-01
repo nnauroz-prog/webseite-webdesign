@@ -126,6 +126,10 @@ const FAQ = [
     a: "Ab vollständigen Unterlagen ist eine einzelne Seite oft in 1–2 Werktagen online, Business meist in 5–10 Werktagen, Premium in 2–3 Wochen und Studio in 3–5 Wochen. Den genauen Termin nennen wir Ihnen vorab.",
   },
   {
+    q: "Website, Webseite oder Homepage: Gibt es einen Unterschied?",
+    a: "Im Alltag meinen alle drei dasselbe: den Auftritt Ihres Betriebs im Internet. Ob Sie eine Website, eine Webseite oder eine Homepage erstellen lassen möchten, der Ablauf und die Preise bei uns sind gleich.",
+  },
+  {
     q: "Was muss ich selbst liefern?",
     a: "Ihr Logo, ein paar Bilder (Handy-Fotos reichen) und Stichpunkte zu Ihren Leistungen. Die Texte formulieren wir daraus, Sie lesen gegen. Fehlt etwas, helfen wir.",
   },

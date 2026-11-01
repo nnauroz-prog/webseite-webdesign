@@ -41,7 +41,7 @@ const BREADCRUMB_LD = {
 };
 
 export const metadata: Metadata = {
-  title: "3-Jahres-Kostenrechner",
+  title: "Website-Kosten über 3 Jahre berechnen",
   description:
     "Was kostet Ihre Website über 3 Jahre? Sitalo vs Wix, Squarespace, Jimdo, ChatGPT-Selbstbau. Inkl. Eigenzeit als echtes Geld.",
   alternates: { canonical: "/rechner" },
