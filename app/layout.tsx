@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Doto, IBM_Plex_Mono, Mona_Sans } from "next/font/google";
 
 import { GlobalExtras } from "@/components/marketing/global-extras";
@@ -58,6 +58,11 @@ const cormorant = Cormorant_Garamond({
 // Datum ab — ohne Revalidate würde der Build-Tag eingefroren, bis
 // zum nächsten Deploy. Gilt per niedrigstem Wert für jede Route.
 export const revalidate = 3600;
+
+/** Browserleiste am Handy (Safari, Chrome) im Elbnebel-Ton der Seite. */
+export const viewport: Viewport = {
+  themeColor: "#eeeeeb",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
