@@ -106,6 +106,16 @@ const LOCAL_BUSINESS_LD = {
   description:
     "Webdesign-Büro in Hamburg: Websites zum Festpreis für Pflegedienste, Praxen, Handwerksbetriebe, Cafés, Friseure, Kanzleien, Reinigungsfirmen, Fitnessstudios und Hotels in ganz Deutschland.",
   url: SITE_URL,
+  // Verknüpfte Profile (Google-Unternehmensprofil usw.), per Vercel-
+  // Umgebungsvariable, durch Komma getrennt. Leer = kein Eintrag.
+  ...((process.env.BUSINESS_PROFILE_URLS ?? "").trim()
+    ? {
+        sameAs: (process.env.BUSINESS_PROFILE_URLS ?? "")
+          .split(",")
+          .map((u) => u.trim())
+          .filter((u) => /^https:\/\//.test(u)),
+      }
+    : {}),
   telephone: "+491607621876",
   email: "info@sitalo.de",
   address: {
