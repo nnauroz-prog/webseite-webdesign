@@ -16,11 +16,14 @@ type NavItem = { href: string; label: string };
  * dedicated subpage with full content, while the homepage carries a
  * short overview that deep-links into the same routes.
  */
+// „Preise" zeigt auf die Geldseite /website-erstellen-lassen: Dort stehen
+// alle Pakete mit Preis und Dauer, und sie ist das Ziel für den wichtigsten
+// Suchbegriff. /pakete bleibt über die Geldseite und die Fußzeile erreichbar.
 const DEFAULT_NAV: NavItem[] = [
   { href: "/leistungen", label: "Leistungen" },
   { href: "/branchen", label: "Branchen" },
   { href: "/ablauf", label: "Ablauf" },
-  { href: "/pakete", label: "Pakete" },
+  { href: "/website-erstellen-lassen", label: "Preise" },
   { href: "/journal", label: "Journal" },
   { href: "/kontakt", label: "Kontakt" },
 ];

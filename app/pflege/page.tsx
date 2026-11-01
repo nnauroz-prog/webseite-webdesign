@@ -31,11 +31,8 @@ export default function PflegeLandingPage() {
     "@type": "Service",
     name: "Pflegedienst-Website aus Hamburg",
     description: DATA.seoDescription,
-    provider: {
-      "@type": "LocalBusiness",
-      "@id": `${SITE_URL}/#business`,
-      name: "Sitalo Webdesign",
-    },
+    // Das Unternehmen selbst beschreibt das Root-Layout (ProfessionalService).
+    provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "City", name: "Hamburg" },
     serviceType: "Webdesign für Pflegedienste",
     url: `${SITE_URL}/pflege`,

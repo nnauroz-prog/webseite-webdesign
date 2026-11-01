@@ -51,8 +51,17 @@ export async function generateMetadata({
   const paket = getPaketBySlug(slug);
   if (!paket) return {};
 
-  const title = `Website-Paket ${paket.name}: ${paket.setup} Festpreis`;
-  const description = paket.description;
+  // Starter führt „Onepager erstellen lassen"; die übrigen Pakete den Paketnamen.
+  const onepager = paket.slug === "starter";
+  const title = onepager
+    ? `Onepager erstellen lassen ${paket.setup}: Paket ${paket.name}`
+    : `Website-Paket ${paket.name}: ${paket.setup} Festpreis`;
+  const basis = onepager
+    ? "Onepage-Website mit Leistungen, Öffnungszeiten und Kontakt, fürs Handy gebaut."
+    : paket.description;
+  // Preis und Dauer anhängen, solange die Beschreibung unter 158 Zeichen bleibt.
+  const zusatz = ` Festpreis ${paket.setup} zzgl. USt., online ${paket.dauer}.`;
+  const description = basis.length + zusatz.length <= 158 ? basis + zusatz : basis;
   return {
     title,
     description,

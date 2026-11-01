@@ -8,7 +8,7 @@ import { PageHero } from "@/components/marketing/page-hero";
 import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "So läuft Ihr Website-Projekt ab — Schritt für Schritt",
+  title: "Ablauf: So läuft Ihr Website-Projekt ab",
   description:
     "So läuft es bei uns: Sie schreiben uns, wir sprechen kurz, wir bauen, Sie prüfen den Test-Link, die Seite geht online. Mit Festpreis vorab.",
   alternates: { canonical: "/ablauf" },

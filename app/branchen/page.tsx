@@ -8,6 +8,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
 import { Briefkarte } from "@/components/marketing/vertical-landing";
 import { BRANCHEN } from "@/lib/branchen-data";
+import { BRANCHEN_SEO } from "@/lib/branchen-seo";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
@@ -18,6 +19,12 @@ export const metadata: Metadata = {
 };
 
 const ZAHLWORT: Record<number, string> = { 8: "Acht", 9: "Neun", 10: "Zehn", 11: "Elf", 12: "Zwölf" };
+
+/** Branchen mit eigener Landingpage (/pflege, /praxen), aus lib/branchen-seo.ts. */
+const LANDINGS = BRANCHEN.flatMap((b) => {
+  const landing = BRANCHEN_SEO[b.slug]?.landing;
+  return landing ? [landing] : [];
+});
 
 export default function BranchenPage() {
   return (
@@ -102,11 +109,28 @@ function Register() {
           })}
         </ul>
         <p className="text-muted-foreground mt-4 font-mono text-[12px] leading-relaxed">
-          Preise sind Einmalpreise, dazu kommt ein Monatsbeitrag je Paket.{" "}
+          Preise sind Einmalpreise zzgl. USt., dazu kommt ein Monatsbeitrag je Paket.{" "}
           <Link href="/pakete" className="hover:text-foreground underline underline-offset-4">
             Alle Pakete
           </Link>
         </p>
+        {/* Landingpages mit Ablauf und Preisen: sie führen „… erstellen lassen", die Branchenseiten den Seitenplan. */}
+        <div className="border-border mt-10 grid gap-4 border-t pt-6 lg:grid-cols-12 lg:gap-8">
+          <p className="label-mono text-muted-foreground lg:col-span-3 lg:pt-1">Eigene Seiten mit Ablauf</p>
+          <ul className="flex flex-wrap gap-x-8 gap-y-3 lg:col-span-9">
+            {LANDINGS.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+                >
+                  {l.label}
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

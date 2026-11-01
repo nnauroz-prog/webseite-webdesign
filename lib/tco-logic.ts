@@ -7,10 +7,12 @@
  *   Sitalo (Business, Premium oder Studio, je nachdem, was bei der
  *   eingestellten Zahl an Änderungen am günstigsten ist; Preise aus
  *   lib/pakete-data.ts, Änderungen über dem Kontingent zum Stundensatz)
- *   Wix (Business-Tarif ~25 €/Mo + Eigenzeit)
- *   Squarespace (~22 €/Mo + Eigenzeit)
- *   Jimdo (~15 €/Mo + Eigenzeit)
- *   Selbstbau mit ChatGPT (~20 €/Mo + viel Eigenzeit)
+ *   Wix, Squarespace, Jimdo (je ein angenommener Monatsbetrag + Eigenzeit)
+ *   Selbstbau mit ChatGPT (angenommen ~20 €/Mo + viel Eigenzeit)
+ *
+ * Die Monatsbeträge der Baukästen sind ANNAHMEN für einen Tarif mit
+ * eigener Domain, keine geprüften Preise der Anbieter (lib/fremdpreise.ts:
+ * dort stehen Beträge nur mit Beleg). Auf der Seite so gekennzeichnet.
  *
  * Eigenzeit wird mit dem User-spezifischen Stunden-Wert multipli-
  * ziert und zu den €-Kosten addiert. Ergebnis: vergleichbare

@@ -10,7 +10,7 @@ import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Website-Wartung und Pflege ab 49\u00A0€ im Monat",
   description:
-    "Hosting, Updates und kleine Änderungen, auf Wunsch auch Werkbank-Stunden für Gestaltung, Technik und Beratung. Auch für Websites, die wir nicht selbst gebaut haben.",
+    "Hosting, Updates und kleine Änderungen, auf Wunsch Werkbank-Stunden für Gestaltung und Technik. Auch für Websites, die wir nicht selbst gebaut haben.",
   alternates: { canonical: "/wartung" },
 };
 

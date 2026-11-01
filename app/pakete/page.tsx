@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
-import { PAKETE, getPaketBySlug, type Paket } from "@/lib/pakete-data";
+import { PAKETE, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -110,7 +110,11 @@ export default function PaketePage() {
           crumb="Pakete"
           eyebrow="Pakete und Preise"
           title={`Website-Pakete ${STARTER_SETUP}`}
-          meta={<span className="text-stahl-hell font-mono text-[12px]">Alle Preise zzgl. MwSt. · Mindestlaufzeit 6 Monate</span>}
+          meta={
+            <span className="text-stahl-hell font-mono text-[12px]">
+              {PREIS_HINWEIS_KURZ} · Mindestlaufzeit 6 Monate
+            </span>
+          }
         >
           Dazu kommt ein Monatsbeitrag {STARTER_MONTHLY} für
           Hosting, Updates und kleine Änderungen. Den Festpreis bekommen Sie schriftlich, bevor wir anfangen.

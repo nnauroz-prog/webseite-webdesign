@@ -398,9 +398,10 @@ function MiniSite({ preset, name }: { preset: Preset; name: string }) {
           <p className="lp-step text-[12px] font-semibold" style={{ color: accent, "--d": 1 } as React.CSSProperties}>
             {name}
           </p>
-          <h3 className="lp-step mt-3 text-[40px] font-semibold leading-[1.05] tracking-[-0.03em]" style={{ "--d": 2 } as React.CSSProperties}>
+          {/* Absatz statt h3: die Musterseite ist Bild, keine Gliederung der echten Seite. */}
+          <p className="lp-step mt-3 text-[40px] font-semibold leading-[1.05] tracking-[-0.03em]" style={{ "--d": 2 } as React.CSSProperties}>
             {preset.headline}
-          </h3>
+          </p>
           <p className="lp-step mt-4 text-[16px] leading-relaxed text-[#4b5563]" style={{ "--d": 3 } as React.CSSProperties}>
             {preset.sub}
           </p>

@@ -201,8 +201,8 @@ export function TcoRechner() {
 
         <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-muted-foreground max-w-xl text-[13px] leading-relaxed">
-            Die Tarife sind gerundete Monatspreise der Anbieter, die Stunden sind unsere Schätzung. Alle Annahmen stehen
-            unter dem Rechner.
+            Die Monatsbeträge der Baukästen sind unsere Annahme für einen Tarif mit eigener Domain, keine Preisangabe der
+            Anbieter; die Stunden sind unsere Schätzung. Alle Annahmen stehen unter dem Rechner.
           </p>
           <Link href={`/anfrage?paket=${sitaloPaket?.slug ?? "business"}`} className="btn-signal h-12 shrink-0 text-[15px]">
             {sitaloPaket?.name ?? "Business"} anfragen

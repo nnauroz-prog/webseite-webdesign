@@ -12,6 +12,12 @@
  * selbst pflegbare Inhalte erst ab Premium) folgen lib/pakete-data.ts.
  */
 
+import { getPaketBySlug, type Paket } from "@/lib/pakete-data";
+
+/** Preise und Dauer in den Branchen-Fragen kommen aus lib/pakete-data.ts. */
+const HW_STARTER = getPaketBySlug("starter") as Paket;
+const HW_BUSINESS = getPaketBySlug("business") as Paket;
+
 export type Branche = {
   /** URL-Slug. /branchen/[slug] */
   slug: string;
@@ -386,8 +392,24 @@ export const BRANCHEN: Branche[] = [
         title: "Nachweise",
         body: "Innung, Meisterbrief, Versicherungen, Jahre im Betrieb. Was Sie vorweisen können, gehört sichtbar auf die Seite.",
       },
+      {
+        title: "Impressum im Handwerk",
+        body: "Bei zulassungspflichtigen Handwerken gehören neben Name und Anschrift die zuständige Handwerkskammer, die Berufsbezeichnung wie Tischlermeister mit dem Staat, in dem sie verliehen wurde, und ein Hinweis auf die Handwerksordnung ins Impressum (§ 5 DDG). Viele Betriebe nennen auch ihre Eintragung in die Handwerksrolle. Wir legen die Seite an, den Rechtstext beziehen Sie, etwa über Ihre Kammer.",
+      },
     ],
     faq: [
+      {
+        q: "Was kostet eine Website für einen Handwerksbetrieb?",
+        a: `Meist passt das Paket ${HW_BUSINESS.name} mit eigenen Seiten für Leistungen, Referenzen und Einsatzgebiet: ${HW_BUSINESS.setup} einmalig und ${HW_BUSINESS.monthly.replace(/\s*\/\s*Monat$/, "")} im Monat für Hosting, Updates und kleine Änderungen, jeweils zzgl. USt. Für einen kleinen Betrieb mit wenigen Leistungen reicht oft ${HW_STARTER.name}, eine einzelne Seite ${HW_STARTER.setup}. Den Festpreis bekommen Sie schriftlich, bevor wir anfangen.`,
+      },
+      {
+        q: "Wie schnell ist die Seite online?",
+        a: `Mit ${HW_BUSINESS.name} dauert es ${HW_BUSINESS.dauer}, mit ${HW_STARTER.name} ${HW_STARTER.dauer}, jeweils ab vollständigen Unterlagen, also Stichpunkten zu Ihren Leistungen und Fotos. Den Starttermin nennen wir Ihnen im ersten Gespräch.`,
+      },
+      {
+        q: "Brauche ich für die Referenzen einen Fotografen?",
+        a: "Nein. Handyfotos bei Tageslicht reichen meist: das fertige Bad, die eingebaute Küche, die Fassade vorher und nachher. Räumen Sie Werkzeug aus dem Bild und nehmen Sie jedes Stück aus zwei, drei Blickwinkeln auf. Fragen Sie Ihre Kunden, bevor Sie Fotos aus ihrem Haus zeigen, und lassen Sie Hausnummern und Gesichter weg. Die besten Bilder wählen wir mit Ihnen aus; ab dem Paket Business bereiten wir sie auch auf.",
+      },
       {
         q: "Brauche ich eine Online-Terminbuchung?",
         a: "Im Handwerk selten. Vor einer Zusage müssen Sie meist kurz nachfragen, deshalb funktionieren Anruf und Rückrufbitte besser.",

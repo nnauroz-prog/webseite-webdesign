@@ -102,13 +102,14 @@ export default function RechnerPage() {
               </h2>
               <div className="text-muted-foreground mt-5 space-y-4 text-[15.5px] leading-relaxed">
                 <p>
-                  Die Monatspreise sind gerundete Tarife der Anbieter. Wir rechnen dabei nicht mit dem günstigsten
-                  Einstiegstarif, sondern mit einem, der für eine Firmenseite üblich ist. Die Einstiegspreise stehen im{" "}
+                  Die Monatsbeträge für Wix, Squarespace, Jimdo und den Selbstbau sind unsere Annahme für einen Tarif
+                  mit eigener Domain, wie ihn eine Firmenseite meist braucht. Es sind keine Preisangaben der Anbieter;
+                  maßgeblich ist deren Preisseite, mehr dazu im{" "}
                   <Link href="/vergleich" className="text-foreground underline underline-offset-4">
                     Vergleich
                   </Link>
                   . Die Stunden für Aufbau und Pflege schätzen wir, sie gelten für jemanden, der zum ersten Mal eine Website
-                  baut.
+                  baut. Sitalo-Preise zzgl. USt.
                 </p>
                 <p>
                   Bei einem Umzug rechnen wir 30 % mehr Aufbauzeit. Wer mit Code umgehen kann, braucht beim Selbstbau 30 %

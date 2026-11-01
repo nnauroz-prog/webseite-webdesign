@@ -35,7 +35,7 @@ const BREADCRUMB_LD = {
 export const metadata: Metadata = {
   title: "Wer zu uns kommt — Auswahl",
   description:
-    "Hier steht, wen wir bewusst nehmen und wen nicht, und wie wir entscheiden.",
+    "Mit wem die Zusammenarbeit gut klappt, wann wir offen sagen, dass wir nicht passen, und wie wir entscheiden. Den Starttermin nennen wir im ersten Gespräch.",
   alternates: { canonical: "/auswahl" },
 };
 

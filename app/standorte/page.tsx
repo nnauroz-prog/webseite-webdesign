@@ -9,14 +9,21 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Briefkarte } from "@/components/marketing/vertical-landing";
 import { STANDORTE } from "@/lib/standorte-data";
 
+const ZAHLWORT: Record<number, string> = { 10: "Zehn", 11: "Elf", 12: "Zwölf", 13: "Dreizehn", 14: "Vierzehn" };
+const ANZAHL = ZAHLWORT[STANDORTE.length] ?? String(STANDORTE.length);
+
+/**
+ * Hub der Stadtteilseiten. Bewusst NICHT „Webdesign Hamburg" oder
+ * „Website erstellen lassen Hamburg" im Title und in der H1: Diese Begriffe
+ * führt die Startseite. Der Hub arbeitet ihr mit einem Link zu, statt ihr
+ * Konkurrenz zu machen.
+ */
 export const metadata: Metadata = {
-  title: "Webdesign Hamburg · Website erstellen lassen im Stadtteil",
+  title: "Hamburgs Stadtteile: Altona, Eimsbüttel und mehr",
   description:
-    "Website erstellen lassen in Hamburg: Webdesign für Betriebe in Eimsbüttel, Altona, Eppendorf, St. Pauli, Winterhude und weiteren Stadtteilen. Ab 499\u00A0€.",
+    `${ANZAHL} Hamburger Stadtteile mit eigener Seite, von Altona und Eimsbüttel bis Bergedorf: welche Betriebe es im Viertel gibt und wonach dort gesucht wird.`,
   alternates: { canonical: "/standorte" },
 };
-
-const ZAHLWORT: Record<number, string> = { 10: "Zehn", 11: "Elf", 12: "Zwölf", 13: "Dreizehn", 14: "Vierzehn" };
 
 export default function StandortePage() {
   return (
@@ -43,11 +50,21 @@ function Hero() {
         <div className="min-w-0 lg:col-span-5">
           <p className="label-mono text-muted-foreground">Nach Stadtteil</p>
           <h1 className="mt-6 text-balance text-[2.4rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[3.6rem]">
-            Website erstellen lassen in Hamburg
+            {ANZAHL} Hamburger Stadtteile mit eigener Seite
           </h1>
           <p className="mt-6 max-w-md text-pretty text-[17px] leading-relaxed text-[#33383a] sm:text-[18px]">
             Wer einen Friseur in der Nähe sucht, tippt „Friseur Eimsbüttel“ oder „Friseur Osterstraße“. Auf solche
             Suchen richten wir Seitentitel und Texte aus.
+          </p>
+          <p className="text-muted-foreground mt-4 max-w-md text-[15.5px] leading-relaxed">
+            Was wir für Betriebe in ganz Hamburg bauen, steht auf der Seite{" "}
+            <Link
+              href="/"
+              className="text-foreground font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
+            >
+              Webdesign Hamburg
+            </Link>
+            .
           </p>
         </div>
         <div className="min-w-0 lg:col-span-7">
@@ -60,13 +77,12 @@ function Hero() {
 
 /** Stadtteile als Tabelle: Name, Einordnung, gefragte Branchen. */
 function Liste() {
-  const anzahl = ZAHLWORT[STANDORTE.length] ?? String(STANDORTE.length);
   return (
     <section className="bg-card border-border border-t">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-7">
-            {anzahl} Stadtteile mit eigener Seite
+            Alle Stadtteile im Überblick
           </h2>
           <p className="text-muted-foreground max-w-md text-[16.5px] leading-relaxed lg:col-span-4 lg:col-start-9">
             Auf jeder Seite steht, welche Betriebe es im Viertel gibt und wonach dort gesucht wird.

@@ -154,7 +154,7 @@ function Hero({ standort }: { standort: Standort }) {
               Anfrage schreiben {ARROW}
             </Link>
             <Link href="/website-erstellen-lassen" className="btn-line grow sm:grow-0">
-              Kosten und Ablauf
+              Festpreis und Ablauf
             </Link>
           </div>
         </div>
