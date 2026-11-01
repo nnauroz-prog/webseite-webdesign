@@ -93,9 +93,9 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h3 className="label-mono text-stahl-hell mb-5">
+      <h2 className="label-mono text-stahl-hell mb-5">
         {title}
-      </h3>
+      </h2>
       <ul className="space-y-3 text-[15px]">{children}</ul>
     </div>
   );

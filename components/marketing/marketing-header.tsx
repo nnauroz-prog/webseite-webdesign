@@ -255,7 +255,7 @@ function MobileFullscreenMenu({
           min-h-0 ist wichtig, sonst kann die flex-1 Fläche nicht
           unter die Höhe ihres Inhalts schrumpfen → kein Scroll. */}
       <nav
-        className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-6 py-6 sm:gap-2"
+        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-6 py-4 sm:gap-2 sm:py-6"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         {MOBILE_NAV.map((item, i) => (
@@ -264,7 +264,7 @@ function MobileFullscreenMenu({
             href={item.href}
             onClick={onClose}
             className={cn(
-              "text-background block shrink-0 py-2.5 text-[2rem] font-bold tracking-[-0.025em] [font-stretch:112%] transition-opacity sm:text-4xl",
+              "text-background block shrink-0 py-2 text-[1.85rem] font-bold tracking-[-0.025em] [font-stretch:112%] transition-opacity sm:text-4xl",
               open
                 ? "translate-y-0 opacity-100"
                 : "translate-y-3 opacity-0",

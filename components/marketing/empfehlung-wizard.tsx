@@ -463,7 +463,7 @@ function OptionCard({
           ))}
       </span>
       <span className="min-w-0">
-        <span className="text-foreground block text-[15px] leading-snug font-semibold break-words">
+        <span className="text-foreground block text-[15px] leading-snug font-semibold hyphens-auto break-words">
           {label}
         </span>
         {detail && (
