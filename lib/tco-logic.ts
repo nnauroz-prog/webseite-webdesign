@@ -4,11 +4,13 @@
  * „Total Cost of Ownership" über 36 Monate, inklusive Eigenzeit-
  * Äquivalent. Vergleicht fünf Optionen ehrlich:
  *
- *   Sitalo Business (Preis aus lib/pakete-data.ts abgeleitet)
+ *   Sitalo (Business, Premium oder Studio, je nachdem, was bei der
+ *   eingestellten Zahl an Änderungen am günstigsten ist; Preise aus
+ *   lib/pakete-data.ts, Änderungen über dem Kontingent zum Stundensatz)
  *   Wix (Business-Tarif ~25 €/Mo + Eigenzeit)
  *   Squarespace (~22 €/Mo + Eigenzeit)
  *   Jimdo (~15 €/Mo + Eigenzeit)
- *   ChatGPT/Cursor-Eigenbau (~20 €/Mo + viel Eigenzeit)
+ *   Selbstbau mit ChatGPT (~20 €/Mo + viel Eigenzeit)
  *
  * Eigenzeit wird mit dem User-spezifischen Stunden-Wert multipli-
  * ziert und zu den €-Kosten addiert. Ergebnis: vergleichbare
@@ -20,7 +22,8 @@
  * ehrlichen Bild.
  */
 
-import { getPaketBySlug } from "@/lib/pakete-data";
+import { STUNDENSATZ_EUR } from "@/lib/honorar-data";
+import { getPaketBySlug, type Paket } from "@/lib/pakete-data";
 
 export type Profile = "neu" | "umzug" | "eigenbau";
 
@@ -52,20 +55,72 @@ function eurFrom(priceLabel: string): number {
   return digits ? parseInt(digits, 10) : 0;
 }
 
-const sitaloBusiness = getPaketBySlug("business");
+const MONTHS = 36;
+
+/**
+ * Sitalo-Pakete, die der Rechner in Betracht zieht, mit den kleinen
+ * Änderungen, die im Monatsbeitrag stecken (wie auf /pakete). Starter
+ * fehlt bewusst: Verglichen wird eine Firmenseite mit Unterseiten.
+ */
+const SITALO_PAKETE: { slug: Paket["slug"]; aenderungen: number }[] = [
+  { slug: "business", aenderungen: 3 },
+  { slug: "premium", aenderungen: 6 },
+  { slug: "studio", aenderungen: 10 },
+];
+
+/**
+ * Eine kleine Änderung über dem Kontingent rechnet der Rechner mit
+ * einer halben Stunde zum Stundensatz (eine kleine Änderung dauert
+ * laut Paket-FAQ 15 bis 30 Minuten, gerechnet wird die obere Grenze).
+ */
+const STUNDEN_PRO_EXTRA_AENDERUNG = 0.5;
+
+type SitaloWahl = {
+  slug: Paket["slug"];
+  label: string;
+  einmaligEUR: number;
+  monatlichEUR: number;
+  extraProMonat: number;
+};
+
+/**
+ * Erklärung unter dem Sitalo-Balken. Leer, solange Business mit seinen
+ * drei Änderungen reicht; sonst steht da, warum anders gerechnet wird.
+ */
+function sitaloHinweis(wahl: SitaloWahl): string {
+  const kontingent = SITALO_PAKETE.find((p) => p.slug === wahl.slug)?.aenderungen ?? 0;
+  if (wahl.slug === "business" && wahl.extraProMonat === 0) return "";
+  const vorweg =
+    wahl.slug === "business"
+      ? ""
+      : `Bei so vielen Änderungen ist ${wahl.label} günstiger als Business mit Zusatzstunden. `;
+  const rest =
+    wahl.extraProMonat > 0
+      ? `, jede weitere ist hier mit einer halben Stunde zum Stundensatz von ${STUNDENSATZ_EUR} € gerechnet.`
+      : ".";
+  return `${vorweg}${wahl.label} enthält ${kontingent} kleine Änderungen im Monat${rest}`;
+}
+
+/** Das Sitalo-Paket, das bei `updatesPerMonth` über 36 Monate am wenigsten kostet. */
+function sitaloFuer(updatesPerMonth: number): SitaloWahl {
+  const kandidaten = SITALO_PAKETE.map(({ slug, aenderungen }) => {
+    const p = getPaketBySlug(slug);
+    const extra = Math.max(0, updatesPerMonth - aenderungen);
+    const name = p?.name ?? slug;
+    return {
+      slug,
+      label: name.startsWith("Sitalo") ? name : `Sitalo ${name}`,
+      einmaligEUR: p ? eurFrom(p.setup) : 0,
+      monatlichEUR: p ? eurFrom(p.monthly) : 0,
+      extraProMonat: extra,
+    };
+  });
+  const kosten = (k: SitaloWahl) =>
+    k.einmaligEUR + (k.monatlichEUR + k.extraProMonat * STUNDEN_PRO_EXTRA_AENDERUNG * STUNDENSATZ_EUR) * MONTHS;
+  return kandidaten.reduce((min, k) => (kosten(k) < kosten(min) ? k : min), kandidaten[0]);
+}
 
 const OPTIONS: Option[] = [
-  {
-    slug: "sitalo",
-    label: "Sitalo Business",
-    einmaligEUR: sitaloBusiness ? eurFrom(sitaloBusiness.setup) : 899,
-    monatlichEUR: sitaloBusiness ? eurFrom(sitaloBusiness.monthly) : 79,
-    aufbauHours: 0,
-    pflegeHoursPerUpdate: 0,
-    baseDescription:
-      "Wir bauen, wir pflegen, Sie schicken Inhalte. Eigenzeit: nur Ihre Inhalte zusammensuchen.",
-    highlight: true,
-  },
   {
     slug: "wix",
     label: "Wix",
@@ -98,18 +153,20 @@ const OPTIONS: Option[] = [
   },
   {
     slug: "diy",
-    label: "Selbstbau mit ChatGPT/Cursor",
+    label: "Selbstbau mit ChatGPT",
     einmaligEUR: 0,
     monatlichEUR: 20,
     aufbauHours: 60,
     pflegeHoursPerUpdate: 1.5,
     baseDescription:
-      "Tools-Subscriptions + Domain + Hosting. Aufbau 60 h Lernkurve, Pflege 1,5 h/Update inkl. Debug.",
+      "Abos für Werkzeuge, Domain und Hosting. Aufbau etwa 60 h mit Einarbeitung, Pflege etwa 1,5 h je Änderung mit Fehlersuche.",
   },
 ];
 
 export type Result = {
   slug: Option["slug"];
+  /** Nur bei Sitalo: das gerechnete Paket (für den Anfrage-Link). */
+  paket?: Paket["slug"];
   label: string;
   highlight: boolean;
   description: string;
@@ -123,7 +180,6 @@ export type Result = {
   totalEur: number;
 };
 
-const MONTHS = 36;
 
 /**
  * Profile-Multiplikator für Aufbau-Stunden:
@@ -142,7 +198,20 @@ function profileAufbauMultiplier(p: Profile, slug: Option["slug"]): number {
 }
 
 export function calculate(inputs: Inputs): Result[] {
-  return OPTIONS.map((opt) => {
+  const wahl = sitaloFuer(inputs.updatesPerMonth);
+  const extraEur = wahl.extraProMonat * STUNDEN_PRO_EXTRA_AENDERUNG * STUNDENSATZ_EUR;
+  const sitalo: Result = {
+    slug: "sitalo",
+    paket: wahl.slug,
+    label: wahl.label,
+    highlight: true,
+    description: sitaloHinweis(wahl),
+    euroCost: wahl.einmaligEUR + (wahl.monatlichEUR + extraEur) * MONTHS,
+    hoursCost: 0,
+    hoursEur: 0,
+    totalEur: wahl.einmaligEUR + (wahl.monatlichEUR + extraEur) * MONTHS,
+  };
+  const andere = OPTIONS.map((opt): Result => {
     const mult = profileAufbauMultiplier(inputs.profile, opt.slug);
     const aufbau = opt.aufbauHours * mult;
     const pflege = opt.pflegeHoursPerUpdate * inputs.updatesPerMonth * MONTHS;
@@ -160,7 +229,9 @@ export function calculate(inputs: Inputs): Result[] {
       totalEur: euro + hoursEur,
     };
   });
+  return [sitalo, ...andere];
 }
+
 
 export function findCheapest(results: Result[]): Result {
   return results.reduce((min, r) => (r.totalEur < min.totalEur ? r : min), results[0]);
@@ -179,6 +250,7 @@ export function formatEur(n: number): string {
 }
 
 export function formatHours(n: number): string {
+  if (n <= 0) return "0 h";
   if (n < 1) return "<1 h";
   return `${Math.round(n)} h`;
 }

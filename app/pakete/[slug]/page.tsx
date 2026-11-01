@@ -29,7 +29,7 @@ const LEAD: Record<Paket["slug"], string> = {
   premium:
     "Eine Struktur, die wir für Ihren Betrieb anlegen. Speisekarte, Angebote oder Termine pflegen Sie auf Wunsch selbst.",
   studio:
-    "Eigene Schrift, Farben und Bildsprache für Ihren Betrieb. Vor dem Entwurf treffen wir uns in Hamburg oder bei Ihnen.",
+    "Ein neues Erscheinungsbild: Schrift, Farben und Bildsprache entwerfen wir eigens für Ihren Betrieb. Vor dem Entwurf treffen wir uns in Hamburg oder bei Ihnen.",
 };
 
 /** „ab 2.499 €" → „2.499 €", „ab 79 € / Monat" → „79 €" */
@@ -301,11 +301,13 @@ export default async function PaketDetailPage({
                 </ul>
                 {naechstes ? (
                   <p className="text-muted-foreground mt-4 text-[14px] leading-relaxed">
-                    Was hier fehlt, hat{" "}
+                    {naechstes.slug === "studio" ? "Ein neues Erscheinungsbild gibt es mit " : "Ein Wechsel zu "}
                     <Link href={`/pakete/${naechstes.slug}`} className="text-foreground underline underline-offset-4">
                       {naechstes.name}
                     </Link>
-                    . Ein Wechsel geht jederzeit, die Seite wird erweitert und nicht neu gebaut.
+                    {naechstes.slug === "studio"
+                      ? ". Dafür gestalten wir die Seite neu, den Preis nennen wir Ihnen vorher."
+                      : " geht jederzeit, die Seite wird erweitert und nicht neu gebaut."}
                   </p>
                 ) : null}
               </div>

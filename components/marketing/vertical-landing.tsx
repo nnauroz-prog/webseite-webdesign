@@ -8,7 +8,7 @@ import type { VertikalLanding } from "@/lib/vertikal-landings";
 /**
  * VerticalLanding: Renderer für die Branchen-Landingpages (/pflege,
  * /praxen). Bewusst anders gebaut als /branchen/[slug]:
- *   - Kopf mit Steckbrief (Paket, Preis, Dauer) statt Bild
+ *   - Kopf mit Steckbrief (Paket, Preis, Dauer aus pakete-data) statt Bild
  *   - typische Probleme als Zeitungsseite: Aufmacher und Spalte
  *   - Bauteile als Verzeichnis mit Haarlinien
  *   - Ablauf als Linie mit drei Halten (echte Reihenfolge)
@@ -17,8 +17,6 @@ import type { VertikalLanding } from "@/lib/vertikal-landings";
  *     /standorte genutzt)
  */
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
-
-const ZAHLWORT = ["null", "eine", "zwei", "drei", "vier", "fünf", "sechs"];
 
 export function VerticalLanding({
   data,
@@ -29,14 +27,16 @@ export function VerticalLanding({
   faq?: { q: string; a: string }[];
 }) {
   const inquiryHref = `/anfrage?branche=${data.inquirySlug}&paket=${data.recommendedPackage}`;
-  const wochen = ZAHLWORT[data.process.length] ?? String(data.process.length);
+  // Dauer kommt aus dem empfohlenen Paket, damit Steckbrief, Ablauf und
+  // FAQ derselben Seite dieselbe Zahl nennen.
+  const dauer = getPaketBySlug(data.recommendedPackage)?.dauer ?? null;
 
   return (
     <>
-      <Hero data={data} inquiryHref={inquiryHref} wochen={wochen} />
+      <Hero data={data} inquiryHref={inquiryHref} dauer={dauer} />
       <Pains data={data} />
       <Bauteile data={data} />
-      <Process data={data} wochen={wochen} />
+      <Process data={data} dauer={dauer} />
       {faq && faq.length > 0 ? <Faq faq={faq} /> : null}
       <Briefkarte title={joinLine(data.schlussZitat, data.schlussZitatItalic)} inquiryHref={inquiryHref}>
         Für ein erstes Gespräch reicht meist eine Viertelstunde am Telefon. Danach kennen Sie den Festpreis und den
@@ -54,11 +54,11 @@ function joinLine(main: string, extra?: string) {
 function Hero({
   data,
   inquiryHref,
-  wochen,
+  dauer,
 }: {
   data: VertikalLanding;
   inquiryHref: string;
-  wochen: string;
+  dauer: string | null;
 }) {
   const paket = getPaketBySlug(data.recommendedPackage);
   const facts: { k: string; v: string }[] = [];
@@ -67,7 +67,7 @@ function Hero({
     facts.push({ k: "Einmalig", v: paket.setup });
     facts.push({ k: "Monatlich", v: paket.monthly.replace(/\s*\/\s*Monat$/, "") });
   }
-  facts.push({ k: "Dauer", v: `etwa ${wochen} Wochen` });
+  if (dauer) facts.push({ k: "Dauer bis online", v: dauer });
   facts.push({ k: "Vor dem Start", v: "Test-Link für Sie" });
 
   return (
@@ -176,27 +176,29 @@ function Bauteile({ data }: { data: VertikalLanding }) {
   );
 }
 
-function Process({ data, wochen }: { data: VertikalLanding; wochen: string }) {
+function Process({ data, dauer }: { data: VertikalLanding; dauer: string | null }) {
   return (
     <section className="grain bg-foreground text-background">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
           <h2 className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7">
-            In {wochen} Wochen online
+            So läuft es ab
           </h2>
           <p className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
-            Gezählt ab dem ersten Gespräch. Wie schnell es danach geht, hängt vor allem davon ab, wann Fotos und
-            Stichpunkte bei uns sind.
+            {dauer
+              ? `Bis die Seite online ist, vergehen ${dauer}, gezählt ab dem Tag, an dem Fotos und Stichpunkte bei uns sind. `
+              : null}
+            Wie schnell es geht, hängt vor allem davon ab, wann die Unterlagen kommen.
           </p>
         </div>
         <ol className="border-background/25 mt-14 grid gap-10 border-l pl-7 sm:mt-20 md:grid-cols-3 md:gap-8 md:border-t md:border-l-0 md:pl-0">
           {data.process.map((step) => (
-            <li key={step.woche} className="relative md:pt-8">
+            <li key={step.schritt} className="relative md:pt-8">
               <span
                 aria-hidden="true"
                 className="bg-gold absolute top-[4px] -left-[34px] h-[11px] w-[11px] md:-top-[6px] md:left-0"
               />
-              <p className="label-mono text-gold">{step.woche}</p>
+              <p className="label-mono text-gold">{step.schritt}</p>
               <p className="text-background/85 mt-3 max-w-sm text-pretty text-[16px] leading-relaxed">{step.what}</p>
             </li>
           ))}

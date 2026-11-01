@@ -39,7 +39,7 @@ type Box = {
 const BOXES: Box[] = [
   {
     title: "Die Website selbst",
-    text: "Eigens für Ihren Betrieb gestaltet und direkt im Code gebaut, ohne Baukasten. Sie läuft auf dem Handy so gut wie am Rechner und lädt auch bei schwachem Mobilfunk zügig.",
+    text: "Für Ihren Betrieb gestaltet, mit Ihrem Logo, Ihren Farben und Fotos, und direkt im Code gebaut, ohne Baukasten. Sie läuft auf dem Handy so gut wie am Rechner und lädt auch bei schwachem Mobilfunk zügig.",
     tag: "In jedem Paket",
     size: "40",
     tone: "signal",

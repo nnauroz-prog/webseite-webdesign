@@ -10,7 +10,7 @@ export default async function Image() {
     variant: "hell",
     eyebrow: "Sitalo · Inventar",
     headline: "Was wir verwenden, und warum.",
-    subline: "Werkzeuge, Hosting und Empfehlungen, jeweils mit Begründung. Am Ende steht, was wir bewusst nicht einsetzen.",
+    subline: "Werkzeuge, Hosting und was Sie selbst beisteuern, jeweils mit Begründung. Am Ende steht, was wir bewusst nicht einsetzen.",
     url: "sitalo.de/inventar",
   });
 }

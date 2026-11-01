@@ -83,8 +83,8 @@ export default function RechnerPage() {
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero crumb="3-Jahres-Rechner" eyebrow="Kostenrechner · 36 Monate" title="Was kostet eine Website über drei Jahre?">
-          Sitalo Business neben Wix, Squarespace, Jimdo und dem Selbstbau mit ChatGPT. Ihre eigene Arbeitszeit zählt mit,
-          zu dem Stundenwert, den Sie im Rechner einstellen.
+          Sitalo neben Wix, Squarespace, Jimdo und dem Selbstbau mit ChatGPT. Ihre eigene Arbeitszeit zählt mit, zu dem
+          Stundenwert, den Sie im Rechner einstellen.
         </PageHero>
 
         <section>
@@ -149,8 +149,10 @@ export default function RechnerPage() {
                 </tbody>
               </table>
               <p className="text-muted-foreground mt-4 text-[13px] leading-relaxed">
-                Bei Sitalo sind Aufbau und Änderungen im Preis, eigene Zeit brauchen Sie nur für Ihre Inhalte. Preise der
-                Anbieter ändern sich, prüfen Sie im Zweifel dort nach.
+                Bei Sitalo sind Aufbau und kleine Änderungen im Preis, eigene Zeit brauchen Sie nur für Ihre Inhalte.
+                Gerechnet wird mit Business und drei Änderungen im Monat. Stellen Sie mehr ein, rechnet der Rechner jede
+                weitere mit einer halben Stunde zum Stundensatz oder nimmt Premium beziehungsweise Studio, wenn das
+                günstiger ist. Preise der Anbieter ändern sich, prüfen Sie im Zweifel dort nach.
               </p>
             </div>
           </div>
@@ -164,8 +166,8 @@ export default function RechnerPage() {
                 Die Zahlen lieber gemeinsam durchgehen
               </h2>
               <p className="text-muted-foreground mt-5 max-w-xl text-[16.5px] leading-relaxed">
-                Im Erstgespräch rechnen wir mit Ihren Angaben nach. Es dauert 30 Minuten, am Telefon, per Video oder in
-                Hamburg, und kostet nichts.
+                Im Erstgespräch rechnen wir mit Ihren Angaben nach. Es dauert bis zu 30 Minuten, meist reicht eine
+                Viertelstunde, am Telefon, per Video oder in Hamburg, und kostet nichts.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-4 lg:col-start-9 lg:justify-end">

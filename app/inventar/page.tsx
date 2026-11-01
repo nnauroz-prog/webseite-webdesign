@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = {
   title: "Inventar — Was wir verwenden",
   description:
-    "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was wir empfehlen und was wir bewusst auslassen.",
+    "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was Sie beisteuern und was wir bewusst auslassen.",
   alternates: { canonical: "/inventar" },
 };
 
@@ -38,7 +38,7 @@ const ARTICLE_LD = {
   "@type": "Article",
   headline: "Sitalo Inventar — was wir verwenden",
   description:
-    "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was wir empfehlen und was wir bewusst auslassen.",
+    "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was Sie beisteuern und was wir bewusst auslassen.",
   author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
   publisher: { "@id": `${SITE_URL}/#business` },
   mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/inventar` },
@@ -65,8 +65,8 @@ export default function InventarPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero crumb="Inventar" eyebrow="Offen einsehbar · Stand Oktober 2026" title="Was wir verwenden, und warum">
-          Hier steht, womit wir Websites bauen, wo sie gehostet werden und an wen wir weiterempfehlen. Am Ende folgt, was
+        <PageHero crumb="Inventar" eyebrow="Offen einsehbar" title="Was wir verwenden, und warum">
+          Hier steht, womit wir Websites bauen, wo sie gehostet werden und was Sie selbst beisteuern. Am Ende folgt, was
           wir bewusst nicht einsetzen.
         </PageHero>
 
@@ -198,7 +198,7 @@ function ClosingNote() {
             Fragen zu einem Werkzeug beantworten wir am Telefon.
           </h2>
           <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-[16px] leading-relaxed">
-            Wir überarbeiten das Inventar etwa alle drei Monate. Ändert sich an unseren Werkzeugen oder Lieferanten etwas,
+            Wir überarbeiten das Inventar etwa alle drei Monate. Ändert sich an unseren Werkzeugen oder Diensten etwas,
             steht es hier. Telefon{" "}
             <a
               href="tel:+491607621876"
@@ -211,7 +211,7 @@ function ClosingNote() {
         </div>
         <div className="flex flex-wrap gap-3 lg:col-span-5 lg:justify-end">
           <Link href="/termin" className="btn-signal grow sm:grow-0">
-            30 Minuten Gespräch buchen {ARROW}
+            Erstgespräch buchen {ARROW}
           </Link>
         </div>
       </div>

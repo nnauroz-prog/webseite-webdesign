@@ -34,10 +34,10 @@ export function MarketingFooter() {
             <FooterLink href="/pakete">Pakete</FooterLink>
             <FooterLink href="/wartung">Wartung</FooterLink>
             <FooterLink href="/branchen">Branchen</FooterLink>
-            <FooterLink href="/audit">Kostenloser Google-Check</FooterLink>
+            <FooterLink href="/audit">Kostenlose Durchsicht Ihrer Website</FooterLink>
           </FooterCol>
           <FooterCol title="Sitalo">
-            <FooterLink href="/atelier">Das Atelier</FooterLink>
+            <FooterLink href="/atelier">Über uns</FooterLink>
             <FooterLink href="/ablauf">Ablauf</FooterLink>
             <FooterLink href="/journal">Journal</FooterLink>
             <FooterLink href="/faq">FAQ</FooterLink>

@@ -10,7 +10,7 @@ export default async function Image() {
     variant: "dunkel",
     eyebrow: "Sitalo · Auswahl",
     headline: "Welche Aufträge wir annehmen.",
-    subline: "Wir nehmen höchstens drei neue Aufträge im Monat an. Hier steht, wonach wir entscheiden.",
+    subline: "Hier steht, wonach wir entscheiden, welche Aufträge wir annehmen.",
     url: "sitalo.de/auswahl",
   });
 }

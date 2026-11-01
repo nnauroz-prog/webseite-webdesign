@@ -1,8 +1,9 @@
 /**
  * Atelier-Notizen — was gerade wirklich im Atelier passiert.
  *
- * Eine Datenquelle für zwei Konsumenten: die „Aus dem Atelier"-
- * Sektion auf der Homepage und die /jetzt-Seite (Now-Page).
+ * Datenquelle für die /jetzt-Seite. Bewusst ohne festes Stand-Datum:
+ * ein Datum, das niemand nachzieht, sieht nach wenigen Wochen veraltet
+ * aus.
  *
  * Pflege-Regeln (gelten unverändert):
  *   - jeden Eintrag mit dem, was wirklich diese/letzte Woche
@@ -23,37 +24,11 @@ export type AtelierNote = {
 };
 
 /**
- * Wann die Notizen zuletzt gepflegt wurden (yyyy-mm-dd). Die
- * Überschriften auf Homepage und /jetzt zeigen dieses Datum statt
- * des aktuellen Monats — beim Aktualisieren der Notizen mitziehen.
- */
-export const ATELIER_STAND = "2026-06-14";
-
-/**
  * Derzeit leer: Die früheren Einträge nannten Kundenprojekte, die sich
  * nicht belegen ließen. Nur eintragen, was wirklich passiert ist und
  * vom Kunden freigegeben wurde. Wird zur Zeit auf keiner Seite gezeigt.
  */
 export const ATELIER_NOTES: AtelierNote[] = [];
-
-/** „Juni 2026" — Monat des Notizen-Stands. */
-export function atelierStandMonth(): string {
-  return new Date(`${ATELIER_STAND}T12:00:00Z`).toLocaleDateString("de-DE", {
-    month: "long",
-    year: "numeric",
-    timeZone: "Europe/Berlin",
-  });
-}
-
-/** „14. Juni 2026" — voller Notizen-Stand. */
-export function atelierStandDate(): string {
-  return new Date(`${ATELIER_STAND}T12:00:00Z`).toLocaleDateString("de-DE", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "Europe/Berlin",
-  });
-}
 
 /**
  * Was wir gerade lernen/lesen/ausprobieren — der persönlichere

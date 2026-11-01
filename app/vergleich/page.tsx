@@ -9,15 +9,15 @@ import { getPaketBySlug } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Vergleich — Wix, Squarespace, Jimdo, Eigenbau mit KI",
+  title: "Vergleich — Wix, Squarespace, Jimdo, Selbstbau mit ChatGPT",
   description:
-    "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Eigenbau mit KI, wann ein Webdesign-Büro wie Sitalo.",
+    "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Selbstbau mit ChatGPT, wann ein Webdesign-Büro wie Sitalo.",
   alternates: { canonical: "/vergleich" },
 };
 
 /**
  * `/vergleich` — Sitalo neben Wix, Squarespace, Jimdo und dem
- * Selbstbau mit ChatGPT oder Cursor. Jede Option bekommt die Fälle,
+ * Selbstbau mit Chat-Programmen wie ChatGPT. Jede Option bekommt die Fälle,
  * in denen sie passt, auch wenn das gegen uns spricht.
  */
 export default function VergleichPage() {
@@ -28,9 +28,9 @@ export default function VergleichPage() {
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Wix, Squarespace, Jimdo, Eigenbau mit KI oder Webdesign-Büro?",
+    headline: "Wix, Squarespace, Jimdo, Selbstbau mit ChatGPT oder Webdesign-Büro?",
     description:
-      "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Eigenbau mit KI, wann ein Webdesign-Büro wie Sitalo.",
+      "Vergleich für lokale Unternehmen in Deutschland: Wann lohnt sich ein Baukasten, wann der Selbstbau mit ChatGPT, wann ein Webdesign-Büro wie Sitalo.",
     author: {
       "@type": "Organization",
       name: "Sitalo Webdesign",
@@ -99,7 +99,7 @@ const FAUSTREGEL = [
       "Günstig, solange Sie die Stunden für Texte, Bilder, die Ansicht am Handy und Google selbst aufbringen.",
   },
   {
-    weg: "ChatGPT oder Cursor",
+    weg: "Selbst programmieren mit ChatGPT",
     wann: "Sie sind technisch interessiert und basteln gern.",
     detail:
       "Damit kommen Sie heute weiter als vor zwei Jahren. Domain, Hosting, Datenschutz, Tests am Handy und Updates bleiben trotzdem bei Ihnen.",
@@ -190,7 +190,7 @@ const DEEP_DIVES: DeepDive[] = [
     goodFor: [
       "Sehr kleine Betriebe wie Friseur oder Bäckerei mit einfachem Bedarf",
       "Wenn Sie Datenschutz-Standardtexte direkt aus dem System brauchen",
-      "Wenn Sie einen Aufbau mit KI-Hilfe ausprobieren möchten",
+      "Wenn Sie sich beim ersten Aufbau von einem Assistenten durch Fragen führen lassen möchten",
     ],
     watchOut: [
       "Wenig Spielraum für eine eigene Gestaltung, viele Jimdo-Seiten sehen sich ähnlich",
@@ -201,8 +201,8 @@ const DEEP_DIVES: DeepDive[] = [
   {
     id: "ki-eigenbau",
     kategorie: "Selbstbau",
-    label: "ChatGPT oder Cursor",
-    tagline: "Sie beschreiben, was Sie wollen, das Programm schreibt den Code.",
+    label: "Selbstbau mit ChatGPT",
+    tagline: "Sie beschreiben einem Chat-Programm wie ChatGPT, was Sie wollen, und es schreibt den Code.",
     goodFor: [
       "Inhaber mit Technik-Interesse, die gern basteln",
       "Schnelle Entwürfe, um eine Idee auszuprobieren",

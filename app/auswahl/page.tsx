@@ -12,7 +12,7 @@ const ARTICLE_LD = {
   "@type": "Article",
   headline: "Wer zu uns kommt — Auswahl",
   description:
-    "Wir nehmen pro Monat höchstens drei neue Aufträge an. Wen wir bewusst nehmen und wen nicht — und wie wir entscheiden.",
+    "Wen wir bewusst nehmen und wen nicht, und wie wir entscheiden.",
   author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
   publisher: { "@id": `${SITE_URL}/#business` },
   mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/auswahl` },
@@ -35,7 +35,7 @@ const BREADCRUMB_LD = {
 export const metadata: Metadata = {
   title: "Wer zu uns kommt — Auswahl",
   description:
-    "Wir nehmen pro Monat höchstens drei neue Aufträge an. Hier steht, wen wir bewusst nehmen und wen nicht — und wie wir entscheiden.",
+    "Hier steht, wen wir bewusst nehmen und wen nicht, und wie wir entscheiden.",
   alternates: { canonical: "/auswahl" },
 };
 
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
  * `/auswahl` — Aufnahmekriterien.
  *
  * Wir sagen offen, mit wem die Zusammenarbeit gut klappt und wann wir
- * lieber jemand anderen empfehlen. Aufbau: Kriterien als zweispaltige
+ * nicht passen. Aufbau: Kriterien als zweispaltige
  * Tabelle (passt gut / passt eher nicht), danach die drei Schritte bis
  * zur Entscheidung, am Ende eine ruhige Notiz mit zwei Wegen statt
  * eines großen Anfrage-Knopfs.
@@ -58,8 +58,9 @@ export default function AuswahlPage() {
           eyebrow="Aufnahmekriterien"
           title="Wer zu uns kommt und wer nicht"
         >
-          Jede Seite bauen und betreuen wir selbst, deshalb nehmen wir pro Monat höchstens drei neue Aufträge an. Unten
-          steht, mit wem das gut klappt und wann wir Ihnen lieber jemand anderen empfehlen.
+          Wir bauen und betreuen jede Seite selbst. Deshalb nehmen wir nur so viele Aufträge an, wie wir sorgfältig
+          fertig bekommen; den Starttermin nennen wir Ihnen im ersten Gespräch. Unten steht, mit wem die Zusammenarbeit
+          gut klappt und wann wir Ihnen offen sagen, dass wir nicht passen.
         </PageHero>
         <CriteriaList />
         <Process />
@@ -100,8 +101,8 @@ const CRITERIA: Criterion[] = [
   },
   {
     thema: "Unterlagen",
-    ja: "Sie schicken Logo, Fotos und Stichpunkte. Die Texte schreiben wir daraus.",
-    nein: "Logo-Entwicklung und Fotoshooting erwarten Sie von uns. Dafür nennen wir Ihnen Leute, mit denen wir zusammenarbeiten.",
+    ja: "Sie schicken Stichpunkte, Fotos und, falls vorhanden, Ihr Logo. Die Texte schreiben wir daraus.",
+    nein: "Logo-Entwicklung und Fotoshooting erwarten Sie von uns. Beides bieten wir nicht an. Oft reichen Handyfotos, und wer einen Fotografen beauftragt, bekommt von uns eine kurze Motivliste.",
   },
   {
     thema: "Nach dem Start",
@@ -166,16 +167,16 @@ function CriteriaList() {
 
 const STEPS: { title: string; body: string }[] = [
   {
-    title: "Audit oder kurze Anfrage",
-    body: "Wir sehen uns Ihre jetzige Seite an oder lesen, was Sie geschrieben haben, und schicken drei bis fünf Punkte per Mail zurück. Daran sehen Sie, wie wir arbeiten, und wir sehen, worum es geht.",
+    title: "Durchsicht oder kurze Anfrage",
+    body: "Wir sehen uns Ihre jetzige Seite an und schicken drei bis fünf Punkte per Mail zurück. Oder wir lesen Ihre Anfrage und melden uns, meist am selben Werktag. Daran sehen Sie, wie wir arbeiten, und wir sehen, worum es geht.",
   },
   {
-    title: "Gespräch von 30 Minuten",
-    body: "Wir telefonieren oder treffen uns, wenn Sie in Hamburg sind. Wir fragen, was Sie anbieten, wer Ihre Kunden sind und was der Seite fehlt. Sie fragen, wie wir arbeiten und wann die Seite fertig wäre.",
+    title: "Ein kurzes Gespräch",
+    body: "Meist reicht eine Viertelstunde, im Kalender sind 30 Minuten reserviert. Wir telefonieren oder treffen uns, wenn Sie in Hamburg sind. Wir fragen, was Sie anbieten, wer Ihre Kunden sind und was der Seite fehlt. Sie fragen, wie wir arbeiten und wann die Seite fertig wäre.",
   },
   {
-    title: "Zusage oder Empfehlung",
-    body: "Passt es, schicken wir Ihnen Paket, Zeitplan und Festpreis. Passt es nicht, sagen wir das und nennen Ihnen jemanden, der besser zu Ihrem Vorhaben passt.",
+    title: "Zusage oder Absage",
+    body: "Passt es, schicken wir Ihnen Paket, Zeitplan und Festpreis. Passt es nicht, sagen wir Ihnen das offen und begründen es.",
   },
 ];
 
@@ -219,10 +220,10 @@ function ClosingNote() {
         </p>
         <div className="flex flex-wrap items-center gap-3 lg:col-span-5 lg:justify-end">
           <Link href="/audit" className="btn-line grow sm:grow-0">
-            Audit anfordern
+            Durchsicht anfordern
           </Link>
           <Link href="/termin" className="btn-signal grow sm:grow-0">
-            30-Minuten-Termin <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            Termin buchen <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
       </div>

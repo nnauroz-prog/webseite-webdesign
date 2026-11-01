@@ -36,7 +36,6 @@ export const INVENTAR_USED: InventarSection[] = [
         name: "Next.js",
         what: "Grundgerüst für Websites, das Seiten schnell ausliefert.",
         why: "Weit verbreitet und von Vercel und vielen freiwilligen Entwicklern gepflegt. Neue Versionen lassen sich planbar einspielen.",
-        since: "Seit 2022",
       },
       {
         name: "React",
@@ -69,27 +68,22 @@ export const INVENTAR_USED: InventarSection[] = [
     slug: "hosting",
     title: "Wo Ihre Seite liegt",
     intro:
-      "Ihre Seite liegt auf Servern in der EU. Diese Dienste nutzen wir dafür.",
+      "Ihre Seite liegt auf Servern in der EU. Hier steht, welchen Dienst wir dafür nutzen und was geht, wenn Sie nur Server in Deutschland möchten.",
     items: [
       {
         name: "Vercel",
         what: "Hosting für Websites, die mit Next.js gebaut sind.",
-        why: "Hier laufen unsere eigene Seite und die meisten Kundenseiten. Wir wählen dabei einen Serverstandort in der EU.",
+        why: "Hier läuft unsere eigene Seite, und hier betreiben wir auch Ihre. Wir wählen dabei einen Serverstandort in der EU.",
       },
       {
-        name: "Hetzner",
-        what: "Server in Deutschland für Backups und Dateien.",
-        why: "Wenn Sie ausdrücklich nur Server in Deutschland möchten, können wir Ihre Seite ganz bei Hetzner betreiben. Unsere zusätzlichen Backups liegen ebenfalls dort.",
-      },
-      {
-        name: "Cloudflare",
-        what: "Verwaltung von Domains und Schutz vor Überlastung.",
-        why: "Wir nutzen es sparsam. Besucher Ihrer Seite müssen dadurch keine Prüfaufgaben lösen, um zu beweisen, dass sie kein Roboter sind.",
-      },
-      {
-        name: "Eigene Backups",
+        name: "Backups",
         what: "Jeden Tag eine Sicherung, 30 Tage zurück.",
-        why: "Fällt ein Anbieter aus, liegt der letzte Stand Ihrer Seite zusätzlich bei uns.",
+        why: "Der Quellcode jeder Seite liegt außerdem in unserer Versionsverwaltung. Fällt ein Anbieter aus, lässt sich die Seite von dort aus neu aufsetzen.",
+      },
+      {
+        name: "Hetzner, auf Wunsch",
+        what: "Server in Deutschland.",
+        why: "Wenn Sie ausdrücklich nur Server in Deutschland möchten, können wir Ihre Seite bei Hetzner betreiben. Das besprechen wir vor dem Start.",
       },
     ],
   },
@@ -117,30 +111,30 @@ export const INVENTAR_USED: InventarSection[] = [
       {
         name: "Plausible Analytics",
         what: "Besucherstatistik ohne Cookies.",
-        why: "Wir sehen, welche Seiten gelesen werden und wie oft jemand auf die Telefonnummer tippt. Personenbezogene Daten werden dabei nicht gespeichert, deshalb braucht es keinen Cookie-Banner. Für Kundenseiten empfehlen wir es, wenn Sie überhaupt eine Statistik brauchen.",
+        why: "Wir sehen, welche Seiten gelesen werden und wie oft eine Anfrage abgeschickt wird. Personenbezogene Daten werden dabei nicht gespeichert, deshalb braucht es keinen Cookie-Banner. Für Kundenseiten empfehlen wir es, wenn Sie überhaupt eine Statistik brauchen.",
       },
     ],
   },
   {
-    slug: "lieferanten",
-    title: "Wen wir empfehlen",
+    slug: "beisteuern",
+    title: "Was Sie selbst beisteuern",
     intro:
-      "Manches machen wir nicht selbst. Dafür nennen wir Ihnen auf Wunsch Leute aus Hamburg.",
+      "Manches machen wir nicht selbst. Hier steht, was Sie dafür brauchen.",
     items: [
       {
-        name: "Logo-Gestaltung",
-        what: "Wenn Sie noch kein Logo haben oder ein altes ersetzen wollen.",
-        why: "Wir nennen Ihnen Grafikdesigner, die für kleine Betriebe arbeiten. Eine Provision bekommen wir dafür nicht.",
+        name: "Logo",
+        what: "Wenn Sie schon eins haben, oder noch keins.",
+        why: "Ein vorhandenes Logo binden wir in jedem Format ein, notfalls fotografiert vom Briefpapier. Haben Sie noch keins, reicht für den Start Ihr Name in einer klaren Schrift. Ein Logo lässt sich später ergänzen.",
       },
       {
         name: "Fotos",
-        what: "Wenn Sie Bilder vom Raum oder vom Team brauchen.",
-        why: "Für viele Seiten reichen gute Handyfotos. Wenn nicht, nennen wir Ihnen Fotografen aus Hamburg.",
+        what: "Bilder vom Raum, vom Team und von Ihrer Arbeit.",
+        why: "Für viele Seiten reichen gute Handyfotos. Wir sagen Ihnen, welche Motive die Seite braucht; wer einen Fotografen beauftragt, bekommt von uns eine kurze Motivliste.",
       },
       {
-        name: "Lektorat",
-        what: "Wenn längere Texte besonders sorgfältig werden sollen.",
-        why: "Die Texte für Ihre Seite formulieren wir aus Ihren Stichpunkten. Für lange Texte, etwa eine Chronik, empfehlen wir ein Lektorat.",
+        name: "Stichpunkte",
+        what: "Zu Ihren Leistungen, Öffnungszeiten und Ihrem Betrieb.",
+        why: "Die Texte formulieren wir daraus. Sie lesen gegen und streichen, was nicht stimmt.",
       },
     ],
   },
@@ -150,7 +144,7 @@ export const INVENTAR_NOT_USED: InventarItem[] = [
   {
     name: "WordPress",
     what: "Weit verbreitetes System zum Verwalten von Websites.",
-    why: "Es braucht jeden Monat Sicherheits-Updates, und Erweiterungen vertragen sich nicht immer. Wenn wir die Pflege übernehmen, kostet das Zeit, die Sie über den Monatsbeitrag bezahlen würden.",
+    why: "Für neue Seiten setzen wir es nicht ein: Es braucht jeden Monat Sicherheits-Updates, und Erweiterungen vertragen sich nicht immer. Das kostet Zeit, die Sie über den Monatsbeitrag bezahlen würden. Bestehende WordPress-Seiten pflegen wir weiter, wenn Sie das möchten.",
   },
   {
     name: "Webflow",

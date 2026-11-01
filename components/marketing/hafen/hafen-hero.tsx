@@ -21,7 +21,7 @@ function NebenLinks() {
         Schon eine Website? Pflege ab 49 € im Monat
       </Link>
       <Link href="/audit" className={NEBEN}>
-        Kostenloser Google-Check
+        Kostenlose Durchsicht Ihrer Website
       </Link>
     </>
   );
@@ -77,7 +77,7 @@ export async function HafenHero() {
               className={`${s.folgt} mt-5 max-w-[33em] text-pretty text-[16.5px] leading-relaxed text-[#33383a] sm:mt-8 sm:text-[18px]`}
               style={{ "--d": "420ms" } as CSSProperties}
             >
-              Ein kleines Studio in Hamburg, das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre
+              Ein kleines Büro in Hamburg, das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre
               Seite sehen Sie vorher auf einem Test-Link.
             </p>
             <div className={`${s.folgt} mt-6 flex flex-wrap gap-3 sm:mt-9`} style={{ "--d": "540ms" } as CSSProperties}>

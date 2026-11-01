@@ -186,14 +186,14 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Wie steht es mit dem Datenschutz beim Kontaktformular?",
-        a: "Gesundheitsdaten gehören nicht in ein Website-Formular. Wir fragen deshalb nur ab, was für einen Termin nötig ist: Wunschtermin, Name und Rückrufnummer. Die Server stehen in der EU, die Verbindung ist verschlüsselt, und die Datenschutzerklärung passen wir an Ihre Praxis an.",
+        a: "Gesundheitsdaten gehören nicht in ein Website-Formular. Wir fragen deshalb nur ab, was für einen Termin nötig ist: Wunschtermin, Name und Rückrufnummer. Die Server stehen in der EU, und die Verbindung ist verschlüsselt. Die Seite für die Datenschutzerklärung legen wir an und sagen Ihnen, welche Funktionen (Terminformular, Karte) darin vorkommen müssen. Den Rechtstext selbst liefern Sie, etwa aus einem Generator oder von Ihrer Kammer.",
       },
     ],
     recommendedPackage: "business",
   },
   {
     slug: "friseur",
-    label: "Friseure & Kosmetikstudios",
+    label: "Friseure & Barbiere",
     inquirySlug: "friseur",
     image: {
       src: "/images/sitalo-friseur-mobile.webp",
@@ -214,7 +214,7 @@ export const BRANCHEN: Branche[] = [
     ],
     detailHeadline: "Eine Seite, auf der Ihre Arbeit zu sehen ist.",
     detailIntro: [
-      "Beim Friseur und im Kosmetikstudio entscheiden Kund:innen mit den Augen. Wer Ihre Arbeit nicht sieht, ruft nicht an. Die Bilder auf Ihrer Seite sind deshalb das wichtigste Argument, wichtiger als jeder Satz darüber.",
+      "Beim Friseur und beim Barbier entscheiden Kund:innen mit den Augen. Wer Ihre Arbeit nicht sieht, ruft nicht an. Die Bilder auf Ihrer Seite sind deshalb das wichtigste Argument, wichtiger als jeder Satz darüber.",
       "Gleich danach kommen die Preise und der Weg zum Termin. Gesucht wird oft unterwegs am Handy. Die Telefonnummer steht deshalb oben und lässt sich antippen, die Terminanfrage ist ein kurzes Formular.",
     ],
     typicalPages: [
@@ -254,7 +254,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Wie werden meine Bilder gut genug?",
-        a: "Ihre eigenen Fotos bereiten wir auf: Ausschnitt, Farbe, Dateigröße. Gibt es keine brauchbaren Bilder, empfehlen wir einen Fotografen aus Ihrer Gegend. Gute Bilder sind bei Ihnen das Erste, was Kund:innen sehen.",
+        a: "Ihre eigenen Fotos bereiten wir auf: Ausschnitt, Farbe, Dateigröße. Gibt es keine brauchbaren Bilder, sagen wir Ihnen, welche Motive die Seite braucht; wer einen Fotografen beauftragt, bekommt von uns eine kurze Motivliste. Gute Bilder sind bei Ihnen das Erste, was Kund:innen sehen.",
       },
       {
         q: "Können wir Gutscheine über die Seite verkaufen?",
@@ -394,7 +394,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Wie viele Bilder brauche ich?",
-        a: "Zehn bis fünfzehn gute Bilder von fertigen Arbeiten sind ein guter Anfang. Haben Sie weniger, fotografieren Sie die nächsten Aufträge, bevor die Seite online geht, oder Sie beauftragen einen Fotografen aus der Gegend.",
+        a: "Zehn bis fünfzehn gute Bilder von fertigen Arbeiten sind ein guter Anfang. Haben Sie weniger, fotografieren Sie die nächsten Aufträge, bevor die Seite online geht. Wer lieber einen Fotografen beauftragt, bekommt von uns eine kurze Motivliste.",
       },
       {
         q: "Können wir Videos aus der Werkstatt zeigen?",
@@ -618,7 +618,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Wie sollte die Anfrage fürs Probetraining aussehen?",
-        a: "Ein kurzer Knopf in der Kopfleiste, ein Formular mit drei Feldern (Name, E-Mail, Wunschtag) und eine Bestätigung innerhalb von 24 Stunden. Ein langes Anfrageformular schreckt eher ab.",
+        a: "Ein kurzer Knopf in der Kopfleiste, ein Formular mit drei Feldern (Name, E-Mail, Wunschtag) und eine Bestätigung, die möglichst noch am selben Tag kommt. Ein langes Anfrageformular schreckt eher ab.",
       },
     ],
     recommendedPackage: "business",

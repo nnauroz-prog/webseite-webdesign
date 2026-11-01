@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 /**
- * Speed-Check-Tool — Live-PageSpeed-Analyse über /api/speed-check.
+ * Ladezeit-Test — Live-PageSpeed-Analyse über /api/speed-check.
  *
  * Aufbau im Hafen-Stil: ein Prüfschein mit Haarlinien statt Karten,
  * die vier Lighthouse-Werte als Skalen mit Tabellenziffern statt
@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
  * unter 50 (die Schwellen von Lighthouse).
  *
  * Abgrenzung zu /audit: hier misst Google automatisch die Technik,
- * im Audit sehen wir uns die Seite selbst an.
+ * in der Durchsicht (/audit) sehen wir uns die Seite selbst an.
  */
 
 type Strategy = "mobile" | "desktop";
@@ -169,7 +169,7 @@ export function SpeedCheck() {
               </>
             ) : (
               <>
-                Geschwindigkeit testen
+                Ladezeit testen
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </>
             )}
@@ -280,7 +280,7 @@ function BasicPanel({ data }: { data: BasicData }) {
         </ul>
       </div>
       <Link href="/audit" className="btn-signal h-12 text-[15px]">
-        Audit anfordern
+        Durchsicht anfordern
         <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </Link>
     </div>
@@ -365,13 +365,13 @@ function ResultPanel({ data }: { data: ScoreData }) {
             ein.
           </p>
           <p className="text-stahl-hell mt-4 max-w-2xl text-[15px] leading-relaxed">
-            Woran es liegt, schreiben wir Ihnen im Audit auf. Beheben lässt es
+            Woran es liegt, schreiben wir Ihnen in der Durchsicht auf. Beheben lässt es
             sich mit einer neuen Seite oder an Ihrer bestehenden über unsere
             Wartung, auch wenn wir die Seite nicht gebaut haben.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/audit" className="btn-signal h-12 text-[15px]">
-              Audit anfordern
+              Durchsicht anfordern
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <Link href="/wartung" className="btn-line h-12 text-[15px]">
@@ -389,10 +389,10 @@ function ResultPanel({ data }: { data: ScoreData }) {
           </p>
           <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed">
             Die Seite funktioniert, lässt aber etwas liegen. Welche Stelle sich
-            zuerst lohnt, schreiben wir Ihnen im Audit auf.
+            zuerst lohnt, schreiben wir Ihnen in der Durchsicht auf.
           </p>
           <Link href="/audit" className="btn-signal mt-6 h-12 text-[15px]">
-            Audit anfordern
+            Durchsicht anfordern
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
@@ -407,13 +407,13 @@ function ResultPanel({ data }: { data: ScoreData }) {
           <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed">
             Technisch ist die Seite in Ordnung. Ob Besucher die Telefonnummer
             finden und verstehen, was Sie anbieten, misst der Test nicht. Das
-            sehen wir uns im Audit an.
+            sehen wir uns in der Durchsicht an.
           </p>
           <Link
             href="/audit"
             className="text-foreground decoration-gold mt-5 inline-flex items-center gap-2 text-[15px] font-semibold underline decoration-2 underline-offset-[6px]"
           >
-            Audit anfordern
+            Durchsicht anfordern
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>

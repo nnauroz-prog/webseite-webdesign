@@ -41,7 +41,7 @@ const PAKET_KURZ: Record<Paket["slug"], string> = {
   starter: "Eine Seite mit Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten.",
   business: "Bis zu fünf Unterseiten mit Team, Leistungen und Galerie. Ihre Fotos bereiten wir mit auf.",
   premium: "Eine eigene Struktur für Ihren Betrieb. Auf Wunsch pflegen Sie Speisekarte, Angebote oder Termine selbst.",
-  studio: "Eigene Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden und ein Besuch vor Ort.",
+  studio: "Eigene Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden und ein Treffen vor Ort.",
 };
 
 const WEGE = [
@@ -133,7 +133,7 @@ export default function WebsiteKostenPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero crumb="Website-Kosten" eyebrow="Ratgeber · Stand November 2026" title="Was kostet eine Website?">
+        <PageHero crumb="Website-Kosten" eyebrow="Ratgeber · Preise 2026" title="Was kostet eine Website?">
           Zwischen null Euro und mehreren zehntausend, je nachdem, wer sie baut und was sie können muss. Für kleine
           Betriebe liegt eine professionell gebaute Website meist bei einigen hundert bis wenigen tausend Euro, dazu kommen
           laufende Kosten. Hier steht, wovon der Preis abhängt und was Sie im Angebot prüfen sollten.
@@ -176,7 +176,7 @@ export default function WebsiteKostenPage() {
                   </th>
                   <td className="py-5 pr-4 font-semibold whitespace-nowrap">{STARTER_SETUP}</td>
                   <td className="py-5 pr-4">{STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen</td>
-                  <td className="py-5 pr-3">Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie dieselben Leute erreichen.</td>
+                  <td className="py-5 pr-3">Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie uns selbst erreichen.</td>
                 </tr>
               </tbody>
             </table>
@@ -189,7 +189,7 @@ export default function WebsiteKostenPage() {
                   name: "Sitalo",
                   einmalig: STARTER_SETUP,
                   laufend: `${STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen`,
-                  passt: "Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie dieselben Leute erreichen.",
+                  passt: "Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie uns selbst erreichen.",
                 },
               ].map((w) => (
                 <div key={w.name} className={`border-border border-b py-5 ${w.name === "Sitalo" ? "bg-card -mx-5 px-5" : ""}`}>

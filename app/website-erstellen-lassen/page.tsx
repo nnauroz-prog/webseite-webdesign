@@ -93,19 +93,19 @@ const VERGLEICH: { label: string; selbst: string; lassen: string; vorn: "selbst"
   {
     label: "Gestaltung",
     selbst: "Eine Vorlage des Anbieters, die Sie anpassen",
-    lassen: "Eigens für Ihren Betrieb gestaltet",
+    lassen: "Für Ihren Betrieb gestaltet, mit Ihrem Logo, Ihren Farben und Fotos",
     vorn: "lassen",
   },
   {
     label: "Google und Technik",
     selbst: "Richten Sie selbst ein",
-    lassen: "Richten wir von Anfang an ein",
+    lassen: "Technik richten wir ein, die Grundlagen für Google ab Business",
     vorn: "lassen",
   },
   {
     label: "Impressum und Datenschutz",
     selbst: "Klären Sie selbst",
-    lassen: "Binden wir ein",
+    lassen: "Wir legen die Seiten an. Den Rechtstext liefern Sie, wir sagen Ihnen, woher",
     vorn: "lassen",
   },
   {
@@ -123,7 +123,7 @@ const FAQ = [
   },
   {
     q: "Wie lange dauert es, bis meine Website online ist?",
-    a: "Kleine Seiten stehen oft nach 1–2 Werktagen, sobald alle Unterlagen da sind. Für größere Projekte vereinbaren wir vorab einen verbindlichen Termin.",
+    a: "Ab vollständigen Unterlagen ist eine einzelne Seite oft in 1–2 Werktagen online, Business meist in 5–10 Werktagen, Premium in 2–3 Wochen und Studio in 3–5 Wochen. Den genauen Termin nennen wir Ihnen vorab.",
   },
   {
     q: "Was muss ich selbst liefern?",

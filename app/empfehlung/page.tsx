@@ -49,7 +49,7 @@ const UMFANG: Record<string, string> = {
   starter: "Eine Seite mit Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten",
   business: "Bis zu fünf Unterseiten, etwa für Leistungen, Team und Galerie",
   premium: "Eigene Struktur, Speisekarte, Angebote oder Termine pflegen Sie selbst",
-  studio: "Eigene Gestaltung, bis zu drei Korrekturrunden und ein Treffen vor Ort",
+  studio: "Neues Erscheinungsbild, bis zu drei Korrekturrunden und ein Treffen vor Ort",
 };
 
 /**

@@ -34,11 +34,11 @@ const ROUTES: Record<string, { path: string; label: string }> = {
   k: { path: "/kontakt", label: "Kontakt" },
   f: { path: "/faq", label: "FAQ" },
   o: { path: "/ablauf", label: "Ablauf" },
-  t: { path: "/atelier", label: "Atelier" },
-  u: { path: "/audit", label: "Audit" },
+  t: { path: "/atelier", label: "Über uns" },
+  u: { path: "/audit", label: "Durchsicht" },
   w: { path: "/wartung", label: "Wartung" },
   v: { path: "/vergleich", label: "Vergleich" },
-  c: { path: "/check", label: "Speed-Check" },
+  c: { path: "/check", label: "Ladezeit-Test" },
   j: { path: "/journal", label: "Journal" },
 };
 

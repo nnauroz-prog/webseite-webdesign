@@ -7,7 +7,8 @@
  * Stunden Aufbau braucht, kann die 899 € selbst nachrechnen.
  *
  * Monatliche Posten folgen lib/pakete-data.ts (Änderungen pro Monat,
- * Hosting in der EU, Antwortzeiten). Ändert sich dort etwas, hier
+ * Hosting in der EU, Antwortzeiten: alle „meist am selben Werktag“,
+ * Premium und Studio bevorzugt, „meist noch am selben Tag“). Ändert sich dort etwas, hier
  * nachziehen.
  */
 
@@ -86,15 +87,14 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
         "Sicherheits- und Software-Updates",
         "Sechs kleine Änderungen pro Monat",
         "Ladezeit-Prüfung jede Woche",
-        "Vorrang bei Anfragen, Antwort meist am selben Werktag",
-        "Bei einem Notfall erreichen Sie uns direkt am Telefon",
+        "Ihre Anfragen beantworten wir bevorzugt, meist noch am selben Tag",
       ],
     },
     studio: {
       stundenSetup: 35,
       setupPosten: [
         { label: "Treffen vor Ort, Briefing, Gespräch über Ihre Marke", stunden: 3 },
-        { label: "Konzept und eigene Gestaltung von Grund auf", stunden: 6 },
+        { label: "Konzept und neues Erscheinungsbild von Grund auf", stunden: 6 },
         { label: "Bau der Seiten (bis zu 12 Bereiche)", stunden: 14 },
         { label: "Bereiche zum Selbstpflegen, auf Ihren Ablauf zugeschnitten", stunden: 5 },
         { label: "Bilder, Schrift, Texte, bis zu drei Korrekturrunden", stunden: 4 },
@@ -105,8 +105,7 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
         "Sicherheits- und Software-Updates",
         "Zehn kleine Änderungen pro Monat",
         "Einmal im Quartal ein Gespräch über die Seite (60 Minuten)",
-        "Vorrang bei kurzfristigen Anfragen, Antwort meist am selben Werktag",
-        "Direkter Draht zu der Person, die Ihre Seite gebaut hat",
+        "Vorrang bei kurzfristigen Anfragen, meist noch am selben Tag",
       ],
     },
   };
@@ -124,10 +123,10 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
 }
 
 export const NICHT_ABGERECHNET: string[] = [
-  "Das erste Gespräch (30 bis 60 Minuten), vor Ort, am Telefon oder per Video",
-  "Der Check Ihrer bisherigen Seite: drei bis fünf konkrete Punkte per Mail",
+  "Das erste Gespräch (meist eine Viertelstunde, im Kalender bis zu 30 Minuten), in Hamburg, am Telefon oder per Video",
+  "Die Durchsicht Ihrer bisherigen Seite: drei bis fünf konkrete Punkte per Mail",
   "Kurze Fragen per Mail oder Telefon, wenn Sie schon Kunde sind",
-  "Der Hinweis auf einen anderen Anbieter, wenn der besser zu Ihnen passt",
+  "Der Hinweis, wenn ein Baukasten oder ein anderes Angebot besser zu Ihnen passt",
 ];
 
 export const ZUSATZ_ABGERECHNET: { posten: string; preis: string }[] = [
@@ -136,19 +135,23 @@ export const ZUSATZ_ABGERECHNET: { posten: string; preis: string }[] = [
     preis: "Nach Stundensatz, den Betrag nennen wir vorher verbindlich",
   },
   {
+    posten: "Kleine Änderungen über die im Paket enthaltenen hinaus",
+    preis: "Nach Aufwand zum Stundensatz, eine kleine Änderung dauert 15 bis 30 Minuten. Ist Ihr Kontingent aufgebraucht, sagen wir Ihnen das vorher",
+  },
+  {
     posten: "Saisonale Aktionen und Seiten für einzelne Veranstaltungen",
     preis: "Als eigenes kleines Projekt, der Monatsbeitrag bleibt gleich",
   },
   {
     posten: "Texte von Grund auf, ohne Stichpunkte von Ihnen",
-    preis: "Wir vermitteln an eine Lektorin aus Hamburg",
+    preis: "Nach Stundensatz, den Betrag nennen wir vorher. Meist reichen schon kurze Stichpunkte, dann ist es im Paket enthalten",
   },
   {
     posten: "Foto-Shooting",
-    preis: "Wir vermitteln an einen Fotografen aus Hamburg",
+    preis: "Bieten wir nicht an. Oft reichen Handyfotos; wer einen Fotografen beauftragt, bekommt von uns eine kurze Motivliste",
   },
   {
     posten: "Ein neues Logo",
-    preis: "Wir vermitteln an eine Grafikdesignerin, mit der wir zusammenarbeiten",
+    preis: "Bieten wir nicht an. Ein vorhandenes Logo binden wir in jedem Format ein",
   },
 ];

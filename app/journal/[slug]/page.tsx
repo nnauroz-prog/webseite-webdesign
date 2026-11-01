@@ -119,13 +119,13 @@ export default async function JournalPostPage({
   // Weiterführende Links pro Essay aus lib/journal-data.ts. Genutzt
   // werden nur Ziel und Linktext; Kopfzeile und Frage-Satz der Daten
   // bleiben weg, der Schluss ist für alle Beiträge gleich gesetzt.
-  // Ohne Eintrag: Google-Check und Termin.
+  // Ohne Eintrag: Durchsicht und Erstgespräch.
   const cta: Pick<JournalCta, "primaryHref" | "primaryLabel" | "secondaryHref" | "secondaryLabel"> =
     getCtaForPost(post.slug) ?? {
       primaryHref: "/audit",
-      primaryLabel: "Kostenloser Google-Check",
+      primaryLabel: "Kostenlose Durchsicht Ihrer Website",
       secondaryHref: "/termin",
-      secondaryLabel: "30-Minuten-Termin",
+      secondaryLabel: "Erstgespräch buchen",
     };
   const links = [
     { href: cta.primaryHref, label: cta.primaryLabel },

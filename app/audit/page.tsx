@@ -9,9 +9,9 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Kostenloser Website-Audit",
+  title: "Kostenlose Website-Durchsicht (Website-Audit)",
   description:
-    "Drei bis fünf konkrete Punkte zu Ihrer aktuellen Website, per Mail innerhalb von 48 Stunden. Kostenlos, aus Hamburg.",
+    "Wir sehen uns Ihre Website von Hand an und schicken drei bis fünf konkrete Punkte per Mail, meist innerhalb von zwei Werktagen. Kostenlos, aus Hamburg.",
   alternates: { canonical: "/audit" },
 };
 
@@ -27,12 +27,12 @@ const SCHRITTE: { title: string; body: string }[] = [
   },
   {
     title: "Sie bekommen eine E-Mail",
-    body: "Innerhalb von 48 Stunden, mit drei bis fünf Punkten.",
+    body: "Meist innerhalb von zwei Werktagen, mit drei bis fünf Punkten.",
   },
 ];
 
 /**
- * Muster einer Audit-Mail. Der Betrieb ist die erfundene Tischlerei
+ * Muster einer Durchsicht-Mail. Der Betrieb ist die erfundene Tischlerei
  * Nordholz aus dem Vorher-Nachher der Startseite; die Punkte passen
  * zu deren „Vorher“-Seite (Willkommen-Titel, Öffnungszeiten als PDF,
  * Cookie-Banner über dem Inhalt).
@@ -46,7 +46,9 @@ const MUSTER_PUNKTE = [
 /**
  * `/audit` — Lead-Magnet-Seite.
  *
- * Versprechen: ein Mini-Audit per Mail innerhalb 48 h. Keine
+ * Versprechen: eine Durchsicht per Mail, meist innerhalb von zwei
+ * Werktagen (keine Stundenfrist, weil Wochenenden dazwischen liegen
+ * können, siehe /erreichbarkeit). Keine
  * Lighthouse-Reports, keine Score-Karten, sondern 3–5 konkrete
  * Punkte, von Hand geschrieben. Statt das zu beschreiben, zeigt die
  * Seite eine Muster-Mail.
@@ -55,15 +57,16 @@ const MUSTER_PUNKTE = [
  * anderes ist: hier wird noch keine Anfrage gestellt.
  */
 export default function AuditPage() {
-  // Service + BreadcrumbList JSON-LD — der kostenlose Mini-Audit ist
-  // ein eigenständiger Service (free Lead-Magnet mit konkretem
-  // Deliverable: 3-5 Punkte per Mail in 48 h).
+  // Service + BreadcrumbList JSON-LD — die kostenlose Durchsicht ist
+  // ein eigenständiger Service (3–5 Punkte per Mail, meist in zwei
+  // Werktagen).
   const serviceLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: "Kostenloser Website-Audit",
+    name: "Kostenlose Website-Durchsicht",
+    alternateName: "Website-Audit",
     description:
-      "Audit Ihrer aktuellen Website: drei bis fünf konkrete Verbesserungspunkte per Mail innerhalb von 48 Stunden.",
+      "Durchsicht Ihrer aktuellen Website von Hand: drei bis fünf konkrete Verbesserungspunkte per Mail, meist innerhalb von zwei Werktagen.",
     provider: {
       "@type": "LocalBusiness",
       "@id": `${SITE_URL}/#business`,
@@ -93,7 +96,7 @@ export default function AuditPage() {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Mini-Audit",
+        name: "Durchsicht",
         item: `${SITE_URL}/audit`,
       },
     ],
@@ -105,16 +108,16 @@ export default function AuditPage() {
 
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
-          crumb="Mini-Audit"
-          eyebrow="Kostenloser Website-Audit"
+          crumb="Durchsicht"
+          eyebrow="Kostenlose Durchsicht Ihrer Website"
           title="Wir sehen uns Ihre Website an."
         >
-          Sie bekommen innerhalb von 48 Stunden eine E-Mail mit drei bis fünf
-          Punkten: was an Ihrer Seite funktioniert und was wir zuerst ändern
-          würden. Ob Sie sich danach melden, entscheiden Sie.
+          Sie bekommen meist innerhalb von zwei Werktagen eine E-Mail mit drei
+          bis fünf Punkten: was an Ihrer Seite funktioniert und was wir zuerst
+          ändern würden. Ob Sie sich danach melden, entscheiden Sie.
         </PageHero>
 
-        <section aria-label="Audit anfordern">
+        <section aria-label="Durchsicht anfordern">
           <div className="mx-auto w-full max-w-6xl px-5 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-20">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
               <div className="min-w-0 lg:col-span-7">
@@ -168,7 +171,7 @@ export default function AuditPage() {
                       href="/check"
                       className="text-foreground underline underline-offset-4"
                     >
-                      Speed-Check
+                      Ladezeit-Test
                     </Link>
                     . Wenn Sie auf die Mail antworten, antworten wir Ihnen
                     selbst.
@@ -233,7 +236,7 @@ export default function AuditPage() {
             <ul className="border-foreground mt-5 border-t">
               <WegZeile
                 href="/check"
-                title="Speed-Check"
+                title="Ladezeit-Test"
                 body="Nur die Technik messen. Ergebnis nach 15 bis 30 Sekunden, ohne Kontaktdaten."
               />
               <WegZeile

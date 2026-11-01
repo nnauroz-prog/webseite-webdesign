@@ -1,7 +1,7 @@
 /**
  * Vertikal-Landing-Daten für /pflege und /praxen. Schlanker als
  * BRANCHEN: diese Seiten sind auf Anfragen ausgelegt (Probleme der
- * Branche, Bauteile, drei Wochen Ablauf), nicht das Archiv unter
+ * Branche, Bauteile, Ablauf in drei Schritten), nicht das Archiv unter
  * /branchen. Die Fragen kommen aus BRANCHEN (über `brancheSlug`).
  *
  * Bewusst eigener Datentopf mit eigenen Texten, damit /pflege und
@@ -39,8 +39,12 @@ export type VertikalLanding = {
   pains: { headline: string; body: string }[];
   /** Was auf die Seite kommt, vier bis sechs Teile. */
   bauteile: { name: string; what: string }[];
-  /** Ablauf in Wochen. Die Anzahl ergibt die Dauer im Steckbrief. */
-  process: { woche: string; what: string }[];
+  /**
+   * Ablauf in Schritten (echte Reihenfolge). Die Dauer im Steckbrief
+   * kommt aus dem empfohlenen Paket (pakete-data `dauer`), nicht aus
+   * der Anzahl der Schritte.
+   */
+  process: { schritt: string; what: string }[];
   /** Aussage der Abschluss-Briefkarte, ein normaler Satz. */
   schlussZitat: string;
   /** Optionaler Zusatz zur Aussage, wird angehängt. */
@@ -102,15 +106,15 @@ export const VERTIKAL_LANDINGS: VertikalLanding[] = [
     ],
     process: [
       {
-        woche: "Woche 1",
-        what: "Erstes Gespräch am Telefon oder bei Ihnen vor Ort. Sie schicken, was schon da ist: alte Seite, Flyer, PDFs. Wir sortieren es.",
+        schritt: "Schritt 1",
+        what: "Erstes Gespräch am Telefon, per Video oder, in Hamburg, bei Ihnen vor Ort. Sie schicken, was schon da ist: alte Seite, Flyer, PDFs. Wir sortieren es.",
       },
       {
-        woche: "Woche 2",
-        what: "Wir bauen die Seite. Zum Ende der Woche bekommen Sie einen Test-Link und schauen sich alles in Ruhe an.",
+        schritt: "Schritt 2",
+        what: "Wir bauen die Seite. Danach bekommen Sie einen Test-Link und schauen sich alles in Ruhe an.",
       },
       {
-        woche: "Woche 3",
+        schritt: "Schritt 3",
         what: "Eine Korrekturrunde, in der wir alle Anmerkungen gesammelt umsetzen. Danach geht die Seite online, der Google-Eintrag wird parallel angepasst.",
       },
     ],
@@ -165,21 +169,21 @@ export const VERTIKAL_LANDINGS: VertikalLanding[] = [
         what: "Karte, Haltestellen, Parkplätze und ob es einen Aufzug gibt. Für ältere Patient:innen gibt das oft den Ausschlag.",
       },
       {
-        name: "Datenschutz",
-        what: "Impressum, Datenschutzerklärung und Cookie-Hinweis richten wir vor dem Start passend zu den Funktionen der Seite ein, also auch zu Terminformular und Karte.",
+        name: "Impressum und Datenschutz",
+        what: "Beide Seiten legen wir an und sagen Ihnen, welche Funktionen (Terminformular, Karte) in den Rechtstext gehören. Den Text selbst liefern Sie, etwa aus einem Generator, von Ihrer Kammer oder vom Anwalt.",
       },
     ],
     process: [
       {
-        woche: "Woche 1",
-        what: "Erstes Gespräch und ein Blick auf Ihre bisherige Seite. Sie schicken Texte, Fotos und Angaben zum Team. Wo Texte fehlen, schreiben wir sie.",
+        schritt: "Schritt 1",
+        what: "Erstes Gespräch und ein Blick auf Ihre bisherige Seite. Sie schicken Texte, Fotos und Angaben zum Team. Wo Texte fehlen, schreiben wir sie aus Ihren Stichpunkten.",
       },
       {
-        woche: "Woche 2",
+        schritt: "Schritt 2",
         what: "Wir bauen die Seite. Sie bekommen einen Test-Link und schauen sie in Ruhe durch.",
       },
       {
-        woche: "Woche 3",
+        schritt: "Schritt 3",
         what: "Eine gesammelte Korrekturrunde, dann geht die Seite online. Das Terminformular testen wir vorher mit Ihrer Anmeldung.",
       },
     ],

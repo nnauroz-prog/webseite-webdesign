@@ -118,12 +118,12 @@ export function TerminBooking() {
         </p>
         <p className="text-muted-foreground mx-auto mt-3 max-w-md text-pretty text-[14.5px] leading-relaxed">
           {formatDateLong(status.iso)} um {status.slot} Uhr. Sie bekommen
-          am selben Werktag eine Bestätigung per E-Mail mit
-          Kalender-Eintrag. Falls der Slot doppelt belegt sein sollte
-          (selten), schlagen wir Ihnen zwei Alternativen vor.
+          meist am selben Werktag eine Bestätigung per E-Mail mit
+          Kalender-Eintrag. Falls der Termin schon vergeben sein sollte,
+          schlagen wir Ihnen zwei andere vor.
         </p>
         <p className="text-muted-foreground/70 mt-6 text-[13px]">
-          Bestätigung manuell · meist schneller als 15 Min
+          Wir bestätigen jeden Termin persönlich.
         </p>
       </div>
     );
@@ -251,7 +251,7 @@ export function TerminBooking() {
           <Textarea
             id="termin-note"
             rows={3}
-            placeholder="z. B. Erstgespräch, Audit-Besprechung, Wartungs-Übernahme."
+            placeholder="z. B. Erstgespräch, Durchsicht besprechen, Wartung übernehmen."
             value={note}
             onChange={(e) => setNote(e.target.value)}
             className="mt-2"
