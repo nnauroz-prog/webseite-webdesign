@@ -74,7 +74,7 @@ export async function HafenHero() {
               ))}
             </p>
             <p
-              className={`${s.folgt} mt-5 max-w-[33em] text-pretty text-[16.5px] leading-relaxed text-[#33383a] sm:mt-8 sm:text-[18px]`}
+              className={`${s.folgtText} mt-5 max-w-[33em] text-pretty text-[16.5px] leading-relaxed text-[#33383a] sm:mt-8 sm:text-[18px]`}
               style={{ "--d": "420ms" } as CSSProperties}
             >
               Ein kleines Büro in Hamburg, das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre

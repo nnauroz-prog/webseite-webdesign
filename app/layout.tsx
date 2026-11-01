@@ -24,14 +24,14 @@ const brandSans = Mona_Sans({
 });
 
 // IBM Plex Mono für Beschriftungen: Containernummern, Uhrzeit,
-// Bildunterschriften. Steht nie als größter Text im ersten Bildschirm,
-// deshalb nicht vorladen.
+// Bildunterschriften – und die H1-Kennzeile im ersten Bildschirm der
+// Startseite. Deshalb vorladen: Lighthouse misst diese Zeile als größtes
+// Element, ohne Vorladen wartete die Messung auf den späten Schrifttausch.
 const brandMono = IBM_Plex_Mono({
   variable: "--font-brand-mono",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   display: "swap",
-  preload: false,
 });
 
 // Punktmatrix nur für die Abfahrtstafel mit den Preisen.
