@@ -12,12 +12,12 @@ import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 
 /**
- * AuditForm — eigene, schlanke Form für die Mini-Audit-Lead-Generation.
+ * AuditForm — eigene, schlanke Form für die kostenlose Durchsicht (/audit).
  *
  * Vier Felder: URL (Pflicht), Name (Pflicht), E-Mail (Pflicht),
  * Hinweis (optional) + Consent. Bewusst kürzer als das Haupt-
  * Anfrageformular, weil hier nur ein einzelner Mehrwert versprochen
- * wird (Audit innerhalb 48 h), nicht ein ganzes Projekt.
+ * wird (Durchsicht, meist in zwei Werktagen), nicht ein ganzes Projekt.
  *
  * Versand über /api/anfrage (siehe lib/lead-mail.ts), eigener
  * Betreff „Audit-Anfrage …" zum Filtern im Postfach.
@@ -121,10 +121,9 @@ export function AuditForm() {
               Die Adresse ist bei uns angekommen.
             </p>
             <p className="text-muted-foreground mt-4 max-w-xl text-pretty text-[15px] leading-relaxed">
-              Innerhalb von 48 Stunden bekommen Sie eine E-Mail mit drei bis
-              fünf Punkten: was an Ihrer Seite funktioniert und was wir zuerst
-              ändern würden. Oft geht es schneller. Wann wir antworten, steht
-              unter{" "}
+              Meist innerhalb von zwei Werktagen bekommen Sie eine E-Mail mit
+              drei bis fünf Punkten: was an Ihrer Seite funktioniert und was wir
+              zuerst ändern würden. Wann wir antworten, steht unter{" "}
               <Link
                 href="/erreichbarkeit"
                 className="text-foreground underline underline-offset-4"
@@ -256,7 +255,7 @@ export function AuditForm() {
           />
           <span className="text-foreground/80">
             Ich bin damit einverstanden, dass meine Angaben für die
-            Bearbeitung der Audit-Anfrage gespeichert werden. Details in
+            Bearbeitung der Anfrage zur Durchsicht gespeichert werden. Details in
             der{" "}
             <a
               href="/datenschutz"
@@ -284,7 +283,7 @@ export function AuditForm() {
           disabled={!canSubmit}
           className="btn-signal h-12 shrink-0 text-[15px]"
         >
-          {status.kind === "submitting" ? "Wird gesendet…" : "Audit anfordern"}
+          {status.kind === "submitting" ? "Wird gesendet…" : "Durchsicht anfordern"}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>

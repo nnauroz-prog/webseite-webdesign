@@ -289,11 +289,12 @@ function EigenerTermin() {
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
         <div className="lg:col-span-7">
           <h2 className="text-balance text-[1.9rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.6rem]">
-            Für ein eigenes Vorhaben gibt es den 30-Minuten-Termin
+            Für ein eigenes Vorhaben gibt es das Erstgespräch
           </h2>
           <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-[16.5px] leading-relaxed">
             Die Sprechstunde ist offen für alle und nicht planbar. Wollen Sie über Ihr Projekt sprechen, buchen Sie
-            einen eigenen Termin. Tag und Uhrzeit wählen Sie selbst, die Bestätigung kommt am selben Werktag per Mail.
+            einen eigenen Termin. Tag und Uhrzeit wählen Sie selbst, bis zu 30 Minuten sind reserviert. Die Bestätigung
+            kommt meist am selben Werktag per Mail.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-4 lg:col-start-9 lg:justify-end">

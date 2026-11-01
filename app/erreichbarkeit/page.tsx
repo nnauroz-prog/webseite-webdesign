@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { ERREICHBARKEIT } from "@/lib/erreichbarkeit";
+import { ERREICHBARKEIT, TELEFON_ANZEIGE, TELEFON_HREF } from "@/lib/erreichbarkeit";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -24,13 +24,7 @@ export const metadata: Metadata = {
 
 const CONTACT_EMAIL = "info@sitalo.de";
 
-/** Nur den ersten Buchstaben klein, damit „Eine Hamburger
- *  Webentwicklerin …“ mitten im Satz richtig geschrieben bleibt. */
-function klein(text: string): string {
-  return text.charAt(0).toLowerCase() + text.slice(1);
-}
-
-/** Erster Buchstabe groß, für Tabellenzellen („Meist in vier Stunden“). */
+/** Erster Buchstabe groß, für Tabellenzellen („Meist am selben Werktag“). */
 function gross(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
@@ -39,8 +33,8 @@ function gross(text: string): string {
  * /erreichbarkeit — wann wir antworten, schriftlich.
  *
  * Oben die Antwortzeiten als Fahrplan-Tabelle (Werte aus
- * lib/erreichbarkeit.ts), darunter Fließtext zu Feierabend, Urlaub
- * und Vertretung, dann die Schritte, wenn keine Antwort kommt (echte
+ * lib/erreichbarkeit.ts), darunter Fließtext zu Feierabend, Wochenende
+ * und Urlaub, dann die Schritte, wenn keine Antwort kommt (echte
  * Reihenfolge, deshalb nummeriert). Am Schluss die Telefonnummer.
  */
 export default function ErreichbarkeitPage() {
@@ -118,8 +112,6 @@ function Kopf() {
  * ---------------------------------------------------------------- */
 function Text() {
   const f = ERREICHBARKEIT.fenster;
-  const u = ERREICHBARKEIT.urlaub;
-  const v = ERREICHBARKEIT.vertretung;
 
   return (
     <section className="bg-card border-foreground border-t">
@@ -127,29 +119,32 @@ function Text() {
         <div className="grid gap-x-8 gap-y-14 lg:grid-cols-12">
           <Absatz titel="Feierabend und Wochenende">
             <p>
-              Werktags zwischen 9 und 18 Uhr lesen wir laufend Mails und antworten {f[0].zeit}. Anrufe nehmen wir oft
-              direkt an. Wenn nicht, rufen wir am selben Tag zurück.
+              Werktags zwischen 9 und 18 Uhr lesen wir regelmäßig Mails und antworten {f[0].zeit}. Anrufe nehmen wir
+              oft direkt an. Wenn nicht, rufen wir meist am selben Tag zurück.
             </p>
             <p>
-              Um 18 Uhr machen wir Feierabend, denn wer nachts arbeitet, baut am nächsten Tag schlechtere Seiten. Was abends
-              ankommt, beantworten wir {f[1].zeit}. Nachts geht das Telefon auf die Mailbox.
+              Nach 18 Uhr lesen wir keine Mails mehr. Einzige Ausnahme ist die Sprechstunde am ersten Donnerstag im
+              Monat bis 18:30 Uhr. Was abends ankommt, beantworten wir {f[1].zeit}. Nachts geht das Telefon auf die
+              Mailbox.
             </p>
             <p>
-              Am Wochenende bleibt die Mail liegen. Reguläre Anfragen vom Samstag oder Sonntag beantworten wir{" "}
-              {f[2].zeit}. Ausnahme: Ihre Seite ist nicht mehr erreichbar. Dafür gibt es eine Notfall-Nummer, die
-              auch am Samstag klingelt.
+              Am Wochenende bleibt die Mail liegen. Anfragen vom Samstag oder Sonntag beantworten wir {f[2].zeit}.
+              Ausnahme: Ihre Seite ist nicht mehr erreichbar. Dann rufen Sie auch am Wochenende unter{" "}
+              <a href={TELEFON_HREF} className="font-semibold whitespace-nowrap underline-offset-4 hover:underline">
+                {TELEFON_ANZEIGE}
+              </a>{" "}
+              an oder schicken eine SMS.
             </p>
           </Absatz>
 
-          <Absatz titel={`Urlaub: ${u.wochenProJahr} Wochen im Jahr`}>
+          <Absatz titel="Urlaub">
             <p>
-              Wir sind {u.wochenProJahr} Wochen im Jahr nicht da, höchstens {u.maxAmStueck} Wochen am Stück. In der
-              automatischen Antwort steht dann das Datum, an dem wir zurück sind, damit Sie planen können.
+              Urlaub kündigen wir rechtzeitig vorher an, und in der automatischen Antwort steht, wann wir zurück
+              sind. So können Sie planen.
             </p>
             <p>
-              Fällt in dieser Zeit Ihre Seite aus oder reagiert die Domain nicht, liest {klein(v.rolle)} mit. Sie kann
-              technisch eingreifen und bringt die Seite wieder ans Laufen. Texte, Beratung und neue Seiten warten, bis wir
-              zurück sind.
+              Ihre Seite läuft in dieser Zeit weiter, denn Hosting und Backups laufen automatisch. Änderungen und
+              neue Wünsche erledigen wir, sobald wir zurück sind.
             </p>
           </Absatz>
         </div>
@@ -163,7 +158,7 @@ function Text() {
               Eine Antwort innerhalb von Minuten zum Beispiel wäre ein Versprechen, das ein kleines Büro nicht halten
               kann. Wir nennen lieber eine Frist, die wir auch an einem vollen Tag einhalten.
             </p>
-            <p>Dafür sprechen Sie jedes Mal mit denselben Leuten, und die kennen Ihre Seite.</p>
+            <p>Dafür sprechen Sie jedes Mal mit uns selbst, und wir kennen Ihre Seite.</p>
           </div>
         </div>
       </div>
@@ -189,7 +184,7 @@ const SCHRITTE: { titel: string; text: string }[] = [
     text: "Solche Mails sortieren wir nach oben.",
   },
   {
-    titel: "Nach einem Tag: die Notfall-Nummer anrufen",
+    titel: `Nach einem Werktag: unter ${TELEFON_ANZEIGE} anrufen`,
     text: "Auch wenn Sie sonst lieber schreiben.",
   },
   {
@@ -207,8 +202,8 @@ function WennNichtsKommt() {
             Wenn keine Antwort kommt
           </h2>
           <p className="text-muted-foreground mt-5 text-[16px] leading-relaxed">
-            Bleibt die Antwort im genannten Zeitfenster aus, ist meist jemand krank oder bei uns streikt die Technik.
-            Dann hilft diese Reihenfolge.
+            Bleibt die Antwort länger aus als angekündigt, ist etwas dazwischengekommen. Dann hilft diese
+            Reihenfolge.
           </p>
         </div>
         <ol className="border-foreground border-t lg:col-span-7 lg:col-start-6">

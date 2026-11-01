@@ -193,7 +193,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Für eine Starter-Seite rechnen wir mit etwa zwei Arbeitstagen: einem halben Tag für den Aufbau und die Sichtung Ihrer Inhalte, einem Tag für den Bau und einem halben Tag für Tests auf echten Handys und letzte Korrekturen. Dazu kommen Werkzeuge, Lizenzen und die Einrichtung des Hostings. Wer deutlich weniger verlangt, spart meist an einer dieser Stellen, oft beim Testen. Das merken Sie erst Monate später.",
+        text: "Für eine Starter-Seite rechnen wir mit etwa fünf Arbeitsstunden: eine für den Seitenplan und die Sichtung Ihrer Unterlagen, zwei für den Bau, eine für Bilder und Tests auf echten Handys und eine für Hosting, Domain und SSL. Dazu kommen Werkzeuge und Lizenzen. Wer deutlich weniger verlangt, spart meist an einer dieser Stellen, oft beim Testen. Das merken Sie erst Monate später.",
       },
       {
         kind: "h2",
@@ -263,7 +263,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Diese Arbeitsweise funktioniert nur mit echten Inhalten. Ein Entwurfsbild lässt sich mit Blindtext füllen, eine echte Seite nicht. Deshalb brauchen wir am Anfang Ihr Logo, ein paar Stichpunkte und Fotos, gern vom Handy. Den Text formulieren wir daraus. Fehlt etwas, helfen wir beim Beschaffen, statt mit Platzhaltern zu bauen.",
+        text: "Diese Arbeitsweise funktioniert nur mit echten Inhalten. Ein Entwurfsbild lässt sich mit Blindtext füllen, eine echte Seite nicht. Deshalb brauchen wir am Anfang Ihr Logo, ein paar Stichpunkte und Fotos, gern vom Handy. Den Text formulieren wir daraus. Fehlt etwas, sagen wir Ihnen genau, was wir noch brauchen, statt mit Platzhaltern zu bauen.",
       },
       {
         kind: "quote",
@@ -277,7 +277,7 @@ const POSTS: JournalPost[] = [
     dek: "Was ein Gast vor einem Hamburger Café auf dem Handy sucht, und was eine Café-Website deshalb oben zeigen sollte.",
     publishedAt: "2026-06-01",
     readingMinutes: 4,
-    tags: ["Gastronomie", "Lokales SEO", "Mobile"],
+    tags: ["Gastronomie", "Gefunden werden", "Handy"],
     body: [
       {
         kind: "p",
@@ -343,7 +343,7 @@ const POSTS: JournalPost[] = [
     dek: "Wie Angehörige in Hamburg nach ambulanter Pflege suchen, und was ein vollständiger Google-Eintrag dafür braucht.",
     publishedAt: "2026-05-26",
     readingMinutes: 3,
-    tags: ["Pflegedienst", "Lokales SEO", "Google Maps"],
+    tags: ["Pflegedienst", "Gefunden werden", "Google Maps"],
     body: [
       {
         kind: "p",
@@ -387,11 +387,11 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Für die Einrichtung rechnen wir etwa einen halben Tag. Wenn wir die Website eines Pflegedienstes bauen, prüfen wir den Eintrag als Erstes.",
+        text: "Für die Einrichtung rechnen wir etwa eine Stunde, wenn Sie den Eintrag als Inhaber bestätigen können. Wenn wir die Website eines Pflegedienstes bauen, prüfen wir den Eintrag als Erstes.",
       },
       {
         kind: "quote",
-        text: "Ein gepflegter Google-Eintrag kostet einen halben Tag Arbeit und keine Provision.",
+        text: "Ein vollständiger Google-Eintrag kostet nichts außer etwas Zeit.",
       },
     ],
   },
@@ -441,7 +441,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Deshalb richten wir vor dem Umzug die Google Search Console ein, falls sie noch fehlt, und lassen sie ein paar Wochen mitlaufen. Danach legen wir fest, welche Adressen bleiben, welche weitergeleitet werden und welche wegfallen.",
+        text: "Deshalb richten wir vor dem Umzug die Google Search Console ein (das kostenlose Werkzeug, mit dem Google zeigt, wie Ihre Seite gefunden wird), falls sie noch fehlt, und lassen sie ein paar Wochen mitlaufen. Danach legen wir fest, welche Adressen bleiben, welche weitergeleitet werden und welche wegfallen.",
       },
       {
         kind: "h2",
@@ -493,7 +493,7 @@ export const JOURNAL_BY_STANDORT: Record<string, string> = {
 
 /**
  * Weiterführende Links am Ende eines Beitrags. Ohne Eintrag zeigt
- * die Beitragsseite einen Standard (Website-Audit und Termin).
+ * die Beitragsseite einen Standard (Durchsicht und Erstgespräch).
  */
 export type JournalCta = {
   primaryHref: string;
@@ -511,7 +511,7 @@ export const JOURNAL_CTAS: Record<string, JournalCta> = {
   },
   "wann-eine-website-warten-kann": {
     primaryHref: "/audit",
-    primaryLabel: "Kostenloser Website-Audit",
+    primaryLabel: "Kostenlose Durchsicht Ihrer Website",
     secondaryHref: "/sprechstunde",
     secondaryLabel: "Zur Sprechstunde",
   },
@@ -531,13 +531,13 @@ export const JOURNAL_CTAS: Record<string, JournalCta> = {
     primaryHref: "/branchen/gastro",
     primaryLabel: "Websites für Gastronomie",
     secondaryHref: "/audit",
-    secondaryLabel: "Website-Audit für Ihre Seite",
+    secondaryLabel: "Kostenlose Durchsicht Ihrer Seite",
   },
   "pflegedienst-google-maps-hamburg": {
     primaryHref: "/branchen/pflege",
     primaryLabel: "Websites für Pflegedienste",
     secondaryHref: "/audit",
-    secondaryLabel: "Website-Audit für Ihre Seite",
+    secondaryLabel: "Kostenlose Durchsicht Ihrer Seite",
   },
   "was-wir-an-wix-migrationen-lernen": {
     primaryHref: "/anfrage",

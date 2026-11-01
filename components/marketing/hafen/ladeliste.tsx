@@ -169,7 +169,7 @@ function Frachtpapier({
     >
       <div className={s.head}>
         <div className="min-w-0">
-          <p className={s.kicker}>Ladeliste · Website</p>
+          <p className={s.kicker}>Ladeliste · Was auf Ihre Seite gehört</p>
           <h3 className={s.title}>{b.label}</h3>
         </div>
         <div className={s.stamp} aria-hidden="true">
@@ -196,8 +196,8 @@ function Frachtpapier({
 
       <div className={s.colhead} aria-hidden="true">
         <span>Pos.</span>
-        <span>Ladung · Stauplatz</span>
-        <span>Vermerk</span>
+        <span>Ladung · Wo auf der Seite</span>
+        <span>Warum</span>
       </div>
       <ol className={s.rows}>
         {b.positionen.map((pos, i) => (
@@ -208,12 +208,12 @@ function Frachtpapier({
             <div className="min-w-0">
               <p className={s.ladung}>{pos.ladung}</p>
               <p className={s.stau}>
-                <span className="sr-only">Stauplatz: </span>
+                <span className="sr-only">Wo auf der Seite: </span>
                 {pos.stauplatz}
               </p>
             </div>
             <p className={s.vermerk}>
-              <span className="sr-only">Vermerk: </span>
+              <span className="sr-only">Warum: </span>
               {pos.vermerk}
             </p>
           </li>

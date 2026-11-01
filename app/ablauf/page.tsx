@@ -34,7 +34,7 @@ const STEPS = [
     title: "Gespräch und Festpreis",
     body: "Eine Viertelstunde am Telefon oder per Video, in Hamburg auf Wunsch bei einem Kaffee. Danach schicken wir Ihnen den Festpreis schriftlich.",
     wer: "Sie und wir",
-    hinweis: "15 Minuten",
+    hinweis: "Meist eine Viertelstunde",
   },
   {
     number: "03",
@@ -46,16 +46,16 @@ const STEPS = [
   {
     number: "04",
     title: "Wir bauen die Seite",
-    body: "Aus Ihren Stichpunkten schreiben wir die Texte, dann gestalten und bauen wir die Seite für Handy und Rechner. Kleine Seiten stehen oft nach ein bis zwei Werktagen.",
+    body: "Aus Ihren Stichpunkten schreiben wir die Texte, dann gestalten und bauen wir die Seite für Handy und Rechner. Ab vollständigen Unterlagen steht eine einzelne Seite oft nach ein bis zwei Werktagen, Business meist nach fünf bis zehn. Für Premium und Studio rechnen Sie mit zwei bis fünf Wochen.",
     wer: "Wir",
-    hinweis: "Kleine Seiten oft in 1–2 Werktagen",
+    hinweis: "Starter oft 1–2, Business meist 5–10 Werktage",
   },
   {
     number: "05",
     title: "Sie prüfen den Test-Link",
-    body: "Sie sehen die fertige Seite unter einer Testadresse und schicken Ihre Änderungswünsche gesammelt. Eine Runde ist im Preis, freigegeben wird erst, wenn alles stimmt.",
+    body: "Sie sehen die fertige Seite unter einer Testadresse und schicken Ihre Änderungswünsche gesammelt. Eine Runde ist im Preis, bei Studio sind es bis zu drei. Freigegeben wird erst, wenn alles stimmt.",
     wer: "Sie",
-    hinweis: "Eine Änderungsrunde inklusive",
+    hinweis: "Eine Korrekturrunde inklusive, bei Studio bis zu drei",
   },
   {
     number: "06",
@@ -114,8 +114,8 @@ export default function AblaufPage() {
             </a>
           }
         >
-          Sechs Halte vom ersten Anruf bis zur fertigen Seite. Sie sprechen dabei die ganze Zeit mit denselben Leuten, und
-          größere Projekte bekommen vorab einen verbindlichen Termin.
+          Sechs Halte vom ersten Anruf bis zur fertigen Seite. Sie sprechen dabei die ganze Zeit mit uns selbst, und den
+          Termin, an dem die Seite online geht, nennen wir Ihnen vorab.
         </PageHero>
         <Fahrplan />
         <Abschluss />

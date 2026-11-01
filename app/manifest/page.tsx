@@ -11,7 +11,7 @@ import { SITE_URL } from "@/lib/site";
 const ARTICLE_LD = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Sitalo Manifest — acht Sätze",
+  headline: "Sitalo Manifest — acht Grundsätze",
   description:
     "Was Sitalo macht, was Sitalo nicht macht, woran sich Inhaber wie Kunden verlassen können.",
   author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
@@ -36,14 +36,14 @@ const BREADCRUMB_LD = {
 export const metadata: Metadata = {
   title: "Manifest · Wie wir Websites bauen",
   description:
-    "Acht Sätze. Was Sitalo macht, was Sitalo nicht macht, woran sich Inhaber wie Kunden verlassen können.",
+    "Acht Grundsätze. Was Sitalo macht, was Sitalo nicht macht, woran sich Inhaber wie Kunden verlassen können.",
   alternates: { canonical: "/manifest" },
 };
 
 /**
  * `/manifest` — ein einzelnes Blatt, gesetzt wie ein Aushang im
- * Kontor: Papierfläche mit kräftiger Oberkante, acht Sätze, am Fuß
- * der Firmenstempel. Die Sätze haben keine Reihenfolge, deshalb
+ * Kontor: Papierfläche mit kräftiger Oberkante, acht Grundsätze, am Fuß
+ * der Firmenstempel. Die Grundsätze haben keine Reihenfolge, deshalb
  * keine Nummern; links steht in Mono, worum es jeweils geht.
  *
  * Jede Aussage muss sich mit dem Rest der Seite decken (Festpreis,
@@ -72,8 +72,8 @@ const SAETZE: { thema: string; lead: string; coda: string }[] = [
   },
   {
     thema: "Kapazität",
-    lead: "Wir nehmen höchstens drei neue Aufträge im Monat an.",
-    coda: "So bleibt für jeden Auftrag die Zeit, die er braucht.",
+    lead: "Wir nehmen nur so viele Aufträge an, wie wir sorgfältig fertig bekommen.",
+    coda: "Jede Seite bauen und betreuen wir selbst. Den Starttermin nennen wir Ihnen im ersten Gespräch.",
   },
   {
     thema: "Google",
@@ -109,7 +109,7 @@ export default function ManifestPage() {
                   </h1>
                 </div>
                 <p className="text-muted-foreground max-w-xs text-pretty text-[15.5px] leading-relaxed">
-                  Acht Sätze darüber, wie wir arbeiten. Wir haben sie aufgeschrieben, damit Sie uns daran messen
+                  Acht Grundsätze darüber, wie wir arbeiten. Wir haben sie aufgeschrieben, damit Sie uns daran messen
                   können.
                 </p>
               </header>

@@ -27,7 +27,7 @@ const SIE = [
   },
   {
     title: "Test-Link ansehen",
-    text: "In Ruhe am Handy und am Rechner. Wünsche schicken Sie gesammelt, eine Änderungsrunde ist im Preis.",
+    text: "In Ruhe am Handy und am Rechner. Wünsche schicken Sie gesammelt, eine Korrekturrunde ist im Preis.",
   },
   {
     title: "Freigeben",

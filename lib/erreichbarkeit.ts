@@ -1,49 +1,37 @@
 /**
- * Antwortzeit-Versprechen, zentral an einer Stelle.
+ * Antwortzeiten, zentral an einer Stelle.
  *
- * Aus der L7-Wahrheits-Analyse (§ 03 — die unsichtbaren Verträge):
- * das implizite Versprechen „wir gehen ans Telefon" wird ohne
- * Offenlegung der Grenzen zur Brand-Falle, sobald die Kundenzahl
- * wächst. Diese Datei hält die Grenzen einsehbar — Antwortzeiten
- * nach Fenster, Urlaubs-Regelung, Vertretung, Fallback wenn nichts
- * kommt.
+ * Die Seite /erreichbarkeit zeigt diese Werte als Tabelle und im
+ * Fließtext. Kanonisch (siehe auch FAQ, Anfrageformular, llms.txt):
+ * werktags „meist am selben Werktag“, abends und am Wochenende am
+ * nächsten Werktag. Keine Stunden-Versprechen, keine feste Urlaubszahl
+ * und keine Vertretung, die wir nicht belegen können.
  *
- * Bewusst nur die echten Zahlen und Regeln hier. Die Prosa lebt
- * auf der Seite, weil sie sich seltener ändert und stilistisch
- * Hand drauf gehört.
+ * Die Prosa lebt auf der Seite, weil sie sich seltener ändert.
  */
 
+/** Mit geschütztem Leerzeichen, damit die Nummer nie umbricht. */
+export const TELEFON_ANZEIGE = "0160\u00a07621876";
+export const TELEFON_HREF = "tel:+491607621876";
+
 export const ERREICHBARKEIT = {
-  /** Antwortzeit-Versprechen pro Tageszeit / Wochenende. */
+  /** Antwortzeiten pro Tageszeit / Wochenende. */
   fenster: [
     {
       label: "Werktags, 9 bis 18 Uhr",
-      zeit: "meist in vier Stunden",
+      zeit: "meist am selben Werktag",
     },
     {
       label: "Werktags, abends und nachts",
-      zeit: "am nächsten Werktag bis Mittag",
+      zeit: "am nächsten Werktag, meist vormittags",
     },
     {
-      label: "Wochenende, regulär",
-      zeit: "Montag bis 12 Uhr",
+      label: "Am Wochenende",
+      zeit: "am Montag, meist vormittags",
     },
     {
-      label: "Wochenende, Live-Seite down",
-      zeit: "Notfall-Nummer, auch Samstag",
+      label: "Wochenende, Ihre Seite ist nicht erreichbar",
+      zeit: `Anruf oder SMS an ${TELEFON_ANZEIGE}`,
     },
   ],
-
-  /** Urlaubs-Regel — konkrete Wochen-Zahl, kein „bei Bedarf". */
-  urlaub: {
-    wochenProJahr: 3,
-    maxAmStueck: 3,
-  },
-
-  /** Vertretung im Akutfall. */
-  vertretung: {
-    rolle: "Eine Hamburger Webentwicklerin aus unserem Netzwerk",
-    kann: "technisch handeln, wenn die Live-Seite kippt",
-    kannNicht: "Texte, Beratung und neue Gestaltung",
-  },
 } as const;

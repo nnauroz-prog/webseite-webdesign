@@ -14,6 +14,7 @@ import {
   type Profile,
   type Result,
 } from "@/lib/tco-logic";
+import { getPaketBySlug } from "@/lib/pakete-data";
 import { cn } from "@/lib/utils";
 
 /**
@@ -45,8 +46,8 @@ const PROFILES: { slug: Profile; label: string; detail: string }[] = [
   },
   {
     slug: "eigenbau",
-    label: "Code-affin",
-    detail: "Sie können selbst mit Code umgehen",
+    label: "Selbst programmieren",
+    detail: "Sie können mit Code umgehen",
   },
 ];
 
@@ -69,6 +70,8 @@ export function TcoRechner() {
   );
 
   const sitaloWins = cheapest.slug === "sitalo";
+  // Anfrage-Link folgt dem Paket, mit dem der Rechner gerade rechnet.
+  const sitaloPaket = getPaketBySlug(sitalo?.paket ?? "business");
   const sitaloDelta =
     sitalo && cheapest.slug !== "sitalo"
       ? sitalo.totalEur - cheapest.totalEur
@@ -201,8 +204,8 @@ export function TcoRechner() {
             Die Tarife sind gerundete Monatspreise der Anbieter, die Stunden sind unsere Schätzung. Alle Annahmen stehen
             unter dem Rechner.
           </p>
-          <Link href="/anfrage?paket=business" className="btn-signal h-12 shrink-0 text-[15px]">
-            Business anfragen
+          <Link href={`/anfrage?paket=${sitaloPaket?.slug ?? "business"}`} className="btn-signal h-12 shrink-0 text-[15px]">
+            {sitaloPaket?.name ?? "Business"} anfragen
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
@@ -240,8 +243,14 @@ function ResultBar({
         />
       </div>
       <p className="text-muted-foreground mt-1.5 font-mono text-[11.5px]">
-        Euro {formatEur(result.euroCost)} · Eigenzeit {formatHours(result.hoursCost)} ({formatEur(result.hoursEur)})
+        Euro {formatEur(result.euroCost)} ·{" "}
+        {result.slug === "sitalo"
+          ? "Eigenzeit nur für Ihre Inhalte"
+          : `Eigenzeit ${formatHours(result.hoursCost)} (${formatEur(result.hoursEur)})`}
       </p>
+      {result.slug === "sitalo" && result.description ? (
+        <p className="text-muted-foreground mt-1 max-w-xl text-[12.5px] leading-snug">{result.description}</p>
+      ) : null}
     </li>
   );
 }

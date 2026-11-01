@@ -39,7 +39,7 @@ Lokale Betriebe in Deutschland, viele davon in Hamburg und Umgebung. Eigene Bran
 
 ${paketZeilen}
 
-Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unterseiten mit Team, Leistungen und Galerie. Premium enthält Bereiche, die Kunden selbst pflegen, etwa eine Speisekarte. Sitalo Studio ist eine eigene Gestaltung von Grund auf mit Treffen vor Ort und bis zu drei Korrekturrunden. Alle Pakete: Hosting in der EU.
+Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unterseiten mit Team, Leistungen und Galerie. Premium enthält Bereiche, die Kunden selbst pflegen, etwa eine Speisekarte. Sitalo Studio entwirft das Erscheinungsbild neu (Schrift, Farben, Bildsprache), mit Treffen vor Ort und bis zu drei Korrekturrunden. Dauer bis online, jeweils ab vollständigen Unterlagen: Starter oft 1–2 Werktage, Business meist 5–10 Werktage, Premium meist 2–3 Wochen, Studio meist 3–5 Wochen. Alle Pakete: Hosting in der EU.
 
 ## Wichtige Seiten
 
@@ -55,27 +55,27 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 
 ## Kostenlose Werkzeuge (ohne Anmeldung)
 
-- [Speed-Check](https://www.sitalo.de/check): PageSpeed-Test einer beliebigen Website mit Ladezeit, Barrierefreiheit und SEO-Grundlagen.
+- [Ladezeit-Test](https://www.sitalo.de/check): Test einer beliebigen Website mit Google PageSpeed: Ladezeit, Barrierefreiheit, Technik und Google-Grundlagen.
 - [Paket-Quiz](https://www.sitalo.de/empfehlung): Fünf Fragen, danach eine begründete Paket-Empfehlung.
 - [3-Jahres-Rechner](https://www.sitalo.de/rechner): Gesamtkosten über drei Jahre im Vergleich mit Wix, Squarespace, Jimdo und Eigenbau, die eigene Zeit als Geld gerechnet.
-- [Website-Check](https://www.sitalo.de/audit): Drei bis fünf konkrete Punkte zur eigenen Website per Mail, innerhalb von 48 Stunden.
-- [Termin](https://www.sitalo.de/termin): 30 Minuten Erstgespräch direkt buchen, Bestätigung per Mail am selben Werktag.
+- [Durchsicht Ihrer Website](https://www.sitalo.de/audit): Wir sehen uns eine bestehende Website von Hand an und schicken drei bis fünf konkrete Punkte per Mail, meist innerhalb von zwei Werktagen.
+- [Termin](https://www.sitalo.de/termin): Erstgespräch direkt buchen: bis zu 30 Minuten, meist reicht eine Viertelstunde. Bestätigung per Mail meist am selben Werktag.
 - [Sprechstunde](https://www.sitalo.de/sprechstunde): Jeden ersten Donnerstag im Monat von 17:00 bis 18:30 Uhr offene Telefonsprechstunde, auch für Nicht-Kunden und ohne Anmeldung.
 
 ## Weitere Angebote
 
-- [Wartung](https://www.sitalo.de/wartung): Hosting, Updates und kleine Änderungen, auch für Websites, die Sitalo nicht gebaut hat. Basis 49 € im Monat, Plus 99 € im Monat, Werkbank On-Demand 299 € im Monat mit zwei frei einsetzbaren Arbeitsstunden.
-- [Erreichbarkeit](https://www.sitalo.de/erreichbarkeit): Wann Sitalo antwortet. Werktags zwischen 9 und 18 Uhr meist innerhalb von vier Stunden, Nachrichten vom Wochenende am Montag. Drei Wochen Urlaub im Jahr mit Vertretung für Notfälle.
+- [Wartung](https://www.sitalo.de/wartung): Hosting, Updates und kleine Änderungen, auch für Websites, die Sitalo nicht gebaut hat. Basis 49 € im Monat, Plus 99 € im Monat, Werkbank 299 € im Monat mit zwei frei einsetzbaren Arbeitsstunden.
+- [Erreichbarkeit](https://www.sitalo.de/erreichbarkeit): Wann Sitalo antwortet: meist am selben Werktag, Nachrichten vom Wochenende am Montag. Urlaub kündigen wir vorher an; Hosting und Backups laufen automatisch weiter.
 - [Vergleich](https://www.sitalo.de/vergleich): Wann sich ein Baukasten lohnt, wann der Eigenbau und wann ein Webdesign-Büro.
 - [Honorar](https://www.sitalo.de/honorar): Stundensatz, geschätzter Aufwand je Paket und was nicht abgerechnet wird.
 
 ## Hintergrund
 
 - [Über Sitalo](https://www.sitalo.de/atelier): Wer Sitalo ist und wie gearbeitet wird.
-- [Jetzt](https://www.sitalo.de/jetzt): Woran Sitalo gerade arbeitet, freie Termine, nächste Sprechstunde.
+- [Jetzt](https://www.sitalo.de/jetzt): Woran Sitalo gerade arbeitet, die nächste Sprechstunde und die neuesten Artikel.
 - [Journal](https://www.sitalo.de/journal): Artikel zu Preisen, Arbeitsweise, lokaler Suche und einzelnen Branchen.
-- [Manifest](https://www.sitalo.de/manifest): Acht Sätze darüber, was Sitalo tut und was nicht.
-- [Auswahl](https://www.sitalo.de/auswahl): Sitalo nimmt höchstens drei neue Aufträge pro Monat an.
+- [Manifest](https://www.sitalo.de/manifest): Acht Grundsätze darüber, was Sitalo tut und was nicht.
+- [Auswahl](https://www.sitalo.de/auswahl): Welche Aufträge Sitalo annimmt. Jede Seite bauen und betreuen wir selbst, deshalb nehmen wir nur so viele Aufträge an, wie wir sorgfältig fertig bekommen.
 - [Inventar](https://www.sitalo.de/inventar): Verwendete Werkzeuge, Hosting und was bewusst nicht eingesetzt wird.
 - [Lexikon](https://www.sitalo.de/lexikon): ${LEXIKON.length} Webbegriffe (Hosting, SSL, CMS, SEO, DSGVO, Google-Unternehmensprofil und weitere) in Alltagsdeutsch erklärt.
 - [Stadtteile](https://www.sitalo.de/standorte): Eigene Seiten für ${STANDORTE.length} Hamburger Stadtteile und Bezirke: ${standorteListe}.

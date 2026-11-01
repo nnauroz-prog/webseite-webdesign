@@ -7,15 +7,19 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 
 export const metadata: Metadata = {
   title: "Impressum",
-  description: "Anbieterkennzeichnung gemäß § 5 TMG.",
+  description: "Anbieterkennzeichnung gemäß § 5 DDG.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/impressum" },
 };
 
 /**
- * Impressum nach § 5 TMG / § 18 MStV. Anschrift und Steuer-Angaben
+ * Impressum nach § 5 DDG (Digitale-Dienste-Gesetz, ersetzt seit
+ * 14.05.2024 das TMG) und § 18 MStV. Anschrift und Steuer-Angaben
  * sind aktuell mit „folgt in Kürze" markiert und werden vor dem
  * offiziellen Launch durch die echten Daten ersetzt.
+ *
+ * Der Hinweis auf die EU-Plattform zur Online-Streitbeilegung entfällt,
+ * die Plattform ist seit dem 20.07.2025 eingestellt.
  *
  * Gesetzt wie ein Datenblatt: links Titel und Verweis auf den
  * Datenschutz, rechts die Angaben als Tabelle mit Mono-Beschriftung.
@@ -42,7 +46,7 @@ export default function ImpressumPage() {
 
             <div className="min-w-0 lg:col-span-8">
               <dl className="border-foreground border-t-2">
-                <Row label="Angaben gemäß § 5 TMG">
+                <Row label="Angaben gemäß § 5 DDG">
                   Sitalo
                   <br />
                   Inhaber: Nadim Nauroz
@@ -74,29 +78,18 @@ export default function ImpressumPage() {
                 <div>
                   <h2 className="text-foreground text-[1.35rem] leading-tight tracking-[-0.02em]">Haftung für Inhalte</h2>
                   <p className="mt-3">
-                    Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den
-                    allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht
-                    verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen
-                    zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+                    Für eigene Inhalte auf dieser Website sind wir nach den allgemeinen Gesetzen verantwortlich. Für die
+                    Inhalte verlinkter fremder Websites ist der jeweilige Anbieter verantwortlich. Erfahren wir von einem
+                    Rechtsverstoß auf einer verlinkten Seite, entfernen wir den Link.
                   </p>
                 </div>
                 <div>
-                  <h2 className="text-foreground text-[1.35rem] leading-tight tracking-[-0.02em]">EU-Streitschlichtung</h2>
+                  <h2 className="text-foreground text-[1.35rem] leading-tight tracking-[-0.02em]">
+                    Verbraucher&shy;streitbeilegung
+                  </h2>
                   <p className="mt-3">
-                    Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:{" "}
-                    <a
-                      href="https://ec.europa.eu/consumers/odr/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-4"
-                    >
-                      ec.europa.eu/consumers/odr
-                    </a>
-                    .
-                  </p>
-                  <p className="mt-3">
-                    Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
-                    Verbraucherschlichtungsstelle teilzunehmen.
+                    Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer
+                    Verbraucherschlichtungsstelle teilzunehmen (§&nbsp;36&nbsp;VSBG).
                   </p>
                 </div>
               </div>

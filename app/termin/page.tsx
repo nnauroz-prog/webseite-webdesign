@@ -11,7 +11,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Kostenloses Erstgespräch buchen · Webdesign",
   description:
-    "30-Minuten-Erstgespräch mit Sitalo aus Hamburg. Tag und Uhrzeit wählen, Bestätigung per E-Mail am selben Werktag.",
+    "Erstgespräch (bis zu 30 Minuten) mit Sitalo aus Hamburg. Tag und Uhrzeit wählen, Bestätigung per E-Mail meist am selben Werktag.",
   alternates: { canonical: "/termin" },
 };
 
@@ -35,15 +35,15 @@ const BOOKING_HAFEN =
  * Büros, ein Mensch bestätigt den Termin.
  */
 export default function TerminPage() {
-  // Service-Schema für das 30-Min-Erstgespräch + Breadcrumb.
+  // Service-Schema für das Erstgespräch (bis zu 30 Minuten) + Breadcrumb.
   // ReservationService statt Reservation — wir bieten die Möglichkeit
   // zur Terminvereinbarung als Service an, kein konkretes Datum.
   const serviceLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: "30-Minuten-Erstgespräch",
+    name: "Erstgespräch (bis zu 30 Minuten)",
     description:
-      "30-Minuten-Erstgespräch per Video, Telefon oder vor Ort in Hamburg. Termin direkt auswählen, Bestätigung am selben Werktag per Mail.",
+      "Erstgespräch (bis zu 30 Minuten, meist reicht eine Viertelstunde) per Video, Telefon oder vor Ort in Hamburg. Termin direkt auswählen, Bestätigung meist am selben Werktag per Mail.",
     provider: {
       "@type": "LocalBusiness",
       "@id": `${SITE_URL}/#business`,
@@ -85,12 +85,13 @@ export default function TerminPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Termin"
-          eyebrow="Erstgespräch · 30 Minuten · kostenlos"
+          eyebrow="Erstgespräch · bis zu 30 Minuten · kostenlos"
           title="Erstgespräch buchen"
           meta="Per Video oder Telefon, in Hamburg auf Wunsch bei einem Kaffee."
         >
-          Sie wählen Tag und Uhrzeit, wir bestätigen am selben Werktag per Mail.
-          Den Kalendereintrag schicken wir als Anhang mit.
+          Im Kalender sind 30 Minuten reserviert, meist reicht eine Viertelstunde.
+          Sie wählen Tag und Uhrzeit, wir bestätigen meist am selben Werktag per
+          Mail und schicken den Kalendereintrag als Anhang mit.
         </PageHero>
 
         <section aria-label="Termin wählen">

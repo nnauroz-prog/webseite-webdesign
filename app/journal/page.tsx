@@ -27,6 +27,14 @@ function shortDate(iso: string): string {
   return `${d}.${m}.${y}`;
 }
 
+/** „Neu“ nur, solange der Beitrag jünger als etwa einen Monat ist. Die
+ *  Seite wird stündlich neu erzeugt, das Etikett veraltet also nicht. */
+const NEU_TAGE = 30;
+function istNeu(iso: string): boolean {
+  const alter = Date.now() - new Date(`${iso}T12:00:00Z`).getTime();
+  return alter >= 0 && alter < NEU_TAGE * 24 * 60 * 60 * 1000;
+}
+
 /**
  * `/journal` — Inhaltsverzeichnis wie in einer Zeitschrift.
  *
@@ -110,7 +118,12 @@ export default function JournalPage() {
               className="group border-foreground grid gap-6 border-t-2 pt-6 pb-14 sm:pb-20 lg:grid-cols-12 lg:gap-8"
             >
               <p className="label-mono text-muted-foreground lg:col-span-3 lg:pt-3">
-                <span className="text-gold">Neu</span> · {formatDate(hero.publishedAt)}
+                {istNeu(hero.publishedAt) ? (
+                  <span className="text-gold">Neu</span>
+                ) : (
+                  <span>Zuletzt erschienen</span>
+                )}{" "}
+                · {formatDate(hero.publishedAt)}
                 <span className="mt-1 block">{hero.readingMinutes} Min Lesezeit</span>
               </p>
               <div className="min-w-0 lg:col-span-9">

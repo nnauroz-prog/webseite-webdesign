@@ -299,8 +299,8 @@ export const LADELISTEN: BranchenLadeliste[] = [
           "Gutscheine sind ein beliebtes Geschenk. Ein Hinweis auf der Startseite erinnert vor Weihnachten und Muttertag daran.",
       },
     ],
-    paket: "starter",
-    paketGrund: "Eine Seite mit Preisen, Galerie und Terminanfrage passt in Starter.",
+    paket: "business",
+    paketGrund: "Preise, Team und Galerie bekommen eigene Unterseiten, dazu das Formular für Terminanfragen. Das alles gehört zu Business.",
     alternative: { paket: "premium", text: "Mit eigener Online-Buchung ist {paket} richtig." },
   },
   {
@@ -494,7 +494,7 @@ export const LADELISTEN: BranchenLadeliste[] = [
       },
     ],
     paket: "premium",
-    paketGrund: "Saisonpreise und ein Formular für Buchungsanfragen gehören zu Premium.",
+    paketGrund: "Saisonpreise pflegen Sie in Premium selbst, ohne auf uns zu warten.",
     alternative: { paket: "business", text: "Eine kleine Pension mit wenigen Zimmern kommt mit {paket} aus." },
   },
 ];

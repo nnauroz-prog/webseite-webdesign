@@ -115,7 +115,7 @@ function pad(n: number): string {
  *  damit niemand denkt, „meine Frage ist zu klein". */
 export const TYPISCHE_THEMEN: string[] = [
   "Mein bestehender Anbieter ist nicht mehr erreichbar. Wie komme ich an meine Inhalte?",
-  "Lohnt sich ein eigenes CMS oder reicht eine handgepflegte Seite für meinen Betrieb?",
+  "Lohnt sich ein System, in dem ich Inhalte selbst ändere, oder reicht es, wenn das jemand für mich macht?",
   "Mein Google-Eintrag sieht traurig aus. Was sind die ersten drei Schritte?",
   "Wie unterscheide ich ein faires Wartungs-Angebot von einem überteuerten?",
   "Mein Kontaktformular sammelt Spam. Was hilft wirklich?",

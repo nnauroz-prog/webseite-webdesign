@@ -1,7 +1,7 @@
 import { editorialOgImage, OG_SIZE } from "@/lib/og-editorial";
 
 export const runtime = "nodejs";
-export const alt = "Sitalo Erreichbarkeit: Antwortzeiten, Urlaub und Vertretung.";
+export const alt = "Sitalo Erreichbarkeit: Antwortzeiten und Urlaub.";
 export const size = OG_SIZE;
 export const contentType = "image/png";
 
@@ -10,7 +10,7 @@ export default async function Image() {
     variant: "hell",
     eyebrow: "Sitalo · Erreichbarkeit",
     headline: "Werktags antworten wir meist am selben Tag.",
-    subline: "Hier steht, wann wir antworten, was im Urlaub gilt und wer im Notfall einspringt.",
+    subline: "Hier steht, wann wir antworten und was gilt, wenn wir im Urlaub sind.",
     url: "sitalo.de/erreichbarkeit",
   });
 }

@@ -48,7 +48,7 @@ export default function AtelierPage() {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Atelier",
+        name: "Über uns",
         item: `${SITE_URL}/atelier`,
       },
     ],
@@ -58,9 +58,9 @@ export default function AtelierPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero crumb="Atelier" eyebrow="Über Sitalo · Hamburg" title="Sitalo ist ein kleines Büro für Webdesign in Hamburg.">
-          Wer bei uns anruft, spricht mit jemandem, der die Seiten auch selbst baut. Damit das so bleibt, nehmen wir
-          höchstens drei neue Aufträge im Monat an.
+        <PageHero crumb="Über uns" eyebrow="Über Sitalo · Hamburg" title="Sitalo ist ein kleines Büro für Webdesign in Hamburg.">
+          Wer bei uns anruft, spricht mit jemandem, der die Seiten auch selbst baut. Damit das so bleibt, nehmen wir nur
+          so viele Aufträge an, wie wir sorgfältig fertig bekommen. Den Starttermin nennen wir Ihnen im ersten Gespräch.
         </PageHero>
         <Werkstattbericht />
         <Grundsaetze />
@@ -153,7 +153,7 @@ function Grundsaetze() {
         <div className="border-border border-t pt-6 lg:col-span-3 lg:col-start-10 lg:border-t-0 lg:border-l lg:pt-1 lg:pl-8">
           <h2 className="label-mono text-muted-foreground">Was wir nicht machen</h2>
           <p className="mt-4 text-[16px] leading-relaxed">
-            Werbekampagnen und Newsletter. Dafür gibt es Leute, die das besser können, und an die verweisen wir Sie gern.
+            Werbekampagnen und Newsletter. Das ist ein eigenes Fach, und das sagen wir Ihnen lieber gleich zu Beginn.
           </p>
         </div>
       </div>
@@ -200,7 +200,7 @@ function Hamburg() {
  * Register der übrigen Seiten, gesetzt wie ein Inhaltsverzeichnis.
  * ---------------------------------------------------------------- */
 const SEITEN: { href: string; title: string; line: string }[] = [
-  { href: "/manifest", title: "Manifest", line: "Acht Sätze darüber, wie wir arbeiten." },
+  { href: "/manifest", title: "Manifest", line: "Acht Grundsätze darüber, wie wir arbeiten." },
   { href: "/auswahl", title: "Auswahl", line: "Welche Aufträge wir annehmen und wie wir das entscheiden." },
   { href: "/inventar", title: "Inventar", line: "Womit wir bauen und wo wir hosten, jeweils mit Begründung." },
   { href: "/erreichbarkeit", title: "Erreichbarkeit", line: "Wann wir antworten und was im Urlaub passiert." },

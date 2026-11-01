@@ -44,7 +44,7 @@ const SERVICES = [
   },
   {
     name: "Inhalte selbst pflegen",
-    description: "Speisekarte, Öffnungszeiten oder Angebote ändern Sie auf Wunsch selbst. Im Premium-Paket enthalten.",
+    description: "Speisekarte, Öffnungszeiten oder Angebote ändern Sie auf Wunsch selbst. Ab dem Premium-Paket enthalten.",
   },
 ];
 
@@ -84,7 +84,7 @@ export default function LeistungenPage() {
           }
         >
           Hier steht, was wir übernehmen und in welchem Paket es steckt. Von der ersten Zeile bis zum Hosting liegt die
-          Arbeit bei uns, und Sie sprechen dabei immer mit denselben Leuten.
+          Arbeit bei uns, und Sie sprechen dabei immer mit uns selbst.
         </PageHero>
         <Bauplan />
         <Verzeichnis />
@@ -118,7 +118,7 @@ const STELLEN = [
   },
   {
     titel: "Kontaktformular",
-    text: "Was jemand hier eintippt, kommt direkt in Ihrem Postfach an. Gegen Spam schützen wir das Formular ohne Captcha.",
+    text: "Was jemand hier eintippt, kommt direkt in Ihrem Postfach an. Gegen Spam schützen wir das Formular, ohne dass Besucher Bilderrätsel lösen müssen.",
   },
   {
     titel: "Impressum und Datenschutz",
@@ -257,7 +257,7 @@ const VERZEICHNIS: { nr: string; titel: string; posten: Posten[] }[] = [
       { nr: "1.4", text: "Eine Seite mit allem Wichtigen", umfang: "Starter" },
       { nr: "1.5", text: "Bis zu fünf Unterseiten, etwa für Leistungen, Team und Galerie", umfang: "Business" },
       { nr: "1.6", text: "Eigene Struktur nach Ihrem Bedarf", umfang: "Premium" },
-      { nr: "1.7", text: "Eigene Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden", umfang: "Studio" },
+      { nr: "1.7", text: "Neues Erscheinungsbild: Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden", umfang: "Studio" },
     ],
   },
   {
@@ -273,9 +273,10 @@ const VERZEICHNIS: { nr: string; titel: string; posten: Posten[] }[] = [
     nr: "3",
     titel: "Anfragen",
     posten: [
-      { nr: "3.1", text: "Kontaktformular mit Spam-Schutz ohne Captcha, Anfragen kommen per Mail bei Ihnen an", umfang: "Alle Pakete" },
+      { nr: "3.1", text: "Kontaktformular mit Spam-Schutz ohne Bilderrätsel, Anfragen kommen per Mail bei Ihnen an", umfang: "Alle Pakete" },
       { nr: "3.2", text: "Anruf-Knopf, Karte und Öffnungszeiten", umfang: "Alle Pakete" },
-      { nr: "3.3", text: "Formulare für Bewerbung oder Buchung", umfang: "Premium" },
+      { nr: "3.3", text: "Formular für Bewerbung oder Terminanfrage, kommt per Mail bei Ihnen an", umfang: "Ab Business" },
+      { nr: "3.4", text: "Online-Buchung mit festen Terminen", umfang: "Ab Premium" },
     ],
   },
   {
@@ -293,7 +294,7 @@ const VERZEICHNIS: { nr: string; titel: string; posten: Posten[] }[] = [
       { nr: "5.1", text: "Hosting auf einem Server in der EU, SSL-Zertifikat", umfang: "Alle Pakete" },
       { nr: "5.2", text: "Sicherheits-Updates und tägliche Backups, die 30 Tage zurückreichen", umfang: "Alle Pakete" },
       { nr: "5.3", text: "Kleine Änderungen im Monat: Starter 1, Business 3, Premium 6, Studio 10", umfang: "Je nach Paket" },
-      { nr: "5.4", text: "Bereiche, die Sie selbst pflegen, etwa Speisekarte, Angebote oder Termine", umfang: "Premium, auf Wunsch" },
+      { nr: "5.4", text: "Bereiche, die Sie selbst pflegen, etwa Speisekarte, Angebote oder Termine", umfang: "Ab Premium, auf Wunsch" },
       { nr: "5.5", text: "Domain und E-Mail-Adressen einrichten", umfang: "Auf Wunsch" },
     ],
   },
@@ -369,8 +370,9 @@ function Verzeichnis() {
         <div className="border-foreground mt-10 grid gap-6 border-t-[1.5px] pt-6 lg:grid-cols-12 lg:gap-8">
           <p className="label-mono text-muted-foreground lg:col-span-3">Nicht im Verzeichnis</p>
           <p className="text-foreground/85 max-w-2xl text-[15.5px] leading-relaxed lg:col-span-9">
-            Werbekampagnen und Newsletter machen wir nicht. Für Logo-Entwicklung und Fotoshootings nennen wir Ihnen Leute,
-            mit denen wir zusammenarbeiten. Online-Shops und Apps besprechen wir im Einzelfall.
+            Werbekampagnen und Newsletter machen wir nicht. Logo-Entwicklung und Fotoshootings bieten wir ebenfalls nicht
+            an: Fotos liefern Sie, Handyfotos reichen oft, und für einen Fotografen bekommen Sie von uns eine kurze
+            Motivliste. Online-Shops und Apps besprechen wir im Einzelfall.
           </p>
         </div>
       </div>

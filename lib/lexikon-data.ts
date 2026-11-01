@@ -92,7 +92,7 @@ export const LEXIKON: LexikonEntry[] = [
     plain:
       "Wie schnell Ihre Seite erscheint und auf Eingaben reagiert. Google misst das mit drei Kennzahlen (LCP, CLS, INP) und berücksichtigt sie beim Ranking. Wichtiger ist etwas anderes: Wer am Handy zu lange wartet, geht zurück zur Trefferliste.",
     bottomLine:
-      "Testen Sie Ihre Seite selbst. Unser Speed-Check zeigt die Werte in etwa einer halben Minute, ohne Anmeldung.",
+      "Testen Sie Ihre Seite selbst. Unser Ladezeit-Test zeigt die Werte in etwa einer halben Minute, ohne Anmeldung.",
   },
   {
     term: "Baukasten",

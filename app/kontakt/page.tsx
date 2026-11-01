@@ -167,7 +167,7 @@ const WEGE: { name: string; text: string; href: string; link: string; extern?: b
   },
   {
     name: "Termin",
-    text: "30 Minuten am Telefon, per Video oder in Hamburg. Tag und Uhrzeit wählen Sie selbst.",
+    text: "Bis zu 30 Minuten, meist reicht eine Viertelstunde. Am Telefon, per Video oder in Hamburg; Tag und Uhrzeit wählen Sie selbst.",
     href: "/termin",
     link: "Termin buchen",
   },
@@ -238,7 +238,7 @@ function Treffen() {
             Treffen in Hamburg
           </h2>
           <p className="text-foreground/85 mt-5 max-w-md text-pretty text-[16.5px] leading-relaxed">
-            Wer in Hamburg sitzt, kann uns gern treffen: in Ihrem Betrieb, in einem Café oder bei uns. Alle anderen
+            Wer in Hamburg sitzt, kann uns gern treffen: in Ihrem Betrieb oder in einem Café. Alle anderen
             sprechen mit uns am Telefon oder per Video. Die Website wird dieselbe.
           </p>
           <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[15px] leading-relaxed">

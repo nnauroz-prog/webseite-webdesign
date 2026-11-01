@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 const FAQ = [
   {
     q: "Wie schnell ist meine Seite fertig?",
-    a: "Liegen alle Unterlagen vor, sind kleine Seiten oft nach ein bis zwei Werktagen online. Für größere Projekte nennen wir vorab einen verbindlichen Termin.",
+    a: "Ab vollständigen Unterlagen ist eine einzelne Seite oft in 1–2 Werktagen online, Business meist in 5–10 Werktagen, Premium in 2–3 Wochen und Studio in 3–5 Wochen. Den genauen Termin nennen wir Ihnen vorab.",
   },
   {
     q: "Was brauchen Sie von mir?",
@@ -64,7 +64,7 @@ const FAQ = [
   },
   {
     q: "Gibt es laufende Kosten?",
-    a: "Ja, einen Monatsbeitrag für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49 €, 79 € oder 179 €. Nach sechs Monaten Mindestlaufzeit ist er zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
+    a: "Ja, einen Monatsbeitrag für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49 €, 79 €, 179 € oder 249 €. Nach sechs Monaten Mindestlaufzeit ist er zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
   },
   {
     q: "Kann ich später noch etwas ändern lassen?",
@@ -264,10 +264,10 @@ function Ablauf() {
             data-reveal="rise"
             className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7 lg:text-[3.6rem]"
           >
-            Vier Halte bis zur fertigen Seite
+            Der Weg zur fertigen Seite, kurz gefasst
           </h2>
           <p data-reveal="fade" className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
-            Sie sprechen vom ersten Anruf an mit denselben Leuten, auch wenn die Seite längst online ist.
+            Vom ersten Anruf an sprechen Sie mit uns selbst, auch wenn die Seite längst online ist.
           </p>
         </div>
         <div className="mt-14 sm:mt-20">
@@ -302,7 +302,7 @@ function Preise() {
             Den Preis bekommen Sie schriftlich, bevor wir anfangen. Kommt später etwas dazu, sprechen wir vorher darüber.
           </p>
           <p data-reveal="fade" className="text-muted-foreground mt-4 text-[16.5px] leading-relaxed">
-            Welches Paket passt, klären wir im ersten Telefonat. Die meisten Betriebe wählen Business; die{" "}
+            Welches Paket passt, klären wir im ersten Telefonat. Für die meisten Betriebe empfehlen wir Business; die{" "}
             <Link href="#ladeliste" className="text-foreground underline decoration-[var(--gold)] decoration-2 underline-offset-4">
               Ladeliste
             </Link>{" "}

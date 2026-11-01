@@ -29,10 +29,21 @@ function betrag(label: string) {
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
+/** Richtwert bis online aus pakete-data, „meist 5–10 Werktage“. */
+function dauer(slug: Slug) {
+  return getPaketBySlug(slug)?.dauer ?? "–";
+}
+
+function gross(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 /**
  * Vergleich als Tabelle: Pakete sind Spalten, Leistungen sind Zeilen.
  * Preise kommen aus lib/pakete-data.ts, die Zeilen fassen die
  * Leistungslisten dort zusammen. Ein Strich heißt: nicht in diesem Paket.
+ * Die Dauer folgt den kanonischen Richtwerten (ab vollständigen
+ * Unterlagen), siehe auch pakete-data detailIntro.
  */
 const ZEILEN: { label: string; zahl?: boolean; werte: Record<Slug, string> }[] = [
   {
@@ -48,9 +59,9 @@ const ZEILEN: { label: string; zahl?: boolean; werte: Record<Slug, string> }[] =
     label: "Typisch dabei",
     werte: {
       starter: "Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten",
-      business: "Team mit Fotos, Leistungen, Galerie, Bildaufbereitung",
-      premium: "Formulare für Kontakt, Bewerbung und Buchung",
-      studio: "Eigene Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden",
+      business: "Team mit Fotos, Leistungen, Galerie, Formular für Bewerbung oder Terminanfrage",
+      premium: "Formulare für Kontakt, Bewerbung und Online-Buchung",
+      studio: "Neues Erscheinungsbild: Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden",
     },
   },
   {
@@ -72,17 +83,22 @@ const ZEILEN: { label: string; zahl?: boolean; werte: Record<Slug, string> }[] =
     werte: { starter: "1", business: "3", premium: "6", studio: "10" },
   },
   {
-    label: "Bauzeit",
+    label: "Dauer bis online",
     werte: {
-      starter: "Oft 1–2 Werktage",
-      business: "Termin legen wir vorher fest",
-      premium: "Termin legen wir vorher fest",
-      studio: "3–5 Wochen",
+      starter: gross(dauer("starter")),
+      business: gross(dauer("business")),
+      premium: gross(dauer("premium")),
+      studio: gross(dauer("studio")),
     },
   },
   {
-    label: "Besuch vor Ort",
-    werte: { starter: "–", business: "–", premium: "–", studio: "In Hamburg oder bei Ihnen" },
+    label: "Persönliches Treffen",
+    werte: {
+      starter: "In Hamburg auf Wunsch, sonst Telefon oder Video",
+      business: "In Hamburg auf Wunsch, sonst Telefon oder Video",
+      premium: "In Hamburg auf Wunsch, sonst Telefon oder Video",
+      studio: "Vor dem Entwurf, in Hamburg oder bei Ihnen",
+    },
   },
 ];
 
@@ -213,8 +229,11 @@ function Vergleich() {
             </tbody>
             <tfoot>
               <tr>
-                <td className="pt-6 align-top">
-                  <span className="text-muted-foreground text-[13px]">Preise zzgl. MwSt.</span>
+                <td className="pt-6 pr-4 align-top">
+                  <span className="text-muted-foreground block text-[13px] leading-snug">Preise zzgl. MwSt.</span>
+                  <span className="text-muted-foreground mt-2 block text-[13px] leading-snug">
+                    Dauer jeweils ab vollständigen Unterlagen.
+                  </span>
                 </td>
                 {PAKETE.map((p) => (
                   <td key={p.slug} className={`px-4 pt-6 pb-6 align-top ${p.highlight ? "bg-card" : ""}`}>
@@ -242,7 +261,9 @@ function Vergleich() {
           {PAKETE.map((p) => (
             <PaketMobil key={p.slug} p={p} />
           ))}
-          <p className="text-muted-foreground text-[13px]">Preise zzgl. MwSt.</p>
+          <p className="text-muted-foreground text-[13px]">
+            Preise zzgl. MwSt. Dauer jeweils ab vollständigen Unterlagen.
+          </p>
         </div>
       </div>
     </section>

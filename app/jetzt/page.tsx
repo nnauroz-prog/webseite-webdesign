@@ -5,13 +5,8 @@ import { ArrowRight } from "lucide-react";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import {
-  ATELIER_GERADE,
-  ATELIER_STAND,
-  atelierStandDate,
-  atelierStandMonth,
-} from "@/lib/atelier-notes";
-import { AVAILABILITY } from "@/lib/availability";
+import { ATELIER_GERADE } from "@/lib/atelier-notes";
+import { nextWorkdays } from "@/lib/calendar-availability";
 import { formatDate, JOURNAL_POSTS } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 import {
@@ -23,7 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "Jetzt — was bei Sitalo gerade ansteht",
   description:
-    "Was bei Sitalo gerade ansteht: wie viele Plätze frei sind, wann die nächste Sprechstunde ist und was wir zuletzt geschrieben haben.",
+    "Was bei Sitalo gerade ansteht: der nächste freie Tag für ein Erstgespräch, die nächste Sprechstunde, was auf dem Schreibtisch liegt und was wir zuletzt geschrieben haben.",
   alternates: { canonical: "/jetzt" },
 };
 
@@ -33,30 +28,35 @@ const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
  * `/jetzt` — Now-Page.
  *
  * Eine Seite, die sagt, was gerade ansteht, nicht was wir generell
- * anbieten. Speist sich aus bestehenden Datenquellen (Notizen-Stand,
- * Verfügbarkeit, Sprechstunden-Termine, neueste Journal-Texte) und
- * bleibt dadurch von selbst aktuell, sobald die Quellen gepflegt
- * werden. Aufbau: Kopf mit Aushang (Plätze, Sprechstunde), daneben
- * nichts Dekoratives; dann der Schreibtisch, dann das Journal.
+ * anbieten. Zeigt nur Werte, die aus echten Daten berechnet werden:
+ * den nächsten buchbaren Tag aus dem Terminkalender
+ * (lib/calendar-availability.ts, dieselbe Quelle wie /termin), die
+ * nächste Sprechstunde und die neuesten Journal-Texte. Kein festes
+ * Stand-Datum und kein Zähler für freie Plätze, beides würde ohne
+ * Pflege veralten. Aufbau: Kopf mit Aushang (Erstgespräch,
+ * Sprechstunde), dann der Schreibtisch, dann das Journal.
  */
 export default function JetztPage() {
-  // Stand der Notizen, nicht das heutige Datum: die Seite verspricht
-  // selbst, dass man ihr Veraltetes vorhalten darf.
-  const monthLabel = atelierStandMonth();
-  const standDate = atelierStandDate();
   const sprechstunde = nextSprechstunden(1)[0];
   const latestPosts = JOURNAL_POSTS.slice(0, 2);
   const gerade = ATELIER_GERADE;
-  const { availableSlots, slotMonth, nextMonth } = AVAILABILITY;
-  const slotsOpen = availableSlots > 0;
+  const naechsterTag = nextWorkdays(15).find((d) => !d.isBlocked);
+  const naechsterTagLabel = naechsterTag
+    ? new Date(`${naechsterTag.iso}T12:00:00Z`).toLocaleDateString("de-DE", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        timeZone: "Europe/Berlin",
+      })
+    : null;
 
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `Jetzt — ${monthLabel}`,
+    headline: "Jetzt bei Sitalo",
     description:
-      "Was bei Sitalo gerade ansteht: freie Plätze, nächste Sprechstunde, zuletzt geschrieben.",
-    dateModified: ATELIER_STAND,
+      "Was bei Sitalo gerade ansteht: nächster freier Tag für ein Erstgespräch, nächste Sprechstunde, zuletzt geschrieben.",
+    dateModified: JOURNAL_POSTS[0]?.publishedAt,
     author: { "@type": "Organization", name: "Sitalo Webdesign", url: SITE_URL },
     publisher: { "@id": `${SITE_URL}/#business` },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/jetzt` },
@@ -81,52 +81,43 @@ export default function JetztPage() {
       <MarketingHeader />
       <EditorialMasthead section="Jetzt" />
       <main id="main" tabIndex={-1} className="flex-1">
-        {/* Kopf: links der Text, rechts der Aushang mit Plätzen und Sprechstunde */}
+        {/* Kopf: links der Text, rechts der Aushang mit Erstgespräch und Sprechstunde */}
         <section>
           <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-24 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-6">
-              <p className="label-mono text-muted-foreground">Stand {standDate}</p>
+              <p className="label-mono text-muted-foreground">Jetzt</p>
               <h1 className="mt-6 text-balance text-[2.5rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[4.25rem]">
                 Was bei uns gerade ansteht
               </h1>
               <p className="text-muted-foreground mt-6 max-w-xl text-pretty text-[16.5px] leading-relaxed sm:text-lg">
-                Diese Seite ist eine Momentaufnahme: wie viel Platz im Kalender ist, wann die nächste Sprechstunde
-                stattfindet und was auf dem Schreibtisch liegt. Steht hier etwas, das Monate alt ist, sagen Sie es uns
-                ruhig.
+                Hier steht, wann Sie das nächste Erstgespräch buchen können, wann die nächste Sprechstunde stattfindet
+                und was auf dem Schreibtisch liegt. Den Starttermin für Ihre Seite nennen wir Ihnen im ersten Gespräch.
               </p>
             </div>
 
             <dl className="border-foreground self-start border-t-2 lg:col-span-5 lg:col-start-8 lg:mt-2">
-              <div className="border-border border-b py-6">
-                <dt className="label-mono text-muted-foreground flex items-center gap-2.5">
-                  <span
-                    aria-hidden="true"
-                    className={`inline-block h-2 w-2 shrink-0 rounded-full ${slotsOpen ? "bg-ink-petrol" : "bg-ink-olive"}`}
-                  />
-                  Freie Plätze
-                </dt>
-                <dd className="mt-3">
-                  <p
-                    className="text-[1.75rem] leading-[1.1] tracking-[-0.03em] sm:text-[2.1rem]"
-                    style={{ fontStretch: "112%", fontWeight: 740 }}
-                  >
-                    {slotsOpen
-                      ? `${availableSlots} ${availableSlots === 1 ? "Platz" : "Plätze"} frei`
-                      : "Ausgebucht"}
-                  </p>
-                  <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
-                    {slotsOpen
-                      ? `Für neue Aufträge ${slotMonth}.`
-                      : `Für ${slotMonth} sind alle Plätze vergeben. Anfragen für ${nextMonth} nehmen wir gern an.`}
-                  </p>
-                  <Link
-                    href="/anfrage"
-                    className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
-                  >
-                    Website anfragen {ARROW}
-                  </Link>
-                </dd>
-              </div>
+              {naechsterTagLabel ? (
+                <div className="border-border border-b py-6">
+                  <dt className="label-mono text-muted-foreground">Nächster freier Tag für ein Erstgespräch</dt>
+                  <dd className="mt-3">
+                    <p
+                      className="text-[1.75rem] leading-[1.1] tracking-[-0.03em] sm:text-[2.1rem]"
+                      style={{ fontStretch: "112%", fontWeight: 740 }}
+                    >
+                      {naechsterTagLabel}
+                    </p>
+                    <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
+                      Bis zu 30 Minuten, meist reicht eine Viertelstunde. Die Uhrzeit wählen Sie selbst.
+                    </p>
+                    <Link
+                      href="/termin"
+                      className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+                    >
+                      Termin buchen {ARROW}
+                    </Link>
+                  </dd>
+                </div>
+              ) : null}
               <div className="border-border border-b py-6">
                 <dt className="label-mono text-muted-foreground">Nächste Sprechstunde</dt>
                 <dd className="mt-3">
@@ -202,9 +193,6 @@ export default function JetztPage() {
                 </li>
               ))}
             </ul>
-            <p className="border-border text-muted-foreground mt-16 border-t pt-5 font-mono text-[12px] leading-relaxed">
-              Seiten wie diese heißen im Netz Now-Page. Die Idee und viele Beispiele sind auf nownownow.com gesammelt.
-            </p>
           </div>
         </section>
       </main>

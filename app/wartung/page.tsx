@@ -28,7 +28,7 @@ export const metadata: Metadata = {
  * Hintergrund-Dienst plus optional die Werkbank.
  *
  * Aufbau: Tarife als Zeilen (kein Kartentrio), Anlässe als Liste,
- * Fragen offen gesetzt, Abschluss mit Telefonnummer und Audit.
+ * Fragen offen gesetzt, Abschluss mit Telefonnummer und Durchsicht.
  */
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
@@ -51,14 +51,14 @@ const PLANS: Plan[] = [
     price: "49 €",
     description: "Für Seiten, die vor allem sicher und aktuell bleiben sollen.",
     contents: [
-      "Hosting auf einem Server in der EU, Umzug auf Wunsch inklusive",
+      "Hosting auf einem Server in der EU, Umzug zu uns inklusive (Wix und Squarespace bleiben beim Anbieter)",
       "SSL-Zertifikat, das sich selbst verlängert",
       "Sicherheits- und Software-Updates jeden Monat",
       "Tägliche Backups, 30 Tage zurück abrufbar",
       "Eine kleine Änderung am Inhalt pro Monat",
       "Antwort auf Mails meist am selben Werktag",
     ],
-    limits: ["Größere Umbauten der Gestaltung", "Mehr als eine Änderungsrunde im Monat", "Neue Funktionen"],
+    limits: ["Größere Umbauten der Gestaltung", "Mehr als eine kleine Änderung im Monat", "Neue Funktionen"],
   },
   {
     slug: "plus",
@@ -69,22 +69,21 @@ const PLANS: Plan[] = [
       "Alles aus Basis",
       "Bis zu drei kleine Änderungen pro Monat",
       "Monatliche Prüfung von Ladezeit, Handy-Ansicht und Formularen",
-      "Antwort meist innerhalb von 4 Stunden",
+      "Bevorzugte Bearbeitung, Antwort meist noch am selben Tag",
       "Saisonale Anpassungen, etwa zu Weihnachten oder zur Sommerpause",
-      "Eine direkte Telefonnummer für Notfälle",
     ],
     limits: [
-      "SEO-Kampagnen und bezahlte Anzeigen",
-      "Mehr als drei Änderungsrunden im Monat",
+      "Werbekampagnen und bezahlte Anzeigen",
+      "Mehr als drei kleine Änderungen im Monat",
       "Neue Bereiche mit eigener Seite, die rechnen wir nach Stunden ab",
     ],
   },
   {
     slug: "werkbank",
-    name: "Werkbank On-Demand",
+    name: "Werkbank",
     price: "299 €",
     description:
-      "Wartung plus feste Stunden für Gestaltung und Technik, ohne für jede Kleinigkeit ein neues Projekt aufzusetzen.",
+      "Wartung plus feste Stunden im Monat für Gestaltung und Technik, ohne für jede Kleinigkeit ein neues Projekt aufzusetzen.",
     contents: [
       "Alles aus Plus",
       "Zwei Werkbank-Stunden pro Monat, frei einsetzbar",
@@ -92,7 +91,6 @@ const PLANS: Plan[] = [
       "Für Gestaltung, Technik, Texte oder eine Beratung",
       "Etwa für einen neuen Bereich, kürzere Ladezeiten oder eine neue Gliederung",
       "Einmal im Quartal ein Termin, bei dem wir gemeinsam auf die Seite schauen",
-      "Vorrang bei kurzfristigen Anfragen",
     ],
     limits: [
       "Größere Neubauten wie eine komplette Seite oder ein Shop ab 30 Artikeln, dafür gibt es ein eigenes Projekt",
@@ -111,7 +109,7 @@ export default function WartungPage() {
   const serviceLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: "Website-Wartung & Werkbank On-Demand",
+    name: "Website-Wartung & Werkbank",
     description:
       "Hosting, Updates, kleine Änderungen und auf Wunsch Stunden für Gestaltung, Technik und Beratung, auch für Websites, die wir nicht selbst gebaut haben.",
     provider: {
@@ -149,7 +147,7 @@ export default function WartungPage() {
       },
       {
         "@type": "Offer",
-        name: "Werkbank On-Demand",
+        name: "Werkbank",
         price: "299",
         priceCurrency: "EUR",
         priceSpecification: {
@@ -203,7 +201,8 @@ export default function WartungPage() {
           }
         >
           Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das
-          geht mit WordPress genauso wie mit Wix oder Squarespace.
+          geht mit WordPress, Wix oder Squarespace. Bei WordPress fallen jeden Monat Updates an, deshalb sehen wir uns
+          die Seite vorher an und nennen Ihnen den passenden Tarif.
         </PageHero>
         <Plans />
         <Anlaesse />
@@ -232,7 +231,8 @@ function Plans() {
             Drei Tarife für die laufende Pflege
           </h2>
           <p className="text-muted-foreground max-w-sm text-[14.5px] leading-relaxed">
-            Preise zzgl. MwSt. Das Onboarding kostet einmalig ab 199 € und entfällt, wenn Sie auf unser Hosting umziehen.
+            Preise zzgl. MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab 199 € und
+            entfällt, wenn Sie auf unser Hosting umziehen.
           </p>
         </div>
 
@@ -289,7 +289,7 @@ function PlanRow({ plan }: { plan: Plan }) {
           href={`/anfrage?vorhaben=Wartung+${plan.name}`}
           className="btn-line mt-auto h-11 self-start px-4 text-[14.5px] lg:self-stretch"
         >
-          {plan.name === "Werkbank On-Demand" ? "Werkbank" : plan.name} anfragen {ARROW}
+          {plan.name} anfragen {ARROW}
         </Link>
       </div>
     </article>
@@ -306,11 +306,11 @@ const CASES = [
   },
   {
     title: "Die Seite ist lange nicht gepflegt worden",
-    body: "Wir bringen Software, Zertifikat und Plugins auf den aktuellen Stand, ohne die Seite neu aufzusetzen.",
+    body: "Wir bringen Software, Zertifikat und Erweiterungen (Plugins) auf den aktuellen Stand, ohne die Seite neu aufzusetzen.",
   },
   {
     title: "Das Formular geht am Freitag nicht",
-    body: "Im Tarif Plus rufen Sie direkt an. Am Telefon ist jemand, der Ihre Seite kennt.",
+    body: "Rufen Sie an. Im Tarif Plus kümmern wir uns bevorzugt darum, meist noch am selben Tag.",
   },
   {
     title: "Kleine Arbeiten ohne eigenes Angebot",
@@ -346,11 +346,11 @@ function Anlaesse() {
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Können Sie auch Wix oder Squarespace warten?",
-    a: "Ja. Wir pflegen Inhalte, sichern per Export, prüfen die Ladezeit und passen kleinere Dinge an der Gestaltung an, auch auf diesen Baukästen. Das Hosting bezahlen Sie in dem Fall weiter direkt bei Wix oder Squarespace.",
+    a: "Ja. Wir pflegen Inhalte, sichern per Export, prüfen die Ladezeit und passen kleinere Dinge an der Gestaltung an, auch auf diesen Baukästen. Das Hosting bleibt in dem Fall beim Anbieter, Sie bezahlen es weiter direkt bei Wix oder Squarespace. Unser Beitrag deckt dann Pflege, Sicherung und kleine Änderungen. Mitnehmen lässt sich eine Wix-Seite nicht und eine Squarespace-Seite nur teilweise. Wer dort weg will, braucht meist eine neu gebaute Seite.",
   },
   {
     q: "Was passiert mit meiner Domain?",
-    a: "Die Domain bleibt auf Ihren Namen registriert. Auf Wunsch verwalten wir die DNS-Einträge, die Kontrolle behalten Sie.",
+    a: "Die Domain bleibt auf Ihren Namen registriert. Auf Wunsch verwalten wir die Einstellungen Ihrer Domain, die Kontrolle behalten Sie.",
   },
   {
     q: "Kann ich kündigen, wenn ich nicht zufrieden bin?",
@@ -396,7 +396,7 @@ function Faq() {
 }
 
 /* ------------------------------------------------------------------
- * Abschluss: Telefonnummer groß, daneben Audit und Mail.
+ * Abschluss: Telefonnummer groß, daneben Durchsicht und Mail.
  * ---------------------------------------------------------------- */
 function Abschluss() {
   return (
@@ -416,15 +416,15 @@ function Abschluss() {
         </div>
         <div className="lg:col-span-4 lg:col-start-9">
           <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Schicken Sie uns die Adresse Ihrer Seite. Innerhalb von 48 Stunden bekommen Sie drei bis fünf Punkte per Mail,
-            kostenlos.
+            Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf Punkte
+            per Mail, kostenlos.
           </p>
           <a href={`mailto:${CONTACT_EMAIL}`} className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold">
             {CONTACT_EMAIL}
           </a>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
             <Link href="/audit" className="btn-signal">
-              Audit anfordern {ARROW}
+              Durchsicht anfordern {ARROW}
             </Link>
             <Link
               href="/anfrage?vorhaben=Wartung"

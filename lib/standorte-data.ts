@@ -426,7 +426,7 @@ export const STANDORTE: Standort[] = [
       },
       {
         slug: "friseur",
-        label: "Friseure und Kosmetik",
+        label: "Friseure und Barbiere",
         warum:
           "Hier zählt Verlässlichkeit. Eine Seite mit Terminanfrage, Galerie und einer klaren Beschreibung des Salons genügt.",
       },

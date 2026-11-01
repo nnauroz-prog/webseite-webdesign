@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AvailabilitySlot } from "@/components/marketing/availability-slot";
 import { InquiryForm } from "@/components/marketing/inquiry-form";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { PageHero } from "@/components/marketing/page-hero";
@@ -35,7 +34,7 @@ const DANACH: { title: string; body: string }[] = [
   },
   {
     title: "Eine Viertelstunde Gespräch",
-    body: "Am Telefon oder per Video. Danach kennen Sie Umfang und Termin.",
+    body: "Am Telefon, per Video oder in Hamburg. Danach kennen Sie Umfang und Termin.",
   },
   {
     title: "Festpreis schriftlich",
@@ -90,7 +89,6 @@ export default async function AnfragePage({
           <div className="mx-auto w-full max-w-6xl px-5 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-24">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
               <div className="min-w-0 lg:col-span-7">
-                <AvailabilitySlot variant="inline" className="mb-5" />
                 <div className={FORM_HAFEN}>
                   <InquiryForm
                     initialPackage={initialPackage}

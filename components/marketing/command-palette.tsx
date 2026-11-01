@@ -141,7 +141,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Termin buchen",
-        description: "Erstgespräch, 30 Minuten, Bestätigung am selben Werktag",
+        description: "Erstgespräch, bis zu 30 Minuten, Bestätigung meist am selben Werktag",
         href: "/termin",
         icon: CalendarDays,
       },
@@ -161,15 +161,15 @@ export function CommandPalette({
       },
       {
         kind: "link",
-        label: "Kostenlosen Audit anfordern",
-        description: "Drei bis fünf Punkte zu Ihrer Seite per E-Mail, in 48 h",
+        label: "Kostenlose Durchsicht Ihrer Website",
+        description: "Drei bis fünf Punkte zu Ihrer Seite per E-Mail, meist in zwei Werktagen",
         href: "/audit",
         icon: Eye,
       },
       {
         kind: "link",
-        label: "Speed-Check",
-        description: "Ladezeit messen mit Google PageSpeed, 15 bis 30 Sekunden",
+        label: "Ladezeit-Test",
+        description: "Ladezeit messen mit Google PageSpeed, in etwa 30 Sekunden",
         href: "/check",
         icon: Zap,
       },
@@ -214,7 +214,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Wartung & Werkbank",
-        description: "Pflege ab 49 €, Werkbank On-Demand ab 299 €",
+        description: "Pflege ab 49 €, Werkbank mit festen Stunden ab 299 €",
         href: "/wartung",
         icon: Wrench,
       },
@@ -248,8 +248,8 @@ export function CommandPalette({
       },
       {
         kind: "link",
-        label: "Das Atelier",
-        description: "Wer hinter Sitalo steht und wie wir arbeiten",
+        label: "Über uns",
+        description: "Wie wir arbeiten und woran wir uns halten",
         href: "/atelier",
         icon: FileText,
       },

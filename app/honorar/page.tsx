@@ -41,7 +41,7 @@ export default function HonorarPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero crumb="Honorar" eyebrow="Offene Kalkulation · Stand Juni 2026" title="Unser Honorar, offen vorgerechnet">
+        <PageHero crumb="Honorar" eyebrow="Offene Kalkulation" title="Unser Honorar, offen vorgerechnet">
           Hier rechnen wir vor, wie unsere Paketpreise zustande kommen, und zeigen, was wir gar nicht abrechnen. Ihr
           Angebot bekommen Sie trotzdem einzeln und schriftlich, bevor wir anfangen.
         </PageHero>
@@ -77,12 +77,12 @@ function Stundensatz() {
             Von dieser Zahl leiten sich alle Paketpreise ab.
           </h2>
           <p>
-            Darin stecken die Arbeitszeit, Lizenzen für unsere Werkzeuge, das Hosting und ein Puffer für die Stunden, die
-            wir nicht abrechnen. Welche das sind, steht weiter unten.
+            Darin stecken die Arbeitszeit, Lizenzen für unsere Werkzeuge und ein Puffer für die Stunden, die wir nicht
+            abrechnen. Welche das sind, steht weiter unten. Das Hosting zahlen Sie getrennt über den Monatsbeitrag.
           </p>
           <p className="text-muted-foreground text-[15.5px]">
-            Fahrten innerhalb Hamburgs stellen wir nicht in Rechnung, Reise- oder Bereitstellungspauschalen gibt es bei uns
-            nicht.
+            Fahrten innerhalb Hamburgs stellen wir nicht in Rechnung. Liegt das Treffen im Paket Studio außerhalb Hamburgs,
+            nennen wir die Reisekosten vorher im Festpreis. Bereitstellungspauschalen gibt es bei uns nicht.
           </p>
         </div>
       </div>
@@ -229,7 +229,7 @@ function Zusatz() {
           Was über das Paket hinaus kostet
         </h2>
         <p className="text-muted-foreground mt-5 max-w-xl text-[15.5px] leading-relaxed">
-          Den Betrag nennen wir Ihnen, bevor wir anfangen. Manches machen wir nicht selbst, dann vermitteln wir.
+          Den Betrag nennen wir Ihnen, bevor wir anfangen. Manches bieten wir gar nicht an, auch das steht hier.
         </p>
         <dl className="border-foreground mt-10 border-t-[3px] lg:mt-12">
           <div className="border-border hidden grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-8 border-b py-3 sm:grid">
@@ -260,8 +260,8 @@ function Schluss() {
             Fragen Sie nach, wenn Ihnen eine Stundenzahl seltsam vorkommt.
           </h2>
           <p className="text-muted-foreground mt-5 max-w-xl text-[16px] leading-relaxed">
-            Wir erklären, woher die Schätzung kommt. Ändern sich Tarife oder Aufwände, passen wir diese Seite an und setzen
-            das Datum oben neu. Telefon{" "}
+            Wir erklären, woher die Schätzung kommt. Ändern sich Tarife oder Aufwände, passen wir diese Seite an.
+            Telefon{" "}
             <a href="tel:+491607621876" className="text-foreground font-semibold whitespace-nowrap underline-offset-4 hover:underline">
               0160 7621876
             </a>

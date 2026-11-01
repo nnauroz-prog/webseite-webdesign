@@ -189,8 +189,8 @@ export function InquiryForm({
         Anfrage senden
       </h2>
       <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
-        Drei Pflichtfelder. Antwort meist noch am selben Tag —
-        persönlich, kostenlos.
+        Drei Pflichtfelder. Antwort meist am selben Werktag, persönlich
+        und kostenlos.
       </p>
 
       {/* Honeypot — visuell versteckt */}
@@ -419,14 +419,14 @@ function SuccessScreen() {
             Angekommen.
           </h2>
           <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[15.5px] leading-relaxed">
-            Wir lesen es jetzt. Im Werktagsfenster zwischen 9 und 18
-            Uhr antworten wir meist innerhalb von vier Stunden — sonst
-            spätestens am nächsten Werktag bis Mittag.{" "}
+            Wir lesen es jetzt und antworten meist am selben Werktag. Was
+            abends oder am Wochenende kommt, beantworten wir am nächsten
+            Werktag.{" "}
             <Link
               href="/erreichbarkeit"
               className="text-foreground underline-offset-4 hover:underline"
             >
-              Antwortzeit-Fenster
+              Mehr zu unseren Antwortzeiten
             </Link>
             .
           </p>
@@ -438,15 +438,16 @@ function SuccessScreen() {
         </p>
         <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[14.5px] leading-relaxed">
           Wenn Sie lieber direkt sprechen, geht das in der offenen
-          Sprechstunde ohne Anmeldung — oder Sie buchen einen
-          30-Minuten-Termin, der zu Ihnen passt.
+          Sprechstunde ohne Anmeldung. Oder Sie buchen einen
+          Gesprächstermin (bis zu 30 Minuten, meist reicht eine
+          Viertelstunde).
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <Link
             href="/termin"
             className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight transition-all"
           >
-            30-Min-Termin vereinbaren
+            Termin vereinbaren
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link

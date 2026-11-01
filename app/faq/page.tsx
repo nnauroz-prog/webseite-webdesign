@@ -9,7 +9,7 @@ import { PageHero } from "@/components/marketing/page-hero";
 export const metadata: Metadata = {
   title: "Häufige Fragen rund um Ihre neue Website",
   description:
-    "Antworten auf das, was Kunden uns am häufigsten fragen — Preise, Ablauf, Hosting, SEO, Betreuung.",
+    "Antworten auf das, was Kunden uns am häufigsten fragen — Preise, Ablauf, Hosting, Google-Suche, Betreuung.",
   alternates: { canonical: "/faq" },
 };
 
@@ -30,23 +30,23 @@ const GROUPS: Group[] = [
       },
       {
         q: "Wie schnell ist meine Seite fertig?",
-        a: "Liegen alle Unterlagen vor, ist eine einfache Seite oft nach ein bis zwei Werktagen fertig. Für größere Projekte nennen wir Ihnen vorab einen verbindlichen Termin.",
+        a: "Ab vollständigen Unterlagen ist eine einzelne Seite (Starter) oft in 1–2 Werktagen online, Business meist in 5–10 Werktagen, Premium in 2–3 Wochen und Studio in 3–5 Wochen. Den genauen Termin für Ihre Seite nennen wir Ihnen vorab.",
       },
       {
         q: "Was brauchen Sie von mir?",
-        a: "Ihr Logo in irgendeinem Format, notfalls fotografiert vom Briefpapier. Dazu fünf bis zehn Bilder von Ihnen oder Ihrem Betrieb, Handyfotos reichen. Außerdem Stichpunkte zu Ihren Leistungen, Öffnungszeiten und Kontaktdaten. Fehlt etwas, sagen wir Bescheid. Sind Bilder ein Problem, nennen wir Ihnen einen Fotografen in Hamburg.",
+        a: "Ihr Logo in irgendeinem Format, notfalls fotografiert vom Briefpapier. Dazu fünf bis zehn Bilder von Ihnen oder Ihrem Betrieb, Handyfotos reichen. Außerdem Stichpunkte zu Ihren Leistungen, Öffnungszeiten und Kontaktdaten. Fehlt etwas, sagen wir Bescheid. Sind Bilder ein Problem, sagen wir Ihnen, welche Motive die Seite braucht. Wer einen Fotografen beauftragen will, bekommt von uns eine kurze Motivliste.",
       },
       {
         q: "Können wir uns persönlich in Hamburg treffen?",
-        a: "Ja, in Ihrem Betrieb oder in einem Café. Eine Viertelstunde reicht meistens, um zu klären, ob wir zusammenpassen. Telefon oder Video geht genauso. Über die Termin-Seite wählen Sie Tag und Uhrzeit selbst, die Bestätigung kommt am selben Werktag per Mail.",
+        a: "Ja, in Ihrem Betrieb oder in einem Café. Eine Viertelstunde reicht meistens, um zu klären, ob wir zusammenpassen. Telefon oder Video geht genauso. Über die Termin-Seite wählen Sie Tag und Uhrzeit selbst; reserviert sind bis zu 30 Minuten, damit Zeit für Fragen bleibt. Die Bestätigung kommt meist am selben Werktag per Mail.",
       },
       {
         q: "Kann ich erst einmal eine Einschätzung meiner aktuellen Seite bekommen?",
-        a: "Ja, kostenlos. Über die Audit-Seite schicken Sie uns die Adresse Ihrer Seite. Wir sehen sie uns selbst an und schreiben Ihnen innerhalb von 48 Stunden drei bis fünf konkrete Punkte. Einen Vertriebsanruf gibt es danach nicht. Die technischen Messwerte liefert der Speed-Check automatisch in etwa 30 Sekunden.",
+        a: "Ja, kostenlos. Über die Seite „Kostenlose Durchsicht“ schicken Sie uns die Adresse Ihrer Seite. Wir sehen sie uns selbst an und schreiben Ihnen meist innerhalb von zwei Werktagen drei bis fünf konkrete Punkte. Einen Vertriebsanruf gibt es danach nicht. Die technischen Messwerte liefert der Ladezeit-Test automatisch in etwa 30 Sekunden.",
       },
       {
         q: "Was passiert nach meiner Anfrage?",
-        a: "Sie bekommen sofort eine kurze Bestätigung per E-Mail. Danach lesen wir Ihre Angaben und melden uns, meist am selben Werktag. Bis Sie ein Angebot unterschreiben, kostet Sie das nichts.",
+        a: "Nach dem Absenden sehen Sie eine Bestätigung auf der Seite. Wir lesen Ihre Angaben und melden uns meist am selben Werktag, per Mail oder am Telefon. Bis Sie ein Angebot unterschreiben, kostet Sie das nichts.",
       },
       {
         q: "Was, wenn ich noch gar nichts vorbereitet habe?",
@@ -72,11 +72,11 @@ const GROUPS: Group[] = [
       },
       {
         q: "Kann ich später noch etwas ändern lassen?",
-        a: "Ja. Kleine Änderungen sind im Monatsbeitrag enthalten, je nach Paket eine, drei, sechs oder zehn pro Monat. Sie schreiben uns kurz, was sich ändern soll. Wir setzen es um und sagen Bescheid, sobald es online ist.",
+        a: "Ja. Kleine Änderungen sind im Monatsbeitrag enthalten, je nach Paket eine, drei, sechs oder zehn pro Monat. Sie schreiben uns kurz, was sich ändern soll. Wir setzen es um und sagen Bescheid, sobald es online ist. Ist das Kontingent eines Monats aufgebraucht, sagen wir Ihnen das vorher; weitere Änderungen rechnen wir nach Aufwand zum Stundensatz ab.",
       },
       {
         q: "Kann ich bestimmte Inhalte selbst pflegen?",
-        a: "Wenn Sie möchten, ja. Im Premium-Paket bauen wir Bereiche ein, die Sie selbst ändern können, etwa Öffnungszeiten, Wochenangebot, Speisekarte oder Bilder. Wollen Sie das nicht, übernehmen wir es.",
+        a: "Wenn Sie möchten, ja. Ab dem Premium-Paket bauen wir Bereiche ein, die Sie selbst ändern können, etwa Öffnungszeiten, Wochenangebot, Speisekarte oder Bilder. Wollen Sie das nicht, übernehmen wir es.",
       },
       {
         q: "Bin ich an einen langen Vertrag gebunden?",
@@ -84,17 +84,17 @@ const GROUPS: Group[] = [
       },
       {
         q: "Was kostet eine spätere Erweiterung?",
-        a: "Kleine Erweiterungen sind in der monatlichen Pflege enthalten. Für Größeres, etwa einen neuen Bereich, eine Online-Buchung oder eine zweite Sprache, bekommen Sie vorher ein verbindliches Angebot nach Stundensatz.",
+        a: "Kleine Änderungen sind im Monatsbeitrag enthalten, je nach Paket eine bis zehn pro Monat. Eine Erweiterung, etwa ein neuer Bereich, eine Online-Buchung oder eine zweite Sprache, wird nach Stundensatz berechnet. Den Betrag bekommen Sie vorher als verbindliches Angebot.",
       },
       {
         q: "Meine Seite wurde woanders gebaut. Übernehmen Sie die Pflege?",
-        a: "Ja. Hosting, Updates, Backups und kleine Änderungen übernehmen wir auch für fremde Seiten, auch für Wix und Squarespace. Auf der Wartungs-Seite stehen drei Stufen: Basis ab 49 €, Plus ab 99 € und Werkbank On-Demand ab 299 € im Monat, die letzte mit zwei Arbeitsstunden pro Monat. Das Onboarding kostet einmalig ab 199 €.",
+        a: "Ja. Hosting, Updates, Backups und kleine Änderungen übernehmen wir auch für fremde Seiten, auch für Wix und Squarespace. Bei Wix und Squarespace bleibt das Hosting beim Anbieter. Auf der Wartungs-Seite stehen drei Stufen: Basis ab 49 €, Plus ab 99 € und Werkbank ab 299 € im Monat, die letzte mit zwei Arbeitsstunden pro Monat. Die Übernahme Ihrer Seite kostet einmalig ab 199 €.",
       },
     ],
   },
   {
     id: "sichtbarkeit",
-    label: "Sichtbarkeit und SEO",
+    label: "Bei Google gefunden werden",
     items: [
       {
         q: "Werde ich für meinen Stadtteil gefunden?",
@@ -105,12 +105,12 @@ const GROUPS: Group[] = [
         a: "Ja. Das Profil ist kostenlos und entscheidet mit, ob Sie bei Google Maps und in der lokalen Suche auftauchen. Ab dem Business-Paket richten wir es mit Ihnen ein. Danach pflegen Sie es selbst oder überlassen es uns.",
       },
       {
-        q: "Was bringt mir SEO konkret?",
+        q: "Was bringt mir Suchmaschinenoptimierung (SEO) konkret?",
         a: `Für lokale Betriebe vor allem Anfragen von Leuten, die gerade suchen. Wer bei „Friseur" plus Stadtteil auf der ersten Seite steht, wird angerufen, ohne für Anzeigen zu bezahlen. Dafür sorgen saubere Seitentitel, die richtigen Suchbegriffe und ein gepflegtes Google-Profil.`,
       },
       {
         q: "Schalten Sie auch Google-Anzeigen für mich?",
-        a: "Nein, Werbekampagnen sind ein eigenes Fach. Wenn Sie Anzeigen schalten wollen, nennen wir Ihnen eine Agentur, die darauf spezialisiert ist. Für die meisten lokalen Betriebe sind eine gut gebaute Seite und ein gepflegtes Google-Profil auf Dauer günstiger als Anzeigen.",
+        a: "Nein, Werbekampagnen sind ein eigenes Fach, das wir nicht anbieten. Für die meisten lokalen Betriebe sind eine gut gebaute Seite und ein gepflegtes Google-Profil auf Dauer günstiger als Anzeigen.",
       },
     ],
   },
@@ -136,7 +136,7 @@ const GROUPS: Group[] = [
       },
       {
         q: "Ich habe schon eine Website. Kann die modernisiert werden?",
-        a: `Ja. Im Formular wählen Sie „Redesign" und schicken uns die Adresse. Nach einer ersten Sichtung sagen wir Ihnen, ob sich ein Umbau lohnt oder ein Neubau sinnvoller ist.`,
+        a: "Ja. Schreiben Sie im Anfrageformular kurz dazu, dass es um Ihre bestehende Seite geht, und nennen Sie die Adresse. Oder Sie schicken sie über die kostenlose Durchsicht. Danach sagen wir Ihnen, ob sich ein Umbau lohnt oder ein Neubau sinnvoller ist.",
       },
       {
         q: "Für welche Branchen arbeiten Sie?",
