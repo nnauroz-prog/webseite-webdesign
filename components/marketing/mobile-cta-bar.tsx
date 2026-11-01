@@ -11,7 +11,8 @@ import { ArrowRight } from "lucide-react";
  * wird. Versteckt sich im letzten ~22% der Seite, weil dort
  * eigene CTAs (Pakete, Final-CTA) erscheinen.
  *
- * Versteckt auf /anfrage, /impressum, /datenschutz.
+ * Versteckt auf /anfrage, /impressum, /datenschutz, im Admin und auf
+ * den Angeboten für Kunden (/angebot/<token>).
  *
  * Beachtet env(safe-area-inset-bottom) für iPhones mit Home-Indicator.
  */
@@ -40,7 +41,8 @@ export function MobileCtaBar() {
     pathname?.startsWith("/anfrage") ||
     pathname?.startsWith("/impressum") ||
     pathname?.startsWith("/datenschutz") ||
-    pathname?.startsWith("/admin")
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/angebot/")
   ) {
     return null;
   }

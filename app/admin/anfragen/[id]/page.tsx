@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import type { Angebot } from "@/lib/admin/angebote";
 import type { CardLead } from "@/lib/admin/card-model";
 import type { LeadRow } from "@/lib/leads-meta";
 
+import { AngeboteSection } from "@/app/admin/anfragen/[id]/angebote-section";
 import { DeleteLead } from "@/app/admin/anfragen/[id]/delete-lead";
 import { FollowUpCard } from "@/app/admin/anfragen/[id]/follow-up-card";
 import { NotesPanel } from "@/app/admin/anfragen/[id]/notes-panel";
@@ -17,6 +19,7 @@ import { DbProblem } from "@/app/admin/db-problem";
 import { DueChip } from "@/app/admin/due-chip";
 import { SchemaNotice } from "@/app/admin/schema-notice";
 import { StatusPill } from "@/app/admin/status-pill";
+import { paketAusAnfrage } from "@/lib/admin/angebote";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
   berlinDateIso,
@@ -37,20 +40,37 @@ import { hasOutcomeEvent, outcomeText } from "@/lib/admin/timeline";
 import { parseId } from "@/lib/admin/validate";
 import { explainDeliveryError } from "@/lib/lead-mail";
 import { fieldValue, KIND_LABELS, STATUS_LABELS } from "@/lib/leads-meta";
+import { getAngeboteByLead } from "@/lib/angebote-store";
 import { getLead, listEvents, listLeads } from "@/lib/leads-store";
+import { PAKETE } from "@/lib/pakete-data";
 
 // Bewusst generisch: Name oder Firma im <title> landeten im Safari-
 // Verlauf, in iCloud-Tabs und im App-Umschalter.
 export const metadata: Metadata = { title: "Anfrage" };
 
+/**
+ * Angebote der Anfrage. Ein Fehler hier soll nicht die ganze Seite
+ * kosten: Der Abschnitt zeigt ihn dann selbst an.
+ */
+async function loadAngebote(
+  id: string,
+): Promise<{ rows: Angebot[] | null; error: unknown }> {
+  try {
+    return { rows: await getAngeboteByLead(id), error: null };
+  } catch (error) {
+    return { rows: null, error };
+  }
+}
+
 async function load(id: string) {
-  const [lead, schema, events, all] = await Promise.all([
+  const [lead, schema, events, all, angebote] = await Promise.all([
     getLead(id),
     checkSchema(),
     listEvents(id),
     listLeads(),
+    loadAngebote(id),
   ]);
-  return { lead, schema, events, all };
+  return { lead, schema, events, all, angebote };
 }
 
 export default async function AdminLeadPage({
@@ -78,7 +98,7 @@ export default async function AdminLeadPage({
       </div>
     );
   }
-  const { lead, schema, events, all } = data;
+  const { lead, schema, events, all, angebote } = data;
   if (!lead) notFound();
 
   const v2 = schema.leadsV2 === "ok";
@@ -245,6 +265,18 @@ export default async function AdminLeadPage({
           </dl>
         ) : null}
 
+        <AngeboteSection
+          leadId={lead.id}
+          angebote={angebote.rows}
+          loadError={angebote.error}
+          schemaPart={schema.angebote}
+          leadOpen={open}
+          paketName={
+            PAKETE.find((p) => p.slug === paketAusAnfrage(lead))?.name ?? "Business"
+          }
+          now={now}
+        />
+
         {related.length > 0 ? (
           <section className="border-border bg-card mt-4 rounded-[4px] border p-4">
             <h2 className="text-[16px] font-semibold">Schon einmal angefragt ({related.length})</h2>
@@ -286,6 +318,9 @@ export default async function AdminLeadPage({
           <DeleteLead
             leadId={lead.id}
             related={related.map((r) => ({ id: r.id, label: relatedLabel(r) }))}
+            angenommen={(angebote.rows ?? [])
+              .filter((a) => a.status === "angenommen")
+              .map((a) => a.nummer)}
           />
         ) : null}
       </div>

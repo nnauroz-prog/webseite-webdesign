@@ -2,6 +2,7 @@ import { CircleCheck, Inbox } from "lucide-react";
 import Link from "next/link";
 import { cache } from "react";
 
+import type { AngebotHinweis, AngebotKurz } from "@/lib/admin/angebote";
 import type { LeadRow, LeadStatus } from "@/lib/leads-meta";
 
 import { ContactPrompt } from "@/app/admin/contact-prompt";
@@ -13,6 +14,7 @@ import { LeadCard } from "@/app/admin/lead-card";
 import { LeadSearch } from "@/app/admin/lead-search";
 import { MailStatus } from "@/app/admin/mail-status";
 import { SchemaNotice } from "@/app/admin/schema-notice";
+import { angebotHinweis, angeboteNachAnfrage } from "@/lib/admin/angebote";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
   berlinDateIso,
@@ -24,6 +26,7 @@ import {
 import { cardModel, dayLabel, firstNoteLine } from "@/lib/admin/card-model";
 import { checkSchema } from "@/lib/admin/schema";
 import { buildToday } from "@/lib/admin/today";
+import { listAngeboteKurz } from "@/lib/angebote-store";
 import { explainDeliveryError, mailSetup } from "@/lib/lead-mail";
 import {
   DELETE_REASON_LABELS,
@@ -46,15 +49,38 @@ const WEEK_MS = 7 * 24 * 60 * 60_000;
  */
 const loadOverview = cache(async (status: LeadStatus | null) => {
   await requireAdmin();
-  const [all, filtered, counts, schema, deletions] = await Promise.all([
+  const [all, filtered, counts, schema, deletions, angebote] = await Promise.all([
     listLeads(),
     status ? listLeads(status) : Promise.resolve(null),
     countByStatus(),
     checkSchema(),
     listDeletions(20),
+    loadAngebotHinweise(),
   ]);
-  return { all, filtered, counts, schema, deletions };
+  return { all, filtered, counts, schema, deletions, angebote };
 });
+
+/**
+ * Angebots-Hinweise je Anfrage („Angebot gesendet“ …). Fehlt die
+ * Tabelle oder klemmt die Abfrage, gibt es einfach keine Hinweise:
+ * Die Übersicht soll daran nie scheitern.
+ */
+async function loadAngebotHinweise(): Promise<Map<string, AngebotHinweis>> {
+  let rows: AngebotKurz[] | null = null;
+  try {
+    rows = await listAngeboteKurz();
+  } catch (err) {
+    console.error("[admin] Angebots-Hinweise nicht geladen", {
+      code: err && typeof err === "object" && "code" in err ? String(err.code) : "unbekannt",
+    });
+  }
+  const out = new Map<string, AngebotHinweis>();
+  for (const [leadId, list] of angeboteNachAnfrage(rows ?? [])) {
+    const h = angebotHinweis(list);
+    if (h) out.set(leadId, h);
+  }
+  return out;
+}
 
 function parseTab(raw: string | string[] | undefined): LeadStatus | null {
   return typeof raw === "string" &&
@@ -91,8 +117,19 @@ export default async function AdminHomePage({
     );
   }
 
-  const { all, filtered, counts, schema, deletions } = data;
+  const { all, filtered, counts, schema, deletions, angebote } = data;
   const today = buildToday(all, now);
+  // Angenommene Angebote, deren Anfrage noch offen ist: Kunde wartet auf
+  // den Starttermin. Stehen oben in „Jetzt melden“.
+  const angenommen = all.filter(
+    (l) =>
+      (l.status === "neu" || l.status === "in_arbeit") &&
+      angebote.get(l.id)?.status === "angenommen",
+  );
+  const melden = [
+    ...angenommen,
+    ...today.melden.filter((l) => !angenommen.includes(l)),
+  ];
   const v2 = schema.leadsV2 === "ok";
   const nextDay = nextWorkday(berlinDateIso(now));
 
@@ -125,7 +162,7 @@ export default async function AdminHomePage({
       ? Number(sp.weitere)
       : 0;
   const nothingUrgent =
-    today.melden.length === 0 &&
+    melden.length === 0 &&
     today.termine.length === 0 &&
     today.wiedervorlagen.length === 0;
   const total = counts.neu + counts.in_arbeit + counts.erledigt + counts.archiviert;
@@ -242,14 +279,26 @@ export default async function AdminHomePage({
                 </div>
               ) : null}
 
-              {today.melden.length > 0 ? (
-                <Section title={`Jetzt melden (${today.melden.length})`}>
+              {melden.length > 0 ? (
+                <Section title={`Jetzt melden (${melden.length})`}>
                   <ul className="space-y-2">
-                    {today.melden.map((lead) => (
-                      <li key={lead.id}>
-                        <LeadCard card={cardModel(lead, now)} hideStatus />
-                      </li>
-                    ))}
+                    {melden.map((lead) => {
+                      const angebot = angebote.get(lead.id);
+                      return (
+                        <li key={lead.id}>
+                          <LeadCard
+                            card={cardModel(lead, now)}
+                            hideStatus
+                            angebot={angebot}
+                            context={
+                              angebot?.status === "angenommen"
+                                ? `${angebot.nummer} angenommen: Starttermin nennen`
+                                : undefined
+                            }
+                          />
+                        </li>
+                      );
+                    })}
                   </ul>
                 </Section>
               ) : null}
@@ -287,7 +336,11 @@ export default async function AdminHomePage({
                   <ul className="space-y-2">
                     {today.wiedervorlagen.map((lead) => (
                       <li key={lead.id}>
-                        <LeadCard card={cardModel(lead, now)} context={firstNoteLine(lead.notes)} />
+                        <LeadCard
+                          card={cardModel(lead, now)}
+                          context={firstNoteLine(lead.notes)}
+                          angebot={angebote.get(lead.id)}
+                        />
                       </li>
                     ))}
                   </ul>
@@ -342,7 +395,7 @@ export default async function AdminHomePage({
                 <ul className="mt-3 space-y-2">
                   {list.map((lead) => (
                     <li key={lead.id}>
-                      <LeadCard card={cardModel(lead, now)} />
+                      <LeadCard card={cardModel(lead, now)} angebot={angebote.get(lead.id)} />
                     </li>
                   ))}
                 </ul>

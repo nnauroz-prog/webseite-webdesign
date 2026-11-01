@@ -88,6 +88,16 @@ const nextConfig: NextConfig = {
         source: "/admin/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
+      {
+        // Angebote für Kunden (/angebot/<token>): nie in die Suche, und
+        // der Link mit dem Token geht nicht als Referrer an andere Seiten
+        // (zusätzlich robots/referrer-Metadaten in der Seite).
+        source: "/angebot/:path*",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+        ],
+      },
     ];
   },
 };

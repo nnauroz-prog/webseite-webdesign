@@ -32,6 +32,7 @@ const ABSCHNITTE = [
   { id: "verantwortlich", titel: "Verantwortliche Stelle" },
   { id: "hosting", titel: "Besuch der Website und Hosting" },
   { id: "anfragen", titel: "Anfragen, Durchsicht und Termine" },
+  { id: "angebote", titel: "Angebote" },
   { id: "ladezeit-test", titel: "Ladezeit-Test" },
   { id: "statistik", titel: "Besucherstatistik" },
   { id: "schriften", titel: "Schriften" },
@@ -67,8 +68,8 @@ export default function DatenschutzPage() {
                 Stand: <time dateTime={STAND.iso}>{STAND.text}</time>
               </p>
               <p className="text-muted-foreground mt-4 max-w-sm text-pretty text-[15.5px] leading-relaxed">
-                Welche Daten beim Besuch dieser Website, bei einer Anfrage und beim Ladezeit-Test anfallen, wer sie
-                verarbeitet und welche Rechte Sie haben.
+                Welche Daten beim Besuch dieser Website, bei einer Anfrage, einem Angebot und beim Ladezeit-Test
+                anfallen, wer sie verarbeitet und welche Rechte Sie haben.
               </p>
               <nav aria-label="Inhalt" className="mt-8">
                 <ol className="border-border border-t">
@@ -157,7 +158,7 @@ export default function DatenschutzPage() {
                   name="Supabase"
                   anbieter="Supabase Inc., USA"
                   zeilen={[
-                    ["Zweck", "Speicherung von Anfragen, Durchsicht-Anfragen und Terminwünschen"],
+                    ["Zweck", "Speicherung von Anfragen, Durchsicht-Anfragen, Terminwünschen und Angeboten"],
                     ["Rechtsgrundlage", "Art. 6 Abs. 1 lit. b DSGVO"],
                     ["Drittland", <UsaVerweis key="usa" />],
                   ]}
@@ -167,12 +168,36 @@ export default function DatenschutzPage() {
                   name="Resend"
                   anbieter="Resend Inc., USA"
                   zeilen={[
-                    ["Zweck", "Versand der Benachrichtigungs-Mail zu Ihrer Anfrage an unser Postfach"],
+                    [
+                      "Zweck",
+                      "Versand der Benachrichtigungs-Mail zu Ihrer Anfrage an unser Postfach und der Bestätigung, wenn Sie ein Angebot annehmen",
+                    ],
                     ["Rechtsgrundlage", "Art. 6 Abs. 1 lit. b DSGVO"],
                     ["Drittland", <UsaVerweis key="usa" />],
                   ]}
                   hinweise="https://resend.com/legal/privacy-policy"
                 />
+              </Abschnitt>
+
+              <Abschnitt id="angebote">
+                <p>
+                  Schicken wir Ihnen ein Angebot, bekommen Sie dafür einen persönlichen Link (sitalo.de/angebot/…).
+                  Hinter dem Link steht nur Ihr Angebot. Die Seite ist für Suchmaschinen gesperrt, und die
+                  Besucherstatistik zählt dort keine Aufrufe.
+                </p>
+                <p>
+                  Gespeichert werden die Angaben im Angebot (Name, Firma, E-Mail-Adresse, Leistungen und Preise) und der
+                  Zeitpunkt, zu dem Sie die Seite zum ersten Mal öffnen. Dafür meldet die Seite nach dem Laden nur, dass
+                  sie geöffnet wurde, ohne IP-Adresse oder Gerätedaten. Nehmen Sie das Angebot an, speichern wir den
+                  Namen, den Sie dabei eingeben, und den Zeitpunkt. Lehnen Sie ab, speichern wir den Zeitpunkt und den
+                  Grund, falls Sie einen nennen.
+                </p>
+                <p>
+                  Bei einer Annahme oder Ablehnung bekommen wir eine Benachrichtigungs-Mail. Nehmen Sie an, schicken wir
+                  Ihnen eine Bestätigung an die E-Mail-Adresse im Angebot. Gespeichert wird bei Supabase, verschickt
+                  über Resend (siehe Abschnitt {nr("anfragen")}). Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, die
+                  Vorbereitung und der Abschluss des Vertrags.
+                </p>
               </Abschnitt>
 
               <Abschnitt id="ladezeit-test">
@@ -280,6 +305,12 @@ export default function DatenschutzPage() {
                     info@sitalo.de
                   </a>{" "}
                   genügt. Gesetzliche Aufbewahrungsfristen bleiben unberührt, wenn daraus ein Auftrag wird.
+                </p>
+                <p>
+                  Angenommene Angebote gehören zu unseren Geschäftsunterlagen. Wir bewahren sie so lange auf, wie es
+                  Handels- und Steuerrecht verlangen, in der Regel sechs Jahre (§ 257 HGB, § 147 AO). Ein Jahr nach
+                  Annahme, Ablehnung oder Ablauf zeigt der Link nur noch die Angebotsnummer, ohne Namen und Preise.
+                  Nicht angenommene Angebote löschen wir zusammen mit der Anfrage.
                 </p>
                 <p>
                   Die Verbindungsdaten in den Server-Protokollen löscht Vercel nach kurzer Zeit automatisch. Plausible

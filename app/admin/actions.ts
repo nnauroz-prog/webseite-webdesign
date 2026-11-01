@@ -36,6 +36,7 @@ import {
   parseStatus,
   parseTemplateId,
 } from "@/lib/admin/validate";
+import { getAngeboteByLead } from "@/lib/angebote-store";
 import { deliverLead, explainDeliveryError, mailSetup } from "@/lib/lead-mail";
 import { CONTACT_RESULT_LABELS } from "@/lib/leads-meta";
 import {
@@ -634,6 +635,19 @@ export async function deleteLeadAction(
     if (!lead) return { error: GONE };
     if (lead.status !== "archiviert") {
       return { error: "Nur archivierte Anfragen lassen sich löschen." };
+    }
+    // Angenommene Angebote sind Geschäftsunterlagen (Aufbewahrung nach
+    // § 257 HGB, § 147 AO; Art. 17 Abs. 3 DSGVO). Die Datenbank würde
+    // sie mit der Anfrage löschen, deshalb hier sperren.
+    const angenommen = ((await getAngeboteByLead(id)) ?? []).filter(
+      (a) => a.status === "angenommen",
+    );
+    if (angenommen.length) {
+      return {
+        error: `Nicht gelöscht: Zu dieser Anfrage gibt es ein angenommenes Angebot (${angenommen
+          .map((a) => a.nummer)
+          .join(", ")}). Es gehört zu deinen Geschäftsunterlagen und muss aufbewahrt werden. Lass die Anfrage archiviert.`,
+      };
     }
     // Weitere Einträge derselben Person (E-Mail ohne Groß-/Klein-
     // schreibung, Telefon 0176 = +49 176) für den Hinweis danach.

@@ -11,7 +11,9 @@ import { notesFingerprint } from "@/lib/admin/notes";
 import { NOTE_MAX } from "@/lib/admin/validate";
 import { cn } from "@/lib/utils";
 
-const QUICK = ["Angebot geschickt", "Rückruf vereinbart"] as const;
+// „Angebot geschickt“ entfällt: Angebote vermerken das Senden selbst
+// im Verlauf (Abschnitt „Angebot“).
+const QUICK = ["Rückruf vereinbart", "Mailbox, erneut anrufen"] as const;
 const CHIP =
   "border-border bg-background hover:border-foreground/40 inline-flex min-h-11 items-center justify-center rounded-[3px] border px-3 py-1.5 text-center text-[15px] leading-tight font-medium transition-colors disabled:opacity-50";
 
