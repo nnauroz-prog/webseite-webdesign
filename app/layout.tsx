@@ -7,6 +7,7 @@ import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PlausibleScript } from "@/components/marketing/plausible-script";
 import "./globals.css";
 import "./hafen.css";
+import { PAKETE } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
 // Display: "swap" auf allen Fonts — der Browser nimmt sofort den
@@ -66,12 +67,28 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: "Sitalo Webdesign",
   title: {
     default: "Sitalo — Webdesign aus Hamburg",
     template: "%s · Sitalo",
   },
   description:
-    "Websites für lokale Unternehmen. Persönlich gemacht in Hamburg, für Betriebe in ganz Deutschland. Sie schicken uns Ihre Unterlagen, wir kümmern uns um den Rest.",
+    "Website erstellen lassen zum Festpreis ab 499 €: gestaltet und gebaut in Hamburg, für Betriebe in ganz Deutschland. Test-Link vor dem Start.",
+  // Grundwerte fürs Teilen; Seiten mit eigenem openGraph ersetzen sie.
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "Sitalo Webdesign",
+  },
+  // Bestätigung für Google Search Console und Bing Webmaster Tools:
+  // Den Code aus dem jeweiligen „HTML-Tag“ in Vercel als
+  // Umgebungsvariable eintragen, dann neu bereitstellen.
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION }
+      : undefined,
+  },
 };
 
 const LOCAL_BUSINESS_LD = {
@@ -82,12 +99,23 @@ const LOCAL_BUSINESS_LD = {
   // später in sameAs.
   "@type": "ProfessionalService",
   "@id": `${SITE_URL}/#business`,
-  logo: `${SITE_URL}/icon.png`,
+  logo: `${SITE_URL}/apple-icon`,
   image: `${SITE_URL}/opengraph-image`,
   name: "Sitalo Webdesign",
+  slogan: "Wir bauen Websites für Betriebe.",
   description:
-    "Webdesign für lokale Unternehmen — Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien, Fitnessstudios. Persönlich gemacht, in Hamburg.",
+    "Webdesign-Büro in Hamburg: Websites zum Festpreis für Pflegedienste, Praxen, Handwerksbetriebe, Cafés, Friseure, Kanzleien, Reinigungsfirmen, Fitnessstudios und Hotels in ganz Deutschland.",
   url: SITE_URL,
+  // Verknüpfte Profile (Google-Unternehmensprofil usw.), per Vercel-
+  // Umgebungsvariable, durch Komma getrennt. Leer = kein Eintrag.
+  ...((process.env.BUSINESS_PROFILE_URLS ?? "").trim()
+    ? {
+        sameAs: (process.env.BUSINESS_PROFILE_URLS ?? "")
+          .split(",")
+          .map((u) => u.trim())
+          .filter((u) => /^https:\/\//.test(u)),
+      }
+    : {}),
   telephone: "+491607621876",
   email: "info@sitalo.de",
   address: {
@@ -95,8 +123,38 @@ const LOCAL_BUSINESS_LD = {
     addressLocality: "Hamburg",
     addressCountry: "DE",
   },
-  areaServed: { "@type": "Country", name: "Deutschland" },
-  priceRange: "€€",
+  areaServed: [
+    { "@type": "City", name: "Hamburg" },
+    { "@type": "Country", name: "Deutschland" },
+  ],
+  priceRange: "ab 499 €",
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+491607621876",
+    email: "info@sitalo.de",
+    contactType: "customer service",
+    availableLanguage: "German",
+  },
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Website-Pakete",
+    itemListElement: PAKETE.map((p) => ({
+      "@type": "Offer",
+      url: `${SITE_URL}/pakete/${p.slug}`,
+      priceCurrency: "EUR",
+      price: p.setup.replace(/\D/g, ""),
+      priceSpecification: {
+        "@type": "PriceSpecification",
+        minPrice: Number(p.setup.replace(/\D/g, "")),
+        priceCurrency: "EUR",
+      },
+      itemOffered: {
+        "@type": "Service",
+        name: `Website-Paket ${p.name}`,
+        description: p.description,
+      },
+    })),
+  },
   knowsAbout: [
     "Webdesign",
     "Website erstellen lassen",
@@ -111,19 +169,9 @@ const LOCAL_BUSINESS_LD = {
 };
 
 /**
- * WebSite-Schema mit potentialAction = SearchAction.
- *
- * Aktiviert das Sitelinks-Suchfeld in Google-SERPs für Brand-
- * Suchen nach "sitalo" — User können direkt aus dem Treffer
- * heraus die Site durchsuchen. Wir leiten die Suche auf die
- * Cmd+K-fähige Homepage, die `?q=`-Param liest und die Palette
- * mit vorbefülltem Query öffnet (siehe globale Listener-Logik
- * in der Command-Palette).
- *
- * Wenn `?q=` noch nicht clientseitig ausgewertet wird, schickt
- * Google die Suchanfrage trotzdem — Nutzer sehen die Startseite
- * und können dort manuell Cmd+K öffnen. Auch das ist Mehrwert
- * gegenüber gar keinem Sitelinks-Suchfeld.
+ * WebSite-Schema: Name der Website für die Anzeige in Google (statt
+ * der Domain). Ohne SearchAction – Google zeigt das Sitelinks-Suchfeld
+ * seit Ende 2024 nicht mehr an.
  */
 const WEBSITE_LD = {
   "@context": "https://schema.org",
@@ -132,15 +180,8 @@ const WEBSITE_LD = {
   url: SITE_URL,
   name: "Sitalo Webdesign",
   publisher: { "@id": `${SITE_URL}/#business` },
+  alternateName: ["Sitalo", "sitalo.de"],
   inLanguage: "de-DE",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${SITE_URL}/?q={search_term_string}`,
-    },
-    "query-input": "required name=search_term_string",
-  },
 };
 
 export default function RootLayout({
@@ -156,7 +197,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col pb-20 md:pb-0">
         <a
           href="#main"
-          className="bg-foreground text-background sr-only z-[100] rounded-full px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"
+          className="bg-foreground text-background sr-only z-[100] rounded-[2px] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"
         >
           Direkt zum Inhalt
         </a>

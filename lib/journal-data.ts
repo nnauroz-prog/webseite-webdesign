@@ -22,6 +22,9 @@ export type Paragraph =
 export type JournalPost = {
   slug: string;
   title: string;
+  /** Titel für Google und Browser-Tab: mit dem Suchbegriff, den Leser
+   *  eintippen. Die Überschrift auf der Seite (title) bleibt. */
+  seoTitle?: string;
   /** Untertitel als Dek — eine Zeile Kontext. */
   dek: string;
   /** ISO-Datum, yyyy-mm-dd, Veröffentlichung. */
@@ -37,6 +40,7 @@ export type JournalPost = {
 const POSTS: JournalPost[] = [
   {
     slug: "die-zweite-frage",
+    seoTitle: "Erstgespräch beim Webdesigner: Was Anrufer wissen wollen",
     title: "Die zweite Frage",
     dek: "Was Anrufer im Erstgespräch eigentlich wissen wollen, und warum sie zuerst nach dem Preis fragen.",
     publishedAt: "2026-06-15",
@@ -103,6 +107,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "wann-eine-website-warten-kann",
+    seoTitle: "Neue Website jetzt oder später? Wann es warten kann",
     title: "Wann eine Website warten kann",
     dek: "Drei Fälle, in denen wir raten, mit der eigenen Website noch zu warten.",
     publishedAt: "2026-06-12",
@@ -165,6 +170,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "der-preis-einer-website",
+    seoTitle: "Website-Festpreis erklärt: Wie unsere Preise entstehen",
     title: "Der Preis, einmal offen hingelegt",
     dek: "Was eine Website kostet, wie unsere Preise entstehen und welcher Posten in vielen Angeboten fehlt.",
     publishedAt: "2026-06-08",
@@ -223,6 +229,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "warum-wir-keine-mockups-zeigen",
+    seoTitle: "Test-Link statt Entwurfsbild: Warum wir echt bauen",
     title: "Das Echte zuerst",
     dek: "Warum wir statt eines Entwurfsbilds gleich eine Seite bauen, die Sie auf dem Handy öffnen können.",
     publishedAt: "2026-06-05",
@@ -273,6 +280,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "cafe-website-hamburg-2026",
+    seoTitle: "Café-Website: Was Gäste am Handy zuerst suchen",
     title: "Die paar Sekunden vor der Tür",
     dek: "Was ein Gast vor einem Hamburger Café auf dem Handy sucht, und was eine Café-Website deshalb oben zeigen sollte.",
     publishedAt: "2026-06-01",
@@ -339,6 +347,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "pflegedienst-google-maps-hamburg",
+    seoTitle: "Pflegedienst bei Google Maps: Was der Eintrag braucht",
     title: "Wer auf der Karte fehlt, ist nicht im Gespräch",
     dek: "Wie Angehörige in Hamburg nach ambulanter Pflege suchen, und was ein vollständiger Google-Eintrag dafür braucht.",
     publishedAt: "2026-05-26",
@@ -397,6 +406,7 @@ const POSTS: JournalPost[] = [
   },
   {
     slug: "was-wir-an-wix-migrationen-lernen",
+    seoTitle: "Von Wix umziehen: Was beim Wechsel Arbeit macht",
     title: "Die Mietwohnung mit dem goldenen Schlüssel",
     dek: "Drei Dinge, die beim Umzug von einem Baukasten fast immer Arbeit machen, und wie wir sie angehen.",
     publishedAt: "2026-05-18",

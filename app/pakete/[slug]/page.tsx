@@ -7,6 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PAKETE, getAllPaketSlugs, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { CONTACT_EMAIL } from "@/lib/site";
+import { SITE_URL } from "@/lib/site";
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
@@ -83,6 +84,7 @@ export default async function PaketDetailPage({
     description: paket.description,
     provider: {
       "@type": "LocalBusiness",
+      "@id": `${SITE_URL}/#business`,
       name: "Sitalo Webdesign",
       address: {
         "@type": "PostalAddress",

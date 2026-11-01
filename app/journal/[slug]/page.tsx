@@ -35,7 +35,7 @@ export async function generateMetadata({
   const post = getPost(slug);
   if (!post) return {};
   return {
-    title: `${post.title} — Journal`,
+    title: post.seoTitle ?? `${post.title} — Journal`,
     description: post.dek,
     alternates: { canonical: `/journal/${post.slug}` },
     openGraph: {
@@ -61,6 +61,9 @@ export default async function JournalPostPage({
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
+    ...(post.seoTitle ? { alternativeHeadline: post.seoTitle } : {}),
+    image: `${SITE_URL}/journal/${post.slug}/opengraph-image`,
+    inLanguage: "de-DE",
     description: post.dek,
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,

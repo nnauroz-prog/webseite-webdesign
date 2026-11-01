@@ -36,7 +36,7 @@ const BREADCRUMB_LD = {
 };
 
 export const metadata: Metadata = {
-  title: "Ladezeit-Test",
+  title: "Website-Ladezeit kostenlos testen",
   description:
     "Kostenloser Test mit Google PageSpeed Insights: Ladezeit, Barrierefreiheit, Technik und Google-Grundlagen Ihrer Website in etwa 30 Sekunden.",
   alternates: { canonical: "/check" },
