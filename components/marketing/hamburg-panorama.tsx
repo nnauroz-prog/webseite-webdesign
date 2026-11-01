@@ -4,8 +4,8 @@ import { HamburgSkyline } from "@/components/marketing/hamburg-skyline";
 
 /**
  * Hamburg-Panorama als Linienzeichnung über die volle Breite (Startseite,
- * unten im Kontakt-Abschnitt). Ränder laufen
- * weich in den Hintergrund aus.
+ * oben im dunklen Abschnitt der Ladeliste). Ränder laufen weich in den
+ * Hintergrund aus.
  *
  * Solange kein eigenes Panorama-Bild hinterlegt ist, steht hier die
  * gezeichnete Silhouette. Für ein Bild: Datei nach

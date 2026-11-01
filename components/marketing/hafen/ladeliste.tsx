@@ -35,12 +35,15 @@ function anfrageHref(b: BranchenLadeliste, pakete: PaketeKurz) {
 
 export function Ladeliste({
   id,
+  top,
   head,
   pakete,
   className = "",
   style,
 }: {
   id?: string;
+  /** Volle Breite über dem Inhalt, z. B. die Hamburg-Silhouette. */
+  top?: ReactNode;
   head?: ReactNode;
   pakete: PaketeKurz;
   className?: string;
@@ -76,7 +79,8 @@ export function Ladeliste({
 
   return (
     <section id={id} className={`${s.section} grain scroll-mt-20 ${className}`} style={style}>
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
+      {top}
+      <div className={`mx-auto w-full max-w-6xl px-5 sm:px-6 ${top ? "pt-6 pb-20 sm:pt-8 sm:pb-28" : "py-20 sm:py-28"}`}>
         {head}
         <div className="mt-12 grid gap-8 sm:mt-16 lg:grid-cols-12 lg:gap-10">
           <div className={`${s.side} lg:col-span-3`}>
