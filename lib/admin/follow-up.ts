@@ -13,7 +13,14 @@ import {
   workdayOnOrAfter,
 } from "@/lib/admin/berlin-time";
 
-export type FollowUpChip = { iso: string; label: string };
+export type FollowUpChip = {
+  iso: string;
+  /** „Nächster Werktag (Mo 2.11.)“, z. B. für Vorlesen und Tests. */
+  label: string;
+  /** „Nächster Werktag“ und „Mo 2.11.“ getrennt, für zweizeilige Knöpfe. */
+  name: string;
+  day: string;
+};
 
 /** Meldung für ein Wiedervorlage-Datum vor heute (Client und Action). */
 export const PAST_DATE_ERROR = "Bitte ein Datum ab heute wählen.";
@@ -48,10 +55,10 @@ export function followUpChips(now: Date): FollowUpChip[] {
       seen.add(iso);
       return true;
     })
-    .map(([label, iso]) => ({
-      iso,
-      label: `${label} (${formatShortDay(iso)})`,
-    }));
+    .map(([name, iso]) => {
+      const day = formatShortDay(iso);
+      return { iso, label: `${name} (${day})`, name, day };
+    });
 }
 
 export type FollowUpView = {

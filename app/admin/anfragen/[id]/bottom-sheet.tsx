@@ -38,9 +38,10 @@ export function BottomSheet({
         // Nur der Hintergrund (das <dialog> selbst, nicht der Inhalt).
         if (e.target === e.currentTarget) e.currentTarget.close();
       }}
-      className="bg-card text-foreground backdrop:bg-foreground/40 mx-auto mt-auto mb-0 max-h-[85dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-[6px] p-0"
+      // Am iPhone unten angedockt, ab lg mittig als Dialog.
+      className="bg-card text-foreground backdrop:bg-foreground/40 mx-auto mt-auto mb-0 max-h-[85dvh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-[4px] p-0 lg:my-auto lg:max-w-lg lg:rounded-[4px] lg:shadow-xl"
     >
-      <div className="px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+      <div className="pt-2 pr-[max(1rem,env(safe-area-inset-right))] pb-[calc(env(safe-area-inset-bottom)+1rem)] pl-[max(1rem,env(safe-area-inset-left))] lg:pb-5">
         <div className="flex items-center justify-between gap-2">
           <h2 id={titleId} className="text-[17px] font-semibold tracking-tight">
             {title}

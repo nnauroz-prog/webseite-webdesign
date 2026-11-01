@@ -19,18 +19,21 @@ async function safeSendTestMail(): Promise<ActionState> {
  * Test-Mail über denselben Weg wie echte Anfragen.
  *
  * `problem`: Hinweis oben auf /admin (kein Anbieter eingerichtet oder
- * eine Benachrichtigung der letzten 7 Tage ist gescheitert). Sonst
- * ruhig im aufklappbaren Bereich unten.
+ * eine Benachrichtigung der letzten 7 Tage ist gescheitert, mit dem
+ * Grund der jüngsten). Sonst ruhig im aufklappbaren Bereich unten.
  */
 export function MailStatus({
   provider,
   to,
   recentFailures = 0,
+  lastFailure,
   problem = false,
 }: {
   provider: "resend" | "formspree" | null;
   to: string;
   recentFailures?: number;
+  /** Erklärter Grund der jüngsten gescheiterten Benachrichtigung. */
+  lastFailure?: string;
   problem?: boolean;
 }) {
   const [state, action, pending] = useActionState<ActionState>(
@@ -44,7 +47,7 @@ export function MailStatus({
       aria-label="E-Mail-Benachrichtigung"
       className={cn(
         "rounded-[4px] text-[15px] leading-relaxed",
-        problem ? "border-gold bg-card mt-3 border-2 p-4" : "pt-2",
+        problem && "border-gold bg-card mt-4 border-2 p-4",
       )}
     >
       {!ok ? (
@@ -63,24 +66,31 @@ export function MailStatus({
       ) : (
         <>
           {recentFailures > 0 ? (
-            <p className="font-semibold">
-              {recentFailures === 1
-                ? "Eine Benachrichtigung der letzten 7 Tage ist nicht rausgegangen."
-                : `${recentFailures} Benachrichtigungen der letzten 7 Tage sind nicht rausgegangen.`}{" "}
-              <span className="font-normal">
+            <>
+              <p className="font-semibold">
+                {recentFailures === 1
+                  ? "Eine Benachrichtigung der letzten 7 Tage ist nicht rausgegangen."
+                  : `${recentFailures} Benachrichtigungen der letzten 7 Tage sind nicht rausgegangen.`}
+              </p>
+              <p className="mt-1">
                 Die Anfragen sind trotzdem hier gespeichert (Karte „Mail
                 fehlgeschlagen“).
-              </span>
-            </p>
+                {lastFailure ? ` Grund: ${lastFailure}` : null}
+              </p>
+            </>
           ) : null}
-          <p className={cn(recentFailures > 0 && "mt-2")}>
-            Neue Anfragen erreichst du per Mail über {providerName} an {to}.
-          </p>
+          {recentFailures > 0 ? (
+            <p className="text-muted-foreground mt-2 text-[14px]">
+              Nach dem Beheben mit einer Test-Mail prüfen ({providerName} an {to}).
+            </p>
+          ) : (
+            <p>Neue Anfragen kommen per Mail über {providerName} an {to}.</p>
+          )}
           <form action={action} className="mt-3">
             <button
               type="submit"
               disabled={pending}
-              className="border-border hover:border-foreground/40 inline-flex h-11 items-center rounded-[3px] border px-5 text-[15px] font-medium disabled:opacity-60"
+              className="border-border bg-background hover:border-foreground/40 inline-flex h-11 items-center rounded-[3px] border px-5 text-[15px] font-medium disabled:opacity-60"
             >
               {pending ? "Sende …" : "Test-Mail senden"}
             </button>
@@ -88,12 +98,12 @@ export function MailStatus({
         </>
       )}
       {state.info ? (
-        <p role="status" className="mt-3 text-emerald-800">
+        <p role="status" className="text-ink-petrol mt-3">
           {state.info}
         </p>
       ) : null}
       {state.error ? (
-        <p role="alert" className="mt-3 text-red-800">
+        <p role="alert" className="text-ink-olive mt-3">
           Test fehlgeschlagen: {state.error}
         </p>
       ) : null}

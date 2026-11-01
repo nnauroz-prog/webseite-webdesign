@@ -95,7 +95,7 @@ describe("dueState", () => {
   it("ziel_verpasst", () => {
     const s = dueState("anfrage", created, Z("2026-10-30T14:00:00Z"));
     assert.equal(s.level, "ziel_verpasst");
-    assert.equal(s.label, "4-Std-Ziel verpasst · Antwort spätestens Mo 12:00");
+    assert.equal(s.label, "Über 4 Std. offen · Antwort spätestens Mo 12:00");
   });
 
   it("ueberfaellig mit Min, Std und Tagen", () => {

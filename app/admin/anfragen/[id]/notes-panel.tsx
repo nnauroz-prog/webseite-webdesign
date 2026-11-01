@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 const QUICK = ["Angebot geschickt", "Rückruf vereinbart"] as const;
 const CHIP =
-  "border-border bg-background inline-flex h-11 items-center rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-50";
+  "border-border bg-background hover:border-foreground/40 inline-flex min-h-11 items-center justify-center rounded-[3px] border px-3 py-1.5 text-center text-[15px] leading-tight font-medium transition-colors disabled:opacity-50";
 
 /**
  * Notizen: Schnellnotiz (wächst mit, „Speichern“-Knopf, Kurz-Chips),
@@ -43,48 +43,82 @@ export function NotesPanel({ leadId, notes }: { leadId: string; notes: string })
 
   return (
     <section aria-labelledby="notes-title" className="border-border bg-card mt-4 rounded-[4px] border p-4">
-      <h2 id="notes-title" className="text-[16px] font-semibold">
-        Notizen <span className="text-muted-foreground font-normal">(nur für dich)</span>
-      </h2>
-
-      <form
-        className="mt-3 flex items-end gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          append(quick, true);
-        }}
-      >
-        <label htmlFor="quick-note" className="sr-only">
-          Schnellnotiz
-        </label>
-        <textarea
-          id="quick-note"
-          value={quick}
-          onChange={(e) => setQuick(e.target.value)}
-          data-dirty={quick.trim() ? "true" : undefined}
-          rows={2}
-          maxLength={NOTE_MAX}
-          placeholder="Notiz …"
-          className="border-border bg-background focus:border-foreground/50 max-h-48 min-h-[4.75rem] min-w-0 flex-1 resize-none rounded-[4px] border px-3.5 py-3 text-base leading-snug outline-none [field-sizing:content]"
-        />
-        <button
-          type="submit"
-          disabled={pending || !quick.trim()}
-          className="bg-foreground text-background inline-flex h-11 shrink-0 items-center rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-50"
-        >
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" aria-label="Speichert" /> : "Speichern"}
-        </button>
-      </form>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {QUICK.map((q) => (
-          <button key={q} type="button" className={CHIP} disabled={pending} onClick={() => append(q, false)}>
-            {q}
-          </button>
-        ))}
+      <div className="flex items-center justify-between gap-2">
+        <h2 id="notes-title" className="text-[16px] font-semibold">
+          Notizen <span className="text-muted-foreground font-normal">(nur für dich)</span>
+        </h2>
+        {pending ? (
+          <span role="status" className="text-muted-foreground inline-flex items-center gap-1.5 text-[13px]">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            Speichert …
+          </span>
+        ) : null}
       </div>
+
+      {editing ? null : (
+        <form
+          className="mt-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            append(quick, true);
+          }}
+        >
+          <label htmlFor="quick-note" className="sr-only">
+            Neue Notiz
+          </label>
+          <textarea
+            id="quick-note"
+            value={quick}
+            onChange={(e) => setQuick(e.target.value)}
+            data-dirty={quick.trim() ? "true" : undefined}
+            rows={2}
+            maxLength={NOTE_MAX}
+            placeholder="Neue Notiz …"
+            className="border-border bg-background focus:border-foreground/60 block max-h-48 min-h-[4.75rem] w-full resize-none rounded-[4px] border px-3.5 py-3 text-base leading-snug outline-none [field-sizing:content]"
+          />
+          {quick.trim() ? (
+            // Mit Text: Speichern direkt unter dem Feld (auch bei offener
+            // Tastatur erreichbar), die Kurz-Knöpfe treten zurück.
+            <div className="mt-2 flex gap-2">
+              <button
+                type="submit"
+                disabled={pending}
+                className="bg-foreground text-background inline-flex h-11 flex-1 items-center justify-center rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-60"
+              >
+                Notiz speichern
+              </button>
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() => setQuick("")}
+                className={CHIP}
+              >
+                Verwerfen
+              </button>
+            </div>
+          ) : (
+            <div className="mt-2">
+              <p className="text-muted-foreground text-[13px]">Oder mit einem Tipp vermerken:</p>
+              <div className="mt-1.5 grid grid-cols-2 gap-2">
+                {QUICK.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    className={cn(CHIP, "px-2 text-[14.5px]")}
+                    disabled={pending}
+                    onClick={() => append(q, false)}
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </form>
+      )}
       {error ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <p role="alert" className="text-[14px] text-red-800">
+          <p role="alert" className="text-ink-olive text-[14px]">
             {error.text}
           </p>
           <button type="button" className={CHIP} disabled={pending} onClick={error.retry}>
@@ -103,21 +137,15 @@ export function NotesPanel({ leadId, notes }: { leadId: string; notes: string })
             setSavedAll(saved);
           }}
         />
-      ) : (
+      ) : notes.trim() ? (
         <>
-          {notes.trim() ? (
-            <p className="border-border mt-4 border-t pt-3 text-[15px] leading-relaxed break-words whitespace-pre-wrap">
-              {notes}
-            </p>
-          ) : (
-            <p className="text-muted-foreground border-border mt-4 border-t pt-3 text-[14px]">
-              Noch keine Notizen.
-            </p>
-          )}
-          <div className="mt-2 flex flex-wrap items-center gap-3">
+          <p className="border-border mt-4 border-t pt-3 text-[15px] leading-relaxed break-words whitespace-pre-wrap">
+            {notes}
+          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-3">
             <button
               type="button"
-              className="inline-flex h-11 items-center text-[15px] font-medium underline underline-offset-4"
+              className="decoration-foreground/30 hover:decoration-foreground inline-flex h-11 items-center text-[15px] font-medium underline underline-offset-4"
               onClick={() => {
                 setEditorKey((k) => k + 1);
                 setEditing(true);
@@ -127,12 +155,16 @@ export function NotesPanel({ leadId, notes }: { leadId: string; notes: string })
               Alle Notizen bearbeiten
             </button>
             {savedAll ? (
-              <span role="status" className="text-[14px] text-emerald-800">
+              <span role="status" className="text-ink-petrol text-[14px]">
                 Gespeichert.
               </span>
             ) : null}
           </div>
         </>
+      ) : (
+        <p className="text-muted-foreground border-border mt-4 border-t pt-3 text-[14px]">
+          Noch keine Notizen.
+        </p>
       )}
     </section>
   );
@@ -190,7 +222,7 @@ function NotesEditor({
 
   if (state.gone) {
     return (
-      <div role="alert" className="border-border mt-4 border-t pt-3 text-[15px]">
+      <div role="alert" className="mt-3 text-[15px]">
         <p className="font-semibold">Diese Anfrage gibt es nicht mehr.</p>
         <Link href="/admin" className="mt-2 inline-flex h-11 items-center underline underline-offset-4">
           Zur Übersicht
@@ -202,11 +234,11 @@ function NotesEditor({
   const conflict = state.conflict || changedElsewhere;
 
   return (
-    <form action={action} className="border-border mt-4 space-y-3 border-t pt-3" data-dirty={dirty ? "true" : undefined}>
+    <form action={action} className="mt-3 space-y-3" data-dirty={dirty ? "true" : undefined}>
       <input type="hidden" name="id" value={leadId} />
       <input type="hidden" name="fingerprint" value={frozen.fp} />
-      <label htmlFor="all-notes" className="text-[14px] font-medium">
-        Alle Notizen
+      <label htmlFor="all-notes" className="block text-[14px] font-medium">
+        Alle Notizen bearbeiten
       </label>
       <textarea
         id="all-notes"
@@ -216,7 +248,7 @@ function NotesEditor({
         rows={8}
         maxLength={5000}
         readOnly={Boolean(state.conflict)}
-        className="border-border bg-background focus:border-foreground/50 w-full rounded-[4px] border p-3 text-base leading-relaxed outline-none"
+        className="border-border bg-background focus:border-foreground/60 block w-full rounded-[4px] border p-3 text-base leading-relaxed outline-none"
       />
       {conflict ? (
         <div role="alert" className="border-gold rounded-[4px] border-2 p-3 text-[15px] leading-relaxed">
@@ -240,7 +272,7 @@ function NotesEditor({
         </div>
       ) : null}
       {state.error ? (
-        <p role="alert" className="text-[14px] text-red-800">
+        <p role="alert" className="text-[14px] text-ink-olive">
           {state.error}
         </p>
       ) : null}
@@ -258,7 +290,7 @@ function NotesEditor({
           type="button"
           onClick={() => onDone(false)}
           disabled={pending}
-          className="border-border inline-flex h-12 items-center rounded-[3px] border px-5 text-[15px] font-medium"
+          className="border-border hover:border-foreground/40 inline-flex h-12 items-center rounded-[3px] border px-5 text-[15px] font-medium transition-colors disabled:opacity-50"
         >
           Abbrechen
         </button>

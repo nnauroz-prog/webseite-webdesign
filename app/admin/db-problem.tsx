@@ -18,7 +18,7 @@ export function DbProblem({
   return (
     <div
       role="alert"
-      className="border-gold bg-card mt-3 rounded-[4px] border-2 p-4 text-[15px] leading-relaxed"
+      className="border-gold bg-card mt-4 rounded-[4px] border-2 p-4 text-[15px] leading-relaxed"
     >
       <p className="font-semibold">
         {compact ? e.title : `Du bist angemeldet, aber die Daten lassen sich nicht laden. ${e.title}`}

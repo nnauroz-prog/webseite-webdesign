@@ -11,7 +11,10 @@ import { PAST_DATE_ERROR } from "@/lib/admin/follow-up";
 import { cn } from "@/lib/utils";
 
 const CHIP =
-  "border-border bg-background inline-flex h-11 items-center rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-50";
+  "border-border bg-background hover:border-foreground/40 inline-flex h-11 items-center justify-center rounded-[3px] border px-4 text-[15px] font-medium transition-colors disabled:opacity-50";
+/** Zweizeiliger Datums-Knopf: „Nächster Werktag“ über „Mo 2.11.“. */
+const DAY =
+  "border-border bg-background hover:border-foreground/40 flex min-h-14 flex-col items-start justify-center rounded-[3px] border px-3 py-1.5 text-left transition-colors disabled:opacity-50";
 
 /**
  * Wiedervorlage mit Ein-Tipp-Daten. Die Chips rechnet der Server
@@ -28,7 +31,7 @@ export function FollowUpCard({
   view: FollowUpView | null;
   chips: FollowUpChip[];
   todayIso: string;
-  /** false ohne Datenbank-Update: ausgegraut mit Hinweis. */
+  /** false ohne Datenbank-Update: nur ein Hinweis. */
   enabled: boolean;
 }) {
   const [editing, setEditing] = useState(false);
@@ -77,21 +80,27 @@ export function FollowUpCard({
             <p className={cn("text-[14px]", view.due ? "font-medium" : "text-muted-foreground")}>
               {view.hint}
             </p>
+          ) : enabled ? (
+            <p className="text-muted-foreground text-[14px]">
+              Wann willst du dich wieder darum kümmern?
+            </p>
           ) : null}
         </div>
-        {pending ? <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" aria-label="Speichert" /> : null}
+        {pending ? (
+          <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" aria-label="Speichert" />
+        ) : null}
       </div>
 
       {!enabled ? (
         <p className="text-muted-foreground mt-2 text-[14px]">
-          Geht nach dem Datenbank-Update.
+          Geht nach dem Datenbank-Update (siehe Hinweis oben).
         </p>
       ) : null}
 
       {view && enabled && !editing ? (
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           <button type="button" className={CHIP} disabled={pending} onClick={() => setEditing(true)}>
-            Ändern
+            Verschieben
           </button>
           <button type="button" className={CHIP} disabled={pending} onClick={() => save(null)}>
             Entfernen
@@ -99,20 +108,33 @@ export function FollowUpCard({
         </div>
       ) : null}
 
-      {showChips || !enabled ? (
-        <fieldset disabled={!enabled || pending} className="mt-3 flex flex-wrap gap-2">
+      {showChips ? (
+        <fieldset disabled={pending} className="mt-3 grid grid-cols-2 gap-2">
           <legend className="sr-only">Wiedervorlage setzen</legend>
           {chips.map((c) => (
-            <button key={c.iso} type="button" className={CHIP} onClick={() => save(c.iso)}>
-              {c.label}
+            <button
+              key={c.iso}
+              type="button"
+              className={DAY}
+              aria-label={c.label}
+              onClick={() => save(c.iso)}
+            >
+              <span className="text-[15px] leading-tight font-medium">{c.name}</span>
+              <span className="text-muted-foreground text-[13px] leading-tight">{c.day}</span>
             </button>
           ))}
-          <label className={cn(CHIP, "relative cursor-pointer has-[:disabled]:opacity-50")}>
-            Datum …
+          <label
+            className={cn(
+              DAY,
+              "has-[:focus-visible]:outline-gold relative cursor-pointer has-[:disabled]:opacity-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2",
+            )}
+          >
+            <span className="text-[15px] leading-tight font-medium">Anderes Datum</span>
+            <span className="text-muted-foreground text-[13px] leading-tight">im Kalender wählen</span>
             <input
               type="date"
               min={todayIso}
-              aria-label="Datum wählen"
+              aria-label="Datum für die Wiedervorlage wählen"
               onClick={(e) => {
                 try {
                   e.currentTarget.showPicker?.();
@@ -132,13 +154,13 @@ export function FollowUpCard({
                 }
                 save(value);
               }}
-              className="absolute inset-0 h-full w-full cursor-pointer opacity-0 text-base"
+              className="absolute inset-0 h-full w-full cursor-pointer text-base opacity-0"
             />
           </label>
           {editing ? (
             <button
               type="button"
-              className={cn(CHIP, "text-muted-foreground")}
+              className={cn(CHIP, "text-muted-foreground h-auto min-h-14")}
               onClick={() => setEditing(false)}
             >
               Abbrechen
@@ -149,7 +171,7 @@ export function FollowUpCard({
 
       {error ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <p role="alert" className="text-[14px] text-red-800">
+          <p role="alert" className="text-ink-olive text-[14px]">
             {error.text}
           </p>
           {error.retry ? (

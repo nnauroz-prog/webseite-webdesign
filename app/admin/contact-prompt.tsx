@@ -13,9 +13,9 @@ import {
   setFollowUpAction,
   setOutcomeAction,
 } from "@/app/admin/actions";
-import { noteHidden, takeContact } from "@/app/admin/client-state";
+import { noteHidden, statusDoneLabel, takeContact } from "@/app/admin/client-state";
 import { runAction } from "@/app/admin/run-action";
-import { LOST_REASON_LABELS, LOST_REASONS, STATUS_LABELS } from "@/lib/leads-meta";
+import { LOST_REASON_LABELS, LOST_REASONS } from "@/lib/leads-meta";
 import { cn } from "@/lib/utils";
 
 type Phase =
@@ -157,7 +157,7 @@ export function ContactPrompt({
         setPhase({
           kind: "done",
           text: res.statusChanged
-            ? `Gespeichert, auf ${STATUS_LABELS[res.newStatus]} gesetzt.`
+            ? `Gespeichert. ${statusDoneLabel(res.newStatus)}.`
             : res.asNote
               ? "Als Notiz gespeichert."
               : "Gespeichert.",
@@ -194,10 +194,13 @@ export function ContactPrompt({
     });
   }
 
+  // grow: Knöpfe füllen die Zeile, einzeln stehende die ganze Breite.
   const btn =
-    "inline-flex h-11 items-center justify-center rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-60";
+    "inline-flex h-11 grow items-center justify-center rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-60";
   const primary = cn(btn, "bg-foreground text-background");
   const secondary = cn(btn, "border-border bg-background border");
+  const undoLink =
+    "inline-flex h-11 basis-full items-center px-1 text-[15px] font-semibold underline underline-offset-4 disabled:opacity-60";
 
   let title: string;
   let buttons: React.ReactNode;
@@ -261,7 +264,7 @@ export function ContactPrompt({
     );
   } else if (phase.kind === "reason") {
     const snapshot = phase.undo;
-    title = "Absage vermerkt: Erledigt, kein Auftrag. Grund?";
+    title = `Absage vermerkt${who}: Erledigt, kein Auftrag. Grund?`;
     buttons = (
       <>
         {LOST_REASONS.map((r) => (
@@ -270,17 +273,18 @@ export function ContactPrompt({
           </button>
         ))}
         {snapshot ? (
-          <button type="button" className={secondary} onClick={() => undo(snapshot)}>
-            Rückgängig
+          // Kein Grund-Knopf: als Textlink abgesetzt, eigene Zeile.
+          <button type="button" className={undoLink} onClick={() => undo(snapshot)}>
+            Absage rückgängig machen
           </button>
         ) : null}
       </>
     );
   } else {
     const snapshot = phase.undo;
-    title = phase.text;
+    title = `${phase.text}${who}`;
     buttons = snapshot ? (
-      <button type="button" className={secondary} onClick={() => undo(snapshot)}>
+      <button type="button" className={undoLink} onClick={() => undo(snapshot)}>
         Rückgängig
       </button>
     ) : null;
@@ -290,7 +294,12 @@ export function ContactPrompt({
     <div
       role="status"
       aria-live="polite"
-      className="bg-card border-border mx-auto w-full max-w-2xl border-t px-4 pt-3 pb-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]"
+      className={cn(
+        "bg-card border-border mx-auto w-full max-w-2xl border-t pt-3 pr-[max(1rem,env(safe-area-inset-right))] pb-3 pl-[max(1rem,env(safe-area-inset-left))] shadow-[0_-4px_16px_rgba(0,0,0,0.08)]",
+        // Ab lg: eigener Kasten (unten rechts bzw. unter den Aktionen).
+        "lg:max-w-none lg:rounded-[4px] lg:border lg:px-4",
+        standalone ? "lg:shadow-lg" : "lg:mt-3 lg:shadow-none",
+      )}
     >
       <div className="flex items-start gap-2">
         <p className="min-w-0 flex-1 py-2.5 text-[15px] font-semibold">
@@ -310,7 +319,7 @@ export function ContactPrompt({
       </div>
       {error ? (
         <div className="mt-1 flex flex-wrap items-center gap-2">
-          <p role="alert" className="text-[14px] text-red-800">
+          <p role="alert" className="text-[14px] text-ink-olive">
             {error}
           </p>
           {retry ? (
@@ -326,7 +335,7 @@ export function ContactPrompt({
         </div>
       ) : null}
       {buttons ? (
-        <fieldset disabled={pending} className="mt-1 flex flex-wrap gap-2">
+        <fieldset disabled={pending} className="mt-1 flex min-w-0 flex-wrap gap-2">
           {buttons}
         </fieldset>
       ) : null}
@@ -337,7 +346,7 @@ export function ContactPrompt({
   return (
     <div
       ref={boxRef}
-      className="bg-card fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)]"
+      className="bg-card fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-[26rem] lg:bg-transparent lg:pb-0"
     >
       {content}
     </div>

@@ -10,7 +10,7 @@ const STYLES: Record<LeadStatus, string> = {
 
 export function StatusPill({ status }: { status: LeadStatus }) {
   return (
-    <span className={cn("rounded-[3px] px-2.5 py-0.5 text-[11.5px] font-medium", STYLES[status])}>
+    <span className={cn("rounded-[3px] px-2 py-0.5 text-[12.5px] font-medium", STYLES[status])}>
       {STATUS_LABELS[status]}
     </span>
   );

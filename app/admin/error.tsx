@@ -20,7 +20,9 @@ export default function AdminError({
       role="alert"
       className="border-border bg-card mt-2 rounded-[4px] border p-5 text-[15px] leading-relaxed"
     >
-      <p className="font-semibold">Da ist etwas schiefgelaufen.</p>
+      <h1 className="text-[18px] leading-tight font-semibold tracking-tight">
+        Da ist etwas schiefgelaufen
+      </h1>
       <p className="text-muted-foreground mt-2">
         Bei schwachem Netz hilft meist „Neu laden“. Deine Daten in der
         Datenbank sind davon nicht betroffen.
@@ -40,7 +42,7 @@ export default function AdminError({
         </button>
         <Link
           href="/admin"
-          className="border-border inline-flex h-12 items-center rounded-[3px] border px-6 text-[15px] font-medium"
+          className="border-border hover:border-foreground/40 inline-flex h-12 items-center rounded-[3px] border px-6 text-[15px] font-medium transition-colors"
         >
           Zur Übersicht
         </Link>

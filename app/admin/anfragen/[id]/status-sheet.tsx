@@ -12,7 +12,9 @@ import {
   setStatusAction,
 } from "@/app/admin/actions";
 import { BottomSheet } from "@/app/admin/anfragen/[id]/bottom-sheet";
+import { statusDoneLabel } from "@/app/admin/client-state";
 import { runAction } from "@/app/admin/run-action";
+import { outcomeText } from "@/lib/admin/timeline";
 import {
   LEAD_STATUSES,
   LOST_REASON_LABELS,
@@ -22,9 +24,17 @@ import {
 import { cn } from "@/lib/utils";
 
 const BIG =
-  "flex h-13 w-full items-center justify-between rounded-[4px] border px-4 text-[16px] font-medium transition-colors disabled:opacity-60";
+  "flex min-h-13 w-full items-center justify-between gap-3 rounded-[4px] border px-4 py-2 text-left text-[16px] font-medium transition-colors disabled:opacity-60";
 const CHIP =
-  "border-border bg-background inline-flex h-11 items-center rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-60";
+  "border-border bg-background inline-flex h-11 items-center justify-center rounded-[3px] border px-3 text-[15px] font-medium disabled:opacity-60";
+
+/** Kurz, was der Status bedeutet (vor allem „Archiviert“ ist sonst unklar). */
+const STATUS_HINTS: Record<LeadStatus, string> = {
+  neu: "Noch nicht gemeldet",
+  in_arbeit: "Im Gespräch, Antwort läuft",
+  erledigt: "Abgeschlossen, mit oder ohne Auftrag",
+  archiviert: "Aus der Liste, kann gelöscht werden",
+};
 
 /**
  * Status-Sheet: vier große Knöpfe, ein Tipp speichert. Nach „Erledigt“
@@ -75,7 +85,7 @@ export function StatusSheet({
         return;
       }
       const info: StatusDone = {
-        label: `Auf ${STATUS_LABELS[next]} gesetzt`,
+        label: statusDoneLabel(next),
         undo: res.undo,
         askOutcome: res.askOutcome,
       };
@@ -110,6 +120,17 @@ export function StatusSheet({
         setError({ text: res.error, retry: () => outcome(value, reason) });
         return;
       }
+      // Streifen nach dem Schließen nennt dann beides; „Rückgängig“
+      // stellt den Stand vor „Erledigt“ wieder her (mit Ergebnis).
+      if (done) {
+        onSaved({
+          ...done,
+          label:
+            value === null
+              ? `${STATUS_LABELS.erledigt}, ohne Ergebnis`
+              : `${STATUS_LABELS.erledigt}: ${outcomeText(value, reason ?? null)}`,
+        });
+      }
       onClose();
     });
   }
@@ -137,7 +158,7 @@ export function StatusSheet({
 
       {error ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <p role="alert" className="text-[14px] text-red-800">
+          <p role="alert" className="text-[14px] text-ink-olive">
             {error.text}
           </p>
           <button type="button" className={CHIP} disabled={pending} onClick={error.retry}>
@@ -164,8 +185,18 @@ export function StatusSheet({
                       : "border-border bg-background",
                   )}
                 >
-                  {STATUS_LABELS[s]}
-                  {current ? <Check className="h-5 w-5" aria-label="aktuell" /> : null}
+                  <span className="min-w-0">
+                    <span className="block">{STATUS_LABELS[s]}</span>
+                    <span
+                      className={cn(
+                        "block text-[13px] font-normal",
+                        current ? "text-background/75" : "text-muted-foreground",
+                      )}
+                    >
+                      {STATUS_HINTS[s]}
+                    </span>
+                  </span>
+                  {current ? <Check className="h-5 w-5 shrink-0" aria-label="aktuell" /> : null}
                 </button>
               </li>
             );
@@ -194,7 +225,7 @@ export function StatusSheet({
             Kein Auftrag
           </button>
           {lost ? (
-            <div className="flex flex-wrap gap-2 py-1" aria-label="Grund">
+            <div className="grid grid-cols-2 gap-2 py-1" role="group" aria-label="Grund">
               {LOST_REASONS.map((r) => (
                 <button
                   key={r}
@@ -212,7 +243,7 @@ export function StatusSheet({
                 onClick={() => outcome("verloren")}
                 className={cn(CHIP, "text-muted-foreground")}
               >
-                Ohne Grund
+                Grund offen lassen
               </button>
             </div>
           ) : null}

@@ -18,6 +18,7 @@ import {
 } from "@/lib/admin/berlin-time";
 import { telHref } from "@/lib/admin/links";
 import { dueState } from "@/lib/admin/reply-due";
+import { parseTerminSlot } from "@/lib/admin/termin-slot";
 import { fieldValue, KIND_LABELS, OUTCOME_LABELS } from "@/lib/leads-meta";
 
 /** Eine Anfrage ohne interne Notizen (z. B. Suchtreffer im Client). */
@@ -38,6 +39,7 @@ export type CardModel = {
   followUpDue: boolean;
   outcome: { label: string; won: boolean } | null;
   mailFailed: boolean;
+  /** Eine Zeile Inhalt (Nachricht, Termin, Website), leer wenn es keine gibt. */
   preview: string;
   /** tel:-Link (geprüft) oder null. */
   tel: string | null;
@@ -78,13 +80,56 @@ export function cardModel(lead: CardLead, now: Date): CardModel {
         }
       : null,
     mailFailed: Boolean(lead.delivery_error),
-    preview:
-      fieldValue(lead, "Nachricht") ??
-      fieldValue(lead, "Wunsch-Slot") ??
-      fieldValue(lead, "Audit-URL") ??
-      lead.subject,
+    preview: previewOf(lead, now),
     tel: telHref(fieldValue(lead, "Telefon")),
   };
+}
+
+/**
+ * Vorschauzeile einer Karte. Termine zeigen den gebuchten Zeitpunkt
+ * kurz („Termin morgen, 10:00 Uhr“, vorbei: „Termin war …“), Audits
+ * die Website, Anfragen die Nachricht. Der Betreff („Anfrage von …“)
+ * wiederholte nur Name und Firma und fällt deshalb weg.
+ */
+export function previewOf(lead: Pick<CardLead, "kind" | "subject" | "fields">, now: Date): string {
+  if (lead.kind === "termin") {
+    const slot = parseTerminSlot(lead);
+    if (slot) {
+      const day = dayLabel(slot.dateIso, now);
+      const when = `${day === "Heute" || day === "Morgen" ? day.toLowerCase() : day}, ${slot.time} Uhr`;
+      return slot.end.getTime() < now.getTime() ? `Termin war ${when}` : `Termin ${when}`;
+    }
+  }
+  const order =
+    lead.kind === "audit"
+      ? ["Audit-URL", "Hinweis", "Nachricht"]
+      : ["Nachricht", "Notiz", "Hinweis", "Wunsch-Slot", "Audit-URL"];
+  for (const label of order) {
+    const value = fieldValue(lead, label);
+    if (value) return value;
+  }
+  return "";
+}
+
+/**
+ * Felder für die Liste auf der Detailseite, ohne Wiederholungen: Name
+ * steht schon in der Überschrift, Firma darunter und der Wunsch-Slot
+ * in der Termin-Box (nur wenn er dort lesbar angezeigt wird).
+ */
+export function shownFields(
+  lead: Pick<CardLead, "fields">,
+  { slotShown }: { slotShown: boolean },
+): [string, string][] {
+  const name = fieldValue(lead, "Name");
+  const firma = fieldValue(lead, "Firma");
+  return lead.fields.filter(([label, value]) => {
+    const v = value.trim();
+    if (!v) return false;
+    if (label === "Name" && v === name) return false;
+    if (label === "Firma" && v === firma) return false;
+    if (label === "Wunsch-Slot" && slotShown) return false;
+    return true;
+  });
 }
 
 /** „heute“, „morgen“, „in 3 Tagen“, „gestern“, „vor 2 Tagen“ */
