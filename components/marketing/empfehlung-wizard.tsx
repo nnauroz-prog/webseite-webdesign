@@ -463,8 +463,8 @@ function OptionCard({
           ))}
       </span>
       <span className="min-w-0">
-        <span className="text-foreground block text-[15px] leading-snug font-semibold break-words">
-          {label}
+        <span className="text-foreground block text-[15px] leading-snug font-semibold hyphens-manual break-words">
+          {trennbar(label)}
         </span>
         {detail && (
           <span className="text-muted-foreground mt-0.5 block text-[13px] leading-snug">
@@ -578,4 +578,22 @@ function toggleMaterial(
   return without.includes(slug)
     ? without.filter((s) => s !== slug)
     : [...without, slug];
+}
+
+/** Feste Trennstellen für lange Wörter in schmalen Auswahlfeldern
+ *  (bedingte Trennstriche statt automatischer Silbentrennung, die z. B.
+ *  „Fitnessstu-dio“ trennen würde). Nur für die Anzeige. */
+const TRENN: Record<string, string> = {
+  Pflegedienst: "Pflege\u00ADdienst",
+  Zahnarztpraxis: "Zahnarzt\u00ADpraxis",
+  Fitnessstudio: "Fitness\u00ADstudio",
+  Arztpraxis: "Arzt\u00ADpraxis",
+  Handwerker: "Hand\u00ADwerker",
+};
+
+function trennbar(label: string) {
+  return label
+    .split(" ")
+    .map((w) => TRENN[w] ?? w)
+    .join(" ");
 }

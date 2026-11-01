@@ -222,7 +222,7 @@ html {
 
   /* Globales Keyboard-Focus-Ring für alle interaktiven Elemente.
      Verwendet :focus-visible (statt :focus), damit Maus-Klicks
-     keinen Ring ziehen — nur Tab-Navigation. Gold-Tönung statt
+     keinen Ring ziehen — nur Tab-Navigation. Signal-Orange statt
      Browser-Default-Blau passt zur Brand und ist auf cream und
      dunklen Hintergründen lesbar.
 
@@ -238,7 +238,7 @@ html {
   summary:focus-visible {
     outline: 2px solid var(--gold);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: 2px;
   }
 
   /* Bild-Fade-In — wenn Bilder fertig geladen sind (next/image
