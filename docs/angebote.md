@@ -36,7 +36,9 @@ unverändert, und es schadet nicht, es zweimal auszuführen.
    Link für den Kunden. So bekommt niemand einen Link ins Leere.
 4. **Verschicken.** Per Mail (öffnet dein Mail-Programm mit fertigem
    Text), über **Teilen** (WhatsApp, SMS) oder **Link kopieren**.
-   Danach **Fertig**.
+   Danach **Fertig**. Schließt du das Blatt, ohne einen Weg
+   anzutippen, steht auf der Karte „Freigegeben, noch nicht
+   verschickt“, bis du es über **Senden** nachholst.
 5. **Warten.** Öffnet der Kunde den Link, steht „vom Kunden geöffnet“
    im Verlauf. Nimmt er an oder lehnt ab, bekommst du eine Mail und
    die Karte zeigt es an.

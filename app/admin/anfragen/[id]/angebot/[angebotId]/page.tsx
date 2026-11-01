@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import type { Angebot } from "@/lib/admin/angebote";
-import type { LeadRow } from "@/lib/leads-meta";
+import type { LeadEvent, LeadRow } from "@/lib/leads-meta";
 
 import { AngebotEditor } from "@/app/admin/anfragen/[id]/angebot/[angebotId]/angebot-editor";
 import { EditorBackLink } from "@/app/admin/anfragen/[id]/angebot/[angebotId]/editor-back-link";
@@ -13,6 +13,7 @@ import {
   hinweisKontext,
   istBearbeitbar,
   kundenAnsicht,
+  nochNichtVerschickt,
   statusZeile,
   syncHinweise,
   ustSatzAusUmgebung,
@@ -22,7 +23,7 @@ import { berlinDateIso } from "@/lib/admin/berlin-time";
 import { parseId } from "@/lib/admin/validate";
 import { getAngebotById } from "@/lib/angebote-store";
 import { fieldValue } from "@/lib/leads-meta";
-import { getLead } from "@/lib/leads-store";
+import { getLead, listEvents } from "@/lib/leads-store";
 
 // Generisch wie die Detailseite: keine Kundennamen im <title>.
 export const metadata: Metadata = { title: "Angebot" };
@@ -41,10 +42,13 @@ export default async function AngebotEditorPage({
 
   let angebot: Angebot | null;
   let lead: LeadRow | null;
+  let events: LeadEvent[] | null;
   try {
-    [angebot, lead] = await Promise.all([
+    [angebot, lead, events] = await Promise.all([
       getAngebotById(angebotId),
       getLead(leadId),
+      // Für „Freigegeben, noch nicht verschickt“; ohne Verlauf kein Hinweis.
+      listEvents(leadId).catch(() => null),
     ]);
   } catch (err) {
     // Auch „Tabelle angebote fehlt“ landet hier, mit eigener Erklärung.
@@ -94,8 +98,10 @@ export default async function AngebotEditorPage({
   return (
     <AngebotEditor
       angebot={fuerEditor}
-      leadName={fieldValue(lead, "Name") ?? (lead.reply_to || "Anfrage")}
+      // Ohne Namen und Adresse nur „Zur Anfrage“ (kein Platzhalter).
+      leadName={fieldValue(lead, "Name") ?? (lead.reply_to || undefined)}
       statusText={statusZeile(angebot, now)}
+      nochNichtVerschickt={nochNichtVerschickt(events ?? [], angebot.nummer)}
       pill={
         ansicht === "abgelaufen"
           ? { key: "abgelaufen", label: "Abgelaufen" }

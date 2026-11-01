@@ -103,6 +103,21 @@ export function mengeText(menge: number): string {
   return menge > 1 ? `${menge} ×` : "";
 }
 
+/**
+ * Rechtsformen wie „e. K.“, „e. V.“ oder „GmbH & Co. KG“ bleiben beim
+ * Umbruch zusammen (geschützte Leerzeichen, nur für die Anzeige).
+ */
+export function festeRechtsformen(text: string): string {
+  return text
+    .replace(/\b([eiu])\. (K\.|Kfm\.|Kfr\.|V\.|L\.|G\.|U\.)/g, "$1. $2")
+    .replace(/& (Co\.) (KG|OHG|KGaA)\b/g, "& $1 $2");
+}
+
+/** Lange Titel (ab 60 Zeichen) eine Stufe kleiner, sonst füllen sie am Handy den Bildschirm. */
+export function titelGross(titel: string): boolean {
+  return titel.length <= 60;
+}
+
 // ---------------------------------------------------------------------
 // Status
 // ---------------------------------------------------------------------
@@ -156,7 +171,7 @@ export function statusKasten(
         titel: "Angebot angenommen",
         text: `Angenommen${wann}${wer}. ${
           heute
-            ? "Danke für Ihren Auftrag! Wir melden uns meist noch am selben Werktag mit dem Starttermin. Für Ihre Unterlagen können Sie das Angebot oben als PDF speichern."
+            ? "Danke für Ihren Auftrag! Wir melden uns meist noch am selben Werktag mit dem Starttermin. Für Ihre Unterlagen können Sie das Angebot als PDF speichern."
             : "Danke für Ihren Auftrag. Bei Fragen erreichen Sie uns unter den Kontaktdaten unten."
         }`,
       };

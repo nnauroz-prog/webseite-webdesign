@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache, Fragment } from "react";
 import { Mail, Phone } from "lucide-react";
@@ -15,12 +14,14 @@ import {
   absaetze,
   absenderAdresse,
   aktualisiertNachSenden,
+  festeRechtsformen,
   mengeText,
   NICHT_MEHR_ONLINE,
   nichtMehrOnline,
   positionsGruppen,
   rueckfrageMailHref,
   statusKasten,
+  titelGross,
 } from "@/app/angebot/angebot-seite";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import {
@@ -33,6 +34,7 @@ import {
   parseToken,
   preisSatz,
   ustHinweis,
+  ustKurz,
 } from "@/lib/admin/angebote";
 import { getAdminEmail } from "@/lib/admin/auth";
 import { berlinDateIso } from "@/lib/admin/berlin-time";
@@ -40,6 +42,7 @@ import { getAngebotByToken } from "@/lib/angebote-store";
 import { cn } from "@/lib/utils";
 
 import styles from "./angebot.module.css";
+import { Fuss } from "./fuss";
 import {
   AnnahmeBereich,
   AufrufMelder,
@@ -166,12 +169,15 @@ export default async function AngebotSeite({ params }: Props) {
               "mb-4 flex items-center justify-between gap-3 sm:mb-5",
             )}
           >
-            <p className="label-mono text-muted-foreground">Ihr Angebot</p>
+            {/* Unter 360 px fällt das Etikett weg, die Knöpfe erklären sich selbst. */}
+            <p className="label-mono text-muted-foreground whitespace-nowrap max-[359px]:hidden">
+              Ihr Angebot
+            </p>
             {zeigeAngebot ? (
-              <div className="flex items-center gap-2">
-                <DruckKnopf kurz className="h-10 px-3.5 text-[14px]" />
+              <div className="ml-auto flex items-center gap-2">
+                <DruckKnopf kurz className="h-11 px-3.5 text-[14px]" />
                 {offen ? (
-                  <ZumAnnehmen className="h-10 px-4 text-[14px]" />
+                  <ZumAnnehmen className="h-11 px-4 text-[14px] max-[359px]:px-3" />
                 ) : null}
               </div>
             ) : null}
@@ -191,7 +197,7 @@ export default async function AngebotSeite({ params }: Props) {
               nummer={angebot.nummer}
               kundeName={angebot.kunde_name}
               stand={angebot.updated_at}
-              preis={preisSatz(summen)}
+              preis={preisSatz(summen, { brutto: true })}
             />
           ) : (
             <>
@@ -261,6 +267,9 @@ function Hinweiskasten({
   );
 }
 
+/** Tap-Fläche 44 px bei 13px-Text, ohne die Zeile höher zu machen. */
+const BRIEFKOPF_LINK = "-my-3 inline-block py-3 hover:underline";
+
 /**
  * Briefkopf: Wortmarke und Absender. Am Handy fließt der Absender in
  * zwei, drei Zeilen mit „·“ dazwischen, ab sm steht er rechts als Block.
@@ -284,7 +293,7 @@ function Briefkopf({ adresse }: { adresse: string[] }) {
       {
         key: "tel",
         inhalt: (
-          <a href={ANGEBOT_KONTAKT.telHref} className="hover:underline">
+          <a href={ANGEBOT_KONTAKT.telHref} className={BRIEFKOPF_LINK}>
             {ANGEBOT_KONTAKT.telefon}
           </a>
         ),
@@ -294,7 +303,7 @@ function Briefkopf({ adresse }: { adresse: string[] }) {
         inhalt: (
           <a
             href={`mailto:${ANGEBOT_KONTAKT.email}`}
-            className="hover:underline"
+            className={BRIEFKOPF_LINK}
           >
             {ANGEBOT_KONTAKT.email}
           </a>
@@ -355,6 +364,14 @@ function Blatt({
   const einleitung = absaetze(angebot.einleitung);
   const hinweise = absaetze(angebot.hinweise);
   const aktualisiert = aktualisiertNachSenden(angebot);
+  // § 19-Satz unter den Summen: kurz, wenn die Hinweise ihn schon ganz
+  // enthalten (sonst stünde er zweimal untereinander).
+  const ustZeile =
+    summen.ust_satz === 0
+      ? enthaelt(angebot.hinweise, ustHinweis(0))
+        ? ustKurz(0)
+        : ustHinweis(0)
+      : null;
 
   return (
     <article
@@ -379,7 +396,7 @@ function Blatt({
         <div className="min-w-0">
           <p className="label-mono text-muted-foreground">Angebot für</p>
           <p className="mt-2 text-[17px] leading-snug font-semibold break-words">
-            {firma ?? name}
+            {festeRechtsformen(firma ?? name)}
           </p>
           {firma && name ? (
             <p className="mt-0.5 text-[15px] leading-snug break-words">
@@ -413,10 +430,13 @@ function Blatt({
         id="angebot-titel"
         className={cn(
           styles.titel,
-          "mt-10 text-[1.6rem] leading-[1.12] tracking-[-0.025em] text-balance break-words sm:mt-12 sm:text-[2.15rem]",
+          "mt-10 leading-[1.12] tracking-[-0.025em] text-balance break-words sm:mt-12",
+          titelGross(angebot.titel)
+            ? "text-[1.6rem] sm:text-[2.15rem]"
+            : "text-[1.35rem] sm:text-[1.9rem]",
         )}
       >
-        {angebot.titel}
+        {festeRechtsformen(angebot.titel)}
       </h1>
 
       <AufEinenBlick summen={summen} />
@@ -448,14 +468,20 @@ function Blatt({
           >
             {g.titel}
           </h2>
-          <Positionstabelle gruppe={g} />
-          <Positionsliste gruppe={g} />
+          {/* Ohne USt-Zeilen folgt die Gesamt-Linie direkt auf die letzte
+              Position: deren Linie fällt dann weg, sonst stehen zwei
+              Striche übereinander. */}
+          <Positionstabelle
+            gruppe={g}
+            ohneSchlusslinie={summen.ust_satz === 0}
+          />
+          <Positionsliste gruppe={g} ohneSchlusslinie={summen.ust_satz === 0} />
           <Summenblock
             summe={g.art === "einmalig" ? summen.einmalig : summen.monatlich}
             monatlich={g.art === "monatlich"}
             ustSatz={summen.ust_satz}
             // § 19-Satz nur einmal, unter der letzten Summe.
-            ustHinweisZeigen={gi === gruppen.length - 1}
+            ustZeile={gi === gruppen.length - 1 ? ustZeile : null}
           />
         </section>
       ))}
@@ -526,10 +552,15 @@ function Blatt({
   );
 }
 
+/** Enthält der Text den Satz, egal ob mit geschützten oder normalen Leerzeichen? */
+function enthaelt(text: string, satz: string): boolean {
+  const norm = (s: string) => s.replace(/ /g, " ");
+  return norm(text).includes(norm(satz));
+}
+
 function AufEinenBlick({ summen }: { summen: AngebotSummen }) {
   const teile: { label: string; betrag: number; zusatz: string }[] = [];
-  const steuer =
-    summen.ust_satz === 19 ? "zzgl. 19 % USt" : "ohne USt (§ 19 UStG)";
+  const steuer = ustKurz(summen.ust_satz);
   if (summen.einmalig.netto > 0)
     teile.push({
       label: "Einmalig",
@@ -575,7 +606,13 @@ function betragText(netto: number): string {
   return netto === 0 ? "inklusive" : formatEuro(netto);
 }
 
-function Positionstabelle({ gruppe }: { gruppe: Gruppe }) {
+function Positionstabelle({
+  gruppe,
+  ohneSchlusslinie,
+}: {
+  gruppe: Gruppe;
+  ohneSchlusslinie: boolean;
+}) {
   const monatlich = gruppe.art === "monatlich";
   return (
     <table className={cn(styles.tabelle, "hidden w-full sm:table")}>
@@ -611,7 +648,11 @@ function Positionstabelle({ gruppe }: { gruppe: Gruppe }) {
         {gruppe.positionen.map((p) => (
           <tr
             key={p.id}
-            className={cn(styles.zeile, "border-border border-b align-top")}
+            className={cn(
+              styles.zeile,
+              "border-border border-b align-top",
+              ohneSchlusslinie && "last:border-b-0",
+            )}
           >
             <td
               className={cn(
@@ -662,35 +703,49 @@ function Positionstabelle({ gruppe }: { gruppe: Gruppe }) {
   );
 }
 
-/** Am Handy: Positionen als Liste (Titel, Beschreibung, Betrag). */
-function Positionsliste({ gruppe }: { gruppe: Gruppe }) {
+/**
+ * Am Handy: Positionen als Liste. Die Nummer steht in einer eigenen
+ * schmalen Spalte, sodass Folgezeilen eines langen Titels (und die
+ * Beschreibung) bündig unter dem Titel beginnen, wie in der Tabelle.
+ */
+function Positionsliste({
+  gruppe,
+  ohneSchlusslinie,
+}: {
+  gruppe: Gruppe;
+  ohneSchlusslinie: boolean;
+}) {
   return (
     <ul className={cn(styles.liste, "sm:hidden")}>
       {gruppe.positionen.map((p) => (
-        <li key={p.id} className="border-border border-b py-4">
-          <div className="flex items-start justify-between gap-4">
-            <p className="min-w-0 text-[15.5px] leading-snug font-semibold break-words">
-              <span
-                className={cn(
-                  styles.zahl,
-                  "text-muted-foreground mr-2 font-mono text-[13px] font-normal",
-                )}
-              >
-                {p.nr}
-              </span>
-              {p.titel}
-            </p>
-            <p
-              className={cn(
-                styles.zahl,
-                "shrink-0 text-right text-[15.5px] font-semibold whitespace-nowrap",
-              )}
-            >
-              {betragText(p.netto)}
-            </p>
-          </div>
+        <li
+          key={p.id}
+          className={cn(
+            "border-border grid grid-cols-[1.5rem_minmax(0,1fr)_auto] gap-x-2 border-b py-4",
+            ohneSchlusslinie && "last:border-b-0",
+          )}
+        >
+          <span
+            className={cn(
+              styles.zahl,
+              "text-muted-foreground pt-0.5 font-mono text-[13px]",
+            )}
+          >
+            {p.nr}
+          </span>
+          <p className="min-w-0 text-[15.5px] leading-snug font-semibold break-words">
+            {p.titel}
+          </p>
+          <p
+            className={cn(
+              styles.zahl,
+              "pl-2 text-right text-[15.5px] font-semibold whitespace-nowrap",
+            )}
+          >
+            {betragText(p.netto)}
+          </p>
           {p.beschreibung ? (
-            <p className="text-muted-foreground mt-1.5 text-[14px] leading-relaxed break-words whitespace-pre-line">
+            <p className="text-muted-foreground col-span-2 col-start-2 mt-1.5 text-[14px] leading-relaxed break-words whitespace-pre-line">
               {p.beschreibung}
             </p>
           ) : null}
@@ -698,7 +753,7 @@ function Positionsliste({ gruppe }: { gruppe: Gruppe }) {
             <p
               className={cn(
                 styles.zahl,
-                "text-muted-foreground mt-1.5 text-[13.5px]",
+                "text-muted-foreground col-span-2 col-start-2 mt-1.5 text-[13.5px]",
               )}
             >
               {mengeText(p.menge)} {formatEuro(p.preis_cent)}
@@ -714,17 +769,24 @@ function Summenblock({
   summe,
   monatlich,
   ustSatz,
-  ustHinweisZeigen,
+  ustZeile,
 }: {
   summe: Summe;
   monatlich: boolean;
   ustSatz: AngebotSummen["ust_satz"];
-  ustHinweisZeigen: boolean;
+  /** Satz zur Umsatzsteuer unter der Summe (nur Kleinunternehmer, nur einmal). */
+  ustZeile: string | null;
 }) {
   const proMonat = monatlich ? " pro Monat" : "";
   const zeile = "flex items-baseline justify-between gap-6";
   return (
-    <div className={cn(styles.summen, "mt-4 flex justify-end")}>
+    <div
+      className={cn(
+        styles.summen,
+        "flex justify-end",
+        ustSatz === 19 ? "mt-4" : "mt-0",
+      )}
+    >
       <div className="w-full max-w-[22rem]">
         <dl className={cn(styles.zahl, "text-[15px]")}>
           {ustSatz === 19 ? (
@@ -734,7 +796,7 @@ function Summenblock({
                 <dd className="whitespace-nowrap">{formatEuro(summe.netto)}</dd>
               </div>
               <div className={cn(zeile, "py-0.5")}>
-                <dt className="text-muted-foreground">zzgl. 19 % USt</dt>
+                <dt className="text-muted-foreground">{ustKurz(19)}</dt>
                 <dd className="whitespace-nowrap">{formatEuro(summe.ust)}</dd>
               </div>
             </>
@@ -746,9 +808,9 @@ function Summenblock({
             </dd>
           </div>
         </dl>
-        {ustSatz === 0 && ustHinweisZeigen ? (
+        {ustZeile ? (
           <p className="text-muted-foreground mt-1.5 text-[13px] leading-snug">
-            {ustHinweis(0)}
+            {ustZeile}
           </p>
         ) : null}
       </div>
@@ -814,39 +876,6 @@ function KontaktLeiste({
   );
 }
 
-function Fuss() {
-  return (
-    <footer
-      className={cn(
-        styles.nichtDrucken,
-        "border-border text-muted-foreground border-t px-4 py-6 text-[13px] sm:px-6",
-      )}
-    >
-      <div className="mx-auto flex max-w-[54rem] flex-wrap items-center gap-x-5 gap-y-2">
-        <span>Sitalo Webdesign · Hamburg</span>
-        <Link
-          href="/"
-          className="hover:text-foreground underline-offset-4 hover:underline"
-        >
-          sitalo.de
-        </Link>
-        <Link
-          href="/impressum"
-          className="hover:text-foreground underline-offset-4 hover:underline"
-        >
-          Impressum
-        </Link>
-        <Link
-          href="/datenschutz"
-          className="hover:text-foreground underline-offset-4 hover:underline"
-        >
-          Datenschutz
-        </Link>
-      </div>
-    </footer>
-  );
-}
-
 function Ladefehler() {
   return (
     <div className={cn(styles.seite, "bg-background flex min-h-dvh flex-col")}>
@@ -874,6 +903,7 @@ function Ladefehler() {
           </a>
         </div>
       </main>
+      <Fuss />
     </div>
   );
 }

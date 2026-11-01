@@ -31,7 +31,7 @@ import {
 } from "@/lib/admin/angebote";
 import { berlinDateIso } from "@/lib/admin/berlin-time";
 import { DbError, isMissingTable } from "@/lib/admin/db-errors";
-import { addEvent } from "@/lib/leads-store";
+import { addEvent, listEvents } from "@/lib/leads-store";
 import { serviceClient } from "@/lib/supabase/service";
 
 /*
@@ -271,10 +271,23 @@ export async function updateAngebot(
   return whyNot(id, "konflikt");
 }
 
+/** Gibt es zu dieser Nummer schon einen Verlaufseintrag „gesendet“? */
+async function schonGeschickt(leadId: string, nummer: string): Promise<boolean> {
+  const events = (await listEvents(leadId).catch(() => null)) ?? [];
+  return events.some(
+    (e) =>
+      e.action === "angebot" &&
+      e.detail?.nummer === nummer &&
+      e.detail.was === "gesendet",
+  );
+}
+
 /**
- * Nach „Gesendet?“ → Ja: Status 'gesendet', sent_at = jetzt (auch
- * beim erneuten Senden). Prüft vorher sendeProbleme (Name, Titel,
- * Positionen, Gültig bis). Verlauf: „gesendet“ bzw. „erneut gesendet“.
+ * Freigeben bzw. senden: Status 'gesendet', sent_at = jetzt (auch beim
+ * erneuten Senden). Prüft vorher sendeProbleme (Name, Titel, Positionen,
+ * Gültig bis). Verlauf: aus dem Entwurf heraus „freigegeben“ (der Link
+ * ist aktiv, der Kunde hat noch nichts; das Verschicken vermerkt
+ * noteAngebotVerschickt), sonst „gesendet“ bzw. „erneut gesendet“.
  */
 export async function markAngebotSent(
   id: string,
@@ -299,13 +312,31 @@ export async function markAngebotSent(
     throw dbError("Angebot konnte nicht als gesendet markiert werden", error);
   const [angebot] = rows(data);
   if (!angebot) return whyNot(id, "gesperrt");
-  await event(
-    angebot,
-    actor,
-    "gesendet",
-    current.status === "gesendet" ? { erneut: true } : {},
-  );
+  if (current.status === "entwurf") {
+    await event(angebot, actor, "freigegeben");
+  } else {
+    const erneut = await schonGeschickt(angebot.lead_id, angebot.nummer);
+    await event(angebot, actor, "gesendet", erneut ? { erneut: true } : {});
+  }
   return { ok: true, angebot };
+}
+
+/**
+ * Der Inhaber hat einen Weg angetippt (Mail, Teilen, Link kopieren):
+ * Verlauf „gesendet“ (bzw. „erneut gesendet“). Ändert am Angebot
+ * nichts; nur bei Status 'gesendet'.
+ */
+export async function noteAngebotVerschickt(
+  id: string,
+  actor: string,
+): Promise<AngebotErgebnis> {
+  const current = await getAngebotById(id);
+  if (!current) return { ok: false, grund: "nicht_gefunden" };
+  if (current.status !== "gesendet")
+    return { ok: false, grund: "gesperrt", angebot: current };
+  const erneut = await schonGeschickt(current.lead_id, current.nummer);
+  await event(current, actor, "gesendet", erneut ? { erneut: true } : {});
+  return { ok: true, angebot: current };
 }
 
 /** Gesendet → zurückgezogen (Kundenseite: „nicht mehr gültig“). */

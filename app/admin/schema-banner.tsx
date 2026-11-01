@@ -54,15 +54,25 @@ export function SchemaBanner({
         <li>4. Zurück hier „Erneut prüfen“ tippen</li>
       </ol>
       <p className="text-muted-foreground mt-2 text-[14px]">
-        Bis dahin aus: {migrations.map((m) => m.features).join(", ")}.{" "}
-        {migrations.length > 1 ? "Dateien" : "Datei"}:{" "}
-        {migrations.map((m, i) => (
-          <span key={m.id}>
-            {i > 0 ? ", " : null}
-            <span className="font-mono text-[12.5px] break-all">{m.file}</span>
-          </span>
-        ))}
+        Bis dahin aus: {migrations.map((m) => m.features).join(", ")}.
       </p>
+      {/* Dateinamen braucht der Inhaber nicht (SQL kommt per Knopf). */}
+      <details className="text-muted-foreground mt-1 text-[13px]">
+        <summary className="inline-flex min-h-11 cursor-pointer items-center">
+          Für Entwickler
+        </summary>
+        <p className="pb-1">
+          {migrations.length > 1 ? "Dateien" : "Datei"}:{" "}
+          {migrations.map((m, i) => (
+            <span key={m.id}>
+              {i > 0 ? ", " : null}
+              <span className="font-mono text-[12.5px] break-all">
+                {m.file}
+              </span>
+            </span>
+          ))}
+        </p>
+      </details>
       <div className="mt-3 grid gap-2 sm:grid-cols-3">
         <button
           type="button"

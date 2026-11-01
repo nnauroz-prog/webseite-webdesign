@@ -12,7 +12,7 @@
  * Fehlermeldungen für den Inhaber (Admin) in du-Form.
  */
 
-import type { LeadRow } from "@/lib/leads-meta";
+import type { LeadEvent, LeadRow } from "@/lib/leads-meta";
 import type { Paket } from "@/lib/pakete-data";
 
 import {
@@ -703,6 +703,15 @@ export function ustHinweis(satz: UstSatz): string {
     : "Alle Beträge verstehen sich netto zuzüglich 19 % Umsatzsteuer.";
 }
 
+/**
+ * Kurzform neben Beträgen: „zzgl. 19 % USt“ bzw. „ohne USt (§ 19 UStG)“,
+ * mit geschützten Leerzeichen, damit Zahl und Prozentzeichen bzw. § und
+ * Nummer am Handy nicht getrennt umbrechen.
+ */
+export function ustKurz(satz: UstSatz): string {
+  return satz === 0 ? "ohne USt (§ 19 UStG)" : "zzgl. 19 % USt";
+}
+
 /** Die Absätze der Standard-Hinweise in fester Reihenfolge ("" = entfällt). */
 function hinweisBausteine(k: HinweisKontext): string[] {
   const dauer = k.paket ? paketBySlug(k.paket).dauer : null;
@@ -1161,7 +1170,11 @@ function parsePositionen(raw: unknown, fehler: FeldFehler): AngebotPosition[] {
         ? parsePreisCent(item.preis_cent)
         : parsePreisCent(parseEuroEingabe(item.preis));
     if (preisCent === null) {
-      fehler[`${key}.preis_cent`] = "Betrag ungültig (0 bis 1.000.000 €).";
+      // Leer ist nicht „ungültig“, es fehlt: anders sagen.
+      fehler[`${key}.preis_cent`] =
+        preisRaw == null || (typeof preisRaw === "string" && !preisRaw.trim())
+          ? "Bitte einen Preis eintragen (0 ist erlaubt)."
+          : "Betrag ungültig, z. B. 1.299 oder 1.299,50 (höchstens 1.000.000 €).";
       ok = false;
     }
     const art = oneOf(POSITION_ARTEN, item.art);
@@ -1357,18 +1370,31 @@ export function kundeAnzeige(
  * „899,00 € einmalig und 79,00 € im Monat, jeweils zuzüglich 19 %
  * Umsatzsteuer“ (mit geschützten Leerzeichen); "" ohne Positionen.
  */
-export function preisSatz(summen: AngebotSummen): string {
+export function preisSatz(
+  summen: AngebotSummen,
+  opts: { brutto?: boolean } = {},
+): string {
   const teile: string[] = [];
-  if (summen.einmalig.netto > 0)
+  const brutto: string[] = [];
+  if (summen.einmalig.netto > 0) {
     teile.push(`${formatEuro(summen.einmalig.netto)} einmalig`);
-  if (summen.monatlich.netto > 0)
+    brutto.push(formatEuro(summen.einmalig.brutto));
+  }
+  if (summen.monatlich.netto > 0) {
     teile.push(`${formatEuro(summen.monatlich.netto)} im Monat`);
+    brutto.push(formatEuro(summen.monatlich.brutto));
+  }
   if (teile.length === 0) return "";
   const steuer =
     summen.ust_satz === 0
       ? "ohne Umsatzsteuer (§ 19 UStG)"
       : `${teile.length > 1 ? "jeweils " : ""}zuzüglich 19 % Umsatzsteuer`;
-  return `${teile.join(" und ")}, ${steuer}`;
+  const satz = `${teile.join(" und ")}, ${steuer}`;
+  // Mit brutto: „(1.069,81 € bzw. 94,01 € brutto)“, damit der Satz über
+  // dem Annehmen-Knopf zu „Gesamt“ im Angebotsblatt passt.
+  return opts.brutto && summen.ust_satz !== 0
+    ? `${satz} (${brutto.join(" bzw. ")} brutto)`
+    : satz;
 }
 
 const plain = (s: string) => s.replace(/[  ]/g, " ");
@@ -1558,6 +1584,9 @@ export function inhaberBenachrichtigung(
 
 export const ANGEBOT_EREIGNISSE = [
   "erstellt",
+  /** Entwurf freigegeben: Status „gesendet“, Link aktiv, Kunde hat noch nichts. */
+  "freigegeben",
+  /** An den Kunden geschickt (Mail, Teilen, Link kopiert, oder „Ja, gesendet“). */
   "gesendet",
   "angesehen",
   "angenommen",
@@ -1588,8 +1617,12 @@ export function angebotEventText(detail: Record<string, unknown>): string {
   switch (oneOf(ANGEBOT_EREIGNISSE, detail.was)) {
     case "erstellt":
       return `${nr} erstellt`;
+    case "freigegeben":
+      return `${nr} freigegeben, Link aktiv`;
     case "gesendet":
-      return detail.erneut ? `${nr} erneut gesendet` : `${nr} gesendet`;
+      return detail.erneut
+        ? `${nr} erneut an den Kunden geschickt`
+        : `${nr} an den Kunden geschickt`;
     case "angesehen":
       return `${nr} vom Kunden geöffnet`;
     case "angenommen":
@@ -1601,12 +1634,54 @@ export function angebotEventText(detail: Record<string, unknown>): string {
     case "verworfen":
       return `${nr} (Entwurf) verworfen`;
     case "mail_fehler":
-      return `Benachrichtigung zu ${nr} fehlgeschlagen`;
+      return `Mail an dich zu ${nr} nicht rausgegangen`;
     case "bestaetigt":
-      return `Bestätigung zu ${nr} an den Kunden geschickt`;
+      return `Bestätigungs-Mail an den Kunden zu ${nr} geschickt`;
     case "bestaetigung_fehler":
-      return `Bestätigung zu ${nr} an den Kunden fehlgeschlagen`;
+      return `Bestätigungs-Mail an den Kunden zu ${nr} nicht rausgegangen`;
     default:
       return nr;
   }
+}
+
+/**
+ * Ist die Bestätigungs-Mail an den Kunden zu diesem Angebot nicht
+ * rausgegangen (Ereignis „bestaetigung_fehler“ ohne späteres
+ * „bestaetigt“)? Dann soll der Inhaber sie selbst nachreichen; die
+ * Detailseite zeigt das im Kasten „Nächster Schritt“.
+ */
+/**
+ * Freigegeben, aber noch nie an den Kunden geschickt: Es gibt den
+ * Eintrag „freigegeben“, aber keinen „gesendet“ zu dieser Nummer. Karte
+ * und Editor zeigen dann „Freigegeben, noch nicht verschickt“ statt
+ * „Gesendet am …“, auch nach dem Neuladen.
+ */
+export function nochNichtVerschickt(
+  events: readonly Pick<LeadEvent, "action" | "detail">[],
+  nummer: string,
+): boolean {
+  let frei = false;
+  for (const e of events) {
+    if (e.action !== "angebot" || e.detail?.nummer !== nummer) continue;
+    if (e.detail.was === "gesendet") return false;
+    if (e.detail.was === "freigegeben") frei = true;
+  }
+  return frei;
+}
+
+export function bestaetigungFehlt(
+  events: readonly Pick<LeadEvent, "action" | "detail" | "created_at">[],
+  nummer: string,
+): boolean {
+  let fehler: string | null = null;
+  let ok: string | null = null;
+  for (const e of events) {
+    if (e.action !== "angebot" || e.detail?.nummer !== nummer) continue;
+    if (e.detail.was === "bestaetigung_fehler") {
+      if (!fehler || e.created_at > fehler) fehler = e.created_at;
+    } else if (e.detail.was === "bestaetigt") {
+      if (!ok || e.created_at > ok) ok = e.created_at;
+    }
+  }
+  return fehler !== null && (ok === null || ok < fehler);
 }

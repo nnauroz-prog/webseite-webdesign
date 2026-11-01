@@ -115,14 +115,16 @@
     display: table-header-group;
   }
 
+  /*
+   * Nur das Nötige am Stück halten: eine Zeile, der Summenblock, der
+   * Kopfblock. Keine „avoid“-Ketten (Summe an letzter Zeile, Kontakt
+   * an Hinweisen): Chrome schob damit ganze Abschnitte auf die nächste
+   * Seite und ließ Seiten halb leer. Der Tabellenkopf wiederholt sich.
+   */
   .zeile,
   .summen,
   .block {
     break-inside: avoid;
-  }
-  /* Die Summe bleibt bei der letzten Position ihrer Gruppe. */
-  .summen {
-    break-before: avoid;
   }
   .blatt h1,
   .blatt h2 {
@@ -132,22 +134,26 @@
   .text {
     font-size: 10.5pt !important;
     line-height: 1.5 !important;
+    orphans: 3;
+    widows: 3;
   }
 
   /* Auf Papier enger setzen als am Bildschirm. */
   .abschnitt {
-    margin-top: 8mm !important;
+    margin-top: 6mm !important;
   }
   .zeile > td {
-    padding-top: 2.5mm !important;
-    padding-bottom: 2.5mm !important;
+    padding-top: 2mm !important;
+    padding-bottom: 2mm !important;
   }
   .titel {
     margin-top: 8mm !important;
     font-size: 20pt !important;
   }
-  /* Kontaktzeile nicht allein auf eine neue Seite. */
+  /* Kontaktzeile: knapp, damit sie noch auf die letzte Seite passt. */
   .schluss {
-    break-before: avoid;
+    margin-top: 6mm !important;
+    padding-top: 2.5mm !important;
+    break-inside: avoid;
   }
 }

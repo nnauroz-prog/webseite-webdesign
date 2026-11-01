@@ -15,6 +15,8 @@ import {
   angebotUrl,
   base64Url,
   berechneSummen,
+  bestaetigungFehlt,
+  nochNichtVerschickt,
   centAusPreistext,
   centZuEingabe,
   darfWechseln,
@@ -55,6 +57,7 @@ import {
   statusZeile,
   syncHinweise,
   teilenDaten,
+  ustKurz,
   ustSatzAusUmgebung,
 } from "@/lib/admin/angebote";
 import { eventText } from "@/lib/admin/timeline";
@@ -431,6 +434,32 @@ describe("Beträge", () => {
     );
     assert.equal(preisSatz(berechneSummen([], 19)), "");
   });
+
+  it("preisSatz mit brutto: Klammer nur bei 19 %", () => {
+    const beide = berechneSummen(paketPositionen("business"), 19);
+    assert.equal(
+      preisSatz(beide, { brutto: true }),
+      "899,00 € einmalig und 79,00 € im Monat, jeweils zuzüglich 19 % Umsatzsteuer (1.069,81 € bzw. 94,01 € brutto)",
+    );
+    assert.equal(
+      preisSatz(berechneSummen([paketPositionen("starter")[0]], 19), {
+        brutto: true,
+      }),
+      "499,00 € einmalig, zuzüglich 19 % Umsatzsteuer (593,81 € brutto)",
+    );
+    // Kleinunternehmer: netto ist brutto, keine Klammer.
+    assert.equal(
+      preisSatz(berechneSummen([paketPositionen("starter")[0]], 0), {
+        brutto: true,
+      }),
+      "499,00 € einmalig, ohne Umsatzsteuer (§ 19 UStG)",
+    );
+  });
+
+  it("ustKurz: geschützte Leerzeichen", () => {
+    assert.equal(ustKurz(19), "zzgl. 19 % USt");
+    assert.equal(ustKurz(0), "ohne USt (§ 19 UStG)");
+  });
 });
 
 describe("parseAngebotInhalt", () => {
@@ -539,6 +568,43 @@ describe("parseAngebotInhalt", () => {
     assert.equal(r.fehler.titel, "Höchstens 160 Zeichen.");
     assert.equal(r.fehler.einleitung, "Höchstens 2.000 Zeichen.");
     assert.equal(r.fehler["positionen.1.menge"], "Menge: 1 bis 999.");
+    assert.match(
+      r.fehler["positionen.1.preis_cent"],
+      /^Betrag ungültig, z\. B\. 1\.299/,
+    );
+  });
+
+  it("leerer Preis heißt „fehlt“, nicht „ungültig“", () => {
+    const one = (preis: unknown) =>
+      parseAngebotInhalt({
+        ...gueltig(),
+        positionen: [
+          {
+            id: "a",
+            titel: "Logo",
+            beschreibung: "",
+            menge: 1,
+            preis,
+            art: "einmalig",
+          },
+        ],
+      });
+    for (const preis of ["", "   ", undefined]) {
+      const r = one(preis);
+      assert.equal(r.ok, false);
+      if (!r.ok)
+        assert.equal(
+          r.fehler["positionen.0.preis_cent"],
+          "Bitte einen Preis eintragen (0 ist erlaubt).",
+        );
+    }
+    const r = one("abc");
+    assert.equal(r.ok, false);
+    if (!r.ok)
+      assert.equal(
+        r.fehler["positionen.0.preis_cent"],
+        "Betrag ungültig, z. B. 1.299 oder 1.299,50 (höchstens 1.000.000 €).",
+      );
   });
 
   it("Grenzen: Menge 1–999, Betrag 0 bis 1.000.000 €, höchstens 30 Positionen", () => {
@@ -1018,11 +1084,15 @@ describe("Zeilen und Verlauf", () => {
     );
     assert.equal(
       eventText(ev({ was: "gesendet", nummer: "A-2026-0001" })),
-      "Angebot A-2026-0001 gesendet",
+      "Angebot A-2026-0001 an den Kunden geschickt",
+    );
+    assert.equal(
+      eventText(ev({ was: "freigegeben", nummer: "A-2026-0001" })),
+      "Angebot A-2026-0001 freigegeben, Link aktiv",
     );
     assert.equal(
       eventText(ev({ was: "gesendet", nummer: "A-2026-0001", erneut: true })),
-      "Angebot A-2026-0001 erneut gesendet",
+      "Angebot A-2026-0001 erneut an den Kunden geschickt",
     );
     assert.equal(
       eventText(ev({ was: "angesehen", nummer: "A-2026-0001" })),
@@ -1046,12 +1116,95 @@ describe("Zeilen und Verlauf", () => {
     );
     assert.equal(
       eventText(ev({ was: "mail_fehler", nummer: "A-2026-0001" })),
-      "Benachrichtigung zu Angebot A-2026-0001 fehlgeschlagen",
+      "Mail an dich zu Angebot A-2026-0001 nicht rausgegangen",
+    );
+    assert.equal(
+      eventText(ev({ was: "bestaetigt", nummer: "A-2026-0001" })),
+      "Bestätigungs-Mail an den Kunden zu Angebot A-2026-0001 geschickt",
+    );
+    assert.equal(
+      eventText(ev({ was: "bestaetigung_fehler", nummer: "A-2026-0001" })),
+      "Bestätigungs-Mail an den Kunden zu Angebot A-2026-0001 nicht rausgegangen",
     );
     // Fremde Werte erscheinen nicht.
     assert.equal(
       angebotEventText({ was: "<b>", nummer: "<script>" }),
       "Angebot",
+    );
+  });
+
+  it("nochNichtVerschickt: freigegeben ohne „gesendet“ zu dieser Nummer", () => {
+    const e = (was: string, nummer = "A-2026-0001") => ({
+      action: "angebot" as const,
+      detail: { was, nummer },
+    });
+    assert.equal(nochNichtVerschickt([], "A-2026-0001"), false);
+    assert.equal(
+      nochNichtVerschickt([e("freigegeben"), e("erstellt")], "A-2026-0001"),
+      true,
+    );
+    assert.equal(
+      nochNichtVerschickt(
+        [e("gesendet"), e("freigegeben"), e("erstellt")],
+        "A-2026-0001",
+      ),
+      false,
+    );
+    // Anderes Angebot derselben Anfrage zählt nicht.
+    assert.equal(
+      nochNichtVerschickt(
+        [e("gesendet", "A-2026-0002"), e("freigegeben")],
+        "A-2026-0001",
+      ),
+      true,
+    );
+    assert.equal(
+      nochNichtVerschickt(
+        [{ action: "status" as const, detail: { was: "freigegeben", nummer: "A-2026-0001" } }],
+        "A-2026-0001",
+      ),
+      false,
+    );
+  });
+
+  it("bestaetigungFehlt: Fehler ohne späteres „bestaetigt“ (Reihenfolge egal)", () => {
+    const e = (was: string, created_at: string, nummer = "A-2026-0001") => ({
+      action: "angebot" as const,
+      created_at,
+      detail: { was, nummer },
+    });
+    assert.equal(bestaetigungFehlt([], "A-2026-0001"), false);
+    assert.equal(
+      bestaetigungFehlt(
+        [
+          e("angenommen", "2026-11-01T10:00:00Z"),
+          e("bestaetigung_fehler", "2026-11-01T10:00:01Z"),
+        ],
+        "A-2026-0001",
+      ),
+      true,
+    );
+    // Später doch geschickt (neueste zuerst wie aus der Datenbank).
+    assert.equal(
+      bestaetigungFehlt(
+        [
+          e("bestaetigt", "2026-11-01T11:00:00Z"),
+          e("bestaetigung_fehler", "2026-11-01T10:00:01Z"),
+        ],
+        "A-2026-0001",
+      ),
+      false,
+    );
+    // Anderes Angebot derselben Anfrage zählt nicht; Mail an den Inhaber auch nicht.
+    assert.equal(
+      bestaetigungFehlt(
+        [
+          e("bestaetigung_fehler", "2026-11-01T10:00:01Z", "A-2026-0002"),
+          e("mail_fehler", "2026-11-01T10:00:02Z"),
+        ],
+        "A-2026-0001",
+      ),
+      false,
     );
   });
 });

@@ -16,10 +16,13 @@ import { cn } from "@/lib/utils";
 export function CreateAngebotButton({
   leadId,
   big,
+  weiteres = false,
 }: {
   leadId: string;
-  /** Großer Knopf (noch kein Angebot) oder schlichter („Weiteres Angebot“). */
+  /** Großer schwarzer Knopf (nächster Schritt) oder schlichte Rahmen-Variante. */
   big: boolean;
+  /** Es gibt schon Angebote: „Weiteres Angebot erstellen“. */
+  weiteres?: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -59,9 +62,9 @@ export function CreateAngebotButton({
         )}
         {pending
           ? "Erstellt …"
-          : big
-            ? "Angebot erstellen"
-            : "Weiteres Angebot erstellen"}
+          : weiteres
+            ? "Weiteres Angebot erstellen"
+            : "Angebot erstellen"}
       </button>
       {error ? (
         <p role="alert" className="text-ink-olive mt-2 text-[14px]">

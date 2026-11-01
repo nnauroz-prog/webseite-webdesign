@@ -6,7 +6,10 @@ import { useRef, useState, useTransition } from "react";
 
 import type { Angebot } from "@/lib/admin/angebote";
 
-import { markAngebotSentAction } from "@/app/admin/angebot-actions";
+import {
+  markAngebotSentAction,
+  markAngebotVerschicktAction,
+} from "@/app/admin/angebot-actions";
 import { BottomSheet } from "@/app/admin/anfragen/[id]/bottom-sheet";
 import { runAction } from "@/app/admin/run-action";
 import {
@@ -48,31 +51,47 @@ type Copy = "idle" | "kopiert" | "kopiert_statt_teilen" | "manuell";
  * Ein Entwurf wird zuerst freigegeben (Status „Gesendet“, Verlauf),
  * erst dann gibt es die Wege zum Verschicken. Der Link funktioniert nur
  * für freigegebene Angebote; so bekommt kein Kunde einen Link, der ins
- * Leere führt, egal wann er ihn öffnet.
+ * Leere führt, egal wann er ihn öffnet. Wird das Blatt nach der
+ * Freigabe geschlossen, ohne dass ein Weg angetippt wurde, meldet
+ * onSent `verschickt: false`: Karte und Editor sagen dann „noch nicht
+ * verschickt“ statt „Gesendet am …“.
  *
  * Erneut senden (schon freigegeben): Nach Mail oder Teilen fragt das
  * Blatt „Gesendet?“; „Ja“ vermerkt das erneute Senden im Verlauf.
  *
  * Vor dem Senden: Fehlt etwas (Name, Titel, Position, Gültig bis in
- * der Vergangenheit), gibt es nur die Liste und „Angebot bearbeiten“.
+ * der Vergangenheit), gibt es nur die Liste und „Angebot bearbeiten“
+ * bzw. im Editor „Zurück zum Bearbeiten“ (onFix springt zum Feld).
  */
 export function AngebotSendSheet({
   open,
   angebot,
   editHref,
+  nochNichtVerschickt = false,
   onClose,
+  onFix,
   onSent,
 }: {
   open: boolean;
   angebot: SendAngebot;
   /** Link „Angebot bearbeiten“ (fehlt im Editor selbst). */
   editHref?: string;
+  /** Schon freigegeben, aber noch nie verschickt: Texte ohne „erneut“. */
+  nochNichtVerschickt?: boolean;
   onClose: () => void;
+  /** „Zurück zum Bearbeiten“ (nur im Editor): schließt und springt zum ersten fehlenden Feld. */
+  onFix?: () => void;
   /**
    * anfrageInArbeit: Die Anfrage stand auf „Neu“ und steht jetzt auf
    * „In Arbeit“. erstmals: In diesem Blatt freigegeben (war Entwurf).
+   * verschickt: Ein Weg (Mail, Teilen, Link kopieren) wurde angetippt;
+   * false nur, wenn das Blatt direkt nach der Freigabe geschlossen wurde.
    */
-  onSent: (info: { anfrageInArbeit: boolean; erstmals: boolean }) => void;
+  onSent: (info: {
+    anfrageInArbeit: boolean;
+    erstmals: boolean;
+    verschickt: boolean;
+  }) => void;
 }) {
   // Beim Öffnen einmal prüfen (das Blatt wird je Öffnen neu erzeugt).
   const [probleme, setProbleme] = useState(() =>
@@ -89,21 +108,41 @@ export function AngebotSendSheet({
   );
   const [via, setVia] = useState<"mail" | "teilen" | null>(null);
   const [copy, setCopy] = useState<Copy>("idle");
+  // Ein Weg wurde angetippt (Mail-Programm, Teilen, Link kopiert).
+  const [weg, setWeg] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const urlRef = useRef<HTMLInputElement>(null);
 
   const url = angebotUrl(angebot.token);
   const mailHref = kundenMailHref(angebot);
-  const again = !entwurf;
+  const again = !entwurf && !nochNichtVerschickt;
 
   /** Schließen: Nach einer Freigabe zählt das wie „gesendet“. */
   function close() {
-    if (freigabe) onSent({ ...freigabe, erstmals: true });
+    if (freigabe) onSent({ ...freigabe, erstmals: true, verschickt: weg });
     else onClose();
   }
 
+  /**
+   * Ein Weg wurde angetippt. Direkt nach der Freigabe im selben Blatt
+   * wird das Verschicken gleich im Verlauf vermerkt (ohne Rückfrage),
+   * damit Karte und Editor auch nach dem Neuladen „Gesendet“ sagen.
+   */
+  function wegAngetippt() {
+    if (weg) return;
+    setWeg(true);
+    if (freigabe) {
+      start(async () => {
+        // Scheitert nur das Vermerken, bleibt der Hinweis „noch nicht
+        // verschickt“ stehen; der Inhaber kann später „Senden“ tippen.
+        await runAction(() => markAngebotVerschicktAction(angebot.id));
+      });
+    }
+  }
+
   function ask(how: "mail" | "teilen") {
+    wegAngetippt();
     // Frisch freigegeben: schon vermerkt, keine Rückfrage nötig.
     if (freigabe) return;
     setVia(how);
@@ -112,6 +151,7 @@ export function AngebotSendSheet({
   }
 
   async function copyLink(instead: boolean) {
+    wegAngetippt();
     try {
       await navigator.clipboard.writeText(url);
       setCopy(instead ? "kopiert_statt_teilen" : "kopiert");
@@ -159,7 +199,11 @@ export function AngebotSendSheet({
         setStep("wahl");
         return;
       }
-      onSent({ anfrageInArbeit: res.anfrageInArbeit, erstmals: false });
+      onSent({
+        anfrageInArbeit: res.anfrageInArbeit,
+        erstmals: false,
+        verschickt: true,
+      });
     });
   }
 
@@ -214,7 +258,7 @@ export function AngebotSendSheet({
           ) : (
             <button
               type="button"
-              onClick={onClose}
+              onClick={onFix ?? onClose}
               className="bg-foreground text-background mt-3 flex h-12 w-full items-center justify-center rounded-[3px] text-[16px] font-medium"
             >
               Zurück zum Bearbeiten
@@ -253,7 +297,9 @@ export function AngebotSendSheet({
             {via === "mail"
               ? "Hast du die Mail abgeschickt? Dann vermerke es hier."
               : "Hast du den Link verschickt? Dann vermerke es hier."}{" "}
-            Das erneute Senden steht dann im Verlauf.
+            {again
+              ? "Das erneute Senden steht dann im Verlauf."
+              : "Das Senden steht dann im Verlauf."}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button
@@ -393,21 +439,31 @@ export function AngebotSendSheet({
 
           {freigabe ? (
             <div className="border-border mt-4 border-t pt-3">
+              {!weg ? (
+                <p className="text-muted-foreground mb-2 text-[14px] leading-snug">
+                  Ohne einen der Wege oben hat der Kunde das Angebot noch
+                  nicht. Du kannst es auch später über „Senden“ verschicken.
+                </p>
+              ) : null}
               <button
                 type="button"
                 onClick={close}
                 className={cn(BTN, "bg-foreground text-background w-full")}
               >
-                Fertig
+                {weg ? "Fertig" : "Später verschicken"}
               </button>
             </div>
           ) : (
             <div className="border-border mt-4 border-t pt-3">
               {copy !== "idle" ? (
-                <p className="text-[15px] font-medium">Link erneut verschickt?</p>
+                <p className="text-[15px] font-medium">
+                  {again ? "Link erneut verschickt?" : "Link verschickt?"}
+                </p>
               ) : (
                 <p className="text-muted-foreground text-[14px]">
-                  Schon auf anderem Weg erneut verschickt?
+                  {again
+                    ? "Schon auf anderem Weg erneut verschickt?"
+                    : "Schon auf anderem Weg verschickt?"}
                 </p>
               )}
               <button
@@ -424,7 +480,7 @@ export function AngebotSendSheet({
                 {pending ? (
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                 ) : null}
-                Erneutes Senden vermerken
+                {again ? "Erneutes Senden vermerken" : "Senden vermerken"}
               </button>
             </div>
           )}

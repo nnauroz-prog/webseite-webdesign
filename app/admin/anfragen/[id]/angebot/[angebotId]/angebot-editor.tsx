@@ -45,6 +45,8 @@ import {
 } from "@/app/admin/anfragen/[id]/angebot/[angebotId]/editor-model";
 import {
   ANGEBOT_PILL,
+  NOCH_NICHT_VERSCHICKT,
+  sendeVermerk,
   vorschauPfad,
 } from "@/app/admin/anfragen/[id]/angebot-format";
 import { AngebotSendSheet } from "@/app/admin/anfragen/[id]/angebot-send-sheet";
@@ -114,6 +116,31 @@ const posKey = (
   feld: "titel" | "beschreibung" | "menge" | "preis_cent" | "art",
 ) => `positionen.${i}.${feld}`;
 
+const POS_ADD_ID = "ed-pos-add";
+
+/**
+ * Erstes Feld, das vor dem Senden fehlt oder nicht stimmt: das erste
+ * mit aria-invalid, sonst (keine Position) der Knopf „Position
+ * hinzufügen“. Fokus und in die Mitte scrollen.
+ */
+function zumFehlerSpringen(): void {
+  const el =
+    document.querySelector<HTMLElement>(
+      '[data-editor] [aria-invalid="true"]',
+    ) ?? document.getElementById(POS_ADD_ID);
+  el?.focus();
+  el?.scrollIntoView({ block: "center" });
+}
+
+/** „Gespeichert.“ plus Hinweis, wenn leere Positionen stillschweigend wegfielen. */
+function gespeichertNote(gesendet: boolean, weg: number): string {
+  const base = gesendet
+    ? "Gespeichert. Der Kunde sieht den neuen Stand."
+    : "Gespeichert.";
+  if (weg <= 0) return base;
+  return `${base} ${weg === 1 ? "1 leere Position wurde" : `${weg} leere Positionen wurden`} entfernt.`;
+}
+
 /**
  * Angebots-Editor (iPhone zuerst): Kunde, Paket-Raster, Positionen,
  * Texte, Bedingungen, Summen. Unten klebt die Leiste mit den Summen und
@@ -130,9 +157,13 @@ export function AngebotEditor({
   statusText,
   pill,
   todayIso,
+  nochNichtVerschickt = false,
 }: {
   angebot: Angebot;
-  leadName: string;
+  /** Laut Verlauf freigegeben, aber noch nie an den Kunden geschickt. */
+  nochNichtVerschickt?: boolean;
+  /** Name der Anfrage für „Zur Anfrage · …“; ohne: nur „Zur Anfrage“. */
+  leadName?: string;
   statusText: string;
   pill: { key: AngebotStatus | "abgelaufen"; label: string };
   todayIso: string;
@@ -155,6 +186,9 @@ export function AngebotEditor({
   } | null>(null);
   const [sending, setSending] = useState(0);
   const [sentNow, setSentNow] = useState(false);
+  // Freigegeben, aber noch kein Weg angetippt: Der Kunde hat noch
+  // nichts. Anfangswert aus dem Verlauf, danach aus dem Senden-Blatt.
+  const [nichtVerschickt, setNichtVerschickt] = useState(nochNichtVerschickt);
   const [keyboard, setKeyboard] = useState(false);
   const [discardOpen, setDiscardOpen] = useState(false);
   const [discarded, setDiscarded] = useState(false);
@@ -266,11 +300,7 @@ export function AngebotEditor({
     }
     if (focusError.current) {
       focusError.current = false;
-      const el = document.querySelector<HTMLElement>(
-        '[data-editor] [aria-invalid="true"]',
-      );
-      el?.focus();
-      el?.scrollIntoView({ block: "center" });
+      zumFehlerSpringen();
     }
   });
 
@@ -370,6 +400,7 @@ export function AngebotEditor({
     if (pending || !editable) return;
     const sentKey = formKey(form);
     const body = payloadAus(form);
+    const zeilenVorher = form.zeilen.length;
     setProblem(null);
     start(async () => {
       const res: SaveAngebotResult | { ok: false; error: string } =
@@ -402,10 +433,13 @@ export function AngebotEditor({
       );
       setFehler({});
       setRestored(false);
+      // Leere Zeilen lässt der Server still weg: hier sagen, sonst sucht
+      // man die eben angelegte Position.
       setSavedNote(
-        status === "gesendet"
-          ? "Gespeichert. Der Kunde sieht den neuen Stand."
-          : "Gespeichert.",
+        gespeichertNote(
+          status === "gesendet",
+          zeilenVorher - a.positionen.length,
+        ),
       );
     });
   }
@@ -459,12 +493,30 @@ export function AngebotEditor({
     ) : null;
 
   const vergangen = form.gueltig_bis !== "" && form.gueltig_bis < todayIso;
+  // Pflicht zum Senden (sendeProbleme), schon beim Tippen sichtbar: Feld
+  // rot, Hinweis darunter, in der Leiste statt „gespeichert“. „Senden“
+  // springt dann zum Feld, statt das Blatt mit der Liste zu öffnen.
+  const nameFehlt = editable && !form.kunde_name.trim();
+  const titelFehlt = editable && !form.titel.trim();
+  const sendeHindernis = nameFehlt
+    ? "Name des Kunden fehlt"
+    : titelFehlt
+      ? "Titel fehlt"
+      : form.zeilen.length === 0
+        ? "Noch keine Position"
+        : vergangen
+          ? "„Gültig bis“ liegt in der Vergangenheit"
+          : null;
   // Direkt nach „Gesendet“, bis der Server den neuen Stand liefert.
   const justSent = sentNow && angebot.status === "entwurf";
   const shownPill = justSent
     ? { key: "gesendet" as const, label: "Gesendet" }
     : pill;
-  const shownStatus = justSent ? "Gerade gesendet" : statusText;
+  const shownStatus = nichtVerschickt
+    ? NOCH_NICHT_VERSCHICKT
+    : justSent
+      ? "Gerade gesendet"
+      : statusText;
   const sendAngebot = { ...saved.angebot, status };
 
   return (
@@ -481,7 +533,14 @@ export function AngebotEditor({
           {shownPill.label}
         </span>
         {shownStatus !== shownPill.label ? (
-          <span className="text-muted-foreground text-[13.5px]">
+          <span
+            className={cn(
+              "text-[13.5px]",
+              nichtVerschickt
+                ? "text-gold-ink font-medium"
+                : "text-muted-foreground",
+            )}
+          >
             {shownStatus}
           </span>
         ) : null}
@@ -551,7 +610,10 @@ export function AngebotEditor({
           <div className="mt-2 space-y-3 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-x-4 lg:gap-y-3">
             <div>
               <label htmlFor="ed-name" className={LABEL}>
-                Name
+                Name{" "}
+                <span className="text-muted-foreground font-normal">
+                  (nötig zum Senden)
+                </span>
               </label>
               <input
                 id="ed-name"
@@ -559,11 +621,21 @@ export function AngebotEditor({
                 onChange={(e) => setFeld("kunde_name", e.target.value)}
                 maxLength={ANGEBOT_GRENZEN.kundeName}
                 autoComplete="off"
-                aria-invalid={invalid("kunde_name")}
-                aria-describedby={describedBy("ed-name", "kunde_name")}
+                aria-invalid={
+                  invalid("kunde_name") ?? (nameFehlt ? true : undefined)
+                }
+                aria-describedby={
+                  describedBy("ed-name", "kunde_name") ??
+                  (nameFehlt ? "ed-name-fehlt" : undefined)
+                }
                 className={INPUT}
               />
               {fehlerText("ed-name", "kunde_name")}
+              {nameFehlt && !fehler.kunde_name ? (
+                <p id="ed-name-fehlt" className="text-ink-olive mt-1 text-[14px]">
+                  Fehlt noch – ohne Namen lässt sich das Angebot nicht senden.
+                </p>
+              ) : null}
             </div>
             <div>
               <label htmlFor="ed-firma" className={LABEL}>
@@ -710,6 +782,7 @@ export function AngebotEditor({
             </p>
           ) : null}
           <button
+            id={POS_ADD_ID}
             type="button"
             onClick={addZeile}
             disabled={form.zeilen.length >= ANGEBOT_GRENZEN.positionenMax}
@@ -737,11 +810,19 @@ export function AngebotEditor({
                 onKeyDown={keinUmbruch}
                 maxLength={ANGEBOT_GRENZEN.titel}
                 rows={1}
-                aria-invalid={invalid("titel")}
-                aria-describedby={describedBy("ed-titel", "titel")}
+                aria-invalid={invalid("titel") ?? (titelFehlt ? true : undefined)}
+                aria-describedby={
+                  describedBy("ed-titel", "titel") ??
+                  (titelFehlt ? "ed-titel-fehlt" : undefined)
+                }
                 className={cn(AREA, "min-h-12 resize-none py-2.5")}
               />
               {fehlerText("ed-titel", "titel")}
+              {titelFehlt && !fehler.titel ? (
+                <p id="ed-titel-fehlt" className="text-ink-olive mt-1 text-[14px]">
+                  Fehlt noch – ohne Titel lässt sich das Angebot nicht senden.
+                </p>
+              ) : null}
             </div>
             <div>
               <label htmlFor="ed-einleitung" className={LABEL}>
@@ -780,7 +861,8 @@ export function AngebotEditor({
                       }
                       setFeld("hinweise", std);
                     }}
-                    className="text-muted-foreground hover:text-foreground inline-flex h-9 items-center text-[13.5px] underline underline-offset-4"
+                    // 44 px Tap-Fläche, optisch so kompakt wie ein Textlink.
+                    className="text-muted-foreground hover:text-foreground -my-1 -mr-2 inline-flex h-11 items-center px-2 text-[13.5px] underline underline-offset-4"
                   >
                     Standardtext einsetzen
                   </button>
@@ -1020,6 +1102,10 @@ export function AngebotEditor({
                   <span className="text-gold-ink font-medium">
                     nicht gespeichert
                   </span>
+                ) : sendeHindernis ? (
+                  <span className="text-ink-olive font-medium">
+                    {sendeHindernis}
+                  </span>
                 ) : savedNote ? (
                   <span role="status" className="text-ink-petrol font-medium">
                     gespeichert
@@ -1051,16 +1137,28 @@ export function AngebotEditor({
             ) : (
               <button
                 type="button"
-                onClick={() => setSending((n) => n + 1)}
+                onClick={() =>
+                  sendeHindernis
+                    ? zumFehlerSpringen()
+                    : setSending((n) => n + 1)
+                }
                 className="bg-foreground text-background inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-[3px] px-5 text-[16px] font-medium"
               >
                 <Send className="h-4 w-4" aria-hidden="true" />
-                {status === "gesendet" ? "Erneut senden" : "Senden"}
+                {status === "gesendet" && !nichtVerschickt
+                  ? "Erneut senden"
+                  : "Senden"}
               </button>
             )}
           </div>
-          {savedNote ? (
-            <p className="text-ink-petrol mt-1 text-[13.5px] font-medium">
+          {/* Nur, wenn die Zeile mehr sagt als das „gespeichert“ darüber. */}
+          {savedNote && savedNote !== "Gespeichert." ? (
+            <p
+              className={cn(
+                "mt-1 text-[13.5px] font-medium",
+                nichtVerschickt ? "text-gold-ink" : "text-ink-petrol",
+              )}
+            >
               {savedNote}
             </p>
           ) : null}
@@ -1072,17 +1170,18 @@ export function AngebotEditor({
           key={sending}
           open
           angebot={sendAngebot}
+          nochNichtVerschickt={nichtVerschickt}
           onClose={() => setSending(0)}
-          onSent={({ anfrageInArbeit, erstmals }) => {
+          onFix={() => {
+            // Blatt zu, dann zum ersten fehlenden Feld (nach dem Rendern).
+            setSending(0);
+            focusError.current = true;
+          }}
+          onSent={(info) => {
             setSending(0);
             setSentNow(true);
-            setSavedNote(
-              `${angebot.nummer} ${erstmals ? "freigegeben und als gesendet" : "erneut als gesendet"} vermerkt.${
-                anfrageInArbeit
-                  ? " Die Anfrage steht jetzt auf „In Arbeit“."
-                  : ""
-              }`,
-            );
+            setNichtVerschickt(!info.verschickt);
+            setSavedNote(sendeVermerk(angebot.nummer, info));
           }}
         />
       ) : null}
@@ -1262,9 +1361,10 @@ function PositionZeile({
             );
           })}
         </div>
+        {/* Live-Hinweis nur, solange der Server nichts zum Preis sagt (sonst zwei Meldungen zum selben Feld). */}
         <p className="text-[14.5px] tabular-nums">
           {netto === null ? (
-            zeile.preis.trim() ? (
+            f("preis_cent") ? null : zeile.preis.trim() ? (
               <span className="text-ink-olive font-medium">
                 Betrag ungültig, z. B. 1.299 oder 1.299,50
               </span>
