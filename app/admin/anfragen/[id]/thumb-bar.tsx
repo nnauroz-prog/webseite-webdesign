@@ -204,21 +204,30 @@ export function ThumbBar({
   }
 
   const sheetKey = sheet.kind === "none" ? null : sheet.key;
-  const item =
-    "flex h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 text-[13px] font-medium active:bg-background/10";
+  // Am iPhone: Leiste mit Symbol über dem Wort. Ab lg: Knopfreihe unter
+  // dem Namen (kein fester Balken auf einem breiten Bildschirm).
+  const item = cn(
+    "flex h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 text-[13px] font-medium active:bg-background/10",
+    "lg:h-11 lg:flex-none lg:flex-row lg:gap-2 lg:rounded-[3px] lg:border lg:border-border lg:bg-card lg:px-4 lg:text-[15px] lg:transition-colors lg:hover:border-foreground/40 lg:active:bg-card",
+  );
 
   return (
     <div
       data-thumb-bar=""
-      className={cn("fixed inset-x-0 bottom-0 z-40", keyboard && "hidden")}
+      className={cn(
+        "fixed inset-x-0 bottom-0 z-40 flex flex-col lg:static lg:z-auto lg:mt-4 lg:flex-col-reverse",
+        // Tastatur offen: nur am Handy ausblenden (am Rechner sprang sonst
+        // die Seite beim Tippen).
+        keyboard && "max-lg:hidden",
+      )}
     >
       <div ref={stripsRef}>
         {strip ? (
           <div
             role="status"
-            className="bg-card border-border mx-auto flex w-full max-w-2xl flex-wrap items-center gap-2 border-t px-4 py-2 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]"
+            className="bg-card border-border mx-auto flex w-full max-w-2xl flex-wrap items-center gap-x-2 border-t py-2 pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] shadow-[0_-4px_16px_rgba(0,0,0,0.08)] lg:mt-3 lg:max-w-none lg:rounded-[4px] lg:border lg:pr-2 lg:pl-4 lg:shadow-none"
           >
-            <p className="min-w-0 flex-1 text-[15px] font-medium">{strip.label}</p>
+            <p className="min-w-0 flex-1 py-2 text-[15px] font-medium">{strip.label}</p>
             <button
               type="button"
               onClick={undo}
@@ -229,7 +238,7 @@ export function ThumbBar({
               {stripError ? "Nochmal" : "Rückgängig"}
             </button>
             {stripError ? (
-              <p role="alert" className="w-full text-[14px] text-red-800">
+              <p role="alert" className="text-ink-olive w-full pb-1 text-[14px]">
                 {stripError}
               </p>
             ) : null}
@@ -246,9 +255,9 @@ export function ThumbBar({
 
       <nav
         aria-label="Aktionen"
-        className="bg-foreground text-background pb-[env(safe-area-inset-bottom)]"
+        className="bg-foreground text-background pb-[env(safe-area-inset-bottom)] lg:bg-transparent lg:pb-0 lg:text-foreground"
       >
-        <div className="mx-auto flex max-w-2xl">
+        <div className="mx-auto flex max-w-2xl pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] lg:max-w-none lg:flex-wrap lg:gap-2 lg:px-0">
           {tel ? (
             <a
               href={tel}
@@ -271,7 +280,7 @@ export function ThumbBar({
             className={item}
           >
             <ListChecks className="h-5 w-5" aria-hidden="true" />
-            Status
+            Status ändern
           </button>
         </div>
       </nav>

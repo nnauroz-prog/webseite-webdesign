@@ -19,7 +19,9 @@
  * gilt der Speicher im Modul als Rückfallebene.
  */
 
-import type { LeadSnapshot } from "@/lib/leads-meta";
+import type { LeadSnapshot, LeadStatus } from "@/lib/leads-meta";
+
+import { STATUS_LABELS } from "@/lib/leads-meta";
 
 export type ContactMark = {
   leadId: string;
@@ -228,6 +230,11 @@ export type StatusDone = {
   /** Schritt „Wie ist es ausgegangen?“ anbieten. */
   askOutcome: boolean;
 };
+
+/** „Auf „In Arbeit“ gesetzt“: Statusname in Anführungszeichen, sonst liest es sich holprig. */
+export function statusDoneLabel(status: LeadStatus): string {
+  return `Auf „${STATUS_LABELS[status]}“ gesetzt`;
+}
 
 export function emitStatusDone(detail: StatusDone): void {
   window.dispatchEvent(new CustomEvent<StatusDone>(STATUS_DONE_EVENT, { detail }));

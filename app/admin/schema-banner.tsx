@@ -33,14 +33,14 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
     <section
       role="status"
       aria-label="Datenbank-Update"
-      className="border-gold bg-card mt-3 rounded-[4px] border-2 p-4 text-[15px] leading-relaxed"
+      className="border-gold bg-card mt-4 rounded-[4px] border-2 p-4 text-[15px] leading-relaxed"
     >
       <p className="font-semibold">Datenbank-Update ausstehend</p>
       <ol className="mt-2 space-y-0.5">
-        <li>1. SQL kopieren</li>
-        <li>2. Editor öffnen</li>
-        <li>3. Einfügen und Run tippen</li>
-        <li>4. Hier „Erneut prüfen“</li>
+        <li>1. „SQL kopieren“ tippen</li>
+        <li>2. „SQL Editor öffnen“ tippen (Supabase)</li>
+        <li>3. Dort einfügen und auf „Run“ tippen</li>
+        <li>4. Zurück hier „Erneut prüfen“ tippen</li>
       </ol>
       <p className="text-muted-foreground mt-2 text-[14px]">
         Bis dahin aus: Wiedervorlage, Ergebnis, Verlauf, Löschprotokoll.
@@ -63,7 +63,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
           href={editorUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="border-border inline-flex h-11 items-center justify-center gap-2 rounded-[3px] border px-4 text-[15px] font-medium"
+          className="border-border hover:border-foreground/40 inline-flex h-11 items-center justify-center gap-2 rounded-[3px] border px-4 text-[15px] font-medium transition-colors"
         >
           <ExternalLink className="h-4 w-4" aria-hidden="true" />
           SQL Editor öffnen
@@ -75,7 +75,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
             kickRender();
           }}
           disabled={checking}
-          className="border-border inline-flex h-11 items-center justify-center gap-2 rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-60"
+          className="border-border hover:border-foreground/40 inline-flex h-11 items-center justify-center gap-2 rounded-[3px] border px-4 text-[15px] font-medium transition-colors disabled:opacity-60"
         >
           <RotateCw
             className={checking ? "h-4 w-4 animate-spin" : "h-4 w-4"}

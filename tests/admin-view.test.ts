@@ -6,6 +6,7 @@ import {
   dayLabel,
   firstNoteLine,
   relativeDay,
+  shownFields,
   sqlEditorUrl,
 } from "@/lib/admin/card-model";
 import { followUpChips, followUpView, isPastDate } from "@/lib/admin/follow-up";
@@ -33,6 +34,15 @@ describe("followUpChips", () => {
       ],
     );
     assert.equal(followUpChips(SAT)[0].iso, "2026-11-02");
+    assert.deepEqual(
+      followUpChips(SAT).map((c) => [c.name, c.day]),
+      [
+        ["Nächster Werktag", "Mo 2.11."],
+        ["In 3 Werktagen", "Mi 4.11."],
+        ["In einer Woche", "Mo 9.11."],
+        ["In 2 Wochen", "Mo 16.11."],
+      ],
+    );
   });
 
   it("zeigt rund um Ostern keinen Tag doppelt", () => {
@@ -111,11 +121,93 @@ describe("cardModel", () => {
     assert.equal(wv.followUpDue, true);
   });
 
+  it("Vorschau: Termin kurz, Audit mit Website, nie der Betreff", () => {
+    const termin = (subject: string) =>
+      makeLead({
+        kind: "termin",
+        subject,
+        fields: [
+          ["Wunsch-Slot", "Dienstag, 3. November 2026 um 10:00 Uhr (30 Min)"],
+          ["Name", "Lars Wendt"],
+          ["Notiz", "Neue Website"],
+        ],
+      });
+    assert.equal(
+      cardModel(termin("Terminbuchung von Lars Wendt — 2026-11-03 10:00"), SAT).preview,
+      "Termin Di 3.11., 10:00 Uhr",
+    );
+    assert.equal(
+      cardModel(termin("Terminbuchung von Lars Wendt — 2026-11-01 16:00"), SAT).preview,
+      "Termin morgen, 16:00 Uhr",
+    );
+    assert.equal(
+      cardModel(termin("Terminbuchung von Lars Wendt — 2026-10-31 14:00"), SAT).preview,
+      "Termin war heute, 14:00 Uhr",
+    );
+    assert.equal(
+      cardModel(termin("Terminbuchung von Lars Wendt — 2026-10-30 14:00"), SAT).preview,
+      "Termin war Fr 30.10., 14:00 Uhr",
+    );
+    // Ohne lesbaren Zeitpunkt: Notiz der Buchung statt des Betreffs.
+    assert.equal(
+      cardModel({ ...termin("Terminbuchung"), fields: [["Notiz", "Bitte vormittags"]] }, SAT).preview,
+      "Bitte vormittags",
+    );
+
+    const audit = makeLead({
+      kind: "audit",
+      fields: [
+        ["Audit-URL", "cafe-kajuete.de"],
+        ["Hinweis", "Speisekarte als PDF"],
+      ],
+    });
+    assert.equal(cardModel(audit, SAT).preview, "cafe-kajuete.de");
+
+    const nurName = makeLead({ subject: "Anfrage von Lisa Weber (Weber GmbH)" });
+    assert.equal(cardModel(nurName, SAT).preview, "");
+    const mitText = makeLead({ fields: [["Name", "Lisa"], ["Nachricht", "Neue Seite"]] });
+    assert.equal(cardModel(mitText, SAT).preview, "Neue Seite");
+  });
+
   it("kommt ohne notes aus (Suchtreffer) und ohne Namen", () => {
     const lead = makeLead({ fields: [], reply_to: "x@y.de" });
     const hit: Partial<typeof lead> = { ...lead };
     delete hit.notes;
     assert.equal(cardModel(hit as typeof lead, SAT).name, "x@y.de");
+  });
+});
+
+describe("shownFields", () => {
+  const lead = makeLead({
+    fields: [
+      ["Wunsch-Slot", "Dienstag, 3. November 2026 um 10:00 Uhr (30 Min)"],
+      ["Name", "Lisa Weber"],
+      ["E-Mail", "lisa@example.de"],
+      ["Firma", "Weber GmbH"],
+      ["Nachricht", "Hallo"],
+    ],
+  });
+
+  it("lässt Name, Firma und (in der Termin-Box gezeigten) Wunsch-Slot weg", () => {
+    assert.deepEqual(
+      shownFields(lead, { slotShown: true }).map(([k]) => k),
+      ["E-Mail", "Nachricht"],
+    );
+    assert.deepEqual(
+      shownFields(lead, { slotShown: false }).map(([k]) => k),
+      ["Wunsch-Slot", "E-Mail", "Nachricht"],
+    );
+  });
+
+  it("zeigt ein zweites, abweichendes Namensfeld und lässt Leeres weg", () => {
+    const odd = makeLead({
+      fields: [
+        ["Name", "Lisa Weber"],
+        ["Name", "Max Weber"],
+        ["Telefon", "  "],
+      ],
+    });
+    assert.deepEqual(shownFields(odd, { slotShown: false }), [["Name", "Max Weber"]]);
   });
 });
 

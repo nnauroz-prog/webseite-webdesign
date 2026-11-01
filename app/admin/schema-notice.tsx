@@ -22,7 +22,7 @@ export function SchemaNotice({ schema }: { schema: SchemaStatus }) {
     return (
       <p
         role="status"
-        className="border-border bg-card text-muted-foreground mt-3 rounded-[4px] border p-3 text-[14px] leading-relaxed"
+        className="border-border bg-card text-muted-foreground mt-4 rounded-[4px] border p-3 text-[14px] leading-relaxed"
       >
         Datenbank-Stand gerade nicht prüfbar: {e.title} Wiedervorlage und
         Ergebnis sind bis zum nächsten Laden aus.

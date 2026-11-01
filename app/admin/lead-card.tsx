@@ -23,16 +23,19 @@ export function LeadCard({
   /** Ersetzt die Vorschau, z. B. erste Notizzeile bei Wiedervorlagen. */
   context?: string;
 }) {
+  const neu = card.status === "neu";
+  const preview = context ?? card.preview;
   return (
     <div
       className={cn(
-        "border-border bg-card flex items-center gap-2 rounded-[4px] border",
-        card.status === "neu" && "border-l-gold border-l-4",
+        "border-border bg-card hover:border-foreground/30 flex items-center gap-2 rounded-[4px] border transition-colors",
+        neu && "border-l-gold hover:border-l-gold border-l-4",
       )}
     >
       <Link
         href={`/admin/anfragen/${card.id}`}
-        className="block min-w-0 flex-1 py-3 pl-4"
+        // Der dickere Rand bei „neu“ verschiebt den Text nicht.
+        className={cn("block min-w-0 flex-1 py-3", neu ? "pl-[13px]" : "pl-4")}
       >
         <p className="truncate text-[16px] font-semibold tracking-tight">
           {card.name}
@@ -66,7 +69,7 @@ export function LeadCard({
               className={cn(
                 "rounded-[3px] px-2 py-0.5 text-[12.5px] font-medium",
                 card.outcome.won
-                  ? "bg-secondary text-foreground"
+                  ? "border-ink-petrol/45 text-ink-petrol border"
                   : "bg-muted text-muted-foreground",
               )}
             >
@@ -74,14 +77,14 @@ export function LeadCard({
             </span>
           ) : null}
           {card.mailFailed ? (
-            <span className="rounded-[3px] bg-red-50 px-2 py-0.5 text-[12.5px] font-medium text-red-900">
+            <span className="bg-ink-olive/10 text-ink-olive rounded-[3px] px-2 py-0.5 text-[12.5px] font-medium">
               Mail fehlgeschlagen
             </span>
           ) : null}
         </div>
-        <p className="text-muted-foreground mt-1 truncate text-[14px]">
-          {context ?? card.preview}
-        </p>
+        {preview ? (
+          <p className="text-muted-foreground mt-1 truncate text-[14px]">{preview}</p>
+        ) : null}
       </Link>
       {card.tel ? (
         <div className="flex w-14 shrink-0 items-center justify-center">

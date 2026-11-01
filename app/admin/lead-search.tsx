@@ -12,6 +12,7 @@ import {
 import { LeadCard } from "@/app/admin/lead-card";
 import { isRedirect } from "@/app/admin/run-action";
 import { cardModel } from "@/lib/admin/card-model";
+import { cn } from "@/lib/utils";
 
 const EMPTY: SearchState = { q: "", hits: [], more: false, truncated: false };
 const SEARCH_OFFLINE = "Keine Verbindung. Bitte nochmal suchen.";
@@ -50,6 +51,7 @@ export function LeadSearch({
 }) {
   const [state, action, pending] = useActionState(search, EMPTY);
   const [dismissed, setDismissed] = useState(false);
+  const [typed, setTyped] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -80,6 +82,7 @@ export function LeadSearch({
       if (!fromHeader && document.activeElement === input) return;
       rememberSearch("", Date.now());
       input.value = "";
+      setTyped(false);
       setDismissed(true);
     };
     window.addEventListener(SEARCH_RESET_EVENT, onReset);
@@ -92,6 +95,7 @@ export function LeadSearch({
   function clear() {
     rememberSearch("", Date.now());
     if (inputRef.current) inputRef.current.value = "";
+    setTyped(false);
     setDismissed(true);
   }
 
@@ -121,14 +125,29 @@ export function LeadSearch({
             name="q"
             type="search"
             defaultValue={state.q}
+            onInput={(e) => setTyped(e.currentTarget.value !== "")}
             placeholder="Name, E-Mail, Nummer"
             enterKeyHint="search"
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
             maxLength={100}
-            className="border-border bg-card focus:border-foreground/50 h-12 w-full rounded-[3px] border pr-4 pl-11 text-base outline-none"
+            // Eigenes ✕ statt des Browser-Knopfs (in Chrome blau, klein).
+            className={cn(
+              "border-border bg-card focus:border-foreground/60 h-12 w-full rounded-[3px] border pl-11 text-base outline-none [&::-webkit-search-cancel-button]:appearance-none",
+              typed || active ? "pr-12" : "pr-3",
+            )}
           />
+          {typed || active ? (
+            <button
+              type="button"
+              onClick={clear}
+              aria-label="Suche löschen"
+              className="text-muted-foreground hover:text-foreground absolute top-0 right-0 inline-flex h-12 w-12 items-center justify-center rounded-[3px]"
+            >
+              <X className="h-5 w-5" aria-hidden="true" />
+            </button>
+          ) : null}
         </div>
         <button
           type="submit"
@@ -144,34 +163,29 @@ export function LeadSearch({
       </form>
 
       {active ? (
-        <section aria-label="Suchergebnis" className="mt-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2
-              className="min-w-0 flex-1 text-[17px] font-semibold tracking-tight [overflow-wrap:anywhere]"
-              aria-live="polite"
-            >
-              {state.error
-                ? "Suche fehlgeschlagen"
-                : state.hits.length === 0
-                  ? `Keine Treffer für „${shortQuery(state.q)}“.`
-                  : `${state.hits.length}${state.more ? "+" : ""} Treffer für „${shortQuery(state.q)}“`}
-            </h2>
-            <button
-              type="button"
-              onClick={clear}
-              className="border-border inline-flex h-11 shrink-0 items-center gap-1.5 rounded-[3px] border px-4 text-[14px] font-medium"
-            >
-              <X className="h-4 w-4" aria-hidden="true" />
-              Suche löschen
-            </button>
-          </div>
+        <section aria-label="Suchergebnis" className="mt-5">
+          <h2
+            className="text-[17px] font-semibold tracking-tight [overflow-wrap:anywhere]"
+            aria-live="polite"
+          >
+            {state.error
+              ? "Suche fehlgeschlagen"
+              : state.hits.length === 0
+                ? `Keine Treffer für „${shortQuery(state.q)}“`
+                : `${state.hits.length}${state.more ? "+" : ""} Treffer für „${shortQuery(state.q)}“`}
+          </h2>
           {state.error ? (
-            <p role="alert" className="mt-2 text-[15px] text-red-800">
+            <p role="alert" className="text-ink-olive mt-1 text-[15px]">
               {state.error}
+            </p>
+          ) : state.hits.length === 0 ? (
+            <p className="text-muted-foreground mt-1 text-[14px] leading-relaxed">
+              Gesucht wird in Name, E-Mail, Telefon, Firma, Website und Notizen, auch im
+              Archiv. Ein Teil des Namens oder der Nummer reicht.
             </p>
           ) : null}
           {state.hits.length > 0 ? (
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-3 space-y-2 lg:grid lg:grid-cols-2 lg:gap-2 lg:space-y-0">
               {state.hits.map((hit) => (
                 <li key={hit.id}>
                   <LeadCard card={cardModel(hit, now)} />
@@ -190,6 +204,25 @@ export function LeadSearch({
               Durchsucht wurden die neuesten 500 Anfragen.
             </p>
           ) : null}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {state.error ? (
+              <button
+                type="button"
+                onClick={() => formRef.current?.requestSubmit()}
+                disabled={pending}
+                className="bg-foreground text-background inline-flex h-11 items-center rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-60"
+              >
+                Nochmal suchen
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={clear}
+              className="border-border hover:border-foreground/40 inline-flex h-11 items-center gap-1.5 rounded-[3px] border px-4 text-[15px] font-medium transition-colors"
+            >
+              Zurück zur Übersicht
+            </button>
+          </div>
         </section>
       ) : (
         children

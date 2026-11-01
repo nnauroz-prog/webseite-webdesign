@@ -88,7 +88,7 @@ export function ReplySheet({
                 <a
                   href={href}
                   onClick={() => sent(t.id)}
-                  className="border-border bg-background flex min-h-13 items-center gap-3 rounded-[4px] border px-4 py-2.5"
+                  className="border-border bg-background hover:border-foreground/40 flex min-h-13 items-center gap-3 rounded-[4px] border px-4 py-2.5 transition-colors"
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block text-[16px] font-medium">{t.label}</span>
@@ -133,7 +133,7 @@ export function ReplySheet({
                     {slotDays.map((day) => (
                       <div key={day.dateIso}>
                         <p className="text-muted-foreground text-[13px]">{day.label}</p>
-                        <div className="mt-1 flex flex-wrap gap-2">
+                        <div className="mt-1 grid grid-cols-4 gap-2 sm:grid-cols-6">
                           {day.times.map((time) => {
                             const on = picks.some((p) => p.dateIso === day.dateIso && p.time === time);
                             return (
@@ -143,10 +143,10 @@ export function ReplySheet({
                                 aria-pressed={on}
                                 onClick={() => toggle(day.dateIso, time, needed)}
                                 className={cn(
-                                  "inline-flex h-11 min-w-16 items-center justify-center rounded-[3px] border px-3 text-[15px] tabular-nums",
+                                  "inline-flex h-11 items-center justify-center rounded-[3px] border text-[15px] transition-colors",
                                   on
                                     ? "border-foreground bg-foreground text-background"
-                                    : "border-border bg-card",
+                                    : "border-border bg-card hover:border-foreground/40",
                                 )}
                               >
                                 {time}

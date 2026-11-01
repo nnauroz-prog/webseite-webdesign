@@ -82,9 +82,11 @@ export function dueState(kind: LeadKind, createdAt: Date, now: Date): DueState {
     };
   }
   if (now.getTime() <= spaetestens.getTime()) {
+    // Diese Stufe gibt es nur, wenn das Vier-Stunden-Ziel galt (Eingang
+    // werktags 9–14 Uhr): Die Anfrage ist also wirklich über 4 Std. offen.
     return {
       level: "ziel_verpasst",
-      label: `4-Std-Ziel verpasst · Antwort spätestens ${formatMoment(spaetestens, now)}`,
+      label: `Über 4 Std. offen · Antwort spätestens ${formatMoment(spaetestens, now)}`,
       sortKey,
     };
   }

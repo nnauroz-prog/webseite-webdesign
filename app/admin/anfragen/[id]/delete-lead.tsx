@@ -5,6 +5,7 @@ import { startTransition, useActionState, useState } from "react";
 
 import { deleteLeadAction, type ActionState } from "@/app/admin/actions";
 import { clearAdminSession } from "@/app/admin/client-state";
+import { Disclosure } from "@/app/admin/disclosure";
 import { isRedirect } from "@/app/admin/run-action";
 import { DELETE_REASON_LABELS, DELETE_REASONS } from "@/lib/leads-meta";
 
@@ -38,10 +39,15 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
   const [confirmed, setConfirmed] = useState(false);
 
   return (
-    <details className="mt-4 rounded-[4px] border border-red-200 bg-card">
-      <summary className="flex min-h-12 cursor-pointer items-center px-4 text-[16px] font-semibold text-red-900">
-        Endgültig löschen
-      </summary>
+    <Disclosure
+      className="border-ink-olive/35 mt-4"
+      summaryClassName="text-ink-olive text-[16px] font-semibold"
+      title="Endgültig löschen"
+    >
+      <p className="text-muted-foreground text-[14px] leading-relaxed">
+        Löscht die Anfrage mit Notizen und Verlauf (Art. 17 DSGVO). Im Löschprotokoll
+        bleibt nur ein Eintrag ohne Namen oder Inhalte.
+      </p>
       <form
         // onSubmit statt action: Das Formular wird nach einem Fehler nicht
         // zurückgesetzt, Grund und Häkchen bleiben stehen.
@@ -50,7 +56,7 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
           const data = new FormData(e.currentTarget);
           startTransition(() => action(data));
         }}
-        className="space-y-4 px-4 pb-4"
+        className="mt-3 space-y-4"
       >
         <input type="hidden" name="id" value={leadId} />
         <fieldset>
@@ -65,7 +71,7 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
                   required
                   checked={reason === r}
                   onChange={() => setReason(r)}
-                  className="h-5 w-5"
+                  className="accent-foreground h-5 w-5 shrink-0"
                 />
                 {DELETE_REASON_LABELS[r]}
               </label>
@@ -85,7 +91,7 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
                   <li key={r.id}>
                     <Link
                       href={`/admin/anfragen/${r.id}`}
-                      className="flex min-h-11 items-center underline underline-offset-4"
+                      className="decoration-foreground/30 hover:decoration-foreground flex min-h-11 items-center underline underline-offset-4"
                     >
                       {r.label}
                     </Link>
@@ -108,13 +114,13 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
             required
             checked={confirmed}
             onChange={(e) => setConfirmed(e.target.checked)}
-            className="h-5 w-5"
+            className="accent-foreground h-5 w-5 shrink-0"
           />
           Ich weiß, dass das nicht rückgängig geht.
         </label>
 
         {state.error ? (
-          <p role="alert" className="text-[14px] text-red-800">
+          <p role="alert" className="text-[14px] text-ink-olive">
             {state.error}
           </p>
         ) : null}
@@ -122,11 +128,11 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
         <button
           type="submit"
           disabled={pending}
-          className="h-12 w-full rounded-[3px] bg-red-700 text-[16px] font-semibold text-white disabled:opacity-60"
+          className="bg-ink-olive h-12 w-full rounded-[3px] text-[16px] font-semibold text-white disabled:opacity-60"
         >
           {pending ? "Löscht …" : "Endgültig löschen"}
         </button>
       </form>
-    </details>
+    </Disclosure>
   );
 }

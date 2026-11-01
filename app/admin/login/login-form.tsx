@@ -1,9 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { login, type ActionState } from "@/app/admin/actions";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,13 @@ export function LoginForm({ next }: { next: string }) {
     login,
     {},
   );
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  // Nach einem Fehler steht die E-Mail noch da, nur das Passwort ist
+  // leer: gleich dorthin, damit man direkt neu tippen kann.
+  useEffect(() => {
+    if (state.error && state.email) passwordRef.current?.focus();
+  }, [state]);
 
   return (
     <form action={action} className="space-y-5">
@@ -28,25 +34,36 @@ export function LoginForm({ next }: { next: string }) {
           name="email"
           type="email"
           autoComplete="username"
+          autoCapitalize="none"
+          spellCheck={false}
+          enterKeyHint="next"
           required
-          className="h-12 text-base"
+          className="bg-card h-12 rounded-[3px] text-base"
         />
       </div>
       <div className="space-y-2">
         <Label htmlFor="admin-password">Passwort</Label>
         <Input
+          ref={passwordRef}
           id="admin-password"
           name="password"
           type="password"
           autoComplete="current-password"
+          enterKeyHint="go"
           required
-          className="h-12 text-base"
+          aria-invalid={state.error ? true : undefined}
+          aria-describedby={state.error ? "login-fehler" : undefined}
+          className="bg-card h-12 rounded-[3px] text-base"
         />
       </div>
       {state.error ? (
-        <Alert variant="destructive">
-          <AlertDescription>{state.error}</AlertDescription>
-        </Alert>
+        <p
+          id="login-fehler"
+          role="alert"
+          className="border-ink-olive/35 bg-ink-olive/8 text-foreground rounded-[4px] border px-4 py-3 text-[15px] leading-relaxed"
+        >
+          {state.error}
+        </p>
       ) : null}
       <Button
         type="submit"

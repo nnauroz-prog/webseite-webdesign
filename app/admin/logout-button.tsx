@@ -42,7 +42,7 @@ export function LogoutButton() {
         {pending ? "Meldet ab …" : "Abmelden"}
       </button>
       {error ? (
-        <p role="alert" className="text-[13px] text-red-800">
+        <p role="alert" className="text-[13px] text-ink-olive">
           {error}
         </p>
       ) : null}
