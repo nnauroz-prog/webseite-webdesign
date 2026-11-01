@@ -12,7 +12,6 @@ import { Lotse } from "@/components/marketing/hafen/lotse";
 import { paketeKurz } from "@/components/marketing/hafen/paket-kurz";
 import { RevealRoot } from "@/components/marketing/hafen/reveal";
 import { VorherNachher as VorherNachherRegler } from "@/components/marketing/hafen/vorher-nachher";
-import { WellenKante } from "@/components/marketing/hafen/wellen-kante";
 import { LivePreview } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -126,9 +125,9 @@ export default function HomePage() {
         <RevealRoot />
         <HafenHero />
         <Leistungen />
-        <WellenKante from="card" to="foreground" />
         <Ladeliste
           id="ladeliste"
+          top={<Ladehafen />}
           head={<LadelisteKopf />}
           pakete={PAKETE_KURZ}
           className="spaeter-geladen"
@@ -188,6 +187,22 @@ function Leistungen() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * Ladehafen: Hamburg als Linienzeichnung oben im dunklen Abschnitt der
+ * Ladeliste. Zeichnet sich beim Hinscrollen, danach gehen die Lichter
+ * an. Darunter steht die Ladeliste – der Hafen, in dem geladen wird.
+ * ---------------------------------------------------------------- */
+function Ladehafen() {
+  return (
+    <div className="pt-10 sm:pt-14">
+      <HamburgPanorama tone="dark" />
+      <p className="label-mono text-stahl-hell mx-auto -mt-2 w-full max-w-6xl px-5 sm:-mt-4 sm:px-6">
+        Ladehafen Hamburg<span className="hidden sm:inline"> · Köhlbrandbrücke bis Speicherstadt</span>
+      </p>
+    </div>
   );
 }
 
@@ -427,9 +442,6 @@ function Kontakt() {
           </div>
         </div>
       </div>
-      {/* Hamburg als Linienzeichnung, zeichnet sich beim Hinscrollen.
-          Darunter beginnt der Fuß mit der Elbe-Linie. */}
-      <HamburgPanorama tone="dark" />
     </section>
   );
 }
