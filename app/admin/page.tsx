@@ -157,7 +157,7 @@ export default async function AdminHomePage({
         ) : null}
 
         {nothingUrgent ? (
-          <p className="border-border text-muted-foreground mt-5 rounded-2xl border border-dashed p-4 text-[15px]">
+          <p className="border-border text-muted-foreground mt-5 rounded-[4px] border border-dashed p-4 text-[15px]">
             Nichts Dringendes.
             {today.naechsteWiedervorlage
               ? ` Nächste Wiedervorlage: ${formatShortDay(today.naechsteWiedervorlage)}`
@@ -179,7 +179,7 @@ export default async function AdminHomePage({
 
         {today.termine.length > 0 ? (
           <Section title="Termine">
-            <ul className="border-border bg-card divide-border divide-y rounded-2xl border">
+            <ul className="border-border bg-card divide-border divide-y rounded-[4px] border">
               {today.termine.map(({ lead, slot }) => (
                 <li key={lead.id}>
                   <Link
@@ -233,7 +233,7 @@ export default async function AdminHomePage({
                     scroll={false}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "inline-flex h-11 items-center gap-2 rounded-full border px-4 text-[14px] font-medium whitespace-nowrap transition-colors",
+                      "inline-flex h-11 items-center gap-2 rounded-[3px] border px-4 text-[14px] font-medium whitespace-nowrap transition-colors",
                       active
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-card",
@@ -256,7 +256,7 @@ export default async function AdminHomePage({
         </nav>
 
         {list.length === 0 ? (
-          <p className="border-border text-muted-foreground mt-4 rounded-2xl border border-dashed p-6 text-center text-[15px]">
+          <p className="border-border text-muted-foreground mt-4 rounded-[4px] border border-dashed p-6 text-center text-[15px]">
             Hier ist gerade nichts.
           </p>
         ) : (
@@ -277,7 +277,7 @@ export default async function AdminHomePage({
         <HomeScreenTip />
 
         {mailProblem ? null : (
-          <details className="border-border bg-card group mt-6 rounded-2xl border">
+          <details className="border-border bg-card group mt-6 rounded-[4px] border">
             <summary className="flex min-h-12 cursor-pointer items-center px-4 text-[15px] font-medium">
               E-Mail-Benachrichtigung aktiv · Test-Mail senden
             </summary>
@@ -287,7 +287,7 @@ export default async function AdminHomePage({
           </details>
         )}
 
-        <details className="border-border bg-card mt-3 rounded-2xl border">
+        <details className="border-border bg-card mt-3 rounded-[4px] border">
           <summary className="flex min-h-12 cursor-pointer items-center px-4 text-[15px] font-medium">
             Löschprotokoll
           </summary>

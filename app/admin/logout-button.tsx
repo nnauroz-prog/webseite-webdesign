@@ -37,7 +37,7 @@ export function LogoutButton() {
       <button
         type="submit"
         disabled={pending}
-        className="border-border hover:border-foreground/40 h-12 shrink-0 rounded-full border px-5 text-[14px] font-medium transition-colors disabled:opacity-60"
+        className="border-border hover:border-foreground/40 h-12 shrink-0 rounded-[3px] border px-5 text-[14px] font-medium transition-colors disabled:opacity-60"
       >
         {pending ? "Meldet ab …" : "Abmelden"}
       </button>

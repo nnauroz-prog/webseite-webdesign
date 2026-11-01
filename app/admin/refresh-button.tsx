@@ -21,7 +21,7 @@ export function RefreshButton() {
       disabled={pending}
       aria-label="Aktualisieren"
       title="Aktualisieren"
-      className="hover:bg-background/10 inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors disabled:opacity-70"
+      className="hover:bg-background/10 inline-flex h-11 w-11 items-center justify-center rounded-[3px] transition-colors disabled:opacity-70"
     >
       <RotateCw
         className={cn("h-5 w-5", pending && "animate-spin")}

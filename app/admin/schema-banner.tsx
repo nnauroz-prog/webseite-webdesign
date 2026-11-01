@@ -33,7 +33,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
     <section
       role="status"
       aria-label="Datenbank-Update"
-      className="border-gold bg-card mt-3 rounded-2xl border-2 p-4 text-[15px] leading-relaxed"
+      className="border-gold bg-card mt-3 rounded-[4px] border-2 p-4 text-[15px] leading-relaxed"
     >
       <p className="font-semibold">Datenbank-Update ausstehend</p>
       <ol className="mt-2 space-y-0.5">
@@ -50,7 +50,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
         <button
           type="button"
           onClick={copy}
-          className="bg-foreground text-background inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-[15px] font-medium"
+          className="bg-foreground text-background inline-flex h-11 items-center justify-center gap-2 rounded-[3px] px-4 text-[15px] font-medium"
         >
           {copied ? (
             <Check className="h-4 w-4" aria-hidden="true" />
@@ -63,7 +63,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
           href={editorUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="border-border inline-flex h-11 items-center justify-center gap-2 rounded-full border px-4 text-[15px] font-medium"
+          className="border-border inline-flex h-11 items-center justify-center gap-2 rounded-[3px] border px-4 text-[15px] font-medium"
         >
           <ExternalLink className="h-4 w-4" aria-hidden="true" />
           SQL Editor öffnen
@@ -75,7 +75,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
             kickRender();
           }}
           disabled={checking}
-          className="border-border inline-flex h-11 items-center justify-center gap-2 rounded-full border px-4 text-[15px] font-medium disabled:opacity-60"
+          className="border-border inline-flex h-11 items-center justify-center gap-2 rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-60"
         >
           <RotateCw
             className={checking ? "h-4 w-4 animate-spin" : "h-4 w-4"}
@@ -95,7 +95,7 @@ export function SchemaBanner({ editorUrl }: { editorUrl: string }) {
             onFocus={(e) => e.currentTarget.select()}
             onClick={(e) => e.currentTarget.select()}
             rows={6}
-            className="border-border bg-background mt-2 w-full rounded-xl border p-3 font-mono text-base"
+            className="border-border bg-background mt-2 w-full rounded-[4px] border p-3 font-mono text-base"
           />
         </div>
       ) : null}

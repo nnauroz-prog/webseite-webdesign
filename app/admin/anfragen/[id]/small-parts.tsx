@@ -22,7 +22,7 @@ export function BackLink() {
           router.back();
         }
       }}
-      className="-ml-2 inline-flex h-11 items-center gap-0.5 rounded-full pr-3 pl-1 text-[15px] font-medium"
+      className="-ml-2 inline-flex h-11 items-center gap-0.5 rounded-[3px] pr-3 pl-1 text-[15px] font-medium"
     >
       <ChevronLeft className="h-5 w-5" aria-hidden="true" />
       Zurück
@@ -41,13 +41,13 @@ export function ResultLine({
   enabled: boolean;
 }) {
   return (
-    <div className="border-border bg-card mt-4 flex flex-wrap items-center gap-x-2 rounded-2xl border py-1 pr-1 pl-4 text-[15px]">
+    <div className="border-border bg-card mt-4 flex flex-wrap items-center gap-x-2 rounded-[4px] border py-1 pr-1 pl-4 text-[15px]">
       <span className="py-2">{text}</span>
       {enabled ? (
         <button
           type="button"
           onClick={openOutcome}
-          className="ml-auto inline-flex h-11 items-center rounded-full px-3 font-medium underline underline-offset-4"
+          className="ml-auto inline-flex h-11 items-center rounded-[3px] px-3 font-medium underline underline-offset-4"
         >
           {actionLabel}
         </button>

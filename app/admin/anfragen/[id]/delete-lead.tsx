@@ -38,7 +38,7 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
   const [confirmed, setConfirmed] = useState(false);
 
   return (
-    <details className="mt-4 rounded-2xl border border-red-200 bg-card">
+    <details className="mt-4 rounded-[4px] border border-red-200 bg-card">
       <summary className="flex min-h-12 cursor-pointer items-center px-4 text-[16px] font-semibold text-red-900">
         Endgültig löschen
       </summary>
@@ -75,7 +75,7 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
 
         {reason === "anfrage_person" ? (
           related.length > 0 ? (
-            <div className="border-gold rounded-xl border-2 p-3 text-[15px]">
+            <div className="border-gold rounded-[4px] border-2 p-3 text-[15px]">
               <p className="font-semibold">Weitere Einträge dieser Person ({related.length})</p>
               <p className="text-muted-foreground text-[14px]">
                 Gleiche E-Mail oder Telefonnummer. Diese bitte einzeln archivieren und löschen.
@@ -122,7 +122,7 @@ export function DeleteLead({ leadId, related }: { leadId: string; related: Relat
         <button
           type="submit"
           disabled={pending}
-          className="h-12 w-full rounded-full bg-red-700 text-[16px] font-semibold text-white disabled:opacity-60"
+          className="h-12 w-full rounded-[3px] bg-red-700 text-[16px] font-semibold text-white disabled:opacity-60"
         >
           {pending ? "Löscht …" : "Endgültig löschen"}
         </button>

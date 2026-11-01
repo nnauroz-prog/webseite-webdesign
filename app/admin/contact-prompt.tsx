@@ -195,7 +195,7 @@ export function ContactPrompt({
   }
 
   const btn =
-    "inline-flex h-11 items-center justify-center rounded-full px-4 text-[15px] font-medium disabled:opacity-60";
+    "inline-flex h-11 items-center justify-center rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-60";
   const primary = cn(btn, "bg-foreground text-background");
   const secondary = cn(btn, "border-border bg-background border");
 
@@ -303,7 +303,7 @@ export function ContactPrompt({
           type="button"
           onClick={close}
           aria-label="Schließen"
-          className="-mr-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          className="-mr-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[3px]"
         >
           <X className="h-5 w-5" aria-hidden="true" />
         </button>

@@ -43,7 +43,7 @@ export function MailStatus({
     <section
       aria-label="E-Mail-Benachrichtigung"
       className={cn(
-        "rounded-2xl text-[15px] leading-relaxed",
+        "rounded-[4px] text-[15px] leading-relaxed",
         problem ? "border-gold bg-card mt-3 border-2 p-4" : "pt-2",
       )}
     >
@@ -80,7 +80,7 @@ export function MailStatus({
             <button
               type="submit"
               disabled={pending}
-              className="border-border hover:border-foreground/40 inline-flex h-11 items-center rounded-full border px-5 text-[15px] font-medium disabled:opacity-60"
+              className="border-border hover:border-foreground/40 inline-flex h-11 items-center rounded-[3px] border px-5 text-[15px] font-medium disabled:opacity-60"
             >
               {pending ? "Sende …" : "Test-Mail senden"}
             </button>

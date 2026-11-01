@@ -26,7 +26,7 @@ export function LeadCard({
   return (
     <div
       className={cn(
-        "border-border bg-card flex items-center gap-2 rounded-2xl border",
+        "border-border bg-card flex items-center gap-2 rounded-[4px] border",
         card.status === "neu" && "border-l-gold border-l-4",
       )}
     >
@@ -52,7 +52,7 @@ export function LeadCard({
           {card.followUp ? (
             <span
               className={cn(
-                "rounded-full border px-2 py-0.5 text-[12.5px]",
+                "rounded-[3px] border px-2 py-0.5 text-[12.5px]",
                 card.followUpDue
                   ? "border-gold text-foreground"
                   : "border-border",
@@ -64,7 +64,7 @@ export function LeadCard({
           {card.outcome ? (
             <span
               className={cn(
-                "rounded-full px-2 py-0.5 text-[12.5px] font-medium",
+                "rounded-[3px] px-2 py-0.5 text-[12.5px] font-medium",
                 card.outcome.won
                   ? "bg-secondary text-foreground"
                   : "bg-muted text-muted-foreground",
@@ -74,7 +74,7 @@ export function LeadCard({
             </span>
           ) : null}
           {card.mailFailed ? (
-            <span className="rounded-full bg-red-50 px-2 py-0.5 text-[12.5px] font-medium text-red-900">
+            <span className="rounded-[3px] bg-red-50 px-2 py-0.5 text-[12.5px] font-medium text-red-900">
               Mail fehlgeschlagen
             </span>
           ) : null}

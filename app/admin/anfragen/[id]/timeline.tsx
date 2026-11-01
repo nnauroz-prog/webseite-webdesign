@@ -13,7 +13,7 @@ export function Timeline({
 }) {
   const lines = timelineLines(events ?? [], lead);
   return (
-    <details className="border-border bg-card mt-4 rounded-2xl border">
+    <details className="border-border bg-card mt-4 rounded-[4px] border">
       <summary className="flex min-h-12 cursor-pointer items-center px-4 text-[16px] font-semibold">
         Verlauf ({lines.length})
       </summary>

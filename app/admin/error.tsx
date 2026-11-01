@@ -18,7 +18,7 @@ export default function AdminError({
   return (
     <div
       role="alert"
-      className="border-border bg-card mt-2 rounded-2xl border p-5 text-[15px] leading-relaxed"
+      className="border-border bg-card mt-2 rounded-[4px] border p-5 text-[15px] leading-relaxed"
     >
       <p className="font-semibold">Da ist etwas schiefgelaufen.</p>
       <p className="text-muted-foreground mt-2">
@@ -34,13 +34,13 @@ export default function AdminError({
         <button
           type="button"
           onClick={() => unstable_retry()}
-          className="bg-foreground text-background h-12 rounded-full px-6 text-[15px] font-medium"
+          className="bg-foreground text-background h-12 rounded-[3px] px-6 text-[15px] font-medium"
         >
           Neu laden
         </button>
         <Link
           href="/admin"
-          className="border-border inline-flex h-12 items-center rounded-full border px-6 text-[15px] font-medium"
+          className="border-border inline-flex h-12 items-center rounded-[3px] border px-6 text-[15px] font-medium"
         >
           Zur Übersicht
         </Link>

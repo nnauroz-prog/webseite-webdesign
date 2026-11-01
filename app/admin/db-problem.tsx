@@ -18,7 +18,7 @@ export function DbProblem({
   return (
     <div
       role="alert"
-      className="border-gold bg-card mt-3 rounded-2xl border-2 p-4 text-[15px] leading-relaxed"
+      className="border-gold bg-card mt-3 rounded-[4px] border-2 p-4 text-[15px] leading-relaxed"
     >
       <p className="font-semibold">
         {compact ? e.title : `Du bist angemeldet, aber die Daten lassen sich nicht laden. ${e.title}`}
@@ -32,7 +32,7 @@ export function DbProblem({
       {compact ? null : (
         <a
           href={retryHref}
-          className="bg-foreground text-background mt-4 inline-flex h-12 items-center rounded-full px-6 text-[15px] font-medium"
+          className="bg-foreground text-background mt-4 inline-flex h-12 items-center rounded-[3px] px-6 text-[15px] font-medium"
         >
           Erneut versuchen
         </a>

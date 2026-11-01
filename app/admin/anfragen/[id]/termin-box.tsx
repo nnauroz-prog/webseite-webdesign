@@ -43,12 +43,12 @@ export function TerminBox({
   }
 
   return (
-    <section aria-label="Termin" className="border-border bg-card mt-4 rounded-2xl border p-4">
+    <section aria-label="Termin" className="border-border bg-card mt-4 rounded-[4px] border p-4">
       <p className="text-[16px] font-semibold">{when}</p>
       <p className="text-muted-foreground text-[14px]">{relative}</p>
       <a
         href={icsHref}
-        className="border-border bg-background mt-3 inline-flex h-11 items-center gap-2 rounded-full border px-4 text-[15px] font-medium"
+        className="border-border bg-background mt-3 inline-flex h-11 items-center gap-2 rounded-[3px] border px-4 text-[15px] font-medium"
       >
         <CalendarPlus className="h-5 w-5" aria-hidden="true" />
         In meinen Kalender
@@ -60,7 +60,7 @@ export function TerminBox({
             type="button"
             onClick={done}
             disabled={pending}
-            className="bg-foreground text-background inline-flex h-11 items-center gap-2 rounded-full px-4 text-[15px] font-medium disabled:opacity-60"
+            className="bg-foreground text-background inline-flex h-11 items-center gap-2 rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-60"
           >
             {pending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
             {error ? "Nochmal" : "Auf Erledigt setzen"}

@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 const QUICK = ["Angebot geschickt", "Rückruf vereinbart"] as const;
 const CHIP =
-  "border-border bg-background inline-flex h-11 items-center rounded-full border px-4 text-[15px] font-medium disabled:opacity-50";
+  "border-border bg-background inline-flex h-11 items-center rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-50";
 
 /**
  * Notizen: Schnellnotiz (wächst mit, „Speichern“-Knopf, Kurz-Chips),
@@ -42,7 +42,7 @@ export function NotesPanel({ leadId, notes }: { leadId: string; notes: string })
   }
 
   return (
-    <section aria-labelledby="notes-title" className="border-border bg-card mt-4 rounded-2xl border p-4">
+    <section aria-labelledby="notes-title" className="border-border bg-card mt-4 rounded-[4px] border p-4">
       <h2 id="notes-title" className="text-[16px] font-semibold">
         Notizen <span className="text-muted-foreground font-normal">(nur für dich)</span>
       </h2>
@@ -65,12 +65,12 @@ export function NotesPanel({ leadId, notes }: { leadId: string; notes: string })
           rows={2}
           maxLength={NOTE_MAX}
           placeholder="Notiz …"
-          className="border-border bg-background focus:border-foreground/50 max-h-48 min-h-[4.75rem] min-w-0 flex-1 resize-none rounded-2xl border px-3.5 py-3 text-base leading-snug outline-none [field-sizing:content]"
+          className="border-border bg-background focus:border-foreground/50 max-h-48 min-h-[4.75rem] min-w-0 flex-1 resize-none rounded-[4px] border px-3.5 py-3 text-base leading-snug outline-none [field-sizing:content]"
         />
         <button
           type="submit"
           disabled={pending || !quick.trim()}
-          className="bg-foreground text-background inline-flex h-11 shrink-0 items-center rounded-full px-4 text-[15px] font-medium disabled:opacity-50"
+          className="bg-foreground text-background inline-flex h-11 shrink-0 items-center rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-50"
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" aria-label="Speichert" /> : "Speichern"}
         </button>
@@ -216,10 +216,10 @@ function NotesEditor({
         rows={8}
         maxLength={5000}
         readOnly={Boolean(state.conflict)}
-        className="border-border bg-background focus:border-foreground/50 w-full rounded-2xl border p-3 text-base leading-relaxed outline-none"
+        className="border-border bg-background focus:border-foreground/50 w-full rounded-[4px] border p-3 text-base leading-relaxed outline-none"
       />
       {conflict ? (
-        <div role="alert" className="border-gold rounded-xl border-2 p-3 text-[15px] leading-relaxed">
+        <div role="alert" className="border-gold rounded-[4px] border-2 p-3 text-[15px] leading-relaxed">
           <p>
             Die Notizen wurden inzwischen an anderer Stelle geändert. Lade die Seite neu. Dein Text
             steht oben zum Kopieren.
@@ -249,7 +249,7 @@ function NotesEditor({
           type="submit"
           disabled={pending || conflict}
           className={cn(
-            "bg-foreground text-background inline-flex h-12 items-center rounded-full px-6 text-[15px] font-medium disabled:opacity-50",
+            "bg-foreground text-background inline-flex h-12 items-center rounded-[3px] px-6 text-[15px] font-medium disabled:opacity-50",
           )}
         >
           {pending ? "Speichert …" : state.error ? "Nochmal speichern" : "Notizen speichern"}
@@ -258,7 +258,7 @@ function NotesEditor({
           type="button"
           onClick={() => onDone(false)}
           disabled={pending}
-          className="border-border inline-flex h-12 items-center rounded-full border px-5 text-[15px] font-medium"
+          className="border-border inline-flex h-12 items-center rounded-[3px] border px-5 text-[15px] font-medium"
         >
           Abbrechen
         </button>

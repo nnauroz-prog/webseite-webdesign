@@ -24,7 +24,7 @@ export default async function AdminLoginPage({
         {adminConfigured() ? (
           <LoginForm next={next} />
         ) : (
-          <div className="border-border bg-card rounded-2xl border p-5 text-[14px] leading-relaxed">
+          <div className="border-border bg-card rounded-[4px] border p-5 text-[14px] leading-relaxed">
             <p className="font-medium">Noch nicht eingerichtet.</p>
             <p className="text-muted-foreground mt-2">
               In Vercel fehlen die Variablen{" "}

@@ -22,9 +22,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const BIG =
-  "flex h-13 w-full items-center justify-between rounded-2xl border px-4 text-[16px] font-medium transition-colors disabled:opacity-60";
+  "flex h-13 w-full items-center justify-between rounded-[4px] border px-4 text-[16px] font-medium transition-colors disabled:opacity-60";
 const CHIP =
-  "border-border bg-background inline-flex h-11 items-center rounded-full border px-4 text-[15px] font-medium disabled:opacity-60";
+  "border-border bg-background inline-flex h-11 items-center rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-60";
 
 /**
  * Status-Sheet: vier große Knöpfe, ein Tipp speichert. Nach „Erledigt“
@@ -122,13 +122,13 @@ export function StatusSheet({
       title={step === "status" ? "Status" : "Wie ist es ausgegangen?"}
     >
       {step === "outcome" && done ? (
-        <div className="bg-secondary mt-1 flex min-h-11 items-center justify-between gap-2 rounded-xl py-0.5 pr-0.5 pl-3 text-[15px]">
+        <div className="bg-secondary mt-1 flex min-h-11 items-center justify-between gap-2 rounded-[4px] py-0.5 pr-0.5 pl-3 text-[15px]">
           <span>{done.label}</span>
           <button
             type="button"
             onClick={undo}
             disabled={pending}
-            className="inline-flex h-11 items-center rounded-full px-4 font-semibold underline underline-offset-4 disabled:opacity-60"
+            className="inline-flex h-11 items-center rounded-[3px] px-4 font-semibold underline underline-offset-4 disabled:opacity-60"
           >
             Rückgängig
           </button>

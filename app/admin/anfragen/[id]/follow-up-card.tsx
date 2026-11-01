@@ -11,7 +11,7 @@ import { PAST_DATE_ERROR } from "@/lib/admin/follow-up";
 import { cn } from "@/lib/utils";
 
 const CHIP =
-  "border-border bg-background inline-flex h-11 items-center rounded-full border px-4 text-[15px] font-medium disabled:opacity-50";
+  "border-border bg-background inline-flex h-11 items-center rounded-[3px] border px-4 text-[15px] font-medium disabled:opacity-50";
 
 /**
  * Wiedervorlage mit Ein-Tipp-Daten. Die Chips rechnet der Server
@@ -63,7 +63,7 @@ export function FollowUpCard({
     <section
       aria-labelledby="wv-title"
       className={cn(
-        "bg-card mt-4 rounded-2xl border p-4",
+        "bg-card mt-4 rounded-[4px] border p-4",
         view?.due ? "border-gold border-2" : "border-border",
       )}
     >
