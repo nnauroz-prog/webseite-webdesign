@@ -57,6 +57,7 @@ import {
   statusZeile,
   syncHinweise,
   teilenDaten,
+  ustHinweis,
   ustKurz,
   ustSatzAusUmgebung,
 } from "@/lib/admin/angebote";
@@ -121,7 +122,7 @@ describe("Pakete", () => {
     assert.equal(paketSlugAus("Premium"), "premium");
     assert.equal(paketSlugAus("  sitalo   studio "), "studio");
     assert.equal(paketSlugAus("business"), "business");
-    assert.equal(paketSlugAus("Paket Starter (ab 499 €)"), "starter");
+    assert.equal(paketSlugAus("Paket Starter (ab 599 €)"), "starter");
     assert.equal(paketSlugAus("Etwas ganz anderes"), null);
     assert.equal(paketSlugAus(undefined), null);
   });
@@ -144,20 +145,24 @@ describe("Pakete", () => {
     assert.equal(paketAusAnfrage({ fields: [] }), "business");
   });
 
-  it("Preise kommen ausschließlich aus lib/pakete-data.ts", () => {
-    const erwartet = {
-      starter: [49900, 4900],
-      business: [89900, 7900],
-      premium: [249900, 17900],
-      studio: [349000, 24900],
-    };
+  it("Preise kommen ausschließlich aus lib/pakete-data.ts (brutto, wie auf der Website)", () => {
+    // 299900 → „2.999“: die Zahl so, wie sie auf der Website steht.
+    const euroText = (cent: number) =>
+      formatEuro(cent).replace(/,00\u00A0€$/, "");
     for (const p of PAKETE) {
       const [einmalig, monatlich] = paketPositionen(p.slug);
-      assert.deepEqual(
-        [einmalig.preis_cent, monatlich.preis_cent],
-        erwartet[p.slug],
+      assert.ok(einmalig.preis_cent > 0 && einmalig.preis_cent % 100 === 0);
+      assert.ok(monatlich.preis_cent > 0 && monatlich.preis_cent % 100 === 0);
+      assert.ok(
+        p.setup.includes(`${euroText(einmalig.preis_cent)}\u00A0€`),
+        `${p.slug}: ${p.setup}`,
+      );
+      assert.ok(
+        p.monthly.includes(`${euroText(monatlich.preis_cent)}\u00A0€`),
+        `${p.slug}: ${p.monthly}`,
       );
       assert.equal(einmalig.preis_cent, centAusPreistext(p.setup));
+      assert.equal(monatlich.preis_cent, centAusPreistext(p.monthly));
       assert.equal(einmalig.titel, `Website-Paket ${p.name}`);
       assert.equal(einmalig.art, "einmalig");
       assert.equal(einmalig.id, `paket-${p.slug}-einmalig`);
@@ -173,8 +178,8 @@ describe("Pakete", () => {
         einmalig.beschreibung.length <= ANGEBOT_GRENZEN.positionBeschreibung,
       );
     }
-    assert.equal(centAusPreistext("ab 2.499 €"), 249900);
-    assert.equal(centAusPreistext("ab 49 € / Monat"), 4900);
+    assert.equal(centAusPreistext("ab 2.999\u00A0€"), 299900);
+    assert.equal(centAusPreistext("ab 59\u00A0€ / Monat"), 5900);
   });
 
   it("Paketwechsel ersetzt nur die Paket-Positionen an ihrer Stelle", () => {
@@ -230,10 +235,11 @@ describe("angebotAusAnfrage", () => {
       "meist 2–3 Wochen ab vollständigen Unterlagen",
       "Der Monatsbeitrag beginnt mit dem Livegang",
       "Mindestlaufzeit 6 Monate, danach monatlich kündbar",
-      "netto zuzüglich 19 % Umsatzsteuer",
+      "Alle Preise inkl. 19\u00A0% USt.",
       "gilt bis zum 1. Dezember 2026",
     ])
       assert.ok(a.hinweise.includes(teil), teil);
+    assert.ok(!/zzgl|zuzüglich|netto/i.test(a.hinweise));
     // Erfüllt die eigene Prüfung bis auf nichts.
     assert.deepEqual(parseAngebotInhalt(a), { ok: true, inhalt: a });
   });
@@ -343,7 +349,7 @@ describe("Beträge", () => {
   it("formatEuro: de-DE mit geschütztem Leerzeichen vor €", () => {
     assert.equal(formatEuro(0), "0,00 €");
     assert.equal(formatEuro(5), "0,05 €");
-    assert.equal(formatEuro(89900), "899,00 €");
+    assert.equal(formatEuro(99900), "999,00 €");
     assert.equal(formatEuro(129950), "1.299,50 €");
     assert.equal(formatEuro(100_000_000), "1.000.000,00 €");
     assert.equal(formatEuro(-1050), "-10,50 €");
@@ -356,11 +362,11 @@ describe("Beträge", () => {
       ["1299,5", 129950],
       ["1299,50 €", 129950],
       ["1.299", 129900],
-      ["2.499", 249900],
+      ["2.999", 299900],
       ["1.000.000", 100_000_000],
       ["1,299.50", 129950],
-      ["899", 89900],
-      [" 899 € ", 89900],
+      ["999", 99900],
+      [" 999 € ", 99900],
       ["0", 0],
       ["0,99", 99],
       [",5", 50],
@@ -396,24 +402,28 @@ describe("Beträge", () => {
   });
 
   it("centZuEingabe ist umkehrbar", () => {
-    for (const cent of [0, 50, 89900, 129950, 249900, 100_000_000, 12345678]) {
+    for (const cent of [0, 50, 99900, 129950, 299900, 100_000_000, 12345678]) {
       assert.equal(parseEuroEingabe(centZuEingabe(cent)), cent, String(cent));
     }
     assert.equal(centZuEingabe(129950), "1.299,50");
-    assert.equal(centZuEingabe(89900), "899");
+    assert.equal(centZuEingabe(99900), "999");
   });
 
-  it("Summen getrennt nach einmalig und monatlich, USt je Summe gerundet", () => {
+  it("Summen: Positionen sind brutto, enthaltene USt und netto herausgerechnet", () => {
     const positionen = [
-      pos({ menge: 1, preis_cent: 89900 }),
+      pos({ menge: 1, preis_cent: 99900 }),
       pos({ menge: 3, preis_cent: 3333 }),
-      pos({ art: "monatlich", preis_cent: 7900 }),
+      pos({ art: "monatlich", preis_cent: 9900 }),
     ];
     const s = berechneSummen(positionen, 19);
-    assert.deepEqual(s.einmalig, { netto: 99899, ust: 18981, brutto: 118880 });
-    assert.deepEqual(s.monatlich, { netto: 7900, ust: 1501, brutto: 9401 });
+    // 999,00 + 3 × 33,33 = 1.098,99 € brutto; USt = 109.899 · 19 / 119
+    // = 17.546,6… → 17.547 Cent; netto = 109.899 − 17.547.
+    assert.deepEqual(s.einmalig, { brutto: 109899, ust: 17547, netto: 92352 });
+    // 99,00 € → USt 15,81 € (1.580,6… Cent), netto 83,19 €.
+    assert.deepEqual(s.monatlich, { brutto: 9900, ust: 1581, netto: 8319 });
     const k = berechneSummen(positionen, 0);
-    assert.deepEqual(k.einmalig, { netto: 99899, ust: 0, brutto: 99899 });
+    assert.deepEqual(k.einmalig, { netto: 109899, ust: 0, brutto: 109899 });
+    assert.deepEqual(k.monatlich, { netto: 9900, ust: 0, brutto: 9900 });
     assert.equal(k.ust_satz, 0);
     assert.deepEqual(berechneSummen([], 19).einmalig, {
       netto: 0,
@@ -422,43 +432,93 @@ describe("Beträge", () => {
     });
   });
 
-  it("preisSatz", () => {
-    const beide = berechneSummen(paketPositionen("business"), 19);
+  it("Summen: 999,00 € brutto → 159,50 € USt, 839,50 € netto", () => {
+    const s = berechneSummen([pos({ preis_cent: 99900 })], 19);
+    assert.deepEqual(s.einmalig, { brutto: 99900, ust: 15950, netto: 83950 });
+    assert.equal(formatEuro(s.einmalig.ust), "159,50 €");
+    assert.equal(formatEuro(s.einmalig.netto), "839,50 €");
+  });
+
+  it("Summen: enthaltene USt kaufmännisch auf Cent gerundet, netto + USt = brutto", () => {
+    // brutto − brutto / 1,19, auf ganze Cent gerundet (ab ,5 aufwärts).
+    const faelle: [brutto: number, ust: number][] = [
+      [1, 0], // 0,16 Cent → 0
+      [3, 0], // 0,48 → 0
+      [4, 1], // 0,64 → 1
+      [100, 16], // 15,97 → 16
+      [119, 19], // genau 19
+      [5900, 942], // 59 €: 942,02
+      [21900, 3497], // 219 €: 3.496,64
+      [29900, 4774], // 299 €: 4.773,95
+      [59900, 9564], // 599 €: 9.563,87
+      [299900, 47883], // 2.999 €: 47.883,19
+      [399000, 63706], // 3.990 €: 63.705,88
+      [100_000_000, 15_966_387], // 1.000.000 €: 15.966.386,55
+    ];
+    for (const [brutto, ust] of faelle) {
+      const s = berechneSummen([pos({ preis_cent: brutto })], 19).einmalig;
+      assert.equal(s.ust, ust, `brutto ${brutto}`);
+      assert.equal(s.netto + s.ust, s.brutto);
+      assert.equal(s.netto, Math.round(brutto / 1.19), `netto ${brutto}`);
+    }
+    // Gerundet wird je Summe, nicht je Position: 3 × 4 Cent = 12 Cent
+    // enthalten 1,92 → 2 Cent USt (je Position wären es 3 × 1).
+    const drei = berechneSummen(
+      [pos({ preis_cent: 4 }), pos({ preis_cent: 4 }), pos({ preis_cent: 4 })],
+      19,
+    );
+    assert.deepEqual(drei.einmalig, { brutto: 12, ust: 2, netto: 10 });
+    // Ganzzahlig und ohne Ausreißer über viele Beträge.
+    for (let b = 0; b <= 50_000; b += 7) {
+      const s = berechneSummen([pos({ preis_cent: b })], 19).einmalig;
+      assert.ok(Number.isInteger(s.ust) && Number.isInteger(s.netto));
+      assert.equal(s.ust, Math.round(b - b / 1.19), `brutto ${b}`);
+    }
+  });
+
+  it("preisSatz: Bruttobeträge mit „inkl. 19 % USt“, ohne Brutto-Klammer", () => {
+    const beide = berechneSummen(
+      [pos({ preis_cent: 59900 }), pos({ art: "monatlich", preis_cent: 5900 })],
+      19,
+    );
     assert.equal(
       preisSatz(beide),
-      "899,00 € einmalig und 79,00 € im Monat, jeweils zuzüglich 19 % Umsatzsteuer",
+      "599,00 € einmalig und 59,00 € im Monat, jeweils inkl. 19 % USt",
     );
     assert.equal(
-      preisSatz(berechneSummen([paketPositionen("starter")[0]], 0)),
-      "499,00 € einmalig, ohne Umsatzsteuer (§ 19 UStG)",
+      preisSatz(berechneSummen([pos({ preis_cent: 99900 })], 19)),
+      "999,00 € einmalig, inkl. 19 % USt",
+    );
+    assert.equal(
+      preisSatz(
+        berechneSummen([pos({ art: "monatlich", preis_cent: 9900 })], 19),
+      ),
+      "99,00 € im Monat, inkl. 19 % USt",
+    );
+    assert.equal(
+      preisSatz(berechneSummen([pos({ preis_cent: 59900 })], 0)),
+      "599,00 € einmalig, ohne Umsatzsteuer (§ 19 UStG)",
     );
     assert.equal(preisSatz(berechneSummen([], 19)), "");
+    assert.ok(!/brutto|netto|zzgl|zuzüglich/.test(preisSatz(beide)));
   });
 
-  it("preisSatz mit brutto: Klammer nur bei 19 %", () => {
-    const beide = berechneSummen(paketPositionen("business"), 19);
+  it("preisSatz: Paketpreise kommen brutto aus PAKETE", () => {
+    const [einmalig, monatlich] = paketPositionen("business");
     assert.equal(
-      preisSatz(beide, { brutto: true }),
-      "899,00 € einmalig und 79,00 € im Monat, jeweils zuzüglich 19 % Umsatzsteuer (1.069,81 € bzw. 94,01 € brutto)",
-    );
-    assert.equal(
-      preisSatz(berechneSummen([paketPositionen("starter")[0]], 19), {
-        brutto: true,
-      }),
-      "499,00 € einmalig, zuzüglich 19 % Umsatzsteuer (593,81 € brutto)",
-    );
-    // Kleinunternehmer: netto ist brutto, keine Klammer.
-    assert.equal(
-      preisSatz(berechneSummen([paketPositionen("starter")[0]], 0), {
-        brutto: true,
-      }),
-      "499,00 € einmalig, ohne Umsatzsteuer (§ 19 UStG)",
+      preisSatz(berechneSummen([einmalig, monatlich], 19)),
+      `${formatEuro(einmalig.preis_cent)} einmalig und ${formatEuro(monatlich.preis_cent)} im Monat, jeweils inkl. 19 % USt`,
     );
   });
 
-  it("ustKurz: geschützte Leerzeichen", () => {
-    assert.equal(ustKurz(19), "zzgl. 19 % USt");
+  it("ustKurz und ustHinweis: inkl. USt, geschützte Leerzeichen", () => {
+    assert.equal(ustKurz(19), "inkl. 19 % USt");
     assert.equal(ustKurz(0), "ohne USt (§ 19 UStG)");
+    assert.equal(ustHinweis(19), "Alle Preise inkl. 19 % USt.");
+    assert.equal(
+      ustHinweis(0),
+      "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.",
+    );
   });
 });
 
@@ -570,7 +630,7 @@ describe("parseAngebotInhalt", () => {
     assert.equal(r.fehler["positionen.1.menge"], "Menge: 1 bis 999.");
     assert.match(
       r.fehler["positionen.1.preis_cent"],
-      /^Betrag ungültig, z\. B\. 1\.299/,
+      /^Betrag ungültig, z\. B\. 999 oder 2\.999,50/,
     );
   });
 
@@ -603,7 +663,7 @@ describe("parseAngebotInhalt", () => {
     if (!r.ok)
       assert.equal(
         r.fehler["positionen.0.preis_cent"],
-        "Betrag ungültig, z. B. 1.299 oder 1.299,50 (höchstens 1.000.000 €).",
+        "Betrag ungültig, z. B. 999 oder 2.999,50 (höchstens 1.000.000 €).",
       );
   });
 
@@ -903,7 +963,20 @@ describe("Status", () => {
 });
 
 describe("Texte rund ums Senden", () => {
-  const a = angebot({ status: "gesendet" });
+  // Bruttopreise wie Business (999 € einmalig, 99 € im Monat), fest im
+  // Test, damit er nicht an den Paketpreisen hängt.
+  const a = angebot({
+    status: "gesendet",
+    positionen: [
+      pos({ id: "e1", titel: "Website-Paket", preis_cent: 99900 }),
+      pos({
+        id: "m1",
+        titel: "Monatsbeitrag",
+        art: "monatlich",
+        preis_cent: 9900,
+      }),
+    ],
+  });
 
   it("Kunden-Mail: Betreff, Sie-Form, Preis, Gültigkeit, Link", () => {
     const m = kundenMail(a, "https://www.sitalo.de");
@@ -912,9 +985,11 @@ describe("Texte rund ums Senden", () => {
     assert.ok(m.body.includes(`https://www.sitalo.de/angebot/${a.token}`));
     assert.ok(
       m.body.includes(
-        "2.499,00 € einmalig und 179,00 € im Monat, jeweils zuzüglich 19 % Umsatzsteuer",
+        "Preis: 999,00 € einmalig und 99,00 € im Monat, jeweils inkl. 19 % USt.",
       ),
+      m.body,
     );
+    assert.ok(!/zzgl|zuzüglich|netto|brutto/i.test(m.body));
     assert.ok(m.body.includes("gilt bis zum 1. Dezember 2026"));
     assert.ok(!/ /.test(m.body));
     assert.ok(!/\bdu\b|\bdein/i.test(m.body));
@@ -936,6 +1011,10 @@ describe("Texte rund ums Senden", () => {
     assert.equal(t.url, `https://www.sitalo.de/angebot/${a.token}`);
     assert.equal(t.title, "Ihr Angebot A-2026-0001 von Sitalo Webdesign");
     assert.ok(t.text.includes("Gültig bis zum 1. Dezember 2026."));
+    assert.equal(
+      t.text,
+      "Ihr Angebot A-2026-0001 von Sitalo Webdesign: 999,00 € einmalig und 99,00 € im Monat, jeweils inkl. 19 % USt. Gültig bis zum 1. Dezember 2026.",
+    );
     assert.equal(angebotUrl("abc", "https://x.de"), "https://x.de/angebot/abc");
     assert.equal(editorPfad("l1", "a1"), "/admin/anfragen/l1/angebot/a1");
   });
@@ -955,6 +1034,12 @@ describe("Texte rund ums Senden", () => {
       "Angebot A-2026-0001 angenommen: Pflegedienst Elbblick (Jana Petersen)",
     );
     assert.ok(n.text.includes("Angenommen von: J. Petersen"));
+    assert.ok(
+      n.text.includes(
+        "Preis: 999,00 € einmalig und 99,00 € im Monat, jeweils inkl. 19 % USt",
+      ),
+      n.text,
+    );
     assert.ok(n.text.includes("2. November 2026 um 14:05 Uhr"));
     assert.ok(
       n.text.includes(`https://www.sitalo.de/admin/anfragen/${a.lead_id}`),
@@ -985,18 +1070,22 @@ describe("Texte rund ums Senden", () => {
     assert.ok(b.text.includes("Angenommen von: J. Petersen"));
     assert.ok(b.text.includes("Einmalige Leistungen:"));
     assert.ok(b.text.includes("Monatliche Leistungen:"));
-    // Premium: 2.499 € einmalig, 179 € im Monat, je mit USt und brutto.
+    // Positionen brutto, Summen: Gesamt inkl. USt, enthaltene USt, netto.
+    assert.ok(b.text.includes("- Website-Paket: 999,00 €"), b.text);
+    assert.ok(b.text.includes("- Monatsbeitrag: 99,00 € im Monat"));
     assert.ok(
       b.text.includes(
-        "Summe einmalig: 2.499,00 € netto + 474,81 € USt (19 %) = 2.973,81 €",
+        "Summe einmalig: 999,00 € inkl. 19 % USt (darin enthalten 159,50 € USt, netto 839,50 €)",
       ),
       b.text,
     );
     assert.ok(
       b.text.includes(
-        "Summe monatlich: 179,00 € netto + 34,01 € USt (19 %) = 213,01 € im Monat",
+        "Summe monatlich: 99,00 € im Monat inkl. 19 % USt (darin enthalten 15,81 € USt, netto 83,19 €)",
       ),
+      b.text,
     );
+    assert.ok(!/zzgl|zuzüglich/i.test(b.text));
     assert.ok(
       b.text.includes(
         `Hinweise:\n${a.hinweise.trim().replace(/[\u00A0\u202F]/g, " ")}`,
@@ -1009,7 +1098,7 @@ describe("Texte rund ums Senden", () => {
     const klein = kundenBestaetigung({ ...a, ust_satz: 0 });
     assert.ok(
       klein.text.includes(
-        "Summe einmalig: 2.499,00 € (keine Umsatzsteuer nach § 19 UStG)",
+        "Summe einmalig: 999,00 € (keine Umsatzsteuer nach § 19 UStG)",
       ),
     );
   });

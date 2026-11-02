@@ -11,7 +11,7 @@
 
 import { BRANCHEN } from "@/lib/branchen-data";
 import { LEXIKON } from "@/lib/lexikon-data";
-import { PAKETE } from "@/lib/pakete-data";
+import { PAKETE, WARTUNG_PREISE } from "@/lib/pakete-data";
 import { STANDORTE } from "@/lib/standorte-data";
 
 const paketZeilen = PAKETE.map(
@@ -29,7 +29,7 @@ const CONTENT = `# Sitalo Webdesign
 
 ## Was Sitalo macht
 
-Sitalo baut fertige Websites für Betriebe, die keine Zeit für einen Baukasten (Wix, Jimdo, Squarespace) haben. Aus den Stichpunkten des Kunden formulieren wir die Texte, der Kunde streicht und ergänzt. Den Festpreis gibt es schriftlich, bevor die Arbeit beginnt. Nach dem Start kümmert sich Sitalo um Hosting, Updates und kleine Änderungen gegen einen Monatsbeitrag. Websites ab 499 € einmalig, Monatsbeitrag ab 49 €, jeweils zzgl. USt.; das Angebot richtet sich an Betriebe und Selbstständige.
+Sitalo baut fertige Websites für Betriebe, die keine Zeit für einen Baukasten (Wix, Jimdo, Squarespace) haben. Aus den Stichpunkten des Kunden formulieren wir die Texte, der Kunde streicht und ergänzt. Den Festpreis gibt es schriftlich, bevor die Arbeit beginnt. Nach dem Start kümmert sich Sitalo um Hosting, Updates und kleine Änderungen gegen einen Monatsbeitrag. Websites ${PAKETE[0].setup} einmalig, Monatsbeitrag ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")}, alle Preise inklusive 19 % MwSt.; das Angebot richtet sich an Betriebe und Selbstständige.
 
 ## Für wen
 
@@ -66,7 +66,7 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 
 ## Weitere Angebote
 
-- [Wartung](https://www.sitalo.de/wartung): Hosting, Updates und kleine Änderungen, auch für Websites, die Sitalo nicht gebaut hat. Basis 49 € im Monat, Plus 99 € im Monat, Werkbank 299 € im Monat mit zwei frei einsetzbaren Arbeitsstunden.
+- [Wartung](https://www.sitalo.de/wartung): Hosting, Updates und kleine Änderungen, auch für Websites, die Sitalo nicht gebaut hat. Basis ${WARTUNG_PREISE.basis} im Monat, Plus ${WARTUNG_PREISE.plus} im Monat, Werkbank ${WARTUNG_PREISE.werkbank} im Monat mit zwei frei einsetzbaren Arbeitsstunden, jeweils inkl. 19 % MwSt.
 - [Erreichbarkeit](https://www.sitalo.de/erreichbarkeit): Wann Sitalo antwortet: meist am selben Werktag, Nachrichten vom Wochenende am Montag. Urlaub kündigen wir vorher an; Hosting und Backups laufen automatisch weiter.
 - [Vergleich](https://www.sitalo.de/vergleich): Wann sich ein Baukasten lohnt, wann der Eigenbau und wann ein Webdesign-Büro.
 - [Honorar](https://www.sitalo.de/honorar): Stundensatz, geschätzter Aufwand je Paket und was nicht abgerechnet wird.

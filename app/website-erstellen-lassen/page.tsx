@@ -41,10 +41,9 @@ import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
  * Haarlinien-Liste, Hamburg-Zeile, Fragen offen, Abschluss dunkel.
  */
 
-const TITLE = "Website erstellen lassen ab 499 € | Festpreis · Sitalo";
-// Google-Grundlagen gibt es erst ab Business, deshalb hier nicht neben „ab 499 €".
-const DESCRIPTION =
-  "Webseite erstellen lassen zum Festpreis ab 499\u00A0€ zzgl. USt.: für Ihren Betrieb gestaltet, fürs Handy gebaut, Test-Link vor dem Start. Betreut aus Hamburg.";
+const TITLE = `Website erstellen lassen ${PAKETE[0].setup} | Festpreis · Sitalo`;
+// Google-Grundlagen gibt es erst ab Business, deshalb hier nicht neben „ab 599 €".
+const DESCRIPTION = `Webseite erstellen lassen zum Festpreis ${PAKETE[0].setup} inkl. MwSt.: für Ihren Betrieb gestaltet, fürs Handy gebaut, Test-Link vor dem Start. Betreut aus Hamburg.`;
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -73,12 +72,12 @@ const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 const MINDESTLAUFZEIT = "sechs Monate";
 const MINDESTLAUFZEIT_DATIV = "sechs Monaten";
 
-/** „ab 2.499 €" → „2.499 €", „ab 79 € / Monat" → „79 €" */
+/** „ab 2.999 €" → „2.999 €", „ab 99 € / Monat" → „99 €" */
 function betrag(label: string) {
   return label.replace(/^ab\s*/, "").replace(/\s*\/\s*Monat$/, "");
 }
 
-/** „ab 79 € / Monat" → „ab 79 €" */
+/** „ab 99 € / Monat" → „ab 99 €" */
 function monatlich(p: Paket) {
   return p.monthly.replace(/\s*\/\s*Monat$/, "");
 }
@@ -186,7 +185,7 @@ const VERGLEICH: { label: string; selbst: string; lassen: string; vorn: "selbst"
   {
     label: "Kosten für eine sehr einfache Seite",
     selbst: "Günstiger, Sie zahlen nur das Abo des Anbieters",
-    lassen: `${STARTER.setup} einmalig, dazu ${monatlich(STARTER)} im Monat, jeweils zzgl. USt.`,
+    lassen: `${STARTER.setup} einmalig, dazu ${monatlich(STARTER)} im Monat, jeweils inkl. MwSt.`,
     vorn: "selbst",
   },
   {
@@ -267,7 +266,7 @@ const ZUSAGEN_LINKS: { href: string; label: string }[] = [
 const FAQ: { q: string; a: string; link?: { href: string; label: string } }[] = [
   {
     q: "Was kostet eine Website bei Sitalo?",
-    a: `${STARTER.setup.replace(/^ab/, "Ab")} einmalig für eine Onepage-Website, ${BUSINESS.setup} für eine mehrseitige Website. Dazu kommt ein Monatsbeitrag ${monatlich(STARTER)} für Hosting, Updates und kleine Änderungen. Alle Preise zzgl. USt.; unser Angebot richtet sich an Betriebe und Selbstständige. Den genauen Festpreis bekommen Sie vor Auftrag schriftlich.`,
+    a: `${STARTER.setup.replace(/^ab/, "Ab")} einmalig für eine Onepage-Website, ${BUSINESS.setup} für eine mehrseitige Website. Dazu kommt ein Monatsbeitrag ${monatlich(STARTER)} für Hosting, Updates und kleine Änderungen. Alle Preise inkl. 19\u00A0% MwSt.; unser Angebot richtet sich an Betriebe und Selbstständige. Den genauen Festpreis bekommen Sie vor Auftrag schriftlich.`,
     link: { href: "/website-kosten", label: "Was Websites allgemein kosten" },
   },
   {
@@ -345,12 +344,12 @@ export default function WebsiteErstellenLassenPage() {
         name: `Website ${p.name}`,
         url: `${SITE_URL}/pakete/${p.slug}`,
         priceCurrency: "EUR",
-        // „ab"-Preise zzgl. MwSt., deshalb Mindestpreis statt Festbetrag.
+        // „ab"-Preise inkl. MwSt., deshalb Mindestpreis statt Festbetrag.
         priceSpecification: {
           "@type": "PriceSpecification",
           minPrice: Number(p.setup.replace(/\D/g, "")),
           priceCurrency: "EUR",
-          valueAddedTaxIncluded: false,
+          valueAddedTaxIncluded: true,
         },
       })),
     },

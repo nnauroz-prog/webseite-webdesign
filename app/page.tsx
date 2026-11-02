@@ -16,7 +16,7 @@ import { LivePreview } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
-import { PREIS_HINWEIS, getPaketBySlug } from "@/lib/pakete-data";
+import { MONATSBEITRAEGE, PAKETE, PREIS_HINWEIS, getPaketBySlug } from "@/lib/pakete-data";
 
 const CONTACT_EMAIL = "info@sitalo.de";
 
@@ -32,15 +32,13 @@ export const metadata: Metadata = {
   // lassen“ steht im Titel der Geldseite /website-erstellen-lassen, damit
   // sich beide Seiten bei Google keine Konkurrenz machen; die H1 im Hero
   // nennt den Begriff weiterhin, Preise() verlinkt auf die Geldseite.
-  title: { absolute: "Webdesign Hamburg · Websites zum Festpreis ab 499 € | Sitalo" },
-  description:
-    "Webdesign aus Hamburg für Betriebe in ganz Deutschland: Websites zum Festpreis ab 499\u00A0€, Test-Link vor dem Start und kleine Änderungen im Monatsbeitrag.",
+  title: { absolute: `Webdesign Hamburg · Websites zum Festpreis ${PAKETE[0].setup} | Sitalo` },
+  description: `Webdesign aus Hamburg für Betriebe in ganz Deutschland: Websites zum Festpreis ${PAKETE[0].setup}, Test-Link vor dem Start und kleine Änderungen im Monatsbeitrag.`,
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     title: "Sitalo · Webdesign Hamburg",
-    description:
-      "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499\u00A0€, Test-Link vor dem Start.",
+    description: `Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ${PAKETE[0].setup}, Test-Link vor dem Start.`,
     siteName: "Sitalo Webdesign",
     locale: "de_DE",
     // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
@@ -48,7 +46,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Sitalo · Webdesign Hamburg",
-    description: "Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ab 499\u00A0€.",
+    description: `Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ${PAKETE[0].setup}.`,
   },
 };
 
@@ -67,7 +65,7 @@ const FAQ = [
   },
   {
     q: "Gibt es laufende Kosten?",
-    a: "Ja, einen Monatsbeitrag für Hosting, Pflege und kleine Änderungen: je nach Paket ab 49\u00A0€, 79\u00A0€, 179\u00A0€ oder 249\u00A0€. Nach sechs Monaten Mindestlaufzeit ist er zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.",
+    a: `Ja, einen Monatsbeitrag für Hosting, Pflege und kleine Änderungen: je nach Paket ${MONATSBEITRAEGE}, inkl. 19\u00A0% MwSt. Nach sechs Monaten Mindestlaufzeit ist er zum Monatsende kündbar. Beim Ausstieg übergeben wir den kompletten Bestand.`,
   },
   {
     q: "Kann ich später noch etwas ändern lassen?",
@@ -91,8 +89,8 @@ const FAQ_LD = {
 };
 
 const STARTER = getPaketBySlug("starter");
-const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "499\u00A0€";
-const MONTHLY_FROM = STARTER ? STARTER.monthly.replace(/\s*\/\s*Monat$/, "") : "ab 49\u00A0€";
+const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "599\u00A0€";
+const MONTHLY_FROM = STARTER ? STARTER.monthly.replace(/\s*\/\s*Monat$/, "") : "ab 59\u00A0€";
 const STUDIO = getPaketBySlug("studio");
 /** Name und Preise je Paket für Ladeliste und Abfahrtstafel (Client). */
 const PAKETE_KURZ = paketeKurz();

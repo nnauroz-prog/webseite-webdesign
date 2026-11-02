@@ -65,9 +65,9 @@ describe("absenderAdresse", () => {
 });
 
 describe("positionsGruppen", () => {
-  it("erst einmalig, dann monatlich, durchnummeriert, mit Netto", () => {
+  it("erst einmalig, dann monatlich, durchnummeriert, mit Zeilenbetrag (brutto)", () => {
     const g = positionsGruppen([
-      pos({ id: "m1", art: "monatlich", preis_cent: 7900 }),
+      pos({ id: "m1", art: "monatlich", preis_cent: 9900 }),
       pos({ id: "e1", menge: 5, preis_cent: 9000 }),
       pos({ id: "e2", preis_cent: 0 }),
     ]);
@@ -75,7 +75,7 @@ describe("positionsGruppen", () => {
       g.map((x) => [
         x.art,
         x.titel,
-        x.positionen.map((p) => [p.id, p.nr, p.netto]),
+        x.positionen.map((p) => [p.id, p.nr, p.betrag]),
       ]),
       [
         [
@@ -86,7 +86,7 @@ describe("positionsGruppen", () => {
             ["e2", 2, 0],
           ],
         ],
-        ["monatlich", "Monatliche Leistungen", [["m1", 3, 7900]]],
+        ["monatlich", "Monatliche Leistungen", [["m1", 3, 9900]]],
       ],
     );
   });

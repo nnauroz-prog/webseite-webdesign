@@ -33,7 +33,7 @@ const LEAD: Record<Paket["slug"], string> = {
     "Ein neues Erscheinungsbild: Schrift, Farben und Bildsprache entwerfen wir eigens für Ihren Betrieb. Vor dem Entwurf treffen wir uns in Hamburg oder bei Ihnen.",
 };
 
-/** „ab 2.499 €" → „2.499 €", „ab 79 € / Monat" → „79 €" */
+/** „ab 2.999 €" → „2.999 €", „ab 99 € / Monat" → „99 €" */
 function betrag(label: string) {
   return label.replace(/^ab\s*/, "").replace(/\s*\/\s*Monat$/, "");
 }
@@ -60,7 +60,7 @@ export async function generateMetadata({
     ? "Onepage-Website mit Leistungen, Öffnungszeiten und Kontakt, fürs Handy gebaut."
     : paket.description;
   // Preis und Dauer anhängen, solange die Beschreibung unter 158 Zeichen bleibt.
-  const zusatz = ` Festpreis ${paket.setup} zzgl. USt., online ${paket.dauer}.`;
+  const zusatz = ` Festpreis ${paket.setup} inkl. MwSt., online ${paket.dauer}.`;
   const description = basis.length + zusatz.length <= 158 ? basis + zusatz : basis;
   return {
     title,
@@ -110,6 +110,7 @@ export default async function PaketDetailPage({
         priceCurrency: "EUR",
         price: paket.monthly.replace(/[^\d]/g, ""),
         billingDuration: "P1M",
+        valueAddedTaxIncluded: true,
       },
     },
     url: `https://www.sitalo.de/pakete/${paket.slug}`,
@@ -217,7 +218,7 @@ export default async function PaketDetailPage({
                     {betrag(paket.setup)}
                   </span>
                 </p>
-                <p className="text-stahl-hell mt-2 text-[14px]">einmalig, zzgl. MwSt.</p>
+                <p className="text-stahl-hell mt-2 text-[14px]">einmalig, inkl. 19&nbsp;% MwSt.</p>
                 <div className="border-background/15 mt-6 border-t pt-5">
                   <p className="flex items-baseline gap-2">
                     <span className="text-stahl-hell text-[14px]">ab</span>

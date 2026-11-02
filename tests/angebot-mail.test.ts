@@ -36,7 +36,7 @@ const angebot: Pick<
       titel: "Website-Paket Business",
       beschreibung: "",
       menge: 1,
-      preis_cent: 89900,
+      preis_cent: 99900,
       art: "einmalig",
     },
   ],
@@ -91,6 +91,8 @@ describe("sendeAngebotBenachrichtigung", () => {
     const text = String(b.text);
     assert.ok(text.includes(`https://www.sitalo.de/admin/anfragen/${LEAD}`));
     assert.ok(text.includes("Angenommen von: Jana Petersen"));
+    assert.ok(text.includes("Preis: 999,00 € einmalig, inkl. 19 % USt"), text);
+    assert.ok(!/zzgl|zuzüglich|netto/i.test(text));
     assert.ok(!JSON.stringify(b).includes(TOKEN), "Token in der Mail");
   });
 

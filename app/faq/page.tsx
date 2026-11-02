@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
+import { MONATSBEITRAEGE, PAKETE, WARTUNG_PREISE } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
   title: "Häufige Fragen rund um Ihre neue Website",
@@ -64,7 +65,11 @@ const GROUPS: Group[] = [
     items: [
       {
         q: "Was kostet das Ganze?",
-        a: "Es gibt vier Pakete: Starter ab 499\u00A0€, Business ab 899\u00A0€, Premium ab 2.499\u00A0€ und Sitalo Studio ab 3.490\u00A0€, jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ab 49\u00A0€, 79\u00A0€, 179\u00A0€ oder 249\u00A0€ für Hosting, Pflege und kleine Änderungen. Den Endpreis nennen wir Ihnen nach Ihrer Anfrage, schriftlich und verbindlich.",
+        a: `Es gibt vier Pakete: ${PAKETE.map((p) => `${p.name} ${p.setup}`).join(", ").replace(/, ([^,]*)$/, " und $1")}, jeweils einmalig für die Erstellung. Dazu kommt ein Monatsbeitrag ${MONATSBEITRAEGE} für Hosting, Pflege und kleine Änderungen. Alle Preise inklusive 19\u00A0% Mehrwertsteuer. Den genauen Festpreis nennen wir Ihnen nach Ihrer Anfrage, schriftlich und verbindlich.`,
+      },
+      {
+        q: "Sind die Preise mit oder ohne Mehrwertsteuer?",
+        a: "Mit. Alle Preise auf dieser Website sind Endpreise inklusive 19\u00A0% Mehrwertsteuer. Sind Sie vorsteuerabzugsberechtigt, ziehen Sie die enthaltene Mehrwertsteuer wie gewohnt als Vorsteuer ab; dafür steht sie auf unserer Rechnung gesondert ausgewiesen.",
       },
       {
         q: "Warum gibt es nur Einstiegspreise?",
@@ -88,7 +93,7 @@ const GROUPS: Group[] = [
       },
       {
         q: "Meine Seite wurde woanders gebaut. Übernehmen Sie die Pflege?",
-        a: "Ja. Hosting, Updates, Backups und kleine Änderungen übernehmen wir auch für fremde Seiten, auch für Wix und Squarespace. Bei Wix und Squarespace bleibt das Hosting beim Anbieter. Auf der Wartungs-Seite stehen drei Stufen: Basis ab 49\u00A0€, Plus ab 99\u00A0€ und Werkbank ab 299\u00A0€ im Monat, die letzte mit zwei Arbeitsstunden pro Monat. Die Übernahme Ihrer Seite kostet einmalig ab 199\u00A0€.",
+        a: `Ja. Hosting, Updates, Backups und kleine Änderungen übernehmen wir auch für fremde Seiten, auch für Wix und Squarespace. Bei Wix und Squarespace bleibt das Hosting beim Anbieter. Auf der Wartungs-Seite stehen drei Stufen: Basis ab ${WARTUNG_PREISE.basis}, Plus ab ${WARTUNG_PREISE.plus} und Werkbank ab ${WARTUNG_PREISE.werkbank} im Monat, die letzte mit zwei Arbeitsstunden pro Monat. Die Übernahme Ihrer Seite kostet einmalig ab ${WARTUNG_PREISE.uebernahme}. Alle Preise inkl. 19\u00A0% MwSt.`,
       },
     ],
   },

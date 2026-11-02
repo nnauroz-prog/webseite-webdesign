@@ -19,7 +19,7 @@ import {
   ANGEBOT_KONTAKT,
   formatDatumLang,
   formatZeitpunktLang,
-  positionNetto,
+  positionBetrag,
 } from "@/lib/admin/angebote";
 
 // ---------------------------------------------------------------------
@@ -54,8 +54,8 @@ export function absenderAdresse(raw: string | undefined): string[] {
 export type SeitenPosition = AngebotPosition & {
   /** Laufende Nummer über alle Gruppen (1, 2, 3 …). */
   nr: number;
-  /** menge × preis_cent */
-  netto: number;
+  /** menge × preis_cent, brutto (inkl. USt) */
+  betrag: number;
 };
 
 export type PositionsGruppe = {
@@ -82,7 +82,7 @@ export function positionsGruppen(
   for (const art of ["einmalig", "monatlich"] as const) {
     const liste = positionen
       .filter((p) => p.art === art)
-      .map((p) => ({ ...p, nr: ++nr, netto: positionNetto(p) }));
+      .map((p) => ({ ...p, nr: ++nr, betrag: positionBetrag(p) }));
     if (liste.length)
       out.push({ art, titel: GRUPPEN_TITEL[art], positionen: liste });
   }

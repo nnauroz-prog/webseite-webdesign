@@ -109,8 +109,8 @@ export function preisCent(text: string): number | null {
   return c !== null && c <= ANGEBOT_GRENZEN.preisMaxCent ? c : null;
 }
 
-/** Zeilensumme netto in Cent, null bei ungültiger Menge oder ungültigem Preis. */
-export function zeileNetto(z: EditorZeile): number | null {
+/** Zeilenbetrag brutto (inkl. USt) in Cent, null bei ungültiger Menge oder ungültigem Preis. */
+export function zeileBetrag(z: EditorZeile): number | null {
   const m = mengeZahl(z.menge);
   const p = preisCent(z.preis);
   return m === null || p === null ? null : m * p;
@@ -131,7 +131,7 @@ function positionAus(z: EditorZeile): AngebotPosition {
 /** Live-Summen; ungültige Zeilen zählen nicht mit. */
 export function summenAus(form: Pick<EditorForm, "zeilen" | "ust_satz">) {
   return berechneSummen(
-    form.zeilen.filter((z) => zeileNetto(z) !== null).map(positionAus),
+    form.zeilen.filter((z) => zeileBetrag(z) !== null).map(positionAus),
     form.ust_satz,
   );
 }

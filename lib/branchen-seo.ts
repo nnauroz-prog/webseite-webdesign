@@ -38,15 +38,15 @@ export const BRANCHEN_SEO: Partial<Record<string, BrancheSeo>> = {
   kosmetik: {
     seoLabel: "Kosmetikstudios",
     description:
-      "Website für Kosmetikstudios: Behandlungen mit Preisen, Terminanfrage und Fotos aus dem Studio, gut lesbar am Handy. Festpreis ab 499 €, gebaut in Hamburg.",
+      "Website für Kosmetikstudios: Behandlungen mit Preisen, Terminanfrage und Fotos aus dem Studio, gut lesbar am Handy. Festpreis ab 599 €, gebaut in Hamburg.",
   },
   reinigung: {
     description:
-      "Website für Reinigungsfirmen: Pakete nebeneinander, Anfrage mit Objektart, Fläche und Turnus, Versicherung und Schlüssel erklärt. Festpreis ab 499 €.",
+      "Website für Reinigungsfirmen: Pakete nebeneinander, Anfrage mit Objektart, Fläche und Turnus, Versicherung und Schlüssel erklärt. Festpreis ab 599 €.",
   },
   handwerker: {
     description:
-      "Handwerker-Website erstellen lassen: Referenzen, Einsatzgebiet, Rückrufbitte und Notdienstnummer. Festpreis ab 499 €, Test-Link vor dem Start.",
+      "Handwerker-Website erstellen lassen: Referenzen, Einsatzgebiet, Rückrufbitte und Notdienstnummer. Festpreis ab 599 €, Test-Link vor dem Start.",
   },
 };
 

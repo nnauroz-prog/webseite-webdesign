@@ -32,7 +32,7 @@ const ROWS = [
 
 function priceOf(pakete: PaketeKurz, slug: (typeof ROWS)[number]["slug"]) {
   const p = pakete[slug];
-  // „ab 2.499 €" → „2.499"
+  // „ab 2.999 €" → „2.999"
   return { name: p.name, value: p.setup.replace(/^ab\s*/, "").replace(/\s*€$/, ""), monthly: p.monthly };
 }
 

@@ -400,7 +400,7 @@ export const BRANCHEN: Branche[] = [
     faq: [
       {
         q: "Was kostet eine Website für einen Handwerksbetrieb?",
-        a: `Meist passt das Paket ${HW_BUSINESS.name} mit eigenen Seiten für Leistungen, Referenzen und Einsatzgebiet: ${HW_BUSINESS.setup} einmalig und ${HW_BUSINESS.monthly.replace(/\s*\/\s*Monat$/, "")} im Monat für Hosting, Updates und kleine Änderungen, jeweils zzgl. USt. Für einen kleinen Betrieb mit wenigen Leistungen reicht oft ${HW_STARTER.name}, eine einzelne Seite ${HW_STARTER.setup}. Den Festpreis bekommen Sie schriftlich, bevor wir anfangen.`,
+        a: `Meist passt das Paket ${HW_BUSINESS.name} mit eigenen Seiten für Leistungen, Referenzen und Einsatzgebiet: ${HW_BUSINESS.setup} einmalig und ${HW_BUSINESS.monthly.replace(/\s*\/\s*Monat$/, "")} im Monat für Hosting, Updates und kleine Änderungen, jeweils inkl. 19\u00A0% MwSt. Für einen kleinen Betrieb mit wenigen Leistungen reicht oft ${HW_STARTER.name}, eine einzelne Seite ${HW_STARTER.setup}. Den Festpreis bekommen Sie schriftlich, bevor wir anfangen.`,
       },
       {
         q: "Wie schnell ist die Seite online?",

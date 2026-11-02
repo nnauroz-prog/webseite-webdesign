@@ -63,7 +63,7 @@ describe("templatesFor: Anfrage", () => {
     );
     assert.ok(
       t.body.includes(
-        "Sie interessieren sich für das Paket Business (ab 899 €).",
+        "Sie interessieren sich für das Paket Business (ab 999 €).",
       ),
     );
     assert.ok(t.body.includes("Ihr Wunschzeitraum: Innerhalb von 1 Monat."));

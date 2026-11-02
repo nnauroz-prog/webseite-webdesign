@@ -607,7 +607,7 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
             titel: "Website-Paket Business",
             beschreibung: "",
             menge: 1,
-            preis_cent: 89900,
+            preis_cent: 99900,
             art: "einmalig",
           },
         ],

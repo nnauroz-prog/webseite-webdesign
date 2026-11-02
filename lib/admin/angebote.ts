@@ -334,7 +334,7 @@ function groupThousands(n: number): string {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-/** „1.299,50 €“ mit geschütztem Leerzeichen vor €. */
+/** „2.999,50 €“ mit geschütztem Leerzeichen vor €. */
 export function formatEuro(cent: number): string {
   const neg = cent < 0;
   const abs = Math.abs(Math.round(cent));
@@ -343,7 +343,7 @@ export function formatEuro(cent: number): string {
   return `${neg ? "-" : ""}${groupThousands(euros)},${rest} €`;
 }
 
-/** Wert fürs Eingabefeld: „1.299,50“ bzw. „899“ (ohne €). */
+/** Wert fürs Eingabefeld: „1.299,50“ bzw. „999“ (ohne €). */
 export function centZuEingabe(cent: number): string {
   const abs = Math.abs(Math.round(cent));
   const euros = groupThousands(Math.floor(abs / 100));
@@ -363,7 +363,7 @@ function thousandsOk(s: string, sep: string): boolean {
 
 /**
  * Euro-Eingabe → Cent. Akzeptiert „1.299,50“, „1299,5“, „1299.5“,
- * „1.299“, „1,299.50“, „899 €“; sonst null. Ein einzelnes Trennzeichen
+ * „1.299“, „1,299.50“, „999 €“; sonst null. Ein einzelnes Trennzeichen
  * mit 1–2 Ziffern danach ist das Dezimalzeichen. Nur der Punkt darf
  * allein als Tausendertrenner stehen („1.299“); ein Komma ist im
  * Deutschen das Dezimalzeichen, „1,299“ ist also ein Tippfehler (null)
@@ -713,16 +713,16 @@ const HINWEIS_FESTPREIS =
 export function ustHinweis(satz: UstSatz): string {
   return satz === 0
     ? "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."
-    : "Alle Beträge verstehen sich netto zuzüglich 19 % Umsatzsteuer.";
+    : "Alle Preise inkl. 19 % USt.";
 }
 
 /**
- * Kurzform neben Beträgen: „zzgl. 19 % USt“ bzw. „ohne USt (§ 19 UStG)“,
+ * Kurzform neben Beträgen: „inkl. 19 % USt“ bzw. „ohne USt (§ 19 UStG)“,
  * mit geschützten Leerzeichen, damit Zahl und Prozentzeichen bzw. § und
  * Nummer am Handy nicht getrennt umbrechen.
  */
 export function ustKurz(satz: UstSatz): string {
-  return satz === 0 ? "ohne USt (§ 19 UStG)" : "zzgl. 19 % USt";
+  return satz === 0 ? "ohne USt (§ 19 UStG)" : "inkl. 19 % USt";
 }
 
 /** Die Absätze der Standard-Hinweise in fester Reihenfolge ("" = entfällt). */
@@ -1187,7 +1187,7 @@ function parsePositionen(raw: unknown, fehler: FeldFehler): AngebotPosition[] {
       fehler[`${key}.preis_cent`] =
         preisRaw == null || (typeof preisRaw === "string" && !preisRaw.trim())
           ? "Bitte einen Preis eintragen (0 ist erlaubt)."
-          : "Betrag ungültig, z. B. 1.299 oder 1.299,50 (höchstens 1.000.000 €).";
+          : "Betrag ungültig, z. B. 999 oder 2.999,50 (höchstens 1.000.000 €).";
       ok = false;
     }
     const art = oneOf(POSITION_ARTEN, item.art);
@@ -1380,34 +1380,22 @@ export function kundeAnzeige(
 }
 
 /**
- * „899,00 € einmalig und 79,00 € im Monat, jeweils zuzüglich 19 %
- * Umsatzsteuer“ (mit geschützten Leerzeichen); "" ohne Positionen.
+ * „599,00 € einmalig und 59,00 € im Monat, jeweils inkl. 19 % USt“
+ * (Bruttobeträge, mit geschützten Leerzeichen); bei Kleinunternehmern
+ * „… ohne Umsatzsteuer (§ 19 UStG)“; "" ohne Positionen.
  */
-export function preisSatz(
-  summen: AngebotSummen,
-  opts: { brutto?: boolean } = {},
-): string {
+export function preisSatz(summen: AngebotSummen): string {
   const teile: string[] = [];
-  const brutto: string[] = [];
-  if (summen.einmalig.netto > 0) {
-    teile.push(`${formatEuro(summen.einmalig.netto)} einmalig`);
-    brutto.push(formatEuro(summen.einmalig.brutto));
-  }
-  if (summen.monatlich.netto > 0) {
-    teile.push(`${formatEuro(summen.monatlich.netto)} im Monat`);
-    brutto.push(formatEuro(summen.monatlich.brutto));
-  }
+  if (summen.einmalig.brutto > 0)
+    teile.push(`${formatEuro(summen.einmalig.brutto)} einmalig`);
+  if (summen.monatlich.brutto > 0)
+    teile.push(`${formatEuro(summen.monatlich.brutto)} im Monat`);
   if (teile.length === 0) return "";
   const steuer =
     summen.ust_satz === 0
       ? "ohne Umsatzsteuer (§ 19 UStG)"
-      : `${teile.length > 1 ? "jeweils " : ""}zuzüglich 19 % Umsatzsteuer`;
-  const satz = `${teile.join(" und ")}, ${steuer}`;
-  // Mit brutto: „(1.069,81 € bzw. 94,01 € brutto)“, damit der Satz über
-  // dem Annehmen-Knopf zu „Gesamt“ im Angebotsblatt passt.
-  return opts.brutto && summen.ust_satz !== 0
-    ? `${satz} (${brutto.join(" bzw. ")} brutto)`
-    : satz;
+      : `${teile.length > 1 ? "jeweils " : ""}inkl. 19 % USt`;
+  return `${teile.join(" und ")}, ${steuer}`;
 }
 
 const plain = (s: string) => s.replace(/[  ]/g, " ");
@@ -1513,7 +1501,9 @@ export function kundenBestaetigung(
     const liste = a.positionen.filter((p) => p.art === art);
     if (!liste.length) continue;
     const monatlich = art === "monatlich";
-    leistungen.push(monatlich ? "Monatliche Leistungen:" : "Einmalige Leistungen:");
+    leistungen.push(
+      monatlich ? "Monatliche Leistungen:" : "Einmalige Leistungen:",
+    );
     for (const p of liste) {
       const brutto = positionBetrag(p);
       const menge = p.menge > 1 ? `${p.menge} × ` : "";

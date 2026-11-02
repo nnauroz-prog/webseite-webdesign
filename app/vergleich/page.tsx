@@ -108,7 +108,7 @@ export default function VergleichPage() {
 }
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
-const STARTER_MONTHLY = (getPaketBySlug("starter")?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_MONTHLY = (getPaketBySlug("starter")?.monthly ?? "ab 59\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
 
 /* ------------------------------------------------------------------
  * Faustregel: drei Zeilen, wer womit am besten fährt.
@@ -394,7 +394,7 @@ function TableSummary() {
             Die Kurzfassung als Tabelle
           </h2>
           <p className="text-muted-foreground max-w-md text-[15.5px] leading-relaxed lg:col-span-5">
-            Beim Preis liegen die Baukästen vorn. Sitalo kostet {STARTER_MONTHLY} im Monat zzgl. USt., dazu kommt der Aufbau.
+            Beim Preis liegen die Baukästen vorn. Sitalo kostet {STARTER_MONTHLY} im Monat inkl. MwSt., dazu kommt der Aufbau.
           </p>
         </div>
 

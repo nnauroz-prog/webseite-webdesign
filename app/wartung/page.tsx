@@ -5,10 +5,11 @@ import { ArrowRight } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
+import { WARTUNG_PREISE } from "@/lib/pakete-data";
 import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Website-Wartung und Pflege ab 49\u00A0€ im Monat",
+  title: `Website-Wartung und Pflege ab ${WARTUNG_PREISE.basis} im Monat`,
   description:
     "Hosting, Updates und kleine Änderungen, auf Wunsch Werkbank-Stunden für Gestaltung und Technik. Auch für Websites, die wir nicht selbst gebaut haben.",
   alternates: { canonical: "/wartung" },
@@ -31,6 +32,9 @@ export const metadata: Metadata = {
  * Fragen offen gesetzt, Abschluss mit Telefonnummer und Durchsicht.
  */
 
+/** „359 €" → 359 für die strukturierten Daten. */
+const zahl = (betrag: string) => Number(betrag.replace(/\D/g, ""));
+
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 type Plan = {
@@ -48,7 +52,7 @@ const PLANS: Plan[] = [
   {
     slug: "basis",
     name: "Basis",
-    price: "49\u00A0€",
+    price: WARTUNG_PREISE.basis,
     description: "Für Seiten, die vor allem sicher und aktuell bleiben sollen.",
     contents: [
       "Hosting auf einem Server in der EU, Umzug zu uns inklusive (Wix und Squarespace bleiben beim Anbieter)",
@@ -63,7 +67,7 @@ const PLANS: Plan[] = [
   {
     slug: "plus",
     name: "Plus",
-    price: "99\u00A0€",
+    price: WARTUNG_PREISE.plus,
     description: "Für Seiten, auf denen sich öfter etwas ändert, etwa die Speisekarte, eine Aktion oder das Team.",
     contents: [
       "Alles aus Basis",
@@ -81,7 +85,7 @@ const PLANS: Plan[] = [
   {
     slug: "werkbank",
     name: "Werkbank",
-    price: "299\u00A0€",
+    price: WARTUNG_PREISE.werkbank,
     description:
       "Wartung plus feste Stunden im Monat für Gestaltung und Technik, ohne für jede Kleinigkeit ein neues Projekt aufzusetzen.",
     contents: [
@@ -124,37 +128,40 @@ export default function WartungPage() {
       {
         "@type": "Offer",
         name: "Wartung Basis",
-        price: "49",
+        price: String(zahl(WARTUNG_PREISE.basis)),
         priceCurrency: "EUR",
         priceSpecification: {
           "@type": "UnitPriceSpecification",
-          price: 49,
+          price: zahl(WARTUNG_PREISE.basis),
           priceCurrency: "EUR",
           unitText: "MONTH",
+          valueAddedTaxIncluded: true,
         },
       },
       {
         "@type": "Offer",
         name: "Wartung Plus",
-        price: "99",
+        price: String(zahl(WARTUNG_PREISE.plus)),
         priceCurrency: "EUR",
         priceSpecification: {
           "@type": "UnitPriceSpecification",
-          price: 99,
+          price: zahl(WARTUNG_PREISE.plus),
           priceCurrency: "EUR",
           unitText: "MONTH",
+          valueAddedTaxIncluded: true,
         },
       },
       {
         "@type": "Offer",
         name: "Werkbank",
-        price: "299",
+        price: String(zahl(WARTUNG_PREISE.werkbank)),
         priceCurrency: "EUR",
         priceSpecification: {
           "@type": "UnitPriceSpecification",
-          price: 299,
+          price: zahl(WARTUNG_PREISE.werkbank),
           priceCurrency: "EUR",
           unitText: "MONTH",
+          valueAddedTaxIncluded: true,
         },
       },
     ],
@@ -196,7 +203,7 @@ export default function WartungPage() {
           title="Website-Wartung für Seiten, die schon laufen"
           meta={
             <span className="text-stahl-hell font-mono text-[12px]">
-              Ab 49&nbsp;€ im Monat · nach 6 Monaten monatlich kündbar
+              Ab {WARTUNG_PREISE.basis} im Monat · nach 6 Monaten monatlich kündbar
             </span>
           }
         >
@@ -231,7 +238,8 @@ function Plans() {
             Drei Tarife für die laufende Pflege
           </h2>
           <p className="text-muted-foreground max-w-sm text-[14.5px] leading-relaxed">
-            Preise zzgl. MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab 199&nbsp;€ und
+            Preise inkl. 19&nbsp;% MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab{" "}
+            {WARTUNG_PREISE.uebernahme} und
             entfällt, wenn Sie auf unser Hosting umziehen.
           </p>
         </div>

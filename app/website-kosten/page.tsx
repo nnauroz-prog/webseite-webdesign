@@ -55,9 +55,9 @@ export const metadata: Metadata = {
 const STARTER = getPaketBySlug("starter");
 const BUSINESS = getPaketBySlug("business") as Paket;
 const PREMIUM = getPaketBySlug("premium") as Paket;
-const STARTER_SETUP = STARTER?.setup ?? "ab 499\u00A0€";
-/** „ab 49 € / Monat" → „ab 49 €" */
-const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_SETUP = STARTER?.setup ?? "ab 599\u00A0€";
+/** „ab 59 € / Monat" → „ab 59 €" */
+const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 59\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
@@ -182,7 +182,7 @@ const UMFANG: { titel: string; text: string; paket?: Paket; hinweis: string }[] 
 const FAQ = [
   {
     q: "Was kostet eine einfache Website für ein kleines Unternehmen?",
-    a: `Eine professionell gebaute Onepage-Website kostet nach unserer Einschätzung je nach Anbieter meist zwischen einigen hundert und wenigen tausend Euro. Bei uns beginnt sie bei ${STARTER_SETUP.replace(/^ab\s*/, "")}, dazu kommt ein Monatsbeitrag ${STARTER_MONTHLY} für Hosting und Pflege, jeweils zzgl. USt.`,
+    a: `Eine professionell gebaute Onepage-Website kostet nach unserer Einschätzung je nach Anbieter meist zwischen einigen hundert und wenigen tausend Euro. Bei uns beginnt sie bei ${STARTER_SETUP.replace(/^ab\s*/, "")}, dazu kommt ein Monatsbeitrag ${STARTER_MONTHLY} für Hosting und Pflege, jeweils inkl. 19\u00A0% MwSt.`,
   },
   {
     q: "Welche laufenden Kosten hat eine Website?",
@@ -287,7 +287,7 @@ export default function WebsiteKostenPage() {
                     Sitalo
                   </th>
                   <td className="py-5 pr-4 font-semibold whitespace-nowrap">{STARTER_SETUP}</td>
-                  <td className="py-5 pr-4">{STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen; zzgl. USt.</td>
+                  <td className="py-5 pr-4">{STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen; inkl. MwSt.</td>
                   <td className="py-5 pr-3">Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie uns selbst erreichen.</td>
                 </tr>
               </tbody>
@@ -301,7 +301,7 @@ export default function WebsiteKostenPage() {
                   link: undefined,
                   name: "Sitalo",
                   einmalig: STARTER_SETUP,
-                  laufend: `${STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen; zzgl. USt.`,
+                  laufend: `${STARTER_MONTHLY} im Monat, mit Hosting und kleinen Änderungen; inkl. MwSt.`,
                   passt: "Sie möchten einen Festpreis vorab und eine Telefonnummer, unter der Sie uns selbst erreichen.",
                 },
               ].map((w) => (
@@ -365,7 +365,7 @@ export default function WebsiteKostenPage() {
               </dl>
               <p className="text-muted-foreground mt-5 text-[14.5px] leading-relaxed">
                 Bei uns stecken Hosting in der EU, SSL-Zertifikat, Backups, Updates und kleine Änderungen im
-                Monatsbeitrag, {STARTER_MONTHLY} zzgl. USt. Rechtstexte und Abos für Erweiterungen kommen wie überall dazu.
+                Monatsbeitrag, {STARTER_MONTHLY} inkl. MwSt. Rechtstexte und Abos für Erweiterungen kommen wie überall dazu.
               </p>
             </div>
           </div>
@@ -418,8 +418,8 @@ export default function WebsiteKostenPage() {
                         >
                           {u.paket.name}
                         </Link>
-                        , {u.paket.setup} einmalig und {u.paket.monthly.replace(/\s*\/\s*Monat$/, "")} im Monat, zzgl.
-                        USt.; online {nachDauer(u.paket.dauer)} ab vollständigen Unterlagen.
+                        , {u.paket.setup} einmalig und {u.paket.monthly.replace(/\s*\/\s*Monat$/, "")} im Monat, inkl.
+                        MwSt.; online {nachDauer(u.paket.dauer)} ab vollständigen Unterlagen.
                       </>
                     ) : (
                       "nur im Einzelfall, den Preis nennen wir nach einem Gespräch."

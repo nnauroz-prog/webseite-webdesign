@@ -52,8 +52,8 @@ export const PAKETE: Paket[] = [
   {
     slug: "starter",
     name: "Starter",
-    setup: "ab 499\u00A0€",
-    monthly: "ab 49\u00A0€ / Monat",
+    setup: "ab 599\u00A0€",
+    monthly: "ab 59\u00A0€ / Monat",
     dauer: "oft 1–2 Werktage",
     description:
       "Eine Seite mit allem Wichtigen: Leistungen, Öffnungszeiten und Kontakt. Für Selbstständige und kleine Betriebe.",
@@ -115,8 +115,8 @@ export const PAKETE: Paket[] = [
     name: "Business",
     badge: "Empfohlen",
     highlight: true,
-    setup: "ab 899\u00A0€",
-    monthly: "ab 79\u00A0€ / Monat",
+    setup: "ab 999\u00A0€",
+    monthly: "ab 99\u00A0€ / Monat",
     dauer: "meist 5–10 Werktage",
     description:
       "Mehrere Seiten für Leistungen, Team und Galerie. Für lokale Betriebe mit mehreren Angeboten.",
@@ -181,8 +181,8 @@ export const PAKETE: Paket[] = [
   {
     slug: "premium",
     name: "Premium",
-    setup: "ab 2.499\u00A0€",
-    monthly: "ab 179\u00A0€ / Monat",
+    setup: "ab 2.999\u00A0€",
+    monthly: "ab 219\u00A0€ / Monat",
     dauer: "meist 2–3 Wochen",
     description:
       "Eine Struktur, die wir für Ihren Betrieb anlegen, mit Bereichen, die Sie selbst pflegen, etwa Speisekarte, Wochenangebot oder Termine.",
@@ -248,8 +248,8 @@ export const PAKETE: Paket[] = [
     slug: "studio",
     name: "Sitalo Studio",
     badge: "Neues Erscheinungsbild",
-    setup: "ab 3.490\u00A0€",
-    monthly: "ab 249\u00A0€ / Monat",
+    setup: "ab 3.990\u00A0€",
+    monthly: "ab 299\u00A0€ / Monat",
     dauer: "meist 3–5 Wochen",
     description:
       "Neues Erscheinungsbild, bis zu drei Korrekturrunden und ein Treffen vor Ort. Für Betriebe, die ihren ganzen Auftritt neu aufstellen.",
@@ -316,14 +316,33 @@ export const PAKETE: Paket[] = [
 ];
 
 /**
- * Alle Preise oben sind Nettopreise. Das Angebot richtet sich nur an
- * Unternehmer (§ 14 BGB), deshalb dürfen Netto-Preise stehen, wenn das
- * bei jeder Preisnennung klar dabeisteht (PAngV gilt gegenüber
- * Verbrauchern). Kurzform für Hero-Zeilen, Langform für Fußnoten.
+ * Alle Preise oben sind Endpreise inklusive 19 % MwSt. Das Angebot
+ * richtet sich an Unternehmer (§ 14 BGB); wer vorsteuerabzugsberechtigt
+ * ist, holt sich die enthaltene MwSt. als Vorsteuer zurück.
+ * Kurzform für Hero-Zeilen, Langform für Fußnoten.
  */
-export const PREIS_HINWEIS_KURZ = "Für Betriebe und Selbstständige, Preise zzgl. 19 % USt.";
+export const PREIS_HINWEIS_KURZ = "Für Betriebe und Selbstständige, alle Preise inkl. 19 % MwSt.";
 export const PREIS_HINWEIS =
-  "Unser Angebot richtet sich an Betriebe und Selbstständige (Unternehmer nach § 14 BGB). Alle Preise zzgl. 19 % USt.";
+  "Unser Angebot richtet sich an Betriebe und Selbstständige (Unternehmer nach § 14 BGB). Alle Preise inklusive 19 % Mehrwertsteuer.";
+
+/** „ab 59 €, 99 €, 219 € oder 299 €“: die Monatsbeiträge aller Pakete in einem Satzteil. */
+export const MONATSBEITRAEGE = (() => {
+  const b = PAKETE.map((p) => p.monthly.replace(/^ab\s*/, "").replace(/\s*\/\s*Monat$/, ""));
+  return `ab ${b.slice(0, -1).join(", ")} oder ${b[b.length - 1]}`;
+})();
+
+/**
+ * Tarife auf /wartung (auch für Seiten, die nicht von uns stammen),
+ * Endpreise inkl. 19 % MwSt. Betrag ohne „ab“ und Zeiteinheit.
+ * Werkbank = Plus + zwei Stunden zum Stundensatz (lib/honorar-data.ts).
+ */
+export const WARTUNG_PREISE = {
+  basis: "59\u00A0€",
+  plus: "119\u00A0€",
+  werkbank: "359\u00A0€",
+  /** Einmalig für die Übernahme einer fremden Seite. */
+  uebernahme: "239\u00A0€",
+} as const;
 
 /** „oft 1–2 Werktage" → „oft nach 1–2 Werktagen" (für „steht … online"). */
 export function nachDauer(dauer: string): string {

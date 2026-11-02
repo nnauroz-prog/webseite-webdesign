@@ -109,7 +109,7 @@ export default function RechnerPage() {
                     Vergleich
                   </Link>
                   . Die Stunden für Aufbau und Pflege schätzen wir, sie gelten für jemanden, der zum ersten Mal eine Website
-                  baut. Sitalo-Preise zzgl. USt.
+                  baut. Die Sitalo-Preise sind Endpreise inkl. 19&nbsp;% MwSt., ebenso der Stundensatz für Änderungen über dem Kontingent.
                 </p>
                 <p>
                   Bei einem Umzug rechnen wir 30 % mehr Aufbauzeit. Wer mit Code umgehen kann, braucht beim Selbstbau 30 %

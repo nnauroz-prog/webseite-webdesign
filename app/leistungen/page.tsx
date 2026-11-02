@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/leistungen" },
 };
 
-const MONTHLY_FROM = (getPaketBySlug("starter")?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
+const MONTHLY_FROM = (getPaketBySlug("starter")?.monthly ?? "ab 59\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 

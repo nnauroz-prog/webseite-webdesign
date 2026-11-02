@@ -229,13 +229,14 @@ const FUNKELN = (() => {
 /* Beschriftungen der abgesetzten Container. Die Seriennummer ist der
    Einstiegspreis und zählt hoch; als Eigentümerkennung steht der
    Markenname statt eines (womöglich vergebenen) ISO-Präfixes. */
-const STARTER = getPaketBySlug("starter")?.setup ?? "ab 499\u00A0€";
+const STARTER = getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€";
+const START_SERIE = Number(STARTER.replace(/\D/g, "")) || 599;
 const SCHILDER = [
-  { serie: "000499", text: `Festpreis vorab · ${STARTER}` },
-  { serie: "000500", text: "Test-Link vor dem Start" },
-  { serie: "000501", text: "Texte aus Ihren Stichpunkten" },
-  { serie: "000502", text: "Kleine Seiten oft in 1–2 Werktagen" },
-];
+  `Festpreis vorab · ${STARTER}`,
+  "Test-Link vor dem Start",
+  "Texte aus Ihren Stichpunkten",
+  "Kleine Seiten oft in 1–2 Werktagen",
+].map((text, i) => ({ serie: String(START_SERIE + i).padStart(6, "0"), text }));
 
 /* Lage der Beschriftung: rechts oben neben dem Container, Hinweislinie
    zur Ecke. Prozentwerte der viewBox (-160 0 960 760). */

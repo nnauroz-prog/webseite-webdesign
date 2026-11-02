@@ -109,7 +109,7 @@ function Register() {
           })}
         </ul>
         <p className="text-muted-foreground mt-4 font-mono text-[12px] leading-relaxed">
-          Preise sind Einmalpreise zzgl. USt., dazu kommt ein Monatsbeitrag je Paket.{" "}
+          Preise sind Einmalpreise inkl. MwSt., dazu kommt ein Monatsbeitrag je Paket.{" "}
           <Link href="/pakete" className="hover:text-foreground underline underline-offset-4">
             Alle Pakete
           </Link>

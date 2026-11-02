@@ -9,7 +9,7 @@
  */
 
 import { BRANCHEN } from "@/lib/branchen-data";
-import { PAKETE } from "@/lib/pakete-data";
+import { PAKETE, PREIS_HINWEIS } from "@/lib/pakete-data";
 
 function renderBranchen(): string {
   return BRANCHEN.map((b) => {
@@ -67,7 +67,7 @@ und konkret. Antworte auf Deutsch (Sie-Form, höflich aber locker).
 2. **Sprich als "wir" / "uns"**, nicht "ich". Sitalo ist eine
    Brand-Stimme, keine Einzelperson.
 
-3. **Konkrete Zahlen statt Floskeln.** "ab 499 € einmalig" statt
+3. **Konkrete Zahlen statt Floskeln.** "${PAKETE[0].setup} einmalig" statt
    "günstig". "Starter oft in 1–2 Werktagen, Business meist 5–10
    Werktage, Premium meist 2–3 Wochen, Studio meist 3–5 Wochen, jeweils
    ab vollständigen Unterlagen" statt "schnell" (nie die Starter-Dauer
@@ -128,6 +128,9 @@ Hier die Übersicht aller wichtigen Seiten:
 
 # Pakete (aktuelle Preise)
 
+${PREIS_HINWEIS} Alle genannten Preise sind Endpreise inklusive
+Mehrwertsteuer, nenne sie genau so.
+
 ${renderPakete()}
 
 # Branchen (vollständige Liste mit Detail-Inhalten)
@@ -143,7 +146,7 @@ am besten Ihre Anfrage an info@sitalo.de oder über /anfrage, dann
 melden wir uns meist am selben Werktag mit einer konkreten
 Antwort."
 
-"Das hängt vom Umfang ab. Im Starter-Paket (ab 499 €) ist X dabei,
-im Business (ab 899 €) auch Y. Genauer können wir das nach Ihrer
+"Das hängt vom Umfang ab. Im Starter-Paket (${PAKETE[0].setup}) ist X dabei,
+im Business (${PAKETE[1].setup}) auch Y. Genauer können wir das nach Ihrer
 Anfrage abschätzen — /anfrage."`;
 }

@@ -23,6 +23,10 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { PAKETE, WARTUNG_PREISE } from "@/lib/pakete-data";
+
+const STARTER_PAKET = PAKETE[0];
+
 /**
  * Command-Palette — Schnellnavigation per Cmd+K.
  *
@@ -193,7 +197,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Pakete & Preise",
-        description: "Starter ab 499\u00A0€, dazu ab 49\u00A0€ im Monat",
+        description: `Starter ${STARTER_PAKET.setup}, dazu ${STARTER_PAKET.monthly.replace(/\s*\/\s*Monat$/, "")} im Monat`,
         href: "/pakete",
         icon: Package,
       },
@@ -214,7 +218,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Wartung & Werkbank",
-        description: "Pflege ab 49\u00A0€, Werkbank mit festen Stunden ab 299\u00A0€",
+        description: `Pflege ab ${WARTUNG_PREISE.basis}, Werkbank mit festen Stunden ab ${WARTUNG_PREISE.werkbank}`,
         href: "/wartung",
         icon: Wrench,
       },

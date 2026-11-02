@@ -774,7 +774,7 @@ a.board-row:focus-visible .board-arrow circle {
   font-size: 1.15rem;
 }
 /* Die Punktmatrix zeichnet den Tausenderpunkt wie ein Komma. Der Punkt
-   kommt deshalb aus der Mono-Schrift, damit 2.499 nicht wie 2,499 wirkt. */
+   kommt deshalb aus der Mono-Schrift, damit 2.999 nicht wie 2,999 wirkt. */
 .led-dot {
   font-family: var(--font-mono), monospace;
   font-weight: 600;
