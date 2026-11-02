@@ -29,8 +29,11 @@ unverändert, und es schadet nicht, es zweimal auszuführen.
 2. **Anpassen.** Leistungen ändern, hinzufügen oder entfernen, Mengen
    und Preise eintragen, Hinweise ergänzen. Die Summen rechnen live
    mit. Dann **Speichern**.
-   - Preise netto eingeben, zum Beispiel `1.299` oder `1.299,50`.
-     Ein Tippfehler wie `1,299` wird markiert und nicht übernommen.
+   - Preise brutto eingeben, also inklusive 19 % USt, so wie sie auf
+     der Website stehen: zum Beispiel `999` oder `2.999,50`. Ein
+     Tippfehler wie `2,999` wird markiert und nicht übernommen. Die
+     enthaltene USt und den Nettobetrag rechnet das Angebot selbst aus
+     (bei 999 € sind das 159,50 € USt und 839,50 € netto).
    - Der Steuersatz ist fest (siehe unten) und steht nur zur Anzeige.
 3. **Senden → Freigeben.** Erst nach der Freigabe funktioniert der
    Link für den Kunden. So bekommt niemand einen Link ins Leere.
@@ -56,13 +59,14 @@ Anruf), Weiteres Angebot erstellen, Entwurf verwerfen.
 
 ## Was der Kunde sieht
 
-Ein gesetztes Angebot mit Briefkopf, Positionen, Summen (netto, USt,
-brutto) und deinen Hinweisen. Er kann es als PDF speichern, dich
+Ein gesetztes Angebot mit Briefkopf, Positionen (brutto), Summen
+(groß der Gesamtbetrag inkl. 19 % USt, darunter klein die enthaltene
+USt und der Nettobetrag) und deinen Hinweisen. Er kann es als PDF speichern, dich
 anrufen oder schreiben, annehmen oder ablehnen.
 
 Beim Annehmen gibt er seinen Namen ein, setzt ein Häkchen und tippt
 **Angebot zahlungspflichtig annehmen**. Direkt darüber stehen die
-Beträge. Die Angebote richten sich an Betriebe und Selbstständige
+Beträge inkl. USt. Die Angebote richten sich an Betriebe und Selbstständige
 (§ 14 BGB); so steht es auch auf der Seite. Nach der Annahme bekommt
 er automatisch eine Bestätigung per Mail mit allen Positionen.
 

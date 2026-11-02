@@ -1,3 +1,5 @@
+import { getPaketBySlug } from "@/lib/pakete-data";
+
 import s from "./lotse.module.css";
 
 /**
@@ -35,6 +37,11 @@ const SIE = [
   },
 ];
 
+/** „ab 59 € / Monat" → „Ab 59 €" */
+const STARTER_MONATLICH = (getPaketBySlug("starter")?.monthly ?? "ab 59\u00A0€ / Monat")
+  .replace(/\s*\/\s*Monat$/, "")
+  .replace(/^ab/, "Ab");
+
 /** Tag nur, wo es vom Normalfall „in jedem Paket“ abweicht. */
 const WIR: { title: string; tag?: string; text?: string }[] = [
   { title: "Gestaltung" },
@@ -50,7 +57,7 @@ const WIR: { title: string; tag?: string; text?: string }[] = [
     tag: "Ab Business",
     text: "Titel und Beschreibung für jede Seite, Sitemap und strukturierte Daten.",
   },
-  { title: "Pflege nach dem Start", tag: "Ab 49\u00A0€ im Monat" },
+  { title: "Pflege nach dem Start", tag: `${STARTER_MONATLICH} im Monat` },
 ];
 
 /** Signalflagge H des Internationalen Signalbuchs: „Ich habe einen Lotsen an Bord.“ */

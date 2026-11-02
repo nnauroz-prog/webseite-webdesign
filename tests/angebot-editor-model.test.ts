@@ -16,7 +16,7 @@ import {
   stateAus,
   stateAusEntwurf,
   summenAus,
-  zeileNetto,
+  zeileBetrag,
 } from "@/app/admin/anfragen/[id]/angebot/[angebotId]/editor-model";
 import {
   betragZeile,
@@ -27,11 +27,15 @@ import {
 import {
   angebotAusAnfrage,
   berechneSummen,
+  centAusPreistext,
+  centZuEingabe,
+  formatEuro,
   parseAngebotInhalt,
   standardEinleitung,
   standardTitel,
   ustHinweis,
 } from "@/lib/admin/angebote";
+import { PAKETE } from "@/lib/pakete-data";
 
 // So, 1.11.2026, 12:00 in Hamburg
 const NOW = new Date("2026-11-01T11:00:00Z");
@@ -53,6 +57,18 @@ function inhalt(): AngebotInhalt {
 
 const MONATSBEITRAG = "Der Monatsbeitrag beginnt mit dem Livegang.";
 
+/** Bruttopreise eines Pakets in Cent, aus lib/pakete-data.ts (nicht fest im Test). */
+function paketCent(slug: string): { einmalig: number; monatlich: number } {
+  const p = PAKETE.find((x) => x.slug === slug);
+  assert.ok(p, slug);
+  return {
+    einmalig: centAusPreistext(p.setup),
+    monatlich: centAusPreistext(p.monthly),
+  };
+}
+const BUSINESS = paketCent("business");
+const PREMIUM = paketCent("premium");
+
 describe("Editor-Modell: Formular und Speichern", () => {
   it("Felder als Text, Speichern ergibt wieder denselben Inhalt", () => {
     const i = inhalt();
@@ -60,8 +76,8 @@ describe("Editor-Modell: Formular und Speichern", () => {
     assert.deepEqual(
       f.zeilen.map((z) => [z.menge, z.preis, z.art]),
       [
-        ["1", "899", "einmalig"],
-        ["1", "79", "monatlich"],
+        ["1", centZuEingabe(BUSINESS.einmalig), "einmalig"],
+        ["1", centZuEingabe(BUSINESS.monatlich), "monatlich"],
       ],
     );
     const parsed = parseAngebotInhalt(payloadAus(f));
@@ -97,7 +113,8 @@ describe("Editor-Modell: Formular und Speichern", () => {
     assert.equal(parsed.inhalt.positionen.length, 3);
     assert.equal(parsed.inhalt.positionen[2].preis_cent, 129950);
     assert.equal(parsed.inhalt.positionen[2].menge, 2);
-    assert.equal(zeileNetto(s.form.zeilen[2]), 259900);
+    // Zeilenbetrag brutto: 2 × 1.299,50 €.
+    assert.equal(zeileBetrag(s.form.zeilen[2]), 259900);
   });
 
   it("formKey erkennt Änderungen, nicht aber gleiche Inhalte", () => {
@@ -134,8 +151,17 @@ describe("Editor-Modell: Formular und Speichern", () => {
     }));
     const summen = summenAus(s.form);
     assert.deepEqual(summen, berechneSummen(inhalt().positionen, 19));
-    assert.equal(summen.einmalig.netto, 89900);
-    assert.equal(summen.monatlich.brutto, 9401);
+    // Paketpreise sind brutto: Gesamt = Paketpreis, USt steckt darin.
+    assert.equal(summen.einmalig.brutto, BUSINESS.einmalig);
+    assert.equal(summen.monatlich.brutto, BUSINESS.monatlich);
+    assert.equal(
+      summen.einmalig.ust,
+      Math.round((BUSINESS.einmalig * 19) / 119),
+    );
+    assert.equal(
+      summen.einmalig.netto + summen.einmalig.ust,
+      BUSINESS.einmalig,
+    );
   });
 });
 
@@ -161,8 +187,8 @@ describe("Editor-Modell: Paket wählen", () => {
       next.form.zeilen.map((z) => z.id),
       ["paket-premium-einmalig", "p-eigen", "paket-premium-monatlich"],
     );
-    assert.equal(next.form.zeilen[0].preis, "2.499");
-    assert.equal(next.form.zeilen[2].preis, "179");
+    assert.equal(next.form.zeilen[0].preis, centZuEingabe(PREMIUM.einmalig));
+    assert.equal(next.form.zeilen[2].preis, centZuEingabe(PREMIUM.monatlich));
     // Eigene Zeile unverändert, auch mit halb getipptem Preis.
     assert.equal(next.form.zeilen[1].preis, "250,");
     assert.equal(paketAus(next.form), "premium");
@@ -307,13 +333,20 @@ describe("Editor-Modell: Entwurf aus dem Sitzungsspeicher", () => {
 describe("Angebots-Zeilen im Admin", () => {
   it("Betrag und Steuer kurz", () => {
     // formatEuro setzt ein geschütztes Leerzeichen vor €.
+    // Bruttobeträge (inkl. USt), wie im Angebot.
     assert.equal(
       betragZeile(berechneSummen(inhalt().positionen, 19)),
-      "899,00\u00a0€ einmalig · 79,00\u00a0€ monatlich",
+      `${formatEuro(BUSINESS.einmalig)} einmalig · ${formatEuro(BUSINESS.monatlich)} monatlich`,
+    );
+    assert.equal(
+      betragZeile(
+        berechneSummen([{ menge: 1, preis_cent: 99900, art: "einmalig" }], 19),
+      ),
+      "999,00\u00a0€ einmalig",
     );
     assert.equal(betragZeile(berechneSummen([], 19)), "Noch ohne Betrag");
     // Zahl und Prozentzeichen bzw. § und Nummer bleiben zusammen.
-    assert.equal(steuerZeile(19), "netto, zzgl. 19\u00a0%\u00a0USt");
+    assert.equal(steuerZeile(19), "inkl. 19\u00a0%\u00a0USt");
     assert.equal(steuerZeile(0), "ohne USt (§\u00a019\u00a0UStG)");
   });
 

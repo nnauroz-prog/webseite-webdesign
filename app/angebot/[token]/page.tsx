@@ -197,7 +197,7 @@ export default async function AngebotSeite({ params }: Props) {
               nummer={angebot.nummer}
               kundeName={angebot.kunde_name}
               stand={angebot.updated_at}
-              preis={preisSatz(summen, { brutto: true })}
+              preis={preisSatz(summen)}
             />
           ) : (
             <>
@@ -468,14 +468,11 @@ function Blatt({
           >
             {g.titel}
           </h2>
-          {/* Ohne USt-Zeilen folgt die Gesamt-Linie direkt auf die letzte
-              Position: deren Linie fällt dann weg, sonst stehen zwei
-              Striche übereinander. */}
-          <Positionstabelle
-            gruppe={g}
-            ohneSchlusslinie={summen.ust_satz === 0}
-          />
-          <Positionsliste gruppe={g} ohneSchlusslinie={summen.ust_satz === 0} />
+          {/* Die Gesamt-Linie folgt direkt auf die letzte Position:
+              deren Linie fällt weg, sonst stehen zwei Striche
+              übereinander. */}
+          <Positionstabelle gruppe={g} />
+          <Positionsliste gruppe={g} />
           <Summenblock
             summe={g.art === "einmalig" ? summen.einmalig : summen.monatlich}
             monatlich={g.art === "monatlich"}
@@ -558,19 +555,20 @@ function enthaelt(text: string, satz: string): boolean {
   return norm(text).includes(norm(satz));
 }
 
+/** Die Gesamtbeträge oben unter dem Titel, brutto mit Steuerhinweis. */
 function AufEinenBlick({ summen }: { summen: AngebotSummen }) {
   const teile: { label: string; betrag: number; zusatz: string }[] = [];
   const steuer = ustKurz(summen.ust_satz);
-  if (summen.einmalig.netto > 0)
+  if (summen.einmalig.brutto > 0)
     teile.push({
       label: "Einmalig",
-      betrag: summen.einmalig.netto,
+      betrag: summen.einmalig.brutto,
       zusatz: steuer,
     });
-  if (summen.monatlich.netto > 0)
+  if (summen.monatlich.brutto > 0)
     teile.push({
       label: "Monatlich",
-      betrag: summen.monatlich.netto,
+      betrag: summen.monatlich.brutto,
       zusatz: `pro Monat, ${steuer}`,
     });
   if (teile.length === 0) return null;
@@ -602,17 +600,12 @@ function AufEinenBlick({ summen }: { summen: AngebotSummen }) {
 
 type Gruppe = ReturnType<typeof positionsGruppen>[number];
 
-function betragText(netto: number): string {
-  return netto === 0 ? "inklusive" : formatEuro(netto);
+/** Zeilenbetrag brutto; 0 € heißt „inklusive“. */
+function betragText(betrag: number): string {
+  return betrag === 0 ? "inklusive" : formatEuro(betrag);
 }
 
-function Positionstabelle({
-  gruppe,
-  ohneSchlusslinie,
-}: {
-  gruppe: Gruppe;
-  ohneSchlusslinie: boolean;
-}) {
+function Positionstabelle({ gruppe }: { gruppe: Gruppe }) {
   const monatlich = gruppe.art === "monatlich";
   return (
     <table className={cn(styles.tabelle, "hidden w-full sm:table")}>
@@ -650,8 +643,7 @@ function Positionstabelle({
             key={p.id}
             className={cn(
               styles.zeile,
-              "border-border border-b align-top",
-              ohneSchlusslinie && "last:border-b-0",
+              "border-border border-b align-top last:border-b-0",
             )}
           >
             <td
@@ -694,7 +686,7 @@ function Positionstabelle({
                 "py-4 text-right text-[15px] font-semibold whitespace-nowrap",
               )}
             >
-              {betragText(p.netto)}
+              {betragText(p.betrag)}
             </td>
           </tr>
         ))}
@@ -708,22 +700,13 @@ function Positionstabelle({
  * schmalen Spalte, sodass Folgezeilen eines langen Titels (und die
  * Beschreibung) bündig unter dem Titel beginnen, wie in der Tabelle.
  */
-function Positionsliste({
-  gruppe,
-  ohneSchlusslinie,
-}: {
-  gruppe: Gruppe;
-  ohneSchlusslinie: boolean;
-}) {
+function Positionsliste({ gruppe }: { gruppe: Gruppe }) {
   return (
     <ul className={cn(styles.liste, "sm:hidden")}>
       {gruppe.positionen.map((p) => (
         <li
           key={p.id}
-          className={cn(
-            "border-border grid grid-cols-[1.5rem_minmax(0,1fr)_auto] gap-x-2 border-b py-4",
-            ohneSchlusslinie && "last:border-b-0",
-          )}
+          className="border-border grid grid-cols-[1.5rem_minmax(0,1fr)_auto] gap-x-2 border-b py-4 last:border-b-0"
         >
           <span
             className={cn(
@@ -742,7 +725,7 @@ function Positionsliste({
               "pl-2 text-right text-[15.5px] font-semibold whitespace-nowrap",
             )}
           >
-            {betragText(p.netto)}
+            {betragText(p.betrag)}
           </p>
           {p.beschreibung ? (
             <p className="text-muted-foreground col-span-2 col-start-2 mt-1.5 text-[14px] leading-relaxed break-words whitespace-pre-line">
@@ -765,6 +748,10 @@ function Positionsliste({
   );
 }
 
+/**
+ * Summe einer Gruppe: groß der Gesamtbetrag (brutto), bei 19 % darunter
+ * klein die darin enthaltene USt und der Nettobetrag.
+ */
 function Summenblock({
   summe,
   monatlich,
@@ -779,34 +766,36 @@ function Summenblock({
 }) {
   const proMonat = monatlich ? " pro Monat" : "";
   const zeile = "flex items-baseline justify-between gap-6";
+  const klein = "text-muted-foreground text-[13.5px] leading-snug";
   return (
-    <div
-      className={cn(
-        styles.summen,
-        "flex justify-end",
-        ustSatz === 19 ? "mt-4" : "mt-0",
-      )}
-    >
+    <div className={cn(styles.summen, "flex justify-end")}>
       <div className="w-full max-w-[22rem]">
         <dl className={cn(styles.zahl, "text-[15px]")}>
-          {ustSatz === 19 ? (
-            <>
-              <div className={cn(zeile, "py-0.5")}>
-                <dt className="text-muted-foreground">Summe netto</dt>
-                <dd className="whitespace-nowrap">{formatEuro(summe.netto)}</dd>
-              </div>
-              <div className={cn(zeile, "py-0.5")}>
-                <dt className="text-muted-foreground">{ustKurz(19)}</dt>
-                <dd className="whitespace-nowrap">{formatEuro(summe.ust)}</dd>
-              </div>
-            </>
-          ) : null}
-          <div className={cn(zeile, "border-foreground mt-1.5 border-t pt-2")}>
-            <dt className="font-semibold">Gesamt{proMonat}</dt>
+          <div className={cn(zeile, "border-foreground border-t pt-2")}>
+            <dt className="font-semibold">
+              Gesamt{proMonat}
+              {ustSatz === 19 ? (
+                <span className="text-muted-foreground block text-[13px] leading-snug font-normal">
+                  {ustKurz(19)}
+                </span>
+              ) : null}
+            </dt>
             <dd className="text-[16.5px] font-bold whitespace-nowrap">
               {formatEuro(summe.brutto)}
             </dd>
           </div>
+          {ustSatz === 19 ? (
+            <>
+              <div className={cn(zeile, klein, "mt-1")}>
+                <dt>darin enthalten 19{"\u00A0"}% USt</dt>
+                <dd className="whitespace-nowrap">{formatEuro(summe.ust)}</dd>
+              </div>
+              <div className={cn(zeile, klein)}>
+                <dt>netto</dt>
+                <dd className="whitespace-nowrap">{formatEuro(summe.netto)}</dd>
+              </div>
+            </>
+          ) : null}
         </dl>
         {ustZeile ? (
           <p className="text-muted-foreground mt-1.5 text-[13px] leading-snug">

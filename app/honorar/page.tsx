@@ -64,7 +64,7 @@ function Stundensatz() {
     <section>
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
         <div className="lg:col-span-5">
-          <p className="label-mono text-muted-foreground">Stundensatz, netto</p>
+          <p className="label-mono text-muted-foreground">Stundensatz, inkl. 19&nbsp;% MwSt.</p>
           <p
             className="mt-4 text-[6rem] leading-[0.85] tracking-[-0.05em] sm:text-[9rem]"
             style={{ fontStretch: "118%", fontWeight: 780 }}
@@ -77,8 +77,8 @@ function Stundensatz() {
             Von dieser Zahl leiten sich alle Paketpreise ab.
           </h2>
           <p>
-            Darin stecken die Arbeitszeit, Lizenzen für unsere Werkzeuge und ein Puffer für die Stunden, die wir nicht
-            abrechnen. Welche das sind, steht weiter unten. Das Hosting zahlen Sie getrennt über den Monatsbeitrag.
+            Darin stecken die Arbeitszeit, Lizenzen für unsere Werkzeuge, ein Puffer für die Stunden, die wir nicht
+            abrechnen, und die Mehrwertsteuer. Welche Stunden das sind, steht weiter unten. Das Hosting zahlen Sie getrennt über den Monatsbeitrag.
           </p>
           <p className="text-muted-foreground text-[15.5px]">
             Fahrten innerhalb Hamburgs stellen wir nicht in Rechnung. Liegt das Treffen im Paket Studio außerhalb Hamburgs,

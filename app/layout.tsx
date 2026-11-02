@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     template: "%s · Sitalo",
   },
   description:
-    "Website erstellen lassen zum Festpreis ab 499 €: gestaltet und gebaut in Hamburg, für Betriebe in ganz Deutschland. Test-Link vor dem Start.",
+    `Website erstellen lassen zum Festpreis ${PAKETE[0].setup}: gestaltet und gebaut in Hamburg, für Betriebe in ganz Deutschland. Test-Link vor dem Start.`,
   // Grundwerte fürs Teilen; Seiten mit eigenem openGraph ersetzen sie.
   openGraph: {
     type: "website",
@@ -127,7 +127,7 @@ const LOCAL_BUSINESS_LD = {
     { "@type": "City", name: "Hamburg" },
     { "@type": "Country", name: "Deutschland" },
   ],
-  priceRange: "ab 499 €",
+  priceRange: PAKETE[0].setup,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+491607621876",
@@ -147,6 +147,7 @@ const LOCAL_BUSINESS_LD = {
         "@type": "PriceSpecification",
         minPrice: Number(p.setup.replace(/\D/g, "")),
         priceCurrency: "EUR",
+        valueAddedTaxIncluded: true,
       },
       itemOffered: {
         "@type": "Service",

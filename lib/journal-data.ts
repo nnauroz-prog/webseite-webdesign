@@ -13,6 +13,12 @@
  * Post nach oben.
  */
 
+import { PAKETE, getPaketBySlug } from "@/lib/pakete-data";
+
+/** „Starter ab 599 €, Business ab 999 €, …“ für Fließtext. */
+const PREISE_SATZ = PAKETE.map((p) => `${p.name.replace(/^Sitalo\s+/, "")} ${p.setup}`).join(", ");
+const preis = (slug: "starter" | "business" | "premium" | "studio") => getPaketBySlug(slug)?.setup ?? "";
+
 export type Paragraph =
   | { kind: "p"; text: string }
   | { kind: "h2"; text: string }
@@ -87,7 +93,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Auf die Preisfrage antworten wir in einem Satz: Starter ab 499\u00A0€, Business ab 899\u00A0€, Premium ab 2.499\u00A0€, Studio ab 3.490\u00A0€, den genauen Festpreis bekommen Sie schriftlich. Dann machen wir eine Pause. In dieser Pause kommt oft die zweite Frage.",
+        text: `Auf die Preisfrage antworten wir in einem Satz: ${PREISE_SATZ}, alles inklusive Mehrwertsteuer, den genauen Festpreis bekommen Sie schriftlich. Dann machen wir eine Pause. In dieser Pause kommt oft die zweite Frage.`,
       },
       {
         kind: "p",
@@ -195,7 +201,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Unsere Pakete beginnen bei 499\u00A0€ für eine einzelne Seite. Business kostet ab 899\u00A0€, Premium mit Bereichen, die Sie selbst pflegen, ab 2.499\u00A0€ und Studio mit eigener Gestaltung ab 3.490\u00A0€.",
+        text: `Unsere Pakete beginnen ${preis("starter").replace(/^ab/, "bei")} für eine einzelne Seite. Business kostet ${preis("business")}, Premium mit Bereichen, die Sie selbst pflegen, ${preis("premium")} und Studio mit eigener Gestaltung ${preis("studio")}. Alle Preise inklusive 19\u00A0% Mehrwertsteuer.`,
       },
       {
         kind: "h2",
@@ -215,7 +221,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Unser Monatsbeitrag ab 49\u00A0€ deckt genau diesen Posten ab, und er steht im Angebot. Darin sind Hosting in der EU, Updates, Backups und je nach Paket eine bis zehn kleine Änderungen pro Monat enthalten.",
+        text: `Unser Monatsbeitrag ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")} deckt genau diesen Posten ab, und er steht im Angebot. Darin sind Hosting in der EU, Updates, Backups und je nach Paket eine bis zehn kleine Änderungen pro Monat enthalten.`,
       },
       {
         kind: "h2",

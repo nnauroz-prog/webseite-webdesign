@@ -62,7 +62,7 @@ function compose(
     ...paragraphs.filter((p): p is string => Boolean(p)),
     SIGNATURE,
   ];
-  // Geschützte Leerzeichen (Website-Typografie, z. B. „499 €“) in der
+  // Geschützte Leerzeichen (Website-Typografie, z. B. „599 €“) in der
   // Mail als normale Leerzeichen: mailto-Texte bleiben schlichter Text.
   return clampBody(parts.join("\n\n").replace(/\u00A0/g, " "));
 }

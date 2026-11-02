@@ -61,7 +61,7 @@ export const metadata: Metadata = {
 
 const STARTER = getPaketBySlug("starter");
 const BUSINESS = getPaketBySlug("business");
-const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49 € / Monat").replace(
+const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 59 € / Monat").replace(
   /\s*\/\s*Monat$/,
   "",
 );

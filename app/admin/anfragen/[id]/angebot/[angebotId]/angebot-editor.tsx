@@ -23,6 +23,7 @@ import type {
   AngebotStatus,
   FeldFehler,
   PositionArt,
+  Summe,
 } from "@/lib/admin/angebote";
 
 import {
@@ -41,7 +42,7 @@ import {
   stateAus,
   stateAusEntwurf,
   summenAus,
-  zeileNetto,
+  zeileBetrag,
 } from "@/app/admin/anfragen/[id]/angebot/[angebotId]/editor-model";
 import {
   ANGEBOT_PILL,
@@ -632,7 +633,10 @@ export function AngebotEditor({
               />
               {fehlerText("ed-name", "kunde_name")}
               {nameFehlt && !fehler.kunde_name ? (
-                <p id="ed-name-fehlt" className="text-ink-olive mt-1 text-[14px]">
+                <p
+                  id="ed-name-fehlt"
+                  className="text-ink-olive mt-1 text-[14px]"
+                >
                   Fehlt noch – ohne Namen lässt sich das Angebot nicht senden.
                 </p>
               ) : null}
@@ -738,7 +742,7 @@ export function AngebotEditor({
             Positionen{form.zeilen.length ? ` (${form.zeilen.length})` : ""}
           </h2>
           <p className="text-muted-foreground mt-0.5 text-[14px]">
-            Preise netto, je Stück.
+            Preise inkl. USt (brutto), je Stück.
           </p>
           {fehler.positionen ? (
             <p className="text-ink-olive mt-2 text-[14px]">
@@ -810,7 +814,9 @@ export function AngebotEditor({
                 onKeyDown={keinUmbruch}
                 maxLength={ANGEBOT_GRENZEN.titel}
                 rows={1}
-                aria-invalid={invalid("titel") ?? (titelFehlt ? true : undefined)}
+                aria-invalid={
+                  invalid("titel") ?? (titelFehlt ? true : undefined)
+                }
                 aria-describedby={
                   describedBy("ed-titel", "titel") ??
                   (titelFehlt ? "ed-titel-fehlt" : undefined)
@@ -819,7 +825,10 @@ export function AngebotEditor({
               />
               {fehlerText("ed-titel", "titel")}
               {titelFehlt && !fehler.titel ? (
-                <p id="ed-titel-fehlt" className="text-ink-olive mt-1 text-[14px]">
+                <p
+                  id="ed-titel-fehlt"
+                  className="text-ink-olive mt-1 text-[14px]"
+                >
                   Fehlt noch – ohne Titel lässt sich das Angebot nicht senden.
                 </p>
               ) : null}
@@ -957,9 +966,10 @@ export function AngebotEditor({
               </p>
               <p className="text-muted-foreground mt-1.5 text-[13px] leading-snug">
                 {form.ust_satz === 19
-                  ? "Preise netto, auf dem Angebot kommen 19 % USt dazu. "
+                  ? "Preise brutto eingeben (inkl. 19 % USt). Das Angebot weist die enthaltene USt und den Nettobetrag zusätzlich aus. "
                   : "Kleinunternehmer: Auf dem Angebot steht der Satz nach § 19 UStG. "}
-                Gilt für alle Angebote, einstellbar in Vercel (ANGEBOT_UST_SATZ).
+                Gilt für alle Angebote, einstellbar in Vercel
+                (ANGEBOT_UST_SATZ).
               </p>
             </div>
           </div>
@@ -1080,14 +1090,14 @@ export function AngebotEditor({
           <div className="flex items-center gap-3">
             <div className="min-w-0 flex-1 leading-tight tabular-nums">
               <p className="text-[15.5px] font-semibold">
-                {formatEuro(summen.einmalig.netto)}{" "}
+                {formatEuro(summen.einmalig.brutto)}{" "}
                 <span className="text-muted-foreground text-[13.5px] font-normal">
                   einmalig
                 </span>
               </p>
-              {summen.monatlich.netto > 0 ? (
+              {summen.monatlich.brutto > 0 ? (
                 <p className="mt-0.5 text-[14.5px] font-medium">
-                  + {formatEuro(summen.monatlich.netto)}{" "}
+                  + {formatEuro(summen.monatlich.brutto)}{" "}
                   <span className="text-muted-foreground text-[13.5px] font-normal">
                     monatlich
                   </span>
@@ -1095,7 +1105,7 @@ export function AngebotEditor({
               ) : null}
               <p className="mt-0.5 text-[12.5px]">
                 <span className="text-muted-foreground">
-                  {form.ust_satz === 19 ? "netto, zzgl. USt" : "ohne USt"}
+                  {form.ust_satz === 19 ? "inkl. 19 % USt" : "ohne USt"}
                 </span>
                 {" · "}
                 {dirty ? (
@@ -1207,7 +1217,7 @@ function PositionZeile({
   onRemove: () => void;
 }) {
   const id = `pos-${zeile.id}`;
-  const netto = zeileNetto(zeile);
+  const betrag = zeileBetrag(zeile);
   const f = (feld: Parameters<typeof posKey>[1]) => fehler[posKey(index, feld)];
   const errId = (feld: string) => `${id}-${feld}-fehler`;
   const err = (feld: Parameters<typeof posKey>[1]) =>
@@ -1294,7 +1304,7 @@ function PositionZeile({
         </div>
         <div>
           <label htmlFor={`${id}-preis`} className={LABEL}>
-            Einzelpreis netto
+            Einzelpreis inkl. USt
           </label>
           <div className="relative">
             <input
@@ -1363,10 +1373,10 @@ function PositionZeile({
         </div>
         {/* Live-Hinweis nur, solange der Server nichts zum Preis sagt (sonst zwei Meldungen zum selben Feld). */}
         <p className="text-[14.5px] tabular-nums">
-          {netto === null ? (
+          {betrag === null ? (
             f("preis_cent") ? null : zeile.preis.trim() ? (
               <span className="text-ink-olive font-medium">
-                Betrag ungültig, z. B. 1.299 oder 1.299,50
+                Betrag ungültig, z. B. 999 oder 2.999,50
               </span>
             ) : (
               <span className="text-muted-foreground">Betrag fehlt</span>
@@ -1374,7 +1384,7 @@ function PositionZeile({
           ) : (
             <>
               <span className="text-muted-foreground">= </span>
-              <span className="font-semibold">{formatEuro(netto)}</span>
+              <span className="font-semibold">{formatEuro(betrag)}</span>
               {zeile.art === "monatlich" ? (
                 <span className="text-muted-foreground"> / Monat</span>
               ) : null}
@@ -1404,15 +1414,32 @@ function parseEuroOrNull(text: string): number | null {
   return parseEuroEingabe(t);
 }
 
-/** Netto, USt und brutto getrennt nach einmalig und monatlich. */
+/**
+ * Gesamt (brutto) zuerst, darunter die enthaltene USt und netto, getrennt
+ * nach einmalig und monatlich. Ohne USt (§ 19 UStG) nur Gesamt.
+ */
 function SummenTabelle({ summen }: { summen: ReturnType<typeof summenAus> }) {
-  const cols: { label: string; s: (typeof summen)["einmalig"] }[] = [
+  const cols: { label: string; s: Summe }[] = [
     { label: "Einmalig", s: summen.einmalig },
-    ...(summen.monatlich.netto > 0
+    ...(summen.monatlich.brutto > 0
       ? [{ label: "Monatlich", s: summen.monatlich }]
       : []),
   ];
   const ust = summen.ust_satz === 19;
+  const zeilen: { label: string; wert: (s: Summe) => number; haupt?: true }[] =
+    [
+      {
+        label: ust ? "Gesamt inkl. 19 % USt" : "Gesamt (ohne USt, § 19 UStG)",
+        wert: (s) => s.brutto,
+        haupt: true,
+      },
+      ...(ust
+        ? [
+            { label: "darin 19 % USt", wert: (s: Summe) => s.ust },
+            { label: "netto", wert: (s: Summe) => s.netto },
+          ]
+        : []),
+    ];
   return (
     <table className="mt-2 w-full text-[15px] tabular-nums sm:max-w-md">
       <thead>
@@ -1432,42 +1459,30 @@ function SummenTabelle({ summen }: { summen: ReturnType<typeof summenAus> }) {
         </tr>
       </thead>
       <tbody className="divide-border divide-y">
-        <tr>
-          <th scope="row" className="py-1.5 text-left font-normal">
-            Netto
-          </th>
-          {cols.map((c) => (
-            <td key={c.label} className="py-1.5 text-right">
-              {formatEuro(c.s.netto)}
-            </td>
-          ))}
-        </tr>
-        <tr>
-          <th
-            scope="row"
-            className="text-muted-foreground py-1.5 text-left font-normal"
-          >
-            {ust ? "19 % USt" : "USt (§ 19 UStG)"}
-          </th>
-          {cols.map((c) => (
-            <td
-              key={c.label}
-              className="text-muted-foreground py-1.5 text-right"
+        {zeilen.map((z) => (
+          <tr key={z.label}>
+            <th
+              scope="row"
+              className={cn(
+                "py-1.5 text-left",
+                z.haupt ? "font-semibold" : "text-muted-foreground font-normal",
+              )}
             >
-              {formatEuro(c.s.ust)}
-            </td>
-          ))}
-        </tr>
-        <tr>
-          <th scope="row" className="py-1.5 text-left font-semibold">
-            {ust ? "Brutto" : "Gesamt"}
-          </th>
-          {cols.map((c) => (
-            <td key={c.label} className="py-1.5 text-right font-semibold">
-              {formatEuro(c.s.brutto)}
-            </td>
-          ))}
-        </tr>
+              {z.label}
+            </th>
+            {cols.map((c) => (
+              <td
+                key={c.label}
+                className={cn(
+                  "py-1.5 text-right",
+                  z.haupt ? "font-semibold" : "text-muted-foreground",
+                )}
+              >
+                {formatEuro(z.wert(c.s))}
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );

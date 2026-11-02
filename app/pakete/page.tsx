@@ -9,20 +9,19 @@ import { PAKETE, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pa
 import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Pakete & Preise — Websites ab 499\u00A0€",
-  description:
-    "Websites ab 499\u00A0€ einmalig, dazu ab 49\u00A0€ im Monat für Hosting und kleine Änderungen. Den Festpreis bekommen Sie vor Auftrag schriftlich.",
+  title: `Pakete & Preise — Websites ${PAKETE[0].setup}`,
+  description: `Websites ${PAKETE[0].setup} einmalig, dazu ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")} im Monat für Hosting und kleine Änderungen, inkl. MwSt. Den Festpreis bekommen Sie vor Auftrag schriftlich.`,
   alternates: { canonical: "/pakete" },
 };
 
 type Slug = Paket["slug"];
 
 const STARTER = getPaketBySlug("starter");
-const STARTER_SETUP = STARTER?.setup ?? "ab 499\u00A0€";
-/** „ab 49 € / Monat" → „ab 49 €" */
-const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 49\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_SETUP = STARTER?.setup ?? "ab 599\u00A0€";
+/** „ab 59 € / Monat" → „ab 59 €" */
+const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 59\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
 
-/** „ab 2.499 €" → „2.499 €", „ab 79 € / Monat" → „79 €" */
+/** „ab 2.999 €" → „2.999 €", „ab 99 € / Monat" → „99 €" */
 function betrag(label: string) {
   return label.replace(/^ab\s*/, "").replace(/\s*\/\s*Monat$/, "");
 }
@@ -233,7 +232,7 @@ function Vergleich() {
             <tfoot>
               <tr>
                 <td className="pt-6 pr-4 align-top">
-                  <span className="text-muted-foreground block text-[13px] leading-snug">Preise zzgl. MwSt.</span>
+                  <span className="text-muted-foreground block text-[13px] leading-snug">Preise inkl. 19&nbsp;% MwSt.</span>
                   <span className="text-muted-foreground mt-2 block text-[13px] leading-snug">
                     Dauer jeweils ab vollständigen Unterlagen.
                   </span>
@@ -265,7 +264,7 @@ function Vergleich() {
             <PaketMobil key={p.slug} p={p} />
           ))}
           <p className="text-muted-foreground text-[13px]">
-            Preise zzgl. MwSt. Dauer jeweils ab vollständigen Unterlagen.
+            Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen Unterlagen.
           </p>
         </div>
       </div>

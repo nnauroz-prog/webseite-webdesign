@@ -3,8 +3,10 @@
  *
  * Wir zeigen, wie die Paketpreise zustande kommen: Stundensatz,
  * Aufwand je Paket, was nicht abgerechnet wird, was zusätzlich kostet.
- * Wer weiß, dass wir 99 € pro Stunde nehmen und Business etwa neun
- * Stunden Aufbau braucht, kann die 899 € selbst nachrechnen.
+ * Wer weiß, dass wir 120 € pro Stunde nehmen (inkl. 19 % MwSt.) und
+ * Starter etwa fünf Stunden Aufbau braucht, kann die 599 € selbst
+ * nachrechnen. Alle Beträge hier und in lib/pakete-data.ts sind
+ * Endpreise inkl. 19 % MwSt.
  *
  * Monatliche Posten folgen lib/pakete-data.ts (Änderungen pro Monat,
  * Hosting in der EU, Antwortzeiten: alle „meist am selben Werktag“,
@@ -14,13 +16,14 @@
 
 import { getPaketBySlug, type Paket } from "@/lib/pakete-data";
 
-export const STUNDENSATZ_EUR = 99;
+/** Stundensatz als Endpreis inkl. 19 % MwSt., auf volle 5 € gerundet. */
+export const STUNDENSATZ_EUR = 120;
 
 export type HonorarPaket = {
   slug: Paket["slug"];
   name: string;
   setup: string;
-  /** Geschätzter netto-Aufwand in Stunden bis Live-Schaltung. */
+  /** Geschätzter Aufwand in Stunden bis Live-Schaltung. */
   stundenSetup: number;
   /** Was in diesen Stunden steckt, jede Zeile eine konkrete Tätigkeit. */
   setupPosten: { label: string; stunden: number }[];
@@ -56,10 +59,10 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
       ],
     },
     business: {
-      stundenSetup: 9,
+      stundenSetup: 8.5,
       setupPosten: [
         { label: "Seitenplan, Gliederung, Suchbegriffe für Ihren Ort", stunden: 1.5 },
-        { label: "Bau der Unterseiten (Leistungen, Team, Kontakt)", stunden: 4 },
+        { label: "Bau der Unterseiten (Leistungen, Team, Kontakt)", stunden: 3.5 },
         { label: "Bilder aufbereiten, Galerie, Test auf echten Handys", stunden: 1.5 },
         { label: "Google-Unternehmensprofil, Grundlagen für die lokale Suche", stunden: 1 },
         { label: "Hosting einrichten, Domain, SSL, Übergabe", stunden: 1 },
@@ -91,11 +94,11 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
       ],
     },
     studio: {
-      stundenSetup: 35,
+      stundenSetup: 33,
       setupPosten: [
         { label: "Treffen vor Ort, Briefing, Gespräch über Ihre Marke", stunden: 3 },
         { label: "Konzept und neues Erscheinungsbild von Grund auf", stunden: 6 },
-        { label: "Bau der Seiten (bis zu 12 Bereiche)", stunden: 14 },
+        { label: "Bau der Seiten (bis zu 12 Bereiche)", stunden: 12 },
         { label: "Bereiche zum Selbstpflegen, auf Ihren Ablauf zugeschnitten", stunden: 5 },
         { label: "Bilder, Schrift, Texte, bis zu drei Korrekturrunden", stunden: 4 },
         { label: "Google-Unternehmensprofil, lokale Suche, Übergabe", stunden: 3 },

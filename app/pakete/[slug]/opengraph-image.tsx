@@ -1,5 +1,5 @@
 import { editorialOgImage, OG_SIZE } from "@/lib/og-editorial";
-import { getAllPaketSlugs, getPaketBySlug } from "@/lib/pakete-data";
+import { PAKETE, getAllPaketSlugs, getPaketBySlug } from "@/lib/pakete-data";
 
 /**
  * Vorschaubild je Paket: Name und Einmalpreis als Überschrift,
@@ -26,8 +26,8 @@ export default async function Image({
     return editorialOgImage({
       variant: "hell",
       eyebrow: "Sitalo · Pakete",
-      headline: "Website-Pakete ab 499\u00A0€",
-      subline: "Dazu ab 49\u00A0€ im Monat für Hosting, Updates und kleine Änderungen.",
+      headline: `Website-Pakete ${PAKETE[0].setup}`,
+      subline: `Dazu ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")} im Monat für Hosting, Updates und kleine Änderungen.`,
       url: "sitalo.de/pakete",
     });
   }

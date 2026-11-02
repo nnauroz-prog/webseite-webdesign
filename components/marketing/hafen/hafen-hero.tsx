@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { Containerbruecke } from "@/components/marketing/hafen/containerbruecke";
+import { WARTUNG_PREISE } from "@/lib/pakete-data";
 
 import s from "./hero.module.css";
 import { HeroBuehne } from "./hero-buehne";
@@ -18,7 +19,7 @@ function NebenLinks() {
   return (
     <>
       <Link href="/wartung" className={NEBEN}>
-        Schon eine Website? Pflege ab 49&nbsp;€ im Monat
+        Schon eine Website? Pflege ab {WARTUNG_PREISE.basis} im Monat
       </Link>
       <Link href="/audit" className={NEBEN}>
         Kostenlose Durchsicht Ihrer Website

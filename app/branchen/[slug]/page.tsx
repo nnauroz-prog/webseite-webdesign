@@ -44,7 +44,7 @@ export async function generateMetadata({
   const title = seo?.title ?? `Website für ${seo?.seoLabel ?? branche.label} erstellen lassen`;
   const lead =
     branche.shortBody.length > 100 ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "." : branche.shortBody;
-  const description = seo?.description ?? `${lead} Website zum Festpreis ab 499\u00A0€, gebaut in Hamburg.`;
+  const description = seo?.description ?? `${lead} Website zum Festpreis ${getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€"}, gebaut in Hamburg.`;
   return {
     title,
     description,
@@ -196,8 +196,8 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
                 {paket.name}
               </Link>
               , <span className="tabular-nums">{paket.setup}</span> einmalig und{" "}
-              <span className="tabular-nums">{paket.monthly.replace(/\s*\/\s*Monat$/, "")}</span> im Monat, zzgl.
-              USt. Online {nachDauer(paket.dauer)} ab vollständigen Unterlagen.{" "}
+              <span className="tabular-nums">{paket.monthly.replace(/\s*\/\s*Monat$/, "")}</span> im Monat, inkl.
+              MwSt. Online {nachDauer(paket.dauer)} ab vollständigen Unterlagen.{" "}
               {landing ? (
                 <Link href={landing.href} className={zweitlink}>
                   {landing.label}

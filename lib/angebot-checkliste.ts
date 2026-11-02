@@ -11,7 +11,7 @@ const STARTER = getPaketBySlug("starter") as Paket;
 const STUDIO = getPaketBySlug("studio") as Paket;
 const BUSINESS = getPaketBySlug("business") as Paket;
 
-/** „ab 49 € / Monat" → „ab 49 €" */
+/** „ab 59 € / Monat" → „ab 59 €" */
 const monatlich = (p: Paket) => p.monthly.replace(/\s*\/\s*Monat$/, "");
 
 /** Pakete mit bevorzugter Bearbeitung (steht in pakete-data bei Premium und Studio). */
@@ -37,7 +37,7 @@ export const ANGEBOT_CHECKLISTE: { frage: string; sitalo: string }[] = [
   },
   {
     frage: "Was kosten Hosting, Updates und kleine Änderungen im Monat?",
-    sitalo: `Je nach Paket ${monatlich(STARTER)} (${STARTER.name}) bis ${monatlich(STUDIO)} (${STUDIO.name.replace(/^Sitalo\s+/, "")}) im Monat, zzgl. USt., mit sechs Monaten Mindestlaufzeit und danach monatlich kündbar.`,
+    sitalo: `Je nach Paket ${monatlich(STARTER)} (${STARTER.name}) bis ${monatlich(STUDIO)} (${STUDIO.name.replace(/^Sitalo\s+/, "")}) im Monat, inkl. MwSt., mit sechs Monaten Mindestlaufzeit und danach monatlich kündbar.`,
   },
   {
     frage:

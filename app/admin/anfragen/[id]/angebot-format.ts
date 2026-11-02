@@ -7,19 +7,22 @@ import type { AngebotStatus, AngebotSummen } from "@/lib/admin/angebote";
 
 import { formatEuro, ustKurz } from "@/lib/admin/angebote";
 
-/** „899,00 € einmalig · 79,00 € monatlich“ (netto), sonst „Noch ohne Betrag“. */
+/**
+ * „999,00 € einmalig · 99,00 € monatlich“ (brutto, inkl. USt), sonst
+ * „Noch ohne Betrag“.
+ */
 export function betragZeile(s: AngebotSummen): string {
   const teile: string[] = [];
-  if (s.einmalig.netto > 0)
-    teile.push(`${formatEuro(s.einmalig.netto)} einmalig`);
-  if (s.monatlich.netto > 0)
-    teile.push(`${formatEuro(s.monatlich.netto)} monatlich`);
+  if (s.einmalig.brutto > 0)
+    teile.push(`${formatEuro(s.einmalig.brutto)} einmalig`);
+  if (s.monatlich.brutto > 0)
+    teile.push(`${formatEuro(s.monatlich.brutto)} monatlich`);
   return teile.length ? teile.join(" · ") : "Noch ohne Betrag";
 }
 
-/** „netto, zzgl. 19 % USt“ bzw. „ohne USt (§ 19 UStG)“. */
+/** „inkl. 19 % USt“ bzw. „ohne USt (§ 19 UStG)“. */
 export function steuerZeile(satz: 0 | 19): string {
-  return satz === 0 ? ustKurz(0) : `netto, ${ustKurz(19)}`;
+  return ustKurz(satz);
 }
 
 /** Farbe der Status-Marke; „abgelaufen“ gilt für gesendete nach Gültig bis. */

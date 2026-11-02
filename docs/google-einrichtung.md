@@ -73,7 +73,7 @@ Firmen.
      und andere Betriebe in ganz Deutschland. Test-Link vor dem Start,
      kleine Änderungen im Monatsbeitrag.“
    - **Dienstleistungen:** Website erstellen lassen, Website-Wartung,
-     Website-Durchsicht, je mit Preis „ab 499 €“, „ab 49 € im Monat“,
+     Website-Durchsicht, je mit Preis „ab 599 €“, „ab 59 € im Monat“ (jeweils inkl. MwSt.),
      „kostenlos“.
    - **Öffnungszeiten:** die Zeiten, in denen Sie ans Telefon gehen.
    - **Fotos:** Logo, ein Foto vom Arbeitsplatz, Bildschirmfotos von

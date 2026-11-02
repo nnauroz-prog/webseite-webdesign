@@ -47,7 +47,7 @@ revoke all on sequence public.angebote_nummer_seq from anon, authenticated;
 grant usage, select on sequence public.angebote_nummer_seq to service_role;
 
 -- 2) Tabelle ---------------------------------------------------------
--- Beträge in Cent, netto. positionen ist eine Liste von
+-- Beträge in Cent, brutto (inkl. USt). positionen ist eine Liste von
 -- { id, titel, beschreibung, menge, preis_cent, art }, art ist
 -- 'einmalig' oder 'monatlich'; die App prüft jede Position.
 -- ust_satz 0 = Kleinunternehmer nach § 19 UStG.
