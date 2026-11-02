@@ -3,8 +3,10 @@
  *
  * Wir zeigen, wie die Paketpreise zustande kommen: Stundensatz,
  * Aufwand je Paket, was nicht abgerechnet wird, was zusätzlich kostet.
- * Wer weiß, dass wir 99 € pro Stunde nehmen und Business etwa neun
- * Stunden Aufbau braucht, kann die 899 € selbst nachrechnen.
+ * Wer weiß, dass wir 120 € pro Stunde nehmen (inkl. 19 % MwSt.) und
+ * Starter etwa fünf Stunden Aufbau braucht, kann die 599 € selbst
+ * nachrechnen. Alle Beträge hier und in lib/pakete-data.ts sind
+ * Endpreise inkl. 19 % MwSt.
  *
  * Monatliche Posten folgen lib/pakete-data.ts (Änderungen pro Monat,
  * Hosting in der EU, Antwortzeiten: alle „meist am selben Werktag“,
@@ -14,13 +16,14 @@
 
 import { getPaketBySlug, type Paket } from "@/lib/pakete-data";
 
-export const STUNDENSATZ_EUR = 99;
+/** Stundensatz als Endpreis inkl. 19 % MwSt., auf volle 5 € gerundet. */
+export const STUNDENSATZ_EUR = 120;
 
 export type HonorarPaket = {
   slug: Paket["slug"];
   name: string;
   setup: string;
-  /** Geschätzter netto-Aufwand in Stunden bis Live-Schaltung. */
+  /** Geschätzter Aufwand in Stunden bis Live-Schaltung. */
   stundenSetup: number;
   /** Was in diesen Stunden steckt, jede Zeile eine konkrete Tätigkeit. */
   setupPosten: { label: string; stunden: number }[];

@@ -6,7 +6,8 @@
  *
  *   Sitalo (Business, Premium oder Studio, je nachdem, was bei der
  *   eingestellten Zahl an Änderungen am günstigsten ist; Preise aus
- *   lib/pakete-data.ts, Änderungen über dem Kontingent zum Stundensatz)
+ *   lib/pakete-data.ts als Endpreise inkl. 19 % MwSt., Änderungen über
+ *   dem Kontingent zum Stundensatz, ebenfalls inkl. MwSt.)
  *   Wix, Squarespace, Jimdo (je ein angenommener Monatsbetrag + Eigenzeit)
  *   Selbstbau mit ChatGPT (angenommen ~20 €/Mo + viel Eigenzeit)
  *
@@ -48,7 +49,7 @@ export type Option = {
 
 /**
  * Zieht den ersten Zahlenwert aus einem Preis-String der
- * kanonischen Quelle ("ab 899 €" → 899, "ab 79 € / Monat" → 79).
+ * kanonischen Quelle ("ab 999 €" → 999, "ab 99 € / Monat" → 99).
  * So schlagen Preisänderungen in pakete-data.ts automatisch hier
  * durch, ohne Hand-Sync.
  */
@@ -98,7 +99,7 @@ function sitaloHinweis(wahl: SitaloWahl): string {
       : `Bei so vielen Änderungen ist ${wahl.label} günstiger als Business mit Zusatzstunden. `;
   const rest =
     wahl.extraProMonat > 0
-      ? `, jede weitere ist hier mit einer halben Stunde zum Stundensatz von ${STUNDENSATZ_EUR} € gerechnet.`
+      ? `, jede weitere ist hier mit einer halben Stunde zum Stundensatz von ${STUNDENSATZ_EUR} € inkl. MwSt. gerechnet.`
       : ".";
   return `${vorweg}${wahl.label} enthält ${kontingent} kleine Änderungen im Monat${rest}`;
 }

@@ -8,8 +8,10 @@
  * node --test nutzbar. Gespeichert wird über lib/angebote-store.ts
  * (server-only).
  *
- * Beträge sind immer ganze Cent, netto. Texte für Kunden in Sie-Form,
- * Fehlermeldungen für den Inhaber (Admin) in du-Form.
+ * Beträge sind immer ganze Cent und brutto (Endpreise inkl. USt). Die
+ * enthaltene Umsatzsteuer und der Nettobetrag werden daraus herausgerechnet
+ * (berechneSummen). Texte für Kunden in Sie-Form, Fehlermeldungen für
+ * den Inhaber (Admin) in du-Form.
  */
 
 import type { LeadEvent, LeadRow } from "@/lib/leads-meta";
@@ -56,14 +58,14 @@ export const POSITION_ART_LABELS: Record<PositionArt, string> = {
   monatlich: "monatlich",
 };
 
-/** Eine Zeile im Angebot. preis_cent ist der Einzelpreis netto. */
+/** Eine Zeile im Angebot. preis_cent ist der Einzelpreis brutto (inkl. USt). */
 export type AngebotPosition = {
   id: string;
   titel: string;
   beschreibung: string;
   /** Ganzzahl 1–999. */
   menge: number;
-  /** Ganzzahl in Cent, 0 bis 100.000.000 (1.000.000 €), netto. */
+  /** Ganzzahl in Cent, 0 bis 100.000.000 (1.000.000 €), brutto (inkl. USt). */
   preis_cent: number;
   art: PositionArt;
 };
@@ -402,6 +404,11 @@ export function parseEuroEingabe(input: unknown): number | null {
   return Number(intPart) * 100 + Number(frac.padEnd(2, "0"));
 }
 
+/**
+ * brutto ist die Summe der Positionen (Endpreis inkl. USt), ust die darin
+ * enthaltene Umsatzsteuer, netto = brutto − ust. Bei ust_satz 0 sind
+ * netto und brutto gleich.
+ */
 export type Summe = { netto: number; ust: number; brutto: number };
 export type AngebotSummen = {
   einmalig: Summe;
@@ -409,31 +416,37 @@ export type AngebotSummen = {
   ust_satz: UstSatz;
 };
 
-export function positionNetto(
+/** Zeilenbetrag menge × preis_cent, brutto (inkl. USt). */
+export function positionBetrag(
   p: Pick<AngebotPosition, "menge" | "preis_cent">,
 ): number {
   return p.menge * p.preis_cent;
 }
 
-/** USt auf eine Summe, kaufmännisch auf Cent gerundet. */
-export function ustBetrag(netto: number, satz: UstSatz): number {
-  return Math.round((netto * satz) / 100);
+/**
+ * In einem Bruttobetrag enthaltene USt, kaufmännisch auf Cent gerundet:
+ * brutto − brutto / 1,19, gerechnet als brutto · 19 / 119 (ganzzahlig,
+ * ohne Gleitkomma-Drift). Bei Satz 0 immer 0.
+ */
+export function enthalteneUst(brutto: number, satz: UstSatz): number {
+  if (satz === 0) return 0;
+  return Math.round((brutto * satz) / (100 + satz));
 }
 
-/** Summen getrennt nach einmalig und monatlich, USt je Summe. */
+/** Summen getrennt nach einmalig und monatlich, enthaltene USt je Summe. */
 export function berechneSummen(
   positionen: readonly Pick<AngebotPosition, "menge" | "preis_cent" | "art">[],
   ust_satz: UstSatz,
 ): AngebotSummen {
-  const netto = { einmalig: 0, monatlich: 0 };
-  for (const p of positionen) netto[p.art] += positionNetto(p);
-  const summe = (n: number): Summe => {
-    const ust = ustBetrag(n, ust_satz);
-    return { netto: n, ust, brutto: n + ust };
+  const brutto = { einmalig: 0, monatlich: 0 };
+  for (const p of positionen) brutto[p.art] += positionBetrag(p);
+  const summe = (b: number): Summe => {
+    const ust = enthalteneUst(b, ust_satz);
+    return { netto: b - ust, ust, brutto: b };
   };
   return {
-    einmalig: summe(netto.einmalig),
-    monatlich: summe(netto.monatlich),
+    einmalig: summe(brutto.einmalig),
+    monatlich: summe(brutto.monatlich),
     ust_satz,
   };
 }
@@ -484,7 +497,7 @@ export function paketAusAnfrage(lead: Pick<LeadRow, "fields">): PaketSlug {
   );
 }
 
-/** „ab 2.499 €“ → 249900 (nur die Ziffern zählen). */
+/** „ab 2.999 €“ → 299900 (nur die Ziffern zählen; Bruttopreis aus PAKETE). */
 export function centAusPreistext(text: string): number {
   const digits = text.replace(/\D/g, "");
   return digits ? Number(digits) * 100 : 0;
@@ -1459,18 +1472,24 @@ export function teilenDaten(
   };
 }
 
-/** „899,00 € netto + 170,81 € USt (19 %) = 1.069,81 €“ bzw. ohne USt. */
-function summenText(s: Summe, satz: UstSatz): string {
+/**
+ * „999,00 € inkl. 19 % USt (darin enthalten 159,50 € USt, netto 839,50 €)“,
+ * monatlich „99,00 € im Monat inkl. 19 % USt (…)“; ohne USt
+ * „999,00 € (keine Umsatzsteuer nach § 19 UStG)“.
+ */
+function summenText(s: Summe, satz: UstSatz, monatlich: boolean): string {
+  const betrag = `${formatEuro(s.brutto)}${monatlich ? " im Monat" : ""}`;
   return satz === 19
-    ? `${formatEuro(s.netto)} netto + ${formatEuro(s.ust)} USt (19 %) = ${formatEuro(s.brutto)}`
-    : `${formatEuro(s.netto)} (keine Umsatzsteuer nach § 19 UStG)`;
+    ? `${betrag} ${ustKurz(19)} (darin enthalten ${formatEuro(s.ust)} USt, netto ${formatEuro(s.netto)})`
+    : `${betrag} (keine Umsatzsteuer nach § 19 UStG)`;
 }
 
 /**
  * Bestätigung an den Kunden direkt nach der Annahme (Eingangsbestätigung
  * nach § 312i Abs. 1 Nr. 3 BGB und zugleich sein Beleg): Nummer, Titel,
- * wann und von wem angenommen, alle Positionen mit Summen (netto, USt,
- * brutto), die Hinweise und der Link zum Angebot. Sie-Form.
+ * wann und von wem angenommen, alle Positionen (brutto) mit Summen
+ * (Gesamt inkl. USt, enthaltene USt, netto), die Hinweise und der Link
+ * zum Angebot. Sie-Form.
  */
 export function kundenBestaetigung(
   a: Pick<
@@ -1496,15 +1515,17 @@ export function kundenBestaetigung(
     const monatlich = art === "monatlich";
     leistungen.push(monatlich ? "Monatliche Leistungen:" : "Einmalige Leistungen:");
     for (const p of liste) {
-      const netto = positionNetto(p);
+      const brutto = positionBetrag(p);
       const menge = p.menge > 1 ? `${p.menge} × ` : "";
       const betrag =
-        netto === 0 ? "inklusive" : `${formatEuro(netto)}${monatlich ? " im Monat" : ""}`;
+        brutto === 0
+          ? "inklusive"
+          : `${formatEuro(brutto)}${monatlich ? " im Monat" : ""}`;
       leistungen.push(`- ${menge}${einzeilig(p.titel)}: ${betrag}`);
     }
     const summe = monatlich ? summen.monatlich : summen.einmalig;
     leistungen.push(
-      `Summe ${monatlich ? "monatlich" : "einmalig"}: ${summenText(summe, a.ust_satz)}${monatlich ? " im Monat" : ""}`,
+      `Summe ${monatlich ? "monatlich" : "einmalig"}: ${summenText(summe, a.ust_satz, monatlich)}`,
     );
     leistungen.push("");
   }
