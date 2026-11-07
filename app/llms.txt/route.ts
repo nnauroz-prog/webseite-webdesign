@@ -77,7 +77,10 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 
 - [Über Sitalo](https://www.sitalo.de/atelier): Wer Sitalo ist und wie gearbeitet wird.
 - [Jetzt](https://www.sitalo.de/jetzt): Woran Sitalo gerade arbeitet, die nächste Sprechstunde und die neuesten Artikel.
-- [Journal](https://www.sitalo.de/journal): Artikel zu Preisen, Arbeitsweise, lokaler Suche und einzelnen Branchen.
+- [Journal](https://www.sitalo.de/journal): Artikel zu Preisen, Arbeitsweise, lokaler Suche und einzelnen Branchen, dazu Ratgeber für Betriebe:
+  - [Google-Unternehmensprofil einrichten](https://www.sitalo.de/journal/google-unternehmensprofil-einrichten): Profil anlegen oder übernehmen, bestätigen und vollständig ausfüllen.
+  - [Pflichtangaben einer Website](https://www.sitalo.de/journal/pflichtangaben-website-impressum-datenschutz): Impressum, Datenschutzerklärung, Cookie-Einwilligung und Barrierefreiheit (BFSG).
+  - [Domain, Hosting, SSL und E-Mail](https://www.sitalo.de/journal/domain-hosting-ssl-email-website-was-braucht-mein-betrieb): Was eine Website braucht, wem die Domain gehören sollte und was das ungefähr kostet.
 - [Manifest](https://www.sitalo.de/manifest): Acht Grundsätze darüber, was Sitalo tut und was nicht.
 - [Auswahl](https://www.sitalo.de/auswahl): Welche Aufträge Sitalo annimmt. Jede Seite bauen und betreuen wir selbst, deshalb nehmen wir nur so viele Aufträge an, wie wir sorgfältig fertig bekommen.
 - [Inventar](https://www.sitalo.de/inventar): Verwendete Werkzeuge, Hosting und was bewusst nicht eingesetzt wird.

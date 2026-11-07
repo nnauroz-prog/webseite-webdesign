@@ -103,6 +103,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         q: "Lohnt sich ein Google-Unternehmensprofil?",
         a: "Ja. Das Profil ist kostenlos und entscheidet mit, ob Sie bei Google Maps und in der lokalen Suche auftauchen. Ab dem Business-Paket richten wir es mit Ihnen ein. Danach pflegen Sie es selbst oder überlassen es uns.",
+        link: { href: "/journal/google-unternehmensprofil-einrichten", label: "Google-Unternehmensprofil einrichten: Anleitung" },
       },
       {
         q: "Was bringt mir Suchmaschinenoptimierung (SEO) konkret?",
@@ -133,6 +134,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         q: "Sind Impressum und Datenschutz dabei?",
         a: "Die Seiten legen wir technisch an. Den rechtlich geprüften Text sollten Sie aus einer geeigneten Quelle beziehen, etwa einem Generator, einer Anwältin oder Ihrem Verband. Was zu Ihrem Fall passt, sagen wir Ihnen gern.",
+        link: { href: "/journal/pflichtangaben-website-impressum-datenschutz", label: "Was auf jede Betriebs-Website gehört" },
       },
       {
         q: "Ich habe schon eine Website. Kann die modernisiert werden?",
@@ -145,6 +147,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         q: "Was, wenn meine Domain woanders liegt?",
         a: "Dann bleibt sie in Ihrem Konto, etwa bei IONOS, Strato oder GoDaddy, und wir richten sie auf unseren Server. Wenn Sie wollen, ziehen wir die Domain auch zu uns um. Eingetragen bleibt sie immer auf Ihren Namen.",
+        link: { href: "/journal/domain-hosting-ssl-email-website-was-braucht-mein-betrieb", label: "Domain, Hosting, SSL: was eine Website braucht" },
       },
       {
         q: "Was, wenn ich später woanders hin will?",
