@@ -15,6 +15,9 @@ zwei Quellen:
    verschiedenen Stellen gleich auftaucht, desto sicherer nennt eine KI
    Sitalo.
 
+Fertige Texte zum Kopieren für alle Profile und Verzeichnisse stehen
+in docs/profiltexte.md.
+
 Die Website ist dafür technisch fertig (siehe unten). Den größten
 Hebel haben jetzt die Schritte, die nur der Inhaber selbst machen
 kann. Reihenfolge nach Wirkung, alles geht am Handy.
