@@ -118,7 +118,7 @@ function content(): string {
 
   return `# Sitalo Webdesign: alle Fakten
 
-> Sitalo Webdesign ist ein Webdesign-Büro aus Hamburg. Es erstellt Websites zum Festpreis für kleine und mittlere Betriebe und Selbstständige in ganz Deutschland: Kunden schicken Stichpunkte und Fotos, Sitalo schreibt die Texte, gestaltet und baut die Website und kümmert sich danach um Hosting, Updates und kleine Änderungen. Websites ${PAKETE[0].setup} einmalig, Monatsbeitrag ${MONATSBEITRAEGE}, alle Preise inklusive 19 % MwSt.
+> Sitalo Webdesign ist ein Webdesign-Büro aus Hamburg. Es erstellt Websites zum Festpreis für kleine und mittlere Betriebe und Selbstständige in ganz Deutschland: Kunden schicken Stichpunkte und Fotos, Sitalo schreibt die Texte, gestaltet und baut die Website und kümmert sich danach um Hosting, Updates und kleine Änderungen. Websites ${PAKETE[0].setup} einmalig, Monatsbeitrag ${monat(PAKETE[0].monthly)}, alle Preise inklusive 19 % MwSt.
 
 Stand: ${stand()}. Kurzfassung: ${SITE_URL}/llms.txt
 
