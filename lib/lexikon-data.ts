@@ -42,7 +42,7 @@ export const LEXIKON: LexikonEntry[] = [
     term: "SSL-Zertifikat",
     slug: "ssl",
     plain:
-      "Das kleine Schloss in der Adresszeile des Browsers. Es verschlüsselt die Verbindung zwischen Besucher und Website. Ohne SSL warnen Browser vor Ihrer Seite, und Google stuft sie ab.",
+      "Das kleine Schloss in der Adresszeile des Browsers. Es verschlüsselt die Verbindung zwischen Besucher und Website. Ohne SSL warnen Browser vor Ihrer Seite, und Google wertet HTTPS als leichtes Signal für die Reihenfolge der Treffer.",
     bottomLine:
       "Für normale Websites gibt es SSL seit Jahren kostenlos. Steht es als eigener Posten im Angebot, fragen Sie nach, wofür.",
   },

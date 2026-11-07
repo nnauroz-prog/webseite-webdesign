@@ -7,7 +7,7 @@
  * zu müssen.
  *
  * Alles kommt aus denselben Datendateien wie die Website (Pakete, FAQ,
- * Branchen, Stadtteile, Lexikon, Honorar), damit nichts veraltet oder
+ * Branchen, Stadtteile, Lexikon, Honorar, Journal), damit nichts veraltet oder
  * sich widerspricht. Keine Inhalte, die nicht auch auf der Website
  * stehen.
  *
@@ -18,6 +18,7 @@ import { ABLAUF_HALTE } from "@/lib/ablauf-data";
 import { BRANCHEN } from "@/lib/branchen-data";
 import { FAQ_GROUPS } from "@/lib/faq-data";
 import { NICHT_ABGERECHNET, ZUSATZ_ABGERECHNET } from "@/lib/honorar-data";
+import { JOURNAL_POSTS } from "@/lib/journal-data";
 import { LEXIKON } from "@/lib/lexikon-data";
 import {
   MONATSBEITRAEGE,
@@ -112,6 +113,10 @@ function content(): string {
     (s) => `- **${s.name}**: ${s.tagline} (${SITE_URL}/standorte/${s.slug})`,
   ).join("\n");
 
+  const ratgeber = JOURNAL_POSTS.map(
+    (p) => `- **${p.title}** (${SITE_URL}/journal/${p.slug}): ${p.dek}`,
+  ).join("\n");
+
   const lexikon = LEXIKON.map(
     (e) => `**${e.term}**: ${e.plain} ${e.bottomLine}`,
   ).join("\n\n");
@@ -192,6 +197,12 @@ ${stadtteile}
 - 3-Jahres-Kostenrechner (Sitalo, Wix, Squarespace, Jimdo, Selbstbau): ${SITE_URL}/rechner
 - Kostenlose Durchsicht einer bestehenden Website: ${SITE_URL}/audit
 - Erstgespräch buchen: ${SITE_URL}/termin
+
+## Ratgeber
+
+Artikel aus dem Journal, neueste zuerst:
+
+${ratgeber}
 
 ## Webbegriffe in Alltagsdeutsch
 
