@@ -14,7 +14,7 @@ import {
 } from "@/lib/inventar-data";
 
 export const metadata: Metadata = {
-  title: "Inventar — Was wir verwenden",
+  title: "Inventar · Was wir verwenden",
   description:
     "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was Sie beisteuern und was wir bewusst auslassen.",
   alternates: { canonical: "/inventar" },

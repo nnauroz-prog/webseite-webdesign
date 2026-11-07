@@ -15,9 +15,9 @@ import {
 import { getAllPaketSlugs, type Paket } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
-  title: "Honorar — offen vorgerechnet",
+  title: "Honorar · offen vorgerechnet",
   description:
-    "Wie unsere Preise zustande kommen. Stundensatz, Aufwand pro Paket, was im Stundensatz enthalten ist, was nicht abgerechnet wird. Open-Book-Honorar-Modell.",
+    `Wie unsere Preise zustande kommen: Stundensatz ${STUNDENSATZ_EUR}\u00A0€ inkl. MwSt., Stunden je Paket und was wir nicht abrechnen.`,
   alternates: { canonical: "/honorar" },
 };
 

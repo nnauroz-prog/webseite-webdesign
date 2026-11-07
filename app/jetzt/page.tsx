@@ -16,7 +16,7 @@ import {
 } from "@/lib/sprechstunde-data";
 
 export const metadata: Metadata = {
-  title: "Jetzt — was bei Sitalo gerade ansteht",
+  title: "Jetzt · was bei Sitalo gerade ansteht",
   description:
     "Was bei Sitalo gerade ansteht: der nächste freie Tag für ein Erstgespräch, die nächste Sprechstunde und was wir zuletzt geschrieben haben.",
   alternates: { canonical: "/jetzt" },

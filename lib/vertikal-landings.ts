@@ -132,15 +132,15 @@ export const VERTIKAL_LANDINGS: VertikalLanding[] = [
     // ­: weiche Trennung, damit das lange Wort am Handy umbrechen kann.
     headline: "Websites für Arzt- und Zahnarzt­praxen",
     subhead:
-      "Vor dem ersten Termin schauen Patient:innen nach Sprechzeiten, Anfahrt und Behandlungen. Auf Ihrer Seite finden sie das ohne Suchen und können gleich einen Termin anfragen.",
+      "Vor dem ersten Termin schauen Patientinnen und Patienten nach Sprechzeiten, Anfahrt und Behandlungen. Auf Ihrer Seite finden sie das ohne Suchen und können gleich einen Termin anfragen.",
     pains: [
       {
         headline: "Die Sprechzeiten sind schwer zu finden.",
-        body: "Vor dem Anruf suchen Patient:innen nach Sprechzeiten und Notdienst. Stecken die in einem PDF unter „Praxisinfo“, wählen sie die nächste Praxis. Sprechzeiten gehören oben auf jede Seite.",
+        body: "Vor dem Anruf suchen Patientinnen und Patienten nach Sprechzeiten und Notdienst. Stecken die in einem PDF unter „Praxisinfo“, wählen sie die nächste Praxis. Sprechzeiten gehören oben auf jede Seite.",
       },
       {
         headline: "Die Seite wirkt veraltet.",
-        body: "Wenn eine Seite am Handy verrutscht oder seit Jahren gleich aussieht, schließen Patient:innen daraus auf die Praxis. Vor dem ersten Besuch haben sie nichts anderes, woran sie sich halten können.",
+        body: "Wenn eine Seite am Handy verrutscht oder seit Jahren gleich aussieht, schließen Patientinnen und Patienten daraus auf die Praxis. Vor dem ersten Besuch haben sie nichts anderes, woran sie sich halten können.",
       },
       {
         headline: "Jeder Termin läuft über das Telefon.",
@@ -158,15 +158,15 @@ export const VERTIKAL_LANDINGS: VertikalLanding[] = [
       },
       {
         name: "Behandlungen",
-        what: "Ihre Leistungen in Alltagssprache. Patient:innen suchen mit ihren eigenen Worten. Finden sie die nicht, nehmen sie an, dass Sie es nicht anbieten.",
+        what: "Ihre Leistungen in Alltagssprache. Ihre Patientinnen und Patienten suchen mit ihren eigenen Worten. Finden sie die nicht, nehmen sie an, dass Sie es nicht anbieten.",
       },
       {
         name: "Team",
-        what: "Porträts von Ärzt:innen und Praxisteam, zu jeder Person ein paar Sätze. Man möchte wissen, zu wem man geht.",
+        what: "Porträts von Ärztinnen, Ärzten und Praxisteam, zu jeder Person ein paar Sätze. Man möchte wissen, zu wem man geht.",
       },
       {
         name: "Anfahrt und Parken",
-        what: "Karte, Haltestellen, Parkplätze und ob es einen Aufzug gibt. Für ältere Patient:innen gibt das oft den Ausschlag.",
+        what: "Karte, Haltestellen, Parkplätze und ob es einen Aufzug gibt. Für ältere Menschen gibt das oft den Ausschlag.",
       },
       {
         name: "Impressum und Datenschutz",

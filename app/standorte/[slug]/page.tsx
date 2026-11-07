@@ -71,7 +71,7 @@ export default async function StandortPage({
     // Dienstleistung mit Einsatzgebiet statt eines eigenen Firmeneintrags
     // je Stadtteil: Sitalo hat dort kein Büro, das Büro ist eines.
     "@type": "Service",
-    name: `Website erstellen lassen in ${standort.name}`,
+    name: `Website erstellen lassen ${standort.inName}`,
     description: standort.tagline,
     url: `${SITE_URL}/standorte/${standort.slug}`,
     serviceType: "Webdesign",
@@ -120,7 +120,7 @@ export default async function StandortPage({
         <Branchen standort={standort} />
         <Weiter standort={standort} />
         <Briefkarte
-          title={`Das erste Gespräch führen wir am Telefon oder bei Ihnen in ${standort.name}.`}
+          title={`Das erste Gespräch führen wir am Telefon, per Video oder bei Ihnen ${standort.inName}.`}
           inquiryHref={`/anfrage?ort=${standort.slug}`}
         >
           Den Festpreis bekommen Sie schriftlich, bevor wir anfangen. Vor dem Start schicken wir Ihnen einen Test-Link.
@@ -145,7 +145,7 @@ function Hero({ standort }: { standort: Standort }) {
         <div className="min-w-0 lg:col-span-6">
           <p className="label-mono text-muted-foreground">Webdesign in Hamburg-{standort.name}</p>
           <h1 className="mt-6 text-balance text-[2.4rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[3.75rem]">
-            Website erstellen lassen in {standort.name}
+            Website erstellen lassen {standort.inName}
           </h1>
           <p className="mt-6 max-w-xl text-pretty text-[17px] leading-relaxed text-[#33383a] sm:text-[18px]">
             {standort.tagline}
@@ -176,7 +176,7 @@ function Viertel({ standort }: { standort: Standort }) {
       <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
           <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
-            Webdesign für {standort.name}
+            Webdesign {standort.inName}
           </h2>
           <p className="mt-8 text-pretty text-[20px] leading-[1.5] tracking-[-0.01em] sm:text-[22px]">
             {standort.intro}
@@ -223,7 +223,7 @@ function Branchen({ standort }: { standort: Standort }) {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4">
           <h2 className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
-            {ZAHLWORT[n] ?? n} Branchen, die zu {standort.name} passen
+            {ZAHLWORT[n] ?? n} Branchen, die {standort.zuName} passen
           </h2>
           <p className="text-stahl-hell mt-6 max-w-xs text-[15.5px] leading-relaxed">
             Zu jeder Branche gibt es eine eigene Seite mit Musterseite und typischem Seitenplan.

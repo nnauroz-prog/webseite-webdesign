@@ -58,11 +58,11 @@ const PRESETS: Preset[] = [
     accent: "#1f5f8b",
     tint: "#edf3f8",
     image: "/images/atmosphere/praxis-raum.webp",
-    headline: "Hausarztpraxis, Termine auch online.",
+    headline: "Hausarztpraxis, Termine nach Anfrage.",
     sub: "Sprechzeiten Mo–Fr ab 8 Uhr. Neue Patientinnen und Patienten willkommen.",
     nav: ["Praxis", "Leistungen", "Team", "Termin"],
-    cta: "Termin buchen",
-    features: ["Online-Termin", "Sprechzeiten", "Unsere Leistungen"],
+    cta: "Termin anfragen",
+    features: ["Terminanfrage", "Sprechzeiten", "Unsere Leistungen"],
   },
   {
     key: "friseur",
@@ -73,10 +73,10 @@ const PRESETS: Preset[] = [
     tint: "#f6eff3",
     image: "/images/atmosphere/friseur-stuhl.webp",
     headline: "Schnitt, Farbe, Pflege.",
-    sub: "Dienstag bis Samstag geöffnet. Termin online buchen oder anrufen.",
+    sub: "Dienstag bis Samstag geöffnet. Termin anfragen oder anrufen.",
     nav: ["Preise", "Team", "Galerie", "Termin"],
-    cta: "Termin buchen",
-    features: ["Online-Buchung", "Preisliste", "Galerie"],
+    cta: "Termin anfragen",
+    features: ["Terminanfrage", "Preisliste", "Galerie"],
   },
   {
     key: "gastro",
@@ -162,9 +162,9 @@ const EXTRA_PRESETS: Preset[] = [
     tint: "#f6eff1",
     image: "/images/atmosphere/friseur-stuhl.webp",
     headline: "Gesichtsbehandlung, Wimpern, Maniküre.",
-    sub: "Termine online buchen, Preise stehen auf der Seite.",
+    sub: "Termin anfragen, Preise stehen auf der Seite.",
     nav: ["Behandlungen", "Preise", "Gutscheine", "Termin"],
-    cta: "Termin buchen",
+    cta: "Termin anfragen",
     features: ["Behandlungen", "Preisliste", "Gutscheine"],
   },
   {
@@ -208,6 +208,9 @@ function domainFor(name: string) {
     .replace(/ü/g, "ue")
     .replace(/ß/g, "ss")
     .replace(/&/g, "und")
+    // Akzente abtrennen und entfernen: „Café“ → „cafe“.
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 32);
@@ -233,7 +236,7 @@ export function LivePreview() {
   }, []);
 
   const href = `/anfrage?branche=${preset.inquiry}&vorhaben=${encodeURIComponent(
-    `Website für „${shownName}" (${preset.chip}), wie in der Live-Vorschau.`,
+    `Website für „${shownName}“ (${preset.chip}), wie in der Skizze auf der Startseite.`,
   )}`;
 
   return (

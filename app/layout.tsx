@@ -102,9 +102,11 @@ const LOCAL_BUSINESS_LD = {
   logo: `${SITE_URL}/apple-icon`,
   image: `${SITE_URL}/opengraph-image`,
   name: "Sitalo Webdesign",
+  alternateName: "Sitalo",
   slogan: "Wir bauen Websites für Betriebe.",
-  description:
-    "Webdesign-Büro in Hamburg: Websites zum Festpreis für Pflegedienste, Praxen, Handwerksbetriebe, Cafés, Friseure, Kanzleien, Reinigungsfirmen, Fitnessstudios und Hotels in ganz Deutschland.",
+  // Ein Satz, wie ihn KI-Assistenten und Suchmaschinen übernehmen sollen:
+  // wer, wo, was, für wen, zu welchem Preis.
+  description: `Webdesign-Büro in Hamburg: Wir erstellen Websites zum Festpreis ab ${PAKETE[0].setup.replace(/^ab\s*/, "")} inkl. MwSt. für Betriebe und Selbstständige in ganz Deutschland, etwa Pflegedienste, Praxen, Handwerksbetriebe, Cafés, Friseure, Kanzleien, Reinigungsfirmen, Fitnessstudios und Hotels. Texte, Gestaltung, Hosting und Pflege aus einer Hand.`,
   url: SITE_URL,
   // Verknüpfte Profile (Google-Unternehmensprofil usw.), per Vercel-
   // Umgebungsvariable, durch Komma getrennt. Leer = kein Eintrag.
@@ -127,6 +129,7 @@ const LOCAL_BUSINESS_LD = {
     { "@type": "City", name: "Hamburg" },
     { "@type": "Country", name: "Deutschland" },
   ],
+  knowsLanguage: "de",
   priceRange: PAKETE[0].setup,
   contactPoint: {
     "@type": "ContactPoint",
@@ -159,9 +162,16 @@ const LOCAL_BUSINESS_LD = {
   knowsAbout: [
     "Webdesign",
     "Website erstellen lassen",
+    "Webseite erstellen",
+    "Homepage erstellen lassen",
+    "Website-Kosten",
     "Website-Entwicklung",
+    "Website-Wartung",
     "Lokale Suchmaschinenoptimierung",
+    "Google-Unternehmensprofil",
     "Responsive Design",
+    "Barrierefreiheit im Web",
+    "DSGVO-konforme Websites",
     "Pflegedienst-Website",
     "Arztpraxis-Website",
     "Café-Website",
@@ -208,7 +218,6 @@ export default function RootLayout({
         <PlausibleScript />
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
             __html: JSON.stringify([LOCAL_BUSINESS_LD, WEBSITE_LD]),
           }}

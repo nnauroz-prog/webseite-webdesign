@@ -43,7 +43,7 @@ const BREADCRUMB_LD = {
 export const metadata: Metadata = {
   title: "Website-Kosten über 3 Jahre berechnen",
   description:
-    "Was kostet Ihre Website über 3 Jahre? Sitalo vs Wix, Squarespace, Jimdo, ChatGPT-Selbstbau. Inkl. Eigenzeit als echtes Geld.",
+    "Was kostet eine Website über drei Jahre? Sitalo neben Wix, Squarespace, Jimdo und dem Selbstbau, Ihre eigene Arbeitszeit eingerechnet.",
   alternates: { canonical: "/rechner" },
 };
 
@@ -112,8 +112,8 @@ export default function RechnerPage() {
                   baut. Die Sitalo-Preise sind Endpreise inkl. 19&nbsp;% MwSt., ebenso der Stundensatz für Änderungen über dem Kontingent.
                 </p>
                 <p>
-                  Bei einem Umzug rechnen wir 30 % mehr Aufbauzeit. Wer mit Code umgehen kann, braucht beim Selbstbau 30 %
-                  weniger, im Baukasten dafür 40 % mehr.
+                  Bei einem Umzug rechnen wir 30&nbsp;% mehr Aufbauzeit. Wer mit Code umgehen kann, braucht beim Selbstbau
+                  30&nbsp;% weniger; bei den Baukästen rechnen wir unverändert.
                 </p>
               </div>
             </div>
@@ -151,9 +151,9 @@ export default function RechnerPage() {
               </table>
               <p className="text-muted-foreground mt-4 text-[13px] leading-relaxed">
                 Bei Sitalo sind Aufbau und kleine Änderungen im Preis, eigene Zeit brauchen Sie nur für Ihre Inhalte.
-                Gerechnet wird mit Business und drei Änderungen im Monat. Stellen Sie mehr ein, rechnet der Rechner jede
-                weitere mit einer halben Stunde zum Stundensatz oder nimmt Premium beziehungsweise Studio, wenn das
-                günstiger ist. Preise der Anbieter ändern sich, prüfen Sie im Zweifel dort nach.
+                Gerechnet wird mit Business; darin sind drei kleine Änderungen im Monat enthalten. Stellen Sie mehr ein,
+                rechnet der Rechner jede weitere mit einer halben Stunde zum Stundensatz oder nimmt Premium
+                beziehungsweise Studio, wenn das günstiger ist. Preise der Anbieter ändern sich, prüfen Sie im Zweifel dort nach.
               </p>
             </div>
           </div>
@@ -175,7 +175,7 @@ export default function RechnerPage() {
               <Link href="/termin" className="btn-signal grow sm:grow-0">
                 Termin buchen <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <a href="tel:+491607621876" className="text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
+              <a href="tel:+491607621876" className="inline-flex min-h-11 items-center text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
                 0160&nbsp;7621876
               </a>
             </div>

@@ -14,10 +14,10 @@
  * nachziehen.
  */
 
-import { getPaketBySlug, type Paket } from "@/lib/pakete-data";
+import { getPaketBySlug, STUNDENSATZ_EUR, type Paket } from "@/lib/pakete-data";
 
-/** Stundensatz als Endpreis inkl. 19 % MwSt., auf volle 5 € gerundet. */
-export const STUNDENSATZ_EUR = 120;
+/** Stundensatz als Endpreis inkl. 19 % MwSt.; die Quelle ist lib/pakete-data.ts. */
+export { STUNDENSATZ_EUR };
 
 export type HonorarPaket = {
   slug: Paket["slug"];
@@ -48,7 +48,7 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
       setupPosten: [
         { label: "Seitenplan und Sichtung Ihrer Unterlagen", stunden: 1 },
         { label: "Bau der Seite mit allen Abschnitten", stunden: 2 },
-        { label: "Bilder aufbereiten, Test auf echten Handys", stunden: 1 },
+        { label: "Ihre Fotos einsetzen, Test auf echten Handys", stunden: 1 },
         { label: "Hosting einrichten, Domain, SSL", stunden: 1 },
       ],
       monatlichPosten: [

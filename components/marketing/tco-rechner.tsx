@@ -130,7 +130,7 @@ export function TcoRechner() {
             step={1}
             value={updates}
             onChange={(e) => setUpdates(parseInt(e.target.value, 10))}
-            className="accent-gold mt-5 w-full"
+            className="accent-gold mt-2 h-11 w-full"
           />
           <div className="text-muted-foreground mt-1 flex justify-between font-mono text-[12px]">
             <span>0</span>
@@ -154,7 +154,7 @@ export function TcoRechner() {
             step={5}
             value={hourly}
             onChange={(e) => setHourly(parseInt(e.target.value, 10))}
-            className="accent-gold mt-5 w-full"
+            className="accent-gold mt-2 h-11 w-full"
           />
           <div className="text-muted-foreground mt-1 flex justify-between font-mono text-[12px]">
             <span>0&nbsp;€</span>
@@ -243,10 +243,9 @@ function ResultBar({
         />
       </div>
       <p className="text-muted-foreground mt-1.5 font-mono text-[11.5px]">
-        Euro {formatEur(result.euroCost)} ·{" "}
         {result.slug === "sitalo"
-          ? "Eigenzeit nur für Ihre Inhalte"
-          : `Eigenzeit ${formatHours(result.hoursCost)} (${formatEur(result.hoursEur)})`}
+          ? `An uns ${formatEur(result.euroCost)} · Ihre Zeit nur für Ihre Inhalte`
+          : `${result.slug === "diy" ? "An Anbieter" : "An den Anbieter"} ${formatEur(result.euroCost)} · Ihre Zeit ${formatHours(result.hoursCost)} (${formatEur(result.hoursEur)})`}
       </p>
       {result.slug === "sitalo" && result.description ? (
         <p className="text-muted-foreground mt-1 max-w-xl text-[12.5px] leading-snug">{result.description}</p>

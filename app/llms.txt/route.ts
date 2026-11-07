@@ -27,6 +27,8 @@ const CONTENT = `# Sitalo Webdesign
 
 > Webdesign-Büro aus Hamburg für kleine und mittlere Betriebe in ganz Deutschland. Kunden schicken Stichpunkte und Fotos, Sitalo schreibt die Texte und baut die Website. Festpreis vor dem Start, Test-Link vor der Freischaltung, kleine Seiten oft in 1 bis 2 Werktagen.
 
+Alle Fakten in einer Datei (Leistungen, Preise, Dauer, Ablauf, alle Fragen und Antworten, Branchen): https://www.sitalo.de/llms-full.txt
+
 ## Was Sitalo macht
 
 Sitalo baut fertige Websites für Betriebe, die keine Zeit für einen Baukasten (Wix, Jimdo, Squarespace) haben. Aus den Stichpunkten des Kunden formulieren wir die Texte, der Kunde streicht und ergänzt. Den Festpreis gibt es schriftlich, bevor die Arbeit beginnt. Nach dem Start kümmert sich Sitalo um Hosting, Updates und kleine Änderungen gegen einen Monatsbeitrag. Websites ${PAKETE[0].setup} einmalig, Monatsbeitrag ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")}, alle Preise inklusive 19 % MwSt.; das Angebot richtet sich an Betriebe und Selbstständige.
@@ -52,7 +54,7 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 - [Ablauf](https://www.sitalo.de/ablauf): Sechs Schritte von der ersten Nachricht bis zur fertigen Seite.
 - [FAQ](https://www.sitalo.de/faq): Fragen zu Preisen, Hosting, Ablauf und Google.
 - [Kontakt](https://www.sitalo.de/kontakt): Telefon, E-Mail an info@sitalo.de oder Anfrageformular.
-- [Anfrage](https://www.sitalo.de/anfrage): Formular mit drei Feldern, Antwort meist am selben Werktag.
+- [Anfrage](https://www.sitalo.de/anfrage): Formular mit drei Pflichtfeldern, Antwort meist am selben Werktag.
 - [Pflegedienste](https://www.sitalo.de/pflege) und [Praxen](https://www.sitalo.de/praxen): Eigene Seiten für diese beiden Branchen.
 
 ## Kostenlose Werkzeuge (ohne Anmeldung)

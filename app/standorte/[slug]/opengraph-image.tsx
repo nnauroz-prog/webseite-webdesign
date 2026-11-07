@@ -31,7 +31,7 @@ export default async function Image({
   return editorialOgImage({
     variant: "hell",
     eyebrow: `Webdesign in Hamburg-${standort.name}`,
-    headline: `Website erstellen lassen in ${standort.name}`,
+    headline: `Website erstellen lassen ${standort.inName}`,
     subline: standort.tagline,
     url: `sitalo.de/standorte/${standort.slug}`,
   });

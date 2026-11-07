@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -31,6 +32,10 @@ const WEGE: { href: string; label: string; detail: string }[] = [
     detail: "Zum Formular. Wir antworten meist am selben Werktag.",
   },
 ];
+
+export const metadata: Metadata = {
+  title: "Seite nicht gefunden",
+};
 
 export default function NotFound() {
   return (

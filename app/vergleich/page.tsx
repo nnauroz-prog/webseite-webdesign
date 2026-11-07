@@ -219,7 +219,7 @@ const DEEP_DIVES: DeepDive[] = [
       "Impressum und Datenschutzerklärung nach deutschem Recht müssen Sie selbst erstellen und einbinden",
       "Telefon-Knopf, Anfahrt oder Speisekarte am Handy richten Sie selbst ein",
     ],
-    realCost: `${baukastenKosten("Squarespace")} Nach unserer Einschätzung etwas weniger Pflege als bei Wix, dafür mehr Aufwand am Anfang, bis die Rechtstexte für Deutschland stimmen.`,
+    realCost: `${baukastenKosten("Squarespace")} Nach unserer Einschätzung etwas weniger Aufwand als bei Wix, beim Aufbau wie bei der Pflege.`,
   },
   {
     id: "jimdo",
@@ -352,7 +352,7 @@ const TABLE: TableRow[] = [
     squarespace: "partial",
     jimdo: "partial",
     ki: "no",
-    sitalo: "yes",
+    sitalo: "partial",
   },
   {
     feature: "Rechtstexte im Preis",
@@ -374,7 +374,7 @@ const TABLE: TableRow[] = [
     ki: "yes",
     sitalo: "yes",
   },
-  { feature: "Einstiegstarif bis 30\u00A0€ im Monat", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
+  { feature: "Günstiger Einstiegstarif", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
 ];
 
 const SPALTEN: { key: Exclude<keyof TableRow, "feature" | "hinweis">; label: string }[] = [
@@ -517,7 +517,7 @@ function FinalCta() {
           <Link href="/audit" className="btn-signal grow sm:grow-0">
             Seite prüfen lassen {ARROW}
           </Link>
-          <a href="tel:+491607621876" className="text-background text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
+          <a href="tel:+491607621876" className="text-background inline-flex min-h-11 items-center text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
             0160&nbsp;7621876
           </a>
           <Link

@@ -49,6 +49,11 @@ const nr = (id: AbschnittId) => ABSCHNITTE.findIndex((a) => a.id === id) + 1;
 
 const LINK = "underline underline-offset-4 hover:text-foreground";
 
+/** Gesetzeszitate wie „Art. 6 Abs. 1 lit. f DSGVO“ am Handy nicht auseinanderbrechen. */
+const ZITAT = /(?:§|Art\.) \d+(?: (?:Abs\.|lit\.) [\da-z]+)* (?:DSGVO|HGB|AO)/g;
+const zitat = (s: string) => s.replace(/ /g, "\u00A0");
+const zitate = (text: string) => text.replace(ZITAT, zitat);
+
 export default function DatenschutzPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -133,7 +138,7 @@ export default function DatenschutzPage() {
                     ["Zweck", "Hosting und Auslieferung der Website, Sicherheit"],
                     [
                       "Rechtsgrundlage",
-                      "Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse ist eine sichere und stabile Website.",
+                      zitate("Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse ist eine sichere und stabile Website."),
                     ],
                     ["Drittland", <UsaVerweis key="usa" />],
                   ]}
@@ -146,7 +151,7 @@ export default function DatenschutzPage() {
                   Wenn Sie das Anfrageformular, das Formular für die kostenlose Durchsicht oder die Terminbuchung nutzen, verarbeiten wir Ihre
                   Angaben (Name, E-Mail, optional Telefon, Firma, Branche, Paket- und Zeitwunsch, Website-Adresse,
                   Nachricht, gewählter Termin), um Ihre Anfrage zu beantworten oder den Termin zu bestätigen.
-                  Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Das gilt genauso, wenn Sie uns eine E-Mail schreiben
+                  Rechtsgrundlage ist {zitat("Art. 6 Abs. 1 lit. b DSGVO")}. Das gilt genauso, wenn Sie uns eine E-Mail schreiben
                   oder anrufen.
                 </p>
                 <p>
@@ -159,7 +164,7 @@ export default function DatenschutzPage() {
                   anbieter="Supabase Inc., USA"
                   zeilen={[
                     ["Zweck", "Speicherung von Anfragen, Durchsicht-Anfragen, Terminwünschen und Angeboten"],
-                    ["Rechtsgrundlage", "Art. 6 Abs. 1 lit. b DSGVO"],
+                    ["Rechtsgrundlage", zitate("Art. 6 Abs. 1 lit. b DSGVO")],
                     ["Drittland", <UsaVerweis key="usa" />],
                   ]}
                   hinweise="https://supabase.com/privacy"
@@ -172,7 +177,7 @@ export default function DatenschutzPage() {
                       "Zweck",
                       "Versand der Benachrichtigungs-Mail zu Ihrer Anfrage an unser Postfach und der Bestätigung, wenn Sie ein Angebot annehmen",
                     ],
-                    ["Rechtsgrundlage", "Art. 6 Abs. 1 lit. b DSGVO"],
+                    ["Rechtsgrundlage", zitate("Art. 6 Abs. 1 lit. b DSGVO")],
                     ["Drittland", <UsaVerweis key="usa" />],
                   ]}
                   hinweise="https://resend.com/legal/privacy-policy"
@@ -195,7 +200,7 @@ export default function DatenschutzPage() {
                 <p>
                   Bei einer Annahme oder Ablehnung bekommen wir eine Benachrichtigungs-Mail. Nehmen Sie an, schicken wir
                   Ihnen eine Bestätigung an die E-Mail-Adresse im Angebot. Gespeichert wird bei Supabase, verschickt
-                  über Resend (siehe Abschnitt {nr("anfragen")}). Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, die
+                  über Resend (siehe Abschnitt {nr("anfragen")}). Rechtsgrundlage ist {zitat("Art. 6 Abs. 1 lit. b DSGVO")}, die
                   Vorbereitung und der Abschluss des Vertrags.
                 </p>
               </Abschnitt>
@@ -220,7 +225,7 @@ export default function DatenschutzPage() {
                   zeilen={[
                     ["Zweck", "Messung der von Ihnen eingegebenen Website"],
                     ["Daten", "die eingegebene Website-Adresse"],
-                    ["Rechtsgrundlage", "Art. 6 Abs. 1 lit. b DSGVO, weil Sie die Messung selbst anfordern"],
+                    ["Rechtsgrundlage", zitate("Art. 6 Abs. 1 lit. b DSGVO, weil Sie die Messung selbst anfordern")],
                     ["Drittland", <UsaVerweis key="usa" />],
                   ]}
                   hinweise="https://policies.google.com/privacy"
@@ -250,7 +255,7 @@ export default function DatenschutzPage() {
                     ["Zweck", "cookielose Reichweitenmessung"],
                     [
                       "Rechtsgrundlage",
-                      "Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse ist, zu erkennen, welche Inhalte genutzt werden, und die Website danach zu verbessern.",
+                      zitate("Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse ist, zu erkennen, welche Inhalte genutzt werden, und die Website danach zu verbessern."),
                     ],
                     ["Speicherort", "Server in der EU"],
                   ]}
@@ -292,7 +297,7 @@ export default function DatenschutzPage() {
                 </p>
                 <p>
                   Die Übermittlung in die USA stützen wir auf das EU-US Data Privacy Framework, soweit der Anbieter
-                  zertifiziert ist, und im Übrigen auf EU-Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO).
+                  zertifiziert ist, und im Übrigen auf EU-Standardvertragsklauseln ({zitat("Art. 46 Abs. 2 lit. c DSGVO")}).
                 </p>
                 <p>Plausible verarbeitet die Daten in der EU.</p>
               </Abschnitt>
@@ -300,7 +305,7 @@ export default function DatenschutzPage() {
               <Abschnitt id="speicherdauer">
                 <p>
                   Anfragen und Termine speichern wir, solange wir sie zur Bearbeitung brauchen. Auf Wunsch löschen wir
-                  sie sofort (Art. 17 DSGVO), eine Mail an{" "}
+                  sie sofort ({zitat("Art. 17 DSGVO")}), eine Mail an{" "}
                   <a href="mailto:info@sitalo.de" className={LINK}>
                     info@sitalo.de
                   </a>{" "}
@@ -308,7 +313,7 @@ export default function DatenschutzPage() {
                 </p>
                 <p>
                   Angenommene Angebote gehören zu unseren Geschäftsunterlagen. Wir bewahren sie so lange auf, wie es
-                  Handels- und Steuerrecht verlangen, in der Regel sechs Jahre (§ 257 HGB, § 147 AO). Ein Jahr nach
+                  Handels- und Steuerrecht verlangen, in der Regel sechs Jahre ({zitat("§ 257 HGB")}, {zitat("§ 147 AO")}). Ein Jahr nach
                   Annahme, Ablehnung oder Ablauf zeigt der Link nur noch die Angebotsnummer, ohne Namen und Preise.
                   Nicht angenommene Angebote löschen wir zusammen mit der Anfrage.
                 </p>
@@ -322,11 +327,11 @@ export default function DatenschutzPage() {
                 <p>Sie haben jederzeit das Recht auf:</p>
                 <ul className="border-border text-foreground border-t">
                   {[
-                    ["Auskunft", "Art. 15 DSGVO"],
-                    ["Berichtigung", "Art. 16 DSGVO"],
-                    ["Löschung", "Art. 17 DSGVO"],
-                    ["Einschränkung der Verarbeitung", "Art. 18 DSGVO"],
-                    ["Datenübertragbarkeit", "Art. 20 DSGVO"],
+                    ["Auskunft", zitate("Art. 15 DSGVO")],
+                    ["Berichtigung", zitate("Art. 16 DSGVO")],
+                    ["Löschung", zitate("Art. 17 DSGVO")],
+                    ["Einschränkung der Verarbeitung", zitate("Art. 18 DSGVO")],
+                    ["Datenübertragbarkeit", zitate("Art. 20 DSGVO")],
                   ].map(([recht, artikel]) => (
                     <li
                       key={recht}
@@ -346,9 +351,9 @@ export default function DatenschutzPage() {
                 </p>
                 <h3 className="text-foreground pt-2 text-[1.05rem] leading-snug">Widerspruch</h3>
                 <p>
-                  Soweit wir Daten auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO verarbeiten (Hosting, Sicherheit,
+                  Soweit wir Daten auf Grundlage von {zitat("Art. 6 Abs. 1 lit. f DSGVO")} verarbeiten (Hosting, Sicherheit,
                   Besucherstatistik), können Sie dieser Verarbeitung aus Gründen, die sich aus Ihrer besonderen
-                  Situation ergeben, jederzeit widersprechen (Art. 21 DSGVO).
+                  Situation ergeben, jederzeit widersprechen ({zitat("Art. 21 DSGVO")}).
                 </p>
                 <h3 className="text-foreground pt-2 text-[1.05rem] leading-snug">Beschwerde</h3>
                 <p>

@@ -15,7 +15,7 @@ import {
 } from "@/lib/sprechstunde-data";
 
 export const metadata: Metadata = {
-  title: "Sprechstunde — jeden ersten Donnerstag",
+  title: "Sprechstunde · jeden ersten Donnerstag",
   description:
     "Anderthalb Stunden Telefonzeit im Monat, jeden ersten Donnerstag von 17 bis 18:30 Uhr. Auch für Nicht-Kunden, eine Anmeldung brauchen Sie nicht.",
   alternates: { canonical: "/sprechstunde" },

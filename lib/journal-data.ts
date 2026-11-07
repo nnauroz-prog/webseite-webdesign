@@ -197,7 +197,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Eine Website für einen kleinen Betrieb kostet bei einer Agentur meist ab etwa 5.000\u00A0€. Freelancer liegen oft zwischen 800 und 5.000\u00A0€. Ein Baukasten kostet etwa 10 bis 40\u00A0€ im Monat. Dazu kommt Ihre eigene Zeit für Gestaltung, Texte und Technik. Sie steht in keiner Rechnung, fällt aber trotzdem an, meist abends und am Wochenende.",
+        text: "Eine Website für einen kleinen Betrieb kostet bei einer Agentur meist ab etwa 5.000\u00A0€. Freelancer liegen oft zwischen 800 und 5.000\u00A0€. Ein Baukasten kostet ein monatliches Abo; die Tarife stehen auf der Preisseite des Anbieters. Dazu kommt Ihre eigene Zeit für Gestaltung, Texte und Technik. Sie steht in keiner Rechnung, fällt aber trotzdem an, meist abends und am Wochenende.",
       },
       {
         kind: "p",
@@ -351,7 +351,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "quote",
-        text: "Eine Café-Website muss vor allem eine Frage beantworten: Ist heute geöffnet?",
+        text: "Was der Gast vor der Tür wissen will, gehört oben auf die Seite.",
       },
     ],
   },
@@ -394,7 +394,7 @@ const POSTS: JournalPost[] = [
       },
       {
         kind: "p",
-        text: "Keine dieser Ursachen ist schwer zu beheben. Ein vollständiger Eintrag kostet nichts außer Zeit.",
+        text: "Keine dieser Ursachen ist schwer zu beheben.",
       },
       {
         kind: "h2",
@@ -417,7 +417,7 @@ const POSTS: JournalPost[] = [
   {
     slug: "was-wir-an-wix-migrationen-lernen",
     seoTitle: "Von Wix umziehen: Was beim Wechsel Arbeit macht",
-    title: "Die Mietwohnung mit dem goldenen Schlüssel",
+    title: "Wer auszieht, nimmt nicht alles mit",
     dek: "Drei Dinge, die beim Umzug von einem Baukasten fast immer Arbeit machen, und wie wir sie angehen.",
     publishedAt: "2026-05-18",
     readingMinutes: 4,
@@ -503,12 +503,12 @@ export const JOURNAL_BY_BRANCHE: Record<string, string> = {
 /**
  * Stadtteil-Slug → Journal-Slug, gleiche Logik für die Standort-
  * Detailseiten. Nur gepflegt, wo der Essay den Stadtteil wirklich
- * berührt — kein Zwang, alle acht zu bespielen.
+ * berührt — kein Zwang, alle Stadtteile zu bespielen.
  */
 export const JOURNAL_BY_STANDORT: Record<string, string> = {
-  eppendorf: "cafe-website-hamburg-2026",
   eimsbuettel: "cafe-website-hamburg-2026",
   wandsbek: "pflegedienst-google-maps-hamburg",
+  bergedorf: "pflegedienst-google-maps-hamburg",
 };
 
 /**

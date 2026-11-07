@@ -12,7 +12,7 @@ import { BRANCHEN_SEO } from "@/lib/branchen-seo";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
-  title: "Branchen — Websites für Ihren Betrieb",
+  title: "Branchen · Websites für Ihren Betrieb",
   description:
     "Websites für Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien und Fitnessstudios — jede Seite individuell gebaut.",
   alternates: { canonical: "/branchen" },
@@ -36,8 +36,8 @@ export default function BranchenPage() {
           eyebrow={`${ZAHLWORT[BRANCHEN.length] ?? BRANCHEN.length} Branchen`}
           title="Websites für Ihre Branche"
         >
-          Eine Praxis braucht anderes als ein Café. Für jede Branche haben wir aufgeschrieben, worauf Ihre Kunden zuerst
-          schauen, und eine Musterseite gebaut.
+          Eine Praxis braucht anderes als ein Café. Für jede Branche haben wir aufgeschrieben, worauf Ihre Kundschaft zuerst
+          schaut, und eine Musterseite gebaut.
         </PageHero>
         <Register />
         <Briefkarte title="Wir bauen auch für Betriebe, die hier nicht stehen.">

@@ -447,7 +447,7 @@ function HeroMeta() {
         </Link>
         <a
           href="tel:+491607621876"
-          className="text-background text-[15.5px] font-semibold underline-offset-[6px] hover:underline"
+          className="text-background inline-flex min-h-11 items-center text-[15.5px] font-semibold underline-offset-[6px] hover:underline"
         >
           0160&nbsp;7621876
         </a>
@@ -543,7 +543,7 @@ function Kosten() {
           <div className="lg:col-span-4">
             <h3 className={H3}>Was der Monatsbeitrag enthält</h3>
             <p className="text-muted-foreground mt-4 text-[15px] leading-relaxed">
-              Als kleine Änderung zählt, was wir in 15 bis 30 Minuten erledigen: einen Text anpassen, ein Bild tauschen
+              Als kleine Änderung zählt, was wir in 15 bis 30&nbsp;Minuten erledigen: einen Text anpassen, ein Bild tauschen
               oder Öffnungszeiten ändern. Größeres besprechen wir vorher und nennen Ihnen den Preis.
             </p>
           </div>
@@ -644,8 +644,9 @@ function Leistungen() {
             kommt direkt in Ihrem Postfach an. Auf dem Handy reicht ein Tipp auf die Telefonnummer.
           </p>
           <p>
-            <strong className="text-foreground font-semibold">Google und Pflichtseiten.</strong> Ab dem Business-Paket
-            richten wir Titel, Beschreibungen, Sitemap und Ihr Google-Unternehmensprofil ein. Impressum und Datenschutz
+            <strong className="text-foreground font-semibold">Google und Pflichtseiten.</strong> Titel und Beschreibung
+            für Google bekommt jede Seite. Ab dem Business-Paket richten wir dazu Sitemap, strukturierte Daten und Ihr
+            Google-Unternehmensprofil ein. Impressum und Datenschutz
             legen wir in jedem Paket an; den geprüften Rechtstext beziehen Sie, wir sagen Ihnen, woher.
           </p>
           <p>
@@ -822,7 +823,7 @@ function Wege() {
             <h3 className={`${H3} lg:col-span-7`}>Baukasten oder erstellen lassen, Zeile für Zeile</h3>
             <div className="lg:col-span-4 lg:col-start-9">
               <p className="text-muted-foreground text-[15px] leading-relaxed">
-                Für eine sehr einfache Seite ist ein Baukasten günstiger. Die übrigen Zeilen zeigen, wofür Sie bei uns
+                Bei den Kosten und beim Start liegt der Baukasten vorn. In den übrigen Zeilen sehen Sie, wofür Sie bei uns
                 bezahlen.
               </p>
               <Link href="/vergleich" className={`${TEXTLINK} mt-4`}>
@@ -910,6 +911,9 @@ function Beispiele() {
                     </li>
                   ))}
                 </ul>
+                {b.typicalPagesHinweis ? (
+                  <p className="text-muted-foreground mt-3 text-[13.5px] leading-snug">{b.typicalPagesHinweis}</p>
+                ) : null}
                 {paket ? (
                   <p className="text-muted-foreground mt-5 text-[14px] leading-relaxed">
                     Meist empfohlen: {paket.name}, {paket.setup}
