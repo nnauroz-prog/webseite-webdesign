@@ -274,8 +274,8 @@ const FAQ: { q: string; a: string; link?: { href: string; label: string } }[] = 
     a: `Das hängt vom Paket ab und zählt ab vollständigen Unterlagen: ${PAKETE.map((p) => `${kurzName(p)} ${p.dauer}`).join(", ")}. Den genauen Termin nennen wir Ihnen vorab.`,
   },
   {
-    q: "Website, Webseite oder Homepage: Gibt es einen Unterschied?",
-    a: "Im Alltag meinen alle drei dasselbe: den Auftritt Ihres Betriebs im Internet. Ob Sie eine Website, eine Webseite oder eine Homepage erstellen lassen möchten, der Ablauf und die Preise bei uns sind gleich.",
+    q: "Website, Webseite, Homepage oder Internetseite: Gibt es einen Unterschied?",
+    a: "Im Alltag meinen alle vier dasselbe: den Auftritt Ihres Betriebs im Internet. Genau genommen ist die Website der ganze Auftritt, eine Webseite eine einzelne Seite darin und die Homepage die Startseite. Ob Sie eine Website, eine Webseite, eine Homepage oder eine Internetseite erstellen lassen möchten: Der Ablauf und die Preise bei uns sind gleich.",
   },
   {
     q: "Was muss ich selbst liefern?",
