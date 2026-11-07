@@ -11,10 +11,16 @@
  *      Beschriftung erscheint, Spreader hoch, zurück zum Kai, den
  *      nächsten Container aufnehmen.
  *   3. Nach der vierten Ladung legt das Schiff ab (Leine los, Schlepper
- *      zieht es quer vom Kai, dann läuft es aus und verschwindet im Dunst).
- *      Die Katze holt derweil schon Ladung 0 für das nächste Schiff.
- *   4. Das nächste Schiff kommt aus dem Dunst, wird an den Kai gedrückt
- *      und festgemacht. Danach steht alles wie bei 1.
+ *      zieht es vom Kai) und fährt quer über das Bild elbabwärts. Erst
+ *      auf dem letzten Drittel der Strecke wird es kleiner und geht im
+ *      Dunst auf. Die Katze holt derweil schon Ladung 0.
+ *   4. Hat das auslaufende Schiff 60 % seines Weges hinter sich, kommt
+ *      dahinter schon das nächste aus dem Dunst, bremst lange aus, wird
+ *      an den Kai gedrückt und festgemacht. Danach steht alles wie bei 1.
+ *
+ * Für die Überlappung gibt es zwei Schiffe im Bild: das am Kai (wird
+ * beladen, läuft ein) und eine voll beladene Kopie, die beim Ablegen an
+ * seine Stelle tritt und ausläuft.
  *
  * Koordinaten in Einheiten der viewBox "-160 0 960 760".
  */
@@ -62,10 +68,12 @@ export const FAHRHOEHE = 345;
 export const SEIL_OBEN = 292;
 /** Wasserlinie und Horizont. */
 export const WASSERLINIE = 640;
-/** Fluchtpunkt auf dem Horizont, auf den ein auslaufendes Schiff zuläuft. */
-export const FLUCHT_X = 210;
-/** Querversatz, um den der Schlepper das Schiff vom Kai zieht. */
-export const QUER = -46;
+/** Strecke, die das auslaufende Schiff quer über das Bild fährt. */
+export const AUSFAHRT = -900;
+/** Wo das einlaufende Schiff aus dem Dunst kommt (Querversatz). */
+export const EINFAHRT = -250;
+/** Mitte des Schiffs (x), um die es in der Ferne kleiner wird. */
+const SCHIFF_MITTE = 340;
 
 const mitte = (links: number) => links + BOX_B / 2;
 
@@ -119,13 +127,24 @@ const HEBEN = bezier(0.45, 0, 0.35, 1);
 const SANFT = bezier(0.42, 0, 0.58, 1);
 /** Auslaufen: das Schiff nimmt langsam Fahrt auf. */
 const AUSLAUFEN = bezier(0.5, 0, 0.85, 0.6);
-/** Einlaufen: aus der Fahrt heraus lange ausgleiten. */
-const EINLAUFEN = bezier(0.1, 0.45, 0.35, 1);
-/** Anlegen: der Schlepper drückt, die Fender federn ein klein wenig nach. */
-const ANLEGEN: Kurve = (u) => {
-  const b = SANFT(Math.min(1, u * 1.08));
-  const nach = u > 0.9 ? Math.sin(((u - 0.9) / 0.1) * Math.PI) * 0.012 : 0;
-  return b + nach;
+/** Einlaufen: kommt mit Fahrt aus dem Dunst und bremst lange aus. */
+const EINLAUFEN = bezier(0.25, 0.6, 0.36, 1);
+const SPRUNG: Kurve = (u) => (u <= 0 ? 0 : 1);
+
+/** Zeitanteil, zu dem eine Kurve den Wert w erreicht (Bisektion). */
+function zeitBei(k: Kurve, w: number) {
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 30; i++) {
+    const m = (lo + hi) / 2;
+    if (k(m) < w) lo = m;
+    else hi = m;
+  }
+  return (lo + hi) / 2;
+}
+const smooth = (u: number) => {
+  const x = Math.max(0, Math.min(1, u));
+  return x * x * (3 - 2 * x);
 };
 
 const fahrzeit = (weg: number) => 0.8 + Math.abs(weg) / 240;
@@ -194,14 +213,20 @@ export type Zustand = {
   schild: number;
   /** Welche Ladung vorn auf dem Kaistapel steht (rechte, linke Spalte). */
   kai: [number, number];
-  /** Querversatz des Schiffs vom Kai. */
+  /** Querversatz des Schiffs am Kai (beim Einlaufen negativ). */
   quer: number;
-  /** Entfernung des Schiffs: 0 am Kai, 1 im Dunst verschwunden. */
+  /** Einlaufen: 1 noch im Dunst (unsichtbar), 0 am Kai. */
   ferne: number;
+  /** Querversatz der auslaufenden Kopie (0 bis AUSFAHRT). */
+  ab: number;
+  /** Ob die auslaufende Kopie im Bild ist. */
+  abSicht: boolean;
   /** Festmacherleine: 1 belegt, 0 eingeholt. */
   leine: number;
   /** Schlepper: 0 nicht da, 1 längsseits. */
   schlepper: number;
+  /** Querversatz des Schiffs, an dem der Schlepper liegt. */
+  schlepperX: number;
 };
 
 export type Zyklus = {
@@ -213,7 +238,7 @@ export type Zyklus = {
   katzeBei: (t: number) => number;
 };
 
-function bauen(hub: number): Zyklus {
+function bauen(hub: number, einAb: number): Zyklus {
   const platzOben = PLATZ_OBEN - hub;
   const kaiMitte = [mitte(KAI_SPALTEN[0]), mitte(KAI_SPALTEN[1])];
 
@@ -221,6 +246,8 @@ function bauen(hub: number): Zyklus {
   const haken = new Spur(FAHRHOEHE);
   const quer = new Spur(0);
   const ferne = new Spur(0);
+  const aus = new Spur(0);
+  const abSicht = new Schalter(0);
   const leine = new Spur(1);
   const schlepper = new Spur(0);
   const last = new Schalter(0);
@@ -230,7 +257,7 @@ function bauen(hub: number): Zyklus {
   const kaiR = new Schalter(2);
   const kaiL = new Schalter(1);
 
-  let t = 0.6;
+  let t = 0.4;
   let T0 = 0;
   let ende = 0;
 
@@ -270,24 +297,39 @@ function bauen(hub: number): Zyklus {
     }
 
     // ---- Schiffswechsel ----
-    // Die letzte Beschriftung bleibt stehen, während die Katze schon
-    // Ladung 0 für das nächste Schiff holt (rund 5 s, so lange wie die
-    // übrigen ungefähr). Erst dann geht die Leine los.
-    const ablegen = oben + 3.6;
-    schild.setze(ablegen, -1);
+    // Die letzte Beschriftung bleibt kurz stehen, die Katze holt schon
+    // Ladung 0 für das nächste Schiff. Dann geht die Beschriftung, und
+    // erst danach die Leine: während der Fahrt steht keine Beschriftung.
+    const ablegen = oben + 1.4;
+    schild.setze(ablegen - 0.4, -1);
     schlepper.fahre(ablegen - 1.2, 1.4, 1, SANFT);
     leine.fahre(ablegen, 0.7, 0, SANFT);
-    quer.fahre(ablegen + 0.55, 2.6, QUER, SANFT);
-    schlepper.fahre(ablegen + 3.0, 1.2, 0, SANFT);
-    const weg = ferne.fahre(ablegen + 2.7, 3.2, 1, AUSLAUFEN);
-    geladen.setze(weg, 0);
-    const da = ferne.fahre(weg + 0.5, 3.2, 0, EINLAUFEN);
-    schlepper.fahre(da - 1.6, 1.4, 1, SANFT);
-    const anliegen = quer.fahre(da - 0.5, 2.5, 0, ANLEGEN);
-    schlepper.fahre(anliegen + 0.2, 1.2, 0, SANFT);
-    const fest = leine.fahre(anliegen + 0.1, 0.8, 1, SANFT);
+    // Die voll beladene Kopie übernimmt an derselben Stelle; das Schiff
+    // am Kai verschwindet unsichtbar in den Dunst und wird geleert.
+    const tausch = ablegen + 0.7;
+    abSicht.setze(tausch, 1);
+    geladen.setze(tausch, 0);
+    ferne.fahre(tausch, 0.01, 1, SPRUNG);
+    quer.fahre(tausch, 0.01, EINFAHRT, SPRUNG);
+    // Querfahrt elbabwärts, der Schlepper bleibt die ersten Meter dran.
+    const los = tausch + 0.05;
+    const AUS_DAUER = 9.5;
+    const weg = aus.fahre(los, AUS_DAUER, AUSFAHRT, AUSLAUFEN);
+    schlepper.fahre(los + 2.4, 1.2, 0, SANFT);
+    abSicht.setze(weg, 0);
+    // Das nächste Schiff läuft ein, wenn das alte 60 % geschafft hat
+    // (einAb; am Handy früher, siehe zyklus()).
+    const EIN_DAUER = 7;
+    const ein = los + AUS_DAUER * zeitBei(AUSLAUFEN, einAb);
+    // Auf den letzten Metern drückt der Schlepper es an den Kai; die
+    // lange Endbremsung der Kurve ist das Anlegen.
+    ferne.fahre(ein, EIN_DAUER, 0, EINLAUFEN);
+    const anliegen = quer.fahre(ein, EIN_DAUER, 0, EINLAUFEN);
+    schlepper.fahre(anliegen - 3.4, 1.4, 1, SANFT);
+    schlepper.fahre(anliegen + 0.1, 1.2, 0, SANFT);
+    const fest = leine.fahre(anliegen - 0.3, 0.8, 1, SANFT);
     // Der Schlepper hat abgedreht, die Katze wartet mit Ladung 0.
-    ende = Math.max(fest + 0.3, anliegen + 1.45, hoch + 0.5);
+    ende = Math.max(fest + 0.3, anliegen + 1.3, hoch + 0.5, weg + 0.1);
   }
 
   // Die letzte Rückfahrt (Ladung 0 für das nächste Schiff) endet über der
@@ -305,8 +347,11 @@ function bauen(hub: number): Zyklus {
       kai: [kaiR.bei(tt), kaiL.bei(tt)],
       quer: quer.bei(tt),
       ferne: ferne.bei(tt),
+      ab: aus.bei(tt),
+      abSicht: abSicht.bei(tt) > 0,
       leine: leine.bei(tt),
       schlepper: schlepper.bei(tt),
+      schlepperX: abSicht.bei(tt) > 0 ? aus.bei(tt) : quer.bei(tt),
     };
   };
   const katzeBei = (zeit: number) => katze.bei(((zeit % dauer) + dauer) % dauer);
@@ -314,36 +359,84 @@ function bauen(hub: number): Zyklus {
   return { dauer, T0, zustand, katzeBei };
 }
 
-const cache = new Map<number, Zyklus>();
+const cache = new Map<string, Zyklus>();
 
-/** Zyklus für einen Pegel-Hub (in Einheiten, auf 0,5 gerundet). */
-export function zyklus(hub = 0): Zyklus {
-  const key = Math.round(hub * 2) / 2;
+/**
+ * Zyklus für einen Pegel-Hub (in Einheiten, auf 0,5 gerundet).
+ * einAb: Anteil der Ausfahrt, nach dem das nächste Schiff einläuft. Am
+ * Rechner 0,6. Am Handy zeigt das Bild nur den Liegeplatz, das alte
+ * Schiff ist dort schon nach gut einem Drittel seines Weges aus dem
+ * Bild; mit 0,4 bleibt der Liegeplatz auch dort höchstens etwa eine
+ * Sekunde leer. Das Startbild (T0) ist in beiden Fällen dasselbe.
+ */
+export function zyklus(hub = 0, einAb = 0.6): Zyklus {
+  const h = Math.round(hub * 2) / 2;
+  const key = `${h}:${einAb}`;
   let z = cache.get(key);
   if (!z) {
-    z = bauen(key);
+    z = bauen(h, einAb);
     cache.set(key, z);
   }
   return z;
 }
 
-/* ---------- Schiff: Lage aus Querversatz und Entfernung ---------- */
+/* ---------- Schiff: Umriss für den Dunstschleier ---------- */
+
+/** Rumpf in Heckansicht (Pfad). */
+export const RUMPF = "M110 590H570L563 630Q556 652 520 660H160Q124 652 117 630Z";
 
 /**
- * Ein Schiff, das in die Tiefe läuft, wird kleiner und rückt zum
- * Fluchtpunkt auf dem Horizont. Bei Augenhöhe auf dem Wasser bleibt die
- * Wasserlinie dabei auf dem Horizont. Maßstab ~ 1 / Entfernung.
+ * Dunstschleier über einem Schiff, das in die Ferne läuft oder aus ihr
+ * kommt: Umriss von Rumpf und Ladung (gefüllt in der Farbe der fernen
+ * Stadt). voll = alle Ladeplätze belegt (auslaufendes Schiff).
  */
-export function schiffLage(quer: number, ferne: number) {
-  const s = 1 / (1 + 5.2 * ferne);
-  const x = FLUCHT_X * (1 - s) + s * quer;
-  const y = WASSERLINIE * (1 - s);
-  // Im Dunst: erst ab etwa der halben Strecke spürbar blasser.
-  const f = Math.max(0, Math.min(1, (ferne - 0.3) / 0.62));
-  const deckkraft = 1 - f * f * (3 - 2 * f);
+export function dunstUmriss(voll: boolean) {
+  const oben = lageY(2);
+  const halb = lageY(1);
+  const rechts = stapelX(8) + BOX_B;
+  const ladung = voll
+    ? `M${stapelX(0)} 590V${oben}H${rechts}V590Z`
+    : `M${stapelX(0)} 590V${oben}H${stapelX(5) - 2}V${halb}H${rechts}V590Z`;
+  return `${RUMPF} ${ladung}`;
+}
+
+/* ---------- Schiff: Lage aus Querversatz und Entfernung ---------- */
+
+type Lage = { transform: string; deckkraft: number; dunst: number };
+
+/** Querversatz x und Maßstab m, Wasserlinie bleibt auf dem Horizont. */
+function lage(x: number, m: number) {
+  const tx = x + SCHIFF_MITTE * (1 - m);
+  const ty = WASSERLINIE * (1 - m);
+  return m > 0.9999 && Math.abs(tx) < 0.005
+    ? ""
+    : `translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${m.toFixed(4)})`;
+}
+
+/**
+ * Schiff am Kai bzw. beim Einlaufen: kommt aus Maßstab 0,85 und Dunst.
+ * Sichtbar wird es auf den ersten 35 % der Strecke, der Dunstschleier
+ * hält sich etwas länger.
+ */
+export function schiffLage(quer: number, ferne: number): Lage {
+  const k = 1 - ferne;
   return {
-    transform: s > 0.9999 && Math.abs(x) < 0.005 ? "" : `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${s.toFixed(4)})`,
-    deckkraft,
+    transform: lage(quer, 1 - 0.15 * ferne),
+    deckkraft: smooth(k / 0.35),
+    dunst: 0.8 * (1 - smooth(k / 0.6)),
   };
 }
 
+/**
+ * Auslaufendes Schiff: fährt quer über das Bild. Kleiner wird es kaum
+ * (1 → 0,88); der Dunst zieht ab einem Viertel der Strecke langsam auf,
+ * ausgeblendet wird es erst auf den letzten 30 %.
+ */
+export function abfahrtLage(ab: number): Lage {
+  const p = Math.max(0, Math.min(1, ab / AUSFAHRT));
+  return {
+    transform: lage(ab, 1 - 0.12 * p),
+    deckkraft: 1 - smooth((p - 0.7) / 0.3),
+    dunst: 0.75 * smooth((p - 0.25) / 0.6),
+  };
+}

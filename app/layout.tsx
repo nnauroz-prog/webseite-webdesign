@@ -203,9 +203,12 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${brandSans.variable} ${brandMono.variable} ${dotMatrix.variable} ${cormorant.variable} h-full scroll-smooth antialiased`}
+      // Die Startseite setzt html.js per Inline-Script vor dem Hydrieren
+      // (components/marketing/hafen/hafen-hero.tsx).
+      suppressHydrationWarning
+      className={`${brandSans.variable} ${brandMono.variable} ${dotMatrix.variable} ${cormorant.variable} h-full motion-safe:scroll-smooth antialiased`}
     >
-      <body className="flex min-h-full flex-col pb-20 md:pb-0">
+      <body className="flex min-h-full flex-col">
         <a
           href="#main"
           className="bg-foreground text-background sr-only z-[100] rounded-[2px] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"

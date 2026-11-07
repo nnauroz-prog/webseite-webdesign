@@ -49,7 +49,7 @@ export function SkylineMotor({
             beob.disconnect();
           }
         },
-        { threshold: 0.3 },
+        { threshold: 0.25 },
       );
       beob.observe(node);
       io = beob;

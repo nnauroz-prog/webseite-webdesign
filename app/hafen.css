@@ -208,10 +208,17 @@
 }
 /* Unter lg steht über dem ersten Container nur der Einleitungsabsatz.
    Das Gehänge bleibt deshalb so kurz, dass die Hubseile beim Einlaufen
-   nicht durch den Text laufen (Abstand dazu: mt-16 in app/page.tsx). */
+   nicht durch den Text laufen (Abstand dazu: mt-16 in app/page.tsx).
+   Ab lg gilt das für die ganze obere Reihe (beide 40-Fuß-Container);
+   die untere Reihe darf lang bleiben, sie verschwindet hinter ihnen. */
 @media (max-width: 1023px) {
   .box:first-child .box-gear {
     height: 2.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .box:nth-child(-n + 2) .box-gear {
+    height: 3.75rem;
   }
 }
 .box-rope {
@@ -360,18 +367,23 @@
   .stack[data-armed] .box:not([data-phase]):not(:focus-within) {
     opacity: 0;
   }
+  /* Physikalische Ausnahme zur Token-Kurve: Der Container sinkt am
+     Seil, setzt 1,5 px tief auf (Federung der Twistlocks) und kommt
+     zurück. Deckend ist er nach 6 % (etwa 60 ms): Stahl wird nicht
+     durchsichtig. */
   .box[data-phase="in"] {
-    animation: box-lower 1.05s cubic-bezier(0.22, 0.7, 0.32, 1) var(--drop-delay, 0ms) backwards;
+    animation: box-lower 950ms cubic-bezier(0.3, 0, 0.15, 1) var(--drop-delay, 0ms) backwards;
   }
+  /* 950 ms absenken, 150 ms Twistlocks lösen, 450 ms abfahren (--ease-ab). */
   .box[data-phase="in"] .box-gear {
-    animation: gear-release 2s linear var(--drop-delay, 0ms) backwards;
+    animation: gear-release 1550ms linear var(--drop-delay, 0ms) backwards;
   }
   .box[data-phase="in"] :is(.box-beam, .box-half) {
-    animation: gear-extended 2s linear var(--drop-delay, 0ms) backwards;
+    animation: gear-extended 1550ms linear var(--drop-delay, 0ms) backwards;
   }
   .box[data-phase="in"] .box-locks,
   .box[data-phase="in"] .box-half i::after {
-    animation: locks-release 2s linear var(--drop-delay, 0ms) backwards;
+    animation: locks-release 1550ms linear var(--drop-delay, 0ms) backwards;
   }
 }
 @keyframes box-lower {
@@ -379,22 +391,26 @@
     translate: 0 -3.4rem;
     opacity: 0;
   }
-  24% {
+  6% {
     opacity: 1;
+  }
+  82% {
+    translate: 0 1.5px;
   }
   to {
     translate: 0 0;
     opacity: 1;
   }
 }
-/* 0–52 %: hängt am Container und sinkt mit ihm. 58 %: Twistlocks
-   offen. Danach fährt der Spreader an und verschwindet nach oben. */
+/* 0–71 %: hängt am Container und sinkt mit ihm, 61–71 %: Twistlocks
+   offen. Danach fährt der Spreader in 450 ms an und blendet ganz aus:
+   kein Seilrest ohne Container. */
 @keyframes gear-release {
   0%,
-  58% {
+  71% {
     opacity: 1;
     transform: none;
-    animation-timing-function: cubic-bezier(0.55, 0, 0.8, 0.35);
+    animation-timing-function: var(--ease-ab);
   }
   100% {
     opacity: 0;
@@ -409,10 +425,10 @@
 }
 @keyframes locks-release {
   0%,
-  50% {
+  61% {
     opacity: 1;
   }
-  58%,
+  68%,
   100% {
     opacity: 0;
   }
@@ -956,15 +972,54 @@ html.js-reveal [data-reveal]:not([data-reveal-state]):not(:focus-within) {
   opacity: 0;
 }
 
-/* Überschrift steigt aus einer Maske: Text und Maske laufen gegenläufig,
-   die Kante bleibt dabei an der Unterkante der Überschrift stehen. */
+/* Überschrift steigt aus einer Maske, Wort für Wort (<Steigend/>,
+   components/marketing/hafen/steigend.tsx). Jedes Wort hat seine eigene
+   Maske; der Weg ist also immer eine Zeile, gleich, wie viele Zeilen
+   die Überschrift hat. Unterlängen bleiben über padding-bottom frei. */
+.rv-w {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.rv-w > span {
+  display: inline-block;
+}
+html.js-reveal [data-reveal="rise"]:has(.rv-w):not([data-reveal-state]):not(:focus-within) {
+  opacity: 1;
+}
+/* 105 % plus die Polsterung der Maske, damit keine Oberlänge unten
+   hervorschaut, solange das Wort wartet. */
+html.js-reveal [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within) .rv-w > span {
+  transform: translateY(calc(105% + 0.12em));
+}
+html.js-reveal [data-reveal="rise"][data-reveal-state="in"]:has(.rv-w) {
+  animation: none;
+}
+html.js-reveal [data-reveal="rise"][data-reveal-state="in"] .rv-w > span {
+  animation: rv-wort var(--t-lang) var(--ease-aus) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + min(var(--w, 0) * 28ms, 280ms));
+}
+@keyframes rv-wort {
+  from {
+    transform: translateY(calc(105% + 0.12em));
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Überschrift mit verschachtelten Elementen (ohne <Steigend/>): sie
+   steigt als Ganzes, aber nur 0,9 em weit, damit jede Überschrift gleich
+   weit steigt und keine Zeile halbiert durchs Bild wischt. */
 html.js-reveal [data-reveal="rise"][data-reveal-state="in"] {
-  animation: rv-rise 0.7s cubic-bezier(0.25, 0.85, 0.25, 1) var(--reveal-delay, 0ms) both;
+  animation: rv-rise var(--t-lang) var(--ease-aus) var(--reveal-delay, 0ms) both;
 }
 @keyframes rv-rise {
   from {
-    transform: translateY(100%);
-    clip-path: inset(-100% -0.3em 100% -0.3em);
+    transform: translateY(0.9em);
+    clip-path: inset(-0.3em -0.3em 0.9em -0.3em);
   }
   to {
     transform: none;
@@ -1039,10 +1094,111 @@ html.js-reveal [data-reveal="stagger"][data-reveal-state="in"] > * {
   }
 }
 
+/* Kontakt-Finale: die Telefonnummer (app/page.tsx). Ziffern steigen
+   einzeln aus ihren Masken (32 ms Staffel, 90 ms Pause zwischen Vorwahl
+   und Rufnummer), danach zeichnet sich darunter eine 2 px orange Linie
+   von links. Zeigen und Fokus: Die Zahl bleibt hell, die Linie wird
+   4 px stark. Ohne JS und bei reduzierter Bewegung steht alles. */
+.tel-finale {
+  color: inherit;
+}
+.tel-m {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.tel-m > span {
+  display: inline-block;
+}
+.tel-linie {
+  display: block;
+  height: 2px;
+  margin-top: 0.14em;
+  background: var(--gold);
+  transform-origin: 0 0;
+  transition: transform var(--t-kurz) var(--ease-aus);
+}
+.tel-finale:focus-visible .tel-linie {
+  transform: scaleY(2);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tel-finale:hover .tel-linie {
+    transform: scaleY(2);
+  }
+}
+html.js-reveal [data-reveal="tel"]:not([data-reveal-state]):not(:focus-within) {
+  opacity: 1;
+}
+html.js-reveal [data-reveal="tel"]:not([data-reveal-state]):not(:focus-within) .tel-m > span {
+  transform: translateY(calc(105% + 0.12em));
+}
+html.js-reveal [data-reveal="tel"]:not([data-reveal-state]):not(:focus-within) .tel-linie {
+  transform: scaleX(0);
+}
+html.js-reveal [data-reveal="tel"][data-reveal-state="in"] .tel-m > span {
+  animation: rv-wort var(--t-lang) var(--ease-aus) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + var(--n, 0) * 32ms + var(--p, 0) * 90ms);
+}
+/* Start 280 ms, nachdem die letzte Ziffer (Nr. 10) sich gesetzt hat. */
+html.js-reveal [data-reveal="tel"][data-reveal-state="in"] .tel-linie {
+  animation: rv-linie var(--t-linie) var(--ease-wechsel) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 10 * 32ms + 90ms + var(--t-mittel) + 280ms);
+}
+@keyframes rv-linie {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Mail-Link im Kontakt: orange Grundlinie (1,5 px), beim Zeigen läuft
+   eine helle Linie von links darüber. */
+.mail-link {
+  padding-bottom: 3px;
+  background-image:
+    linear-gradient(var(--background), var(--background)),
+    linear-gradient(var(--gold), var(--gold));
+  background-repeat: no-repeat;
+  background-position:
+    0 100%,
+    0 100%;
+  background-size:
+    0 1.5px,
+    100% 1.5px;
+  transition: background-size var(--t-mittel) var(--ease-wechsel);
+}
+.mail-link:focus-visible {
+  background-size:
+    100% 1.5px,
+    100% 1.5px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mail-link:hover {
+    background-size:
+      100% 1.5px,
+      100% 1.5px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .tel-linie,
+  .mail-link {
+    transition: none;
+  }
+  html.js-reveal .tel-m > span,
+  html.js-reveal .tel-linie {
+    transform: none !important;
+    animation: none !important;
+  }
   html.js-reveal [data-reveal],
-  html.js-reveal [data-reveal] > * {
+  html.js-reveal [data-reveal] > *,
+  html.js-reveal .rv-w > span {
     opacity: 1 !important;
+    transform: none !important;
     animation: none !important;
   }
 }

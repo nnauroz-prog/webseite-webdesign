@@ -3,46 +3,56 @@
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-
 /**
- * Floating "scroll to top" button. Appears once the user has
- * scrolled past the first viewport-height of the page. Sits in the
- * bottom-right corner with a small safe-area inset so it clears the
- * iPhone home indicator. Anchored on z-50 — above content, below the
- * mobile menu sheet (z-40 in its backdrop, z-40 on the sheet itself
- * but transient).
+ * „Nach oben“ am Rechner: ein Teer-Quadrat (44 × 44) unten rechts, das
+ * nach zwei Bildschirmhöhen erscheint. Beim Zeigen füllt es sich von
+ * links in Signal-Orange wie .btn-signal (app/globals.css, .nach-oben).
  *
- * Mounted from MarketingFooter so every marketing page picks it up
- * without touching individual pages. No-op while the page is short
- * enough that there is nothing to scroll back from.
+ * Unter 768 px ausgeblendet: Auf dem iPhone springt ein Tippen auf die
+ * Statusleiste nach oben, und unten steht schon die CTA-Leiste.
+ *
+ * Sprung: Ab drei Bildschirmhöhen sofort statt eines langen Wischers,
+ * darunter weich; bei reduzierter Bewegung immer sofort.
+ *
+ * Eingebunden über MarketingFooter, damit jede Marketingseite es hat.
  */
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 600);
-    onScroll();
+    let raf = 0;
+    const pruefen = () => {
+      raf = 0;
+      setVisible(window.scrollY > window.innerHeight * 2);
+    };
+    const onScroll = () => {
+      if (!raf) raf = window.requestAnimationFrame(pruefen);
+    };
+    pruefen();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
   }, []);
+
+  const hoch = () => {
+    const ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const weit = window.scrollY > window.innerHeight * 3;
+    window.scrollTo({ top: 0, behavior: ruhig || weit ? "instant" : "smooth" });
+  };
 
   return (
     <button
       type="button"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={hoch}
       aria-label="Zurück nach oben"
-      className={cn(
-        // Auf Mobile sitzt darunter die MobileCtaBar (md:hidden) — die
-        // ist h-12 + ~14 px Padding-Bottom = ~62 px. BackToTop muss
-        // darüber liegen, also bottom-20 (80 px). Auf md+ kein
-        // CTA-Bar sichtbar → wieder kleineres bottom-6.
-        "print:hidden fixed right-4 bottom-20 z-50 inline-flex h-11 w-11 items-center justify-center rounded-[2px] border shadow-md transition-all duration-200 md:right-6 md:bottom-6",
-        "bg-background/95 border-border text-foreground backdrop-blur-sm hover:bg-secondary hover:shadow-xl",
-        visible
-          ? "pointer-events-auto translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-2 opacity-0",
-      )}
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
+      data-sichtbar={visible}
+      className="nach-oben print:hidden"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <ArrowUp className="h-4 w-4" aria-hidden="true" />

@@ -56,19 +56,13 @@ export function MarketingFooter() {
           </FooterCol>
           <FooterCol title="Kontakt">
             <li>
-              <a
-                href="tel:+491607621876"
-                className="text-background/85 hover:text-background inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:underline"
-              >
-                0160&nbsp;7621876
+              <a href="tel:+491607621876" className="text-background/85 hover:text-background inline-flex min-h-11 items-center py-1 leading-snug transition-colors lg:min-h-9">
+                <span className="link-fuss-text">0160&nbsp;7621876</span>
               </a>
             </li>
             <li>
-              <a
-                href="mailto:info@sitalo.de"
-                className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
-              >
-                info@sitalo.de
+              <a href="mailto:info@sitalo.de" className="text-background/85 hover:text-background inline-flex min-h-11 items-center py-1 leading-snug transition-colors lg:min-h-9">
+                <span className="link-fuss-text">info@sitalo.de</span>
               </a>
             </li>
             <FooterLink href="/termin">Termin buchen</FooterLink>
@@ -76,17 +70,17 @@ export function MarketingFooter() {
         </div>
 
         <div className="border-background/10 border-t">
-          <div className="text-background/60 mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-6 font-mono text-[12px] sm:px-6">
+          <div className="text-background/60 mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-3 gap-y-1 px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] font-mono text-[12px] sm:px-6">
             <span>© {year} Sitalo Webdesign</span>
             <span className="flex gap-5">
-              <Link href="/impressum" className="hover:text-background transition-colors">
-                Impressum
+              <Link href="/impressum" className="inline-flex min-h-11 items-center transition-colors hover:text-background">
+                <span className="link-fuss-text">Impressum</span>
               </Link>
-              <Link href="/datenschutz" className="hover:text-background transition-colors">
-                Datenschutz
+              <Link href="/datenschutz" className="inline-flex min-h-11 items-center transition-colors hover:text-background">
+                <span className="link-fuss-text">Datenschutz</span>
               </Link>
-              <Link href="/admin" rel="nofollow" className="hover:text-background transition-colors">
-                Login
+              <Link href="/admin" rel="nofollow" className="inline-flex min-h-11 items-center transition-colors hover:text-background">
+                <span className="link-fuss-text">Login</span>
               </Link>
             </span>
           </div>
@@ -105,10 +99,10 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h2 className="label-mono text-stahl-hell mb-5">
+      <h2 className="label-mono text-stahl-hell mb-3">
         {title}
       </h2>
-      <ul className="space-y-3 text-[15px]">{children}</ul>
+      <ul className="space-y-0 text-[15px]">{children}</ul>
     </div>
   );
 }
@@ -122,11 +116,8 @@ function FooterLink({
 }) {
   return (
     <li>
-      <Link
-        href={href}
-        className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
-      >
-        {children}
+      <Link href={href} className="text-background/85 hover:text-background inline-flex min-h-11 items-center py-1 leading-snug transition-colors lg:min-h-9">
+        <span className="link-fuss-text">{children}</span>
       </Link>
     </li>
   );
