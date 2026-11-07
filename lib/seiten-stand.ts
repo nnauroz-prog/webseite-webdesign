@@ -8,10 +8,10 @@
  * Tippfehler oder Gestaltung zählen nicht als Überarbeitung.
  */
 export const SEITEN_STAND = {
-  "/webseite-erstellen": { veroeffentlicht: "2026-11-01", stand: "2026-11-01" },
-  "/website-kosten": { veroeffentlicht: "2026-10-31", stand: "2026-11-01" },
-  "/vergleich": { veroeffentlicht: "2026-06-07", stand: "2026-11-01" },
-  "/website-erstellen-lassen": { stand: "2026-11-01" },
+  "/webseite-erstellen": { veroeffentlicht: "2026-11-01", stand: "2026-11-07" },
+  "/website-kosten": { veroeffentlicht: "2026-10-31", stand: "2026-11-07" },
+  "/vergleich": { veroeffentlicht: "2026-06-07", stand: "2026-11-07" },
+  "/website-erstellen-lassen": { stand: "2026-11-07" },
 } as const satisfies Record<
   string,
   { veroeffentlicht?: string; stand: string }
@@ -22,4 +22,4 @@ export const SEITEN_STAND = {
  * festes Datum statt „jetzt", damit Google lastmod nicht als Rauschen
  * lernt. Beim nächsten größeren Umbau einer Seite eintragen, wann.
  */
-export const STAND_UEBRIGE_SEITEN = "2026-11-01";
+export const STAND_UEBRIGE_SEITEN = "2026-11-07";
