@@ -7,16 +7,15 @@
   height: 18px;
 }
 
+/* Abstand zum Kopf kommt aus .buehne-kopf (app/hafen.css). */
 .split {
   display: grid;
   gap: 3.25rem;
-  margin-top: 3.5rem;
 }
 @media (min-width: 1024px) {
   .split {
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     gap: 5rem;
-    margin-top: 5rem;
   }
 }
 
@@ -113,7 +112,11 @@
   line-height: 1.5;
   color: var(--muted-foreground);
 }
+/* 44 px Tippfläche, die Grundlinie bleibt in der Fußzeile. */
 .phone {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   font-family: var(--font-brand-sans), system-ui, sans-serif;
   font-size: 1.35rem;
   font-stretch: 115%;

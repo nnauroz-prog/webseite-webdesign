@@ -4,6 +4,7 @@ import Link from "next/link";
 import { memo, useEffect, useRef, useState } from "react";
 
 import { imBildBeimStart, useLaufzeit } from "@/components/marketing/hafen/reveal";
+import { TAFEL_ZEILEN } from "@/lib/pakete-tafel";
 
 import type { PaketeKurz } from "./paket-kurz";
 
@@ -24,11 +25,7 @@ import type { PaketeKurz } from "./paket-kurz";
  * Ohne Script und bei reduzierter Bewegung steht alles sofort.
  */
 
-const ROWS = [
-  { slug: "starter", linie: "S", desc: "Eine Seite mit Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten." },
-  { slug: "business", linie: "B", desc: "Bis zu fünf Unterseiten, mit Team, Leistungen und Galerie." },
-  { slug: "premium", linie: "P", desc: "Eigene Struktur. Speisekarte, Angebote oder Termine pflegen Sie selbst." },
-] as const;
+const ROWS = TAFEL_ZEILEN;
 
 function priceOf(pakete: PaketeKurz, slug: (typeof ROWS)[number]["slug"]) {
   const p = pakete[slug];
@@ -222,7 +219,9 @@ function LedPfeil() {
   );
 }
 
-export function Abfahrtstafel({ pakete }: { pakete: PaketeKurz }) {
+/** schmal: nur Linie, Name und Preis (.board-schmal, app/hafen.css), für
+ *  Stellen, an denen die Sätze schon daneben stehen (Startseite #preise). */
+export function Abfahrtstafel({ pakete, schmal = false }: { pakete: PaketeKurz; schmal?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [run, setRun] = useState(false);
   const [armed, setArmed] = useState(false);
@@ -267,7 +266,7 @@ export function Abfahrtstafel({ pakete }: { pakete: PaketeKurz }) {
   ];
 
   return (
-    <div ref={ref} className="board">
+    <div ref={ref} className={schmal ? "board board-schmal" : "board"}>
       <div className="board-in">
         <div className="flex items-center gap-2.5 border-b border-[#2a2d2f] px-4 py-4 sm:gap-3.5 sm:px-[1.35rem]">
           <span className="text-[15px] uppercase tracking-[0.14em]" style={{ fontStretch: "115%", fontWeight: 760 }}>
@@ -286,7 +285,7 @@ export function Abfahrtstafel({ pakete }: { pakete: PaketeKurz }) {
         >
           <span>Linie</span>
           <span>Paket</span>
-          <span>Was dabei ist</span>
+          <span className="board-spalte-desc">Was dabei ist</span>
           <span className="text-right">ab</span>
         </div>
         {rows.map((r, i) => (

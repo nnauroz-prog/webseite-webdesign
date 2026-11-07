@@ -13,16 +13,20 @@ import { ArrowRight } from "lucide-react";
  *   aus dem Bild ist; der Kopf bleibt frei.
  * - Sie geht, sobald #kontakt oder der Fuß den unteren Bildrand
  *   berühren (dort gibt es eigene Wege zur Anfrage).
- * Kein setState pro Scroll-Ereignis. Bewegung nur über transform und
- * opacity (app/globals.css, .cta-leiste), bei reduzierter Bewegung nur
- * eine kurze Blende.
+ * Kein setState pro Scroll-Ereignis. Gestalt: Leiste aus Milchglas
+ * (.kopf-glas) mit Haarlinie oben, links der Einstiegspreis, rechts der
+ * ruhige Knopf. Bewegung nur über transform (app/globals.css,
+ * .cta-leiste), bei reduzierter Bewegung nur eine kurze Blende.
  *
  * Versteckt auf /anfrage, /impressum, /datenschutz, im Admin und auf
  * den Angeboten für Kunden (/angebot/<token>).
  *
  * Beachtet env(safe-area-inset-bottom) für iPhones mit Home-Indicator.
  */
-export function MobileCtaBar() {
+/** festpreis: Einstiegspreis aus lib/pakete-data.ts („ab 599 €"), vom
+ *  Layout auf dem Server übergeben, damit die Paketdaten nicht ins
+ *  Client-Bundle wandern. */
+export function MobileCtaBar({ festpreis }: { festpreis: string }) {
   const pathname = usePathname();
   const [kopfWeg, setKopfWeg] = useState(false);
   const [amEnde, setAmEnde] = useState(false);
@@ -78,15 +82,23 @@ export function MobileCtaBar() {
       aria-hidden={!visible}
       inert={!visible}
       data-sichtbar={visible}
-      className={`cta-leiste print:hidden fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 md:hidden ${
+      className={`cta-leiste kopf-glas print:hidden fixed inset-x-0 bottom-0 z-40 md:hidden ${
         visible ? "pointer-events-auto" : "pointer-events-none"
       }`}
-      style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}
     >
-      <Link href="/anfrage" className="btn-signal w-full max-w-md shadow-[0_16px_32px_-14px_rgb(27_29_30/0.45)]">
-        Website anfragen
-        <ArrowRight className="h-4 w-4" aria-hidden="true" />
-      </Link>
+      <div
+        className="mx-auto flex max-w-md items-center justify-between gap-4 px-5 pt-2.5"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 10px)" }}
+      >
+        <p className="leading-tight">
+          <span className="text-foreground/80 block text-[13px]">Festpreis</span>
+          <span className="block text-[17px] font-bold tracking-[-0.01em]">{festpreis}</span>
+        </p>
+        <Link href="/anfrage" className="btn-signal btn-ruhig h-11 px-4">
+          Website anfragen
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
+      </div>
     </div>
   );
 }

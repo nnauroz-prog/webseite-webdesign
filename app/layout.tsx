@@ -217,7 +217,7 @@ export default function RootLayout({
         </a>
         {children}
         <GlobalExtras searchIndex={buildSearchIndex()} />
-        <MobileCtaBar />
+        <MobileCtaBar festpreis={PAKETE[0].setup} />
         <PlausibleScript />
         <script
           type="application/ld+json"
