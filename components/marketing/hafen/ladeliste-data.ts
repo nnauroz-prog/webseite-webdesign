@@ -94,7 +94,7 @@ export const LADELISTEN: BranchenLadeliste[] = [
       },
     ],
     paket: "business",
-    paketGrund: "Bis zu fünf Unterseiten tragen Leistungen, Team, Bewerbung, Einzugsgebiet und Kontakt.",
+    paketGrund: "Startseite mit Einzugsgebiet, dazu eigene Seiten für Leistungen, Team, Bewerbung und Kontakt. Das passt in Business mit bis zu fünf Unterseiten.",
     alternative: { paket: "premium", text: "Wollen Sie Stellen und Neuigkeiten selbst pflegen, passt {paket}." },
   },
   {

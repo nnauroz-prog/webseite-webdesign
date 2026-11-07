@@ -302,7 +302,8 @@ export function Abfahrtstafel({ pakete }: { pakete: PaketeKurz }) {
             </span>
             <span className="board-desc font-mono text-[13px] leading-snug text-[#b9bebf]">{r.desc}</span>
             <span className="board-price led text-right text-[1.4rem] leading-none whitespace-nowrap sm:text-[1.6rem]">
-              <span className="sr-only">ab </span>
+              {/* Am Handy fehlt die Kopfzeile, dort steht das „ab“ sichtbar. */}
+              <span className="mr-1 text-[0.6em] text-[#878d8e] sm:sr-only">ab</span>
               <Ziffern value={r.value} /> €
             </span>
           </Link>

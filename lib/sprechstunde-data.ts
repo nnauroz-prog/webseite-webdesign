@@ -17,6 +17,11 @@ export const SPRECHSTUNDE_BEGINN_HHMM = "17:00";
 export const SPRECHSTUNDE_ENDE_HHMM = "18:30";
 export const SPRECHSTUNDE_RUFNUMMER = "0160 7621876";
 
+/** Uhrzeit für Fließtext ohne volle Stunde: „17:00" → „17", „18:30" bleibt. */
+export function uhrzeitKurz(hhmm: string): string {
+  return hhmm.replace(/:00$/, "");
+}
+
 export type SprechstundeTermin = {
   /** ISO-Datum yyyy-mm-dd. */
   iso: string;

@@ -9,16 +9,16 @@ import { LEXIKON, type LexikonEntry } from "@/lib/lexikon-data";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Lexikon — Webbegriffe in Klartext",
+  title: "Lexikon · Webbegriffe im Klartext",
   description:
-    "Hosting, SSL, CMS, SEO, DSGVO: die wichtigsten Webbegriffe in Alltagsdeutsch erklärt, jeweils mit dem Satz, der für Ihre Entscheidung zählt.",
+    "Hosting, SSL, CMS, SEO, DSGVO: die wichtigsten Webbegriffe in Alltagsdeutsch erklärt, jeweils mit dem, worauf es für Ihre Entscheidung ankommt.",
   alternates: { canonical: "/lexikon" },
 };
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 /**
- * `/lexikon` — Glossar in Klartext.
+ * `/lexikon` — Glossar im Klartext.
  *
  * Kopf, dann ein Register nach Anfangsbuchstaben wie hinten in einem
  * Nachschlagewerk, dann die Einträge zweispaltig: links der Begriff,
@@ -39,7 +39,7 @@ export default function LexikonPage() {
     "@context": "https://schema.org",
     "@type": "DefinedTermSet",
     "@id": `${SITE_URL}/lexikon#glossar`,
-    name: "Sitalo Lexikon — Webbegriffe in Klartext",
+    name: "Sitalo Lexikon · Webbegriffe im Klartext",
     description:
       "Glossar für lokale Unternehmen: Hosting, SSL, CMS, SEO, DSGVO und mehr, in Alltagsdeutsch erklärt.",
     hasDefinedTerm: sorted.map((e) => ({
@@ -54,9 +54,9 @@ export default function LexikonPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero crumb="Lexikon" eyebrow={`Glossar · ${sorted.length} Begriffe`} title="Webbegriffe in Klartext">
-          Hier erklären wir die Wörter, die Ihnen in Angeboten für Websites begegnen. Zu jedem Begriff steht der eine Satz,
-          der für Ihre Entscheidung zählt.
+        <PageHero crumb="Lexikon" eyebrow={`Glossar · ${sorted.length} Begriffe`} title="Webbegriffe im Klartext">
+          Hier erklären wir die Wörter, die Ihnen in Angeboten für Websites begegnen. Zu jedem Begriff steht darunter,
+          worauf es für Ihre Entscheidung ankommt.
         </PageHero>
 
         {/* Register nach Anfangsbuchstaben */}

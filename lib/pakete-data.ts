@@ -7,6 +7,12 @@
  * Projekte mit Branchen-Querverweisen).
  */
 
+/**
+ * Stundensatz in Euro, Endpreis inkl. 19 % MwSt. Einzige Quelle;
+ * lib/honorar-data.ts exportiert ihn weiter.
+ */
+export const STUNDENSATZ_EUR = 120;
+
 export type Paket = {
   slug: "starter" | "business" | "premium" | "studio";
   name: string;
@@ -21,6 +27,9 @@ export type Paket = {
    * Unterlagen (Stichpunkte und Fotos). Klein geschrieben, damit er
    * in Sätze passt („… vergehen meist 5–10 Werktage“). Kanonisch,
    * siehe /pakete, /faq, Startseite und Branchen-Landingpages.
+   * Nach dem Halbgeviertstrich steht ein Wortverbinder (U+2060), vor der
+   * Einheit ein geschütztes Leerzeichen: So bricht die Angabe am Handy
+   * nicht zwischen Zahlen oder vor der Einheit um.
    */
   dauer: string;
   /** Kurz-Beschreibung für Karten. */
@@ -52,9 +61,9 @@ export const PAKETE: Paket[] = [
   {
     slug: "starter",
     name: "Starter",
-    setup: "ab 599\u00A0€",
-    monthly: "ab 59\u00A0€ / Monat",
-    dauer: "oft 1–2 Werktage",
+    setup: "ab\u00A0599\u00A0€",
+    monthly: "ab\u00A059\u00A0€ / Monat",
+    dauer: "oft 1–\u20602\u00A0Werktage",
     description:
       "Eine Seite mit allem Wichtigen: Leistungen, Öffnungszeiten und Kontakt. Für Selbstständige und kleine Betriebe.",
     whoFor:
@@ -73,7 +82,7 @@ export const PAKETE: Paket[] = [
       "Selbstständiger Handwerker mit Einsatzgebiet",
       "Kleines Café mit Öffnungszeiten",
       "Coach oder Berater mit Leistungen und Kontakt",
-      "Friseur:in mit Preisliste, Öffnungszeiten und Anruf-Knopf",
+      "Friseursalon mit Preisliste, Öffnungszeiten und Anruf-Knopf",
     ],
     limits: [
       "Unterseiten für einzelne Leistungen (ab Business)",
@@ -115,9 +124,9 @@ export const PAKETE: Paket[] = [
     name: "Business",
     badge: "Empfohlen",
     highlight: true,
-    setup: "ab 999\u00A0€",
-    monthly: "ab 99\u00A0€ / Monat",
-    dauer: "meist 5–10 Werktage",
+    setup: "ab\u00A0999\u00A0€",
+    monthly: "ab\u00A099\u00A0€ / Monat",
+    dauer: "meist 5–\u206010\u00A0Werktage",
     description:
       "Mehrere Seiten für Leistungen, Team und Galerie. Für lokale Betriebe mit mehreren Angeboten.",
     whoFor:
@@ -129,7 +138,8 @@ export const PAKETE: Paket[] = [
       "Leistungen mit ausführlicher Beschreibung",
       "Bildergalerie, Fotos lassen sich groß ansehen",
       "Formular für Bewerbung oder Terminanfrage",
-      "Grundlagen für Google: Titel, Beschreibungen, Sitemap",
+      "Grundlagen für Google: eigene Titel je Unterseite, Sitemap, strukturierte Daten",
+      "Google-Unternehmensprofil einrichten oder überarbeiten",
       "Bilderaufbereitung inklusive",
       "Bis zu 3 kleine Änderungen pro Monat",
     ],
@@ -165,7 +175,7 @@ export const PAKETE: Paket[] = [
     ],
     faq: [
       {
-        q: "Was zählt als „kleine Änderung\"?",
+        q: "Was zählt als „kleine Änderung“?",
         a: "Alles, was wir in 15 bis 30 Minuten erledigen: einen Text anpassen, ein Bild tauschen, Öffnungszeiten ändern oder jemanden ins Team aufnehmen. Größere Erweiterungen besprechen wir vorher und nennen Ihnen den Preis.",
       },
       {
@@ -181,9 +191,9 @@ export const PAKETE: Paket[] = [
   {
     slug: "premium",
     name: "Premium",
-    setup: "ab 2.999\u00A0€",
-    monthly: "ab 219\u00A0€ / Monat",
-    dauer: "meist 2–3 Wochen",
+    setup: "ab\u00A02.999\u00A0€",
+    monthly: "ab\u00A0219\u00A0€ / Monat",
+    dauer: "meist 2–\u20603\u00A0Wochen",
     description:
       "Eine Struktur, die wir für Ihren Betrieb anlegen, mit Bereichen, die Sie selbst pflegen, etwa Speisekarte, Wochenangebot oder Termine.",
     whoFor:
@@ -195,6 +205,7 @@ export const PAKETE: Paket[] = [
       "Speisekarte oder Wochenangebot selbst änderbar",
       "Formulare für Kontakt, Bewerbung und Online-Buchung",
       "Mehr Arbeit an den Suchbegriffen",
+      "Google-Unternehmensprofil einrichten oder überarbeiten",
       "Regelmäßige Prüfung von Formularen und Ladezeit",
       "Bis zu 6 kleine Änderungen pro Monat",
     ],
@@ -231,7 +242,7 @@ export const PAKETE: Paket[] = [
         a: "Sie klicken auf den Bereich, ändern Text oder Bild und speichern. Das funktioniert ähnlich wie in einem Word-Dokument. HTML müssen Sie dafür nicht können.",
       },
       {
-        q: "Was wenn ich was kaputt mache?",
+        q: "Was, wenn ich etwas kaputt mache?",
         a: "Sie können nur die Inhalte ändern, die wir dafür freigegeben haben. Aufbau und Gestaltung bleiben, wie sie sind. Jede Änderung lässt sich rückgängig machen.",
       },
       {
@@ -240,7 +251,7 @@ export const PAKETE: Paket[] = [
       },
       {
         q: "Was kostet eine zusätzliche Anpassung außer der Reihe?",
-        a: "Sechs kleine Änderungen pro Monat sind im Beitrag enthalten. Ist das Kontingent eines Monats aufgebraucht, sagen wir Ihnen das vorher; jede weitere rechnen wir nach Aufwand zum Stundensatz ab, meist 15 bis 30 Minuten. Eine kurze Rückfrage per Mail zählt nicht als Änderung. Für Größeres, etwa einen neuen Bereich, bekommen Sie vorher ein verbindliches Angebot.",
+        a: `Sechs kleine Änderungen pro Monat sind im Beitrag enthalten. Ist das Kontingent eines Monats aufgebraucht, sagen wir Ihnen das vorher; jede weitere rechnen wir nach Aufwand zum Stundensatz von ${STUNDENSATZ_EUR}\u00A0€ ab, meist 15 bis 30 Minuten. Eine kurze Rückfrage per Mail zählt nicht als Änderung. Für Größeres, etwa einen neuen Bereich, bekommen Sie vorher ein verbindliches Angebot.`,
       },
     ],
   },
@@ -248,9 +259,9 @@ export const PAKETE: Paket[] = [
     slug: "studio",
     name: "Sitalo Studio",
     badge: "Neues Erscheinungsbild",
-    setup: "ab 3.990\u00A0€",
-    monthly: "ab 299\u00A0€ / Monat",
-    dauer: "meist 3–5 Wochen",
+    setup: "ab\u00A03.990\u00A0€",
+    monthly: "ab\u00A0299\u00A0€ / Monat",
+    dauer: "meist 3–\u20605\u00A0Wochen",
     description:
       "Neues Erscheinungsbild, bis zu drei Korrekturrunden und ein Treffen vor Ort. Für Betriebe, die ihren ganzen Auftritt neu aufstellen.",
     whoFor:
@@ -262,6 +273,7 @@ export const PAKETE: Paket[] = [
       "Briefkopf und Vorschaubilder im selben Stil",
       "Bis zu 12 Bereiche oder Seiten, auch zum Selbstpflegen",
       "Auf Wunsch zweisprachig (Deutsch und eine weitere Sprache)",
+      "Google-Unternehmensprofil einrichten oder überarbeiten",
       "Bis zu 10 kleine Änderungen pro Monat",
       "Bevorzugte Bearbeitung, meist noch am selben Tag",
     ],
@@ -321,9 +333,9 @@ export const PAKETE: Paket[] = [
  * ist, holt sich die enthaltene MwSt. als Vorsteuer zurück.
  * Kurzform für Hero-Zeilen, Langform für Fußnoten.
  */
-export const PREIS_HINWEIS_KURZ = "Für Betriebe und Selbstständige, alle Preise inkl. 19 % MwSt.";
+export const PREIS_HINWEIS_KURZ = "Für Betriebe und Selbstständige, alle Preise inkl. 19\u00A0%\u00A0MwSt.";
 export const PREIS_HINWEIS =
-  "Unser Angebot richtet sich an Betriebe und Selbstständige (Unternehmer nach § 14 BGB). Alle Preise inklusive 19 % Mehrwertsteuer.";
+  "Unser Angebot richtet sich an Betriebe und Selbstständige (Unternehmer nach §\u00A014\u00A0BGB). Alle Preise inklusive 19\u00A0%\u00A0Mehrwertsteuer.";
 
 /** „ab 59 €, 99 €, 219 € oder 299 €“: die Monatsbeiträge aller Pakete in einem Satzteil. */
 export const MONATSBEITRAEGE = (() => {

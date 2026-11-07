@@ -58,7 +58,7 @@ export function MarketingFooter() {
             <li>
               <a
                 href="tel:+491607621876"
-                className="text-background/85 hover:text-background underline-offset-4 transition-colors hover:underline"
+                className="text-background/85 hover:text-background inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:underline"
               >
                 0160&nbsp;7621876
               </a>

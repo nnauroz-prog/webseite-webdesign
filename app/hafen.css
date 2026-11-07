@@ -206,6 +206,14 @@
   -webkit-mask-image: linear-gradient(to top, #000 45%, transparent 98%);
   mask-image: linear-gradient(to top, #000 45%, transparent 98%);
 }
+/* Unter lg steht über dem ersten Container nur der Einleitungsabsatz.
+   Das Gehänge bleibt deshalb so kurz, dass die Hubseile beim Einlaufen
+   nicht durch den Text laufen (Abstand dazu: mt-16 in app/page.tsx). */
+@media (max-width: 1023px) {
+  .box:first-child .box-gear {
+    height: 2.5rem;
+  }
+}
 .box-rope {
   position: absolute;
   top: 0;

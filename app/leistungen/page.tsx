@@ -276,8 +276,9 @@ const VERZEICHNIS: { nr: string; titel: string; posten: Posten[] }[] = [
     nr: "4",
     titel: "Google",
     posten: [
-      { nr: "4.1", text: "Titel und Beschreibung für jede Seite, Sitemap, strukturierte Daten", umfang: "Ab Business" },
-      { nr: "4.2", text: "Google-Unternehmensprofil einrichten, lokale Suchbegriffe", umfang: "Ab Business" },
+      { nr: "4.1", text: "Seitentitel und Beschreibung für Google, mit Leistung und Ort", umfang: "Alle Pakete" },
+      { nr: "4.2", text: "Eigener Titel und eigene Beschreibung für jede Unterseite, Sitemap, strukturierte Daten", umfang: "Ab Business" },
+      { nr: "4.3", text: "Google-Unternehmensprofil einrichten, lokale Suchbegriffe", umfang: "Ab Business" },
     ],
   },
   {

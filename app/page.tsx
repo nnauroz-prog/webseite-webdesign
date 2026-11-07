@@ -184,7 +184,7 @@ function Leistungen() {
             Alle Leistungen {ARROW}
           </Link>
         </div>
-        <div className="mt-12 sm:mt-16">
+        <div className="mt-16 sm:mt-20 lg:mt-16">
           <ContainerStack />
         </div>
       </div>
@@ -344,7 +344,20 @@ function Preise() {
           <Abfahrtstafel pakete={PAKETE_KURZ} />
           <p className="text-muted-foreground mt-3 font-mono text-[12px] leading-relaxed">
             Einmalpreise, dazu ein Monatsbeitrag {MONTHLY_FROM}.
-            {STUDIO ? ` ${STUDIO.name} ${STUDIO.setup} steht auf der Paketseite.` : null} {PREIS_HINWEIS}
+            {STUDIO ? (
+              <>
+                {" "}
+                Für ein neues Erscheinungsbild gibt es{" "}
+                <Link
+                  href={`/pakete/${STUDIO.slug}`}
+                  className="text-foreground underline decoration-[var(--gold)] underline-offset-4"
+                >
+                  {STUDIO.name} {STUDIO.setup}
+                </Link>
+                .
+              </>
+            ) : null}{" "}
+            {PREIS_HINWEIS}
           </p>
         </div>
       </div>

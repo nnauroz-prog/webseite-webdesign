@@ -8,11 +8,11 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { SITE_URL } from "@/lib/site";
-import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM } from "@/lib/sprechstunde-data";
+import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
-  title: "Kontakt — schreiben Sie uns direkt",
+  title: "Kontakt · schreiben Sie uns direkt",
   description:
     "Rufen Sie an oder schreiben Sie uns über das Formular oder per E-Mail. Wir antworten meist am selben Werktag.",
   alternates: { canonical: "/kontakt" },
@@ -173,7 +173,7 @@ const WEGE: { name: string; text: string; href: string; link: string; extern?: b
   },
   {
     name: "Sprechstunde",
-    text: `Jeden ersten Donnerstag von ${SPRECHSTUNDE_BEGINN_HHMM} bis ${SPRECHSTUNDE_ENDE_HHMM} Uhr am Telefon, offen für alle.`,
+    text: `Jeden ersten Donnerstag im Monat von ${uhrzeitKurz(SPRECHSTUNDE_BEGINN_HHMM)} bis ${uhrzeitKurz(SPRECHSTUNDE_ENDE_HHMM)}\u00A0Uhr am Telefon, offen für alle.`,
     href: "/sprechstunde",
     link: "Nächste Termine",
   },

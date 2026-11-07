@@ -120,8 +120,7 @@ export default function TerminPage() {
             </div>
             <div className="lg:col-span-4 lg:col-start-9">
               <p className="text-muted-foreground max-w-sm text-[15px] leading-relaxed">
-                Wer lieber schreibt, nimmt das Anfrageformular. Es hat drei
-                Felder.
+                Wer lieber schreibt, nimmt das Anfrageformular.
               </p>
               <Link href="/anfrage" className="btn-line mt-5 h-12 text-[15px]">
                 Anfrage schreiben

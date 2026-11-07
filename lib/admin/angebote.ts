@@ -766,7 +766,12 @@ export function syncHinweise(
   alt: HinweisKontext,
   neu: HinweisKontext,
 ): string {
-  const a = hinweisBausteine(alt);
+  // Ältere Entwürfe tragen die Dauer noch ohne Wortverbinder und mit
+  // normalem statt geschütztem Leerzeichen; dann gilt diese Schreibweise
+  // als „wortgleich“.
+  const ohneSchutz = (s: string) => s.replace(/\u2060/g, "").replace(/\u00A0/g, " ");
+  const alsImText = (s: string) => (s && !text.includes(s) && text.includes(ohneSchutz(s)) ? ohneSchutz(s) : s);
+  const a = hinweisBausteine(alt).map(alsImText);
   const n = hinweisBausteine(neu);
   let out = text;
   for (let i = 0; i < a.length; i++) {

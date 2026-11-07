@@ -15,7 +15,7 @@ import {
   empfehle,
   type MaterialSlug,
 } from "@/lib/empfehlung-logic";
-import { getPaketBySlug } from "@/lib/pakete-data";
+import { getPaketBySlug, PREIS_HINWEIS_KURZ } from "@/lib/pakete-data";
 import { cn } from "@/lib/utils";
 
 /**
@@ -166,9 +166,7 @@ export function EmpfehlungWizard() {
                     key={o.slug}
                     label={o.label}
                     selected={answers.branche === o.slug}
-                    onClick={() =>
-                      setAnswers({ ...answers, branche: o.slug })
-                    }
+                    onClick={() => setAnswers({ ...answers, branche: o.slug })}
                   />
                 ))}
               </Grid>
@@ -188,9 +186,7 @@ export function EmpfehlungWizard() {
                     label={o.label}
                     detail={o.detail}
                     selected={answers.groesse === o.slug}
-                    onClick={() =>
-                      setAnswers({ ...answers, groesse: o.slug })
-                    }
+                    onClick={() => setAnswers({ ...answers, groesse: o.slug })}
                   />
                 ))}
               </Grid>
@@ -214,7 +210,10 @@ export function EmpfehlungWizard() {
                     onClick={() =>
                       setAnswers({
                         ...answers,
-                        materialien: toggleMaterial(answers.materialien, o.slug),
+                        materialien: toggleMaterial(
+                          answers.materialien,
+                          o.slug,
+                        ),
                       })
                     }
                   />
@@ -325,7 +324,9 @@ export function EmpfehlungWizard() {
                   <span
                     className={cn(
                       "min-w-0 text-[14.5px] leading-snug",
-                      value ? "text-foreground font-medium" : "text-muted-foreground",
+                      value
+                        ? "text-foreground font-medium"
+                        : "text-muted-foreground",
                     )}
                   >
                     {value ?? "–"}
@@ -395,10 +396,10 @@ function StepShell({
 }) {
   return (
     <div className="animate-fade-up" data-step={step}>
-      <h2 className="text-foreground text-balance text-[1.75rem] leading-[1.06] tracking-[-0.03em] sm:text-[2.25rem]">
+      <h2 className="text-foreground text-[1.75rem] leading-[1.06] tracking-[-0.03em] text-balance sm:text-[2.25rem]">
         {title}
       </h2>
-      <p className="text-muted-foreground mt-3 max-w-xl text-pretty text-[15px] leading-relaxed">
+      <p className="text-muted-foreground mt-3 max-w-xl text-[15px] leading-relaxed text-pretty">
         {subtitle}
       </p>
       <div className="mt-7">{children}</div>
@@ -463,7 +464,7 @@ function OptionCard({
           ))}
       </span>
       <span className="min-w-0">
-        <span className="text-foreground block text-[15px] leading-snug font-semibold hyphens-manual break-words">
+        <span className="text-foreground block text-[15px] leading-snug font-semibold break-words hyphens-manual">
           {trennbar(label)}
         </span>
         {detail && (
@@ -497,16 +498,29 @@ function Result({
           {empfehlung.paketLabel}
         </h2>
         {einmalig ? (
-          <dl className="grid grid-cols-[auto_auto] gap-x-4 gap-y-1 text-[14px]">
-            <dt className="label-mono text-muted-foreground self-center">Einmalig</dt>
-            <dd className="serif text-foreground text-[1.25rem]">{einmalig}</dd>
-            {monatlich ? (
-              <>
-                <dt className="label-mono text-muted-foreground self-center">Monatlich</dt>
-                <dd className="serif text-foreground text-[1.25rem]">{monatlich}</dd>
-              </>
-            ) : null}
-          </dl>
+          <div>
+            <dl className="grid grid-cols-[auto_auto] gap-x-4 gap-y-1 text-[14px]">
+              <dt className="label-mono text-muted-foreground self-center">
+                Einmalig
+              </dt>
+              <dd className="serif text-foreground text-[1.25rem]">
+                {einmalig}
+              </dd>
+              {monatlich ? (
+                <>
+                  <dt className="label-mono text-muted-foreground self-center">
+                    Monatlich
+                  </dt>
+                  <dd className="serif text-foreground text-[1.25rem]">
+                    {monatlich}
+                  </dd>
+                </>
+              ) : null}
+            </dl>
+            <p className="text-muted-foreground mt-2 max-w-[16rem] text-[12.5px] leading-snug">
+              {PREIS_HINWEIS_KURZ}
+            </p>
+          </div>
         ) : null}
       </div>
 
@@ -529,13 +543,15 @@ function Result({
           <p className="text-foreground/85 text-[14.5px] leading-relaxed">
             {empfehlung.zusatzHinweis}
           </p>
-          <Link
-            href="/wartung"
-            className="text-foreground mt-2 inline-flex items-center gap-1.5 text-[14px] font-semibold underline underline-offset-4"
-          >
-            Wartung ansehen
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
+          {empfehlung.zusatzLink ? (
+            <Link
+              href={empfehlung.zusatzLink.href}
+              className="text-foreground mt-2 inline-flex items-center gap-1.5 text-[14px] font-semibold underline underline-offset-4"
+            >
+              {empfehlung.zusatzLink.label}
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          ) : null}
         </div>
       )}
 

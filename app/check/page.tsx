@@ -101,7 +101,7 @@ export default function CheckPage() {
           eyebrow="Ladezeit-Test · gemessen mit Google PageSpeed"
           title="Testen Sie, wie schnell Ihre Website lädt."
         >
-          Sie geben die Adresse ein, nach 15 bis 30 Sekunden stehen die Werte
+          Sie geben die Adresse ein, nach 15 bis 30&nbsp;Sekunden stehen die Werte
           da. Kontaktdaten brauchen wir dafür nicht.
         </PageHero>
 
@@ -179,7 +179,7 @@ export default function CheckPage() {
               <p className="label-mono text-muted-foreground">Erstgespräch</p>
               <p className="text-foreground mt-4 max-w-xl text-balance text-[1.4rem] leading-snug font-semibold tracking-[-0.015em] sm:text-[1.65rem]">
                 Im Erstgespräch gehen wir die Werte mit Ihnen durch. Meist
-                reicht eine Viertelstunde, reserviert sind bis zu 30 Minuten,
+                reicht eine Viertelstunde, reserviert sind bis zu 30&nbsp;Minuten,
                 und es kostet nichts.
               </p>
             </div>
@@ -190,7 +190,7 @@ export default function CheckPage() {
               </Link>
               <a
                 href="tel:+491607621876"
-                className="text-foreground text-[15px] font-semibold tabular-nums underline-offset-4 hover:underline"
+                className="text-foreground inline-flex min-h-11 items-center text-[15px] font-semibold tabular-nums underline-offset-4 hover:underline"
               >
                 0160&nbsp;7621876
               </a>

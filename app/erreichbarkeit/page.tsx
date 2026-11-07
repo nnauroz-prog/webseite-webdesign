@@ -9,13 +9,13 @@ import { ERREICHBARKEIT, TELEFON_ANZEIGE, TELEFON_HREF } from "@/lib/erreichbark
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Erreichbarkeit — wann wir antworten",
+  title: "Erreichbarkeit · wann wir antworten",
   description:
     "Unsere Antwortzeiten: was wir wann zusagen, was bewusst nicht, und was gilt, wenn wir im Urlaub sind.",
   alternates: { canonical: "/erreichbarkeit" },
   openGraph: {
     type: "website",
-    title: "Erreichbarkeit — wann wir antworten",
+    title: "Erreichbarkeit · wann wir antworten",
     description:
       "Unsere Antwortzeiten, und was im Urlaub gilt.",
     url: `${SITE_URL}/erreichbarkeit`,

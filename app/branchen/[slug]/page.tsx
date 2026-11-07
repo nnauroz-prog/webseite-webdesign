@@ -260,6 +260,9 @@ function Einordnung({ branche }: { branche: Branche }) {
               </li>
             ))}
           </ul>
+          {branche.typicalPagesHinweis ? (
+            <p className="text-muted-foreground mt-4 text-[13.5px] leading-snug">{branche.typicalPagesHinweis}</p>
+          ) : null}
         </div>
       </div>
     </section>

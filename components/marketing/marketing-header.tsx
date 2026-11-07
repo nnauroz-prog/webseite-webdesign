@@ -165,11 +165,12 @@ export function MarketingHeader({
             Website anfragen
           </Link>
 
-          {/* Mobile compact CTA + burger */}
+          {/* Mobile compact CTA + burger. Sichtbar 36 px hoch, die
+              Trefferfläche reicht per ::after auf 44 px. */}
           <Link
             href="/anfrage"
             className={cn(
-              "inline-flex h-9 items-center justify-center rounded-[2px] px-3.5 text-[13px] font-semibold transition-colors lg:hidden",
+              "relative inline-flex h-9 items-center after:absolute after:-inset-1 justify-center rounded-[2px] px-3.5 text-[13px] font-semibold transition-colors lg:hidden",
               onDark ? "bg-gold text-foreground" : "bg-foreground text-background",
             )}
           >
@@ -182,7 +183,7 @@ export function MarketingHeader({
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
-              "inline-flex h-9 w-9 items-center justify-center rounded-[2px] border transition-colors lg:hidden",
+              "relative inline-flex h-9 w-9 items-center justify-center rounded-[2px] border transition-colors after:absolute after:-inset-1 lg:hidden",
               onDark ? "border-background/40 text-background hover:bg-background/10" : "border-foreground/70 bg-transparent hover:bg-secondary",
             )}
           >

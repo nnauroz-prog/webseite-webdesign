@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
+import { STUNDENSATZ_EUR } from "@/lib/honorar-data";
 import { MONATSBEITRAEGE, PAKETE, WARTUNG_PREISE } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
@@ -17,7 +18,8 @@ export const metadata: Metadata = {
 type Group = {
   id: string;
   label: string;
-  items: { q: string; a: string }[];
+  /** `link` erscheint unter der Antwort; ins JSON-LD kommt nur der Text. */
+  items: { q: string; a: string; link?: { href: string; label: string } }[];
 };
 
 const GROUPS: Group[] = [
@@ -27,7 +29,7 @@ const GROUPS: Group[] = [
     items: [
       {
         q: "Muss ich mich irgendwo registrieren?",
-        a: "Nein. Sie schicken uns das Formular oder eine E-Mail, ein Konto brauchen Sie dafür nicht.",
+        a: "Nein. Sie schicken uns das Formular oder eine Mail; ein Konto brauchen Sie dafür nicht.",
       },
       {
         q: "Wie schnell ist meine Seite fertig?",
@@ -85,11 +87,11 @@ const GROUPS: Group[] = [
       },
       {
         q: "Bin ich an einen langen Vertrag gebunden?",
-        a: "Die Erstellung zahlen Sie einmal. Der Monatsbeitrag hat eine Mindestlaufzeit von sechs Monaten und ist danach zum Monatsende kündbar. Wenn Sie gehen, übergeben wir Ihnen alles: die Seite, die Inhalte und den Zugang zur Domain.",
+        a: "Die Erstellung zahlen Sie einmal. Der Monatsbeitrag hat eine Mindestlaufzeit von sechs Monaten und ist danach zum Monatsende kündbar. Wenn Sie gehen, übergeben wir Ihnen alles: die Seite, die Inhalte und die Zugangsdaten zu Ihrer Domain, die ohnehin auf Ihren Namen läuft.",
       },
       {
         q: "Was kostet eine spätere Erweiterung?",
-        a: "Kleine Änderungen sind im Monatsbeitrag enthalten, je nach Paket eine bis zehn pro Monat. Eine Erweiterung, etwa ein neuer Bereich, eine Online-Buchung oder eine zweite Sprache, wird nach Stundensatz berechnet. Den Betrag bekommen Sie vorher als verbindliches Angebot.",
+        a: `Eine Erweiterung, etwa ein neuer Bereich, eine Online-Buchung oder eine zweite Sprache, berechnen wir nach Stundensatz (${STUNDENSATZ_EUR}\u00A0€ inkl. MwSt.). Den Betrag bekommen Sie vorher als verbindliches Angebot.`,
       },
       {
         q: "Meine Seite wurde woanders gebaut. Übernehmen Sie die Pflege?",
@@ -103,7 +105,8 @@ const GROUPS: Group[] = [
     items: [
       {
         q: "Werde ich für meinen Stadtteil gefunden?",
-        a: `Darauf bauen wir die Seite aus. Statt auf „Webdesign Hamburg" zielen wir auf Suchen wie „Friseur Eimsbüttel", „Pflegedienst Wandsbek" oder „Café Ottensen". Für mehrere Hamburger Stadtteile gibt es bei uns eigene Seiten, zu finden unter /standorte. Für Betriebe in anderen Städten gehen wir genauso vor.`,
+        a: `Darauf bauen wir die Seite aus. Statt auf „Webdesign Hamburg“ zielen wir auf Suchen wie „Friseur Eimsbüttel“, „Pflegedienst Wandsbek“ oder „Café Ottensen“. Für mehrere Hamburger Stadtteile haben wir eigene Seiten, zum Beispiel für Eimsbüttel, Altona und Eppendorf. Für Betriebe in anderen Städten gehen wir genauso vor.`,
+        link: { href: "/standorte", label: "Alle Stadtteile" },
       },
       {
         q: "Lohnt sich ein Google-Unternehmensprofil?",
@@ -111,7 +114,7 @@ const GROUPS: Group[] = [
       },
       {
         q: "Was bringt mir Suchmaschinenoptimierung (SEO) konkret?",
-        a: `Für lokale Betriebe vor allem Anfragen von Leuten, die gerade suchen. Wer bei „Friseur" plus Stadtteil auf der ersten Seite steht, wird angerufen, ohne für Anzeigen zu bezahlen. Dafür sorgen saubere Seitentitel, die richtigen Suchbegriffe und ein gepflegtes Google-Profil.`,
+        a: `Für lokale Betriebe vor allem Anfragen von Leuten, die gerade suchen. Wer bei „Friseur“ plus Stadtteil auf der ersten Seite steht, wird angerufen, ohne für Anzeigen zu bezahlen. Dafür sorgen saubere Seitentitel, die richtigen Suchbegriffe und ein gepflegtes Google-Profil.`,
       },
       {
         q: "Schalten Sie auch Google-Anzeigen für mich?",
@@ -133,7 +136,7 @@ const GROUPS: Group[] = [
       },
       {
         q: "Wird man die Seite bei Google finden?",
-        a: `Die Grundlage legen wir sauber an: Seitentitel, Beschreibungen, eine klare Struktur, kurze Ladezeiten, lokale Suchbegriffe und eine Sitemap. Platz 1 kann Ihnen niemand seriös versprechen. Bei lokalen Suchen wie „Friseur Eimsbüttel" oder „Pflegedienst Altona" ist die Konkurrenz aber oft überschaubar.`,
+        a: `Die Grundlage legen wir sauber an: Seitentitel, Beschreibungen, eine klare Struktur, kurze Ladezeiten, lokale Suchbegriffe und eine Sitemap. Platz 1 kann Ihnen niemand seriös versprechen. Bei lokalen Suchen wie „Friseur Eimsbüttel“ oder „Pflegedienst Altona“ ist die Konkurrenz aber oft überschaubar.`,
       },
       {
         q: "Sind Impressum und Datenschutz dabei?",
@@ -149,7 +152,7 @@ const GROUPS: Group[] = [
       },
       {
         q: "Was, wenn meine Domain woanders liegt?",
-        a: "Dann bleibt sie in Ihrem Konto, etwa bei IONOS, Strato oder GoDaddy, und wir richten sie auf unseren Server. Wenn Sie wollen, ziehen wir die Domain auch ganz zu uns um.",
+        a: "Dann bleibt sie in Ihrem Konto, etwa bei IONOS, Strato oder GoDaddy, und wir richten sie auf unseren Server. Wenn Sie wollen, ziehen wir die Domain auch zu uns um. Eingetragen bleibt sie immer auf Ihren Namen.",
       },
       {
         q: "Was, wenn ich später woanders hin will?",
@@ -240,9 +243,20 @@ function GroupSection({ group, first }: { group: Group; first: boolean }) {
                   <span className="transition-transform group-open:rotate-45">+</span>
                 </span>
               </summary>
-              <p className="text-foreground/80 max-w-2xl pb-6 text-pretty text-[15.5px] leading-relaxed sm:pr-12">
+              <p
+                className={`text-foreground/80 max-w-2xl text-pretty text-[15.5px] leading-relaxed sm:pr-12 ${item.link ? "pb-2" : "pb-6"}`}
+              >
                 {item.a}
               </p>
+              {item.link ? (
+                <Link
+                  href={item.link.href}
+                  className="text-foreground mb-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+                >
+                  {item.link.label}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              ) : null}
             </details>
           ))}
         </div>

@@ -188,15 +188,12 @@ export type Result = {
  * Profile-Multiplikator für Aufbau-Stunden:
  *   - neu: 1.0 × baseAufbau
  *   - umzug (von WP/alter Seite): 1.3 × baseAufbau (Import-Aufwand)
- *   - eigenbau (Selbstbau-Code): 0.7 × baseAufbau bei DIY, 1.4 × bei Baukasten
- *     (Code-Affine springen im Baukasten weniger sauber rein)
+ *   - eigenbau (Selbstbau-Code): 0.7 × baseAufbau bei DIY; bei den
+ *     Baukästen unverändert 1.0, dort hilft Programmieren kaum
  */
 function profileAufbauMultiplier(p: Profile, slug: Option["slug"]): number {
   if (p === "umzug") return 1.3;
-  if (p === "eigenbau") {
-    if (slug === "diy") return 0.7;
-    return 1.4;
-  }
+  if (p === "eigenbau" && slug === "diy") return 0.7;
   return 1.0;
 }
 

@@ -71,7 +71,7 @@ const BOXES: Box[] = [
   },
   {
     title: "Bei Google",
-    text: "Titel und Beschreibung für jede Seite, Sitemap und saubere Technik. Damit Google versteht, was Sie anbieten und wo.",
+    text: "Titel und Beschreibung für jede Seite, Sitemap und Ihr Google-Unternehmensprofil. Damit Google versteht, was Sie anbieten und wo.",
     tag: "Ab Business",
     size: "20",
     tone: "rost",
@@ -80,7 +80,7 @@ const BOXES: Box[] = [
   {
     title: "Selbst pflegen",
     text: "Speisekarte, Wochenangebot oder Termine ändern Sie selbst, ohne uns anzurufen.",
-    tag: "Premium",
+    tag: "Ab Premium",
     size: "20",
     tone: "weiss",
     href: "/pakete/premium",

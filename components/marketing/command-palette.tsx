@@ -138,7 +138,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Website anfragen",
-        description: "Formular mit drei Feldern, Antwort meist am selben Werktag",
+        description: "Formular mit drei Pflichtfeldern, Antwort meist am selben Werktag",
         href: "/anfrage",
         icon: Send,
       },
@@ -288,7 +288,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Lexikon",
-        description: "Webbegriffe in Klartext erklärt",
+        description: "Webbegriffe im Klartext erklärt",
         href: "/lexikon",
         icon: BookOpen,
       },

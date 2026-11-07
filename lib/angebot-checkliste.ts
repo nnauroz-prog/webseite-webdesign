@@ -1,4 +1,4 @@
-import { PAKETE, getPaketBySlug, type Paket } from "@/lib/pakete-data";
+import { MONATSBEITRAEGE, PAKETE, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 
 /**
  * „Sechs Fragen an jedes Angebot": steht als Checkliste auf
@@ -7,12 +7,7 @@ import { PAKETE, getPaketBySlug, type Paket } from "@/lib/pakete-data";
  * auseinanderlaufen. Preise, Dauer und Pakete aus lib/pakete-data.ts.
  */
 
-const STARTER = getPaketBySlug("starter") as Paket;
-const STUDIO = getPaketBySlug("studio") as Paket;
 const BUSINESS = getPaketBySlug("business") as Paket;
-
-/** „ab 59 € / Monat" → „ab 59 €" */
-const monatlich = (p: Paket) => p.monthly.replace(/\s*\/\s*Monat$/, "");
 
 /** Pakete mit bevorzugter Bearbeitung (steht in pakete-data bei Premium und Studio). */
 const BEVORZUGT = PAKETE.filter((p) =>
@@ -37,7 +32,7 @@ export const ANGEBOT_CHECKLISTE: { frage: string; sitalo: string }[] = [
   },
   {
     frage: "Was kosten Hosting, Updates und kleine Änderungen im Monat?",
-    sitalo: `Je nach Paket ${monatlich(STARTER)} (${STARTER.name}) bis ${monatlich(STUDIO)} (${STUDIO.name.replace(/^Sitalo\s+/, "")}) im Monat, inkl. MwSt., mit sechs Monaten Mindestlaufzeit und danach monatlich kündbar.`,
+    sitalo: `Je nach Paket ${MONATSBEITRAEGE} im Monat, inkl. MwSt., mit sechs Monaten Mindestlaufzeit und danach monatlich kündbar.`,
   },
   {
     frage:
@@ -46,6 +41,6 @@ export const ANGEBOT_CHECKLISTE: { frage: string; sitalo: string }[] = [
   },
   {
     frage: "Wird die Seite für Handy und Google eingerichtet?",
-    sitalo: `Fürs Handy in jedem Paket. Titel, Beschreibungen und Sitemap für Google richten wir ab ${BUSINESS.name} ein.`,
+    sitalo: `Fürs Handy und mit Titel und Beschreibung für Google in jedem Paket. Sitemap, strukturierte Daten und das Google-Unternehmensprofil richten wir ab ${BUSINESS.name} ein.`,
   },
 ];

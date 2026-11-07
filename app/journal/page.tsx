@@ -7,7 +7,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { JOURNAL_POSTS, formatDate } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
-import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM } from "@/lib/sprechstunde-data";
+import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
 
 export const metadata: Metadata = {
   title: "Journal · Webdesign-Wissen für Betriebe",
@@ -122,9 +122,11 @@ export default function JournalPage() {
                   <span className="text-gold">Neu</span>
                 ) : (
                   <span>Zuletzt erschienen</span>
-                )}{" "}
-                · {formatDate(hero.publishedAt)}
-                <span className="mt-1 block">{hero.readingMinutes} Min Lesezeit</span>
+                )}
+                <span className="mt-1 block">
+                  {formatDate(hero.publishedAt)} ·{" "}
+                  <span className="whitespace-nowrap">{hero.readingMinutes} Min Lesezeit</span>
+                </span>
               </p>
               <div className="min-w-0 lg:col-span-9">
                 <h2 className="text-balance text-[2.6rem] leading-[0.98] tracking-[-0.038em] underline-offset-[6px] group-hover:underline sm:text-6xl lg:text-[4.4rem]">
@@ -187,8 +189,9 @@ export default function JournalPage() {
                 Fragen zu einem Beitrag beantworten wir am Telefon
               </h2>
               <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-[16.5px] leading-relaxed">
-                Jeden ersten Donnerstag von {SPRECHSTUNDE_BEGINN_HHMM} bis {SPRECHSTUNDE_ENDE_HHMM} Uhr ist unsere
-                offene Sprechstunde. Wer nicht so lange warten will, ruft einfach an oder schreibt an{" "}
+                Jeden ersten Donnerstag im Monat von {uhrzeitKurz(SPRECHSTUNDE_BEGINN_HHMM)} bis{" "}
+                {uhrzeitKurz(SPRECHSTUNDE_ENDE_HHMM)}&nbsp;Uhr ist unsere offene Sprechstunde. Wer nicht so lange
+                warten will, ruft einfach an oder schreibt an{" "}
                 <a href="mailto:info@sitalo.de" className="text-foreground underline underline-offset-4">
                   info@sitalo.de
                 </a>

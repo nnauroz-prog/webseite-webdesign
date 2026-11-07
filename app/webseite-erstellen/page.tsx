@@ -7,7 +7,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
 import { WegFinder } from "@/components/marketing/ratgeber/weg-finder";
 import { FAUSTREGEL } from "@/components/marketing/ratgeber/weg-finder-logic";
-import { BAUKASTEN_OHNE_BETRAG, BAUKASTEN_PREISE } from "@/lib/fremdpreise";
+import { BAUKASTEN_PREISE } from "@/lib/fremdpreise";
 import { formatDate } from "@/lib/journal-data";
 import { PREIS_HINWEIS, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { SEITEN_STAND } from "@/lib/seiten-stand";
@@ -189,7 +189,8 @@ const POSTEN: Posten[] = [
     ) : (
       "monatlich, je nach Tarif"
     ),
-    hinweis: `Wix, Squarespace, Jimdo, IONOS, STRATO und andere haben eigene Tarife, oft mit Aktionspreisen. ${BAUKASTEN_OHNE_BETRAG.replace(/^Abo beim Anbieter\. /, "")} Gratistarife zeigen Werbung und laufen unter einer Adresse des Anbieters.`,
+    hinweis:
+      "Wix, Squarespace, Jimdo, IONOS, STRATO und andere haben eigene Tarife, oft mit Aktionspreisen. Was gilt, steht auf der Preisseite des jeweiligen Anbieters; achten Sie auf den Preis nach dem Aktionszeitraum und darauf, ob er die Umsatzsteuer enthält. Gratistarife zeigen Werbung und laufen unter einer Adresse des Anbieters.",
   },
   {
     posten: "Hosting für WordPress oder eine eigene Seite",

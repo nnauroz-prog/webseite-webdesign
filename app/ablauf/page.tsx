@@ -25,7 +25,7 @@ const STEPS = [
   {
     number: "01",
     title: "Sie schreiben uns",
-    body: `Über das Formular mit drei Feldern oder per Mail an ${CONTACT_EMAIL}. Ein paar Sätze dazu, was Sie brauchen, reichen.`,
+    body: `Über das Formular mit drei Pflichtfeldern oder per Mail an ${CONTACT_EMAIL}. Ein paar Sätze dazu, was Sie brauchen, reichen.`,
     wer: "Sie",
     hinweis: "Antwort meist am selben Werktag",
   },

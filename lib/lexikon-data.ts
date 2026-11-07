@@ -74,15 +74,15 @@ export const LEXIKON: LexikonEntry[] = [
     term: "DSGVO",
     slug: "dsgvo",
     plain:
-      "Die europäische Datenschutz-Grundverordnung. Für Ihre Website heißt das vor allem: keine Daten ohne Einwilligung sammeln, Datenschutzerklärung und Impressum korrekt führen und Dienste aus den USA nur mit Rechtsgrundlage einbinden.",
+      "Die europäische Datenschutz-Grundverordnung. Für Ihre Website heißt das vor allem: Daten nur mit Rechtsgrundlage verarbeiten (etwa um eine Anfrage zu beantworten oder mit Einwilligung), Datenschutzerklärung und Impressum korrekt führen und Dienste aus den USA nur mit geeigneter Grundlage einbinden.",
     bottomLine:
-      "Eine Seite ohne Tracking braucht kein Cookie-Banner. Das ist der einfachste Weg, die DSGVO einzuhalten.",
+      "Je weniger fremde Dienste eine Seite einbindet, desto weniger Daten fließen ab und desto kürzer wird die Datenschutzerklärung. Ohne Tracking entfällt meist auch das Cookie-Banner.",
   },
   {
     term: "Cookie-Banner",
     slug: "cookie-banner",
     plain:
-      "Das Zustimmungsfenster beim ersten Besuch einer Seite. Rechtlich nötig ist es nur, wenn die Seite Cookies setzt, die technisch nicht notwendig sind, also vor allem für Tracking und Werbung.",
+      "Das Zustimmungsfenster beim ersten Besuch einer Seite. Rechtlich nötig ist es nur, wenn die Seite auf dem Gerät Daten speichert oder ausliest, die technisch nicht notwendig sind (§\u00A025 TDDDG), also vor allem für Tracking und Werbung.",
     bottomLine:
       "Wir bauen Seiten ohne Tracking-Cookies. Dann entfällt das Banner, und Ihre Besucher sehen sofort die Seite.",
   },
@@ -130,7 +130,7 @@ export const LEXIKON: LexikonEntry[] = [
     term: "Google Ads",
     slug: "google-ads",
     plain:
-      "Bezahlte Anzeigen über und neben den normalen Suchergebnissen. Sie zahlen pro Klick, bei umkämpften lokalen Begriffen schnell mehrere Euro. Anzeigen wirken sofort und hören sofort auf zu wirken, wenn das Budget aufgebraucht ist.",
+      "Bezahlte Anzeigen über und unter den normalen Suchergebnissen und in Google Maps, gekennzeichnet als „Gesponsert“. Sie zahlen pro Klick, bei umkämpften lokalen Begriffen schnell mehrere Euro. Anzeigen wirken sofort und hören sofort auf zu wirken, wenn das Budget aufgebraucht ist.",
     bottomLine:
       "Erst die eigene Seite und das Google-Profil, dann Anzeigen. Sonst bezahlen Sie Klicks auf eine Seite, die nicht überzeugt.",
   },
@@ -172,7 +172,7 @@ export const LEXIKON: LexikonEntry[] = [
     term: "Long-Tail-Keywords",
     slug: "long-tail",
     plain: `Längere, genauere Suchbegriffe, zum Beispiel „Friseur Eimsbüttel Osterstraße“ statt nur „Friseur Hamburg“. Danach suchen weniger Menschen, dafür ist die Konkurrenz kleiner. Wer so genau sucht, weiß meist schon, was er will.`,
-    bottomLine: `Für lokale Betriebe lohnen sich genaue Suchbegriffe mehr als der allgemeine. Dort werden Sie leichter gefunden, und die Anfragen passen besser.`,
+    bottomLine: `Für lokale Betriebe lohnen sich genaue Suchbegriffe mehr als allgemeine. Dort werden Sie leichter gefunden, und die Anfragen passen besser.`,
   },
   {
     term: "Alt-Text",

@@ -232,7 +232,7 @@ describe("angebotAusAnfrage", () => {
     for (const teil of [
       "Festpreise",
       "Test-Link",
-      "meist 2–3 Wochen ab vollständigen Unterlagen",
+      "meist 2–\u20603\u00A0Wochen ab vollständigen Unterlagen",
       "Der Monatsbeitrag beginnt mit dem Livegang",
       "Mindestlaufzeit 6 Monate, danach monatlich kündbar",
       "Alle Preise inkl. 19\u00A0% USt.",
@@ -270,7 +270,7 @@ describe("angebotAusAnfrage", () => {
       a.hinweise.includes("Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."),
     );
     assert.ok(!a.hinweise.includes("19 %"));
-    assert.ok(a.hinweise.includes("oft 1–2 Werktage"));
+    assert.ok(a.hinweise.includes("oft 1–\u20602\u00A0Werktage"));
   });
 
   it("E-Mail aus reply_to, wenn das Feld fehlt; Name als Titel ohne Firma", () => {
@@ -309,7 +309,7 @@ describe("Hinweise synchron halten", () => {
     assert.ok(text.includes("gilt bis zum 24. Dezember 2026"));
     assert.ok(!text.includes("1. Dezember 2026"));
     assert.ok(text.includes("§ 19 UStG"));
-    assert.ok(text.includes("oft 1–2 Werktage"));
+    assert.ok(text.includes("oft 1–\u20602\u00A0Werktage"));
     assert.equal(
       text,
       standardHinweise({
@@ -327,6 +327,14 @@ describe("Hinweise synchron halten", () => {
     assert.ok(!ohne.includes("\n\n\n"));
     const wieder = syncHinweise(ohne, { ...k, monatlich: false }, k);
     assert.equal(wieder, a.hinweise);
+  });
+
+  it("erkennt die Dauer auch mit normalem Leerzeichen (ältere Entwürfe)", () => {
+    const alt = a.hinweise.replace("2–\u20603\u00A0Wochen", "2–3 Wochen");
+    assert.notEqual(alt, a.hinweise);
+    const text = syncHinweise(alt, k, { ...k, paket: "starter" });
+    assert.ok(text.includes("oft 1–\u20602\u00A0Werktage"));
+    assert.ok(!text.includes("2–3 Wochen"));
   });
 
   it("lässt eigenen Text in Ruhe", () => {

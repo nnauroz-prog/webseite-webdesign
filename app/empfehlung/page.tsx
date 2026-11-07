@@ -6,7 +6,7 @@ import { EmpfehlungWizard } from "@/components/marketing/empfehlung-wizard";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { PAKETE } from "@/lib/pakete-data";
+import { PAKETE, PREIS_HINWEIS } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
 const WEBAPP_LD = {
@@ -93,8 +93,9 @@ export default function EmpfehlungPage() {
                   Alle Pakete mit Preis
                 </h2>
                 <p className="text-muted-foreground mt-5 max-w-sm text-[15.5px] leading-relaxed text-pretty">
-                  Die Preise sind Einstiegspreise. Den Festpreis für Ihre
-                  Seite schicken wir Ihnen schriftlich, bevor wir anfangen.
+                  Die Preise sind Einstiegspreise inklusive 19&nbsp;% MwSt.
+                  Den Festpreis für Ihre Seite schicken wir Ihnen schriftlich,
+                  bevor wir anfangen.
                 </p>
                 <Link
                   href="/pakete"
@@ -153,6 +154,10 @@ export default function EmpfehlungPage() {
                     ))}
                   </tbody>
                 </table>
+                <p className="text-muted-foreground mt-4 text-[13.5px] leading-relaxed text-pretty">
+                  {PREIS_HINWEIS} Mindestlaufzeit 6&nbsp;Monate, danach
+                  monatlich kündbar.
+                </p>
               </div>
             </div>
           </div>

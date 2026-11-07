@@ -43,6 +43,8 @@ export type Branche = {
   detailIntro: string[];
   /** Typischer Seitenplan; der erste Eintrag ist die Startseite. */
   typicalPages: string[];
+  /** Optionale Zeile unter dem Seitenplan, etwa zur Erweiterung über das Paket hinaus. */
+  typicalPagesHinweis?: string;
   /** Konkrete Teile der Seite. */
   features: { title: string; body: string }[];
   /** Fragen aus der Branche, offen gesetzt und als FAQPage-Schema. */
@@ -115,7 +117,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Wie schnell kann die Seite online sein?",
-        a: "Eine Pflegedienst-Seite mit mehreren Unterseiten steht meist 5 bis 10 Werktage, nachdem Texte und Fotos bei uns sind. Eine einzelne Seite als Visitenkarte ist oft in 1 bis 2 Werktagen fertig.",
+        a: "Eine Pflegedienst-Seite mit mehreren Unterseiten ist meist in 5 bis 10 Werktagen online, sobald Texte und Fotos bei uns sind. Eine einzelne Seite als Visitenkarte ist oft in 1 bis 2 Werktagen fertig.",
       },
       {
         q: "Können wir Dokumente zum Herunterladen anbieten?",
@@ -137,7 +139,7 @@ export const BRANCHEN: Branche[] = [
       alt: "Behandlungsraum mit Holzschreibtisch, Tablet und einem Pflanzenbild an der Wand.",
     },
     shortBody:
-      "Vor dem ersten Termin suchen Patient:innen nach Sprechzeiten, Anfahrt und Behandlungen. Ihre Seite zeigt das ohne Suchen und nimmt Terminanfragen an.",
+      "Vor dem ersten Termin suchen Patientinnen und Patienten nach Sprechzeiten, Anfahrt und Behandlungen. Ihre Seite zeigt das ohne Suchen und nimmt Terminanfragen an.",
     bullets: [
       "Sprechzeiten, Notdienst und Anfahrt oben auf jeder Seite",
       "Behandlungen in Alltagssprache",
@@ -155,9 +157,8 @@ export const BRANCHEN: Branche[] = [
       "Behandlungen",
       "Team mit Qualifikationen",
       "Praxisräume in Bildern",
-      "Sprechzeiten und Notdienst",
+      "Sprechzeiten, Notdienst und Anfahrt",
       "Terminanfrage",
-      "Anfahrt und Parken",
     ],
     features: [
       {
@@ -170,7 +171,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Behandlungen verständlich",
-        body: "Jede Behandlung in den Worten, die Patient:innen selbst benutzen. Dazu ein Hinweis, was die Kasse zahlt und was privat abgerechnet wird.",
+        body: "Jede Behandlung in den Worten, die Ihre Patientinnen und Patienten selbst benutzen. Dazu ein Hinweis, was die Kasse zahlt und was privat abgerechnet wird.",
       },
       {
         title: "Team mit Werdegang",
@@ -220,7 +221,7 @@ export const BRANCHEN: Branche[] = [
     ],
     detailHeadline: "Eine Seite, auf der Ihre Arbeit zu sehen ist.",
     detailIntro: [
-      "Beim Friseur und beim Barbier entscheiden Kund:innen mit den Augen. Wer Ihre Arbeit nicht sieht, ruft nicht an. Die Bilder auf Ihrer Seite sind deshalb das wichtigste Argument, wichtiger als jeder Satz darüber.",
+      "Beim Friseur und beim Barbier entscheidet die Kundschaft mit den Augen. Wer Ihre Arbeit nicht sieht, ruft nicht an. Die Bilder auf Ihrer Seite sind deshalb das wichtigste Argument, wichtiger als jeder Satz darüber.",
       "Gleich danach kommen die Preise und der Weg zum Termin. Gesucht wird oft unterwegs am Handy. Die Telefonnummer steht deshalb oben und lässt sich antippen, die Terminanfrage ist ein kurzes Formular.",
     ],
     typicalPages: [
@@ -234,7 +235,7 @@ export const BRANCHEN: Branche[] = [
     features: [
       {
         title: "Galerie",
-        body: "Ihre besten Arbeiten in großen Bildern, die man antippen und vergrößern kann. Auf Wunsch nach Leistung oder nach Stylist:in sortiert, auch mit Vorher-Nachher.",
+        body: "Ihre besten Arbeiten in großen Bildern, die man antippen und vergrößern kann. Auf Wunsch nach Leistung oder nach Person sortiert, auch mit Vorher-Nachher.",
       },
       {
         title: "Preisliste",
@@ -242,11 +243,11 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Termin vom Handy",
-        body: "Die Telefonnummer lässt sich antippen, die Terminanfrage geht per Formular. Auf Wunsch binden wir ein Buchungssystem an.",
+        body: "Ein kurzes Formular mit Wunschleistung, Wunschtermin und Rückrufnummer. Arbeiten Sie schon mit einem Buchungssystem, binden wir es an.",
       },
       {
         title: "Team",
-        body: "Foto, Schwerpunkt und Werdegang Ihrer Stylist:innen. Stammkund:innen wollen oft zu einer bestimmten Person.",
+        body: "Foto, Schwerpunkt und Werdegang für jede Person im Team. Die Stammkundschaft will oft zu einer bestimmten Person.",
       },
     ],
     faq: [
@@ -256,15 +257,15 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Welche Online-Buchung passt zu mir?",
-        a: "Für kleine Salons reicht oft eine Terminanfrage per Formular. Arbeiten mehrere Stylist:innen mit eigenen Kalendern, lohnt sich ein System wie Treatwell, Booksy oder Shore. Wir binden das ein, das Sie schon nutzen oder nutzen wollen.",
+        a: "Für kleine Salons reicht oft eine Terminanfrage per Formular. Arbeiten mehrere Leute im Team mit eigenen Kalendern, lohnt sich ein System wie Treatwell, Booksy oder Shore. Wir binden das ein, das Sie schon nutzen oder nutzen wollen.",
       },
       {
         q: "Wie werden meine Bilder gut genug?",
-        a: "Ihre eigenen Fotos bereiten wir auf: Ausschnitt, Farbe, Dateigröße. Gibt es keine brauchbaren Bilder, sagen wir Ihnen, welche Motive die Seite braucht; wer einen Fotografen beauftragt, bekommt von uns eine kurze Motivliste. Gute Bilder sind bei Ihnen das Erste, was Kund:innen sehen.",
+        a: "Ihre eigenen Fotos bereiten wir auf: Ausschnitt, Farbe, Dateigröße. Gibt es keine brauchbaren Bilder, sagen wir Ihnen, welche Motive die Seite braucht; wer einen Fotografen beauftragt, bekommt von uns eine kurze Motivliste. Gute Bilder sind bei Ihnen das Erste, was die Kundschaft sieht.",
       },
       {
         q: "Können wir Gutscheine über die Seite verkaufen?",
-        a: "Ja. Am einfachsten ist ein Gutschein als PDF, den Kund:innen nach der Zahlung über Stripe herunterladen. Wer viele Gutscheine oder auch Produkte verkauft, braucht einen kleinen Shop. Den besprechen wir im Rahmen von Premium.",
+        a: "Ja. Am einfachsten ist ein Gutschein als PDF, den Ihre Kundschaft nach der Zahlung über Stripe herunterlädt. Wer viele Gutscheine oder auch Produkte verkauft, braucht einen kleinen Shop. Der ist in keinem Paket enthalten; Umfang und Preis besprechen wir im Einzelfall.",
       },
     ],
     recommendedPackage: "business",
@@ -354,7 +355,7 @@ export const BRANCHEN: Branche[] = [
       alt: "Werkbank eines Tischlers mit Handhobel, Hobelspänen und Kaffeebecher.",
     },
     shortBody:
-      "Im Handwerk entscheidet sich vieles, bevor jemand anruft. Kund:innen sehen sich Ihre Leistungen und fertige Arbeiten an und suchen dann die Nummer.",
+      "Im Handwerk entscheidet sich vieles, bevor jemand anruft. Die Kundschaft sieht sich Ihre Leistungen und fertige Arbeiten an und sucht dann die Nummer.",
     bullets: [
       "Leistungen und Einsatzgebiet",
       "Galerie mit fertigen Projekten",
@@ -408,7 +409,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Brauche ich für die Referenzen einen Fotografen?",
-        a: "Nein. Handyfotos bei Tageslicht reichen meist: das fertige Bad, die eingebaute Küche, die Fassade vorher und nachher. Räumen Sie Werkzeug aus dem Bild und nehmen Sie jedes Stück aus zwei, drei Blickwinkeln auf. Fragen Sie Ihre Kunden, bevor Sie Fotos aus ihrem Haus zeigen, und lassen Sie Hausnummern und Gesichter weg. Die besten Bilder wählen wir mit Ihnen aus; ab dem Paket Business bereiten wir sie auch auf.",
+        a: "Nein. Handyfotos bei Tageslicht reichen meist: das fertige Bad, die eingebaute Küche, die Fassade vorher und nachher. Räumen Sie Werkzeug aus dem Bild und nehmen Sie jedes Stück aus zwei, drei Blickwinkeln auf. Fragen Sie Ihre Kundschaft, bevor Sie Fotos aus ihrem Zuhause zeigen, und lassen Sie Hausnummern und Gesichter weg. Die besten Bilder wählen wir mit Ihnen aus; ab dem Paket Business bereiten wir sie auch auf.",
       },
       {
         q: "Brauche ich eine Online-Terminbuchung?",
@@ -452,7 +453,7 @@ export const BRANCHEN: Branche[] = [
     ],
     detailHeadline: "Ihre Pakete nebeneinander und eine Anfrage in wenigen Schritten.",
     detailIntro: [
-      "Wer eine Reinigungsfirma beauftragt, schaut auf den Preis und muss fremden Leuten seine Räume überlassen. Ihre Seite sollte deshalb früh zeigen, dass Ihre Mitarbeiter:innen eingewiesen und versichert sind. Das erspart Ihnen viele Fragen am Telefon.",
+      "Wer eine Reinigungsfirma beauftragt, schaut auf den Preis und muss fremden Leuten seine Räume überlassen. Ihre Seite sollte deshalb früh zeigen, dass Ihr Personal eingewiesen und versichert ist. Das erspart Ihnen viele Fragen am Telefon.",
       "Viele Anfragende vergleichen Angebote: Unterhaltsreinigung im Büro, Privathaushalt, Grundreinigung, Fenster. Stehen Ihre Pakete klar nebeneinander, vergleichen sie gleich auf Ihrer Seite und nicht bei der Konkurrenz.",
     ],
     typicalPages: [
@@ -474,11 +475,11 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Nachweise",
-        body: "Versicherung, Einweisung des Personals, Umgang mit Schlüsseln und mit Daten. Das sind die Fragen, die Auftraggeber zuerst stellen.",
+        body: "Versicherung, Einweisung des Personals, Umgang mit Schlüsseln und mit Daten. Das sind die ersten Fragen, wenn jemand eine Reinigung beauftragt.",
       },
       {
         title: "Stimmen von Auftraggebern",
-        body: "Echte Rückmeldungen Ihrer Kunden, mit deren Einverständnis. In der Reinigung schauen Interessenten besonders genau darauf.",
+        body: "Echte Rückmeldungen Ihrer Kundschaft, mit deren Einverständnis. In der Reinigung schaut man besonders genau darauf.",
       },
     ],
     faq: [
@@ -487,8 +488,8 @@ export const BRANCHEN: Branche[] = [
         a: "Genaue Preise selten, weil Fläche, Turnus und Sonderwünsche den Preis bestimmen. Sinnvoll ist ein Einstiegspreis pro Stunde oder Quadratmeter und daneben das Anfrageformular.",
       },
       {
-        q: "Brauchen Auftraggeber und Bewerber getrennte Bereiche?",
-        a: "Ja. Zwei klar getrennte Knöpfe, einer für Aufträge und einer für Bewerbungen. In der Reinigung suchen die meisten Betriebe beides: Kunden und Personal.",
+        q: "Brauchen Aufträge und Bewerbungen getrennte Bereiche?",
+        a: "Ja. Zwei klar getrennte Knöpfe, einer für Aufträge und einer für Bewerbungen. In der Reinigung suchen die meisten Betriebe beides: Kundschaft und Personal.",
       },
       {
         q: "Können wir Zertifikate zeigen?",
@@ -514,7 +515,7 @@ export const BRANCHEN: Branche[] = [
       alt: "Bücherwand einer Kanzlei mit dunkelgrün gebundenen Gesetzbüchern und einer Messinglampe.",
     },
     shortBody:
-      "Mandant:innen suchen nach einem Rechtsgebiet und einem Ort. Die Seite nennt Ihre Schwerpunkte klar und bietet einen diskreten Weg zur ersten Anfrage.",
+      "Mandantinnen und Mandanten suchen nach einem Rechtsgebiet und einem Ort. Die Seite nennt Ihre Schwerpunkte klar und bietet einen diskreten Weg zur ersten Anfrage.",
     bullets: [
       "Rechtsgebiete auf eigenen Seiten",
       "Anwältinnen und Anwälte mit Schwerpunkten",
@@ -524,17 +525,16 @@ export const BRANCHEN: Branche[] = [
     ],
     detailHeadline: "Eine sachliche Seite mit einem diskreten Weg zur Mandatsanfrage.",
     detailIntro: [
-      "Wer einen Anwalt sucht, hat meist ein konkretes Problem, etwa eine Kündigung oder einen Streit ums Erbe. Gesucht wird nach dem Rechtsgebiet und dem Ort. Ihre Seite muss zeigen, dass Sie genau dafür zuständig sind, und das ohne laute Werbung.",
+      "Wer anwaltliche Hilfe sucht, hat meist ein konkretes Problem, etwa eine Kündigung oder einen Streit ums Erbe. Gesucht wird nach dem Rechtsgebiet und dem Ort. Ihre Seite muss zeigen, dass Sie genau dafür zuständig sind, und das ohne laute Werbung.",
       "Viele schreiben ungern über ihr Anliegen in ein Formular. Die erste Anfrage soll deshalb kurz sein und sachlich klingen. Ein Knopf wie „Jetzt kostenlos beraten lassen!“ passt nicht zu einer Kanzlei, „Mandat anfragen“ schon.",
     ],
     typicalPages: [
       "Startseite",
-      "Rechtsgebiete, je eine Seite",
+      "Rechtsgebiete, je eine Seite (meist zwei bis drei)",
       "Anwältinnen und Anwälte",
-      "Mandatsanfrage",
-      "Kosten und Honorar",
-      "Kanzlei und Anfahrt",
+      "Kanzlei, Kosten und Anfahrt mit Mandatsanfrage",
     ],
+    typicalPagesHinweis: "Mehr als fünf Unterseiten: Erweiterung, den Preis nennen wir vorher.",
     features: [
       {
         title: "Rechtsgebiete einzeln",
@@ -588,7 +588,7 @@ export const BRANCHEN: Branche[] = [
     shortBody:
       "Ein Studio gewinnt Mitglieder über das Probetraining. Auf Ihrer Seite sind Probetraining und Kursplan deshalb ohne Suchen zu finden.",
     bullets: [
-      "Kursplan und Trainer:innen",
+      "Kursplan und Trainerteam",
       "Probetraining mit einem kurzen Formular",
       "Mitgliedschaft anfragen",
       "Öffnungszeiten und Adresse",
@@ -597,12 +597,12 @@ export const BRANCHEN: Branche[] = [
     detailHeadline: "Eine Seite, über die man ein Probetraining bucht.",
     detailIntro: [
       "Die Entscheidung für ein Studio fällt meist beim Probetraining. Wer nicht ausprobiert hat, unterschreibt keinen Vertrag. Ihre Seite hat deshalb eine Hauptaufgabe: Das Probetraining soll schnell angefragt sein.",
-      "Dazu kommen Kursplan, Trainer:innen und Bilder vom Studio. Die Gestaltung bleibt ruhig, damit Ihr Studio nicht nach Discounter aussieht. Es sei denn, Sie sind einer.",
+      "Dazu kommen Kursplan, Trainerteam und Bilder vom Studio. Die Gestaltung bleibt ruhig, damit Ihr Studio nicht nach Discounter aussieht. Es sei denn, Sie sind einer.",
     ],
     typicalPages: [
       "Startseite mit Probetraining",
       "Kursplan",
-      "Trainer:innen",
+      "Trainerteam",
       "Mitgliedschaften und Preise",
       "Probetraining anfragen",
       "Bilder vom Studio",
@@ -614,7 +614,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Kursplan",
-        body: "Mit Premium pflegen Sie den Plan selbst und ändern Zeiten oder Trainer:innen ohne uns. Sonst schicken Sie uns die Änderung.",
+        body: "Mit Premium pflegen Sie den Plan selbst und ändern Zeiten oder Kursleitung ohne uns. Sonst schicken Sie uns die Änderung.",
       },
       {
         title: "Mitgliedschaften nebeneinander",
@@ -622,7 +622,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Echte Bilder",
-        body: "Fotos aus Ihrem Studio, mit Ihren Trainer:innen und Ihren Geräten. Bilder aus einer Bilddatenbank sehen in jedem Studio gleich aus.",
+        body: "Fotos aus Ihrem Studio, mit Ihrem Trainerteam und Ihren Geräten. Bilder aus einer Bilddatenbank sehen in jedem Studio gleich aus.",
       },
     ],
     faq: [
@@ -635,8 +635,8 @@ export const BRANCHEN: Branche[] = [
         a: "Das läuft über Ihre Studioverwaltung, etwa Magicline oder Aidoo. Hat sie eine Schnittstelle, binden wir sie ein.",
       },
       {
-        q: "Wie wichtig sind Profile der Trainer:innen?",
-        a: "Sehr. Personal Trainer werden gezielt gesucht. Stehen Ihre Trainer:innen mit Schwerpunkt und Foto auf der Seite, teilen sie den Link auch selbst.",
+        q: "Wie wichtig sind Profile des Trainerteams?",
+        a: "Sehr. Nach Personal Trainerinnen und Trainern wird gezielt gesucht. Steht Ihr Team mit Schwerpunkt und Foto auf der Seite, teilen die Trainerinnen und Trainer den Link auch selbst.",
       },
       {
         q: "Wie sollte die Anfrage fürs Probetraining aussehen?",
@@ -654,7 +654,7 @@ export const BRANCHEN: Branche[] = [
       alt: "Musterseite für ein Kosmetikstudio auf einem Laptop, daneben getrocknetes Pampasgras und kleine Pflegeprodukte.",
     },
     shortBody:
-      "Kund:innen wählen ein Kosmetikstudio nach dem, was sie sehen. Die Seite zeigt Ihre Räume und Behandlungen und führt direkt zur Terminanfrage.",
+      "Die Kundschaft wählt ein Kosmetikstudio nach dem, was sie sieht. Die Seite zeigt Ihre Räume und Behandlungen und führt direkt zur Terminanfrage.",
     bullets: [
       "Behandlungen mit Dauer und Preis",
       "Vorher-Nachher-Galerie mit Einwilligung",

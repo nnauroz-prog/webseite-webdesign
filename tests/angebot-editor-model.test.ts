@@ -206,9 +206,9 @@ describe("Editor-Modell: Paket wählen", () => {
 
   it("passt die Dauer im Ablauf-Satz an das neue Paket an", () => {
     const s = stateAus(inhalt());
-    assert.match(s.form.hinweise, /5–10 Werktage|5-10 Werktage/);
+    assert.match(s.form.hinweise, /5–\u2060?10[\s\u00A0]Werktage|5-10 Werktage/);
     const next = aendern(s, (f) => paketWaehlen(f, "premium"));
-    assert.doesNotMatch(next.form.hinweise, /5–10 Werktage|5-10 Werktage/);
+    assert.doesNotMatch(next.form.hinweise, /5–\u2060?10[\s\u00A0]Werktage|5-10 Werktage/);
     assert.equal(next.kontext.paket, "premium");
   });
 });

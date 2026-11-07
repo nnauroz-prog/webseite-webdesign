@@ -52,7 +52,7 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 - [Ablauf](https://www.sitalo.de/ablauf): Sechs Schritte von der ersten Nachricht bis zur fertigen Seite.
 - [FAQ](https://www.sitalo.de/faq): Fragen zu Preisen, Hosting, Ablauf und Google.
 - [Kontakt](https://www.sitalo.de/kontakt): Telefon, E-Mail an info@sitalo.de oder Anfrageformular.
-- [Anfrage](https://www.sitalo.de/anfrage): Formular mit drei Feldern, Antwort meist am selben Werktag.
+- [Anfrage](https://www.sitalo.de/anfrage): Formular mit drei Pflichtfeldern, Antwort meist am selben Werktag.
 - [Pflegedienste](https://www.sitalo.de/pflege) und [Praxen](https://www.sitalo.de/praxen): Eigene Seiten für diese beiden Branchen.
 
 ## Kostenlose Werkzeuge (ohne Anmeldung)

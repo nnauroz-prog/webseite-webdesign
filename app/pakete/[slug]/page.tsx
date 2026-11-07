@@ -394,7 +394,9 @@ export default async function PaketDetailPage({
           <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
             <div className="lg:col-span-7">
               <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
-                Ob {paket.name} für Ihren Betrieb reicht, klären wir in einem kurzen Telefonat.
+                {paket.slug === "premium" || paket.slug === "studio"
+                  ? `Ob ${paket.name} zu Ihrem Betrieb passt oder ein kleineres Paket genügt, klären wir in einem kurzen Telefonat.`
+                  : `Ob ${paket.name} für Ihren Betrieb reicht, klären wir in einem kurzen Telefonat.`}
               </h2>
               <a
                 href="tel:+491607621876"

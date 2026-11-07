@@ -13,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: "Website anfragen",
   description:
-    "Das Formular hat drei Felder. Wir antworten aus Hamburg, meist am selben Werktag.",
+    "Name, E-Mail und eine kurze Beschreibung genügen. Wir antworten aus Hamburg, meist am selben Werktag.",
   alternates: { canonical: "/anfrage" },
 };
 
@@ -82,8 +82,8 @@ export default async function AnfragePage({
           eyebrow="Website anfragen"
           title="Erzählen Sie uns, was Sie vorhaben."
         >
-          Das Formular hat drei Felder. Ob Sie danach bei uns bauen lassen,
-          entscheiden Sie, wenn das Angebot vorliegt.
+          Name, E-Mail und eine kurze Beschreibung genügen. Ob Sie danach bei
+          uns bauen lassen, entscheiden Sie, wenn das Angebot vorliegt.
         </PageHero>
 
         <section aria-label="Anfrageformular">
