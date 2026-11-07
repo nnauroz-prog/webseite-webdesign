@@ -31,8 +31,10 @@ import {
   LADEPLAETZE,
   LADUNG,
   PLATZ_OBEN,
+  RUMPF,
   SEIL_OBEN,
   dunkel,
+  dunstUmriss,
   lageY,
   stapelX,
   zyklus,
@@ -70,30 +72,41 @@ const ROOFS = (() => {
   return d;
 })();
 
-/* Wahrzeichen als Silhouetten (eine Farbe, etwas dunkler als die Dächer). */
-const LANDMARKS = [
+/* Wahrzeichen als Silhouetten (eine Farbe, etwas dunkler als die Dächer),
+   von West nach Ost. Je Gruppe ein Takt im Auftakt (hero.module.css). */
+const LANDMARKS: string[][] = [
   // Tanzende Türme: zwei geknickte Hochhäuser am Ende der Reeperbahn
-  "M-292 670L-289 614L-294 590H-277L-272 614L-275 670Z",
-  "M-270 670L-268 622L-264 604H-251L-254 622L-257 670Z",
+  [
+    "M-292 670L-289 614L-294 590H-277L-272 614L-275 670Z",
+    "M-270 670L-268 622L-264 604H-251L-254 622L-257 670Z",
+  ],
   // Landungsbrücken: lange Halle mit zwei Kuppeltürmen und dem Pegelturm
-  "M-236 670V628L-232 625H-150L-146 628V670Z",
-  "M-221 625V616H-214V625Z M-221 616Q-217.5 607 -214 616Z M-218 609h1v-6h-1Z",
-  "M-188 625V616H-181V625Z M-188 616Q-184.5 607 -181 616Z M-185 609h1v-6h-1Z",
-  "M-166 625V596H-157V625Z M-167 596L-161.5 586L-156 596Z M-162 587h1v-6h-1Z",
+  [
+    "M-236 670V628L-232 625H-150L-146 628V670Z",
+    "M-221 625V616H-214V625Z M-221 616Q-217.5 607 -214 616Z M-218 609h1v-6h-1Z",
+    "M-188 625V616H-181V625Z M-188 616Q-184.5 607 -181 616Z M-185 609h1v-6h-1Z",
+    "M-166 625V596H-157V625Z M-167 596L-161.5 586L-156 596Z M-162 587h1v-6h-1Z",
+  ],
   // Heinrich-Hertz-Turm: schlanker Schaft, zwei Kanzeln, Antennenmast
-  "M-75.8 670L-72.6 566H-68.4L-65.2 670Z",
-  "M-78 566H-63V559H-78Z M-76 559H-65V552H-76Z M-77.5 549H-63.5V546H-77.5Z",
-  "M-71.2 552V514H-69.8V552Z",
+  [
+    "M-75.8 670L-72.6 566H-68.4L-65.2 670Z",
+    "M-78 566H-63V559H-78Z M-76 559H-65V552H-76Z M-77.5 549H-63.5V546H-77.5Z",
+    "M-71.2 552V514H-69.8V552Z",
+  ],
   // Michel: Kirchenschiff, Turmschaft, Glockengeschoss, Haube, Laterne, Spitze
-  "M-60 670V617L-48 609H-22L-10 617V670Z",
-  "M-42 670V590H-28V670Z",
-  "M-40.5 590V576H-29.5V590Z M-42 591h17v-2h-17Z",
-  "M-40.5 576Q-35 563 -29.5 576Z",
-  "M-37 570V562H-33V570Z",
-  "M-36.2 562L-35 548L-33.8 562Z",
+  [
+    "M-60 670V617L-48 609H-22L-10 617V670Z",
+    "M-42 670V590H-28V670Z",
+    "M-40.5 590V576H-29.5V590Z M-42 591h17v-2h-17Z",
+    "M-40.5 576Q-35 563 -29.5 576Z",
+    "M-37 570V562H-33V570Z",
+    "M-36.2 562L-35 548L-33.8 562Z",
+  ],
   // Elbphilharmonie: Backstein-Speicher, darauf der Glasbau mit Wellendach
-  "M-12 670V606H96V670Z",
-  "M-12 606V588Q-8 580 -2 571Q8 586 22 581Q32 572 44 574Q56 586 68 583Q78 578 86 584Q92 586 96 592V606Z",
+  [
+    "M-12 670V606H96V670Z",
+    "M-12 606V588Q-8 580 -2 571Q8 586 22 581Q32 572 44 574Q56 586 68 583Q78 578 86 584Q92 586 96 592V606Z",
+  ],
 ];
 
 /* Fenster, die nachts leuchten: Glasbau der Elbphilharmonie, Speicher,
@@ -244,6 +257,107 @@ const SCHILD_ABSTAND = 16;
 const SCHILD_UNTEN = 406;
 const pct = (v: number) => `${(v * 100).toFixed(3)}%`;
 
+/** Rumpf mit Ladung und Ladeplätzen, dazu der (unsichtbare) Dunst-
+ *  schleier fürs Einlaufen. Die voll beladene Kopie fürs Auslaufen legt
+ *  hero-buehne.tsx erst im Browser an (Klon), damit sie das erste HTML
+ *  nicht schwerer macht. */
+function Schiff({ geladen }: { geladen: number }) {
+  return (
+    <g data-kb="schiff">
+      <path d={RUMPF} fill="#1B1D1E" />
+      <rect x="114" y="584" width="452" height="6" fill="#26292B" />
+      <path d="M118 630H562L560 640H120Z" fill="#A8382A" />
+      <text
+        x="340"
+        y="612"
+        textAnchor="middle"
+        fill="#EEEEEB"
+        fontSize="12.5"
+        letterSpacing="3.5"
+        style={{ fontFamily: "var(--font-brand-sans)", fontStretch: "125%", fontWeight: 760 }}
+      >
+        SITALO
+      </text>
+      <text
+        x="340"
+        y="624"
+        textAnchor="middle"
+        fill="#EEEEEB"
+        fillOpacity=".72"
+        fontSize="7"
+        letterSpacing="2.4"
+        style={{ fontFamily: "var(--font-brand-mono)" }}
+      >
+        HAMBURG
+      </text>
+      {CARGO.map((b) => (
+        <Box key={b.key} x={b.x} y={b.y} c={b.c} />
+      ))}
+      {LADEPLAETZE.map((x, k) => (
+        <Box
+          key={x}
+          x={x}
+          y={PLATZ_OBEN}
+          c={LADUNG[k]}
+          kb="platz"
+          className={s.platz}
+          hidden={k >= geladen}
+          marke={k === 0}
+        />
+      ))}
+      <path className={s.wahrzeichen} data-kb="dunst" d={dunstUmriss(false)} opacity="0" visibility="hidden" />
+    </g>
+  );
+}
+
+/** Gebrochene Spiegelung von Rumpf und Ladung, bewegt sich mit dem Schiff. */
+function SchiffSpiegel() {
+  return (
+    <g data-kb="schiff" fill="none">
+      {REFLECTION.map(([y, dash, op, sw], i) => (
+        <line
+          key={y}
+          x1="122"
+          y1={y}
+          x2="558"
+          y2={y}
+          stroke="#1B1D1E"
+          strokeDasharray={dash}
+          strokeOpacity={op}
+          strokeWidth={sw}
+          strokeDashoffset={i * 9}
+        />
+      ))}
+      {LADUNG_SPIEGEL.map((r) => (
+        <line
+          key={r.key}
+          x1={r.x}
+          y1={r.y}
+          x2={r.x + r.w}
+          y2={r.y}
+          stroke={r.c}
+          strokeOpacity={r.o}
+          strokeWidth="2"
+          strokeDasharray={r.dash}
+          strokeDashoffset={r.off}
+        />
+      ))}
+    </g>
+  );
+}
+
+/** Hecklicht und Decksleuchten (nur abends und nachts sichtbar). */
+function SchiffLichter() {
+  return (
+    <g data-kb="schiff">
+      <circle cx="340" cy="586" r="9" fill="url(#kb-schein)" />
+      <circle cx="340" cy="586" r="1.8" fill="#FFFFFF" />
+      <circle cx="150" cy="584" r="1.3" fill="#FFE7B8" />
+      <circle cx="530" cy="584" r="1.3" fill="#FFE7B8" />
+    </g>
+  );
+}
+
 type BoxProps = {
   x: number;
   y: number;
@@ -290,20 +404,24 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
       <svg className={s.szene} viewBox="-160 0 960 760" preserveAspectRatio="xMaxYMax meet" focusable="false">
         <defs>
           <clipPath id="kb-wasser">
-            <rect x="-1800" y="641" width="2390" height="160" />
+            <rect data-kb="ufer" x="-1800" y="641" width="2390" height="180" />
           </clipPath>
         </defs>
 
         {/* Stadt im Dunst (Parallax: fern) */}
         <g data-kb="fern">
-          <path className={s.dach} d={ROOFS} />
-          <g className={s.wahrzeichen}>
-            {LANDMARKS.map((d) => (
-              <path key={d} d={d} />
-            ))}
-          </g>
-          {/* Glasfuge der Elbphilharmonie über dem Speicher */}
-          <path d="M-12 606H96" stroke="#EEEEEB" strokeOpacity=".7" strokeWidth="1.2" />
+          <path className={`${s.dach} ${s.stadt}`} d={ROOFS} />
+          {LANDMARKS.map((gruppe, a) => (
+            <g key={gruppe[0]} className={`${s.wahrzeichen} ${s.stadt}`} style={{ "--a": a } as CSSProperties}>
+              {gruppe.map((d) => (
+                <path key={d} d={d} />
+              ))}
+              {/* Glasfuge der Elbphilharmonie über dem Speicher */}
+              {a === LANDMARKS.length - 1 ? (
+                <path d="M-12 606H96" stroke="#EEEEEB" strokeOpacity=".7" strokeWidth="1.2" />
+              ) : null}
+            </g>
+          ))}
 
           {/* Hafenfähre (Linie 72/62): legt an der Elbphilharmonie ab,
               hält an den Landungsbrücken, läuft weiter nach Westen. */}
@@ -321,50 +439,8 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
 
         {/* Elbe und Schiff, mit dem Pegel gehoben oder gesenkt */}
         <g transform={lift}>
-          {/* Schiff, Heckansicht */}
-          <g data-kb="schiff">
-            <path d="M110 590H570L563 630Q556 652 520 660H160Q124 652 117 630Z" fill="#1B1D1E" />
-            <rect x="114" y="584" width="452" height="6" fill="#26292B" />
-            <path d="M118 630H562L560 640H120Z" fill="#A8382A" />
-            <text
-              x="340"
-              y="612"
-              textAnchor="middle"
-              fill="#EEEEEB"
-              fontSize="12.5"
-              letterSpacing="3.5"
-              style={{ fontFamily: "var(--font-brand-sans)", fontStretch: "125%", fontWeight: 760 }}
-            >
-              SITALO
-            </text>
-            <text
-              x="340"
-              y="624"
-              textAnchor="middle"
-              fill="#EEEEEB"
-              fillOpacity=".72"
-              fontSize="7"
-              letterSpacing="2.4"
-              style={{ fontFamily: "var(--font-brand-mono)" }}
-            >
-              HAMBURG
-            </text>
-            {CARGO.map((b) => (
-              <Box key={b.key} x={b.x} y={b.y} c={b.c} />
-            ))}
-            {LADEPLAETZE.map((x, k) => (
-              <Box
-                key={x}
-                x={x}
-                y={PLATZ_OBEN}
-                c={LADUNG[k]}
-                kb="platz"
-                className={s.platz}
-                hidden={k >= st.geladen}
-                marke={k === 0}
-              />
-            ))}
-          </g>
+          {/* Schiff am Kai, Heckansicht */}
+          <Schiff geladen={st.geladen} />
 
           {/* Schlepper, nur beim Ab- und Anlegen längsseits */}
           <g data-kb="schlepper" className={s.schlepper} transform={`translate(52 ${SKY_LINE})`} opacity="0" visibility="hidden">
@@ -378,43 +454,26 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
             <path d="M-23 -22V-31M-26 -28H-20" stroke="#26292B" strokeWidth=".9" />
           </g>
 
-          {/* Wasser */}
-          <rect className={s.wasser} x="-1800" y={SKY_LINE} width="2400" height="160" />
-
-          {/* Spiegelung von Rumpf und Ladung, bewegt sich mit dem Schiff */}
-          <g data-kb="schiff" fill="none">
-            {REFLECTION.map(([y, dash, op, sw], i) => (
-              <line
-                key={y}
-                x1="122"
-                y1={y}
-                x2="558"
-                y2={y}
-                stroke="#1B1D1E"
-                strokeDasharray={dash}
-                strokeOpacity={op}
-                strokeWidth={sw}
-                strokeDashoffset={i * 9}
-              />
-            ))}
-            {LADUNG_SPIEGEL.map((r) => (
-              <line
-                key={r.key}
-                x1={r.x}
-                y1={r.y}
-                x2={r.x + r.w}
-                y2={r.y}
-                stroke={r.c}
-                strokeOpacity={r.o}
-                strokeWidth="2"
-                strokeDasharray={r.dash}
-                strokeDashoffset={r.off}
-              />
-            ))}
+          {/* Wasser mit Horizontlinie. Die Kante geht beim Scrollen mit der
+              fernen Stadt mit (hero-buehne.tsx), damit nichts darunter
+              abtaucht. */}
+          <g data-kb="ufer">
+            <rect className={s.wasser} x="-1800" y={SKY_LINE} width="2400" height="180" />
+            <line
+              className={s.horizont}
+              x1="-1800"
+              y1="640.5"
+              x2="590"
+              y2="640.5"
+              stroke="#1B1D1E"
+              strokeOpacity=".38"
+            />
           </g>
 
+          <SchiffSpiegel />
+
           {/* Vordergrund-Wasser (Parallax: nah) */}
-          <g clipPath="url(#kb-wasser)">
+          <g clipPath="url(#kb-wasser)" className={s.wellen}>
             <g data-kb="nah">
               <g fill="none" stroke="#1B1D1E">
                 {WAVES.map((w) => (
@@ -454,7 +513,6 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
               </g>
             </g>
           </g>
-          <line x1="-1800" y1="640.5" x2="590" y2="640.5" stroke="#1B1D1E" strokeOpacity=".38" />
         </g>
 
         {/* Kai: Spundwand mit Fugen, Fender, Poller */}
@@ -553,7 +611,7 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
             <stop offset="1" stopColor="#FFE7B8" stopOpacity="0" />
           </radialGradient>
         </defs>
-        <g data-kb="fern">
+        <g data-kb="fern" className={s.fernLicht}>
           <g fill="#FFD48A">
             {FENSTER_PFADE.map((g) => (
               <path
@@ -570,13 +628,7 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
           <circle cx="-70.5" cy="548" r="1" fill="#FF4A3A" />
         </g>
         <g transform={lift}>
-          <g data-kb="schiff">
-            {/* Hecklicht und Decksleuchten */}
-            <circle cx="340" cy="586" r="9" fill="url(#kb-schein)" />
-            <circle cx="340" cy="586" r="1.8" fill="#FFFFFF" />
-            <circle cx="150" cy="584" r="1.3" fill="#FFE7B8" />
-            <circle cx="530" cy="584" r="1.3" fill="#FFE7B8" />
-          </g>
+          <SchiffLichter />
         </g>
         {/* Flutlicht unter dem Ausleger auf das Schiff und den Kai */}
         <g className={s.flut}>
@@ -609,7 +661,15 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
             }}
           >
             <span className={s.schildNr}>
-              SITALO {sch.serie}
+              SITALO{" "}
+              <span className={s.maske} aria-hidden="true">
+                {sch.serie.split("").map((z, i) => (
+                  <span key={i} className={s.ziffer} style={{ "--z": i } as CSSProperties}>
+                    {z}
+                  </span>
+                ))}
+              </span>
+              <span className="sr-only">{sch.serie}</span>
             </span>
             <span className={s.schildText}>{sch.text}</span>
           </p>

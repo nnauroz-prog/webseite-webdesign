@@ -1,6 +1,7 @@
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 import s from "./lotse.module.css";
+import { Steigend } from "./steigend";
 
 /**
  * „Was Sie tun, was wir tun“ im Bild des Hamburger Hafenlotsen: Der
@@ -84,7 +85,7 @@ export function Lotse() {
             data-reveal="rise"
             className="mt-5 text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
           >
-            Was Sie tun, was wir tun
+            <Steigend text="Was Sie tun, was wir tun" />
           </h2>
         </div>
         <p

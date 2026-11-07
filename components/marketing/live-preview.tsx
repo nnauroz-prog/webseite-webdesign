@@ -255,7 +255,7 @@ export function LivePreview() {
           autoComplete="organization"
           className="border-input bg-background focus-visible:border-foreground mt-2 h-11 w-full rounded-[2px] border px-4 text-[15px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/40"
         />
-        <div role="radiogroup" aria-label="Branche" className="mt-3 flex flex-wrap gap-1.5">
+        <div role="radiogroup" aria-label="Branche" className="mt-3 flex flex-wrap gap-2">
           {PRESETS.map((p) => {
             const active = p.key === presetKey;
             return (
@@ -265,10 +265,10 @@ export function LivePreview() {
                 role="radio"
                 aria-checked={active}
                 onClick={() => setPresetKey(p.key)}
-                className={`h-8 shrink-0 rounded-[2px] border px-3.5 text-[13px] font-medium transition-colors ${
+                className={`lp-chip h-11 shrink-0 rounded-[2px] border px-4 text-[14px] font-medium sm:h-9 ${
                   active
                     ? "bg-foreground text-background border-foreground"
-                    : "border-border text-foreground/75 hover:border-foreground/40"
+                    : "border-border text-foreground/80 hover:border-foreground/40"
                 }`}
               >
                 {p.chip}

@@ -11,13 +11,19 @@
   --art-w: 100%;
   position: relative;
   overflow: hidden;
+  /* Der Verlauf beginnt hinter dem durchsichtigen Header (h-16), damit
+     dort keine Farbkante zur Grundfläche entsteht. Der Header liegt als
+     sticky z-40 darüber. */
+  margin-top: -4rem;
+  padding-top: 4rem;
   background: linear-gradient(180deg, #f4f4f1 0%, var(--background) 60%);
 }
 
 @media (min-width: 1024px) {
   .hero {
     --art-w: min(1040px, 60vw, calc((100svh - 4rem) * 1.24));
-    min-height: min(max(680px, calc(100svh - 4rem)), 940px);
+    /* + 4rem: der Bereich hinter dem Header zählt jetzt mit */
+    min-height: calc(min(max(680px, calc(100svh - 4rem)), 940px) + 4rem);
   }
 }
 
@@ -40,21 +46,60 @@
   display: inline-block;
 }
 
+/* Orange Quadrat: sitzt auf der Versalhöhe der ersten Zeile. */
+.quadrat {
+  display: inline-block;
+  flex-shrink: 0;
+  /* Kantenlänge = Versalhöhe der IBM Plex Mono (0,7 em), Oberkante auf
+     der Versalhöhe der ersten Zeile, Unterkante auf der Grundlinie:
+     halber Durchschuss + (Oberlänge − Versalhöhe). */
+  width: 0.7em;
+  height: 0.7em;
+  margin-top: 5.1px;
+  background: var(--gold);
+  transform-origin: 0 100%;
+}
+
+/* Einstieg, eine Hand, ein Takt: Quadrat (0 ms) → Mono-Zeile (60 ms) →
+   Wörter der Botschaft (ab 120 ms) → Absatz und Knöpfe. Läuft ohne JS
+   genauso und endet immer im sichtbaren Zustand. */
 @media (prefers-reduced-motion: no-preference) {
+  .quadrat {
+    animation: quadrat-auf var(--t-kurz) var(--ease-aus) both;
+  }
+  .hTitel {
+    animation: zeile-auf var(--t-mittel) var(--ease-wechsel) 60ms both;
+  }
   .wortIn {
-    animation: wort-auf 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(40ms + var(--i, 0) * 65ms);
+    animation: wort-auf var(--t-lang) var(--ease-aus) both;
+    animation-delay: calc(120ms + var(--i, 0) * 65ms);
   }
   .folgt {
-    animation: folgt 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: folgt var(--t-lang) var(--ease-aus) both;
     animation-delay: var(--d, 480ms);
   }
   /* Die Unterzeile ist das größte Textelement im ersten Bildschirm. Sie
      steht sofort da (kein Ausblenden), damit der Browser sie gleich malt
      (LCP); sie setzt sich nur mit einer kurzen Bewegung. */
   .folgtText {
-    animation: folgt-text 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: folgt-text var(--t-lang) var(--ease-aus) both;
     animation-delay: var(--d, 380ms);
+  }
+}
+@keyframes quadrat-auf {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes zeile-auf {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
   }
 }
 @keyframes folgt-text {
@@ -76,7 +121,7 @@
 @keyframes folgt {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -89,11 +134,16 @@
 .art {
   position: relative;
   width: var(--art-w);
-  margin-top: 0.5rem;
+  /* Über der Kranspitze liegt nur Himmel (82 von 760 Einheiten); die
+     Zeichnung darf deshalb ein Stück unter die Knopfzeile rücken. */
+  margin-top: -1.25rem;
 }
 @media (min-width: 640px) {
   .art {
     margin-top: 1.5rem;
+  }
+  .quadrat {
+    margin-top: 5.85px;
   }
 }
 .art svg {
@@ -153,7 +203,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 2.4s ease;
+  transition: opacity 2.4s var(--ease-wechsel);
 }
 .lichtMorgen {
   background:
@@ -181,7 +231,7 @@
 .dach,
 .wahrzeichen,
 .wasser {
-  transition: fill 2.4s ease;
+  transition: fill 2.4s var(--ease-wechsel);
 }
 .hero[data-licht="morgen"] .dach {
   fill: #d8cfcc;
@@ -219,7 +269,7 @@
 .hero[data-licht="abend"] .lichter,
 .hero[data-licht="nacht"] .lichter {
   visibility: visible;
-  animation: licht-an 1.8s ease both;
+  animation: licht-an 1.8s var(--ease-wechsel) both;
 }
 /* Fenster: Helligkeit je Gruppe aus --o (containerbruecke.tsx). Nachts
    leuchten sie kräftiger, damit Elbphilharmonie und Landungsbrücken
@@ -293,17 +343,22 @@
   }
 }
 
-.schild > span,
+.schild > span {
+  transition:
+    opacity var(--t-kurz) var(--ease-aus),
+    transform var(--t-mittel) var(--ease-aus);
+}
 .schild::after {
   transition:
-    opacity 0.3s ease,
-    transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+    opacity var(--t-kurz) var(--ease-aus),
+    transform var(--t-mittel) var(--ease-wechsel);
 }
 /* Die alte Beschriftung geht zügig, die neue setzt sich danach von oben
    auf ihre Linie, so wie der Container gerade aufgesetzt hat. */
 .schild[data-on="0"] > span,
 .schild[data-on="0"]::after {
-  transition-duration: 0.18s, 0.3s;
+  transition-duration: var(--t-druck), var(--t-kurz);
+  transition-timing-function: var(--ease-ab);
 }
 .schild[data-on="0"] > span {
   opacity: 0;
@@ -326,36 +381,57 @@
 .leader path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.45s ease;
+  transition: stroke-dashoffset var(--t-mittel) var(--ease-wechsel);
 }
 .leader circle {
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--t-kurz) var(--ease-aus);
 }
 .leader[data-on="1"] path {
   stroke-dashoffset: 0;
 }
 .leader[data-on="1"] circle {
   opacity: 1;
-  transition-delay: 0.3s;
+  transition-delay: var(--t-kurz);
+}
+
+/* Containernummer: Präfix steht, die sechs Ziffern rollen beim Absetzen
+   einzeln aus ihrer Maske, wie die Fallblätter der Abfahrtstafel. */
+.maske {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  font-variant-numeric: tabular-nums;
+}
+.ziffer {
+  display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .schild[data-on="0"] .ziffer {
+    transform: translateY(100%);
+  }
+  .schild[data-on="1"] .ziffer {
+    transition: transform 260ms var(--ease-aus);
+    transition-delay: calc(0.26s + var(--z, 0) * 35ms);
+  }
 }
 
 /* ---------- Bildunterschrift mit Pegel ---------- */
 
+/* Am Rechner steht die Bildunterschrift in der Zeichnung, bündig zur
+   Textspalte, 12 px über der Kaikante, ohne eigenen Kasten. Am Handy
+   steht sie unter der Kante (hafen-hero.tsx). */
 .unterschrift {
   position: absolute;
   inset-inline: 0;
-  bottom: 0.5rem;
-  z-index: 3;
+  bottom: calc(var(--kante) + 12px);
+  z-index: 4;
   pointer-events: none;
 }
 .caption {
   display: inline-flex;
   flex-direction: column;
   gap: 1px;
-  max-width: 82%;
-  padding: 3px 8px;
-  background: #d3d6d3;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12px;
   line-height: 1.45;
@@ -366,8 +442,108 @@
   .caption {
     flex-direction: row;
     gap: 0 0.9em;
-    max-width: none;
   }
+}
+
+/* ---------- Kopfende: gezeichnete Kaikante ----------
+   Eine Teer-Spundwand über die volle Breite mit feinen Pollern alle
+   120 Einheiten der Zeichnung (960 Einheiten = --art-w), vom rechten
+   Bildrand aus gezählt, damit sie im Raster des Kais stehen. Sie liegt
+   außerhalb der bewegten Zeichnung und bleibt beim Scrollen stehen;
+   darüber dunkelt das Wasser auf den letzten 28 px leicht ab. */
+.hero {
+  --kante: 9px;
+}
+.kaikante {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 3;
+  height: var(--kante);
+  background: #1b1d1e;
+  box-shadow: inset 0 1px 0 #3a3e40;
+  pointer-events: none;
+}
+.kaikante::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 28px;
+  background: linear-gradient(180deg, rgb(27 29 30 / 0), rgb(27 29 30 / 0.09));
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000);
+  mask-image: linear-gradient(180deg, transparent, #000);
+}
+.kaikante::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    270deg,
+    transparent 0 calc(var(--art-w) * 0.0625 - 3px),
+    #3a3e40 calc(var(--art-w) * 0.0625 - 3px) calc(var(--art-w) * 0.0625 + 3px),
+    transparent calc(var(--art-w) * 0.0625 + 3px) calc(var(--art-w) * 0.125)
+  );
+  /* Unter 1024 px ist --art-w = 100 %: im Verlauf ist das die Breite der
+     Kante, und die ist dort so breit wie die Zeichnung. */
+  background-position: right 0 top 0;
+  clip-path: inset(0 0 0 0 round 1.5px 1.5px 0 0);
+}
+
+/* Nebenlinks: Grundlinie als Hintergrund, darüber läuft beim Zeigen
+   eine Teer-Linie von links ein. Tippfläche 44 px über Polsterung mit
+   negativem Rand, die Optik bleibt dieselbe. */
+.neben {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 11.5px;
+  margin-block: -11.5px;
+  background-image:
+    linear-gradient(var(--foreground), var(--foreground)),
+    linear-gradient(rgb(27 29 30 / 0.18), rgb(27 29 30 / 0.18));
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  background-clip: content-box;
+  background-position:
+    0 100%,
+    0 100%;
+  background-size:
+    0 1px,
+    100% 1px;
+  transition:
+    background-size var(--t-mittel) var(--ease-wechsel),
+    color var(--t-kurz) var(--ease-wechsel);
+}
+.neben:focus-visible {
+  color: var(--foreground);
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .neben:hover {
+    color: var(--foreground);
+    background-size:
+      100% 1px,
+      100% 1px;
+  }
+}
+.neben:active {
+  color: var(--foreground);
+}
+.nebenBlock .neben {
+  /* Im Block am Handy stehen die Links untereinander: dort ist die
+     Zeile selbst 44 px hoch, ohne Überlappung der Tippflächen. */
+  min-height: 44px;
+  margin-block: 0;
+  padding-block: 0;
+  background-origin: padding-box;
+  background-clip: padding-box;
+  background-position:
+    0 calc(50% + 0.8em),
+    0 calc(50% + 0.8em);
 }
 .pegel {
   color: var(--foreground);
@@ -394,7 +570,7 @@
   }
   .funkeln {
     opacity: 0;
-    animation: funkeln ease-in-out infinite;
+    animation: funkeln var(--ease-wechsel) infinite;
   }
   .blink {
     animation: blink 2.6s steps(1) infinite;
@@ -509,6 +685,90 @@
   transform-origin: 0 50%;
 }
 
+/* ---------- Auftakt beim ersten Sichtkontakt ----------
+   data-auftakt am Hero: „warten“ setzt ein kleines Inline-Script schon
+   vor dem ersten Bild (nur mit JS und ohne reduzierte Bewegung), damit
+   nichts erst sichtbar ist und dann verschwindet; „lauert“ nach dem
+   Hydrieren; „an“ beim ersten Sichtkontakt; danach fällt das Attribut
+   weg. Ohne Attribut ist alles sichtbar. Kran, Schiff und Wasserfläche
+   stehen von Anfang an. Es bewegen sich nur transform und opacity. */
+.horizont {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :global(html.js) .hero[data-auftakt] .horizont {
+    transform: scaleX(0);
+  }
+  :global(html.js) .hero[data-auftakt] .stadt {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  :global(html.js) .hero[data-auftakt] :is(.wellen, .fernLicht) {
+    opacity: 0;
+  }
+  :global(html.js) .hero[data-auftakt] :is(.schild, .leader) {
+    opacity: 0;
+  }
+  .schild,
+  .leader {
+    transition: opacity var(--t-mittel) var(--ease-aus);
+  }
+  :global(html.js) .hero[data-auftakt="an"] .horizont {
+    will-change: transform;
+    animation: auftakt-linie var(--t-linie) var(--ease-wechsel) both;
+  }
+  :global(html.js) .hero[data-auftakt="an"] .stadt {
+    will-change: transform, opacity;
+    animation: auftakt-stadt var(--t-lang) var(--ease-aus) both;
+    animation-delay: calc(150ms + var(--a, 0) * 60ms);
+  }
+  :global(html.js) .hero[data-auftakt="an"] .wellen {
+    will-change: opacity;
+    animation: auftakt-blende var(--t-lang) var(--ease-aus) 690ms both;
+  }
+  :global(html.js) .hero[data-auftakt="an"] .fernLicht {
+    animation: auftakt-blende var(--t-lang) var(--ease-aus) 390ms both;
+  }
+  /* Notfall: Kommt das Script nach dem Inline-Teil nie an, steht nach
+     acht Sekunden trotzdem alles da. */
+  :global(html.js) .hero[data-auftakt="warten"] :is(.horizont, .stadt, .wellen, .fernLicht, .schild, .leader) {
+    animation: auftakt-notfall 1ms linear 8s forwards;
+  }
+}
+@keyframes auftakt-linie {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes auftakt-stadt {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes auftakt-blende {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes auftakt-notfall {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ---------- Reduzierte Bewegung: ein ruhiges, vollständiges Bild ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -554,5 +814,17 @@
   }
   .hero[data-licht] .lichter {
     animation: none;
+  }
+}
+
+/* Knopfzeile am Handy: 48 px hoch, schmaler gepolstert, damit beide
+   Knöpfe ab etwa 384 px nebeneinander passen (sonst untereinander). */
+@media (max-width: 639px) {
+  .knoepfe > :global(.btn-signal),
+  .knoepfe > :global(.btn-line) {
+    height: 3rem;
+    padding-inline: 1rem;
+    gap: 0.5rem;
+    font-size: 15px;
   }
 }

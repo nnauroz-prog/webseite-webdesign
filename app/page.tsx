@@ -11,6 +11,7 @@ import { Ladeliste } from "@/components/marketing/hafen/ladeliste";
 import { Lotse } from "@/components/marketing/hafen/lotse";
 import { paketeKurz } from "@/components/marketing/hafen/paket-kurz";
 import { RevealRoot } from "@/components/marketing/hafen/reveal";
+import { Steigend } from "@/components/marketing/hafen/steigend";
 import { VorherNachher as VorherNachherRegler } from "@/components/marketing/hafen/vorher-nachher";
 import { LivePreview } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -166,7 +167,7 @@ function Leistungen() {
   return (
     <section
       id="leistungen"
-      className="spaeter-geladen bg-card border-foreground scroll-mt-20 border-t"
+      className="spaeter-geladen bg-card scroll-mt-20"
       style={spaeter(1600, 970)}
     >
       <div className="mx-auto w-full max-w-6xl px-5 pt-20 pb-12 sm:px-6 sm:pt-28 sm:pb-16">
@@ -174,14 +175,14 @@ function Leistungen() {
           data-reveal="rise"
           className="max-w-4xl text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
         >
-          Was zu Ihrer Website gehört
+          <Steigend text="Was zu Ihrer Website gehört" />
         </h2>
         <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 sm:mt-8">
           <p data-reveal="fade" className="text-muted-foreground max-w-xl text-[17px] leading-relaxed">
             Auf jedem Container steht, ab welchem Paket er mitfährt. Geladen wird nur, was Ihr Betrieb braucht.
           </p>
-          <Link href="/leistungen" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-            Alle Leistungen {ARROW}
+          <Link href="/leistungen" className="link-pfeil text-[15px] font-semibold">
+            Alle <span className="whitespace-nowrap">Leistungen{ARROW}</span>
           </Link>
         </div>
         <div className="mt-16 sm:mt-20 lg:mt-16">
@@ -199,7 +200,7 @@ function Leistungen() {
  * ---------------------------------------------------------------- */
 function Ladehafen() {
   return (
-    <div className="pt-10 sm:pt-14">
+    <div className="pt-8 sm:pt-14">
       <HamburgPanorama tone="dark" />
       <p className="label-mono text-stahl-hell mx-auto -mt-2 w-full max-w-6xl px-5 sm:-mt-4 sm:px-6">
         Ladehafen Hamburg<span className="hidden sm:inline"> · Köhlbrandbrücke bis Speicherstadt</span>
@@ -219,19 +220,18 @@ function LadelisteKopf() {
         data-reveal="rise"
         className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7 lg:text-[3.6rem]"
       >
-        Die Ladeliste für Ihre Branche
+        <Steigend text="Die Ladeliste für Ihre Branche" />
       </h2>
       <div className="max-w-md lg:col-span-4 lg:col-start-9">
         <p data-reveal="fade" className="text-stahl-hell text-[16.5px] leading-relaxed">
           Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will. Wählen Sie Ihre
           Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
         </p>
-        <Link
-          href="/branchen"
-          className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
-        >
-          Alle Branchen im Einzelnen {ARROW}
-        </Link>
+        <p className="mt-4">
+          <Link href="/branchen" className="link-pfeil link-pfeil-dunkel text-[15px] font-semibold">
+            Alle Branchen im <span className="whitespace-nowrap">Einzelnen{ARROW}</span>
+          </Link>
+        </p>
       </div>
     </div>
   );
@@ -246,7 +246,7 @@ function Vorschau() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-4 lg:pt-2">
           <h2 data-reveal="rise" className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
-            Eine erste Skizze mit Ihrem Namen
+            <Steigend text="Eine erste Skizze mit Ihrem Namen" />
           </h2>
           <p data-reveal="fade" className="text-muted-foreground mt-5 text-[16.5px] leading-relaxed">
             Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche. Die Skizze entsteht sofort hier im
@@ -281,7 +281,7 @@ function Ablauf() {
             data-reveal="rise"
             className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7 lg:text-[3.6rem]"
           >
-            Der Weg zur fertigen Seite, kurz gefasst
+            <Steigend text="Der Weg zur fertigen Seite, kurz gefasst" />
           </h2>
           <p data-reveal="fade" className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
             Vom ersten Anruf an sprechen Sie mit uns selbst, auch wenn die Seite längst online ist.
@@ -292,8 +292,8 @@ function Ablauf() {
         </div>
         <div className="border-background/15 text-stahl-hell mt-14 flex flex-col justify-between gap-2 border-t pt-5 font-mono text-[12px] sm:mt-16 sm:flex-row">
           <span>Antwort auf Anrufe und Mails meist am selben Werktag.</span>
-          <Link href="/ablauf" className="hover:text-background underline-offset-4 hover:underline">
-            Ablauf im Detail →
+          <Link href="/ablauf" className="link-pfeil link-pfeil-dunkel link-pfeil-zeile self-start">
+            Ablauf im Detail <span className="pfeil">→</span>
           </Link>
         </div>
       </div>
@@ -313,7 +313,7 @@ function Preise() {
             data-reveal="rise"
             className="text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
           >
-            Festpreis ab {STARTER_PRICE}
+            <Steigend text={`Festpreis ab ${STARTER_PRICE}`} />
           </h2>
           <p data-reveal="fade" className="text-muted-foreground mt-6 text-[16.5px] leading-relaxed">
             Den Preis bekommen Sie schriftlich, bevor wir anfangen. Kommt später etwas dazu, sprechen wir vorher darüber.
@@ -329,16 +329,18 @@ function Preise() {
             <Link href="/anfrage" className="btn-signal">
               Anfrage schreiben {ARROW}
             </Link>
-            <Link href="/pakete" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-              Pakete vergleichen {ARROW}
+            <Link href="/pakete" className="link-pfeil text-[15px] font-semibold">
+              Pakete <span className="whitespace-nowrap">vergleichen{ARROW}</span>
             </Link>
           </div>
-          <Link
-            href="/website-erstellen-lassen"
-            className="text-muted-foreground hover:text-foreground mt-5 inline-flex items-center gap-1.5 text-[14.5px] font-semibold underline-offset-4 hover:underline"
-          >
-            Website erstellen lassen: Preise und Ablauf {ARROW}
-          </Link>
+          <p className="mt-5">
+            <Link
+              href="/website-erstellen-lassen"
+              className="link-pfeil text-muted-foreground hover:text-foreground text-[14.5px] font-semibold"
+            >
+              Website erstellen lassen: Preise und <span className="whitespace-nowrap">Ablauf{ARROW}</span>
+            </Link>
+          </p>
         </div>
         <div className="min-w-0 lg:col-span-8 lg:col-start-5">
           <Abfahrtstafel pakete={PAKETE_KURZ} />
@@ -377,7 +379,7 @@ function VorherNachher() {
             data-reveal="rise"
             className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-6"
           >
-            Dieselben Inhalte, neu gebaut
+            <Steigend text="Dieselben Inhalte, neu gebaut" />
           </h2>
           <p
             data-reveal="fade"
@@ -404,20 +406,20 @@ function Fragen() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4">
           <h2 data-reveal="rise" className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
-            Was vor dem ersten Anruf oft gefragt wird
+            <Steigend text="Was vor dem ersten Anruf oft gefragt wird" />
           </h2>
           <ul className="mt-6 space-y-3">
             <li>
-              <Link href="/faq" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-                Alle Fragen {ARROW}
+              <Link href="/faq" className="link-pfeil text-[15px] font-semibold">
+                Alle <span className="whitespace-nowrap">Fragen{ARROW}</span>
               </Link>
             </li>
             <li>
               <Link
                 href="/webseite-erstellen"
-                className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-[14.5px] font-semibold underline-offset-4 hover:underline"
+                className="link-pfeil text-muted-foreground hover:text-foreground text-[14.5px] font-semibold"
               >
-                Selbst bauen: Webseite erstellen in sieben Schritten {ARROW}
+                Selbst bauen: Webseite erstellen in sieben <span className="whitespace-nowrap">Schritten{ARROW}</span>
               </Link>
             </li>
           </ul>
@@ -435,26 +437,54 @@ function Fragen() {
   );
 }
 
+/** Telefonnummer als Ziffern in Masken (Kontakt-Finale). --n zählt die
+ *  Ziffern, --p ist die Pause zwischen Vorwahl und Rufnummer. */
+const TEL_TEILE = ["0160", "7621876"];
+
+function TelZiffern() {
+  let n = 0;
+  return (
+    <span aria-hidden="true" className="tel-ziffern">
+      {TEL_TEILE.map((teil, t) => (
+        <span key={teil}>
+          {t > 0 ? "\u00A0" : null}
+          {teil.split("").map((z, i) => (
+            <span key={i} className="tel-m">
+              <span style={{ "--n": n++, "--p": t } as CSSProperties}>{z}</span>
+            </span>
+          ))}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 /* ------------------------------------------------------------------
- * Kontakt: Telefonnummer groß, daneben Mail und Anfrage.
+ * Kontakt: Telefonnummer groß, daneben Mail und Anfrage. Die Nummer ist
+ * das Finale der Seite: Beim ersten Sichtkontakt steigen die Ziffern aus
+ * ihren Masken, darunter zeichnet sich eine orange Linie (app/hafen.css,
+ * Block „Reveal“, data-reveal="tel").
  * ---------------------------------------------------------------- */
 function Kontakt() {
   return (
     <section id="kontakt" className="spaeter grain bg-foreground text-background scroll-mt-20" style={spaeter(740, 744)}>
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-20 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-7">
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-20 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-7 lg:flex lg:flex-col lg:justify-between">
           <h2
             data-reveal="rise"
-            className="text-stahl-hell text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]"
+            className="text-background/80 text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]"
           >
-            Am schnellsten geht es am Telefon.
+            <Steigend text="Am schnellsten geht es am Telefon." />
           </h2>
           <a
             href="tel:+491607621876"
-            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4.2rem] lg:text-[4.4rem] xl:text-[4.9rem]"
+            aria-label="0160 7621876"
+            data-reveal="tel"
+            className="tel-finale mt-5 inline-block self-start text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap sm:text-[4.2rem] lg:mt-10 lg:text-[4.4rem] xl:text-[4.9rem]"
             style={{ fontStretch: "118%", fontWeight: 780 }}
           >
-            0160&nbsp;7621876
+            <TelZiffern />
+            <span className="tel-linie" aria-hidden="true" />
           </a>
         </div>
         <div className="lg:col-span-4 lg:col-start-9">
@@ -462,10 +492,7 @@ function Kontakt() {
             Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und den Termin. Wer lieber schreibt,
             erreicht uns per Mail oder über das Anfrageformular. Die Antwort kommt meist am selben Werktag.
           </p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="border-gold mt-6 inline-block border-b-[1.5px] pb-0.5 text-[19px] font-semibold"
-          >
+          <a href={`mailto:${CONTACT_EMAIL}`} className="mail-link mt-6 inline-block text-[19px] font-semibold">
             {CONTACT_EMAIL}
           </a>
           <div className="mt-8">

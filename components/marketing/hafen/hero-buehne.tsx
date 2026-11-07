@@ -6,25 +6,32 @@
  * - Ladebetrieb: spielt die Zeitleiste aus hero-zeitleiste.ts ab. Ein
  *   requestAnimationFrame-Takt, Zustand in Variablen, Transforms direkt
  *   auf die SVG-Gruppen (data-kb-Haken). Kein React-Render pro Frame.
- * - Startet, sobald die Zeichnung zur Hälfte sichtbar ist (auf dem Handy
- *   also beim Hinscrollen), und läuft nur, solange sie sichtbar ist und
- *   der Tab im Vordergrund liegt.
+ * - Startet, sobald die Zeichnung zu 12 % sichtbar ist oder ihre Ober-
+ *   kante über 90 % der Fensterhöhe liegt (am iPhone mit Safari-Leisten
+ *   also schon im ersten Bild), und läuft nur, solange sie sichtbar ist
+ *   und der Tab im Vordergrund liegt.
+ * - Auftakt: beim ersten Sichtkontakt einmal data-auftakt="an" (Linie,
+ *   Stadt, Wellen; hero.module.css). Den Wartezustand setzt schon ein
+ *   Inline-Script in hafen-hero.tsx vor dem ersten Bild.
  * - Seile pendeln: gedämpftes Pendel, angetrieben von der Beschleunigung
  *   der Katze, Pendellänge aus der Seillänge; vor dem Absetzen geführt.
- * - Tiefe: Stadt langsamer, Vordergrund-Wasser schneller, Textspalte
- *   schiebt sich hoch und wird blasser (nur breite Fenster). Mit Maus
- *   verschieben sich die Ebenen um wenige Einheiten, weich nachgeführt.
+ * - Tiefe: Die Zeichnung scrollt als Ganzes etwas langsamer, darin die
+ *   Stadt (mit Wasserkante und Horizont) noch etwas langsamer und das
+ *   Vordergrund-Wasser schneller; relativ höchstens 13 Einheiten, damit
+ *   nichts unter die Wasserkante taucht. Textspalte schiebt sich hoch und
+ *   wird blasser (nur breite Fenster). Mit Maus verschieben sich die
+ *   Ebenen um wenige Einheiten, weich nachgeführt.
  * - Licht nach dem Sonnenstand über Hamburg (hero-licht.ts), Vorschau
  *   mit ?licht=morgen|tag|abend|nacht.
  * - prefers-reduced-motion: nichts davon läuft (außer dem Licht), das
  *   CSS zeigt ein vollständiges Standbild.
  * - Sparsam: Der Takt läuft nur, solange es etwas zu bewegen gibt (Lade-
- *   betrieb gestartet, Scrollen, Zeiger). Auf Touch-Geräten genügen
- *   30 Bilder pro Sekunde; die Bewegungen sind langsam, und jedes Bild
- *   malt das ganze Szenen-SVG neu. Dort laufen auch die CSS-Dauer-
- *   animationen der Zeichnung (Wellen, Reflexe, Fähre) im selben Takt:
- *   Sie werden pausiert und hier weitergestellt, sonst malten sie die
- *   Szene in den übersprungenen Bildern doch wieder neu.
+ *   betrieb gestartet, Scrollen, Zeiger). Volle Bildrate, solange Katze,
+ *   Haken, Pendel, Schiffe oder Schlepper sich bewegen; in Ruhephasen,
+ *   in denen nur Wellen laufen, 30 Bilder pro Sekunde. Auf Touch-Geräten
+ *   laufen die CSS-Daueranimationen der Zeichnung (Wellen, Reflexe,
+ *   Fähre) im selben Takt: Sie werden pausiert und hier weitergestellt,
+ *   sonst malten sie die Szene in den übersprungenen Bildern neu.
  */
 
 import { useEffect, useRef, type ReactNode } from "react";
@@ -36,7 +43,9 @@ import {
   LADUNG,
   PLATZ_OBEN,
   SEIL_OBEN,
+  abfahrtLage,
   dunkel,
+  dunstUmriss,
   schiffLage,
   zyklus,
   type Zustand,
@@ -48,16 +57,20 @@ export function HeroBuehne({ id, className, children }: { id?: string; className
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
+    document.documentElement.classList.add("js");
+    const auftakt = auftaktVorbereiten(root);
     const stopLicht = lichtStarten(root);
-    const stopMotor = motorStarten(root);
+    const stopMotor = motorStarten(root, auftakt.starten);
     return () => {
       stopLicht();
       stopMotor();
+      auftakt.stop();
     };
   }, []);
 
+  // data-auftakt setzt ein Inline-Script vor dem Hydrieren (hafen-hero.tsx).
   return (
-    <section ref={ref} id={id} className={className}>
+    <section ref={ref} id={id} className={className} suppressHydrationWarning>
       {children}
     </section>
   );
@@ -84,6 +97,40 @@ function lichtStarten(root: HTMLElement) {
 
 /* ------------------------------------------------------------------ */
 
+/** Ab hier (ms seit Seitenbeginn) darf der Auftakt frühestens beginnen:
+ *  nach dem Wortauftritt der Botschaft, nicht gleichzeitig. */
+const AUFTAKT_FRUEHESTENS = 900;
+/** Dauer des Auftakts bis zur letzten Bewegung (Wellen: 690 + 760 ms). */
+const AUFTAKT_DAUER = 1500;
+
+function auftaktVorbereiten(root: HTMLElement) {
+  const timer: number[] = [];
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Ohne Wartezustand vom Inline-Script (z. B. nach einem Seitenwechsel
+  // im Browser) gibt es keinen Auftakt: dann steht alles schon da.
+  if (!root.hasAttribute("data-auftakt") || reduce) root.removeAttribute("data-auftakt");
+  else root.setAttribute("data-auftakt", "lauert");
+  let gestartet = false;
+  const starten = () => {
+    if (gestartet || root.getAttribute("data-auftakt") !== "lauert") return;
+    gestartet = true;
+    const verzug = Math.max(0, AUFTAKT_FRUEHESTENS - performance.now());
+    timer.push(
+      window.setTimeout(() => {
+        root.setAttribute("data-auftakt", "an");
+        timer.push(window.setTimeout(() => root.removeAttribute("data-auftakt"), AUFTAKT_DAUER + 60));
+      }, verzug),
+    );
+  };
+  const stop = () => {
+    timer.forEach((t) => window.clearTimeout(t));
+    root.removeAttribute("data-auftakt");
+  };
+  return { starten, stop };
+}
+
+/* ------------------------------------------------------------------ */
+
 /** Grad pro Bogenmaß */
 const GRAD = 180 / Math.PI;
 /** Meter pro Zeichnungseinheit (ein Container ist 2,44 m breit = 46 Einheiten). */
@@ -96,7 +143,7 @@ const DAEMPFUNG_STAND = 0.5;
 /** Auf den letzten Einheiten vor dem Absetzen wird die Last geführt. */
 const FUEHRUNG = 50;
 
-function motorStarten(root: HTMLElement) {
+function motorStarten(root: HTMLElement, ersterBlick: () => void) {
   const art = root.querySelector<HTMLElement>('[data-kb="art"]');
   if (!art) return () => {};
 
@@ -104,7 +151,33 @@ function motorStarten(root: HTMLElement) {
   const eins = (k: string) => root.querySelector<SVGElement>(`[data-kb="${k}"]`);
 
   const hub = Number(art.dataset.hub) || 0;
-  const z = zyklus(hub);
+  // Am Handy läuft das nächste Schiff früher ein (hero-zeitleiste.ts).
+  const z = zyklus(hub, window.matchMedia("(max-width: 639px)").matches ? 0.4 : 0.6);
+
+  // Voll beladene Kopie des Schiffs fürs Auslaufen: erst hier geklont
+  // (Rumpf, Spiegelung, Lichter), jeweils direkt hinter dem Original, also
+  // davor im Bild. Bei reduzierter Bewegung gibt es kein Auslaufen.
+  const kopien: Element[] = [];
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    for (const g of alle("schiff")) {
+      const k = g.cloneNode(true) as SVGElement;
+      k.setAttribute("data-kb", "abfahrt");
+      k.setAttribute("visibility", "hidden");
+      k.removeAttribute("transform");
+      k.removeAttribute("opacity");
+      k.querySelectorAll('[data-kb="platz"]').forEach((p) => {
+        p.removeAttribute("data-kb");
+        p.removeAttribute("visibility");
+      });
+      const d = k.querySelector('[data-kb="dunst"]');
+      if (d) {
+        d.setAttribute("data-kb", "dunst-ab");
+        d.setAttribute("d", dunstUmriss(true));
+      }
+      g.after(k);
+      kopien.push(k);
+    }
+  }
 
   const el = {
     katze: alle("katze"),
@@ -116,6 +189,10 @@ function motorStarten(root: HTMLElement) {
     kaiR: eins("kai-r"),
     kaiL: eins("kai-l"),
     schiff: alle("schiff"),
+    abfahrt: alle("abfahrt"),
+    dunst: eins("dunst"),
+    dunstAb: eins("dunst-ab"),
+    ufer: alle("ufer"),
     schlepper: eins("schlepper"),
     leine: eins("leine"),
     fern: alle("fern"),
@@ -208,27 +285,48 @@ function motorStarten(root: HTMLElement) {
     faerben(el.kaiR, st.kai[0]);
     faerben(el.kaiL, st.kai[1]);
 
+    // Schiff am Kai (läuft nach dem Wechsel aus dem Dunst ein)
     const lage = schiffLage(st.quer, st.ferne);
     const op = lage.deckkraft > 0.999 ? "" : lage.deckkraft.toFixed(3);
+    const weg = lage.deckkraft < 0.004;
     for (const g of el.schiff) {
       setze(g, "transform", lage.transform);
       setze(g, "opacity", op);
+      setze(g, "visibility", weg ? "hidden" : "");
     }
+    setze(el.dunst, "visibility", lage.dunst < 0.004 ? "hidden" : "visible");
+    setze(el.dunst, "opacity", lage.dunst.toFixed(3));
+    // Voll beladene Kopie, die quer über das Bild ausläuft
+    const ab = abfahrtLage(st.ab);
+    const abWeg = !st.abSicht || ab.deckkraft < 0.004;
+    for (const g of el.abfahrt) {
+      setze(g, "visibility", abWeg ? "hidden" : "visible");
+      if (abWeg) continue;
+      setze(g, "transform", ab.transform);
+      setze(g, "opacity", ab.deckkraft > 0.999 ? "" : ab.deckkraft.toFixed(3));
+    }
+    setze(el.dunstAb, "visibility", abWeg || ab.dunst < 0.004 ? "hidden" : "visible");
+    setze(el.dunstAb, "opacity", ab.dunst.toFixed(3));
     setze(el.leine, "stroke-dashoffset", (1 - st.leine).toFixed(3));
     setze(el.leine, "visibility", st.leine < 0.01 ? "hidden" : "visible");
 
     const sch = st.schlepper;
     setze(el.schlepper, "visibility", sch < 0.01 ? "hidden" : "visible");
     setze(el.schlepper, "opacity", sch.toFixed(3));
-    setze(el.schlepper, "transform", `translate(${(114 + st.quer - (1 - sch) * 70).toFixed(2)} 640)`);
+    setze(el.schlepper, "transform", `translate(${(114 + st.schlepperX - (1 - sch) * 70).toFixed(2)} 640)`);
 
-    el.schilder.forEach((s, k) => setze(s, "data-on", k === st.schild ? "1" : "0"));
-    el.leader.forEach((s, k) => setze(s, "data-on", k === st.schild ? "1" : "0"));
+    // Während des Auftakts steht noch keine Beschriftung; danach setzt
+    // sich die, die gerade gilt.
+    const schild = root.hasAttribute("data-auftakt") ? -1 : st.schild;
+    el.schilder.forEach((s, k) => setze(s, "data-on", k === schild ? "1" : "0"));
+    el.leader.forEach((s, k) => setze(s, "data-on", k === schild ? "1" : "0"));
 
     if (ohneBewegung) {
       for (const f of el.fern) setze(f, "transform", "");
+      for (const u of el.ufer) setze(u, "transform", "");
       setze(el.nah, "transform", "");
       setzeStil(el.copy, "", "");
+      setzeStil(art, "", "");
     }
   };
 
@@ -255,14 +353,22 @@ function motorStarten(root: HTMLElement) {
     }
     zx += (zielX - zx) * 0.06;
     zy += (zielY - zy) * 0.06;
+    // Relativ zueinander höchstens 8 + 5 = 13 Einheiten. Wasserkante und
+    // Horizont gehen mit der Stadt (nur senkrecht), damit Landungs-
+    // brücken und Dächer nie unter die Kante tauchen.
     const fernX = -zx * 6;
-    const fernY = o * 34 - zy * 2.5;
+    const fernY = o * 8 - zy * 2.5;
     const nahX = zx * 9;
-    const nahY = -o * 22 + zy * 1.5;
+    const nahY = -o * 5 + zy * 1.5;
     const fT = Math.abs(fernX) + Math.abs(fernY) < 0.01 ? "" : `translate(${fernX.toFixed(2)} ${fernY.toFixed(2)})`;
     for (const f of el.fern) setze(f, "transform", fT);
+    const uT = Math.abs(fernY) < 0.01 ? "" : `translate(0 ${fernY.toFixed(2)})`;
+    for (const u of el.ufer) setze(u, "transform", uT);
     setze(el.nah, "transform", Math.abs(nahX) + Math.abs(nahY) < 0.01 ? "" : `translate(${nahX.toFixed(2)} ${nahY.toFixed(2)})`);
     setzeStil(el.copy, copyT, copyO);
+    // Die ganze Zeichnung bleibt beim Scrollen etwas zurück (Tiefe). Die
+    // Kaikante liegt außerhalb und steht.
+    setzeStil(art, o > 0.0005 ? `translate3d(0, ${(o * 18).toFixed(1)}px, 0)` : "", "");
   };
 
   /* Gedämpftes Pendel, angetrieben von der Katzbeschleunigung. Kurz vor
@@ -297,12 +403,14 @@ function motorStarten(root: HTMLElement) {
   /** Gibt es im nächsten Bild etwas zu tun? */
   const gebraucht = () => gestartet || tiefeOffen || !zeigerRuhig() || css.length > 0;
 
-  // Touch-Geräte: das nächste Bild erst nach einer Pause anfordern (30 fps,
-  // auch bei 120 Hz). Ein angefordertes, aber übersprungenes Bild würde
-  // den Browser trotzdem einen ganzen Durchlauf bis zum Malen machen lassen.
+  // Ruhephase (nur Wellen): das nächste Bild erst nach einer Pause
+  // anfordern (30 fps, auch bei 120 Hz). Ein angefordertes, aber
+  // übersprungenes Bild würde den Browser trotzdem einen ganzen Durchlauf
+  // bis zum Malen machen lassen. Bewegt sich etwas, volle Bildrate.
   let pause = 0;
+  let bewegt = true;
   const planen = () => {
-    if (!grob.matches) {
+    if (bewegt) {
       raf = window.requestAnimationFrame(takt);
       return;
     }
@@ -327,12 +435,34 @@ function motorStarten(root: HTMLElement) {
       if (verzug > 0) verzug -= dt;
       else zeit += dt;
     }
+    const tiefeLief = tiefeOffen || !zeigerRuhig();
     tiefe();
     const st = z.zustand(zeit);
     pendeln(dt, st);
     anwenden(st);
     cssWeiter(dt);
+    bewegt = tiefeLief || bewegtSich(st, dt);
     if (gebraucht()) planen();
+  };
+
+  /** Bewegt sich in der Szene gerade etwas außer den Wellen? */
+  let vorige: Zustand | null = null;
+  const bewegtSich = (st: Zustand, dt: number) => {
+    const v = vorige;
+    vorige = st;
+    if (!v || !gestartet) return true;
+    const t = Math.max(dt, 1e-3);
+    return (
+      Math.abs(st.katze - v.katze) / t > 1 ||
+      Math.abs(st.haken - v.haken) / t > 1 ||
+      Math.abs(drehung) > 0.002 ||
+      Math.abs(winkel * frei) > 0.0004 ||
+      st.quer !== v.quer ||
+      st.ferne !== v.ferne ||
+      st.ab !== v.ab ||
+      st.schlepper !== v.schlepper ||
+      st.leine !== v.leine
+    );
   };
 
   /** Takt anwerfen, falls er gerade ruht und etwas zu tun ist. */
@@ -353,15 +483,22 @@ function motorStarten(root: HTMLElement) {
     }
   };
 
+  // Unten 10 % Rand: Was unter der Safari-Leiste klebt, zählt nicht.
+  // Start ab 12 % Sichtbarkeit oder sobald die Oberkante über 90 % der
+  // Fensterhöhe steht; Pause, sobald nichts mehr zu sehen ist.
   const io = new IntersectionObserver(
     (eintraege) => {
       for (const e of eintraege) {
-        sichtbar = e.isIntersecting;
-        if (!gestartet && e.intersectionRatio >= 0.45) gestartet = true;
+        sichtbar = e.isIntersecting && e.intersectionRatio > 0;
+        const oben = e.boundingClientRect.top < window.innerHeight * 0.9;
+        if (sichtbar && (e.intersectionRatio >= 0.12 || oben)) {
+          if (!gestartet) gestartet = true;
+          ersterBlick();
+        }
       }
       steuern();
     },
-    { threshold: [0, 0.25, 0.45, 0.7, 1] },
+    { rootMargin: "0px 0px -10% 0px", threshold: [0, 0.12] },
   );
   io.observe(art);
 
@@ -423,5 +560,7 @@ function motorStarten(root: HTMLElement) {
     ro?.disconnect();
     anhalten();
     root.removeAttribute("data-kb-pause");
+    setzeStil(art, "", "");
+    kopien.forEach((k) => k.remove());
   };
 }
