@@ -74,28 +74,23 @@ function FlaggeH() {
 
 export function Lotse() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
-      <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-6">
-          <p className="label-mono text-muted-foreground flex items-center gap-3">
-            <FlaggeH />
-            Flagge H · Lotse an Bord
-          </p>
-          <h2
-            data-reveal="rise"
-            className="mt-5 text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
-          >
-            <Steigend text="Was Sie tun, was wir tun" />
-          </h2>
-        </div>
-        <p
-          data-reveal="fade"
-          className="text-muted-foreground max-w-xl text-[16.5px] leading-relaxed lg:col-span-5 lg:col-start-8"
-        >
-          Im Hamburger Hafen bringt der Lotse das Schiff an den Liegeplatz, das Kommando behält der Kapitän. So teilen
-          wir die Arbeit an Ihrer Website: Sie entscheiden, wir übernehmen den Rest.
+    <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+      <div className="buehne-kopf buehne-mitte">
+        <p className="label-mono text-muted-foreground flex items-center justify-center gap-3">
+          <FlaggeH />
+          Flagge H · Lotse an Bord
+        </p>
+        <h2 data-reveal="rise" className="buehne-titel mt-5">
+          <Steigend text="Was Sie tun, was wir tun" />
+        </h2>
+        <p data-reveal="fade" className="buehne-unter">
+          Im Hamburger Hafen bringt der Lotse das Schiff an den Liegeplatz, das Kommando behält der Kapitän.
         </p>
       </div>
+      {/* Erklärung zur Aufteilung direkt über den beiden Spalten. */}
+      <p data-reveal="fade" className="text-muted-foreground mx-auto mb-10 max-w-[38em] text-center text-[17px] leading-relaxed lg:mb-14">
+        So teilen wir die Arbeit an Ihrer Website: Sie entscheiden, wir übernehmen den Rest.
+      </p>
 
       <div className={s.split}>
         <div className={s.col}>

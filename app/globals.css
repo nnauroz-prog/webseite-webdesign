@@ -66,6 +66,89 @@ html {
   --t-mittel: 450ms;
   --t-lang: 760ms;
   --t-linie: 900ms;
+
+  /* Höhe der Kopfzeile, an allen Breiten gleich. Bezug für klebende
+     Elemente (Ablauf-Szene, Kopf der Vergleichstabelle) und Anker. */
+  --kopf-h: 64px;
+}
+
+/* ==================================================================
+   Laden-Linie: ruhige Präsentation wie in einem guten Laden. Milchglas
+   für Kopfzeile und Leisten, ein ruhiger Knopf ohne Wischer für Stellen,
+   an denen viele Knöpfe nebeneinander stehen (Kacheln, Tabellenkopf,
+   Leiste). backdrop-filter wird nie animiert, nur zugeschaltet. Deckung
+   0,84: Auch über Teer bleibt das Glas hell genug, dass Schrift ab
+   text-foreground/80 AA hält (gerechnet ≈ 6 : 1); text-muted-foreground
+   gehört deshalb nicht auf Glas. Ohne Unterstützung oder bei reduzierter
+   Transparenz deckt das Glas fast ganz (0,96).
+   ================================================================== */
+@layer components {
+  .kopf-glas {
+    background-color: rgb(238 238 235 / 0.84);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: inset 0 -1px 0 rgb(27 29 30 / 0.08);
+  }
+  /* Mobiles Vollbild-Menü: dunkles Glas, etwas dichter. */
+  /* 0,9 statt 0,82: Über hellem Kopf hielt der Mono-Nebentext
+     (--stahl-hell) sonst keine 4,5 : 1. */
+  .menue-glas {
+    background-color: rgb(27 29 30 / 0.9);
+    -webkit-backdrop-filter: saturate(140%) blur(24px);
+    backdrop-filter: saturate(140%) blur(24px);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .kopf-glas {
+      background-color: rgb(238 238 235 / 0.96);
+    }
+    .menue-glas {
+      background-color: rgb(27 29 30 / 0.97);
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .kopf-glas {
+      background-color: rgb(238 238 235 / 0.96);
+    }
+    .menue-glas {
+      background-color: rgb(27 29 30 / 0.97);
+    }
+  }
+
+  /* Burger und Schließen-X aus zwei Strichen: zu, zwei Linien 6 px
+     auseinander; offen, ein X. Nur transform bewegt sich. */
+  .burger {
+    position: relative;
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+  .burger > i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1.5px;
+    margin-top: -0.75px;
+    background: currentColor;
+    transition: transform var(--t-kurz) var(--ease-wechsel);
+  }
+  .burger > i:first-child {
+    transform: translateY(-3px);
+  }
+  .burger > i:last-child {
+    transform: translateY(3px);
+  }
+  .burger[data-offen="true"] > i:first-child {
+    transform: rotate(45deg);
+  }
+  .burger[data-offen="true"] > i:last-child {
+    transform: rotate(-45deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .burger > i {
+      transition: none;
+    }
+  }
 }
 
 @theme inline {
@@ -1499,6 +1582,55 @@ h3:not(.label-mono) {
   cursor: not-allowed;
   opacity: 0.55;
 }
+
+/* Ruhiger Knopf (Laden-Linie): ohne Wischer, etwas kleiner. Für Kacheln,
+   Tabellenköpfe und Leisten, wo mehrere Knöpfe nebeneinander stehen.
+   Den Wischer behalten die großen Knöpfe in Hero und Kontakt. */
+.btn-signal.btn-ruhig,
+.btn-line.btn-ruhig {
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  font-size: 15px;
+  font-weight: 620;
+  transition:
+    background-color var(--t-kurz) var(--ease-wechsel),
+    color var(--t-kurz) var(--ease-wechsel),
+    border-color var(--t-kurz) var(--ease-wechsel),
+    transform var(--t-druck) var(--ease-aus);
+}
+.btn-signal.btn-ruhig::before,
+.btn-line.btn-ruhig::before {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .btn-signal.btn-ruhig,
+  .btn-line.btn-ruhig {
+    height: 3rem;
+  }
+}
+@media (hover: hover) {
+  .btn-signal.btn-ruhig:not(:disabled, [aria-disabled="true"]):hover {
+    background-color: #ff6d33;
+    border-color: transparent;
+    color: var(--foreground);
+    transition-delay: 0s;
+  }
+  .btn-line.btn-ruhig:not(:disabled, [aria-disabled="true"]):hover {
+    background-color: var(--btn-fill);
+    border-color: var(--btn-fill);
+    color: var(--btn-on-fill);
+    transition-delay: 0s;
+  }
+}
+.btn-ruhig:focus-visible {
+  transition-delay: 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-signal.btn-ruhig,
+  .btn-line.btn-ruhig {
+    transition: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .btn-signal::before,
   .btn-line::before,
@@ -2141,12 +2273,16 @@ body:has([data-admin]) {
    --ease-aus, die Deckkraft schon in den ersten 140 ms; raus: 220 ms
    mit --ease-ab. Bei reduzierter Bewegung nur eine kurze Blende.
    ------------------------------------------------------------------ */
+/* Mobile Anfrage-Leiste: Milchglas (.kopf-glas) mit Haarlinie oben
+   statt unten. Fährt von unten ein (--t-mittel, --ease-aus) und kurz
+   wieder hinaus (--t-kurz, --ease-ab). */
 .cta-leiste {
+  box-shadow: inset 0 1px 0 rgb(27 29 30 / 0.08);
   opacity: 0;
-  transform: translateY(calc(100% + 16px));
+  transform: translateY(100%);
   transition:
-    transform 220ms var(--ease-ab),
-    opacity 220ms var(--ease-ab);
+    transform var(--t-kurz) var(--ease-ab),
+    opacity var(--t-kurz) var(--ease-ab);
 }
 .cta-leiste[data-sichtbar="true"] {
   opacity: 1;

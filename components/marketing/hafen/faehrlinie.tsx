@@ -17,7 +17,17 @@ import { imBildBeimStart, useLaufzeit } from "@/components/marketing/hafen/revea
  *
  * Ohne Script und bei reduzierter Bewegung ist die Linie voll gezeichnet,
  * alle Halte sind erreicht und die Fähre liegt am Endhalt.
+ *
+ * Scroll-Szene (nur am Rechner, ab 1024 × 820, ohne reduzierte Bewegung):
+ * Steht die Linie in einer .ablauf-spur (app/page.tsx), bleibt die Bühne
+ * dort per CSS stehen (app/hafen.css, Block „Ablauf-Szene“). Der
+ * Fortschritt kommt dann aus dem Scrollweg durch die Spur; die Halte
+ * schalten nacheinander, sobald die Linie sie erreicht; die Texte stehen
+ * voll lesbar und rücken nur nach (data-szene an der Linie). Kein eigener
+ * Listener: dieselbe rAF-Schleife rechnet nur anders.
  */
+
+const SZENE = "(min-width: 1024px) and (min-height: 820px) and (prefers-reduced-motion: no-preference)";
 
 const HALTE = [
   {
@@ -59,6 +69,12 @@ export function Faehrlinie() {
     if (!el) return;
     const stops = Array.from(el.querySelectorAll<HTMLElement>(".stop"));
     const vertical = window.matchMedia("(max-width: 767px)");
+    const szene = window.matchMedia(SZENE);
+    const spur = el.closest<HTMLElement>(".ablauf-spur");
+    const html = document.documentElement;
+    const kopfH = parseFloat(getComputedStyle(html).getPropertyValue("--kopf-h")) || 64;
+    // Die Szene klebt per CSS nur unter html.js-reveal (RevealRoot).
+    const inSzene = () => !!spur && szene.matches && html.classList.contains("js-reveal");
 
     // Lage der Halte auf der Linie (Mitte des Kreises), relativ zur Linie.
     let marks: number[] = [];
@@ -91,8 +107,12 @@ export function Faehrlinie() {
     const reached = stops.map(() => false);
 
     const progress = () => {
-      const r = el.getBoundingClientRect();
       const vh = window.innerHeight;
+      if (spur && inSzene()) {
+        const r = spur.getBoundingClientRect();
+        return Math.max(0, Math.min(1, (kopfH - r.top) / Math.max(1, r.height - vh + kopfH)));
+      }
+      const r = el.getBoundingClientRect();
       if (vertical.matches) {
         // Die Füllung folgt einer Lesekante bei 62 % der Bildhöhe.
         return Math.max(0, Math.min(1, (vh * 0.62 - r.top - 6) / length));
@@ -113,8 +133,15 @@ export function Faehrlinie() {
       el.style.setProperty("--p", p.toFixed(4));
       el.style.setProperty("--v", v.toFixed(3));
 
+      const imSzene = inSzene();
+      if (imSzene !== ("szene" in el.dataset)) {
+        if (imSzene) el.dataset.szene = "";
+        else delete el.dataset.szene;
+      }
       const fill = p * length;
       stops.forEach((s, i) => {
+        // Auch in der Szene schaltet ein Halt, wenn die Linie ihn erreicht:
+        // So legt die Fähre genau dort an, wo der Text aufgeht.
         const now = fill >= marks[i];
         if (now === reached[i]) return;
         reached[i] = now;
@@ -142,15 +169,18 @@ export function Faehrlinie() {
       window.addEventListener("scroll", schedule, { passive: true });
       window.addEventListener("resize", onResize, { passive: true });
       vertical.addEventListener("change", onResize);
+      szene.addEventListener("change", onResize);
     });
     return () => {
       abbrechen();
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", onResize);
       vertical.removeEventListener("change", onResize);
+      szene.removeEventListener("change", onResize);
       if (frame) cancelAnimationFrame(frame);
       kick.current = () => {};
       delete el.dataset.armed;
+      delete el.dataset.szene;
       el.style.removeProperty("--line-bottom");
       stops.forEach((s) => delete s.dataset.reached);
     };

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
@@ -51,9 +51,10 @@ const MOBILE_NAV: NavItem[] = [
  * Sitalo is positioned as a done-for-you agency, not a self-service
  * SaaS portal. Existing customers reach /login by direct URL.
  *
- * Sticky header with a subtle scroll-triggered shadow + intensified
- * backdrop blur once the user starts scrolling — keeps the bar quiet
- * at the top of the page and gives it presence over content below.
+ * Klebende Kopfzeile: oben auf der Seite ruhig (transparent bzw. auf
+ * Teer), nach 80 px Scrollweg aus hellem Milchglas mit dünner Haarlinie
+ * (.kopf-glas, app/globals.css, Block „Laden-Linie“), auch auf Seiten
+ * mit dunklem Hero. Die Linie ist ein box-shadow, die Höhe bleibt 64 px.
  */
 export function MarketingHeader({
   nav = DEFAULT_NAV,
@@ -68,6 +69,9 @@ export function MarketingHeader({
   tone?: "light" | "dark";
 }) {
   const [scrolled, setScrolled] = useState(false);
+  // Dunkle Seiten: Ungescrollt steht der Kopf auf Teer mit hellem Logo.
+  // Nach dem Hero wird er zu hellem Milchglas mit dunklem Logo, denn
+  // darunter folgen helle Abschnitte; dunkles Glas darüber würde grau.
   const onDark = tone === "dark" && !scrolled;
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -109,19 +113,19 @@ export function MarketingHeader({
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 transition-[background-color,border-color] duration-300 print:hidden",
+          "sticky top-0 z-40 transition-[background-color,box-shadow] duration-[var(--t-mittel)] ease-[var(--ease-wechsel)] motion-reduce:transition-none print:hidden",
           scrolled
-            ? "border-border border-b bg-background"
+            ? "kopf-glas"
             : onDark
-              ? "bg-foreground border-b border-transparent"
-              : "border-transparent border-b bg-transparent",
+              ? "bg-foreground"
+              : "bg-transparent",
           className,
         )}
       >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:px-6">
         <Link
           href="/"
-          className="shrink-0"
+          className="flex min-h-11 shrink-0 items-center"
           onClick={() => setMenuOpen(false)}
         >
           <SitaloLogo size="md" hideTaglineOnMobile tone={onDark ? "light" : "dark"} />
@@ -187,11 +191,7 @@ export function MarketingHeader({
               onDark ? "border-background/40 text-background hover:bg-background/10" : "border-foreground/70 bg-transparent hover:bg-secondary",
             )}
           >
-            {menuOpen ? (
-              <X className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <Menu className="h-4 w-4" aria-hidden="true" />
-            )}
+            <Burger offen={menuOpen} />
           </button>
         </div>
       </div>
@@ -211,10 +211,25 @@ export function MarketingHeader({
   );
 }
 
+/** Zwei Striche, die zum X werden (.burger, app/globals.css). */
+function Burger({ offen }: { offen: boolean }) {
+  return (
+    <span className="burger" data-offen={offen} aria-hidden="true">
+      <i />
+      <i />
+    </span>
+  );
+}
+
+const KONTAKT_KNOPF =
+  "border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-11 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors";
+
 /**
- * Editorial-Vollbild-Menü auf Mobile. Inspiriert von hochwertigen
- * Praxis-/Studio-Sites: dunkle Take-over-Fläche, große ruhige Nav-
- * Items, kein Card-Lärm. Kommt von oben mit kurzem Fade.
+ * Vollbild-Menü auf dem Handy: dunkles Milchglas (.menue-glas), oben
+ * dieselbe Zeile wie die Kopfzeile (64 px, Logo links, X genau auf dem
+ * Burger), darunter große ruhige Einträge mit Haarlinien. Die Einträge
+ * kommen gestaffelt von oben (opacity, transform), beim Schließen gehen
+ * sie ohne Staffel. Bei reduzierter Bewegung nur eine kurze Blende.
  */
 function MobileFullscreenMenu({
   open,
@@ -232,34 +247,34 @@ function MobileFullscreenMenu({
       aria-hidden={!open}
       inert={!open}
       className={cn(
-        "bg-foreground text-background fixed inset-0 z-[60] flex flex-col transition-all duration-300 ease-out lg:hidden print:hidden",
+        "menue-glas text-background fixed inset-0 z-[60] flex flex-col transition-[opacity,visibility] lg:hidden print:hidden motion-reduce:duration-150",
         open
-          ? "pointer-events-auto opacity-100"
-          : "pointer-events-none opacity-0",
+          ? "visible opacity-100 duration-[var(--t-mittel)] ease-[var(--ease-aus)]"
+          : "pointer-events-none invisible opacity-0 duration-[var(--t-kurz)] ease-[var(--ease-ab)]",
       )}
       style={{
-        paddingTop: "max(env(safe-area-inset-top, 0px), 1rem)",
+        paddingTop: "env(safe-area-inset-top, 0px)",
         paddingBottom: "max(env(safe-area-inset-bottom, 0px), 1rem)",
       }}
     >
-      {/* Header-Zeile innerhalb des Menüs: Wordmark links, X rechts */}
-      <div className="flex items-center justify-between px-6 pt-4">
-        <SitaloLogo size="sm" tone="light" />
+      {/* Gleiche Geometrie wie die Kopfzeile: nichts springt beim Öffnen. */}
+      <div className="flex h-16 shrink-0 items-center justify-between gap-3 px-5 sm:px-6">
+        <SitaloLogo size="md" hideTaglineOnMobile tone="light" />
         <button
           type="button"
           onClick={onClose}
           aria-label="Menü schließen"
-          className="border-background/30 text-background hover:bg-background/10 inline-flex h-10 w-10 items-center justify-center rounded-[2px] border transition-colors"
+          className="border-background/40 text-background hover:bg-background/10 relative inline-flex h-9 w-9 items-center justify-center rounded-[2px] border transition-colors after:absolute after:-inset-1"
         >
-          <X className="h-5 w-5" aria-hidden="true" />
+          <Burger offen={open} />
         </button>
       </div>
 
-      {/* Hauptnavigation — scrollbar wenn der Viewport zu klein ist.
-          min-h-0 ist wichtig, sonst kann die flex-1 Fläche nicht
-          unter die Höhe ihres Inhalts schrumpfen → kein Scroll. */}
+      {/* Hauptnavigation, scrollbar wenn der Viewport zu klein ist.
+          min-h-0 lässt die flex-1 Fläche unter ihre Inhaltshöhe
+          schrumpfen; overscroll-contain hält das Scrollen im Menü. */}
       <nav
-        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-6 py-4 sm:gap-2 sm:py-6"
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-5 pt-4 pb-6 sm:px-6"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         {MOBILE_NAV.map((item, i) => (
@@ -268,51 +283,33 @@ function MobileFullscreenMenu({
             href={item.href}
             onClick={onClose}
             className={cn(
-              "text-background block shrink-0 py-2 text-[1.85rem] font-bold tracking-[-0.025em] [font-stretch:112%] transition-opacity sm:text-4xl",
+              "border-background/10 text-background flex min-h-12 shrink-0 items-center border-b py-2 text-[1.75rem] font-bold tracking-[-0.025em] [font-stretch:112%] transition-[opacity,transform] motion-reduce:transform-none motion-reduce:transition-none sm:text-4xl",
               open
-                ? "translate-y-0 opacity-100"
-                : "translate-y-3 opacity-0",
+                ? "translate-y-0 opacity-100 duration-[var(--t-mittel)] ease-[var(--ease-aus)]"
+                : "-translate-y-2 opacity-0 duration-[var(--t-kurz)] ease-[var(--ease-ab)]",
             )}
-            style={{
-              transitionDuration: "500ms",
-              transitionDelay: open ? `${100 + i * 60}ms` : "0ms",
-              transitionProperty: "opacity, transform",
-            }}
+            style={{ transitionDelay: open ? `${Math.min(40 * i, 240)}ms` : "0ms" }}
           >
             {item.label}
           </Link>
         ))}
       </nav>
 
-      {/* Footer-Zeile mit primärem CTA + Kontakt-Mini-Block */}
-      <div className="space-y-6 border-t border-white/10 px-6 pt-6 pb-4">
-        <Link
-          href="/anfrage"
-          onClick={onClose}
-          className="btn-signal w-full"
-        >
+      {/* Fußzeile mit Hauptaktion und Kontakt */}
+      <div className="border-background/10 space-y-6 border-t px-5 pt-6 pb-4 sm:px-6">
+        <Link href="/anfrage" onClick={onClose} className="btn-signal w-full">
           Website anfragen
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap gap-2.5">
-            <a
-              href="tel:+491607621876"
-              className="border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors"
-            >
+            <a href="tel:+491607621876" className={KONTAKT_KNOPF}>
               Anrufen
             </a>
-            <a
-              href="mailto:info@sitalo.de"
-              className="border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors"
-            >
+            <a href="mailto:info@sitalo.de" className={KONTAKT_KNOPF}>
               Schreiben
             </a>
-            <a
-              href="/sitalo-kontakt.vcf"
-              download="Sitalo-Webdesign.vcf"
-              className="border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-10 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors"
-            >
+            <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className={KONTAKT_KNOPF}>
               Speichern
             </a>
           </div>

@@ -9,6 +9,7 @@ import { Faehrlinie } from "@/components/marketing/hafen/faehrlinie";
 import { HafenHero } from "@/components/marketing/hafen/hafen-hero";
 import { Ladeliste } from "@/components/marketing/hafen/ladeliste";
 import { Lotse } from "@/components/marketing/hafen/lotse";
+import { PaketKacheln } from "@/components/marketing/hafen/paket-kacheln";
 import { paketeKurz } from "@/components/marketing/hafen/paket-kurz";
 import { RevealRoot } from "@/components/marketing/hafen/reveal";
 import { Steigend } from "@/components/marketing/hafen/steigend";
@@ -111,6 +112,16 @@ const PAKETE_KURZ = paketeKurz();
  *  8. Vorher/Nachher: Beleg für die Qualität.
  *  9. Fragen: letzte Zweifel. 10. Kontakt mit Skyline.
  * Hell und dunkel wechseln sich ab, jeder Abschnitt ist anders gebaut.
+ * Helle Abschnitte trennen sich nur über den Flächenwechsel Elbnebel ↔
+ * Karte, ohne Haarlinien. Jeder Kopf ist eine große Aussage
+ * (.buehne-titel) mit einem vorhandenen Satz in Grau darunter
+ * (.buehne-unter), Abstände über .buehne-abschnitt und .buehne-kopf
+ * (app/hafen.css, Block „Bühne“). Regel für die Köpfe: helle
+ * Präsentations-Abschnitte zentriert (Leistungen, Lotse, Vorschau,
+ * Preise, Vorher/Nachher), dunkle Hafen-Abschnitte linksbündig und am
+ * Rechner zweispaltig (Ladeliste, Ablauf), Fragen und Kontakt in der
+ * kleinen Stufe linksbündig. Ein Kopf hat zwei Stufen; weiterer
+ * Fließtext steht beim Inhalt.
  * Eine einzige Wellenkante (Leistungen → Ladeliste) markiert den
  * Übergang aufs Wasser; die übrigen Kanten sind gerade. RevealRoot
  * blendet alle data-reveal-Elemente beim Scrollen ein (API in
@@ -124,7 +135,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
       />
       <MarketingHeader />
-      <main id="main" tabIndex={-1} className="flex-1">
+      <main id="main" tabIndex={-1} className="buehne flex-1">
         <RevealRoot />
         <HafenHero />
         <Leistungen />
@@ -134,9 +145,9 @@ export default function HomePage() {
           head={<LadelisteKopf />}
           pakete={PAKETE_KURZ}
           className="spaeter-geladen"
-          style={spaeter(2400, 1600)}
+          style={spaeter(2830, 2080)}
         />
-        <section id="lotse" className="spaeter-geladen bg-card scroll-mt-20" style={spaeter(1800, 1130)}>
+        <section id="lotse" className="spaeter-geladen buehne-abschnitt scroll-mt-20" style={spaeter(1950, 1420)}>
           <Lotse />
         </section>
         <Ablauf />
@@ -154,8 +165,9 @@ export default function HomePage() {
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 /** Startgröße für .spaeter und .spaeter-geladen (app/hafen.css): Höhe in
- *  px schmal / ab 1024 px. Gemessen bei 390 bis 1440 px; bei
- *  Textänderungen grob nachziehen. */
+ *  px schmal / ab 1024 px. Gemessen bei 390, 1024 und 1440 px; bei
+ *  Textänderungen grob nachziehen. Die Ablauf-Szene setzt ihre Höhe am
+ *  Rechner selbst (app/hafen.css, Block „Ablauf-Szene“). */
 function spaeter(h: number, hLg: number) {
   return { "--spaeter-h": `${h}px`, "--spaeter-h-lg": `${hLg}px` } as CSSProperties;
 }
@@ -167,25 +179,24 @@ function Leistungen() {
   return (
     <section
       id="leistungen"
-      className="spaeter-geladen bg-card scroll-mt-20"
-      style={spaeter(1600, 970)}
+      className="spaeter-geladen buehne-abschnitt bg-card scroll-mt-20"
+      style={spaeter(1905, 1320)}
     >
-      <div className="mx-auto w-full max-w-6xl px-5 pt-20 pb-12 sm:px-6 sm:pt-28 sm:pb-16">
-        <h2
-          data-reveal="rise"
-          className="max-w-4xl text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
-        >
-          <Steigend text="Was zu Ihrer Website gehört" />
-        </h2>
-        <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 sm:mt-8">
-          <p data-reveal="fade" className="text-muted-foreground max-w-xl text-[17px] leading-relaxed">
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+        <div className="buehne-kopf buehne-mitte">
+          <h2 data-reveal="rise" className="buehne-titel">
+            <Steigend text="Was zu Ihrer Website gehört" />
+          </h2>
+          <p data-reveal="fade" className="buehne-unter">
             Auf jedem Container steht, ab welchem Paket er mitfährt. Geladen wird nur, was Ihr Betrieb braucht.
           </p>
-          <Link href="/leistungen" className="link-pfeil text-[15px] font-semibold">
-            Alle <span className="whitespace-nowrap">Leistungen{ARROW}</span>
-          </Link>
+          <p className="mt-5">
+            <Link href="/leistungen" className="link-pfeil text-[15px] font-semibold">
+              Alle <span className="whitespace-nowrap">Leistungen{ARROW}</span>
+            </Link>
+          </p>
         </div>
-        <div className="mt-16 sm:mt-20 lg:mt-16">
+        <div>
           <ContainerStack />
         </div>
       </div>
@@ -215,25 +226,27 @@ function Ladehafen() {
  * ---------------------------------------------------------------- */
 function LadelisteKopf() {
   return (
-    <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-      <h2
-        data-reveal="rise"
-        className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7 lg:text-[3.6rem]"
-      >
-        <Steigend text="Die Ladeliste für Ihre Branche" />
-      </h2>
-      <div className="max-w-md lg:col-span-4 lg:col-start-9">
-        <p data-reveal="fade" className="text-stahl-hell text-[16.5px] leading-relaxed">
-          Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will. Wählen Sie Ihre
-          Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
-        </p>
-        <p className="mt-4">
-          <Link href="/branchen" className="link-pfeil link-pfeil-dunkel text-[15px] font-semibold">
-            Alle Branchen im <span className="whitespace-nowrap">Einzelnen{ARROW}</span>
-          </Link>
-        </p>
+    <>
+      <div className="buehne-kopf buehne-kopf-zweispaltig">
+        <h2 data-reveal="rise" className="buehne-titel">
+          <Steigend text="Die Ladeliste für Ihre Branche" />
+        </h2>
+        <div>
+          <p data-reveal="fade" className="buehne-unter text-stahl-hell">
+            Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will.
+          </p>
+          <p className="mt-5">
+            <Link href="/branchen" className="link-pfeil link-pfeil-dunkel text-[15px] font-semibold">
+              Alle Branchen im <span className="whitespace-nowrap">Einzelnen{ARROW}</span>
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+      {/* Die Anleitung gehört zum Werkzeug und steht direkt darüber. */}
+      <p data-reveal="fade" className="text-stahl-hell mb-8 max-w-[38em] text-[17px] leading-relaxed lg:mb-10">
+        Wählen Sie Ihre Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
+      </p>
+    </>
   );
 }
 
@@ -242,23 +255,26 @@ function LadelisteKopf() {
  * ---------------------------------------------------------------- */
 function Vorschau() {
   return (
-    <section id="vorschau" className="spaeter-geladen scroll-mt-20" style={spaeter(1050, 900)}>
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-4 lg:pt-2">
-          <h2 data-reveal="rise" className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+    <section id="vorschau" className="spaeter-geladen buehne-abschnitt scroll-mt-20" style={spaeter(1200, 1600)}>
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+        <div className="buehne-kopf buehne-mitte">
+          <h2 data-reveal="rise" className="buehne-titel">
             <Steigend text="Eine erste Skizze mit Ihrem Namen" />
           </h2>
-          <p data-reveal="fade" className="text-muted-foreground mt-5 text-[16.5px] leading-relaxed">
-            Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche. Die Skizze entsteht sofort hier im
-            Browser, gespeichert wird nichts.
+          <p data-reveal="fade" className="buehne-unter">
+            Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche.
           </p>
-          <p data-reveal="fade" className="text-muted-foreground mt-4 text-[15px] leading-relaxed">
+        </div>
+        {/* Das Gerät fährt beim Hinscrollen auf die Bühne (.buehne-einzug). */}
+        <div className="buehne-einzug mx-auto max-w-5xl min-w-0">
+          <LivePreview />
+        </div>
+        <div className="text-muted-foreground mx-auto mt-10 grid max-w-5xl gap-4 text-[17px] leading-relaxed md:mt-12 md:grid-cols-2 md:gap-8">
+          <p data-reveal="fade">Die Skizze entsteht sofort hier im Browser, gespeichert wird nichts.</p>
+          <p data-reveal="fade">
             Gefällt Ihnen die Richtung, schicken Sie die Skizze als Anfrage. Die echte Seite entwerfen wir danach mit
             Ihren Fotos und Texten.
           </p>
-        </div>
-        <div className="min-w-0 lg:col-span-8">
-          <LivePreview />
         </div>
       </div>
     </section>
@@ -272,29 +288,35 @@ function Ablauf() {
   return (
     <section
       id="ablauf"
-      className="spaeter-geladen grain bg-foreground text-background scroll-mt-20"
-      style={spaeter(1200, 820)}
+      className="ablauf-spur spaeter-geladen buehne-abschnitt bg-foreground text-background scroll-mt-16"
+      style={spaeter(1320, 1040)}
     >
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
-          <h2
-            data-reveal="rise"
-            className="text-balance text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:col-span-7 lg:text-[3.6rem]"
-          >
-            <Steigend text="Der Weg zur fertigen Seite, kurz gefasst" />
-          </h2>
-          <p data-reveal="fade" className="text-stahl-hell max-w-md text-[17px] leading-relaxed lg:col-span-4 lg:col-start-9">
-            Vom ersten Anruf an sprechen Sie mit uns selbst, auch wenn die Seite längst online ist.
-          </p>
-        </div>
-        <div className="mt-14 sm:mt-20">
-          <Faehrlinie />
-        </div>
-        <div className="border-background/15 text-stahl-hell mt-14 flex flex-col justify-between gap-2 border-t pt-5 font-mono text-[12px] sm:mt-16 sm:flex-row">
-          <span>Antwort auf Anrufe und Mails meist am selben Werktag.</span>
-          <Link href="/ablauf" className="link-pfeil link-pfeil-dunkel link-pfeil-zeile self-start">
-            Ablauf im Detail <span className="pfeil">→</span>
-          </Link>
+      {/* Die eine Scroll-Szene der Seite: Am Rechner bleibt die Bühne
+          stehen, während die Fähre die Halte abfährt (app/hafen.css,
+          Block „Ablauf-Szene“; Fortschritt in faehrlinie.tsx). Mobil, auf
+          niedrigen Fenstern, ohne Script und bei reduzierter Bewegung
+          ein normaler Abschnitt. */}
+      <div className="ablauf-buehne">
+        <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+          <div className="buehne-kopf buehne-kopf-zweispaltig">
+            <h2 data-reveal="rise" className="buehne-titel">
+              <Steigend text="Der Weg zur fertigen Seite, kurz gefasst" />
+            </h2>
+            <div>
+              <p data-reveal="fade" className="buehne-unter">
+                Vom ersten Anruf an sprechen Sie mit uns selbst, auch wenn die Seite längst online ist.
+              </p>
+            </div>
+          </div>
+          <div>
+            <Faehrlinie />
+          </div>
+          <div className="ablauf-fuss border-background/15 text-stahl-hell mt-14 flex flex-col justify-between gap-2 border-t pt-5 font-mono text-[12px] sm:mt-16 sm:flex-row">
+            <span>Antwort auf Anrufe und Mails meist am selben Werktag.</span>
+            <Link href="/ablauf" className="link-pfeil link-pfeil-dunkel link-pfeil-zeile self-start">
+              Ablauf im Detail <span className="pfeil">→</span>
+            </Link>
+          </div>
         </div>
       </div>
     </section>
@@ -306,61 +328,74 @@ function Ablauf() {
  * ---------------------------------------------------------------- */
 function Preise() {
   return (
-    <section id="preise" className="spaeter-geladen border-border scroll-mt-20 border-t" style={spaeter(1100, 700)}>
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
-          <h2
-            data-reveal="rise"
-            className="text-[2.4rem] leading-[0.98] tracking-[-0.034em] sm:text-6xl lg:text-[3.6rem]"
-          >
+    <section
+      id="preise"
+      className="spaeter-geladen buehne-abschnitt bg-card scroll-mt-20"
+      style={spaeter(2950, 1900)}
+    >
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+        <div className="buehne-kopf buehne-mitte">
+          <h2 data-reveal="rise" className="buehne-titel">
             <Steigend text={`Festpreis ab ${STARTER_PRICE}`} />
           </h2>
-          <p data-reveal="fade" className="text-muted-foreground mt-6 text-[16.5px] leading-relaxed">
-            Den Preis bekommen Sie schriftlich, bevor wir anfangen. Kommt später etwas dazu, sprechen wir vorher darüber.
+          <p data-reveal="fade" className="buehne-unter">
+            Den Preis bekommen Sie schriftlich, bevor wir anfangen.
           </p>
-          <p data-reveal="fade" className="text-muted-foreground mt-4 text-[16.5px] leading-relaxed">
-            Welches Paket passt, klären wir im ersten Telefonat. Für die meisten Betriebe empfehlen wir Business; die{" "}
+        </div>
+        <PaketKacheln flaeche="bg-background" />
+
+        {/* Hafen-Akzent: die Abfahrtstafel als schmales Band, nur Linie,
+            Name und Preis. Die Sätze stehen schon auf den Kacheln. */}
+        <div className="mx-auto mt-12 max-w-2xl min-w-0 lg:mt-16">
+          <Abfahrtstafel pakete={PAKETE_KURZ} schmal />
+        </div>
+
+        {/* Abschluss zentriert: ein Absatz, darunter Knopf und Link als
+            Paar, das Kleingedruckte zuletzt. */}
+        <div className="mx-auto mt-14 max-w-[40em] text-center lg:mt-20">
+          <p data-reveal="fade" className="text-muted-foreground text-[17px] leading-relaxed text-pretty">
+            Kommt später etwas dazu, sprechen wir vorher darüber. Welches Paket passt, klären wir im ersten Telefonat.
+            Für die meisten Betriebe empfehlen wir Business; die{" "}
             <Link href="#ladeliste" className="text-foreground underline decoration-[var(--gold)] decoration-2 underline-offset-4">
               Ladeliste
             </Link>{" "}
             nennt die Empfehlung für Ihre Branche.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Link href="/anfrage" className="btn-signal">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+            <Link href="/anfrage" className="btn-signal btn-ruhig">
               Anfrage schreiben {ARROW}
             </Link>
-            <Link href="/pakete" className="link-pfeil text-[15px] font-semibold">
+            <Link href="/pakete#vergleich" className="link-pfeil text-[15px] font-semibold">
               Pakete <span className="whitespace-nowrap">vergleichen{ARROW}</span>
             </Link>
           </div>
-          <p className="mt-5">
-            <Link
-              href="/website-erstellen-lassen"
-              className="link-pfeil text-muted-foreground hover:text-foreground text-[14.5px] font-semibold"
-            >
-              Website erstellen lassen: Preise und <span className="whitespace-nowrap">Ablauf{ARROW}</span>
-            </Link>
-          </p>
-        </div>
-        <div className="min-w-0 lg:col-span-8 lg:col-start-5">
-          <Abfahrtstafel pakete={PAKETE_KURZ} />
-          <p className="text-muted-foreground mt-3 font-mono text-[12px] leading-relaxed">
-            Einmalpreise, dazu ein Monatsbeitrag {MONTHLY_FROM}.
-            {STUDIO ? (
-              <>
-                {" "}
-                Für ein neues Erscheinungsbild gibt es{" "}
-                <Link
-                  href={`/pakete/${STUDIO.slug}`}
-                  className="text-foreground underline decoration-[var(--gold)] underline-offset-4"
-                >
-                  {STUDIO.name} {STUDIO.setup}
-                </Link>
-                .
-              </>
-            ) : null}{" "}
-            {PREIS_HINWEIS}
-          </p>
+          <div className="mt-10">
+            <p className="text-muted-foreground font-mono text-[12px] leading-relaxed">
+              Einmalpreise, dazu ein Monatsbeitrag {MONTHLY_FROM}.
+              {STUDIO ? (
+                <>
+                  {" "}
+                  Für ein neues Erscheinungsbild gibt es{" "}
+                  <Link
+                    href={`/pakete/${STUDIO.slug}`}
+                    className="text-foreground underline decoration-[var(--gold)] underline-offset-4"
+                  >
+                    {STUDIO.name} {STUDIO.setup}
+                  </Link>
+                  .
+                </>
+              ) : null}{" "}
+              {PREIS_HINWEIS}
+            </p>
+            <p className="mt-3">
+              <Link
+                href="/website-erstellen-lassen"
+                className="link-pfeil text-muted-foreground hover:text-foreground text-[14.5px] font-semibold"
+              >
+                Website erstellen lassen: Preise und <span className="whitespace-nowrap">Ablauf{ARROW}</span>
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -372,26 +407,23 @@ function Preise() {
  * ---------------------------------------------------------------- */
 function VorherNachher() {
   return (
-    <section className="spaeter bg-card border-border border-t" style={spaeter(760, 1140)}>
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-6 sm:py-28">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
-          <h2
-            data-reveal="rise"
-            className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl lg:col-span-6"
-          >
+    <section className="spaeter buehne-abschnitt" style={spaeter(820, 1410)}>
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+        <div className="buehne-kopf buehne-mitte">
+          <h2 data-reveal="rise" className="buehne-titel">
             <Steigend text="Dieselben Inhalte, neu gebaut" />
           </h2>
-          <p
-            data-reveal="fade"
-            className="text-muted-foreground max-w-lg text-[16.5px] leading-relaxed lg:col-span-5 lg:col-start-8"
-          >
-            Ziehen Sie den Regler. Links steht eine Seite, wie sie viele Betriebe seit Jahren haben. Rechts stehen
-            dieselben Angaben, geordnet nach dem, was Kunden zuerst wissen wollen. Die Tischlerei ist frei erfunden.
+          <p data-reveal="fade" className="buehne-unter">
+            Ziehen Sie den Regler.
           </p>
         </div>
-        <div className="mt-12 lg:mt-14">
+        <div className="buehne-einzug">
           <VorherNachherRegler />
         </div>
+        <p data-reveal="fade" className="text-muted-foreground mx-auto mt-10 max-w-[38em] text-center text-[17px] leading-relaxed md:mt-12">
+          Links steht eine Seite, wie sie viele Betriebe seit Jahren haben. Rechts stehen dieselben Angaben, geordnet
+          nach dem, was Kunden zuerst wissen wollen. Die Tischlerei ist frei erfunden.
+        </p>
       </div>
     </section>
   );
@@ -402,13 +434,13 @@ function VorherNachher() {
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <section id="faq" className="spaeter border-border scroll-mt-20 border-t" style={spaeter(1450, 880)}>
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-4">
-          <h2 data-reveal="rise" className="text-balance text-[2.2rem] leading-[1.0] tracking-[-0.032em] sm:text-5xl">
+    <section id="faq" className="spaeter buehne-abschnitt bg-card scroll-mt-20" style={spaeter(1600, 1000)}>
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+        <div className="buehne-kopf">
+          <h2 data-reveal="rise" className="buehne-titel-klein">
             <Steigend text="Was vor dem ersten Anruf oft gefragt wird" />
           </h2>
-          <ul className="mt-6 space-y-3">
+          <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-1">
             <li>
               <Link href="/faq" className="link-pfeil text-[15px] font-semibold">
                 Alle <span className="whitespace-nowrap">Fragen{ARROW}</span>
@@ -424,7 +456,7 @@ function Fragen() {
             </li>
           </ul>
         </div>
-        <dl data-reveal="stagger" className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
+        <dl data-reveal="stagger" className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {FAQ.map((item) => (
             <div key={item.q} className="border-foreground border-t pt-5">
               <dt className="text-[18px] font-semibold leading-snug tracking-[-0.01em]">{item.q}</dt>
@@ -467,13 +499,14 @@ function TelZiffern() {
  * ---------------------------------------------------------------- */
 function Kontakt() {
   return (
-    <section id="kontakt" className="spaeter grain bg-foreground text-background scroll-mt-20" style={spaeter(740, 744)}>
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 pt-20 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:grid-cols-12 lg:gap-8">
+    <section
+      id="kontakt"
+      className="spaeter buehne-abschnitt grain bg-foreground text-background scroll-mt-20"
+      style={spaeter(650, 610)}
+    >
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 sm:px-6 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7 lg:flex lg:flex-col lg:justify-between">
-          <h2
-            data-reveal="rise"
-            className="text-background/80 text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem]"
-          >
+          <h2 data-reveal="rise" className="buehne-titel-klein">
             <Steigend text="Am schnellsten geht es am Telefon." />
           </h2>
           <a
@@ -492,7 +525,10 @@ function Kontakt() {
             Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und den Termin. Wer lieber schreibt,
             erreicht uns per Mail oder über das Anfrageformular. Die Antwort kommt meist am selben Werktag.
           </p>
-          <a href={`mailto:${CONTACT_EMAIL}`} className="mail-link mt-6 inline-block text-[19px] font-semibold">
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="mail-link relative mt-6 inline-block text-[19px] font-semibold after:absolute after:inset-x-0 after:-inset-y-2"
+          >
             {CONTACT_EMAIL}
           </a>
           <div className="mt-8">

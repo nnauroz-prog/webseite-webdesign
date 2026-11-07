@@ -80,9 +80,13 @@ export function Ladeliste({
   return (
     <section id={id} className={`${s.section} grain scroll-mt-20 ${className}`} style={style}>
       {top}
-      <div className={`mx-auto w-full max-w-6xl px-5 sm:px-6 ${top ? "pt-4 pb-20 sm:pt-8 sm:pb-28" : "py-20 sm:py-28"}`}>
+      {/* Unten derselbe Abstand wie .buehne-abschnitt (96 / 128 / 160 px),
+          der Abstand zum Kopf kommt aus .buehne-kopf (app/hafen.css). */}
+      <div
+        className={`mx-auto w-full max-w-6xl px-5 sm:px-6 ${top ? "pt-12 pb-24 sm:pt-16 sm:pb-32 lg:pb-40" : "py-24 sm:py-32 lg:py-40"}`}
+      >
         {head}
-        <div className="mt-12 grid gap-8 sm:mt-16 lg:grid-cols-12 lg:gap-10">
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
           <div className={`${s.side} lg:col-span-3`}>
             <p className={s.sideLabel} aria-hidden="true">
               Branche wählen

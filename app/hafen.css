@@ -585,8 +585,9 @@
 }
 
 /* Mit Script: Halte warten, bis die Linie sie erreicht. Der Text bleibt
-   dabei lesbar (0,8 Deckkraft hält AA auf Teer); nur Punkt und Ring
-   kommen erst mit der Linie. */
+   dabei voll lesbar (die orange Halt-Zeile hält AA auf Teer nur in
+   voller Deckkraft) und rückt nur 8 px nach; Punkt und Ring kommen erst
+   mit der Linie. */
 .route[data-armed] .stop-dot::before {
   opacity: 0;
   transition: opacity 0.35s ease;
@@ -596,7 +597,6 @@
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
 .route[data-armed] .stop-body {
-  opacity: 0.8;
   transform: translateY(8px);
   transition:
     opacity 0.6s ease,
@@ -885,6 +885,16 @@ a.board-row:focus-visible .board-arrow circle {
     transform: translateX(-50%);
   }
 }
+/* Schmale Tafel (Startseite #preise, unter den Paket-Kacheln): nur
+   Linie, Name und Preis. Die Sätze stehen schon auf den Kacheln. */
+.board-schmal .board-desc,
+.board-schmal .board-spalte-desc {
+  display: none;
+}
+.board-schmal .board-row {
+  grid-template-columns: 2.6rem minmax(0, 1fr) 6.5rem;
+  padding-block: 0.8rem;
+}
 @media (max-width: 639px) {
   .board {
     padding: 6px;
@@ -914,7 +924,255 @@ a.board-row:focus-visible .board-arrow circle {
     height: 9px;
     margin-top: -4.5px;
   }
+  .board-schmal .board-row {
+    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+    padding-block: 0.75rem;
+  }
+  .board-schmal .board-linie {
+    grid-row: auto;
+  }
 }
+
+/* ------------------------------------------------------------------
+   Bühne: Abschnittsköpfe in zwei Stufen und ein ruhiger Rhythmus.
+   Eine große Aussage (.buehne-titel), darunter ein vorhandener Satz in
+   Grau als eigener Absatz (.buehne-unter). Nebenabschnitte nehmen die
+   kleine Stufe (.buehne-titel-klein). Abschnitte haben 96 / 128 / 160 px
+   Innenabstand, Kopf und Inhalt stehen 48 / 64 / 80 px auseinander.
+
+   Hierarchie: Die Hauptaussage im Hero (hafen-hero.tsx: 44 / 64 / 57,6
+   / 70,4 px ab 0 / 640 / 1024 / 1280) bleibt an jeder Breite mindestens
+   10 % größer als .buehne-titel (40 / bis 52 / 52 / 64 px).
+
+   Regel für Ausrichtung und Stufe (Startseite, /pakete):
+   - Präsentation, große Stufe: helle Abschnitte zentriert
+     (.buehne-mitte), dunkle Hafen-Abschnitte (Ladeliste, Ablauf)
+     linksbündig, ab 1024 px zweispaltig (.buehne-kopf-zweispaltig:
+     Titel links, grauer Satz rechts unten).
+   - Nachschlagen und Abschluss (Fragen, Kontakt): kleine Stufe,
+     linksbündig.
+   - Ein Kopf hat zwei Stufen: Titel und grauer Satz, höchstens noch
+     ein Link. Weiterer Fließtext steht beim Inhalt.
+   ------------------------------------------------------------------ */
+.buehne-titel,
+.buehne-titel-klein {
+  max-width: 18ch;
+  font-size: 2.5rem;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 740;
+  font-stretch: 112%;
+  text-wrap: balance;
+}
+.buehne-titel-klein {
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.032em;
+}
+.buehne-unter {
+  max-width: 34ch;
+  margin-top: 16px;
+  font-size: clamp(1.1875rem, 1.02rem + 0.62vw, 1.5rem);
+  line-height: 1.33;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+:is(.on-dark, .bg-foreground) .buehne-unter,
+.buehne-dunkel .buehne-unter {
+  color: var(--stahl-hell);
+}
+.buehne-mitte {
+  margin-inline: auto;
+  text-align: center;
+}
+.buehne-mitte :is(.buehne-titel, .buehne-titel-klein, .buehne-unter) {
+  margin-inline: auto;
+}
+.buehne-abschnitt {
+  padding-block: 96px;
+}
+.buehne-kopf + * {
+  margin-top: 48px;
+}
+@media (min-width: 640px) {
+  .buehne-titel {
+    font-size: clamp(2.75rem, 0.9rem + 4.6vw, 3.25rem);
+  }
+  .buehne-abschnitt {
+    padding-block: 128px;
+  }
+  .buehne-kopf + * {
+    margin-top: 64px;
+  }
+}
+@media (min-width: 1024px) {
+  .buehne-abschnitt {
+    padding-block: 160px;
+  }
+  .buehne-kopf + * {
+    margin-top: 80px;
+  }
+  .buehne-unter {
+    margin-top: 20px;
+  }
+  .buehne-kopf-zweispaltig {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: 48px;
+    align-items: end;
+  }
+  /* Genau zwei Kinder: Titel und eine Spalte mit grauem Satz (und Link). */
+  .buehne-kopf-zweispaltig .buehne-unter {
+    margin-top: 0;
+  }
+}
+@media (min-width: 1280px) {
+  .buehne-titel {
+    font-size: 4rem;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Paket-Kacheln (components/marketing/hafen/paket-kacheln.tsx): ein
+   40-Fuß-Container als Produktbild, in der Farbe des Pakets wie im
+   Containerstapel. Gezeichnet mit CSS, kein Bild.
+   ------------------------------------------------------------------ */
+.kachel-box {
+  --ton: var(--zink);
+  position: relative;
+  display: block;
+  width: 132px;
+  height: 44px;
+  background-color: var(--ton);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0.09) 0 1px,
+    transparent 1px 6px,
+    rgb(255 255 255 / 0.1) 6px 7px,
+    transparent 7px 12px
+  );
+  box-shadow:
+    inset 0 4px 0 rgb(0 0 0 / 0.14),
+    inset 0 -4px 0 rgb(0 0 0 / 0.16);
+}
+.kachel-box::before,
+.kachel-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* Eckbeschläge oben und unten. */
+.kachel-box::before {
+  background:
+    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top left / 9px 6px no-repeat,
+    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top right / 9px 6px no-repeat;
+}
+.kachel-box::after {
+  background:
+    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom left / 9px 6px no-repeat,
+    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom right / 9px 6px no-repeat;
+}
+.kachel-box-signal {
+  --ton: var(--gold);
+}
+.kachel-box-teer {
+  --ton: var(--teer-2);
+}
+.kachel-box-gruen {
+  --ton: var(--ink-petrol);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .kachel-box {
+    transition: transform var(--t-kurz) var(--ease-aus);
+  }
+  .kachel:hover .kachel-box {
+    transform: translateY(-4px);
+  }
+}
+}
+
+/* ==================================================================
+   Ablauf-Szene (app/page.tsx, Ablauf): die eine klebende Scroll-Szene
+   der Seite. Am Rechner ab 1024 × 820 bleibt die Bühne unter der
+   Kopfzeile stehen, während 900 px Scrollweg die Fähre die Halte
+   abfahren lassen (Fortschritt: faehrlinie.tsx). Nur mit Script
+   (html.js-reveal), damit ohne Script kein leerer Scrollweg entsteht.
+   Mobil, auf niedrigen Fenstern und bei reduzierter Bewegung ein
+   normaler Abschnitt.
+   ================================================================== */
+@media (min-width: 1024px) and (min-height: 820px) and (prefers-reduced-motion: no-preference) {
+  html.js-reveal .ablauf-spur {
+    height: calc(100svh + 900px);
+    contain-intrinsic-block-size: auto calc(100svh + 900px);
+    padding-block: 0;
+  }
+  html.js-reveal .ablauf-buehne {
+    position: sticky;
+    top: var(--kopf-h);
+    display: flex;
+    min-height: calc(100svh - var(--kopf-h));
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 40px;
+  }
+  /* Auf der Bühne ist der Platz knapp: etwas engere Abstände. */
+  html.js-reveal .ablauf-buehne .buehne-kopf + * {
+    margin-top: 56px;
+  }
+  html.js-reveal .ablauf-buehne .ablauf-fuss {
+    margin-top: 48px;
+  }
+  /* Texte bleiben voll lesbar (die orange Halt-Zeile hält AA auf Teer
+     nur in voller Deckkraft); den Aufbau tragen Linie, Punkt, Ring und
+     ein kurzes Nachrücken um 12 px. */
+  .route[data-szene] .stop-body {
+    transform: translateY(12px);
+    transition: transform var(--t-mittel) var(--ease-aus);
+  }
+  .route[data-szene] .stop[data-reached] .stop-body {
+    transform: none;
+    transition-delay: 0s;
+  }
+  .route[data-szene] .stop:focus-within .stop-body {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ==================================================================
+   Bühnen-Einzug: Geräte (Live-Vorschau, Vorher/Nachher) fahren beim
+   Hinscrollen auf die Bühne, an den Scrollweg gekoppelt. Ohne
+   Unterstützung für animation-timeline steht das Gerät einfach da.
+   ================================================================== */
+.buehne-einzug {
+  transform-origin: 50% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .buehne-einzug {
+      animation: einzug linear both;
+      animation-timing-function: var(--ease-aus);
+      animation-timeline: view();
+      animation-range: entry 0% cover 38%;
+    }
+    .buehne-einzug:focus-within {
+      animation: none;
+    }
+  }
+}
+/* Nur Größe, keine Deckkraft: Ein halb durchsichtiges Gerät hielte
+   den Kontrast seiner Knöpfe nicht (axe misst den Startzustand). */
+@keyframes einzug {
+  from {
+    transform: scale(0.92);
+  }
+  to {
+    transform: none;
+  }
 }
 
 /* ==================================================================
@@ -1087,6 +1345,54 @@ html.js-reveal [data-reveal="stagger"][data-reveal-state="in"] > * {
   from {
     opacity: 0;
     transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Startseite (main.buehne): ruhigere Einblendung. Überschriften steigen
+   als ganze Zeile statt Wort für Wort aus Masken, Absätze kommen leiser.
+   Unterseiten behalten das Wort-Steigen. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js-reveal .buehne [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within) .rv-w > span {
+    transform: none;
+  }
+  html.js-reveal .buehne [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within),
+  html.js-reveal .buehne [data-reveal="rise"]:has(.rv-w):not([data-reveal-state]):not(:focus-within) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"],
+  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"]:has(.rv-w) {
+    animation: rv-zeile var(--t-lang) var(--ease-aus) var(--reveal-delay, 0ms) both;
+  }
+  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"] .rv-w > span {
+    animation: none;
+  }
+  html.js-reveal .buehne [data-reveal="fade"]:not([data-reveal-state]):not(:focus-within) {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  html.js-reveal .buehne [data-reveal="fade"][data-reveal-state="in"] {
+    animation: rv-fade-ruhig var(--t-mittel) var(--ease-aus) calc(var(--reveal-delay, 0ms) + 90ms) both;
+  }
+}
+@keyframes rv-zeile {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rv-fade-ruhig {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
