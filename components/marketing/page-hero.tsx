@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 /**
  * Einheitlicher Seitenkopf für Unterseiten im Atelier-Satz: Papier,
  * linksbündig auf der Satzkante, Mono-Brotkrumen (crumb), Hafenwort in
- * Mono mit orangem Quadrat, breite Überschrift (accent in 60 % Stahl),
+ * Mono mit orangem Quadrat, breite einfarbige Überschrift (accent mit
+ * kleinem orangem Unterstrich),
  * ein Absatz, höchstens ein gefüllter Knopf plus ein Textlink.
  *
  * children: kurzer Text (bis ca. 200 Zeichen) steht direkt unter der
@@ -33,7 +34,7 @@ export function PageHero({
   eyebrow: string;
   /** Erster, dunkler Teil der Überschrift. */
   title: string;
-  /** Zweiter, gedämpfter Teil der Überschrift (60 % Stahl). */
+  /** Zweiter Teil der Überschrift, gleiche Farbe, orange unterstrichen. */
   accent?: string;
   /** Einleitender Absatz. */
   children?: React.ReactNode;
@@ -64,7 +65,7 @@ export function PageHero({
             {accent ? (
               <>
                 {" "}
-                <span className="text-[#565b5d]/60">{accent}</span>
+                <span className="underline decoration-[var(--gold)] decoration-[0.07em] underline-offset-[0.14em]">{accent}</span>
               </>
             ) : null}
           </h1>

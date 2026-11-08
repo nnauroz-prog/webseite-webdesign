@@ -53,7 +53,7 @@ function istAktiv(pathname: string | null, href: string) {
 }
 
 /**
- * Kopfzeile (.globalnav, app/apple.css): 48 px hoch, Papier-Glas mit
+ * Kopfzeile (.globalnav, app/apple.css): 56 px hoch (ab 834 px 60 px), Papier-Glas mit
  * Haarlinie. Logo mit dem Zusatz „Webdesign“, Links mit einem orangen
  * Unterstrich, der sich beim Hover von der Mitte aufzieht
  * (.nav-link-underline), ab 1280 px die Telefonnummer in Mono, rechts
@@ -114,7 +114,7 @@ export function MarketingHeader({
           <ul className="globalnav-liste">
             <li>
               <Link href="/" className="globalnav-link -ml-2.5">
-                <SitaloLogo size="xs" />
+                <SitaloLogo size="sm" hideTaglineBelow="lg" />
               </Link>
             </li>
             {nav.map((item) => (
@@ -154,7 +154,7 @@ export function MarketingHeader({
             className="flex min-h-11 items-center min-[834px]:hidden"
             onClick={() => setMenuOpen(false)}
           >
-            <SitaloLogo size="xs" hideTaglineOnMobile />
+            <SitaloLogo size="sm" hideTaglineOnMobile />
           </Link>
           <div className="globalnav-mobil">
             {ctaMobil ? (
@@ -251,9 +251,9 @@ function MobileFullscreenMenu({
       }}
     >
       {/* Gleiche Geometrie wie die Leiste: nichts springt beim Öffnen. */}
-      <div className="globalnav-innen h-12 w-full shrink-0">
+      <div className="globalnav-innen h-[var(--kopf-h)] w-full shrink-0">
         <Link href="/" onClick={onClose} className="flex min-h-11 items-center">
-          <SitaloLogo size="xs" tone="light" />
+          <SitaloLogo size="sm" tone="light" hideTaglineOnMobile />
         </Link>
         <div className="globalnav-mobil">
           <button type="button" onClick={onClose} aria-label="Menü schließen" className="globalnav-icon text-[var(--papier)] hover:text-[var(--papier)]">

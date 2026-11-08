@@ -260,25 +260,29 @@ function Preise() {
         </div>
         <div className="mx-auto max-w-3xl min-w-0">
           <Abfahrtstafel pakete={PAKETE_KURZ} />
-          <table className="sr-only">
-            <caption>Festpreise und Monatsbeiträge der Pakete, inklusive 19 % MwSt.</caption>
-            <thead>
-              <tr>
-                <th scope="col">Paket</th>
-                <th scope="col">Festpreis</th>
-                <th scope="col">Monatsbeitrag</th>
-              </tr>
-            </thead>
-            <tbody>
-              {PAKETE.map((p) => (
-                <tr key={p.slug}>
-                  <th scope="row">{p.name}</th>
-                  <td>{p.setup}</td>
-                  <td>{p.monthly}</td>
+          {/* Tabelle in einem sr-only-Kasten: Eine Tabelle selbst lässt sich
+              nicht auf 1 px schrumpfen und würde am Handy seitlich schieben. */}
+          <div className="sr-only">
+            <table>
+              <caption>Festpreise und Monatsbeiträge der Pakete, inklusive 19 % MwSt.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Paket</th>
+                  <th scope="col">Festpreis</th>
+                  <th scope="col">Monatsbeitrag</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {PAKETE.map((p) => (
+                  <tr key={p.slug}>
+                    <th scope="row">{p.name}</th>
+                    <td>{p.setup}</td>
+                    <td>{p.monthly}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className={s.preisFuss}>
             <p className={s.preisNotiz}>
               Einmalpreise, dazu der Monatsbeitrag ({MONATSBEITRAEGE}). {PREIS_HINWEIS}
@@ -434,7 +438,7 @@ function Verzeichnis() {
         <div className={s.lvFuss}>
           <span>Gezählt wird wie im Handwerk.</span>
           <Link href="/journal" className="link-pfeil link-pfeil-zeile font-sans text-[15px] font-semibold">
-            Alle Beiträge im <span className="whitespace-nowrap">Journal{ARROW}</span>
+            <span>Alle Beiträge im&nbsp;Journal{ARROW}</span>
           </Link>
         </div>
       </div>

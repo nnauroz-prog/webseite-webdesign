@@ -46,6 +46,41 @@
 .kopfNeben {
   min-width: 0;
 }
+/* Kopf mit Foto: das Foto steht klein und gerahmt wie auf /atelier
+   („Am Schreibtisch in Hamburg“), mit Mono-Unterschrift über einer
+   feinen Linie. Ab 1024 px rechts neben dem Text. */
+.kopfMitFoto > .kopfBild {
+  margin-top: 0;
+}
+.kopfFoto > .rahmen {
+  border-radius: 4px;
+}
+@media (min-width: 734px) {
+  .kopfFoto {
+    max-width: 620px;
+  }
+  .kopfFoto > .rahmen {
+    aspect-ratio: 3 / 2;
+  }
+  .kopfFoto > .unterschrift {
+    flex-wrap: nowrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+}
+@media (min-width: 1024px) {
+  .kopfMitFoto .kopfFoto {
+    max-width: none;
+  }
+  .kopfMitFoto .kopfFoto > .rahmen {
+    aspect-ratio: 4 / 3;
+  }
+}
+@media (min-width: 1068px) {
+  .kopfMitFoto .titel {
+    font-size: 58px;
+  }
+}
 
 /* Brotkrumen in Mono */
 .krumen ol {
@@ -113,12 +148,15 @@
     line-height: 0.98;
   }
 }
+/* Zweiter Teil der H1: gleiche Farbe wie der erste (wie auf der
+   Startseite), hervorgehoben nur durch einen kleinen orangen Strich. */
 .akzent {
-  color: rgb(86 91 93 / 0.6);
-  color: color-mix(in srgb, var(--stahl) 60%, transparent);
-}
-:global(.on-dark) .akzent {
-  color: rgb(243 242 238 / 0.6);
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.14em;
+  text-decoration-skip-ink: auto;
 }
 /* Hafenwort in Mono mit orangem Quadrat */
 .eyebrow {
@@ -325,9 +363,6 @@
   color: #1b1d1e;
   text-wrap: balance;
 }
-.zweiton > span + span {
-  color: #565b5d;
-}
 @media (min-width: 734px) {
   .zweiton {
     font-size: 40px;
@@ -338,9 +373,7 @@
 .dunkel .zweiton {
   color: #f3f2ee;
 }
-.dunkel .zweiton > span + span {
-  color: #a1a1a6;
-}
+
 .abschnittUnter {
   margin-top: 12px;
   max-width: 40em;
@@ -798,5 +831,30 @@ section.ladeliste {
   .blatt {
     border-radius: var(--radius-karte);
     padding: 40px;
+  }
+}
+
+/* Handy: das Kopffoto steht wie ein angeheftetes Foto rechts, die
+   Bildunterschrift links daneben. So bleibt der Satz im Kopf das größte
+   Element im ersten Bildschirm (LCP ist Text, nicht das Foto). */
+@media (max-width: 733px) {
+  .kopfBild {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54%;
+    gap: 14px;
+    align-items: end;
+    margin-top: 32px;
+  }
+  .kopfBild > .rahmen {
+    grid-column: 2;
+    grid-row: 1;
+    transform: rotate(1.2deg);
+    box-shadow: 0 12px 26px -16px rgb(27 29 30 / 0.5);
+  }
+  .kopfBild > .unterschrift {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    margin-top: 0;
   }
 }

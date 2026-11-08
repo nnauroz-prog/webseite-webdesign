@@ -68,22 +68,21 @@ export function PaketKacheln({
               p.highlight ? "ring-gold ring-2" : "ring-1 ring-[#1b1d1e]/10"
             }`}
           >
-            <div className="flex min-h-[64px] items-start justify-between gap-3">
-              <span className="block">
-                <span className={`kachel-box ${TON[p.slug]}`} aria-hidden="true" />
-                <span className="mt-2 block font-mono text-[10.5px] tracking-[0.12em] text-[#565b5d] uppercase">
-                  40&nbsp;FT · {kennung(p.setup)}
-                </span>
+            <div className="min-h-[64px]">
+              <span className={`kachel-box ${TON[p.slug]}`} aria-hidden="true" />
+              <span className="mt-2 block font-mono text-[10.5px] tracking-[0.12em] whitespace-nowrap text-[#565b5d] uppercase">
+                40&nbsp;FT · {kennung(p.setup)}
               </span>
-              {p.highlight ? (
-                <span className="text-gold-ink pt-0.5 font-mono text-[10.5px] font-medium tracking-[0.14em] uppercase">
-                  Empfehlung
-                </span>
-              ) : null}
             </div>
+            <p
+              className={`text-gold-ink mt-6 h-4 font-mono text-[10.5px] leading-4 font-medium tracking-[0.14em] uppercase`}
+              aria-hidden={p.highlight ? undefined : true}
+            >
+              {p.highlight ? "Unsere Empfehlung" : ""}
+            </p>
             <h3
               id={nameId}
-              className="mt-7 text-[1.75rem] leading-[1.06] font-[740] tracking-[-0.028em] [font-stretch:116%] lg:text-[1.9rem]"
+              className="mt-1 text-[1.75rem] leading-[1.06] font-[740] tracking-[-0.028em] [font-stretch:116%] lg:text-[1.9rem]"
             >
               {p.name}
             </h3>

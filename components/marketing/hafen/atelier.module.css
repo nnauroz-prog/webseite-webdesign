@@ -394,7 +394,7 @@ a.lvZeile:focus-visible {
   color: var(--foreground);
 }
 @media (min-width: 1024px) {
-  .randnotiz {
+  .mitRand .randnotiz {
     position: sticky;
     top: calc(var(--kopf-h) + 32px);
   }
@@ -806,7 +806,7 @@ a.logZeile:focus-visible {
   color: var(--muted-foreground);
 }
 /* Haarlinien statt Kästen: nur eine Linie unter dem Feld. */
-.lieferschein :is(input[type="text"], input[type="email"], input[type="tel"], textarea) {
+.lieferschein :is(input:not([type]), input[type="text"], input[type="email"], input[type="tel"], textarea) {
   width: 100%;
   margin-top: 4px;
   border: 0;
@@ -828,7 +828,7 @@ a.logZeile:focus-visible {
   line-height: 32px;
   padding-top: 0;
 }
-.lieferschein :is(input[type="text"], input[type="email"], input[type="tel"], textarea):focus-visible {
+.lieferschein :is(input:not([type]), input[type="text"], input[type="email"], input[type="tel"], textarea):focus-visible {
   outline: none;
   border-bottom: 2px solid var(--gold);
   padding-bottom: 8px;
@@ -1101,5 +1101,84 @@ a.logZeile:focus-visible {
   }
   .linieLetzt {
     height: 49px;
+  }
+}
+
+@media (min-width: 900px) {
+  .interviewEins {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Sprungleiste: klebende Mono-Zeile auf langen Seiten ---------- */
+.sprung {
+  position: sticky;
+  top: var(--kopf-h);
+  z-index: 20;
+  margin-top: 40px;
+  border-block: 1px solid var(--border);
+  background: rgb(243 242 238 / 0.96);
+}
+.sprung ol {
+  display: flex;
+  gap: 4px 22px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sprung ol::-webkit-scrollbar {
+  display: none;
+}
+.sprung a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+}
+.sprung a > span {
+  color: var(--gold-ink);
+}
+@media (hover: hover) {
+  .sprung a:hover {
+    color: var(--foreground);
+  }
+}
+
+/* Schmale Bildschirme: nichts darf über den Rand. */
+.briefRaster > * {
+  min-width: 0;
+}
+.briefAktion :global(.btn-signal) {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+.buch {
+  table-layout: fixed;
+}
+.buch thead th:first-child {
+  width: 7.2rem;
+}
+.buch thead th:last-child {
+  width: 5.2rem;
+}
+@media (max-width: 479px) {
+  .buch td:first-child {
+    white-space: normal;
+  }
+  .buch thead th:first-child {
+    width: 5.6rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .lsKopf > span + span {
+    display: none;
   }
 }

@@ -122,7 +122,7 @@ export default function EmpfehlungPage() {
                       <th scope="col" className="label-mono text-muted-foreground pb-3 text-right font-medium">
                         Einmalig
                       </th>
-                      <th scope="col" className="label-mono text-muted-foreground pb-3 pl-4 text-right font-medium">
+                      <th scope="col" className="label-mono text-muted-foreground pb-3 pl-3 text-right font-medium sm:pl-4">
                         Monatlich
                       </th>
                     </tr>
@@ -130,24 +130,24 @@ export default function EmpfehlungPage() {
                   <tbody>
                     {PAKETE.map((p) => (
                       <tr key={p.slug} className="border-border border-b align-baseline">
-                        <th scope="row" className="py-4 pr-4 font-normal">
+                        <th scope="row" className="py-4 pr-3 font-normal sm:pr-4">
                           <Link
                             href={`/pakete/${p.slug}`}
                             className="text-foreground text-[1.1rem] font-bold tracking-[-0.01em] [font-stretch:110%] underline-offset-4 hover:underline"
                           >
                             {p.name}
                           </Link>
-                          <span className="text-muted-foreground mt-1 block text-[13.5px] leading-snug sm:hidden">
+                          <span className="text-muted-foreground mt-1 block text-[13.5px] leading-snug hyphens-auto sm:hidden">
                             {UMFANG[p.slug]}
                           </span>
                         </th>
                         <td className="text-muted-foreground hidden py-4 pr-6 text-[14.5px] leading-snug sm:table-cell">
                           {UMFANG[p.slug]}
                         </td>
-                        <td className="serif text-foreground py-4 text-right text-[1.05rem] whitespace-nowrap">
+                        <td className="serif text-foreground py-4 text-right text-[0.95rem] whitespace-nowrap max-sm:[font-stretch:100%]! sm:text-[1.05rem]">
                           {p.setup}
                         </td>
-                        <td className="serif text-foreground py-4 pl-4 text-right text-[1.05rem] whitespace-nowrap">
+                        <td className="serif text-foreground py-4 pl-3 text-right text-[0.95rem] whitespace-nowrap max-sm:[font-stretch:100%]! sm:pl-4 sm:text-[1.05rem]">
                           {p.monthly.replace(/\s*\/\s*Monat$/, "")}
                         </td>
                       </tr>

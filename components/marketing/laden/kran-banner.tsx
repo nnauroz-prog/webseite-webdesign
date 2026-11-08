@@ -24,7 +24,7 @@ export async function KranBanner() {
       <HeroBuehne className={`${heroStil.hero} ${s.kranBuehne}`}>
         {/* Wartezustand des Auftakts vor dem ersten Bild; braucht die Bühne als Elternteil. */}
         <script dangerouslySetInnerHTML={{ __html: AUFTAKT_SCRIPT }} />
-        <div className={heroStil.licht} aria-hidden="true">
+        <div className={`${heroStil.licht} ${s.kranLicht}`} aria-hidden="true">
           <i className={heroStil.lichtMorgen} />
           <i className={heroStil.lichtAbend} />
           <i className={heroStil.lichtNacht} />

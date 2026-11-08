@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { MehrLink } from "@/components/marketing/apple";
-import { WegBand } from "@/components/marketing/laden/bilder/weg-band";
-import { KarteWeg } from "@/components/marketing/laden/karten";
-import { LadenRegal } from "@/components/marketing/laden/laden-regal";
+import a from "@/components/marketing/hafen/atelier.module.css";
+import { kennung } from "@/components/marketing/hafen/paket-kacheln";
+import { Sprungleiste } from "@/components/marketing/hafen/sprungleiste";
 import {
-  BildKachel,
-  BildRaster,
   FotoRahmen,
   KontaktKarte,
-  MusterPille,
   SeitenKopf,
   UnterseiteMain,
   unterseiteStil as u,
@@ -326,7 +322,7 @@ const FAQ: { q: string; a: string; link?: { href: string; label: string } }[] = 
   },
 ];
 
-/** Anker der lokalen Produktleiste (Abschnitte dieser Seite). */
+/** Anker der Sprungleiste (Abschnitte dieser Seite). */
 const SPRUNGMARKEN: { href: string; label: string }[] = [
   { href: "#kosten", label: "Preise" },
   { href: "#fuer-wen", label: "Für wen" },
@@ -390,7 +386,8 @@ export default function WebsiteErstellenLassenPage() {
       <MarketingHeader cta={false} />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Webdesign zum Festpreis"
+          krumen="Website erstellen lassen"
+          eyebrow="Kontor · Webdesign zum Festpreis"
           titel={`Website erstellen lassen zum Festpreis ${STARTER.setup}`}
           unter={
             <>
@@ -415,7 +412,6 @@ export default function WebsiteErstellenLassenPage() {
           bild={
             <FotoRahmen
               vorab
-              muster
               src="/images/sitalo-handwerker-laptop.webp"
               alt="Laptop auf einem Holztisch in einer Tischlerwerkstatt mit einer Musterseite für einen Handwerksbetrieb"
               aspect="3 / 2"
@@ -423,7 +419,9 @@ export default function WebsiteErstellenLassenPage() {
               position="50% 40%"
             />
           }
+          unterschrift="Musterseite einer Tischlerei auf der Hobelbank · frei erfunden"
         />
+        <Sprungleiste links={SPRUNGMARKEN} />
 
         <Kosten />
         <Leistungen />
@@ -486,13 +484,8 @@ function HeroMeta() {
 /* ------------------------------------------------------------------
  * Preise und Dauer: Preisliste je Paket, darunter der Monatsbeitrag.
  * ---------------------------------------------------------------- */
-/** Gerätefotos der Musterseiten je Paket (wie auf /pakete), frei erfunden. */
-const KOSTEN_BILD = [
-  { src: "/images/sitalo-friseur-mobile.webp", alt: "Handy mit einer einseitigen Musterseite für einen Friseur", position: "60% 50%" },
-  { src: "/images/sitalo-pflege-laptop.webp", alt: "Laptop mit der mehrseitigen Musterseite eines Pflegedienstes", position: "42% 55%" },
-  { src: "/images/sitalo-cafe-mobile.webp", alt: "Handy mit der Musterseite eines Cafés mit Speisekarte", position: "50% 50%" },
-  { src: "/images/sitalo-kanzlei-laptop.webp", alt: "Laptop mit der Musterseite einer Kanzlei neben einer grünen Lampe", position: "50% 55%" },
-];
+/** Containerfarbe je Paket, wie auf /pakete. */
+const KOSTEN_TON = ["", "kachel-box-signal", "kachel-box-teer", "kachel-box-gruen"];
 
 function Kosten() {
   return (
@@ -510,18 +503,11 @@ function Kosten() {
           <ul role="list" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
             {PAKETE.map((p, i) => (
               <li key={p.slug} className="flex">
-                <article className="relative flex w-full flex-col items-center overflow-hidden rounded-[18px] bg-white px-6 pb-7 text-center shadow-[0_4px_16px_rgb(0_0_0/0.08)] transition-shadow hover:shadow-[0_18px_40px_-16px_rgb(16_32_48/0.28)] has-[.karte-link:focus-visible]:outline-2 has-[.karte-link:focus-visible]:outline-offset-2 has-[.karte-link:focus-visible]:outline-[#f45b1e]">
-                  <div className="relative -mx-6 aspect-[4/3] w-[calc(100%+3rem)] overflow-hidden bg-[#e8e8ed]">
-                    <Image
-                      src={KOSTEN_BILD[i].src}
-                      alt={KOSTEN_BILD[i].alt}
-                      fill
-                      sizes="(min-width: 1068px) 240px, (min-width: 640px) 50vw, calc(100vw - 32px)"
-                      className="object-cover"
-                      style={{ objectPosition: KOSTEN_BILD[i].position }}
-                    />
-                    <MusterPille text="Musterseite" />
-                  </div>
+                <article className="kachel relative flex w-full flex-col items-start overflow-hidden rounded-[6px] bg-[#fafaf8] px-6 pt-7 pb-7 text-left ring-1 ring-[#1b1d1e]/10 has-[.karte-link:focus-visible]:outline-2 has-[.karte-link:focus-visible]:outline-offset-2 has-[.karte-link:focus-visible]:outline-[#f45b1e]">
+                  <span aria-hidden="true" className={`kachel-box ${KOSTEN_TON[i]}`} />
+                  <span className="mt-2 block font-mono text-[10.5px] tracking-[0.12em] text-[#565b5d] uppercase">
+                    40&nbsp;FT · {kennung(p.setup)}
+                  </span>
                   <h3 className="t-karte mt-5">
                     <Link href={`/pakete/${p.slug}`} className="karte-link">
                       {p.name}
@@ -539,8 +525,8 @@ function Kosten() {
                       {p.limits.join(" · ")}
                     </p>
                   ) : null}
-                  <span className="link-chevron mt-auto pt-6 text-[14px]" aria-hidden="true">
-                    Mehr erfahren <span className="chev">›</span>
+                  <span className="mt-auto pt-6 text-[14px] font-semibold" aria-hidden="true">
+                    Im Einzelnen <span className="text-gold-ink">→</span>
                   </span>
                 </article>
               </li>
@@ -642,6 +628,11 @@ function Leistungen() {
           <Link href="/leistungen" className={`${TEXTLINK} mt-6`}>
             <MitPfeil>Leistungsverzeichnis</MitPfeil>
           </Link>
+          <aside className={`${a.randnotiz} mt-10`}>
+            <strong>Hinweis aus der Praxis</strong>
+            Handyfotos reichen oft, fertige Texte brauchen wir nicht. Stichpunkte zu Ihren Leistungen genügen für den
+            Anfang.
+          </aside>
         </div>
         <div className="text-foreground/85 max-w-[680px] space-y-5 text-[17px] leading-[1.5] tracking-[-0.022em] lg:col-span-7 lg:col-start-6">
           <p>
@@ -670,44 +661,6 @@ function Leistungen() {
           </p>
         </div>
       </div>
-      <BildRaster className="inhalt mt-10">
-        <BildKachel
-          spalten={4}
-          eyebrow="Gestaltung und Bau"
-          titel="Für Ihren Betrieb gestaltet."
-          foto={{
-            src: "/images/workspace-macbook.webp",
-            alt: "Hände an einer Laptop-Tastatur neben einem Notizbuch mit Skizzen",
-            position: "45% 40%",
-            sizes: "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)",
-          }}
-        />
-        <BildKachel
-          spalten={4}
-          eyebrow="Texte"
-          titel="Aus Ihren Stichpunkten."
-          foto={{
-            src: "/images/workspace-prints.webp",
-            alt: "Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand",
-            position: "50% 40%",
-            sizes: "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)",
-          }}
-        />
-        <BildKachel
-          spalten={4}
-          breit
-          className="min-[1068px]:!col-span-4"
-          eyebrow="Anfragen"
-          titel="Ein Tipp auf die Nummer."
-          foto={{
-            src: "/images/sitalo-cafe-mobile.webp",
-            alt: "Handy mit der Musterseite eines Cafés auf einem Holztisch",
-            position: "50% 45%",
-            muster: true,
-            sizes: "(min-width: 1068px) 320px, (min-width: 640px) 100vw, calc(100vw - 32px)",
-          }}
-        />
-      </BildRaster>
     </section>
   );
 }
@@ -740,7 +693,7 @@ function ListeSpalte({
   gedaempft?: boolean;
 }) {
   return (
-    <div className={u.blatt}>
+    <div className="kante-stark pt-4">
       <h3 className="text-[1.25rem] leading-tight font-semibold tracking-[-0.015em]">{titel}</h3>
       <ul className={`mt-5 border-t-[1.5px] ${gedaempft ? "border-border" : "border-foreground"}`}>
         {eintraege.map((e) => (
@@ -772,25 +725,34 @@ function ListeSpalte({
  * ---------------------------------------------------------------- */
 function Ablauf() {
   const last = ABLAUF_HALTE.length - 1;
-  const zeichen = [0, 0, 1, 1, 2, 3];
   return (
-    <LadenRegal
-      id="ablauf"
-      fett="Von der ersten Nachricht bis zum Start."
-      grau="Sechs Halte."
-      link={{ href: "/ablauf", label: "Ablauf im Detail" }}
-      className="scroll-mt-24 !pt-14 sm:!pt-20"
-    >
-      {ABLAUF_HALTE.map((h, i) => (
-        <KarteWeg
-          key={h.number}
-          band={<WegBand i={i} teile={6} zeichen={zeichen[i]} />}
-          eyebrow={`${i === last ? "Endhalt" : `Halt ${i + 1}`} · ${TEIL[h.wer]}`}
-          fett={`${h.title}.`}
-          grau={h.hinweis}
-        />
-      ))}
-    </LadenRegal>
+    <section id="ablauf" className="scroll-mt-24">
+      <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
+        <div className="lg:col-span-4">
+          <p className={a.eyebrow}>Fährlinie · sechs Halte</p>
+          <h2 className={`${H2} mt-4`}>Von der ersten Nachricht bis zum Start</h2>
+          <Link href="/ablauf" className={`${TEXTLINK} mt-6`}>
+            <MitPfeil>Ablauf im Detail</MitPfeil>
+          </Link>
+          <aside className={`${a.randnotiz} mt-10`}>
+            <strong>Hinweis aus der Praxis</strong>
+            Eine Korrekturrunde ist im Preis. Freigegeben wird erst, wenn alles stimmt.
+          </aside>
+        </div>
+        <ol className={`${a.lvListe} kante-stark lg:col-span-7 lg:col-start-6`}>
+          {ABLAUF_HALTE.map((h, i) => (
+            <li key={h.number} className={a.lvZeile}>
+              <span className={a.lvNr}>{i === last ? "Ende" : `${i + 1}`}</span>
+              <span>
+                <span className={a.lvTitel}>{h.title}</span>
+                <span className={a.lvSatz}>{h.hinweis}</span>
+              </span>
+              <span className={a.lvWert}>{TEIL[h.wer]}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }
 

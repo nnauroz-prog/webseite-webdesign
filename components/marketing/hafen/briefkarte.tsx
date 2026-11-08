@@ -62,7 +62,7 @@ export function Briefkarte({
                   <dt>Schriftlich</dt>
                   <dd>
                     <Link href="/anfrage" className="link-pfeil font-semibold">
-                      Anfrageformular, drei Pflichtfelder
+                      Anfrageformular, drei Pflichtfelder&nbsp;<span className="pfeil" aria-hidden="true">→</span>
                     </Link>
                   </dd>
                 </div>
@@ -77,7 +77,7 @@ export function Briefkarte({
                 </Link>
                 {zweiter ? (
                   <Link href={zweiter.href} className="link-pfeil text-[15px] font-semibold">
-                    {zweiter.label}
+                    {zweiter.label}&nbsp;<span className="pfeil" aria-hidden="true">→</span>
                   </Link>
                 ) : null}
               </div>

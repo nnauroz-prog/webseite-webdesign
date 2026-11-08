@@ -63,21 +63,21 @@ export default function BranchenPage() {
           bild={
             <FotoRahmen
               vorab
-              src="/images/sitalo-praxis-laptop.webp"
-              alt="Laptop mit der Musterseite einer Zahnarztpraxis auf einem hellen Empfangstresen"
+              src="/images/workspace-prints.webp"
+              alt="Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand"
               aspect="21 / 9"
               aspectMobil="4 / 3"
-              position="50% 45%"
+              position="50% 40%"
             />
           }
-          unterschrift="Musterseite einer Zahnarztpraxis am Empfang · frei erfunden"
+          unterschrift="Entwürfe an der Wand: Schrift, Farben, Zeichen. Jede Branche bekommt ihre eigenen."
         />
         <Register />
         <Ladeliste
           id="ladeliste"
           head={<LadelisteKopf />}
           pakete={PAKETE_KURZ}
-          className="on-dark mt-16 sm:mt-24"
+          className="on-dark mt-16 sm:mt-20"
         />
         <Vorschau />
         <KontaktKarte
@@ -136,7 +136,7 @@ function Register() {
         ))}
       </div>
       {/* Landingpages mit Ablauf und Preisen: sie führen „… erstellen lassen", die Branchenseiten den Seitenplan. */}
-      <p className={`${a.lvFuss} justify-start!`}>
+      <p className={`${a.lvFuss} items-baseline justify-start!`}>
         <span>Eigene Seiten mit Ablauf:</span>
         {LANDINGS.map((l) => (
           <Link key={l.href} href={l.href} className="link-pfeil text-foreground font-sans text-[14px] font-semibold">

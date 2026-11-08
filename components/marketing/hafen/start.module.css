@@ -100,6 +100,11 @@
     font-size: 19px;
   }
 }
+@media (min-width: 1024px) {
+  .absatz {
+    max-width: 30em;
+  }
+}
 
 .aktionen {
   display: flex;
@@ -150,8 +155,8 @@
 }
 
 /* Einstieg, eine Hand, ein Takt: Quadrat → Kennzeile → Wörter →
-   Absatz und Aktionen. Ohne JS genauso; endet immer sichtbar. Der
-   Absatz bleibt deckend (LCP), er setzt sich nur kurz. */
+   Aktionen. Ohne JS genauso; endet immer sichtbar. Der Absatz ist das
+   LCP-Element und steht vom ersten Bild an still. */
 @media (prefers-reduced-motion: no-preference) {
   .quadrat {
     animation: quadrat-auf var(--t-kurz) var(--ease-aus) both;
@@ -162,9 +167,6 @@
   .wortIn {
     animation: wort-auf 640ms var(--ease-aus) both;
     animation-delay: calc(100ms + var(--i, 0) * 60ms);
-  }
-  .absatz {
-    animation: folgt-text var(--t-lang) var(--ease-aus) 380ms both;
   }
   .aktionen,
   .gruss {
@@ -190,14 +192,6 @@
 @keyframes wort-auf {
   from {
     transform: translateY(112%);
-  }
-  to {
-    transform: none;
-  }
-}
-@keyframes folgt-text {
-  from {
-    transform: translateY(10px);
   }
   to {
     transform: none;
@@ -236,9 +230,26 @@
 .kranBild > div {
   width: 100% !important;
 }
-/* Schilder an den Containern: am Handy zu eng. */
+/* Am Handy die ganze viewBox: Kranführerhaus, A-Bock und Beine stehen
+   vollständig im Bild, links bleibt die Stadt im Dunst. Die Beschriftung
+   am Container steht etwas kleiner, damit sie in den Himmel passt. */
 @media (max-width: 733px) {
-  .kranBild p {
+  .kranBild {
+    width: 100%;
+    margin-left: 0;
+  }
+  .kranBild p [class*="schildNr"] {
+    font-size: 10px;
+  }
+  .kranBild p [class*="schildText"] {
+    font-size: 11.5px;
+  }
+}
+/* Unter 360 px ist der Himmel zu schmal: Etikett und Zeigerlinie gehen
+   gemeinsam aus, nie nur eins von beiden. */
+@media (max-width: 359px) {
+  .kranBild p,
+  .kranBild [data-kb="leader"] {
     display: none !important;
   }
 }
@@ -249,10 +260,39 @@
     margin-right: var(--rinne);
   }
 }
+/* Ab 1024 px eine Bühne wie im Atelier: Überschrift links, Kran und
+   Schiff rechts daneben im selben ersten Bildschirm. Die Zeichnung steht
+   bündig am rechten Rand und wird so weit unter den Kopf gezogen, dass
+   die Wasserlinie (y = 640 von 960 Breiteneinheiten, also 2/3 der
+   Bildbreite) knapp unter dem letzten Textblock liegt. Der Kopf liegt
+   darüber (z-index), die Stadt im Dunst läuft unter ihm aus. */
 @media (min-width: 1024px) {
+  .kopf {
+    position: relative;
+    z-index: 2;
+    padding-top: 64px;
+  }
+  .kran {
+    --kran-b: min(860px, 58vw);
+    margin-top: calc(36px - var(--kran-b) * 2 / 3);
+  }
+  .kran .kranBuehne {
+    padding-top: 0;
+  }
   .kranBild {
-    width: min(900px, 66%);
-    margin-right: max(var(--rinne), calc((100% - var(--inhalt-max)) / 2 + var(--rinne)));
+    width: var(--kran-b);
+    margin-right: 0;
+  }
+  /* Tageslicht nur hinter der Zeichnung, die Textspalte bleibt hell. */
+  .kranLicht {
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 38%, #000 58%),
+      linear-gradient(180deg, transparent 0%, #000 34%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(90deg, transparent 38%, #000 58%),
+      linear-gradient(180deg, transparent 0%, #000 34%);
+    mask-composite: intersect;
   }
 }
 
@@ -482,6 +522,10 @@
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12px;
   color: var(--muted-foreground);
+}
+/* Der Link rechts schwarz wie alle anderen „Alle …“-Links. */
+.lvFuss :global(.link-pfeil) {
+  color: var(--foreground);
 }
 
 /* ---------- Fragen, offen gesetzt ---------- */

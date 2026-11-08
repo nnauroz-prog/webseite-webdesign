@@ -95,7 +95,9 @@ html {
   --haarlinie: rgb(27 29 30 / 0.14);
 
   /* Höhen und Breiten */
-  --kopf-h: 48px;
+  /* Kopfleiste: 56 px am Handy, 60 px ab 834 px, damit die Wortmarke
+     mit „Webdesign“ wieder Platz hat wie im Atelier. */
+  --kopf-h: 56px;
   --leiste-h: 52px;
   --sticky-top: var(--kopf-h);
   --inhalt-max: 1100px;
@@ -137,6 +139,7 @@ html {
 @media (min-width: 834px) {
   :root {
     --rinne: 22px;
+    --kopf-h: 60px;
   }
 }
 @media (min-width: 1024px) {

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { MehrLink } from "@/components/marketing/apple";
+import a from "@/components/marketing/hafen/atelier.module.css";
 import {
   Abschnitt,
   FotoRahmen,
@@ -50,9 +51,10 @@ const BILDER: Record<
     satz: "Patientinnen und Patienten suchen Sprechzeiten und den Weg zum Termin.",
   },
   friseur: {
-    geraet: "/images/sitalo-friseur-mobile.webp",
-    geraetAlt: "Handy mit der Musterseite eines Friseurs, daneben Visitenkarten auf einem Holztisch",
-    geraetPos: "55% 50%",
+    // Das Friseur-Handy steht nur auf /pakete; hier der Stuhl als Kopfbild.
+    geraet: "/images/atmosphere/friseur-stuhl.webp",
+    geraetAlt: "Lederner Friseurstuhl vor einem runden Spiegel",
+    geraetPos: "50% 50%",
     foto: "/images/atmosphere/friseur-stuhl.webp",
     fotoAlt: "Lederner Friseurstuhl vor einem runden Spiegel",
     satz: "Erst die Bilder, dann der Preis, dann der Termin.",
@@ -233,10 +235,11 @@ export default async function BranchePage({
           titel="Aus Ihren Stichpunkten schreiben wir die Texte für die Seite."
           zeile="Schicken Sie uns, was Sie anbieten und für wen. Den Festpreis bekommen Sie schriftlich, bevor wir anfangen."
           pille={{ href: inquiryHref, label: "Anfrage schreiben" }}
+          link={{ href: "/branchen", label: "Alle Branchen" }}
         />
       </UnterseiteMain>
 
-      <MarketingFooter crumb={`${branche.label}`} />
+      <MarketingFooter crumb={`${branche.label}`} ohnePreisHinweis />
 
       <script
         type="application/ld+json"
@@ -253,10 +256,11 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
   const paket = getPaketBySlug(branche.recommendedPackage);
   const landing = BRANCHEN_SEO[branche.slug]?.landing;
   const bild = BILDER[branche.slug];
-  const zweitlink = "text-gold-ink underline underline-offset-2 hover:decoration-2";
+  const zweitlink = "text-foreground underline decoration-[var(--gold)] underline-offset-4";
   return (
     <SeitenKopf
-      eyebrow={landing ? "Seitenplan und Muster" : "Website erstellen lassen"}
+      krumen={[{ href: "/branchen", label: "Branchen" }, { label: branche.label }]}
+      eyebrow={landing ? "Ladeliste · Seitenplan und Muster" : "Ladeliste · Website erstellen lassen"}
       titel={<span className="hyphens-auto sm:hyphens-none">Website für {branche.label}</span>}
       unter={branche.shortBody}
       aktionen={
@@ -278,18 +282,26 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
             aspect="3 / 2"
             aspectMobil="4 / 3"
             position={bild.geraetPos ?? "50% 55%"}
-            muster
           />
         ) : null
       }
       unterschrift={
+        bild ? (
+          <>
+            {bild.geraet.includes("/sitalo-")
+              ? "Musterseite, frei erfunden. Ihre Seite gestalten wir eigens für Ihren Betrieb."
+              : bild.geraetAlt}{" "}
+            ·{" "}
+            <Link href="/branchen#vorschau" className={zweitlink}>
+              Erste Skizze mit Ihrem Namen
+            </Link>
+          </>
+        ) : null
+      }
+      meta={
         <>
-          {bild ? <>Musterseite, frei erfunden. Ihre Seite gestalten wir eigens für Ihren Betrieb. </> : null}
-          <Link href="/branchen#vorschau" className={zweitlink}>
-            Erste Skizze mit Ihrem Namen
-          </Link>
           {paket ? (
-            <span className="mx-auto mt-3 block max-w-[40em]">
+            <span className="block max-w-[52em]">
               Meist empfohlen:{" "}
               <Link href={`/pakete#${paket.slug}`} className={zweitlink}>
                 {paket.name}
@@ -320,6 +332,7 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
  * ---------------------------------------------------------------- */
 function Einordnung({ branche }: { branche: Branche }) {
   const [root, ...pages] = branche.typicalPages;
+  const satz = BILDER[branche.slug]?.satz;
   return (
     <section className={u.abschnitt} aria-label="Einordnung">
       <div className="inhalt grid gap-8 lg:grid-cols-12 lg:gap-5">
@@ -337,17 +350,25 @@ function Einordnung({ branche }: { branche: Branche }) {
             </p>
           ))}
         </div>
-        <div className={`${u.blatt} self-start lg:col-span-5`}>
-          <h2 className="text-[21px] leading-[25px] font-bold">Typischer Seitenplan</h2>
+        <div className="self-start lg:col-span-4 lg:col-start-9">
+          {satz ? (
+            <aside className={`${a.randnotiz} mb-10`}>
+              <strong>Was Ihre Kunden zuerst wissen wollen</strong>
+              {satz}
+            </aside>
+          ) : null}
+          <h2 className={`${a.lvKopf} kante-stark pt-3`}>
+            <span>Typischer Seitenplan</span>
+          </h2>
           <p className="mt-5 flex items-center gap-3 text-[15.5px] font-semibold">
-            <span aria-hidden="true" className="bg-gold inline-block h-[9px] w-[9px] shrink-0 rounded-full" />
+            <span aria-hidden="true" className="bg-gold inline-block h-[9px] w-[9px] shrink-0" />
             {root}
           </p>
           <ul className="border-foreground/35 mt-1 ml-[4px] border-l">
             {pages.map((page) => (
               <li
                 key={page}
-                className="before:bg-foreground/35 relative py-1.5 last:after:bg-white pl-5 text-[15px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
+                className="before:bg-foreground/35 relative py-1.5 last:after:bg-[#f3f2ee] pl-5 text-[15px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
               >
                 {page}
               </li>
@@ -368,7 +389,8 @@ function Einordnung({ branche }: { branche: Branche }) {
  * ---------------------------------------------------------------- */
 function Stimmung({ branche }: { branche: Branche }) {
   const bild = BILDER[branche.slug];
-  if (!bild) return null;
+  // Jedes Foto höchstens einmal je Seite.
+  if (!bild || bild.foto === bild.geraet) return null;
   return (
     <div className="inhalt mt-14 sm:mt-20">
       <figure>
@@ -379,8 +401,10 @@ function Stimmung({ branche }: { branche: Branche }) {
           aspectMobil="4 / 3"
           position={bild.fotoPos}
           sizes="(min-width: 1068px) 980px, calc(100vw - 32px)"
-          satz={bild.satz}
         />
+        <figcaption className={u.unterschrift}>
+          <span>{bild.fotoAlt}</span>
+        </figcaption>
       </figure>
     </div>
   );
@@ -394,18 +418,18 @@ function Schwerpunkte({ branche }: { branche: Branche }) {
     <Abschnitt
       id="schwerpunkte"
       dunkel
-      fett={`Was eine Website für ${branche.label} braucht.`}
-      grau="Den Rest lassen wir weg."
+      eyebrow="Ladung · Schwerpunkte"
+      fett={`Was eine Website für ${branche.label} braucht, und was wir weglassen`}
       unter="Welche Teile Ihr Betrieb davon braucht, klären wir im ersten Gespräch."
     >
-      <dl className={`grid gap-3 sm:grid-cols-2 lg:gap-5 ${branche.features.length % 3 === 0 ? "lg:grid-cols-3" : ""}`}>
+      <dl className={`grid gap-x-8 sm:grid-cols-2 ${branche.features.length % 3 === 0 ? "lg:grid-cols-3" : ""}`}>
         {branche.features.map((feat, i) => (
-          <div key={feat.title} className="rounded-[18px] bg-[#1d1d1f] p-6 sm:p-8">
-            <p aria-hidden="true" className="text-[12px] leading-4 font-semibold text-[#ff9f5a] tabular-nums">
+          <div key={feat.title} className="border-t border-[#f3f2ee]/20 pt-5 pb-8">
+            <p aria-hidden="true" className="font-mono text-[12px] leading-4 text-[#a3a8a9] tabular-nums">
               {String(i + 1).padStart(2, "0")}
             </p>
-            <dt className="mt-2 text-[21px] leading-[25px] font-bold text-[#f3f2ee]">{feat.title}</dt>
-            <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#a1a1a6]">{feat.body}</dd>
+            <dt className="mt-2 text-[21px] leading-[25px] font-[700] text-[#f3f2ee] [font-stretch:110%]">{feat.title}</dt>
+            <dd className="mt-3 text-[16px] leading-[1.55] text-pretty text-[#a3a8a9]">{feat.body}</dd>
           </div>
         ))}
       </dl>
@@ -418,15 +442,25 @@ function Schwerpunkte({ branche }: { branche: Branche }) {
  * ---------------------------------------------------------------- */
 function Fragen({ branche }: { branche: Branche }) {
   return (
-    <Abschnitt id="fragen" fett="Fragen aus der Branche." grau="Kurz beantwortet.">
-      <dl className="grid gap-3 sm:gap-5 md:grid-cols-2">
+    <Abschnitt id="fragen" eyebrow="Kaimauer · Fragen" fett="Was aus der Branche oft gefragt wird">
+      <dl className={a.interview}>
         {branche.faq.map((item) => (
-          <div key={item.q} className={u.blatt}>
-            <dt className="text-[19px] leading-[1.21] font-semibold tracking-[-0.015em] sm:text-[21px]">{item.q}</dt>
-            <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#6e6e73]">{item.a}</dd>
+          <div key={item.q}>
+            <dt className={a.frage}>{item.q}</dt>
+            <dd className={a.antwort}>{item.a}</dd>
           </div>
         ))}
       </dl>
+      <div className={a.fragenMobil}>
+        {branche.faq.map((item, i) => (
+          <details key={item.q} open={i < 3}>
+            <summary>
+              <h3 className={a.frage}>{item.q}</h3>
+            </summary>
+            <p className={a.antwort}>{item.a}</p>
+          </details>
+        ))}
+      </div>
     </Abschnitt>
   );
 }
@@ -449,21 +483,21 @@ function Weiter({ branche }: { branche: Branche }) {
       <div className="inhalt grid gap-10 md:grid-cols-3 md:gap-8">
         {post ? (
           <div>
-            <h2 className="text-[17px] font-semibold tracking-[-0.022em]">Aus dem Journal</h2>
-            <Link href={`/journal/${post.slug}`} className={`group ${u.blatt} mt-4 block !p-6`}>
+            <h2 className={a.eyebrow}>Aus dem Journal</h2>
+            <Link href={`/journal/${post.slug}`} className="group kante-stark mt-4 block pt-4">
               <span className="block text-[21px] leading-[1.19] font-semibold tracking-[-0.015em]">
                 {post.title}
               </span>
               <span className="text-muted-foreground mt-2 block text-[14.5px] leading-relaxed">{post.dek}</span>
-              <span className="link-chevron mt-3 inline-block text-[14px]">
-                Lesen, {post.readingMinutes} Min <span aria-hidden="true" className="chev">›</span>
+              <span className="mt-3 inline-block font-mono text-[12px] text-[#565b5d]">
+                Lesen, {post.readingMinutes} Min <span aria-hidden="true" className="text-gold-ink">→</span>
               </span>
             </Link>
           </div>
         ) : null}
         {standorte.length > 0 ? (
           <div>
-            <h2 className="text-[17px] font-semibold tracking-[-0.022em]">Stadtteilseiten Hamburg</h2>
+            <h2 className={a.eyebrow}>Stadtteilseiten Hamburg</h2>
             <ul className="border-foreground mt-4 border-t">
               {standorte.map((st) => (
                 <li key={st.slug}>
@@ -477,7 +511,7 @@ function Weiter({ branche }: { branche: Branche }) {
           </div>
         ) : null}
         <div className={!post && standorte.length === 0 ? "md:col-span-3" : !post || standorte.length === 0 ? "md:col-span-2" : ""}>
-          <h2 className="text-[17px] font-semibold tracking-[-0.022em]">Weitere Branchen</h2>
+          <h2 className={a.eyebrow}>Weitere Branchen</h2>
           <ul
             className={`border-foreground mt-4 border-t ${
               !post || standorte.length === 0 ? "sm:columns-2 sm:gap-8" : ""

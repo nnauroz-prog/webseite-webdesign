@@ -223,8 +223,8 @@ function Treffen() {
             uns am Telefon oder per Video. Die Website wird dieselbe.
           </p>
           <p className={`${a.mono} mt-6`}>
-            Für {STANDORTE.length} Hamburger Stadtteile gibt es eine eigene Seite. Fahren Sie mit der Maus über einen
-            Punkt.
+            Für {STANDORTE.length} Hamburger Stadtteile gibt es eine eigene Seite. Jedes Quadrat auf der Karte führt
+            dorthin.
           </p>
           <MehrLink href="/standorte" className="mt-4">
             Alle Stadtteile

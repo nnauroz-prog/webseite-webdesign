@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import { isValidElement, type CSSProperties, type ReactNode } from "react";
 
 import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 import { RevealRoot } from "@/components/marketing/hafen/reveal";
@@ -26,10 +26,11 @@ export const unterseiteStil = u;
 /** Kopfbild-Größen: 980 px im Raster, sonst Fensterbreite minus Rinne. */
 export const SIZES_KOPF = "(min-width: 1068px) 980px, calc(100vw - 32px)";
 /**
- * Kopfbild mit Vorabladen (LCP): am Handy bewusst kleiner angefragt,
- * damit bei 2,6-facher Pixeldichte höchstens die 750er-Variante lädt.
+ * Kopfbild mit Vorabladen: am Handy steht es als angeheftetes Foto auf
+ * 54 % der Breite, darüber als gerahmtes Foto mit höchstens 620 px
+ * (ab 1024 px in der rechten Spalte, unterseite.module.css).
  */
-export const SIZES_KOPF_VORAB = "(min-width: 1068px) 980px, (min-width: 734px) calc(100vw - 32px), 70vw";
+export const SIZES_KOPF_VORAB = "(min-width: 1024px) 460px, (min-width: 734px) 620px, 54vw";
 export const SIZES_HALB = "(min-width: 1068px) 480px, (min-width: 640px) 50vw, calc(100vw - 32px)";
 export const SIZES_DRITTEL = "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)";
 
@@ -119,8 +120,9 @@ export function Brotkrumen({ krumen, className }: { krumen: Krume[] | string; cl
 /**
  * Seitenkopf der Unterseiten im Atelier-Satz: linksbündig auf der
  * Satzkante, Mono-Brotkrumen, Eyebrow in Mono mit orangem Quadrat,
- * zweifarbige H1 (akzent in Stahl), ein Satz, höchstens ein Knopf.
- * Darunter optional das Kopffoto mit einer Mono-Bildunterschrift.
+ * einfarbige H1 (akzent mit kleinem orangem Unterstrich), ein Satz,
+ * höchstens ein Knopf. Ein Kopffoto steht gerahmt mit Mono-
+ * Bildunterschrift daneben (ab 1024 px) bzw. darunter.
  */
 export function SeitenKopf({
   krumen,
@@ -138,7 +140,7 @@ export function SeitenKopf({
   krumen?: Krume[] | string;
   eyebrow?: ReactNode;
   titel: ReactNode;
-  /** zweiter, gedämpfter Teil der H1 */
+  /** zweiter Teil der H1, gleiche Farbe, orange unterstrichen */
   akzent?: ReactNode;
   unter?: ReactNode;
   aktionen?: ReactNode;
@@ -150,6 +152,9 @@ export function SeitenKopf({
   neben?: ReactNode;
   className?: string;
 }) {
+  // Ein Foto im Kopf steht als gerahmtes Bild mit Unterschrift neben dem
+  // Text (ab 1024 px), nicht als Prospektfoto über die volle Breite.
+  const foto = isValidElement(bild) && bild.type === FotoRahmen;
   const text = (
     <div className={u.kopfText}>
       {eyebrow ? <p className={u.eyebrow}>{eyebrow}</p> : null}
@@ -167,6 +172,16 @@ export function SeitenKopf({
       {meta ? <div className={u.meta}>{meta}</div> : null}
     </div>
   );
+  const figur = bild ? (
+    <figure className={cn(u.kopfBild, foto && u.kopfFoto)}>
+      {bild}
+      {unterschrift ? (
+        <figcaption className={u.unterschrift}>
+          <span>{unterschrift}</span>
+        </figcaption>
+      ) : null}
+    </figure>
+  ) : null;
   return (
     <section className={cn(u.kopf, !bild && u.kopfOhneBild, className)}>
       <div className="inhalt">
@@ -176,16 +191,20 @@ export function SeitenKopf({
             {text}
             <div className={u.kopfNeben}>{neben}</div>
           </div>
+        ) : foto ? (
+          <div className={cn(u.kopfZweispaltig, u.kopfMitFoto)}>
+            {text}
+            {figur}
+          </div>
         ) : (
           text
         )}
-        {bild ? (
-          <figure className={u.kopfBild}>
-            {bild}
-            {unterschrift ? <figcaption className={u.unterschrift}>{unterschrift}</figcaption> : null}
-          </figure>
+        {foto && !neben ? null : bild ? (
+          figur
         ) : unterschrift ? (
-          <p className={u.unterschrift}>{unterschrift}</p>
+          <p className={u.unterschrift}>
+            <span>{unterschrift}</span>
+          </p>
         ) : null}
       </div>
     </section>

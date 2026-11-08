@@ -10,7 +10,6 @@ import {
   KontaktKarte,
   SeitenKopf,
   UnterseiteMain,
-  unterseiteStil as u,
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -158,21 +157,8 @@ function Fahrplan() {
           </li>
         ))}
       </ol>
-      <figure className="mt-14 sm:mt-20">
-        <FotoRahmen
-          src="/images/sitalo-praxis-laptop.webp"
-          alt="Laptop am Empfang einer Zahnarztpraxis, auf dem Bildschirm die Musterseite der Praxis"
-          aspect="21 / 9"
-          aspectMobil="4 / 3"
-          position="50% 42%"
-        />
-        <figcaption className={`${u.unterschrift}`}>
-          Halt 5: Erst ansehen, dann freigeben. Den Test-Link öffnen Sie auf Ihren eigenen Geräten. · Musterseite, frei
-          erfunden
-        </figcaption>
-      </figure>
-      <div className={a.lvFuss}>
-        <span>Antwort meist am selben Werktag</span>
+      <div className={`${a.lvFuss} mt-8!`}>
+        <span>Antwort meist am selben Werktag · Halt 5: Den Test-Link öffnen Sie auf Ihren eigenen Geräten.</span>
         <span className="flex gap-6">
           <MehrLink href="/pakete" frei={false} groesse="klein">
             Pakete
