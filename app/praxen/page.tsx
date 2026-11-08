@@ -74,7 +74,7 @@ export default function PraxenLandingPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <VerticalLanding data={DATA} faq={FAQ} />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Praxen" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

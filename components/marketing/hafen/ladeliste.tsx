@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { useId, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
 
 import { LADELISTEN, type BranchenLadeliste } from "./ladeliste-data";
@@ -9,8 +8,10 @@ import s from "./ladeliste.module.css";
 import type { PaketeKurz } from "./paket-kurz";
 
 /**
- * Ladeliste je Branche: links die Auswahl (Tabs), rechts ein Frachtpapier
- * mit Position, Ladung, Stauplatz und Vermerk. Unten das empfohlene Paket
+ * Ladeliste je Branche: oben die Auswahl als Pillen (Tabs), darunter
+ * eine große helle Karte: die drei wichtigsten Positionen als weiße
+ * Kacheln (Ladung, Stauplatz, Vermerk), die übrigen hinter
+ * „Alle … Positionen ›“ (details, ohne JS bedienbar). Unten das empfohlene Paket
  * mit Preis aus lib/pakete-data.ts (auf dem Server aufgelöst, Prop
  * `pakete`, siehe paket-kurz.ts) und der Knopf ins Anfrageformular, das
  * Branche, Paket und Liste schon ausgefüllt mitbringt.
@@ -78,19 +79,12 @@ export function Ladeliste({
   };
 
   return (
-    <section id={id} className={`${s.section} grain scroll-mt-20 ${className}`} style={style}>
+    <section id={id} className={`${s.section} abschnitt ${className}`} style={style}>
       {top}
-      {/* Unten derselbe Abstand wie .buehne-abschnitt (96 / 128 / 160 px),
-          der Abstand zum Kopf kommt aus .buehne-kopf (app/hafen.css). */}
-      <div
-        className={`mx-auto w-full max-w-6xl px-5 sm:px-6 ${top ? "pt-12 pb-24 sm:pt-16 sm:pb-32 lg:pb-40" : "py-24 sm:py-32 lg:py-40"}`}
-      >
+      <div className="inhalt">
         {head}
-        <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
-          <div className={`${s.side} lg:col-span-3`}>
-            <p className={s.sideLabel} aria-hidden="true">
-              Branche wählen
-            </p>
+        <div className={s.werk}>
+          <div className={s.side}>
             <div role="tablist" aria-label="Branche wählen" className={s.tabs}>
               {LADELISTEN.map((b, i) => {
                 const on = i === active;
@@ -120,7 +114,7 @@ export function Ladeliste({
             </div>
           </div>
 
-          <div className="min-w-0 lg:col-span-9">
+          <div className="min-w-0">
             {/* Nur die gewählte Liste trägt Inhalt; die übrigen Panels
                 bleiben leer (für aria-controls). Spart rund 650 Knoten im
                 DOM und damit Zeit beim Hydrieren auf dem Handy. */}
@@ -187,39 +181,22 @@ function Frachtpapier({
         </div>
       </div>
 
-      <dl className={s.fields}>
-        <div>
-          <dt>Ladehafen</dt>
-          <dd>Hamburg</dd>
-        </div>
-        <div>
-          <dt>Positionen</dt>
-          <dd>{b.positionen.length}, nach Wichtigkeit</dd>
-        </div>
-        <div className={s.fieldWide}>
-          <dt>Gelesen von</dt>
-          <dd>{b.leser.join(" · ")}</dd>
-        </div>
-      </dl>
+      <p className={s.leser}>
+        <span className="font-semibold">Gelesen von</span> {b.leser.join(" · ")}
+      </p>
 
-      <div className={s.colhead} aria-hidden="true">
-        <span>Pos.</span>
-        <span>Ladung · Wo auf der Seite</span>
-        <span>Warum</span>
-      </div>
-      <ol className={s.rows}>
-        {b.positionen.map((pos, i) => (
-          <li key={pos.ladung} className={s.row} style={{ "--i": i } as React.CSSProperties}>
+      {/* Die drei wichtigsten Positionen als Kacheln, der Rest auf Wunsch. */}
+      <ol className={s.kacheln}>
+        {b.positionen.slice(0, 3).map((pos, i) => (
+          <li key={pos.ladung} className={s.kachel} style={{ "--i": i } as React.CSSProperties}>
             <span className={s.pos} aria-hidden="true">
-              {String(i + 1).padStart(2, "0")}
+              {i + 1}
             </span>
-            <div className="min-w-0">
-              <p className={s.ladung}>{pos.ladung}</p>
-              <p className={s.stau}>
-                <span className="sr-only">Wo auf der Seite: </span>
-                {pos.stauplatz}
-              </p>
-            </div>
+            <p className={s.ladung}>{pos.ladung}</p>
+            <p className={s.stau}>
+              <span className="sr-only">Wo auf der Seite: </span>
+              {pos.stauplatz}
+            </p>
             <p className={s.vermerk}>
               <span className="sr-only">Warum: </span>
               {pos.vermerk}
@@ -227,6 +204,33 @@ function Frachtpapier({
           </li>
         ))}
       </ol>
+      {b.positionen.length > 3 ? (
+        <details className={s.mehr}>
+          <summary className={s.mehrKnopf}>
+            Alle {b.positionen.length} Positionen <span aria-hidden="true" className={s.chev}>›</span>
+          </summary>
+          <ol start={4} className={s.rows}>
+            {b.positionen.slice(3).map((pos, i) => (
+              <li key={pos.ladung} className={s.row}>
+                <span className={s.pos} aria-hidden="true">
+                  {i + 4}
+                </span>
+                <div className="min-w-0">
+                  <p className={s.ladung}>{pos.ladung}</p>
+                  <p className={s.stau}>
+                    <span className="sr-only">Wo auf der Seite: </span>
+                    {pos.stauplatz}
+                  </p>
+                  <p className={`${s.vermerk} mt-1`}>
+                    <span className="sr-only">Warum: </span>
+                    {pos.vermerk}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </details>
+      ) : null}
 
       <div className={s.foot}>
         <div className="min-w-0">
@@ -245,7 +249,6 @@ function Frachtpapier({
         <div className={s.cta}>
           <Link href={anfrageHref(b, pakete)} className="btn-signal">
             Anfrage mit dieser Ladeliste
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
           <p className={s.ctaNote}>Branche, Paket und Liste stehen dann schon im Formular.</p>
         </div>

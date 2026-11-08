@@ -1,10 +1,24 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { Calculator, CalendarDays, Gauge, ListChecks, Phone, Receipt, ScanSearch, Search } from "lucide-react";
 
-import { Abfahrtstafel } from "@/components/marketing/hafen/abfahrtstafel";
-import { ContainerStack } from "@/components/marketing/hafen/container-stack";
+import {
+  Abschluss,
+  BentoKachel,
+  BentoRaster,
+  BrowserMotiv,
+  ContainerMitIcon,
+  ContainerMitZeilen,
+  ContainerMotiv,
+  IconMotiv,
+  KreisMotiv,
+  MehrLink,
+  PflegeMotiv,
+  Regal,
+  RegalKarte,
+  TextSzene,
+} from "@/components/marketing/apple";
 import { Faehrlinie } from "@/components/marketing/hafen/faehrlinie";
 import { HafenHero } from "@/components/marketing/hafen/hafen-hero";
 import { Ladeliste } from "@/components/marketing/hafen/ladeliste";
@@ -12,12 +26,14 @@ import { Lotse } from "@/components/marketing/hafen/lotse";
 import { PaketKacheln } from "@/components/marketing/hafen/paket-kacheln";
 import { paketeKurz } from "@/components/marketing/hafen/paket-kurz";
 import { RevealRoot } from "@/components/marketing/hafen/reveal";
-import { Steigend } from "@/components/marketing/hafen/steigend";
 import { VorherNachher as VorherNachherRegler } from "@/components/marketing/hafen/vorher-nachher";
 import { LivePreview } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
+import { Produktleiste } from "@/components/marketing/produktleiste";
+import { STUNDENSATZ_EUR } from "@/lib/honorar-data";
+import { JOURNAL_POSTS } from "@/lib/journal-data";
+import { BOXES } from "@/lib/leistungen-kacheln";
 import { MONATSBEITRAEGE, PAKETE, PREIS_HINWEIS, getPaketBySlug } from "@/lib/pakete-data";
 
 const CONTACT_EMAIL = "info@sitalo.de";
@@ -91,41 +107,37 @@ const FAQ_LD = {
 };
 
 const STARTER = getPaketBySlug("starter");
-const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "599\u00A0€";
-const MONTHLY_FROM = STARTER ? STARTER.monthly.replace(/\s*\/\s*Monat$/, "") : "ab 59\u00A0€";
+const STARTER_PRICE = STARTER ? STARTER.setup.replace(/^ab\s*/, "") : "599 €";
+const MONTHLY_FROM = STARTER ? STARTER.monthly.replace(/\s*\/\s*Monat$/, "") : "ab 59 €";
 const STUDIO = getPaketBySlug("studio");
-/** Name und Preise je Paket für Ladeliste und Abfahrtstafel (Client). */
+/** Name und Preise je Paket für die Ladeliste (Client). */
 const PAKETE_KURZ = paketeKurz();
+/** Die vier neuesten Ratgeber fürs Journal-Regal. */
+const JOURNAL_NEU = JOURNAL_POSTS.slice(0, 4);
 
 /*
- * Reihenfolge der Abschnitte und warum:
- *  1. Kopf: wer wir sind, was es kostet.
- *  2. Leistungen: was zu jeder Website gehört (Containerstapel).
- *  3. Ladeliste: was davon in IHRER Branche zählt. Hier entsteht das
- *     Gefühl „die kennen sich aus“, deshalb früh und dunkel abgesetzt.
- *  4. Lotse: wer was tut. Nimmt die Sorge vor Aufwand.
- *  5. Ablauf: wie es läuft (Fährlinie).
- *  6. Vorschau: eine Skizze mit dem eigenen Namen. Steht bewusst nicht
- *     direkt hinter der Ladeliste, damit nicht zwei Branchenwähler
- *     aufeinander folgen.
- *  7. Preise: erst jetzt, wenn Nutzen und Aufwand klar sind.
- *  8. Vorher/Nachher: Beleg für die Qualität.
- *  9. Fragen: letzte Zweifel. 10. Kontakt mit Skyline.
- * Hell und dunkel wechseln sich ab, jeder Abschnitt ist anders gebaut.
- * Helle Abschnitte trennen sich nur über den Flächenwechsel Elbnebel ↔
- * Karte, ohne Haarlinien. Jeder Kopf ist eine große Aussage
- * (.buehne-titel) mit einem vorhandenen Satz in Grau darunter
- * (.buehne-unter), Abstände über .buehne-abschnitt und .buehne-kopf
- * (app/hafen.css, Block „Bühne“). Regel für die Köpfe: helle
- * Präsentations-Abschnitte zentriert (Leistungen, Lotse, Vorschau,
- * Preise, Vorher/Nachher), dunkle Hafen-Abschnitte linksbündig und am
- * Rechner zweispaltig (Ladeliste, Ablauf), Fragen und Kontakt in der
- * kleinen Stufe linksbündig. Ein Kopf hat zwei Stufen; weiterer
- * Fließtext steht beim Inhalt.
- * Eine einzige Wellenkante (Leistungen → Ladeliste) markiert den
- * Übergang aufs Wasser; die übrigen Kanten sind gerade. RevealRoot
- * blendet alle data-reveal-Elemente beim Scrollen ein (API in
- * components/marketing/hafen/reveal.tsx).
+ * Reihenfolge der Abschnitte (Apple-Produktseite) und Flächen:
+ *  1. Kopf (#fff): Kennzeile, große Botschaft, Pille + Link, darunter
+ *     die Containerbrücke als Produktbild.
+ *  2. Leistungen (#fff): Bento-Kacheln, hell und schwarz im Wechsel.
+ *  3. Text-Szene (#000): eine Aussage, die beim Scrollen hell aufgeht.
+ *  4. Werkzeuge (#f5f5f7): Regal mit den kostenlosen Werkzeugen.
+ *  5. Ladeliste (#fff): was davon in IHRER Branche zählt.
+ *  6. Lotse (#f5f5f7): wer was tut, zwei große Kacheln.
+ *  7. Ablauf (#000): die Fährlinie als Scroll-Szene.
+ *  8. Vorschau (#fff): eine Skizze mit dem eigenen Namen. Steht bewusst
+ *     nicht direkt hinter der Ladeliste (zwei Branchenwähler).
+ *  9. Preise (#f5f5f7): die Pakete als Modelle.
+ * 10. Vorher/Nachher (#fff): Beleg für die Qualität.
+ * 11. Fragen (#f5f5f7): letzte Zweifel, Zweiton-Kopf links.
+ * 12. Journal (#fff): Regal mit den neuesten Ratgebern.
+ * 13. Kontakt (#000): Telefonnummer groß, Pille und Mail.
+ * Danach der Fuß (#f5f5f7).
+ * Köpfe: zentriert (.abschnitt-kopf, .t-abschnitt + .t-unter), Regale
+ * und Fragen mit Zweiton-Kopf an der linken Inhaltskante. Bewegung nur
+ * per CSS (data-auftritt, app/apple.css, Block 12); RevealRoot treibt
+ * nur noch die Telefonnummer im Kontakt (data-reveal="tel") und setzt
+ * .seite-geladen für .spaeter-geladen.
  */
 export default function HomePage() {
   return (
@@ -134,20 +146,37 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
       />
-      <MarketingHeader />
+      <MarketingHeader cta={false} />
+      {/* Lokale Produktleiste: direktes Kind des Wrappers, sonst klebt
+          sie am iPhone nicht (components/marketing/produktleiste.tsx). */}
+      <Produktleiste
+        titel="Sitalo Webdesign"
+        titelHref="#start"
+        links={[
+          { href: "#leistungen", label: "Übersicht" },
+          { href: "#werkzeuge", label: "Werkzeuge" },
+          { href: "#preise", label: "Pakete" },
+          { href: "#faq", label: "Fragen" },
+        ]}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
       <main id="main" tabIndex={-1} className="buehne flex-1">
         <RevealRoot />
         <HafenHero />
         <Leistungen />
+        <TextSzene>
+          Vom ersten Anruf an sprechen Sie <span className="leuchtet">mit uns selbst</span>, auch wenn die Seite längst
+          online ist.
+        </TextSzene>
+        <Werkzeuge />
         <Ladeliste
           id="ladeliste"
-          top={<Ladehafen />}
           head={<LadelisteKopf />}
           pakete={PAKETE_KURZ}
           className="spaeter-geladen"
-          style={spaeter(2830, 2080)}
+          style={spaeter(2480, 1850)}
         />
-        <section id="lotse" className="spaeter-geladen buehne-abschnitt scroll-mt-20" style={spaeter(1950, 1420)}>
+        <section id="lotse" className="spaeter-geladen flaeche-hell abschnitt" style={spaeter(2150, 1320)}>
           <Lotse />
         </section>
         <Ablauf />
@@ -155,6 +184,7 @@ export default function HomePage() {
         <Preise />
         <VorherNachher />
         <Fragen />
+        <Journal />
         <Kontakt />
       </main>
       <MarketingFooter />
@@ -162,10 +192,11 @@ export default function HomePage() {
   );
 }
 
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
-
 /** Startgröße für .spaeter und .spaeter-geladen (app/hafen.css): Höhe in
- *  px schmal / ab 1024 px. Gemessen bei 390, 1024 und 1440 px; bei
+ *  px schmal / ab 1024 px. WICHTIG: contain-intrinsic-block-size gilt nur
+ *  für die Inhaltsbox, also die gemessene Gesamthöhe MINUS Innenabstand
+ *  oben und unten eintragen (.abschnitt 160/240 px, .abschluss 192/280 px,
+ *  Regal nur oben 64/96 px), sonst springen Anker beim weichen Scrollen. Gemessen bei 390, 1024 und 1440 px; bei
  *  Textänderungen grob nachziehen. Die Ablauf-Szene setzt ihre Höhe am
  *  Rechner selbst (app/hafen.css, Block „Ablauf-Szene“). */
 function spaeter(h: number, hLg: number) {
@@ -173,31 +204,175 @@ function spaeter(h: number, hLg: number) {
 }
 
 /* ------------------------------------------------------------------
- * Leistungen als Containerstapel.
+ * 2. Leistungen als Bento-Kacheln (Texte: lib/leistungen-kacheln.ts).
+ * Desktop: [Website · 7] [Hosting · 5] / [Texte · 4] [Anfragen · 4]
+ * [Google · 4] / [Selbst pflegen · 12, Querformat].
  * ---------------------------------------------------------------- */
+const BENTO: Record<
+  string,
+  { ton: "hell" | "schwarz"; spalten: 4 | 5 | 7 | 12; gross?: boolean; quer?: boolean; motiv: React.ReactNode }
+> = {
+  "Die Website selbst": { ton: "hell", spalten: 7, gross: true, motiv: <BrowserMotiv /> },
+  "Hosting und Pflege": {
+    ton: "schwarz",
+    spalten: 5,
+    gross: true,
+    motiv: <ContainerMotiv groesse="l" stapel={["signal", "zink", "gruen"]} />,
+  },
+  Texte: { ton: "schwarz", spalten: 4, motiv: <ContainerMitZeilen ton="gruen" /> },
+  Anfragen: { ton: "hell", spalten: 4, motiv: <KreisMotiv icon={Phone} /> },
+  "Bei Google": { ton: "schwarz", spalten: 4, motiv: <ContainerMitIcon ton="signal" icon={Search} /> },
+  "Selbst pflegen": { ton: "hell", spalten: 12, quer: true, motiv: <PflegeMotiv /> },
+};
+
 function Leistungen() {
   return (
+    <section id="leistungen" className="spaeter-geladen flaeche-weiss abschnitt" style={spaeter(3360, 1960)}>
+      <div className="inhalt abschnitt-kopf">
+        <h2 data-auftritt="titel" className="t-abschnitt">
+          Was zu Ihrer Website gehört
+        </h2>
+        <p className="t-unter">
+          Auf jedem Container steht, ab welchem Paket er mitfährt. Geladen wird nur, was Ihr Betrieb braucht.
+        </p>
+        <p className="mt-3">
+          <MehrLink href="/leistungen">Alle Leistungen</MehrLink>
+        </p>
+      </div>
+      <BentoRaster zwoelf>
+        {BOXES.map((b) => {
+          const k = BENTO[b.title];
+          return (
+            <BentoKachel
+              key={b.title}
+              ton={k?.ton ?? "hell"}
+              spalten={k?.spalten}
+              gross={k?.gross}
+              quer={k?.quer}
+              eyebrow={b.tag}
+              titel={b.title}
+              text={b.text}
+              href={b.href}
+              motiv={k?.motiv}
+            />
+          );
+        })}
+      </BentoRaster>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * 4. Werkzeuge als Regal. Titel und Sätze wortnah aus den Seiten.
+ * ---------------------------------------------------------------- */
+function Werkzeuge() {
+  return (
+    <Regal id="werkzeuge" fett="Werkzeuge." grau="Kostenlos ausprobieren." flaeche="hell">
+      <RegalKarte
+        eyebrow="Werkzeug"
+        titel="Kostenlose Durchsicht Ihrer Website"
+        text="Wir sehen uns Ihre Website von Hand an und schicken drei bis fünf konkrete Punkte per Mail, meist innerhalb von zwei Werktagen."
+        href="/audit"
+        linkText="Ausprobieren"
+        motiv={<IconMotiv icon={ScanSearch} />}
+      />
+      <RegalKarte
+        eyebrow="Werkzeug"
+        titel="Website-Ladezeit kostenlos testen"
+        text="Ladezeit, Barrierefreiheit, Technik und Google-Grundlagen Ihrer Website in etwa 30 Sekunden."
+        href="/check"
+        linkText="Ausprobieren"
+        motiv={<IconMotiv icon={Gauge} />}
+      />
+      <RegalKarte
+        eyebrow="Werkzeug"
+        titel="Welches Paket passt? Fünf Fragen"
+        text="Fünf Fragen zu Branche, Größe und Zeitplan, danach eine begründete Empfehlung."
+        href="/empfehlung"
+        linkText="Ausprobieren"
+        motiv={<IconMotiv icon={ListChecks} />}
+      />
+      <RegalKarte
+        eyebrow="Kalkulation"
+        titel="Website-Kosten über 3 Jahre berechnen"
+        text="Sitalo neben Wix, Squarespace, Jimdo und dem Selbstbau, Ihre eigene Arbeitszeit eingerechnet."
+        href="/rechner"
+        linkText="Ausprobieren"
+        motiv={<IconMotiv icon={Calculator} />}
+      />
+      <RegalKarte
+        eyebrow="Termin"
+        titel="Kostenloses Erstgespräch buchen"
+        text="Bis zu 30 Minuten. Tag und Uhrzeit wählen, Bestätigung per E-Mail meist am selben Werktag."
+        href="/termin"
+        linkText="Termin wählen"
+        motiv={<IconMotiv icon={CalendarDays} />}
+      />
+      <RegalKarte
+        eyebrow="Kalkulation"
+        titel="Honorar offen vorgerechnet"
+        text={`Stundensatz ${STUNDENSATZ_EUR} € inkl. MwSt., Stunden je Paket und was wir nicht abrechnen.`}
+        href="/honorar"
+        motiv={<IconMotiv icon={Receipt} />}
+      />
+    </Regal>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * 5. Ladeliste: Kopf zentriert. Auswahl und Frachtpapier liegen in
+ * components/marketing/hafen/ladeliste.tsx.
+ * ---------------------------------------------------------------- */
+function LadelisteKopf() {
+  return (
+    <div className="abschnitt-kopf">
+      <h2 data-auftritt="titel" className="t-abschnitt">
+        Die Ladeliste für Ihre Branche
+      </h2>
+      <p className="t-unter">
+        Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will.
+      </p>
+      <p className="text-muted-foreground mx-auto mt-5 max-w-[38em] text-[17px] leading-[1.47]">
+        Wählen Sie Ihre Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
+      </p>
+      <p className="mt-1">
+        <MehrLink href="/branchen">Alle Branchen im Einzelnen</MehrLink>
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * 7. Ablauf als Fährlinie auf Schwarz.
+ * ---------------------------------------------------------------- */
+function Ablauf() {
+  return (
     <section
-      id="leistungen"
-      className="spaeter-geladen buehne-abschnitt bg-card scroll-mt-20"
-      style={spaeter(1905, 1320)}
+      id="ablauf"
+      className="ablauf-spur spaeter-geladen buehne-abschnitt bg-black text-[#f5f5f7]"
+      style={spaeter(1120, 890)}
     >
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <div className="buehne-kopf buehne-mitte">
-          <h2 data-reveal="rise" className="buehne-titel">
-            <Steigend text="Was zu Ihrer Website gehört" />
-          </h2>
-          <p data-reveal="fade" className="buehne-unter">
-            Auf jedem Container steht, ab welchem Paket er mitfährt. Geladen wird nur, was Ihr Betrieb braucht.
-          </p>
-          <p className="mt-5">
-            <Link href="/leistungen" className="link-pfeil text-[15px] font-semibold">
-              Alle <span className="whitespace-nowrap">Leistungen{ARROW}</span>
-            </Link>
-          </p>
-        </div>
-        <div>
-          <ContainerStack />
+      {/* Die eine Scroll-Szene der Seite: Am Rechner bleibt die Bühne
+          stehen, während die Fähre die Halte abfährt (app/hafen.css,
+          Block „Ablauf-Szene“; Fortschritt in faehrlinie.tsx). Mobil, auf
+          niedrigen Fenstern, ohne Script und bei reduzierter Bewegung
+          ein normaler Abschnitt. */}
+      <div className="ablauf-buehne">
+        <div className="inhalt">
+          <div className="buehne-kopf abschnitt-kopf">
+            <h2 data-auftritt="titel" className="t-abschnitt">
+              Der Weg zur fertigen Seite, kurz gefasst
+            </h2>
+          </div>
+          <div>
+            <Faehrlinie />
+          </div>
+          <div className="ablauf-fuss text-text-2-dark mt-14 flex flex-col items-center justify-center gap-x-6 gap-y-1 border-t border-[#424245] pt-5 text-center text-[14px] leading-[1.43] sm:mt-16 sm:flex-row">
+            <span>Antwort auf Anrufe und Mails meist am selben Werktag.</span>
+            <MehrLink href="/ablauf" groesse="klein">
+              Ablauf im Detail
+            </MehrLink>
+          </div>
         </div>
       </div>
     </section>
@@ -205,73 +380,27 @@ function Leistungen() {
 }
 
 /* ------------------------------------------------------------------
- * Ladehafen: Hamburg als Linienzeichnung oben im dunklen Abschnitt der
- * Ladeliste. Zeichnet sich beim Hinscrollen, danach gehen die Lichter
- * an. Darunter steht die Ladeliste – der Hafen, in dem geladen wird.
- * ---------------------------------------------------------------- */
-function Ladehafen() {
-  return (
-    <div className="pt-8 sm:pt-14">
-      <HamburgPanorama tone="dark" />
-      <p className="label-mono text-stahl-hell mx-auto -mt-2 w-full max-w-6xl px-5 sm:-mt-4 sm:px-6">
-        Ladehafen Hamburg<span className="hidden sm:inline"> · Köhlbrandbrücke bis Speicherstadt</span>
-      </p>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Ladeliste: Kopf der linken Spalte. Auswahl und Frachtpapier
- * liegen in components/marketing/hafen/ladeliste.tsx.
- * ---------------------------------------------------------------- */
-function LadelisteKopf() {
-  return (
-    <>
-      <div className="buehne-kopf buehne-kopf-zweispaltig">
-        <h2 data-reveal="rise" className="buehne-titel">
-          <Steigend text="Die Ladeliste für Ihre Branche" />
-        </h2>
-        <div>
-          <p data-reveal="fade" className="buehne-unter text-stahl-hell">
-            Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will.
-          </p>
-          <p className="mt-5">
-            <Link href="/branchen" className="link-pfeil link-pfeil-dunkel text-[15px] font-semibold">
-              Alle Branchen im <span className="whitespace-nowrap">Einzelnen{ARROW}</span>
-            </Link>
-          </p>
-        </div>
-      </div>
-      {/* Die Anleitung gehört zum Werkzeug und steht direkt darüber. */}
-      <p data-reveal="fade" className="text-stahl-hell mb-8 max-w-[38em] text-[17px] leading-relaxed lg:mb-10">
-        Wählen Sie Ihre Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
-      </p>
-    </>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Live-Vorschau: Betriebsname eintippen, Skizze entsteht sofort.
+ * 8. Live-Vorschau: Betriebsname eintippen, Skizze entsteht sofort.
  * ---------------------------------------------------------------- */
 function Vorschau() {
   return (
-    <section id="vorschau" className="spaeter-geladen buehne-abschnitt scroll-mt-20" style={spaeter(1200, 1600)}>
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <div className="buehne-kopf buehne-mitte">
-          <h2 data-reveal="rise" className="buehne-titel">
-            <Steigend text="Eine erste Skizze mit Ihrem Namen" />
+    <section id="vorschau" className="spaeter-geladen flaeche-weiss abschnitt" style={spaeter(1170, 1520)}>
+      <div className="inhalt">
+        <div className="abschnitt-kopf">
+          <h2 data-auftritt="titel" className="t-abschnitt">
+            Eine erste Skizze mit Ihrem Namen
           </h2>
-          <p data-reveal="fade" className="buehne-unter">
-            Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche.
-          </p>
+          <p className="t-unter">Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche.</p>
         </div>
-        {/* Das Gerät fährt beim Hinscrollen auf die Bühne (.buehne-einzug). */}
-        <div className="buehne-einzug mx-auto max-w-5xl min-w-0">
-          <LivePreview />
+        {/* Bühne: das Gerät fährt beim Hinscrollen ein (.buehne-einzug). */}
+        <div className="karte p-3 sm:p-10 lg:p-16">
+          <div className="buehne-einzug mx-auto max-w-5xl min-w-0">
+            <LivePreview />
+          </div>
         </div>
-        <div className="text-muted-foreground mx-auto mt-10 grid max-w-5xl gap-4 text-[17px] leading-relaxed md:mt-12 md:grid-cols-2 md:gap-8">
-          <p data-reveal="fade">Die Skizze entsteht sofort hier im Browser, gespeichert wird nichts.</p>
-          <p data-reveal="fade">
+        <div className="text-muted-foreground mx-auto mt-10 max-w-[36em] space-y-3 text-center text-[17px] leading-[1.47] md:mt-12">
+          <p>Die Skizze entsteht sofort hier im Browser, gespeichert wird nichts.</p>
+          <p>
             Gefällt Ihnen die Richtung, schicken Sie die Skizze als Anfrage. Die echte Seite entwerfen wir danach mit
             Ihren Fotos und Texten.
           </p>
@@ -282,145 +411,79 @@ function Vorschau() {
 }
 
 /* ------------------------------------------------------------------
- * Ablauf als Fährlinie.
- * ---------------------------------------------------------------- */
-function Ablauf() {
-  return (
-    <section
-      id="ablauf"
-      className="ablauf-spur spaeter-geladen buehne-abschnitt bg-foreground text-background scroll-mt-16"
-      style={spaeter(1320, 1040)}
-    >
-      {/* Die eine Scroll-Szene der Seite: Am Rechner bleibt die Bühne
-          stehen, während die Fähre die Halte abfährt (app/hafen.css,
-          Block „Ablauf-Szene“; Fortschritt in faehrlinie.tsx). Mobil, auf
-          niedrigen Fenstern, ohne Script und bei reduzierter Bewegung
-          ein normaler Abschnitt. */}
-      <div className="ablauf-buehne">
-        <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-          <div className="buehne-kopf buehne-kopf-zweispaltig">
-            <h2 data-reveal="rise" className="buehne-titel">
-              <Steigend text="Der Weg zur fertigen Seite, kurz gefasst" />
-            </h2>
-            <div>
-              <p data-reveal="fade" className="buehne-unter">
-                Vom ersten Anruf an sprechen Sie mit uns selbst, auch wenn die Seite längst online ist.
-              </p>
-            </div>
-          </div>
-          <div>
-            <Faehrlinie />
-          </div>
-          <div className="ablauf-fuss border-background/15 text-stahl-hell mt-14 flex flex-col justify-between gap-2 border-t pt-5 font-mono text-[12px] sm:mt-16 sm:flex-row">
-            <span>Antwort auf Anrufe und Mails meist am selben Werktag.</span>
-            <Link href="/ablauf" className="link-pfeil link-pfeil-dunkel link-pfeil-zeile self-start">
-              Ablauf im Detail <span className="pfeil">→</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Preise als Abfahrtstafel.
+ * 9. Preise: die vier Pakete als Modelle.
  * ---------------------------------------------------------------- */
 function Preise() {
   return (
-    <section
-      id="preise"
-      className="spaeter-geladen buehne-abschnitt bg-card scroll-mt-20"
-      style={spaeter(2950, 1900)}
-    >
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <div className="buehne-kopf buehne-mitte">
-          <h2 data-reveal="rise" className="buehne-titel">
-            <Steigend text={`Festpreis ab ${STARTER_PRICE}`} />
-          </h2>
-          <p data-reveal="fade" className="buehne-unter">
-            Den Preis bekommen Sie schriftlich, bevor wir anfangen.
-          </p>
-        </div>
-        <PaketKacheln flaeche="bg-background" />
+    <section id="preise" className="spaeter-geladen flaeche-hell abschnitt" style={spaeter(1350, 1600)}>
+      <div className="inhalt abschnitt-kopf">
+        <h2 data-auftritt="titel" className="t-abschnitt">
+          Festpreis ab {STARTER_PRICE}
+        </h2>
+        <p className="t-unter">Den Preis bekommen Sie schriftlich, bevor wir anfangen.</p>
+      </div>
+      <PaketKacheln flaeche="weiss" />
 
-        {/* Hafen-Akzent: die Abfahrtstafel als schmales Band, nur Linie,
-            Name und Preis. Die Sätze stehen schon auf den Kacheln. */}
-        <div className="mx-auto mt-12 max-w-2xl min-w-0 lg:mt-16">
-          <Abfahrtstafel pakete={PAKETE_KURZ} schmal />
+      {/* Abschluss zentriert: ein Absatz, darunter Pille und Link als
+          Paar, das Kleingedruckte zuletzt. */}
+      <div className="inhalt mt-12 text-center lg:mt-16">
+        <p className="text-muted-foreground mx-auto max-w-[40em] text-[17px] leading-[1.47] text-pretty">
+          Kommt später etwas dazu, sprechen wir vorher darüber. Welches Paket passt, klären wir im ersten Telefonat. Für
+          die meisten Betriebe empfehlen wir Business; die{" "}
+          <Link href="#ladeliste" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+            Ladeliste
+          </Link>{" "}
+          nennt die Empfehlung für Ihre Branche.
+        </p>
+        <div className="aktionen mt-8">
+          <Link href="/anfrage" className="btn-signal btn-gross">
+            Anfrage schreiben
+          </Link>
+          <MehrLink href="/pakete#vergleich">Pakete vergleichen</MehrLink>
         </div>
-
-        {/* Abschluss zentriert: ein Absatz, darunter Knopf und Link als
-            Paar, das Kleingedruckte zuletzt. */}
-        <div className="mx-auto mt-14 max-w-[40em] text-center lg:mt-20">
-          <p data-reveal="fade" className="text-muted-foreground text-[17px] leading-relaxed text-pretty">
-            Kommt später etwas dazu, sprechen wir vorher darüber. Welches Paket passt, klären wir im ersten Telefonat.
-            Für die meisten Betriebe empfehlen wir Business; die{" "}
-            <Link href="#ladeliste" className="text-foreground underline decoration-[var(--gold)] decoration-2 underline-offset-4">
-              Ladeliste
-            </Link>{" "}
-            nennt die Empfehlung für Ihre Branche.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-            <Link href="/anfrage" className="btn-signal btn-ruhig">
-              Anfrage schreiben {ARROW}
-            </Link>
-            <Link href="/pakete#vergleich" className="link-pfeil text-[15px] font-semibold">
-              Pakete <span className="whitespace-nowrap">vergleichen{ARROW}</span>
-            </Link>
-          </div>
-          <div className="mt-10">
-            <p className="text-muted-foreground font-mono text-[12px] leading-relaxed">
-              Einmalpreise, dazu ein Monatsbeitrag {MONTHLY_FROM}.
-              {STUDIO ? (
-                <>
-                  {" "}
-                  Für ein neues Erscheinungsbild gibt es{" "}
-                  <Link
-                    href={`/pakete/${STUDIO.slug}`}
-                    className="text-foreground underline decoration-[var(--gold)] underline-offset-4"
-                  >
-                    {STUDIO.name} {STUDIO.setup}
-                  </Link>
-                  .
-                </>
-              ) : null}{" "}
-              {PREIS_HINWEIS}
-            </p>
-            <p className="mt-3">
-              <Link
-                href="/website-erstellen-lassen"
-                className="link-pfeil text-muted-foreground hover:text-foreground text-[14.5px] font-semibold"
-              >
-                Website erstellen lassen: Preise und <span className="whitespace-nowrap">Ablauf{ARROW}</span>
+        <p className="t-fuss mx-auto mt-10 max-w-[48em]">
+          Einmalpreise, dazu ein Monatsbeitrag {MONTHLY_FROM}.
+          {STUDIO ? (
+            <>
+              {" "}
+              Für ein neues Erscheinungsbild gibt es{" "}
+              <Link href={`/pakete/${STUDIO.slug}`} className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+                {STUDIO.name} {STUDIO.setup}
               </Link>
-            </p>
-          </div>
-        </div>
+              .
+            </>
+          ) : null}{" "}
+          {PREIS_HINWEIS}
+        </p>
+        <p className="mt-2">
+          <MehrLink href="/website-erstellen-lassen" groesse="klein">
+            Website erstellen lassen: Preise und Ablauf
+          </MehrLink>
+        </p>
       </div>
     </section>
   );
 }
 
 /* ------------------------------------------------------------------
- * Vorher / Nachher.
+ * 10. Vorher / Nachher.
  * ---------------------------------------------------------------- */
 function VorherNachher() {
   return (
-    <section className="spaeter buehne-abschnitt" style={spaeter(820, 1410)}>
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <div className="buehne-kopf buehne-mitte">
-          <h2 data-reveal="rise" className="buehne-titel">
-            <Steigend text="Dieselben Inhalte, neu gebaut" />
+    <section className="spaeter flaeche-weiss abschnitt" style={spaeter(610, 1090)}>
+      <div className="inhalt">
+        <div className="abschnitt-kopf">
+          <h2 data-auftritt="titel" className="t-abschnitt">
+            Dieselben Inhalte, neu gebaut
           </h2>
-          <p data-reveal="fade" className="buehne-unter">
-            Ziehen Sie den Regler.
-          </p>
+          <p className="t-unter">Ziehen Sie den Regler.</p>
         </div>
-        <div className="buehne-einzug">
-          <VorherNachherRegler />
+        <div className="karte p-3 sm:p-10 lg:p-16">
+          <div className="buehne-einzug">
+            <VorherNachherRegler />
+          </div>
         </div>
-        <p data-reveal="fade" className="text-muted-foreground mx-auto mt-10 max-w-[38em] text-center text-[17px] leading-relaxed md:mt-12">
+        <p className="text-muted-foreground mx-auto mt-10 max-w-[38em] text-center text-[17px] leading-[1.47] md:mt-12">
           Links steht eine Seite, wie sie viele Betriebe seit Jahren haben. Rechts stehen dieselben Angaben, geordnet
           nach dem, was Kunden zuerst wissen wollen. Die Tischlerei ist frei erfunden.
         </p>
@@ -430,42 +493,60 @@ function VorherNachher() {
 }
 
 /* ------------------------------------------------------------------
- * Fragen: offen gesetzt wie ein kurzes Interview, nichts zum Aufklappen.
+ * 11. Fragen: offen gesetzt als Karten, nichts zum Aufklappen.
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <section id="faq" className="spaeter buehne-abschnitt bg-card scroll-mt-20" style={spaeter(1600, 1000)}>
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <div className="buehne-kopf">
-          <h2 data-reveal="rise" className="buehne-titel-klein">
-            <Steigend text="Was vor dem ersten Anruf oft gefragt wird" />
-          </h2>
-          <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-1">
-            <li>
-              <Link href="/faq" className="link-pfeil text-[15px] font-semibold">
-                Alle <span className="whitespace-nowrap">Fragen{ARROW}</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/webseite-erstellen"
-                className="link-pfeil text-muted-foreground hover:text-foreground text-[14.5px] font-semibold"
-              >
-                Selbst bauen: Webseite erstellen in sieben <span className="whitespace-nowrap">Schritten{ARROW}</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <dl data-reveal="stagger" className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+    <section id="faq" aria-labelledby="faq-titel" className="spaeter flaeche-hell abschnitt" style={spaeter(1720, 840)}>
+      <div className="inhalt">
+        <h2 id="faq-titel" data-auftritt="titel" className="zweiton">
+          <span>Häufige Fragen.</span> <span className="grau">Was vor dem ersten Anruf oft gefragt wird.</span>
+        </h2>
+        <ul className="mt-3 flex flex-wrap gap-x-8">
+          <li>
+            <MehrLink href="/faq">Alle Fragen</MehrLink>
+          </li>
+          <li>
+            <MehrLink href="/webseite-erstellen">Selbst bauen: Webseite erstellen in sieben Schritten</MehrLink>
+          </li>
+        </ul>
+        <dl className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:mt-10 lg:grid-cols-3 lg:gap-5">
           {FAQ.map((item) => (
-            <div key={item.q} className="border-foreground border-t pt-5">
-              <dt className="text-[18px] font-semibold leading-snug tracking-[-0.01em]">{item.q}</dt>
-              <dd className="text-muted-foreground mt-3 text-[15.5px] leading-relaxed">{item.a}</dd>
+            <div key={item.q} data-auftritt="" className="karte karte-weiss p-7">
+              <dt className="text-[21px] leading-[1.19] font-semibold tracking-[-0.015em]">{item.q}</dt>
+              <dd className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">{item.a}</dd>
             </div>
           ))}
         </dl>
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * 12. Journal als Regal: die vier neuesten Ratgeber.
+ * ---------------------------------------------------------------- */
+function Journal() {
+  return (
+    <Regal
+      id="journal"
+      fett="Journal."
+      grau="Ratgeber für Betriebe."
+      flaeche="weiss"
+      className="spaeter"
+      style={spaeter(570, 650)}
+    >
+      {JOURNAL_NEU.map((post) => (
+        <RegalKarte
+          key={post.slug}
+          eyebrow={`${post.readingMinutes} Min. Lesezeit`}
+          titel={post.title}
+          text={post.dek}
+          href={`/journal/${post.slug}`}
+          linkText="Lesen"
+        />
+      ))}
+    </Regal>
   );
 }
 
@@ -492,52 +573,29 @@ function TelZiffern() {
 }
 
 /* ------------------------------------------------------------------
- * Kontakt: Telefonnummer groß, daneben Mail und Anfrage. Die Nummer ist
- * das Finale der Seite: Beim ersten Sichtkontakt steigen die Ziffern aus
- * ihren Masken, darunter zeichnet sich eine orange Linie (app/hafen.css,
- * Block „Reveal“, data-reveal="tel").
+ * 13. Kontakt: schwarzer Abschluss, die Telefonnummer groß in der
+ * Mitte. Beim ersten Sichtkontakt steigen die Ziffern aus ihren Masken
+ * (app/hafen.css, Block „Reveal“, data-reveal="tel").
  * ---------------------------------------------------------------- */
 function Kontakt() {
   return (
-    <section
+    <Abschluss
       id="kontakt"
-      className="spaeter buehne-abschnitt grain bg-foreground text-background scroll-mt-20"
-      style={spaeter(650, 610)}
-    >
-      <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 sm:px-6 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-7 lg:flex lg:flex-col lg:justify-between">
-          <h2 data-reveal="rise" className="buehne-titel-klein">
-            <Steigend text="Am schnellsten geht es am Telefon." />
-          </h2>
-          <a
-            href="tel:+491607621876"
-            aria-label="0160 7621876"
-            data-reveal="tel"
-            className="tel-finale mt-5 inline-block self-start text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap sm:text-[4.2rem] lg:mt-10 lg:text-[4.4rem] xl:text-[4.9rem]"
-            style={{ fontStretch: "118%", fontWeight: 780 }}
-          >
-            <TelZiffern />
-            <span className="tel-linie" aria-hidden="true" />
-          </a>
-        </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p data-reveal="fade" className="text-stahl-hell text-[16.5px] leading-relaxed">
-            Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und den Termin. Wer lieber schreibt,
-            erreicht uns per Mail oder über das Anfrageformular. Die Antwort kommt meist am selben Werktag.
-          </p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="mail-link relative mt-6 inline-block text-[19px] font-semibold after:absolute after:inset-x-0 after:-inset-y-2"
-          >
-            {CONTACT_EMAIL}
-          </a>
-          <div className="mt-8">
-            <Link href="/anfrage" className="btn-signal">
-              Anfrage schreiben {ARROW}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+      className="spaeter"
+      style={spaeter(420, 430)}
+      titel="Am schnellsten geht es am Telefon."
+      zwischen={
+        <a
+          href="tel:+491607621876"
+          aria-label="0160 7621876"
+          data-reveal="tel"
+          className="abschluss-nummer tel-finale"
+        >
+          <TelZiffern />
+        </a>
+      }
+      unter="Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und den Termin. Wer lieber schreibt, erreicht uns per Mail oder über das Anfrageformular. Die Antwort kommt meist am selben Werktag."
+      link={{ href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }}
+    />
   );
 }

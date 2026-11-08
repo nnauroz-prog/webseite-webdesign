@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 
+import { MehrLink } from "@/components/marketing/apple";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -18,7 +18,6 @@ import {
 } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 type RouteParams = { slug: string };
 
@@ -142,30 +141,30 @@ export default async function JournalPostPage({
       <main id="main" tabIndex={-1} className="flex-1">
         <article>
           <header>
-            <div className="mx-auto w-full max-w-3xl px-5 pt-10 pb-12 sm:px-6 sm:pt-14 sm:pb-16">
+            <div className="mx-auto w-full max-w-3xl px-5 pt-8 pb-12 text-center sm:px-6 sm:pt-12 sm:pb-16">
               <Link
                 href="/journal"
-                className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 font-mono text-[12.5px] transition-colors"
+                className="link-chevron link-chevron-frei text-[14px]"
               >
-                <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+                <span aria-hidden="true" className="chev">‹</span>
                 Alle Beiträge
               </Link>
-              <p className="label-mono text-muted-foreground mt-10">
+              <p className="t-eyebrow mt-8 text-[14px]">
                 <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> · {post.readingMinutes} Min
                 Lesezeit
               </p>
-              <h1 className="mt-5 text-balance text-[2.5rem] leading-[0.98] tracking-[-0.038em] sm:text-[3.6rem] lg:text-[4.2rem]">
+              <h1 className="mt-3 text-balance text-[40px] leading-[1.05] tracking-[-0.025em] sm:text-[56px] sm:tracking-[-0.03em] lg:text-[64px]">
                 {post.title}
               </h1>
-              <p className="text-foreground/80 mt-6 text-pretty text-[19px] leading-relaxed sm:text-[21px]">
+              <p className="t-unter mx-auto mt-5">
                 {post.dek}
               </p>
               {post.tags.length > 0 && (
-                <ul className="mt-8 flex flex-wrap gap-2" aria-label="Themen">
+                <ul className="mt-8 flex flex-wrap justify-center gap-2" aria-label="Themen">
                   {post.tags.map((tag) => (
                     <li
                       key={tag}
-                      className="border-border text-muted-foreground inline-flex h-7 items-center rounded-[2px] border px-2.5 font-mono text-[11.5px]"
+                      className="text-muted-foreground inline-flex h-8 items-center rounded-full bg-[var(--hell)] px-3.5 text-[12px]"
                     >
                       {tag}
                     </li>
@@ -177,84 +176,66 @@ export default async function JournalPostPage({
 
           <PostBody post={post} />
 
-          <footer className="mx-auto w-full max-w-3xl px-5 sm:px-6">
-            <nav aria-label="Weitere Beiträge" className="border-foreground grid border-t sm:grid-cols-2">
+          <footer className="mx-auto w-full max-w-[980px] px-[max(var(--rinne),env(safe-area-inset-left))]">
+            <nav aria-label="Weitere Beiträge" className="grid gap-3 sm:grid-cols-2">
               {prev ? (
-                <Link
-                  href={`/journal/${prev.slug}`}
-                  className="group border-border block border-b py-6 sm:border-b-0 sm:pr-6"
-                >
-                  <span className="label-mono text-muted-foreground">← Neuerer Beitrag</span>
-                  <span className="mt-2 block text-[17px] font-semibold leading-snug tracking-[-0.01em] underline-offset-4 group-hover:underline">
-                    {prev.title}
-                  </span>
-                </Link>
+                <article className="karte karte-hover p-7">
+                  <Link href={`/journal/${prev.slug}`} className="link-chevron karte-link text-[14px]">
+                    <span aria-hidden="true" className="chev">‹</span>
+                    Neuerer Beitrag
+                  </Link>
+                  <p className="t-karte mt-2 text-[21px]">{prev.title}</p>
+                </article>
               ) : (
                 <span className="hidden sm:block" />
               )}
               {next ? (
-                <Link
-                  href={`/journal/${next.slug}`}
-                  className="group border-border block py-6 sm:border-l sm:pl-6 sm:text-right"
-                >
-                  <span className="label-mono text-muted-foreground">Älterer Beitrag →</span>
-                  <span className="mt-2 block text-[17px] font-semibold leading-snug tracking-[-0.01em] underline-offset-4 group-hover:underline">
-                    {next.title}
-                  </span>
-                </Link>
+                <article className="karte karte-hover p-7 sm:text-right">
+                  <Link href={`/journal/${next.slug}`} className="link-chevron karte-link text-[14px]">
+                    Älterer Beitrag
+                    <span aria-hidden="true" className="chev">›</span>
+                  </Link>
+                  <p className="t-karte mt-2 text-[21px]">{next.title}</p>
+                </article>
               ) : null}
             </nav>
           </footer>
         </article>
 
-        <section className="bg-card border-border mt-10 border-t sm:mt-14">
-          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-14 sm:px-6 sm:py-20 lg:grid-cols-12 lg:gap-8">
-            <div className="lg:col-span-6">
-              <h2 className="label-mono text-muted-foreground">Weiter zum Thema</h2>
-              <ul className="border-foreground mt-4 border-t">
-                {links.map((l) => (
-                  <li key={l.href} className="border-border border-b">
-                    <Link
-                      href={l.href}
-                      className="group flex items-center justify-between gap-6 py-4 text-[18px] font-semibold tracking-[-0.01em] sm:text-[20px]"
-                    >
-                      <span className="underline-offset-4 group-hover:underline">{l.label}</span>
-                      <ArrowRight
-                        className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="lg:col-span-5 lg:col-start-8">
-              <p className="label-mono text-muted-foreground">Fragen zum Beitrag</p>
-              <a
-                href="tel:+491607621876"
-                className="hover:text-gold mt-4 block text-[2rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.6rem]"
-                style={{ fontStretch: "118%", fontWeight: 780 }}
-              >
-                0160&nbsp;7621876
+        <section className="flaeche-hell abschnitt mt-16 sm:mt-20">
+          <div className="inhalt abschnitt-kopf">
+            <p className="t-eyebrow">Fragen zum Beitrag</p>
+            <a href="tel:+491607621876" className="abschluss-nummer !text-foreground hover:!text-gold-ink mt-3">
+              0160&nbsp;7621876
+            </a>
+            <p className="t-unter mx-auto mt-4">
+              Oder per Mail an{" "}
+              <a href="mailto:info@sitalo.de" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+                info@sitalo.de
               </a>
-              <p className="text-muted-foreground mt-4 text-[15.5px] leading-relaxed">
-                Oder per Mail an{" "}
-                <a href="mailto:info@sitalo.de" className="text-foreground underline underline-offset-4">
-                  info@sitalo.de
-                </a>
-                . Wir antworten meist am selben Werktag.
-              </p>
-              <Link
-                href="/journal"
-                className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
-              >
-                Alle Beiträge {ARROW}
-              </Link>
+              . Wir antworten meist am selben Werktag.
+            </p>
+            <h2 className="t-karte mt-12">Weiter zum Thema</h2>
+            <div className="aktionen mt-5">
+              {links.map((l, i) =>
+                i === 0 ? (
+                  <Link key={l.href} href={l.href} className="btn-signal">
+                    {l.label}
+                  </Link>
+                ) : (
+                  <MehrLink key={l.href} href={l.href} groesse="unter">
+                    {l.label}
+                  </MehrLink>
+                ),
+              )}
             </div>
+            <p className="mt-6">
+              <MehrLink href="/journal">Alle Beiträge</MehrLink>
+            </p>
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Journal" />
 
       <script
         type="application/ld+json"

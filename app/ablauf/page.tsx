@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
+import { Abschluss as AppleAbschluss, MehrLink } from "@/components/marketing/apple";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
@@ -13,8 +12,6 @@ export const metadata: Metadata = {
     "So läuft es bei uns: Sie schreiben uns, wir sprechen kurz, wir bauen, Sie prüfen den Test-Link, die Seite geht online. Mit Festpreis vorab.",
   alternates: { canonical: "/ablauf" },
 };
-
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 /**
  * Die Halte des Ablaufs. `number` bleibt zweistellig, weil die Anker
@@ -109,7 +106,7 @@ export default function AblaufPage() {
           eyebrow="Ablauf"
           title="So läuft Ihr Website-Projekt ab"
           meta={
-            <a href="tel:+491607621876" className="text-stahl-hell hover:text-background font-mono text-[12px] transition-colors">
+            <a href="tel:+491607621876" className="inline-flex min-h-11 items-center">
               Eine Nummer für alle Fragen: 0160&nbsp;7621876
             </a>
           }
@@ -120,7 +117,7 @@ export default function AblaufPage() {
         <Fahrplan />
         <Abschluss />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Ablauf" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -132,112 +129,70 @@ export default function AblaufPage() {
 }
 
 /* ------------------------------------------------------------------
- * Fahrplan: eine senkrechte Linie mit Haltestellen. Links die Linie,
- * in der Mitte was passiert, rechts wer dran ist und was es dauert.
- * Die Punkte wachsen beim Scrollen über .ablauf-dot (globals.css),
- * bei reduzierter Bewegung stehen sie still.
+ * Fahrplan als Apple-Kacheln: sechs gerundete Karten, je mit runder
+ * Nummer, Titel, Text und „Wer · Hinweis“ darunter. Der letzte Halt ist
+ * schwarz (Höhepunkt). Anker #step-01 … bleiben (HowTo-Schema).
  * ---------------------------------------------------------------- */
 function Fahrplan() {
   const last = STEPS.length - 1;
   return (
-    <section>
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <div className="text-muted-foreground hidden grid-cols-[2.5rem_minmax(0,1fr)_17rem] gap-x-10 pb-3 lg:grid">
-          <span aria-hidden="true" />
-          <span className="label-mono">Halt und was passiert</span>
-          <span className="label-mono">Wer · Hinweis</span>
-        </div>
-        <ol className="border-foreground border-b">
-          {STEPS.map((step, i) => (
-            <li
-              key={step.number}
-              id={`step-${step.number}`}
-              className="grid scroll-mt-24 grid-cols-[1.75rem_minmax(0,1fr)] gap-x-4 sm:gap-x-8 lg:grid-cols-[2.5rem_minmax(0,1fr)_17rem] lg:gap-x-10"
+    <section className="flaeche-hell abschnitt">
+      <ol role="list" className="mx-auto grid max-w-[1200px] gap-3 px-[max(var(--rinne),env(safe-area-inset-left))] md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+        {STEPS.map((step, i) => (
+          <li
+            key={step.number}
+            id={`step-${step.number}`}
+            data-auftritt=""
+            className={`karte ${i === last ? "karte-schwarz" : "karte-weiss"} flex scroll-mt-24 flex-col p-7 sm:p-9`}
+          >
+            <span
+              aria-hidden="true"
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-[17px] font-semibold tabular-nums ${
+                i === last ? "bg-gold text-foreground" : "bg-[var(--hell)] text-foreground"
+              }`}
             >
-              {/* Linie und Haltestelle */}
-              <div aria-hidden="true" className="relative row-span-2 lg:row-span-1">
-                <span
-                  className={`bg-foreground absolute left-1/2 w-[3px] -translate-x-1/2 ${
-                    i === 0 ? "top-[41px] bottom-0 lg:top-[49px]" : i === last ? "top-0 h-[41px] lg:h-[49px]" : "inset-y-0"
-                  }`}
-                />
-                <span className="absolute inset-x-0 top-[33px] flex justify-center lg:top-[41px]">
-                  <span
-                    className={`ablauf-dot block h-4 w-4 rounded-full border-[3px] ${
-                      i === last ? "bg-gold border-foreground" : "bg-background border-foreground"
-                    }`}
-                  />
-                </span>
-              </div>
-
-              <div className={`border-t pt-8 pb-3 lg:py-10 ${i === 0 ? "border-foreground" : "border-border"}`}>
-                <p className="label-mono text-gold">{i === last ? "Endhalt" : `Halt ${i + 1}`}</p>
-                <h2 className="mt-2 text-[1.6rem] leading-[1.1] tracking-[-0.025em] sm:text-[2rem]">{step.title}</h2>
-                <p className="text-foreground/80 mt-3 max-w-xl text-[16px] leading-relaxed">{step.body}</p>
-              </div>
-
-              <dl
-                className={`col-start-2 grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 gap-y-1.5 pb-8 text-[14.5px] lg:col-start-3 lg:grid-cols-1 lg:gap-y-1 lg:border-t lg:py-10 ${
-                  i === 0 ? "lg:border-foreground" : "lg:border-border"
-                }`}
-              >
-                <dt className="label-mono text-muted-foreground pt-[3px] text-[11px] lg:pt-0">Wer</dt>
-                <dd className="font-semibold">{step.wer}</dd>
-                <dt className="label-mono text-muted-foreground pt-[3px] text-[11px] lg:mt-3 lg:pt-0">Hinweis</dt>
-                <dd className="text-muted-foreground leading-snug">{step.hinweis}</dd>
-              </dl>
-            </li>
-          ))}
-        </ol>
-        <div className="text-muted-foreground mt-6 flex flex-col justify-between gap-3 font-mono text-[12px] sm:flex-row">
-          <span>Was eine Seite kostet, steht vorher fest. Kommt etwas dazu, sprechen wir vorher darüber.</span>
-          <span className="flex gap-5">
-            <Link href="/pakete" className="hover:text-foreground underline-offset-4 hover:underline">
-              Pakete →
-            </Link>
-            <Link href="/faq" className="hover:text-foreground underline-offset-4 hover:underline">
-              Fragen →
-            </Link>
-          </span>
-        </div>
+              {i + 1}
+            </span>
+            <p className="t-eyebrow mt-5 text-[14px]">{i === last ? "Endhalt" : `Halt ${i + 1}`}</p>
+            <h2 className="t-karte mt-1">{step.title}</h2>
+            <p className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">{step.body}</p>
+            <dl className="mt-auto grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 border-t border-[var(--border)] pt-5 text-[14px] leading-[1.43] [.karte-schwarz_&]:border-[#424245]">
+              <dt className="text-muted-foreground">Wer</dt>
+              <dd className="font-semibold">{step.wer}</dd>
+              <dt className="text-muted-foreground">Hinweis</dt>
+              <dd>{step.hinweis}</dd>
+            </dl>
+          </li>
+        ))}
+      </ol>
+      <div className="inhalt mt-10 text-center">
+        <p className="t-fuss text-[14px]">
+          Was eine Seite kostet, steht vorher fest. Kommt etwas dazu, sprechen wir vorher darüber.
+        </p>
+        <p className="mt-2 flex flex-wrap justify-center gap-x-8">
+          <MehrLink href="/pakete">Pakete</MehrLink>
+          <MehrLink href="/faq">Fragen</MehrLink>
+        </p>
       </div>
     </section>
   );
 }
 
 /* ------------------------------------------------------------------
- * Abschluss: Telefonnummer groß, daneben Mail und Anfrage.
+ * Abschluss: schwarz, Telefonnummer groß, Pille und Mail.
  * ---------------------------------------------------------------- */
 function Abschluss() {
   return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-7">
-          <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
-            Der erste Halt ist ein Anruf oder eine Mail.
-          </h2>
-          <a
-            href="tel:+491607621876"
-            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
-            style={{ fontStretch: "118%", fontWeight: 780 }}
-          >
-            0160&nbsp;7621876
-          </a>
-        </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Wer lieber schreibt, nutzt das Formular oder schickt eine Mail. Danach geht es mit Halt 2 weiter.
-          </p>
-          <a href={`mailto:${CONTACT_EMAIL}`} className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold">
-            {CONTACT_EMAIL}
-          </a>
-          <div className="mt-7">
-            <Link href="/anfrage" className="btn-signal">
-              Anfrage schreiben {ARROW}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <AppleAbschluss
+      id="kontakt"
+      titel="Der erste Halt ist ein Anruf oder eine Mail."
+      zwischen={
+        <a href="tel:+491607621876" className="abschluss-nummer">
+          0160&nbsp;7621876
+        </a>
+      }
+      unter="Wer lieber schreibt, nutzt das Formular oder schickt eine Mail. Danach geht es mit Halt 2 weiter."
+      link={{ href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }}
+    />
   );
 }

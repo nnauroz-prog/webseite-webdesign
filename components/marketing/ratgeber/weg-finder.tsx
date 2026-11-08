@@ -80,7 +80,7 @@ export function WegFinder() {
                   {f.optionen.map((o) => (
                     <label
                       key={o.value}
-                      className="group border-background/20 hover:border-background/50 has-[:checked]:border-gold has-[:checked]:bg-background/[0.06] has-[:focus-visible]:outline-gold flex min-w-0 cursor-pointer items-start gap-3 rounded-[2px] border px-4 py-3 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"
+                      className="group border-background/20 hover:border-background/50 has-[:checked]:border-gold has-[:checked]:bg-background/[0.06] has-[:focus-visible]:outline-gold flex min-w-0 cursor-pointer items-start gap-3 rounded-[12px] border px-4 py-3 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"
                     >
                       <input
                         type="radio"

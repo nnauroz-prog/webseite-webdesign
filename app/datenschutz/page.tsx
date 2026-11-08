@@ -384,7 +384,7 @@ export default function DatenschutzPage() {
         </section>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter crumb="Datenschutz" />
     </div>
   );
 }
@@ -427,7 +427,7 @@ function Dienst({
     ["Datenschutz", <AnbieterLink key="link" href={hinweise} text={hinweise.replace(/^https:\/\/(www\.)?/, "")} />],
   ];
   return (
-    <div className="border-border bg-card rounded-[3px] border">
+    <div className="bg-card rounded-[18px] lg:rounded-[28px]">
       <div className="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b px-4 py-3 sm:px-5">
         <h3 className="text-foreground text-[1.05rem] leading-snug">{name}</h3>
         <p className="label-mono text-muted-foreground">{anbieter}</p>

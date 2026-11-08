@@ -18,14 +18,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * Hafen-Formen für das Anfrageformular. inquiry-form.tsx ist gesperrt
+ * Apple-Formen für das Anfrageformular. inquiry-form.tsx ist gesperrt
  * (Lead-Logik); diese Regeln greifen nur, solange dort noch die alten
- * Klassen stehen: große Rundungen werden kantig, der weiche Schatten
- * fällt weg, Pillen-Knöpfe werden zu 2 px. Wird das Formular selbst
- * umgestellt, laufen die Regeln ins Leere.
+ * Klassen stehen: Karten bekommen 18/28 px, der weiche Schatten fällt
+ * weg, Pillen bleiben Pillen, Felder 12 px.
  */
 const FORM_HAFEN =
-  "[&_.rounded-3xl]:rounded-[3px] [&_.rounded-2xl]:rounded-[3px] [&_.shadow-xl]:shadow-none [&_.ring-1]:ring-0 [&_.h-12.rounded-full]:rounded-[2px] [&_.h-11.rounded-full]:rounded-[2px] [&_.shadow-md]:shadow-none";
+  "[&_.rounded-3xl]:rounded-[18px] lg:[&_.rounded-3xl]:rounded-[28px] [&_.rounded-2xl]:rounded-[18px] [&_.shadow-xl]:shadow-none [&_.ring-1]:ring-0 [&_.shadow-md]:shadow-none [&_.rounded-md]:rounded-[12px]";
 
 /** Was nach dem Absenden passiert. Echte Reihenfolge, daher nummeriert. */
 const DANACH: { title: string; body: string }[] = [
@@ -78,7 +77,7 @@ export default async function AnfragePage({
 
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
-          crumb="Anfrage"
+          crumb="Anfrage" aktionen={false}
           eyebrow="Website anfragen"
           title="Erzählen Sie uns, was Sie vorhaben."
         >
@@ -86,11 +85,11 @@ export default async function AnfragePage({
           uns bauen lassen, entscheiden Sie, wenn das Angebot vorliegt.
         </PageHero>
 
-        <section aria-label="Anfrageformular">
-          <div className="mx-auto w-full max-w-6xl px-5 pt-10 pb-16 sm:px-6 sm:pt-14 sm:pb-24">
+        <section aria-label="Anfrageformular" className="flaeche-hell">
+          <div className="mx-auto w-full max-w-[1200px] px-[max(var(--rinne),env(safe-area-inset-left))] py-12 sm:py-16 lg:py-20">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
               <div className="min-w-0 lg:col-span-7">
-                <div className={FORM_HAFEN}>
+                <div className={`karte karte-weiss p-5 sm:p-8 lg:p-10 ${FORM_HAFEN}`}>
                   <InquiryForm
                     initialPackage={initialPackage}
                     initialIndustry={initialIndustry}
@@ -99,17 +98,20 @@ export default async function AnfragePage({
                 </div>
               </div>
 
-              <aside className="space-y-12 lg:col-span-4 lg:col-start-9 lg:pt-10">
-                <div>
-                  <h2 className="label-mono text-muted-foreground">Danach</h2>
-                  <ol className="border-foreground mt-5 border-t">
+              <div className="space-y-3 lg:col-span-5 lg:col-start-8">
+                <div className="karte karte-weiss p-7 sm:p-8">
+                  <h2 className="t-karte text-[21px]">Danach</h2>
+                  <ol className="mt-3 divide-y divide-[var(--border)]">
                     {DANACH.map((s, i) => (
                       <li
                         key={s.title}
-                        className="border-border grid grid-cols-[2.5rem_1fr] border-b py-4"
+                        className="grid grid-cols-[2.5rem_1fr] py-4"
                       >
-                        <span className="text-gold pt-0.5 font-mono text-[12.5px] font-semibold tabular-nums">
-                          {String(i + 1).padStart(2, "0")}
+                        <span
+                          aria-hidden="true"
+                          className="bg-gold text-foreground inline-flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-semibold tabular-nums"
+                        >
+                          {i + 1}
                         </span>
                         <div className="min-w-0">
                           <p className="text-foreground text-[15.5px] font-semibold">
@@ -124,12 +126,11 @@ export default async function AnfragePage({
                   </ol>
                 </div>
 
-                <div>
-                  <h2 className="label-mono text-muted-foreground">Lieber direkt</h2>
+                <div className="karte karte-weiss p-7 sm:p-8">
+                  <h2 className="t-karte text-[21px]">Lieber direkt</h2>
                   <a
                     href="tel:+491607621876"
-                    className="text-foreground hover:text-gold mt-4 block text-[2rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.25rem]"
-                    style={{ fontStretch: "118%", fontWeight: 780 }}
+                    className="text-foreground hover:text-gold-ink mt-3 inline-flex min-h-11 items-center text-[32px] leading-none font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums transition-colors"
                   >
                     0160&nbsp;7621876
                   </a>
@@ -139,7 +140,7 @@ export default async function AnfragePage({
                       <dd className="min-w-0">
                         <a
                           href="mailto:info@sitalo.de"
-                          className="text-foreground font-semibold underline-offset-4 hover:underline"
+                          className="text-gold-ink underline underline-offset-2 hover:decoration-2"
                         >
                           info@sitalo.de
                         </a>
@@ -151,7 +152,7 @@ export default async function AnfragePage({
                         <a
                           href="/sitalo-kontakt.vcf"
                           download="Sitalo-Webdesign.vcf"
-                          className="text-foreground font-semibold underline-offset-4 hover:underline"
+                          className="text-gold-ink underline underline-offset-2 hover:decoration-2"
                         >
                           Im Adressbuch speichern
                         </a>
@@ -160,16 +161,16 @@ export default async function AnfragePage({
                   </dl>
                 </div>
 
-                <p className="text-muted-foreground border-border border-t pt-5 text-[13.5px] leading-relaxed">
+                <p className="text-muted-foreground px-2 pt-3 text-[12px] leading-[1.33]">
                   {PREIS_HINWEIS}
                 </p>
-              </aside>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter crumb="Anfrage" />
     </div>
   );
 }

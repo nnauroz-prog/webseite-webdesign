@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowUp } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 
 /**
  * „Nach oben“ am Rechner: ein Teer-Quadrat (44 × 44) unten rechts, das
@@ -55,7 +55,7 @@ export function BackToTop() {
       className="nach-oben print:hidden"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <ArrowUp className="h-4 w-4" aria-hidden="true" />
+      <ChevronUp className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
     </button>
   );
 }

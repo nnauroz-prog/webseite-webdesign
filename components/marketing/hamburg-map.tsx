@@ -104,7 +104,7 @@ export function HamburgMap({ active }: { active?: string }) {
         />
 
         {/* Beschriftung der Gewässer und Nordpfeil, in Mono */}
-        <g className="fill-muted-foreground font-mono text-[13px] sm:text-[10px]" letterSpacing="1.5">
+        <g className="fill-muted-foreground text-[13px] sm:text-[11px]" letterSpacing="0.5">
           <text x="62" y="304">ELBE</text>
           <text x="64" y="74">N ↑</text>
         </g>
@@ -176,6 +176,8 @@ function Pin({
           y={y - 11}
           width="22"
           height="22"
+          rx="11"
+          fill="none"
           stroke="currentColor"
           strokeWidth="1.2"
           className="text-foreground"
@@ -186,6 +188,7 @@ function Pin({
         y={y - size / 2}
         width={size}
         height={size}
+        rx={size / 2}
         className={`transition-colors duration-200 ${squareClass}`}
       />
       <text

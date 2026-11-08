@@ -5,4 +5,4 @@
  * Entspricht --foreground (Teer, #1b1d1e) der Hafen-Palette. Wird die
  * Markenpalette umgestellt, nur hier ändern.
  */
-export const ADMIN_THEME_COLOR = "#1b1d1e";
+export const ADMIN_THEME_COLOR = "#1d1d1f";

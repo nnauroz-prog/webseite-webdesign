@@ -109,7 +109,7 @@ export function SpeedCheck() {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={check} className="bg-card border-border rounded-[3px] border">
+      <form onSubmit={check} className="bg-card rounded-[18px] lg:rounded-[28px]">
         <div className="grid gap-7 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-10">
           <div className="min-w-0">
             <Label htmlFor="check-url" className="text-foreground text-[15px] font-semibold">
@@ -123,7 +123,7 @@ export function SpeedCheck() {
               placeholder="z. B. cafe-nordlicht.de"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="mt-3 h-12 rounded-[2px] text-[16px] shadow-none"
+              className="mt-3 h-12 rounded-[12px] text-[16px] shadow-none"
               required
             />
             <p className="text-muted-foreground mt-2 text-[13px]">
@@ -135,7 +135,7 @@ export function SpeedCheck() {
             <legend className="text-foreground text-[15px] font-semibold">
               Gemessen wird
             </legend>
-            <div className="border-border mt-3 inline-flex rounded-[2px] border p-[3px]">
+            <div className="border-border mt-3 inline-flex rounded-full border p-[3px]">
               <StrategyButton
                 active={strategy === "mobile"}
                 onClick={() => setStrategy("mobile")}
@@ -180,7 +180,7 @@ export function SpeedCheck() {
       {status.kind === "loading" && <LoadingPanel url={status.url} />}
 
       {status.kind === "error" && (
-        <Alert variant="destructive" className="rounded-[3px]">
+        <Alert variant="destructive" className="rounded-[12px]">
           <AlertDescription>{status.message}</AlertDescription>
         </Alert>
       )}
@@ -208,7 +208,7 @@ function StrategyButton({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex h-11 items-center gap-2 rounded-[2px] px-4 text-[14px] font-semibold transition-colors",
+        "inline-flex h-11 items-center gap-2 rounded-full px-4 text-[14px] font-semibold transition-colors",
         active
           ? "bg-foreground text-background"
           : "text-muted-foreground hover:text-foreground",
@@ -225,7 +225,7 @@ function LoadingPanel({ url }: { url: string }) {
     <div
       role="status"
       aria-live="polite"
-      className="bg-card border-border animate-fade-up flex items-start gap-4 rounded-[3px] border p-5 sm:p-8"
+      className="bg-card animate-fade-up flex items-start gap-4 rounded-[18px] lg:rounded-[28px] p-5 sm:p-8"
     >
       <Loader2 className="text-gold mt-1 h-5 w-5 shrink-0 animate-spin" aria-hidden="true" />
       <div className="min-w-0">
@@ -245,7 +245,7 @@ function BasicPanel({ data }: { data: BasicData }) {
   const passed = data.items.filter((i) => i.ok).length;
   return (
     <div className="animate-fade-up space-y-6">
-      <div className="bg-card border-border rounded-[3px] border">
+      <div className="bg-card rounded-[18px] lg:rounded-[28px]">
         <div className="border-border flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b px-5 py-4 sm:px-8">
           <p className="label-mono text-muted-foreground">
             Basis-Check · {passed} von {data.items.length} in Ordnung
@@ -264,7 +264,7 @@ function BasicPanel({ data }: { data: BasicData }) {
               <span
                 aria-hidden="true"
                 className={cn(
-                  "text-background mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-[2px] text-[11px] font-bold",
+                  "text-background mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
                   item.ok ? "bg-ink-petrol" : "bg-ink-olive",
                 )}
               >
@@ -311,7 +311,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
 
   return (
     <div className="animate-fade-up space-y-6">
-      <div className="bg-card border-border overflow-hidden rounded-[3px] border">
+      <div className="bg-card overflow-hidden rounded-[18px] lg:rounded-[28px]">
         <div className="border-border flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b px-5 py-4 sm:px-8">
           <p className="label-mono text-muted-foreground">
             Messung {strategy === "mobile" ? "am Handy" : "am Rechner"}
@@ -358,7 +358,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
       </div>
 
       {veryBad && (
-        <div className="bg-foreground text-background rounded-[3px] p-6 sm:p-8">
+        <div className="bg-foreground text-background rounded-[18px] lg:rounded-[28px] p-6 sm:p-8">
           <p className="label-mono text-stahl-hell">Was das heißt</p>
           <p className="serif mt-3 max-w-2xl text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.85rem]">
             Mindestens ein Wert liegt unter 50. Google stuft das als schlecht
@@ -382,7 +382,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
       )}
 
       {okay && (
-        <div className="border-border rounded-[3px] border p-6 sm:p-8">
+        <div className="rounded-[18px] lg:rounded-[28px] p-6 sm:p-8">
           <p className="label-mono text-muted-foreground">Was das heißt</p>
           <p className="serif text-foreground mt-3 max-w-2xl text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.85rem]">
             Der schwächste Wert liegt zwischen 50 und 79.
@@ -399,7 +399,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
       )}
 
       {great && (
-        <div className="border-border rounded-[3px] border p-6 sm:p-8">
+        <div className="rounded-[18px] lg:rounded-[28px] p-6 sm:p-8">
           <p className="label-mono text-muted-foreground">Was das heißt</p>
           <p className="serif text-foreground mt-3 max-w-2xl text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.85rem]">
             Alle gemessenen Werte liegen bei 80 oder darüber.

@@ -99,7 +99,7 @@ export default function InventarPage() {
         <NotUsedBlock />
         <ClosingNote />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Inventar" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

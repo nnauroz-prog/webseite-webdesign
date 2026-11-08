@@ -121,9 +121,9 @@ export function KeyboardChords() {
   return (
     <div
       aria-live="polite"
-      className="bg-foreground text-background pointer-events-none fixed right-6 bottom-6 z-[70] hidden items-center gap-2.5 rounded-[2px] px-3.5 py-2 font-mono text-[12px] shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] md:inline-flex print:hidden"
+      className="bg-foreground text-background pointer-events-none fixed right-6 bottom-6 z-[70] hidden items-center gap-2.5 rounded-[12px] px-3.5 py-2 font-mono text-[12px] shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] md:inline-flex print:hidden"
     >
-      <kbd className="border-background/30 rounded-[2px] border px-1.5 py-0.5 text-[11px]">
+      <kbd className="border-background/30 rounded-[6px] border px-1.5 py-0.5 text-[11px]">
         G
       </kbd>
       <span>{hint ?? "…"}</span>

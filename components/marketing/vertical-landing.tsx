@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { MehrLink } from "@/components/marketing/apple/mehr-link";
 import { getPaketBySlug } from "@/lib/pakete-data";
 import { CONTACT_EMAIL } from "@/lib/site";
 import type { VertikalLanding } from "@/lib/vertikal-landings";
@@ -262,59 +263,30 @@ export function Briefkarte({
   children?: React.ReactNode;
   inquiryHref?: string;
 }) {
+  // Apple-Abschluss: schwarz, zentriert, Nummer groß, Pille + Link.
   return (
-    <section className="border-border border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <div className="bg-card border-foreground border">
-          <div className="border-border label-mono text-muted-foreground flex items-center justify-between gap-4 border-b px-5 py-3 sm:px-8">
-            <span>Sitalo Webdesign</span>
-            <span>Hamburg</span>
-          </div>
-          <div className="grid lg:grid-cols-12">
-            <div className="flex flex-col justify-between gap-8 px-5 py-9 sm:px-8 sm:py-12 lg:col-span-7 lg:pr-12">
-              <h2 className="max-w-2xl text-balance text-[1.9rem] leading-[1.04] tracking-[-0.03em] sm:text-[2.6rem] lg:text-[2.85rem]">
-                {title}
-              </h2>
-              {children ? (
-                <p className="text-muted-foreground max-w-lg text-pretty text-[16.5px] leading-relaxed">{children}</p>
-              ) : null}
-            </div>
-            <div className="border-border border-t px-5 py-9 sm:px-8 sm:py-12 lg:col-span-5 lg:border-t-0 lg:border-l">
-              <p className="label-mono text-muted-foreground">Telefon</p>
-              <a
-                href="tel:+491607621876"
-                className="hover:text-gold mt-3 inline-block text-[2.1rem] leading-none tracking-[-0.03em] whitespace-nowrap transition-colors sm:text-[2.6rem]"
-                style={{ fontStretch: "118%", fontWeight: 780 }}
-              >
-                0160&nbsp;7621876
-              </a>
-              <dl className="border-border mt-7 border-t text-[15px]">
-                <div className="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-b py-2.5">
-                  <dt className="text-muted-foreground">E-Mail</dt>
-                  <dd>
-                    <a
-                      href={`mailto:${CONTACT_EMAIL}`}
-                      className="font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
-                    >
-                      {CONTACT_EMAIL}
-                    </a>
-                  </dd>
-                </div>
-                <div className="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-b py-2.5">
-                  <dt className="text-muted-foreground">Antwort</dt>
-                  <dd>meist am selben Werktag</dd>
-                </div>
-              </dl>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Link href={inquiryHref} className="btn-signal grow sm:grow-0">
-                  Anfrage schreiben {ARROW}
-                </Link>
-                <Link href="/termin" className="btn-line grow sm:grow-0">
-                  Termin buchen
-                </Link>
-              </div>
-            </div>
-          </div>
+    <section className="flaeche-schwarz abschnitt abschluss">
+      <div className="inhalt abschnitt-kopf">
+        <h2 data-auftritt="titel" className="t-abschnitt mx-auto">
+          {title}
+        </h2>
+        {children ? <p className="t-unter abschluss-unter mx-auto">{children}</p> : null}
+        <a href="tel:+491607621876" className="abschluss-nummer mt-8">
+          0160&nbsp;7621876
+        </a>
+        <p className="t-fuss mt-3 text-[14px]">
+          <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#f5f5f7] underline underline-offset-2">
+            {CONTACT_EMAIL}
+          </a>{" "}
+          · Antwort meist am selben Werktag
+        </p>
+        <div className="aktionen mt-8">
+          <Link href={inquiryHref} className="btn-signal btn-gross">
+            Anfrage schreiben
+          </Link>
+          <MehrLink href="/termin" groesse="unter">
+            Termin buchen
+          </MehrLink>
         </div>
       </div>
     </section>

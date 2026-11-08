@@ -220,9 +220,9 @@ export function InquiryForm({
             <span className="mt-3 block">
               <a
                 href="mailto:info@sitalo.de"
-                className="font-medium underline-offset-4 hover:underline"
+                className="text-gold-ink font-medium underline-offset-4 hover:underline"
               >
-                → Direkt an info@sitalo.de schreiben
+                Direkt an info@sitalo.de schreiben ›
               </a>
             </span>
           </AlertDescription>

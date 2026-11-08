@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Download } from "lucide-react";
+import { Download } from "lucide-react";
 
+import { MehrLink } from "@/components/marketing/apple";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -18,12 +19,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/kontakt" },
 };
 
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
-
 /**
- * `/kontakt` — gesetzt wie ein Briefkopf: links die Nummer groß, rechts
- * die Visitenkarte zum Speichern. Darunter alle Wege als Tabelle und
- * zum Schluss Treffen in Hamburg mit der Stadtteil-Karte.
+ * `/kontakt` im Apple-Stil: zentrierter Kopf mit der Nummer groß und
+ * der Visitenkarte als Bild, darunter alle Wege als Karten und zum
+ * Schluss Treffen in Hamburg mit der Stadtteil-Karte.
  */
 export default function KontaktPage() {
   // ContactPage-Schema + Breadcrumb. ContactPage signalisiert
@@ -65,7 +64,7 @@ export default function KontaktPage() {
         <Treffen />
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter crumb="Kontakt" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -77,41 +76,33 @@ export default function KontaktPage() {
 }
 
 /* ------------------------------------------------------------------
- * Briefkopf: Nummer und Mail groß, daneben die Visitenkarte.
+ * Briefkopf als zentrierter Apple-Kopf: Nummer groß, Mail als Link,
+ * darunter die Visitenkarte als „Produktbild“.
  * ---------------------------------------------------------------- */
 function Briefkopf() {
   return (
-    <section>
-      <div className="mx-auto grid w-full max-w-6xl gap-14 px-5 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-24 lg:grid-cols-12 lg:items-center lg:gap-8">
-        <div className="min-w-0 lg:col-span-7">
-          <p className="label-mono text-muted-foreground">Sitalo Webdesign · Hamburg</p>
-          <h1 className="mt-5 text-[3rem] leading-[0.95] tracking-[-0.04em] sm:text-[5rem] lg:text-[5.6rem]">
-            Kontakt
-          </h1>
-          <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-[17px] leading-relaxed">
-            Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Mails beantworten wir meist am selben
-            Werktag.
-          </p>
-          <a
-            href="tel:+491607621876"
-            className="hover:text-gold mt-8 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[3.6rem]"
-            style={{ fontStretch: "118%", fontWeight: 780 }}
-          >
-            0160&nbsp;7621876
-          </a>
-          <div>
-            <a
-              href="mailto:info@sitalo.de"
-              className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[19px] font-semibold"
-            >
-              info@sitalo.de
-            </a>
-          </div>
+    <section className="flaeche-weiss pt-12 pb-20 text-center sm:pt-16 lg:pt-20 lg:pb-24">
+      <div className="inhalt">
+        <p className="t-eyebrow">Sitalo Webdesign · Hamburg</p>
+        <h1 className="t-hero mt-2">Kontakt</h1>
+        <p className="t-unter mx-auto mt-4 sm:mt-5">
+          Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Mails beantworten wir meist am selben
+          Werktag.
+        </p>
+        <a href="tel:+491607621876" className="abschluss-nummer !text-foreground hover:!text-gold-ink mt-8">
+          0160&nbsp;7621876
+        </a>
+        <div className="aktionen mt-6">
+          <Link href="/anfrage" className="btn-signal">
+            Anfrage schreiben
+          </Link>
+          <MehrLink href="mailto:info@sitalo.de" groesse="unter">
+            info@sitalo.de
+          </MehrLink>
         </div>
-
-        <div className="lg:col-span-5">
-          <Visitenkarte />
-        </div>
+      </div>
+      <div data-auftritt="skala" className="inhalt mt-14 sm:mt-16">
+        <Visitenkarte />
       </div>
     </section>
   );
@@ -119,26 +110,23 @@ function Briefkopf() {
 
 function Visitenkarte() {
   return (
-    <figure className="mx-auto w-full max-w-[26rem] lg:mr-0">
-      <div
-        className="bg-card border-border relative flex aspect-[85/55] flex-col justify-between overflow-hidden rounded-[3px] border p-5 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:p-7"
-      >
-        <span aria-hidden="true" className="bg-gold absolute top-0 left-0 h-1.5 w-16" />
+    <figure className="mx-auto w-full max-w-[26rem]">
+      <div className="karte karte-regal relative flex aspect-[85/55] flex-col justify-between p-6 text-left sm:p-8">
         <SitaloLogo size="sm" />
-        <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[13.5px] sm:text-[14.5px]">
-          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Telefon</span>
-          <span className="font-mono tabular-nums">0160&nbsp;7621876</span>
-          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Mail</span>
-          <span className="truncate font-mono">info@sitalo.de</span>
-          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Web</span>
-          <span className="font-mono">sitalo.de</span>
-          <span className="label-mono text-muted-foreground pt-px text-[10.5px]">Ort</span>
-          <span className="font-mono">Hamburg</span>
+        <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[14px] sm:text-[15px]">
+          <span className="text-muted-foreground pt-px text-[12px]">Telefon</span>
+          <span className="tabular-nums">0160&nbsp;7621876</span>
+          <span className="text-muted-foreground pt-px text-[12px]">Mail</span>
+          <span className="truncate">info@sitalo.de</span>
+          <span className="text-muted-foreground pt-px text-[12px]">Web</span>
+          <span>sitalo.de</span>
+          <span className="text-muted-foreground pt-px text-[12px]">Ort</span>
+          <span>Hamburg</span>
         </div>
       </div>
-      <figcaption className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+      <figcaption className="mt-6 flex flex-col items-center gap-2">
         <span className="text-muted-foreground text-[14px]">Für das Adressbuch im Handy</span>
-        <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="btn-line h-11 text-[14.5px]">
+        <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="btn-line btn-mittel">
           <Download className="h-4 w-4" aria-hidden="true" />
           Visitenkarte speichern
         </a>
@@ -187,38 +175,29 @@ const WEGE: { name: string; text: string; href: string; link: string; extern?: b
 
 function Wege() {
   return (
-    <section className="bg-card border-border border-t" aria-labelledby="wege-titel">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <h2 id="wege-titel" className="text-balance text-[2rem] leading-[1.0] tracking-[-0.032em] sm:text-[2.75rem]">
-          Weitere Wege zu uns
+    <section className="flaeche-hell abschnitt" aria-labelledby="wege-titel">
+      <div className="inhalt">
+        <h2 id="wege-titel" data-auftritt="titel" className="zweiton">
+          <span>Weitere Wege zu uns.</span> <span className="grau">Wählen Sie, was Ihnen liegt.</span>
         </h2>
-        <ul className="border-foreground mt-10 border-t-2 sm:mt-12">
-          {WEGE.map((w) => (
-            <li
-              key={w.name}
-              className="border-border grid gap-x-8 gap-y-2 border-b py-5 sm:grid-cols-[10rem_minmax(0,1fr)_auto] sm:items-baseline sm:py-6"
-            >
-              <span className="label-mono text-muted-foreground">{w.name}</span>
-              <span className="text-foreground/85 max-w-xl text-pretty text-[16px] leading-relaxed">{w.text}</span>
-              {w.extern ? (
-                <a
-                  href={w.href}
-                  className="inline-flex items-center gap-1.5 text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline"
-                >
-                  {w.link} {ARROW}
-                </a>
-              ) : (
-                <Link
-                  href={w.href}
-                  className="inline-flex items-center gap-1.5 text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline"
-                >
-                  {w.link} {ARROW}
-                </Link>
-              )}
-            </li>
-          ))}
-        </ul>
       </div>
+      <ul role="list" className="mx-auto mt-8 grid max-w-[1200px] gap-3 px-[max(var(--rinne),env(safe-area-inset-left))] sm:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-4">
+        {WEGE.map((w, i) => (
+          <li
+            key={w.name}
+            data-auftritt=""
+            className={`karte karte-weiss karte-hover flex flex-col p-7 sm:p-8 ${i === 0 ? "lg:col-span-1" : ""}`}
+          >
+            <h3 className="t-karte">{w.name}</h3>
+            <p className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty">{w.text}</p>
+            <div className="mt-auto pt-6">
+              <MehrLink href={w.href} kontext={w.name} groesse="klein" frei={false} className="karte-link">
+                {w.link}
+              </MehrLink>
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -228,31 +207,25 @@ function Wege() {
  * ---------------------------------------------------------------- */
 function Treffen() {
   return (
-    <section className="border-border border-t" aria-labelledby="treffen-titel">
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
+    <section className="flaeche-weiss abschnitt" aria-labelledby="treffen-titel">
+      <div className="mx-auto grid w-full max-w-[1068px] items-center gap-12 px-[max(var(--rinne),env(safe-area-inset-left))] lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-5">
-          <h2
-            id="treffen-titel"
-            className="text-balance text-[2rem] leading-[1.0] tracking-[-0.032em] sm:text-[2.75rem]"
-          >
+          <h2 id="treffen-titel" data-auftritt="titel" className="t-abschnitt">
             Treffen in Hamburg
           </h2>
-          <p className="text-foreground/85 mt-5 max-w-md text-pretty text-[16.5px] leading-relaxed">
+          <p className="mt-5 max-w-md text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty">
             Wer in Hamburg sitzt, kann uns gern treffen: in Ihrem Betrieb oder in einem Café. Alle anderen
             sprechen mit uns am Telefon oder per Video. Die Website wird dieselbe.
           </p>
-          <p className="text-muted-foreground mt-5 max-w-md text-pretty text-[15px] leading-relaxed">
+          <p className="text-muted-foreground mt-4 max-w-md text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty">
             Für {STANDORTE.length} Hamburger Stadtteile gibt es eine eigene Seite. Ein Klick auf den Namen in der
             Karte führt hin.
           </p>
-          <Link
-            href="/standorte"
-            className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
-          >
-            Alle Stadtteile {ARROW}
-          </Link>
+          <MehrLink href="/standorte" className="mt-4">
+            Alle Stadtteile
+          </MehrLink>
         </div>
-        <div className="min-w-0 lg:col-span-7">
+        <div className="karte min-w-0 p-4 sm:p-8 lg:col-span-7">
           <HamburgMap />
         </div>
       </div>

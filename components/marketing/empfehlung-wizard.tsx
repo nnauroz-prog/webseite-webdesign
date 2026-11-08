@@ -150,7 +150,7 @@ export function EmpfehlungWizard() {
         hydrated ? "opacity-100" : "opacity-0",
       )}
     >
-      <div className="bg-card border-border min-w-0 rounded-[3px] border lg:col-span-8">
+      <div className="bg-card min-w-0 rounded-[18px] lg:rounded-[28px] lg:col-span-8">
         <StepIndicator step={step} />
 
         <div className="min-h-[300px] p-5 sm:min-h-[340px] sm:p-8">
@@ -272,7 +272,7 @@ export function EmpfehlungWizard() {
               onClick={back}
               disabled={step === 1}
               className={cn(
-                "text-muted-foreground hover:text-foreground inline-flex h-11 items-center gap-2 rounded-[2px] text-[15px] font-semibold transition-colors",
+                "text-muted-foreground hover:text-foreground inline-flex h-11 items-center gap-2 rounded-full text-[15px] font-semibold transition-colors",
                 step === 1 && "invisible",
               )}
             >
@@ -440,7 +440,7 @@ function OptionCard({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "group flex min-w-0 items-start gap-3 rounded-[2px] border p-3.5 text-left transition-colors sm:p-4",
+        "group flex min-w-0 items-start gap-3 rounded-[12px] border p-3.5 text-left transition-colors sm:p-4",
         selected
           ? "border-foreground bg-background"
           : "border-border bg-background/50 hover:border-foreground/50",
@@ -450,7 +450,7 @@ function OptionCard({
         aria-hidden="true"
         className={cn(
           "mt-[3px] inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center border transition-colors",
-          multi ? "rounded-[2px]" : "rounded-full",
+          multi ? "rounded-[5px]" : "rounded-full",
           selected
             ? "border-foreground bg-foreground text-background"
             : "border-foreground/35",
@@ -539,7 +539,7 @@ function Result({
       </div>
 
       {empfehlung.zusatzHinweis && (
-        <div className="border-border bg-background mt-6 rounded-[3px] border p-4 sm:p-5">
+        <div className="bg-background mt-6 rounded-[18px] p-4 sm:p-5">
           <p className="text-foreground/85 text-[14.5px] leading-relaxed">
             {empfehlung.zusatzHinweis}
           </p>
@@ -559,7 +559,7 @@ function Result({
         <button
           type="button"
           onClick={onReset}
-          className="text-muted-foreground hover:text-foreground inline-flex h-11 items-center gap-2 self-start rounded-[2px] text-[15px] font-semibold transition-colors sm:self-auto"
+          className="text-muted-foreground hover:text-foreground inline-flex h-11 items-center gap-2 self-start rounded-full text-[15px] font-semibold transition-colors sm:self-auto"
         >
           <RotateCcw className="h-4 w-4" aria-hidden="true" />
           Neu beginnen

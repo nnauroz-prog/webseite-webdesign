@@ -97,7 +97,7 @@ export default function ImpressumPage() {
         </section>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter crumb="Impressum" />
     </div>
   );
 }

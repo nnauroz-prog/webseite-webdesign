@@ -1,0 +1,1550 @@
+/* ==================================================================
+   Apple-Sprache — Bausteine für die ganze Seite.
+
+   Wird in app/layout.tsx NACH globals.css und hafen.css geladen, damit
+   die Regeln hier die alten Hafen-Regeln derselben Schicht ohne
+   !important überstimmen. Tokens (Farben, Radien, Glas, Höhen, Typo-
+   Skala) stehen in app/globals.css (:root).
+
+   Inhalt
+   1. Typo-Stufen (.t-hero … .t-fuss, .zweiton)
+   2. Bühne (alte Abschnittsköpfe in Apple-Werten)
+   3. Flächen und Abschnitte (.flaeche-*, .abschnitt, .inhalt)
+   4. Karten (.karte, .karte-weiss, .karte-schwarz, .karte-regal)
+   5. Links mit Chevron (.link-chevron)
+   6. Globale Leiste (.globalnav) und Mobilmenü
+   7. Lokale Produktleiste (.produktleiste)
+   8. Bento-Raster (.bento, .bento-kachel)
+   9. Regal (.regal, .regal-spur, .regal-karte, .regal-pfeil)
+   10. Container-Motiv (.container-motiv)
+   11. Text-Szene (.text-szene)
+   12. Bewegung ([data-auftritt])
+   13. Leisten am Rand (CTA-Leiste, Nach oben)
+   ================================================================== */
+
+@layer components {
+  /* ----------------------------------------------------------------
+     1. Typo-Stufen
+     ---------------------------------------------------------------- */
+  .t-hero {
+    font-size: var(--t-hero);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .t-abschnitt {
+    max-width: 20ch;
+    font-size: var(--t-abschnitt);
+    line-height: 1.0625;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  .t-regal {
+    font-size: var(--t-regal);
+    line-height: 1.1;
+    letter-spacing: -0.018em;
+    font-weight: 600;
+  }
+  .t-kachel {
+    font-size: var(--t-kachel);
+    line-height: 1.1;
+    letter-spacing: -0.016em;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  .t-karte {
+    font-size: var(--t-karte);
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+  }
+  .t-unter {
+    max-width: 34em;
+    font-size: var(--t-unter);
+    line-height: 1.24;
+    letter-spacing: -0.005em;
+    font-weight: 400;
+    color: var(--muted-foreground);
+    text-wrap: pretty;
+  }
+  .t-eyebrow {
+    font-size: var(--t-eyebrow);
+    line-height: 1.24;
+    letter-spacing: -0.022em;
+    font-weight: 600;
+    color: var(--gold-ink);
+  }
+  .t-text {
+    font-size: var(--t-text);
+    line-height: 1.47;
+    letter-spacing: -0.022em;
+  }
+  .t-klein {
+    font-size: var(--t-klein);
+    line-height: 1.43;
+    letter-spacing: -0.016em;
+  }
+  .t-fuss {
+    font-size: var(--t-mini);
+    line-height: 1.33;
+    letter-spacing: -0.01em;
+    color: var(--muted-foreground);
+  }
+  /* Zweiton-Kopf: <h2 class="zweiton"><span>Werkzeuge.</span>
+     <span class="grau">Kostenlos ausprobieren.</span></h2> */
+  .zweiton {
+    font-size: var(--t-regal);
+    line-height: 1.1;
+    letter-spacing: -0.018em;
+    font-weight: 600;
+    color: var(--foreground);
+    text-wrap: balance;
+  }
+  .zweiton > .grau {
+    color: var(--muted-foreground);
+  }
+  /* Auf Schwarz: Nebentöne heller. */
+  :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz, .bg-foreground, .on-dark)
+    :is(.t-unter, .t-fuss, .zweiton > .grau) {
+    color: var(--text-2-dark);
+  }
+  :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz, .bg-foreground, .on-dark) .t-eyebrow {
+    color: var(--signal-on-dark);
+  }
+  :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz) .zweiton {
+    color: #f5f5f7;
+  }
+  @media (min-width: 641px) {
+    .t-hero {
+      letter-spacing: -0.03em;
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     2. Bühne: die vorhandenen Abschnittsköpfe in Apple-Werten.
+     ---------------------------------------------------------------- */
+  .buehne-titel,
+  .buehne-titel-klein {
+    max-width: 20ch;
+    font-size: var(--t-abschnitt);
+    line-height: 1.0625;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    font-stretch: normal;
+  }
+  .buehne-titel-klein {
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    line-height: 1.08;
+  }
+  .buehne-unter {
+    max-width: 34em;
+    font-size: var(--t-unter);
+    line-height: 1.24;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  :is(.on-dark, .bg-foreground, .bg-black, .flaeche-schwarz) .buehne-unter,
+  .buehne-dunkel .buehne-unter {
+    color: var(--text-2-dark);
+  }
+  .buehne-abschnitt {
+    padding-block: 80px;
+  }
+  .buehne-kopf + * {
+    margin-top: 40px;
+  }
+  @media (min-width: 640px) {
+    .buehne-titel {
+      font-size: var(--t-abschnitt);
+    }
+    .buehne-abschnitt {
+      padding-block: 112px;
+    }
+    .buehne-kopf + * {
+      margin-top: 56px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .buehne-abschnitt {
+      padding-block: 140px;
+    }
+    .buehne-kopf + * {
+      margin-top: 64px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .buehne-titel {
+      font-size: var(--t-abschnitt);
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     3. Flächen und Abschnitte
+     ---------------------------------------------------------------- */
+  .flaeche-weiss {
+    background-color: #fff;
+    color: var(--foreground);
+  }
+  .flaeche-hell {
+    background-color: var(--hell);
+    color: var(--foreground);
+  }
+  .flaeche-schwarz {
+    background-color: #000;
+    color: #f5f5f7;
+  }
+  /* Inhaltsbreite wie bei Apple: 980 px + Rinne. */
+  .inhalt {
+    width: 100%;
+    max-width: var(--inhalt-max);
+    margin-inline: auto;
+    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+  }
+  .inhalt-breit {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+  }
+  .abschnitt {
+    padding-block: 80px;
+  }
+  .abschnitt-kopf {
+    margin-inline: auto;
+    text-align: center;
+  }
+  .abschnitt-kopf > :is(.t-abschnitt, .t-unter) {
+    margin-inline: auto;
+  }
+  .abschnitt-kopf > .t-unter {
+    margin-top: 12px;
+  }
+  .abschnitt-kopf + * {
+    margin-top: 40px;
+  }
+  @media (min-width: 640px) {
+    .abschnitt {
+      padding-block: 100px;
+    }
+    .abschnitt-kopf + * {
+      margin-top: 56px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .abschnitt {
+      padding-block: 120px;
+    }
+    .abschnitt-kopf > .t-unter {
+      margin-top: 16px;
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     4. Karten: große Rundung, kein Rand.
+     ---------------------------------------------------------------- */
+  .karte {
+    position: relative;
+    overflow: clip;
+    border: 0;
+    border-radius: var(--radius-karte);
+    background-color: var(--hell);
+    color: var(--foreground);
+  }
+  .karte-weiss {
+    background-color: #fff;
+  }
+  .karte-schwarz {
+    background-color: #000;
+    color: #f5f5f7;
+  }
+  .karte-schwarz :is(.text-muted-foreground) {
+    color: var(--text-2-dark);
+  }
+  .karte-regal {
+    background-color: #fff;
+    box-shadow: var(--schatten-karte);
+    transition:
+      transform 300ms var(--ease-apple),
+      box-shadow 300ms var(--ease-apple);
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .karte-regal:hover,
+    .karte-hover:hover {
+      transform: scale(1.01);
+      box-shadow: var(--schatten-karte-hover);
+    }
+    .karte-hover {
+      transition:
+        transform 300ms var(--ease-apple),
+        box-shadow 300ms var(--ease-apple);
+    }
+  }
+  /* Ganze Karte klickbar: Link in der Karte mit .karte-link. */
+  .karte-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+  }
+  .karte:has(.karte-link:focus-visible) {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .karte .karte-link:focus-visible {
+    outline: none;
+  }
+
+  /* ----------------------------------------------------------------
+     5. Links mit Chevron (neues Markup, mehr-link.tsx)
+     ---------------------------------------------------------------- */
+  .link-chevron {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15em;
+    color: var(--gold-ink);
+    text-decoration: none;
+    text-underline-offset: 0.18em;
+  }
+  .link-chevron .chev {
+    display: inline-block;
+    transform: translateY(-0.02em);
+    transition: transform 200ms var(--ease-apple);
+  }
+  @media (hover: hover) {
+    .link-chevron:hover {
+      text-decoration: underline;
+    }
+  }
+  .link-chevron:focus-visible {
+    text-decoration: underline;
+  }
+  .link-chevron-frei {
+    min-height: 44px;
+  }
+  :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz, .bg-foreground, .on-dark) .link-chevron {
+    color: var(--signal-on-dark);
+  }
+  /* Aktionen nebeneinander (Pille + Link), zentriert. */
+  .aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 28px;
+  }
+
+  /* ----------------------------------------------------------------
+     6. Globale Leiste
+     ---------------------------------------------------------------- */
+  .globalnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--kopf-h);
+    background-color: var(--glas-nav);
+    -webkit-backdrop-filter: var(--glas-filter);
+    backdrop-filter: var(--glas-filter);
+    color: var(--foreground);
+  }
+  /* Seiten mit lokaler Produktleiste: globale Leiste scrollt weg. */
+  html:has([data-produktleiste]) .globalnav {
+    position: relative;
+  }
+  .globalnav-innen {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    max-width: var(--inhalt-max);
+    margin-inline: auto;
+    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+  }
+  .globalnav-liste {
+    display: none;
+  }
+  .globalnav-link {
+    display: inline-flex;
+    height: var(--kopf-h);
+    align-items: center;
+    padding: 0 8px;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: rgb(0 0 0 / 0.8);
+    text-decoration: none;
+    transition: color 240ms var(--ease-apple);
+  }
+  .globalnav-link:hover,
+  .globalnav-link[aria-current="page"] {
+    color: #000;
+  }
+  .globalnav-icon {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pille);
+    color: rgb(0 0 0 / 0.8);
+    transition: color 240ms var(--ease-apple);
+  }
+  .globalnav-icon:hover {
+    color: #000;
+  }
+  .globalnav-mobil {
+    display: flex;
+    align-items: center;
+    margin-right: -12px;
+  }
+  @media (min-width: 834px) {
+    .globalnav-liste {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .globalnav-mobil {
+      display: none;
+    }
+  }
+
+  /* Burger: zwei Striche, 18 px breit, 1 px. */
+  .burger {
+    width: 18px;
+    height: 18px;
+  }
+  .burger > i {
+    height: 1px;
+    margin-top: -0.5px;
+  }
+  .burger > i:first-child {
+    transform: translateY(-3.5px);
+  }
+  .burger > i:last-child {
+    transform: translateY(3.5px);
+  }
+
+  /* Mobilmenü: große Einträge wie bei Apple. */
+  .menue-eintrag {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 28px;
+    line-height: 1.14;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+  .menue-eintrag-klein {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    font-size: 17px;
+    line-height: 1.24;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+
+  /* ----------------------------------------------------------------
+     7. Lokale Produktleiste (produktleiste.tsx)
+     Nur sticky, nie position wechseln. Glas immer an, beim Kleben
+     wechselt nur die Hintergrundfarbe (iPhone ohne Ruckeln).
+     ---------------------------------------------------------------- */
+  .produktleiste {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: var(--leiste-h);
+    background-color: rgb(255 255 255 / 0);
+    -webkit-backdrop-filter: var(--glas-filter);
+    backdrop-filter: var(--glas-filter);
+    box-shadow: inset 0 -1px 0 var(--haarlinie);
+    color: var(--foreground);
+    transition:
+      background-color 240ms var(--ease-apple),
+      color 240ms var(--ease-apple);
+  }
+  .produktleiste[data-klebt="true"],
+  .produktleiste[data-offen="true"] {
+    background-color: var(--glas-leiste);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .produktleiste[data-klebt="true"],
+    .produktleiste[data-offen="true"] {
+      background-color: var(--glas-dicht);
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .produktleiste[data-klebt="true"],
+    .produktleiste[data-offen="true"] {
+      background-color: var(--glas-dicht);
+    }
+  }
+  /* Über schwarzen Abschnitten: dunkles Glas, helle Schrift
+     (data-dunkel setzt produktleiste.tsx per IntersectionObserver). */
+  .produktleiste[data-dunkel="true"] {
+    background-color: rgb(22 22 23 / 0.8);
+    box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.12);
+    color: #f5f5f7;
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .produktleiste[data-dunkel="true"] {
+      background-color: rgb(22 22 23 / 0.96);
+    }
+  }
+  .produktleiste[data-dunkel="true"] :is(.produktleiste-titel, .produktleiste-toggle) {
+    color: #f5f5f7;
+  }
+  .produktleiste[data-dunkel="true"] .produktleiste-link {
+    color: rgb(255 255 255 / 0.8);
+  }
+  .produktleiste[data-dunkel="true"] .produktleiste-link:hover {
+    color: #fff;
+  }
+  .produktleiste[data-dunkel="true"] .produktleiste-link[aria-current="true"] {
+    color: #a1a1a6;
+  }
+  @media (max-width: 359px) {
+    .produktleiste .produktleiste-titel {
+      font-size: 17px;
+      letter-spacing: -0.022em;
+    }
+  }
+  .produktleiste-innen {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: var(--inhalt-max);
+    margin-inline: auto;
+    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+  }
+  .produktleiste-titel {
+    display: inline-flex;
+    min-width: 0;
+    min-height: 44px;
+    align-items: center;
+    overflow: hidden;
+    font-size: 19px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.011em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+  .produktleiste-rechts {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 4px;
+  }
+  .produktleiste-links {
+    display: none;
+  }
+  .produktleiste-link {
+    display: inline-flex;
+    height: 44px;
+    align-items: center;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: rgb(0 0 0 / 0.8);
+    text-decoration: none;
+    transition: color 200ms var(--ease-apple);
+  }
+  .produktleiste-link:hover {
+    color: #000;
+  }
+  .produktleiste-link[aria-current="true"] {
+    color: var(--muted-foreground);
+  }
+  .produktleiste-toggle {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0 0 0 / 0.8);
+  }
+  .produktleiste-toggle svg {
+    transition: transform 240ms var(--ease-apple);
+  }
+  .produktleiste-toggle[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+  .produktleiste-panel {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    padding: 8px max(var(--rinne), env(safe-area-inset-left)) 16px;
+    /* Deckend: ein backdrop-filter im Kind sähe wegen des Glases der
+       Leiste (Backdrop-Root) nichts dahinter. */
+    background-color: #fff;
+    box-shadow:
+      inset 0 -1px 0 var(--haarlinie),
+      0 12px 24px -16px rgb(0 0 0 / 0.18);
+  }
+  .produktleiste-panel a {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    font-size: 17px;
+    letter-spacing: -0.022em;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+  .produktleiste-panel a[aria-current="true"] {
+    color: var(--muted-foreground);
+  }
+  @media (min-width: 834px) {
+    .produktleiste-titel {
+      font-size: 21px;
+    }
+    .produktleiste-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin: 0 20px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .produktleiste-toggle,
+    .produktleiste-panel {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .produktleiste,
+    .produktleiste-toggle svg {
+      transition: none;
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     8. Bento-Raster (bento.tsx)
+     ---------------------------------------------------------------- */
+  .bento {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .bento-kachel {
+    display: flex;
+    min-height: 420px;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 0;
+    text-align: center;
+  }
+  .bento-kachel > .bento-text {
+    max-width: 30em;
+  }
+  .bento-motiv {
+    display: flex;
+    width: 100%;
+    flex: 1;
+    align-items: flex-end;
+    justify-content: center;
+    padding-top: 24px;
+    padding-bottom: 32px;
+  }
+  @media (min-width: 834px) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .bento-kachel {
+      min-height: 520px;
+      padding: 56px 40px 0;
+    }
+    .bento-breit {
+      grid-column: span 2;
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     9. Regal: waagerecht scrollende Karten (regal.tsx)
+     Kein 100vw: Die Spur ist so breit wie der Abschnitt, der Rand
+     entsteht aus scroll-padding und Innenabstand.
+     ---------------------------------------------------------------- */
+  .regal {
+    position: relative;
+  }
+  .regal-kopf {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .regal-spur {
+    --regal-rand: max(var(--rinne), calc((100% - var(--inhalt-max)) / 2 + var(--rinne)));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--regal-rand);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .regal-spur::-webkit-scrollbar {
+    display: none;
+  }
+  .regal-spur:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: -2px;
+  }
+  .regal-spur > ul {
+    display: flex;
+    width: max-content;
+    gap: 16px;
+    margin: 0;
+    padding: 24px var(--regal-rand) 40px;
+    list-style: none;
+  }
+  .regal-spur > ul > li {
+    display: flex;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+  .regal-karte {
+    display: flex;
+    width: min(78vw, 300px);
+    min-height: 380px;
+    flex-direction: column;
+    padding: 28px;
+  }
+  .regal-karte-breit {
+    width: min(84vw, 400px);
+  }
+  .regal-pfeile {
+    display: none;
+  }
+  .regal-pfeil {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pille);
+    background-color: rgb(210 210 215 / 0.64);
+    color: rgb(0 0 0 / 0.56);
+    transition:
+      background-color 200ms var(--ease-apple),
+      opacity 200ms var(--ease-apple);
+  }
+  .regal-pfeil:hover:not(:disabled) {
+    background-color: rgb(223 223 227 / 0.98);
+    color: rgb(0 0 0 / 0.64);
+  }
+  .regal-pfeil:disabled {
+    opacity: 0.42;
+    cursor: default;
+  }
+  @media (min-width: 834px) {
+    .regal-spur > ul {
+      gap: 20px;
+    }
+    .regal-karte {
+      width: 320px;
+      min-height: 420px;
+      padding: 32px;
+    }
+    .regal-karte-breit {
+      width: 440px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .regal-pfeile {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      max-width: var(--inhalt-max);
+      margin-inline: auto;
+      padding-inline: var(--rinne);
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     10. Container-Motiv (container-motiv.tsx): CSS-Container in der
+     Paketfarbe als „Produktbild“. Größen s/m/l, optional gestapelt.
+     ---------------------------------------------------------------- */
+  .container-motiv {
+    --ton: var(--zink);
+    --b: 132px;
+    --h: 44px;
+    position: relative;
+    display: block;
+    width: var(--b);
+    height: var(--h);
+    border-radius: 3px;
+    background-color: var(--ton);
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.09) 0 1px,
+      transparent 1px 6px,
+      rgb(255 255 255 / 0.12) 6px 7px,
+      transparent 7px 12px
+    );
+    box-shadow:
+      inset 0 4px 0 rgb(0 0 0 / 0.14),
+      inset 0 -4px 0 rgb(0 0 0 / 0.16),
+      0 18px 24px -14px rgb(0 0 0 / 0.35);
+  }
+  .container-motiv::before,
+  .container-motiv::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .container-motiv::before {
+    background:
+      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top left / 9px 6px no-repeat,
+      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top right / 9px 6px no-repeat;
+  }
+  .container-motiv::after {
+    background:
+      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom left / 9px 6px no-repeat,
+      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom right / 9px 6px no-repeat;
+  }
+  .container-motiv[data-groesse="s"] {
+    --b: 96px;
+    --h: 32px;
+  }
+  .container-motiv[data-groesse="l"] {
+    --b: 220px;
+    --h: 72px;
+  }
+  .container-motiv[data-ton="signal"] {
+    --ton: var(--gold);
+  }
+  .container-motiv[data-ton="teer"] {
+    --ton: #2c2c2e;
+  }
+  .container-motiv[data-ton="gruen"] {
+    --ton: var(--ink-petrol);
+  }
+  .container-motiv[data-ton="rot"] {
+    --ton: var(--ink-olive);
+  }
+  .container-stapel {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ----------------------------------------------------------------
+     11. Text-Szene (text-szene.tsx): eine große Aussage auf Schwarz,
+     die beim Scrollen hell aufgeht. Die Schrift selbst bleibt voll
+     deckend (Kontrast); ein Schleier darüber blendet aus.
+     ---------------------------------------------------------------- */
+  .text-szene {
+    position: relative;
+    overflow: clip;
+    background-color: #000;
+    color: #f5f5f7;
+  }
+  .text-szene {
+    padding-block: 112px;
+  }
+  @media (min-width: 1024px) {
+    .text-szene {
+      padding-block: 160px;
+    }
+  }
+  .text-szene-satz {
+    max-width: 18ch;
+    margin-inline: auto;
+    font-size: clamp(2rem, 1.2rem + 3.4vw, 4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .text-szene-satz .leuchtet {
+    color: var(--signal-on-dark);
+  }
+
+}
+
+/* ------------------------------------------------------------------
+   12. Bewegung: Apple-artige Scroll-Auftritte, rein in CSS.
+   Ohne Unterstützung für animation-timeline, ohne JS oder bei
+   reduzierter Bewegung steht alles sofort da.
+   - data-auftritt         Deckkraft + 40 px von unten (Kacheln, Karten)
+   - data-auftritt="skala" Deckkraft + scale(.96) (große Bilder)
+   - data-auftritt="titel" nur 40 px von unten (Überschriften: keine
+                           Deckkraft, damit nie ein Kontrastfehler)
+   ------------------------------------------------------------------ */
+@keyframes auftritt {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+@keyframes auftritt-skala {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes auftritt-titel {
+  from {
+    transform: translateY(40px);
+  }
+}
+/* Schleier fährt nach unten weg: Zeile für Zeile wird der Satz hell. */
+@keyframes szene-schleier {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-auftritt] {
+      animation: auftritt linear both;
+      animation-timing-function: var(--ease-apple);
+      animation-timeline: view();
+      animation-range: entry 5% entry 70%;
+    }
+    [data-auftritt="skala"] {
+      animation-name: auftritt-skala;
+    }
+    [data-auftritt="titel"] {
+      animation-name: auftritt-titel;
+    }
+    /* Text-Szene: Schleier über dem Satz löst sich beim Einscrollen. */
+    .text-szene-schleier {
+      position: absolute;
+      inset-inline: 0;
+      top: -40%;
+      height: 140%;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(to bottom, rgb(0 0 0 / 0) 0, #000 28%);
+      animation: szene-schleier linear both;
+      animation-timeline: view();
+      animation-range: cover 15% cover 55%;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   Seitenkopf (page-hero.tsx) und frühere dunkle Flächen: Seiten
+   übergeben teils noch Klassen aus der dunklen Zeit (text-background,
+   text-stahl-hell). Auf Weiß werden sie dunkel bzw. Apple-grau.
+   Ungeschichtet, damit es die Utilities überstimmt.
+   ------------------------------------------------------------------ */
+.seitenkopf :is(.text-stahl-hell, [class*="text-background/"]) {
+  color: var(--muted-foreground);
+}
+.seitenkopf :is(.text-background, [class*="text-background/8"], [class*="text-background/9"]),
+.seitenkopf [class*="hover:text-background"]:hover {
+  color: var(--foreground);
+}
+/* Meta-Zeilen im Kopf: keine Mono-Labels mehr, Systemschrift 14 px,
+   Links in Apple-Orange; Themen-Navigation als graue Pillen. */
+.seitenkopf-meta :is(.font-mono, .label-mono) {
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: -0.016em;
+  text-transform: none;
+}
+.seitenkopf-meta a:not(.btn-signal):not(.btn-outline) {
+  color: var(--gold-ink);
+}
+.seitenkopf-meta nav > :is(.flex, ul) {
+  justify-content: center;
+}
+.seitenkopf-meta nav.flex {
+  justify-content: center;
+  gap: 8px;
+}
+.seitenkopf-meta nav.flex > a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding-inline: 18px;
+  border-radius: 999px;
+  background-color: var(--hell);
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background-color 200ms var(--ease-apple);
+}
+.seitenkopf-meta nav.flex > a:hover {
+  background-color: var(--hell-2);
+  color: var(--foreground);
+}
+
+/* ----------------------------------------------------------------
+   13. Leisten am Rand (ungeschichtet: überstimmt die alten,
+   ebenfalls ungeschichteten Regeln in globals.css)
+   ---------------------------------------------------------------- */
+.cta-leiste {
+  background-color: var(--glas-leiste);
+  -webkit-backdrop-filter: var(--glas-filter);
+  backdrop-filter: var(--glas-filter);
+  box-shadow: inset 0 1px 0 var(--haarlinie);
+}
+.nach-oben {
+  overflow: visible;
+  border: 0;
+  border-radius: var(--radius-pille);
+  background-color: rgb(232 232 237 / 0.8);
+  -webkit-backdrop-filter: var(--glas-filter);
+  backdrop-filter: var(--glas-filter);
+  color: rgb(29 29 31 / 0.72);
+}
+.nach-oben::before {
+  display: none;
+}
+.nach-oben:focus-visible {
+  color: #1d1d1f;
+}
+@media (hover: hover) and (pointer: fine) {
+  .nach-oben:hover {
+    background-color: rgb(210 210 215 / 0.9);
+    color: #1d1d1f;
+  }
+}
+
+/* ==================================================================
+   Zweiter Durchgang: Startseite und /pakete im Apple-Stil.
+   14. Bento im 12er-Raster   15. Modelle (Paket-Karten)
+   16. Vergleich (/pakete)    17. Motive  18. Abschluss
+   ================================================================== */
+@layer components {
+  /* ----------------------------------------------------------------
+     14. Bento im 12er-Raster (bento.tsx mit zwoelf/spalten)
+     ---------------------------------------------------------------- */
+  .bento-12 {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+    gap: 12px;
+  }
+  .bento-kachel {
+    min-height: 440px;
+  }
+  .bento-kachel.bento-gross {
+    min-height: 480px;
+  }
+  .bento-kopf {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .bento-kopf > .bento-text {
+    max-width: 30ch;
+  }
+  .bento-eyebrow {
+    font-size: 12px;
+    line-height: 1.33;
+    letter-spacing: -0.01em;
+  }
+  .bento-kachel.karte-schwarz .t-kachel {
+    color: #f5f5f7;
+  }
+  @media (min-width: 834px) {
+    .bento-12 {
+      gap: 12px;
+    }
+    .bento-kachel {
+      min-height: 440px;
+      padding: 56px 40px 0;
+    }
+    .bento-kachel.bento-gross {
+      min-height: 580px;
+    }
+  }
+  @media (min-width: 1068px) {
+    .bento-12 {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .bento-12 > .bento-s4 {
+      grid-column: span 4;
+    }
+    .bento-12 > .bento-s5 {
+      grid-column: span 5;
+    }
+    .bento-12 > .bento-s7 {
+      grid-column: span 7;
+    }
+    .bento-12 > .bento-s12 {
+      grid-column: span 12;
+    }
+    .bento-kachel.bento-quer {
+      min-height: 380px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      padding: 56px 72px;
+      text-align: left;
+    }
+    .bento-quer > .bento-kopf {
+      align-items: flex-start;
+      max-width: 34ch;
+    }
+    .bento-quer > .bento-motiv {
+      flex: 0 0 auto;
+      width: auto;
+      padding: 0 24px 0 0;
+      align-items: center;
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     15. Modelle: die vier Pakete als große Karten (paket-kacheln.tsx).
+     Mobil ein Regal (wischen, Anschnitt der nächsten Karte), ab 834 px
+     ein Raster mit 2, ab 1068 px mit 4 Spalten.
+     ---------------------------------------------------------------- */
+  .modelle {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--rinne);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modelle::-webkit-scrollbar {
+    display: none;
+  }
+  .modelle:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: -2px;
+  }
+  .modelle > ul {
+    display: flex;
+    width: max-content;
+    gap: 12px;
+    margin: 0;
+    padding: 8px max(var(--rinne), env(safe-area-inset-left)) 24px;
+    list-style: none;
+  }
+  .modelle > ul > li {
+    display: flex;
+    flex: 0 0 auto;
+    width: min(82vw, 340px);
+    scroll-snap-align: start;
+  }
+  .modell-karte {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 32px;
+    text-align: center;
+  }
+  .modell-bild {
+    position: relative;
+    display: flex;
+    height: 180px;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 18px;
+  }
+  .modell-bild::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    width: 190px;
+    height: 18px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(0 0 0 / 0.14), rgb(0 0 0 / 0));
+  }
+  .modell-bild .container-motiv {
+    --b: 150px;
+    --h: 40px;
+    box-shadow:
+      inset 0 4px 0 rgb(0 0 0 / 0.14),
+      inset 0 -4px 0 rgb(0 0 0 / 0.16);
+  }
+  .modell-eyebrow {
+    min-height: 16px;
+    margin-top: 20px;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+  }
+  .modell-satz {
+    max-width: 24ch;
+    min-height: 4.41em;
+    margin-top: 10px;
+    font-size: 17px;
+    line-height: 1.47;
+    letter-spacing: -0.022em;
+    color: var(--muted-foreground);
+  }
+  .modell-preis {
+    margin-top: 20px;
+    font-size: 21px;
+    line-height: 1.19;
+    font-weight: 600;
+    letter-spacing: 0.011em;
+    font-variant-numeric: tabular-nums;
+  }
+  .modell-monat {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.43;
+    color: var(--muted-foreground);
+  }
+  .modell-aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 20px;
+    margin-top: auto;
+    padding-top: 24px;
+  }
+  @media (min-width: 834px) {
+    .modelle {
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+    .modelle > ul {
+      display: grid;
+      width: auto;
+      max-width: 1200px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      margin-inline: auto;
+      padding: 0 var(--rinne);
+    }
+    .modelle > ul > li {
+      width: auto;
+    }
+  }
+  @media (min-width: 1068px) {
+    .modelle > ul {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .modell-bild .container-motiv {
+      --b: 170px;
+      --h: 40px;
+    }
+  }
+  @media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .modell-karte {
+      transition:
+        transform 300ms var(--ease-apple),
+        box-shadow 300ms var(--ease-apple);
+    }
+    .modell-karte:hover {
+      transform: scale(1.01);
+      box-shadow: var(--schatten-karte-hover);
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     16. Vergleich (/pakete): Apple-Vergleichstabelle
+     ---------------------------------------------------------------- */
+  .vergleich-tabelle {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .vergleich-tabelle thead :is(th, td) {
+    position: sticky;
+    top: var(--sticky-top);
+    z-index: 10;
+    padding: 20px 12px 16px;
+    vertical-align: top;
+    background-color: var(--glas-leiste);
+    -webkit-backdrop-filter: var(--glas-filter);
+    backdrop-filter: var(--glas-filter);
+    box-shadow: inset 0 -1px 0 var(--border);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .vergleich-tabelle thead :is(th, td) {
+      background-color: var(--glas-dicht);
+    }
+  }
+  .vergleich-tabelle tbody :is(th, td) {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .vergleich-tabelle tbody th[scope="row"] {
+    padding-left: 0;
+    font-size: 14px;
+    line-height: 1.43;
+    font-weight: 600;
+    letter-spacing: -0.016em;
+    text-align: left;
+  }
+  .vergleich-tabelle tbody td {
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.43;
+    letter-spacing: -0.016em;
+  }
+  .vergleich-tabelle .gruppe th {
+    padding: 56px 0 12px;
+    font-size: 21px;
+    line-height: 1.19;
+    font-weight: 600;
+    letter-spacing: 0.011em;
+    text-align: left;
+    border-bottom: 1px solid var(--foreground);
+  }
+  .vergleich-tabelle tbody:first-of-type .gruppe th {
+    padding-top: 40px;
+  }
+  .vergleich-tabelle tfoot td {
+    padding: 28px 12px 0;
+    vertical-align: top;
+    text-align: center;
+  }
+  .vergleich-tabelle :is(thead, tfoot) td:first-child {
+    padding-left: 0;
+  }
+  .vergleich-preis {
+    font-size: 24px;
+    line-height: 1.17;
+    font-weight: 600;
+    letter-spacing: 0.009em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .vergleich-zahl {
+    display: block;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: 0.007em;
+    font-variant-numeric: tabular-nums;
+  }
+  .vergleich-unterzeile {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.33;
+    color: var(--muted-foreground);
+  }
+  .vergleich-haken {
+    display: inline-block;
+    color: var(--gold-ink);
+  }
+  .vergleich-strich {
+    display: inline-block;
+    color: var(--muted-foreground);
+  }
+  .vergleich-select {
+    width: 100%;
+    height: 44px;
+    padding: 0 36px 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231d1d1f' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    color: var(--foreground);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .vergleich-select:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  /* ----------------------------------------------------------------
+     17. Motive (ruhige Bilder in Kacheln und Karten)
+     ---------------------------------------------------------------- */
+  .motiv-icon {
+    display: inline-flex;
+    width: 96px;
+    height: 96px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    background-color: var(--hell);
+    color: var(--gold);
+  }
+  .karte-schwarz .motiv-icon {
+    background-color: #1d1d1f;
+  }
+  .motiv-kreis {
+    display: inline-flex;
+    width: 112px;
+    height: 112px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--gold);
+    color: #fff;
+  }
+  .motiv-auf {
+    position: relative;
+    display: inline-flex;
+  }
+  .motiv-auf > .motiv-ueber {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+
+  /* ----------------------------------------------------------------
+     18. Abschluss (abschluss.tsx)
+     ---------------------------------------------------------------- */
+  .abschluss {
+    padding-block: 96px;
+  }
+  @media (min-width: 1024px) {
+    .abschluss {
+      padding-block: 140px;
+    }
+  }
+  .abschluss .t-abschnitt {
+    color: #f5f5f7;
+  }
+  .abschluss-unter {
+    margin-top: 20px;
+    font-size: clamp(17px, 15px + 0.5vw, 21px);
+    line-height: 1.4;
+  }
+  .abschluss-nummer {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    font-size: clamp(2.25rem, 1.2rem + 5vw, 5rem);
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: #f5f5f7;
+    text-decoration: none;
+    transition: color 240ms var(--ease-apple);
+  }
+  @media (hover: hover) {
+    .abschluss-nummer:hover {
+      color: var(--signal-on-dark);
+    }
+  }
+}
+
+/* ==================================================================
+   19. Unterseiten: Reste der eckigen Editorial-Sprache zentral ablösen.
+   Gilt nur für Marketing-Seiten (<main> neben der globalen Leiste),
+   nie für /admin. Ungeschichtet, damit es die Utilities überstimmt.
+   - schwarze 1,5–3-px-Linien → #d2d2d7-Haarlinien (1 px)
+   - dunkle Flächen (bg-foreground / bg-teer-2) → Apple-Schwarz #000
+   - Kästen mit Rand → große Rundung; graue Kästen ohne Rand
+   - quadratische Punkte → rund
+   - Mini-Labels unter 12 px → 12 px
+   - Pfeil-Icons in Textlinks → orange „›“ (wie MehrLink)
+   ================================================================== */
+.globalnav ~ main
+  :is(.border-foreground, [class*="border-foreground/"]):not(input, select, textarea, button, [role="radio"], [role="checkbox"], [role="switch"]) {
+  border-color: var(--border);
+}
+.globalnav ~ main :is(.border-t-2, [class*="border-t-[3px]"], [class*="border-t-[1.5px]"], [class*="border-t-[2px]"]) {
+  border-top-width: 1px;
+}
+.globalnav ~ main :is(.border-b-2, [class*="border-b-[1.5px]"], [class*="border-b-[2px]"]) {
+  border-bottom-width: 1px;
+}
+.globalnav ~ main :is(.border-y-2) {
+  border-block-width: 1px;
+}
+.globalnav ~ main :is(.border-l-2, [class*="border-l-[3px]"]) {
+  border-left-width: 1px;
+}
+.globalnav ~ main :is(.border-2, [class*="border-[1.5px]"]):not(input, select, textarea, button, label, [role="radio"], [role="checkbox"], .rounded-full) {
+  border-width: 1px;
+}
+.globalnav ~ main :is(.bg-foreground, .bg-teer-2):not(.rounded-full) {
+  background-color: #000;
+}
+.globalnav ~ main :is(div, article, aside, figure, details, dl, ol, ul).border:not([class*="rounded"]) {
+  border-radius: var(--radius-karte);
+}
+.globalnav ~ main :is(div, article, aside, figure, details).bg-card.border:not([class*="rounded"]) {
+  border-color: transparent;
+}
+/* Kleine quadratische Marker (5–10 px) werden Punkte. */
+.globalnav ~ main
+  :is(span, i, li > div):is([class*="h-[5px]"], [class*="h-[6px]"], [class*="h-[7px]"], [class*="h-[8px]"], [class*="h-[9px]"], [class*="h-[10px]"], .h-1\.5, .h-2, .h-2\.5):is(.inline-block, .block, .shrink-0) {
+  border-radius: 999px;
+}
+.globalnav ~ main :is([class*="text-[9"], [class*="text-[10"], [class*="text-[11px]"], [class*="text-[11.5px]"]) {
+  font-size: 12px;
+}
+/* Pfeil-Icons in Textlinks: Icon aus, orange Chevron an. */
+.globalnav ~ main a:not(.btn-signal, .btn-line) svg:is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up-right) {
+  display: none;
+}
+.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-up-right) {
+  color: var(--gold-ink);
+  font-weight: 400;
+}
+.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-up-right)::after {
+  content: "\203A";
+  display: inline-block;
+  margin-left: 0.2em;
+  transform: translateY(-0.02em);
+}
+.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-left)::before {
+  content: "\2039";
+  display: inline-block;
+  margin-right: 0.2em;
+}
+.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-left) {
+  color: var(--gold-ink);
+}
+/* Zeilen-Links (ganze Zeile, Chevron rechts): Text dunkel, Chevron grau. */
+.globalnav ~ main a.justify-between:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right) {
+  color: var(--foreground);
+}
+.globalnav ~ main a.justify-between:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right)::after {
+  color: var(--muted-foreground);
+  font-size: 1.25em;
+  line-height: 1;
+}
+.globalnav ~ main :is(.bg-foreground, .bg-teer-2, .bg-black, .flaeche-schwarz, .karte-schwarz, .on-dark)
+  a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-left, svg.lucide-arrow-up-right) {
+  color: var(--signal-on-dark);
+}
+/* Grautext und oranger Text auf schwarzen Flächen und Karten:
+   ungeschichtet, damit die Utility text-muted-foreground nicht gewinnt. */
+:is(.karte-schwarz, .flaeche-schwarz) .text-muted-foreground {
+  color: var(--text-2-dark);
+}
+:is(.karte-schwarz, .flaeche-schwarz) :is(.text-gold, .text-gold-ink) {
+  color: var(--signal-on-dark);
+}

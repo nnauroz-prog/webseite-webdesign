@@ -105,7 +105,7 @@ export function ShortcutHelp() {
       />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-card border-foreground/20 relative w-full max-w-2xl overflow-hidden rounded-[3px] border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]"
+        className="bg-card relative w-full max-w-2xl overflow-hidden rounded-[18px] lg:rounded-[28px] shadow-karte"
       >
         <div className="border-border flex items-center justify-between gap-4 border-b px-5 py-4">
           <div className="min-w-0">
@@ -118,7 +118,7 @@ export function ShortcutHelp() {
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Schließen"
-            className="border-border text-muted-foreground hover:border-foreground hover:text-foreground inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[2px] border transition-colors"
+            className="border-border text-muted-foreground hover:border-foreground hover:text-foreground inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors"
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -143,7 +143,7 @@ export function ShortcutHelp() {
                       {item.keys.map((k, ki) => (
                         <kbd
                           key={ki}
-                          className="border-border bg-background text-foreground inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-[2px] border border-b-2 px-1.5 font-mono text-[11.5px]"
+                          className="border-border bg-background text-foreground inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-[6px] border border-b-2 px-1.5 font-mono text-[11.5px]"
                         >
                           {k}
                         </kbd>
@@ -158,7 +158,7 @@ export function ShortcutHelp() {
 
         <div className="border-border text-muted-foreground border-t px-5 py-3 text-[13px]">
           Mit{" "}
-          <kbd className="border-border mx-0.5 rounded-[2px] border px-1 font-mono text-[11.5px]">?</kbd>{" "}
+          <kbd className="border-border mx-0.5 rounded-[6px] border px-1 font-mono text-[11.5px]">?</kbd>{" "}
           öffnen Sie diese Übersicht jederzeit.
         </div>
       </div>

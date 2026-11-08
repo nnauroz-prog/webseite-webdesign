@@ -89,7 +89,7 @@ export default function NotFound() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Fehler 404" />
     </div>
   );
 }

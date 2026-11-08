@@ -471,7 +471,8 @@
   right: 0;
   top: 4.75rem;
   height: 4px;
-  background: rgb(238 238 235 / 0.16);
+  border-radius: 2px;
+  background: #424245;
 }
 .route-line i {
   position: absolute;
@@ -557,8 +558,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--foreground);
-  box-shadow: inset 0 0 0 4px rgb(238 238 235 / 0.24);
+  background: #000;
+  box-shadow: inset 0 0 0 4px #424245;
 }
 /* Orange Kontur, Füllung und einmal auslaufender Ring. */
 .stop-dot::before,
@@ -1111,9 +1112,9 @@ a.board-row:focus-visible .board-arrow circle {
   }
   html.js-reveal .ablauf-buehne {
     position: sticky;
-    top: var(--kopf-h);
+    top: var(--sticky-top);
     display: flex;
-    min-height: calc(100svh - var(--kopf-h));
+    min-height: calc(100svh - var(--sticky-top));
     flex-direction: column;
     justify-content: center;
     padding-block: 40px;

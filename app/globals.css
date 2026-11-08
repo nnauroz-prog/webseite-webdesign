@@ -16,60 +16,137 @@ html {
    Für Schrift auf hellem Grund gibt es --gold-ink (AA-Kontrast).
    ------------------------------------------------------------------ */
 :root {
-  --radius: 0.25rem;
+  /* ---------------------------------------------------------------
+     Apple-Sprache (zweiter Durchgang): Flächen Weiß und #f5f5f7 im
+     Wechsel, Schwarz für Höhepunkte, Schrift #1d1d1f, Nebentext
+     #6e6e73, Haarlinien #d2d2d7. Signal-Orange bleibt der Akzent.
+     Bausteine (Karten, Leisten, Typo-Stufen) stehen in app/apple.css.
+     --------------------------------------------------------------- */
+  --radius: 0.75rem;
 
-  --background: #eeeeeb;
-  --foreground: #1b1d1e;
-  --card: #fafaf8;
-  --card-foreground: #1b1d1e;
+  /* Flächen */
+  --weiss: #ffffff;
+  --hell: #f5f5f7;
+  --hell-2: #e8e8ed;
+  --schwarz: #000000;
 
-  --primary: #1b1d1e;
-  --primary-foreground: #eeeeeb;
+  --background: #ffffff;
+  --foreground: #1d1d1f;
+  --card: #f5f5f7;
+  --card-foreground: #1d1d1f;
 
-  --secondary: #e4e4e0;
-  --secondary-foreground: #1b1d1e;
-  --muted: #e7e7e3;
-  /* Stahl: Nebentexte, ~5,6:1 auf der Grundfläche. */
-  --muted-foreground: #565b5d;
+  --primary: #1d1d1f;
+  --primary-foreground: #ffffff;
 
-  --accent: #e2e2de;
-  --accent-foreground: #1b1d1e;
+  --secondary: #f5f5f7;
+  --secondary-foreground: #1d1d1f;
+  --muted: #f5f5f7;
+  /* 5,07 : 1 auf Weiß, 4,66 : 1 auf #f5f5f7. Nicht auf #e8e8ed. */
+  --muted-foreground: #6e6e73;
 
-  /* Signal-Orange (Containerbrücke). Als Fläche und auf Teer. */
+  --accent: #e8e8ed;
+  --accent-foreground: #1d1d1f;
+
+  /* Signal-Orange: Grafik, Kran, Fokusring, Flächen ohne Schrift
+     (Weiß darauf nur 3,3 : 1). Name --gold bleibt für bg-gold usw. */
   --gold: #f45b1e;
-  /* Dasselbe Orange, abgedunkelt für Schrift auf hellem Grund. */
-  --gold-ink: #b13d0c;
+  /* Textlinks und Eyebrows auf hell: 5,18 : 1 auf Weiß, 4,76 : 1 auf #f5f5f7. */
+  --gold-ink: #c2410c;
+  /* Pillen-Fläche mit weißer Schrift: 4,86 : 1 / Hover 5,93 : 1. */
+  --signal-fill: #c94410;
+  --signal-fill-hover: #b13d0c;
+  /* Orange Schrift auf Schwarz (8,1 : 1). */
+  --signal-on-dark: #ff7a3d;
+  /* Nebentext auf Schwarz (8,2 : 1). */
+  --text-2-dark: #a1a1a6;
 
-  /* Zweitfarben aus dem Containerstapel. */
-  --ink-petrol: #2e5c4d; /* Hafengrün */
-  --ink-olive: #a8382a; /* Container-Rot */
+  /* Zweitfarben, nur noch als Container-Grafik. */
+  --ink-petrol: #2e5c4d;
+  --ink-olive: #a8382a;
   --zink: #b3b6b2;
-  --teer-2: #26292b;
-  --stahl-hell: #a3a8a9;
+  --teer-2: #1d1d1f;
+  /* NUR auf Schwarz/#1d1d1f (5,8 : 1 auf #000; auf hell zu schwach). */
+  --stahl-hell: #86868b;
 
-  --border: #d6d6d1;
-  --input: #cfcfca;
+  --border: #d2d2d7;
+  --input: #d2d2d7;
   --ring: #f45b1e;
 
-  /* Bewegungssprache der Startseite: drei Kurven, fünf Dauern.
+  /* Formen */
+  --radius-karte: 18px;
+  --radius-pille: 980px;
+  --schatten-karte: 0 4px 24px rgb(0 0 0 / 0.08);
+  --schatten-karte-hover: 0 8px 32px rgb(0 0 0 / 0.12);
+
+  /* Glas */
+  --glas-nav: rgb(245 245 247 / 0.8);
+  --glas-leiste: rgb(255 255 255 / 0.8);
+  --glas-filter: saturate(180%) blur(20px);
+  --glas-dicht: rgb(255 255 255 / 0.96);
+  --haarlinie: rgb(0 0 0 / 0.16);
+
+  /* Höhen und Breiten */
+  --kopf-h: 48px;
+  --leiste-h: 52px;
+  --sticky-top: var(--kopf-h);
+  --inhalt-max: 1024px;
+  --rinne: 16px;
+
+  /* Schrift: San Francisco über die Systemschrift. */
+  --font-sf: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-sf-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Typo-Skala */
+  --t-hero: clamp(3rem, 1.9rem + 4.7vw, 5rem);
+  --t-abschnitt: clamp(2rem, 1.3rem + 3vw, 4rem);
+  --t-regal: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+  --t-kachel: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  --t-karte: clamp(1.5rem, 1.35rem + 0.6vw, 1.75rem);
+  --t-unter: clamp(1.3125rem, 1.1rem + 0.9vw, 1.75rem);
+  --t-eyebrow: 15px;
+  --t-text: 17px;
+  --t-klein: 14px;
+  --t-mini: 12px;
+
+  /* Bewegung: drei Kurven, fünf Dauern, dazu die Apple-Kurve.
      --ease-aus      Auftritte (etwas kommt an und setzt sich)
      --ease-wechsel  Linien, Lichtwechsel, Zustandswechsel
      --ease-ab       nur für Abgänge (etwas verlässt das Bild)
-     Jede neue Bewegung nimmt nur diese Werte; Ausnahmen (physikalische
-     Kurven wie das Aufsetzen eines Containers) stehen an Ort und Stelle
-     begründet. */
+     --ease-apple    Scroll-Auftritte, Karten-Hover, Pillen */
   --ease-aus: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-wechsel: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-ab: cubic-bezier(0.4, 0, 1, 1);
+  --ease-apple: cubic-bezier(0.28, 0.11, 0.32, 1);
   --t-druck: 140ms;
   --t-kurz: 280ms;
   --t-mittel: 450ms;
   --t-lang: 760ms;
   --t-linie: 900ms;
-
-  /* Höhe der Kopfzeile, an allen Breiten gleich. Bezug für klebende
-     Elemente (Ablauf-Szene, Kopf der Vergleichstabelle) und Anker. */
-  --kopf-h: 64px;
+}
+@media (min-width: 834px) {
+  :root {
+    --kopf-h: 44px;
+    --rinne: 22px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --radius-karte: 28px;
+    --t-eyebrow: 17px;
+  }
+}
+/* Seiten mit lokaler Produktleiste: Die globale Leiste scrollt weg,
+   nur die Produktleiste (52 px) klebt. */
+html:has([data-produktleiste]) {
+  --sticky-top: var(--leiste-h);
+}
+html {
+  scroll-padding-top: calc(var(--sticky-top) + 12px);
+}
+/* Admin: Karten heben sich weiß vom grauen Grund ab. */
+body:has([data-admin]) {
+  --background: #f5f5f7;
+  --card: #ffffff;
 }
 
 /* ==================================================================
@@ -84,33 +161,28 @@ html {
    ================================================================== */
 @layer components {
   .kopf-glas {
-    background-color: rgb(238 238 235 / 0.84);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    backdrop-filter: saturate(180%) blur(20px);
-    box-shadow: inset 0 -1px 0 rgb(27 29 30 / 0.08);
+    background-color: var(--glas-leiste);
+    -webkit-backdrop-filter: var(--glas-filter);
+    backdrop-filter: var(--glas-filter);
+    box-shadow: inset 0 -1px 0 var(--haarlinie);
   }
-  /* Mobiles Vollbild-Menü: dunkles Glas, etwas dichter. */
-  /* 0,9 statt 0,82: Über hellem Kopf hielt der Mono-Nebentext
-     (--stahl-hell) sonst keine 4,5 : 1. */
+  /* Mobiles Vollbild-Menü: helles, dichtes Milchglas wie bei Apple. */
   .menue-glas {
-    background-color: rgb(27 29 30 / 0.9);
-    -webkit-backdrop-filter: saturate(140%) blur(24px);
-    backdrop-filter: saturate(140%) blur(24px);
+    background-color: rgb(250 250 252 / 0.96);
+    color: var(--foreground);
+    -webkit-backdrop-filter: var(--glas-filter);
+    backdrop-filter: var(--glas-filter);
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .kopf-glas {
-      background-color: rgb(238 238 235 / 0.96);
-    }
+    .kopf-glas,
     .menue-glas {
-      background-color: rgb(27 29 30 / 0.97);
+      background-color: var(--glas-dicht);
     }
   }
   @media (prefers-reduced-transparency: reduce) {
-    .kopf-glas {
-      background-color: rgb(238 238 235 / 0.96);
-    }
+    .kopf-glas,
     .menue-glas {
-      background-color: rgb(27 29 30 / 0.97);
+      background-color: var(--glas-dicht);
     }
   }
 
@@ -174,12 +246,27 @@ html {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: var(--font-brand-sans);
-  --font-mono: var(--font-brand-mono);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+  --radius-karte: var(--radius-karte);
+  --radius-pille: var(--radius-pille);
+  --color-weiss: var(--weiss);
+  --color-hell: var(--hell);
+  --color-hell-2: var(--hell-2);
+  --color-schwarz: var(--schwarz);
+  --color-signal-fill: var(--signal-fill);
+  --color-signal-on-dark: var(--signal-on-dark);
+  --color-text-2-dark: var(--text-2-dark);
+  --shadow-karte: var(--schatten-karte);
+  --shadow-karte-hover: var(--schatten-karte-hover);
+  /* Systemschrift (SF Pro auf Apple-Geräten) überall. font-mono wird
+     bewusst ebenfalls SF: Die vielen Meta-Zeilen lesen sich so wie
+     Apple-Kleintext. Echte Anzeigen nehmen font-tafel. */
+  --font-sans: var(--font-sf);
+  --font-mono: var(--font-sf);
+  --font-tafel: var(--font-sf-mono);
   --font-serif: var(--font-serif);
   --font-dot: var(--font-dot);
 }
@@ -191,75 +278,30 @@ html {
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans), system-ui, sans-serif;
+    font-family: var(--font-sf);
+    font-size: 17px;
+    line-height: 1.47;
+    letter-spacing: -0.022em;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    /* Film-Grain — SVG-Noise als feste Überlagerung gibt dem
-       ganzen Cream-Hintergrund einen analogen, papier-artigen Ton.
-       Sehr subtil (3 % Opacity), aber wahrnehmbar. Auf Print
-       weggelassen. */
     position: relative;
   }
-  @media print {
-    body::after {
-      display: none !important;
-    }
-  }
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.035;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.11 0 0 0 0 0.12 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 220px 220px;
-  }
 
-  /* Custom Selection: Gold-Tönung statt Browser-Default. Auf
-     beiden Hintergründen (Cream und Dunkel-Sektionen) lesbar. */
   ::selection {
-    background-color: rgb(244 91 30 / 0.32);
+    background-color: rgb(244 91 30 / 0.25);
     color: var(--foreground);
   }
-  .bg-foreground ::selection,
-  [class*="bg-foreground"] ::selection {
+  :is(.bg-foreground, .bg-black, .bg-schwarz, .on-dark) ::selection {
     background-color: rgb(244 91 30 / 0.45);
-    color: var(--background);
-  }
-
-  /* Custom Scrollbar — schmal, Gold-akzentuiert beim Hover.
-     Nur Webkit/Blink (Firefox hat eigene Scrollbar-API mit
-     scrollbar-color, die wir parallel setzen). */
-  html {
-    scrollbar-color: rgb(244 91 30 / 0.5) transparent;
-    scrollbar-width: thin;
-  }
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: rgb(244 91 30 / 0.35);
-    border-radius: 999px;
-    border: 2px solid transparent;
-    background-clip: content-box;
-    transition: background-color 200ms;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(244 91 30 / 0.7);
+    color: #fff;
   }
 
   /* Editorial display defaults — tighter tracking, refined hierarchy. */
   h1,
   h2,
   h3 {
-    letter-spacing: -0.032em;
-    font-feature-settings: "ss01", "cv11";
+    letter-spacing: -0.02em;
   }
 
   /* Smooth scroll-anchored reveal — used on .reveal elements. */
@@ -337,7 +379,6 @@ html {
   summary:focus-visible {
     outline: 2px solid var(--gold);
     outline-offset: 2px;
-    border-radius: 2px;
   }
 
   /* Bild-Fade-In — wenn Bilder fertig geladen sind (next/image
@@ -1394,24 +1435,17 @@ html {
   );
 }
 
-/* Früher Cormorant, jetzt die breite Grotesk: Preise und Kennzahlen
-   stehen wie Beschriftungen am Containerterminal. Die Klassennamen
-   bleiben, damit bestehendes Markup ohne Änderung mitzieht. */
-.serif-italic {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-style: italic;
-  font-weight: 500;
-}
-
-.serif {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-stretch: 112%;
-  font-weight: 700;
-}
-
+/* Früher Cormorant, dann Mona Sans breit, jetzt SF: Preise und
+   Kennzahlen in der Systemschrift mit Tabellenziffern. Die
+   Klassennamen bleiben, damit bestehendes Markup ohne Änderung mitzieht. */
 .serif,
 .serif-italic {
-  font-feature-settings: "lnum" 1, "tnum" 1;
+  font-family: var(--font-sf);
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 /* Die Wortmarke behält die Antiqua aus dem ursprünglichen Logo. */
@@ -1419,16 +1453,26 @@ html {
   font-family: var(--font-serif), Cormorant, Georgia, serif;
 }
 
-/* Überschriften: breit und kräftig, wie Beschriftungen im Hafen.
-   Absichtlich ungeschichtet, damit es die Gewichts-Utilities
-   (font-semibold usw.) überstimmt und alle Seiten einheitlich sind. */
+/* Echte Anzeigen (Containernummer, Pegel, Tafel): Mono. */
+.font-tafel {
+  font-family: var(--font-sf-mono);
+}
+
+/* Überschriften im Apple-Satz: halbfett, eng gesperrt, normale Breite.
+   Absichtlich ungeschichtet, damit es die Gewichts-Utilities überstimmt
+   und alle Seiten einheitlich sind. */
 :is(h1, h2):not(.label-mono) {
-  font-stretch: 112%;
-  font-weight: 740;
+  font-stretch: normal;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+h1:not(.label-mono) {
+  font-weight: 700;
 }
 h3:not(.label-mono) {
-  font-stretch: 106%;
-  font-weight: 680;
+  font-stretch: normal;
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 :is(h1, h2, h3).serif,
 :is(h1, h2, h3) .serif,
@@ -1445,197 +1489,135 @@ h3:not(.label-mono) {
 .text-gold {
   color: var(--gold-ink);
 }
-:is(.bg-foreground, .bg-teer-2, .on-dark) .text-gold,
-:is(.bg-foreground, .bg-teer-2, .on-dark).text-gold {
-  color: var(--gold);
+:is(.bg-foreground, .bg-teer-2, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .text-gold,
+:is(.bg-foreground, .bg-teer-2, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark).text-gold {
+  color: var(--signal-on-dark);
 }
 
 @layer components {
 /* Beschriftung in Mono: kleine Versalien mit Sperrung. */
+/* Früher Mono-Versalien; jetzt Apple-Kleintext (12 px, halbfett, SF).
+   Die Farbe kommt weiter aus der Utility. */
 .label-mono {
-  font-family: var(--font-mono), ui-monospace, monospace;
+  font-family: var(--font-sf);
   font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
 }
 
-/* Knöpfe im Hafen-Stil: kantig, Signal-Orange mit Teer-Schrift
-   (Weiß auf Orange hätte zu wenig Kontrast).
-   Unter dem Zeiger oder mit Tastaturfokus läuft eine Teer-Füllung von
-   links ein (auf dunklem Grund Elbnebel), der Pfeil schiebt nach rechts.
-   Beim Verlassen läuft die Füllung nach rechts hinaus. Die Füllung ist
-   ein ::before mit scaleX, es bewegt sich nur transform. Sie steht 1 px
-   über den Rand hinaus (die Kantenglättung des skalierten ::before ließ
-   sonst unten und rechts einen orangen Saum stehen); ist sie ganz
-   eingelaufen, nimmt auch der Knopf selbst die Füllfarbe an.
-   Am Touchgerät (kein Hover) läuft die Füllung beim Tippen kurz ein,
-   der Knopf gibt 1 px nach. */
+/* Knöpfe im Apple-Stil: Pillen. .btn-signal gefüllt (dunkleres Orange,
+   weiße Schrift 4,86 : 1), .btn-line als orange Kontur. Pfeil-Icons im
+   Markup werden ausgeblendet (Apple-Pillen tragen keinen Pfeil).
+   Größen: Standard 44 px (.btn-ruhig ist Alias), .btn-gross 48 px,
+   .btn-mittel 36 px und .btn-klein 28 px sichtbar, beide per ::after
+   mit 44 px Trefferfläche. */
 .btn-signal,
 .btn-line {
-  --btn-fill: var(--foreground);
-  --btn-on-fill: var(--background);
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  height: 3.25rem;
-  padding: 0 1.4rem;
-  border-radius: 2px;
-  font-size: 15.5px;
-  font-weight: 640;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pille);
+  font-family: var(--font-sf);
+  font-size: 17px;
+  line-height: 1.18;
+  font-weight: 400;
+  letter-spacing: -0.022em;
   white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
   transition:
-    color var(--t-kurz) var(--ease-wechsel) 0.06s,
-    border-color var(--t-kurz) var(--ease-wechsel),
-    transform var(--t-druck) var(--ease-aus),
-    background-color 0s linear;
+    background-color 200ms var(--ease-apple),
+    border-color 200ms var(--ease-apple),
+    color 200ms var(--ease-apple),
+    transform var(--t-druck) var(--ease-apple);
 }
 .btn-signal::before,
 .btn-line::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: -1;
-  background: var(--btn-fill);
-  transform: scaleX(0);
-  transform-origin: right center;
-  transition: transform var(--t-mittel) var(--ease-wechsel);
-  pointer-events: none;
-}
-.btn-signal {
-  background: var(--gold);
-  color: var(--foreground);
-}
-.btn-line {
-  border: 1.5px solid var(--foreground);
-  color: var(--foreground);
-}
-:is(.bg-foreground, .on-dark) :is(.btn-signal, .btn-line) {
-  --btn-fill: var(--background);
-  --btn-on-fill: var(--foreground);
-}
-:is(.bg-foreground, .on-dark) .btn-line {
-  border-color: rgb(238 238 235 / 0.5);
-  color: var(--background);
+  display: none;
 }
 .btn-signal svg,
 .btn-line svg {
-  transition: transform var(--t-mittel) var(--ease-wechsel);
+  display: none;
+}
+.btn-signal {
+  background-color: var(--signal-fill);
+  color: #fff;
+}
+.btn-line {
+  background-color: transparent;
+  border-color: var(--gold-ink);
+  color: var(--gold-ink);
+}
+:is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .btn-line {
+  border-color: var(--signal-on-dark);
+  color: var(--signal-on-dark);
+}
+@media (hover: hover) {
+  .btn-signal:not(:disabled, [aria-disabled="true"]):hover {
+    background-color: var(--signal-fill-hover);
+    color: #fff;
+  }
+  .btn-line:not(:disabled, [aria-disabled="true"]):hover {
+    background-color: var(--gold-ink);
+    border-color: var(--gold-ink);
+    color: #fff;
+  }
+  :is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .btn-line:not(:disabled, [aria-disabled="true"]):hover {
+    background-color: var(--signal-on-dark);
+    border-color: var(--signal-on-dark);
+    color: #000;
+  }
 }
 :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):active {
-  transform: translateY(1px) scale(0.985);
-}
-
-/* Aktiv: Zeiger nur bei echter Maus (kein klebendes Hover auf dem
-   Handy), Tastaturfokus immer. */
-@media (hover: hover) and (pointer: fine) {
-  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):hover {
-    color: var(--btn-on-fill);
-    border-color: var(--btn-fill);
-    background-color: var(--btn-fill);
-    transition-delay: 0.06s, 0s, 0s, var(--t-mittel);
-  }
-  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):hover::before {
-    transform: none;
-    transform-origin: left center;
-  }
-  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):hover svg {
-    transform: translateX(4px);
-  }
+  transform: scale(0.98);
 }
 :is(.btn-signal, .btn-line):focus-visible {
-  color: var(--btn-on-fill);
-  border-color: var(--btn-fill);
-  background-color: var(--btn-fill);
-  transition-delay: 0.06s, 0s, 0s, var(--t-mittel);
   outline: 2px solid var(--gold);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-:is(.btn-signal, .btn-line):focus-visible::before {
-  transform: none;
-  transform-origin: left center;
-}
-:is(.btn-signal, .btn-line):focus-visible svg {
-  transform: translateX(4px);
-}
-/* Touch: Beim Tippen läuft die Teer-Füllung kurz von links ein. */
-@media (hover: none) {
-  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):active {
-    color: var(--btn-on-fill);
-    border-color: var(--btn-fill);
-    background-color: var(--btn-fill);
-    transition-duration: 180ms, 180ms, var(--t-druck), 0s;
-    transition-delay: 0s, 0s, 0s, 180ms;
-  }
-  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):active::before {
-    transform: none;
-    transform-origin: left center;
-    transition-duration: 180ms;
-  }
+  outline-offset: 2px;
 }
 :is(.btn-signal, .btn-line):is(:disabled, [aria-disabled="true"]) {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.4;
 }
-
-/* Ruhiger Knopf (Laden-Linie): ohne Wischer, etwas kleiner. Für Kacheln,
-   Tabellenköpfe und Leisten, wo mehrere Knöpfe nebeneinander stehen.
-   Den Wischer behalten die großen Knöpfe in Hero und Kontakt. */
-.btn-signal.btn-ruhig,
-.btn-line.btn-ruhig {
-  height: 2.75rem;
-  padding: 0 1.25rem;
-  font-size: 15px;
-  font-weight: 620;
-  transition:
-    background-color var(--t-kurz) var(--ease-wechsel),
-    color var(--t-kurz) var(--ease-wechsel),
-    border-color var(--t-kurz) var(--ease-wechsel),
-    transform var(--t-druck) var(--ease-aus);
+.btn-gross {
+  min-height: 48px;
+  padding: 0 28px;
 }
-.btn-signal.btn-ruhig::before,
-.btn-line.btn-ruhig::before {
-  display: none;
+.btn-mittel,
+.btn-klein {
+  isolation: isolate;
 }
-@media (min-width: 1024px) {
-  .btn-signal.btn-ruhig,
-  .btn-line.btn-ruhig {
-    height: 3rem;
-  }
+.btn-mittel {
+  min-height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+  letter-spacing: -0.016em;
 }
-@media (hover: hover) {
-  .btn-signal.btn-ruhig:not(:disabled, [aria-disabled="true"]):hover {
-    background-color: #ff6d33;
-    border-color: transparent;
-    color: var(--foreground);
-    transition-delay: 0s;
-  }
-  .btn-line.btn-ruhig:not(:disabled, [aria-disabled="true"]):hover {
-    background-color: var(--btn-fill);
-    border-color: var(--btn-fill);
-    color: var(--btn-on-fill);
-    transition-delay: 0s;
-  }
+.btn-mittel::after {
+  content: "";
+  position: absolute;
+  inset: -4px 0;
 }
-.btn-ruhig:focus-visible {
-  transition-delay: 0s;
+.btn-klein {
+  min-height: 28px;
+  padding: 0 12px;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+.btn-klein::after {
+  content: "";
+  position: absolute;
+  inset: -8px -4px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .btn-signal.btn-ruhig,
-  .btn-line.btn-ruhig {
-    transition: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .btn-signal::before,
-  .btn-line::before,
-  .btn-signal svg,
-  .btn-line svg {
+  .btn-signal,
+  .btn-line {
     transition: none;
   }
   :is(.btn-signal, .btn-line):active {
@@ -1643,79 +1625,44 @@ h3:not(.label-mono) {
   }
 }
 
-/* Textlinks mit Pfeil, ein System für die ganze Seite: Die Unterstrei-
-   chung wächst von links (450 ms, --ease-wechsel), der Pfeil gleitet
-   3 px mit. Auf hellem Grund in --gold-ink, auf dunklem in --gold
-   (.link-pfeil-dunkel). Der Link bleibt inline und darf umbrechen; das
-   letzte Wort und der Pfeil stehen im Markup in einem whitespace-nowrap.
-   Die Polsterung oben und unten vergrößert nur die Tippfläche; die
-   Linie sitzt an der Unterkante der Schrift (background-origin). */
+/* Textlinks im Apple-Stil: Orange (--gold-ink) mit „›“ dahinter,
+   unterstrichen nur unter dem Zeiger oder mit Fokus. Vorhandene
+   Pfeil-Icons im Markup werden ausgeblendet, der Chevron kommt aus
+   ::after (Alt-Text leer). Auf dunklem Grund .link-pfeil-dunkel. */
 .link-pfeil {
-  --linie: var(--gold-ink);
-  display: inline;
-  padding-block: 12px;
-  background-image: linear-gradient(var(--linie), var(--linie));
-  background-origin: content-box;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0 1.5px;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  transition:
-    background-size var(--t-mittel) var(--ease-wechsel),
-    color var(--t-kurz) var(--ease-wechsel),
-    opacity 60ms linear,
-    transform var(--t-druck) var(--ease-aus);
+  color: var(--gold-ink);
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+  transition: opacity 60ms linear;
 }
-.link-pfeil-dunkel {
-  --linie: var(--gold);
+.link-pfeil-dunkel,
+:is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .link-pfeil {
+  color: var(--signal-on-dark);
 }
 .link-pfeil :is(svg, .pfeil) {
-  display: inline-block;
-  vertical-align: -0.15em;
-  margin-left: 0.375rem;
-  transition: transform var(--t-kurz) var(--ease-aus);
+  display: none;
 }
-.link-pfeil .pfeil {
-  margin-left: 0;
-  vertical-align: baseline;
+.link-pfeil::after {
+  content: "\00A0\203A";
+  content: "\00A0\203A" / "";
 }
 .link-pfeil:focus-visible {
-  background-size: 100% 1.5px;
+  text-decoration: underline;
 }
-.link-pfeil:focus-visible :is(svg, .pfeil) {
-  transform: translateX(3px);
-}
-@media (hover: hover) and (pointer: fine) {
+@media (hover: hover) {
   .link-pfeil:hover {
-    background-size: 100% 1.5px;
-  }
-  .link-pfeil:hover :is(svg, .pfeil) {
-    transform: translateX(3px);
+    text-decoration: underline;
   }
 }
 .link-pfeil:active {
   opacity: 0.7;
 }
-/* Einzeln stehender Pfeil-Link in einer Zeile (Ablauf-Fuß): 44 px hoch,
-   die Linie bleibt unter der Schrift. */
+/* Einzeln stehender Link in einer Zeile: 44 px hoch. */
 .link-pfeil.link-pfeil-zeile {
   display: inline-flex;
   align-items: center;
   min-height: 2.75rem;
   margin-block: -0.75rem;
-  padding-block: 0;
-  background-origin: padding-box;
-  background-position: 0 calc(50% + 0.85em);
-}
-:is(.bg-foreground, .on-dark) .link-pfeil-zeile:is(:hover, :focus-visible) {
-  color: var(--background);
-}
-@media (prefers-reduced-motion: reduce) {
-  .link-pfeil,
-  .link-pfeil :is(svg, .pfeil) {
-    transition: none;
-  }
 }
 
 /* Fuß: Links mit derselben Hintergrundlinie (1 px), von links. Die
@@ -1898,6 +1845,8 @@ h3:not(.label-mono) {
    CSS-Custom-Property gesteuert. Liegt vor allen Inhalten, hinter
    Modals und floating Buttons. Sehr dezent (max ~6 % Opacity). */
 body::before {
+  /* Apple-Durchgang: reine Flächen, keine Tönung. */
+  display: none;
   content: "";
   position: fixed;
   inset: 0;
@@ -2250,6 +2199,7 @@ body::before {
   isolation: isolate;
 }
 .grain::before {
+  display: none;
   content: "";
   position: absolute;
   inset: 0;

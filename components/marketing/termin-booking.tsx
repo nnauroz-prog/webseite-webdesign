@@ -122,7 +122,7 @@ export function TerminBooking() {
           Kalender-Eintrag. Falls der Termin schon vergeben sein sollte,
           schlagen wir Ihnen zwei andere vor.
         </p>
-        <p className="text-muted-foreground/70 mt-6 text-[13px]">
+        <p className="text-muted-foreground mt-6 text-[13px]">
           Wir bestätigen jeden Termin persönlich.
         </p>
       </div>

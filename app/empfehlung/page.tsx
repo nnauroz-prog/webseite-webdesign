@@ -69,7 +69,7 @@ export default function EmpfehlungPage() {
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
-          crumb="Paket-Empfehlung"
+          crumb="Paket-Empfehlung" aktionen={false}
           eyebrow="Paket-Empfehlung"
           title="Fünf Fragen, dann wissen Sie, welches Paket passt."
         >
@@ -163,7 +163,7 @@ export default function EmpfehlungPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Paket-Empfehlung" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

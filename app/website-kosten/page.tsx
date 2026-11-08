@@ -510,7 +510,7 @@ export default function WebsiteKostenPage() {
               <ul className="mt-5">
                 {CHECKLISTE.map((c) => (
                   <li key={c} className="border-border flex gap-4 border-b py-4 text-[16px] leading-snug last:border-b-0">
-                    <span aria-hidden="true" className="border-foreground mt-0.5 inline-block h-[18px] w-[18px] shrink-0 rounded-[2px] border-[1.5px]" />
+                    <span aria-hidden="true" className="border-foreground mt-0.5 inline-block h-[18px] w-[18px] shrink-0 rounded-[5px] border-[1.5px]" />
                     {c}
                   </li>
                 ))}
@@ -560,7 +560,7 @@ export default function WebsiteKostenPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Website-Kosten" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
     </div>
   );

@@ -64,10 +64,14 @@ export function VorherNachher() {
   return (
     <div className="select-none">
       <div className="mb-3 flex justify-between gap-4" aria-hidden="true">
-        <span className="label-mono text-muted-foreground text-[11px]">← So oft gesehen</span>
-        <span className="label-mono text-[11px]">So bauen wir →</span>
+        <span className="text-muted-foreground text-[12px] font-semibold tracking-[-0.01em]">
+          <span className="mr-1">‹</span>So oft gesehen
+        </span>
+        <span className="text-gold-ink text-[12px] font-semibold tracking-[-0.01em]">
+          So bauen wir<span className="ml-1">›</span>
+        </span>
       </div>
-      <div className="border-foreground/20 overflow-hidden rounded-[2px] border">
+      <div className="overflow-hidden rounded-[18px] bg-white shadow-karte lg:rounded-[28px]">
         <div className="bg-foreground flex items-center gap-2 px-3 py-2">
           <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
             <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
@@ -106,8 +110,8 @@ export function VorherNachher() {
             className={`pointer-events-none absolute inset-y-0 ${dragging ? "" : "transition-[left] duration-500 ease-out"}`}
             style={{ left: `${pos}%` }}
           >
-            <div className="bg-foreground absolute inset-y-0 -left-px w-0.5" />
-            <div className="bg-foreground text-background absolute top-1/2 left-0 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[2px] ring-2 ring-white">
+            <div className="absolute inset-y-0 -left-px w-0.5 bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.12)]" />
+            <div className="text-foreground absolute top-1/2 left-0 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgb(0_0_0/0.22)]">
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 6l-6 6 6 6M15 6l6 6-6 6" strokeLinecap="square" />
               </svg>
@@ -202,7 +206,7 @@ function Nachher() {
   const gruen = "#2e5c4d";
   const neben = "#565b5d";
   return (
-    <div className="flex h-full w-full flex-col bg-white" style={{ color: teer, fontFamily: "var(--font-brand-sans)" }}>
+    <div className="flex h-full w-full flex-col bg-white" style={{ color: teer, fontFamily: "var(--font-sf)" }}>
       <div className="flex h-16 items-center justify-between border-b border-black/10 px-10">
         <span className="text-[22px] tracking-[-0.02em]" style={{ fontStretch: "112%", fontWeight: 740 }}>
           Nordholz

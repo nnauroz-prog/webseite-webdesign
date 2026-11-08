@@ -23,7 +23,7 @@ export const metadata: Metadata = {
  * Regeln ins Leere.
  */
 const BOOKING_HAFEN =
-  "[&_.rounded-2xl]:rounded-[3px] [&_.ring-1]:ring-0 [&_.h-11.rounded-full]:rounded-[2px] [&_.h-12.rounded-full]:rounded-[2px]";
+  "[&_.rounded-2xl]:rounded-[18px] [&_.ring-1]:ring-0";
 
 /**
  * `/termin` — Termin-Buchungs-Seite.
@@ -84,7 +84,7 @@ export default function TerminPage() {
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
-          crumb="Termin"
+          crumb="Termin" aktionen={false}
           eyebrow="Erstgespräch · bis zu 30 Minuten · kostenlos"
           title="Erstgespräch buchen"
           meta="Per Video oder Telefon, in Hamburg auf Wunsch bei einem Kaffee."
@@ -130,7 +130,7 @@ export default function TerminPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Termin" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
