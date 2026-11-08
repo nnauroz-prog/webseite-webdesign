@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { MehrLink } from "@/components/marketing/apple/mehr-link";
 import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 import { getPaketBySlug } from "@/lib/pakete-data";
 import type { VertikalLanding } from "@/lib/vertikal-landings";
