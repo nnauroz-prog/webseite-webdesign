@@ -51,7 +51,7 @@ export default function HonorarPage() {
         <Zusatz />
         <Schluss />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Honorar" />
     </div>
   );
 }

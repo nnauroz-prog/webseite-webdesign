@@ -240,7 +240,7 @@ export function LivePreview() {
   )}`;
 
   return (
-    <div className="bg-card border-foreground/15 rounded-[3px] border p-3 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:p-4">
+    <div className="rounded-[18px] bg-white p-3 shadow-karte sm:p-4 lg:rounded-[28px]">
       {/* Steuerung */}
       <div className="px-1 pt-1 pb-3 sm:px-2">
         <label htmlFor="lp-name" className="text-foreground text-[14px] font-semibold">
@@ -253,7 +253,7 @@ export function LivePreview() {
           onChange={(e) => setName(e.target.value.slice(0, 40))}
           placeholder={preset.defaultName}
           autoComplete="organization"
-          className="border-input bg-background focus-visible:border-foreground mt-2 h-11 w-full rounded-[2px] border px-4 text-[15px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/40"
+          className="border-input bg-background focus-visible:border-foreground mt-2 h-12 w-full rounded-[12px] border px-4 text-[17px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/40"
         />
         <div role="radiogroup" aria-label="Branche" className="mt-3 flex flex-wrap gap-2">
           {PRESETS.map((p) => {
@@ -265,7 +265,7 @@ export function LivePreview() {
                 role="radio"
                 aria-checked={active}
                 onClick={() => setPresetKey(p.key)}
-                className={`lp-chip h-11 shrink-0 rounded-[2px] border px-4 text-[14px] font-medium sm:h-9 ${
+                className={`lp-chip h-11 shrink-0 rounded-full border px-4 text-[14px] font-medium sm:h-9 ${
                   active
                     ? "bg-foreground text-background border-foreground"
                     : "border-border text-foreground/80 hover:border-foreground/40"
@@ -279,7 +279,7 @@ export function LivePreview() {
       </div>
 
       {/* Browserfenster */}
-      <div className="overflow-hidden rounded-[2px] ring-1 ring-black/15">
+      <div className="overflow-hidden rounded-[12px] ring-1 ring-black/15">
         <div className="bg-foreground flex items-center gap-2 px-3 py-2">
           <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
             <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
@@ -305,8 +305,8 @@ export function LivePreview() {
       </div>
 
       <div className="flex flex-col items-start gap-2 px-1 pt-4 pb-1 sm:flex-row sm:items-center sm:justify-between sm:px-2">
-        <p className="text-muted-foreground font-mono text-[12px]">Eine Skizze zur Orientierung. Ihre Seite gestalten wir eigens für Ihren Betrieb.</p>
-        <Link href={href} className="btn-signal h-11 shrink-0 text-[14.5px]">
+        <p className="text-muted-foreground text-[12px] leading-[1.33]">Eine Skizze zur Orientierung. Ihre Seite gestalten wir eigens für Ihren Betrieb.</p>
+        <Link href={href} className="btn-signal shrink-0">
           Mit dieser Skizze anfragen
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
@@ -344,7 +344,7 @@ export function MusterFenster({
   }, []);
 
   return (
-    <div className={`overflow-hidden rounded-[2px] bg-white ring-1 ring-black/15 ${className}`}>
+    <div className={`overflow-hidden rounded-[12px] bg-white ring-1 ring-black/15 ${className}`}>
       {rahmen ? (
         <div className="bg-foreground flex items-center gap-2 px-3 py-2">
           <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
@@ -379,7 +379,7 @@ export function MusterFenster({
 function MiniSite({ preset, name }: { preset: Preset; name: string }) {
   const { accent, tint } = preset;
   return (
-    <div className="lp-build flex h-full flex-col text-[#1b2333]" style={{ fontFamily: "var(--font-brand-sans)" }}>
+    <div className="lp-build flex h-full flex-col text-[#1b2333]" style={{ fontFamily: "var(--font-sf)" }}>
       {/* Navigation */}
       <div className="lp-step flex h-16 items-center justify-between border-b border-black/5 px-10" style={{ "--d": 0 } as React.CSSProperties}>
         <span className="serif max-w-[340px] truncate text-[24px] font-medium tracking-[-0.01em]" style={{ color: accent }}>
@@ -425,7 +425,7 @@ function MiniSite({ preset, name }: { preset: Preset; name: string }) {
         {preset.features.map((f, i) => (
           <div
             key={f}
-            className="lp-step rounded-xl border border-black/8 p-4"
+            className="lp-step rounded-[12px] border border-black/8 p-4"
             style={{ "--d": 5 + i } as React.CSSProperties}
           >
             <span className="block h-1.5 w-8 rounded-full" style={{ background: accent }} />

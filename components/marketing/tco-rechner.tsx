@@ -93,7 +93,7 @@ export function TcoRechner() {
                   onClick={() => setProfile(p.slug)}
                   aria-pressed={active}
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-[2px] border px-3.5 py-3 text-left transition-colors",
+                    "flex w-full items-start gap-3 rounded-[12px] border px-3.5 py-3 text-left transition-colors",
                     active ? "border-foreground bg-background" : "border-border hover:border-foreground/50",
                   )}
                 >

@@ -108,7 +108,7 @@ export default function SprechstundePage() {
         <Themen />
         <EigenerTermin />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Sprechstunde" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

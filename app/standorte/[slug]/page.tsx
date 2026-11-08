@@ -126,7 +126,7 @@ export default async function StandortPage({
           Den Festpreis bekommen Sie schriftlich, bevor wir anfangen. Vor dem Start schicken wir Ihnen einen Test-Link.
         </Briefkarte>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb={`${standort.name}`} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

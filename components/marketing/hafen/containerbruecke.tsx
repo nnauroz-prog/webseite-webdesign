@@ -274,7 +274,7 @@ function Schiff({ geladen }: { geladen: number }) {
         fill="#EEEEEB"
         fontSize="12.5"
         letterSpacing="3.5"
-        style={{ fontFamily: "var(--font-brand-sans)", fontStretch: "125%", fontWeight: 760 }}
+        style={{ fontFamily: "var(--font-sf)", fontStretch: "125%", fontWeight: 760 }}
       >
         SITALO
       </text>
@@ -286,7 +286,7 @@ function Schiff({ geladen }: { geladen: number }) {
         fillOpacity=".72"
         fontSize="7"
         letterSpacing="2.4"
-        style={{ fontFamily: "var(--font-brand-mono)" }}
+        style={{ fontFamily: "var(--font-sf-mono)" }}
       >
         HAMBURG
       </text>

@@ -1,13 +1,12 @@
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 import s from "./lotse.module.css";
-import { Steigend } from "./steigend";
 
 /**
  * „Was Sie tun, was wir tun“ im Bild des Hamburger Hafenlotsen: Der
  * Lotse bringt das Schiff an den Liegeplatz, das Kommando behält der
- * Kapitän. Links der kurze Teil des Kunden (leere Kästchen), rechts
- * unser Teil (gefüllte Kästchen) als knappe Liste. Was die Leistungen
+ * Kapitän. Zwei große Kacheln: links weiß der kurze Teil des Kunden
+ * (leere Kästchen), rechts schwarz unser Teil (gefüllte Kästchen). Was die Leistungen
  * im Einzelnen enthalten, steht schon im Containerstapel darüber; hier
  * steht nur dort ein Satz, wo er etwas Neues sagt.
  *
@@ -61,44 +60,30 @@ const WIR: { title: string; tag?: string; text?: string }[] = [
   { title: "Pflege nach dem Start", tag: `${STARTER_MONATLICH} im Monat` },
 ];
 
-/** Signalflagge H des Internationalen Signalbuchs: „Ich habe einen Lotsen an Bord.“ */
-function FlaggeH() {
-  return (
-    <svg viewBox="0 0 30 20" className={s.flag} aria-hidden="true">
-      <rect x="0.5" y="0.5" width="14.5" height="19" fill="#fafaf8" />
-      <rect x="15" y="0.5" width="14.5" height="19" fill="var(--ink-olive)" />
-      <rect x="0.5" y="0.5" width="29" height="19" fill="none" stroke="var(--foreground)" strokeWidth="1" />
-    </svg>
-  );
-}
-
 export function Lotse() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-      <div className="buehne-kopf buehne-mitte">
-        <p className="label-mono text-muted-foreground flex items-center justify-center gap-3">
-          <FlaggeH />
-          Flagge H · Lotse an Bord
-        </p>
-        <h2 data-reveal="rise" className="buehne-titel mt-5">
-          <Steigend text="Was Sie tun, was wir tun" />
+    <div className="inhalt">
+      <div className="abschnitt-kopf">
+        <p className="t-eyebrow">Zusammenarbeit</p>
+        <h2 data-auftritt="titel" className="t-abschnitt mt-2">
+          Was Sie tun, was wir tun
         </h2>
-        <p data-reveal="fade" className="buehne-unter">
+        <p className="t-unter">
           Im Hamburger Hafen bringt der Lotse das Schiff an den Liegeplatz, das Kommando behält der Kapitän.
         </p>
+        {/* Erklärung zur Aufteilung direkt über den beiden Kacheln. */}
+        <p className="text-muted-foreground mx-auto mt-5 max-w-[38em] text-[17px] leading-[1.47]">
+          So teilen wir die Arbeit an Ihrer Website: Sie entscheiden, wir übernehmen den Rest.
+        </p>
       </div>
-      {/* Erklärung zur Aufteilung direkt über den beiden Spalten. */}
-      <p data-reveal="fade" className="text-muted-foreground mx-auto mb-10 max-w-[38em] text-center text-[17px] leading-relaxed lg:mb-14">
-        So teilen wir die Arbeit an Ihrer Website: Sie entscheiden, wir übernehmen den Rest.
-      </p>
 
       <div className={s.split}>
-        <div className={s.col}>
+        <div data-auftritt="" className={`karte karte-weiss ${s.col}`}>
           <div className={s.colHead}>
-            <h3 className="text-[1.5rem] tracking-[-0.02em]">Ihr Teil</h3>
-            <span className="label-mono text-muted-foreground">Kurz und planbar</span>
+            <h3 className="t-karte">Ihr Teil</h3>
+            <span className={s.colNote}>Kurz und planbar</span>
           </div>
-          <ul data-reveal="stagger" className={s.list}>
+          <ul className={s.list}>
             {SIE.map((item) => (
               <li key={item.title} className={s.item}>
                 <span className={`${s.box} ${s.boxOpen}`} aria-hidden="true" />
@@ -111,12 +96,12 @@ export function Lotse() {
           </ul>
         </div>
 
-        <div className={s.col}>
+        <div data-auftritt="" className={`karte karte-schwarz ${s.col} ${s.colWir}`}>
           <div className={s.colHead}>
-            <h3 className="text-[1.5rem] tracking-[-0.02em]">Unser Teil</h3>
-            <span className="label-mono text-muted-foreground">In jedem Paket, wo nicht anders vermerkt</span>
+            <h3 className="t-karte">Unser Teil</h3>
+            <span className={s.colNote}>In jedem Paket, wo nicht anders vermerkt</span>
           </div>
-          <ul data-reveal="stagger" className={`${s.list} ${s.listWir}`}>
+          <ul className={`${s.list} ${s.listWir}`}>
             {WIR.map((item) => (
               <li key={item.title} className={s.item}>
                 <span className={`${s.box} ${s.boxDone}`} aria-hidden="true" />

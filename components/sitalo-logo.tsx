@@ -15,15 +15,19 @@ export function SitaloLogo({
   className,
   tone = "dark",
   hideTaglineOnMobile = false,
+  hideTagline = false,
 }: {
-  size?: "sm" | "md" | "lg";
+  /** xs: globale Leiste im Apple-Stil (Wortmarke ~17 px). */
+  size?: "xs" | "sm" | "md" | "lg";
   className?: string;
   tone?: "dark" | "light";
   hideTaglineOnMobile?: boolean;
+  /** Nur die Wortmarke, ohne „Webdesign“ daneben. */
+  hideTagline?: boolean;
   /** Früher fürs Bild-Preloading; bleibt für bestehende Aufrufe. */
   priority?: boolean;
 }) {
-  const fontPx = { sm: 22, md: 30, lg: 44 }[size];
+  const fontPx = { xs: 18, sm: 22, md: 30, lg: 44 }[size];
   return (
     <span
       className={cn(
@@ -52,7 +56,7 @@ export function SitaloLogo({
         aria-hidden="true"
         className={cn(
           "items-center gap-3",
-          hideTaglineOnMobile ? "hidden sm:inline-flex" : "inline-flex",
+          hideTagline ? "hidden" : hideTaglineOnMobile ? "hidden sm:inline-flex" : "inline-flex",
         )}
       >
         <span className={cn("h-5 w-px", tone === "light" ? "bg-background/30" : "bg-foreground/20")} />

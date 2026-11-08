@@ -4,7 +4,9 @@ import { ArrowRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Abschluss as AppleAbschluss, ContainerMotiv, MehrLink, PAKET_TON } from "@/components/marketing/apple";
 import { PageHero } from "@/components/marketing/page-hero";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { ABLAUF_HALTE, type AblaufHalt } from "@/lib/ablauf-data";
 import { ANGEBOT_CHECKLISTE } from "@/lib/angebot-checkliste";
 import { BRANCHEN, getBrancheBySlug, type Branche } from "@/lib/branchen-data";
@@ -71,11 +73,6 @@ const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 /** Mindestlaufzeit des Monatsbeitrags (fakten.md Nr. 4, /faq). */
 const MINDESTLAUFZEIT = "sechs Monate";
 const MINDESTLAUFZEIT_DATIV = "sechs Monaten";
-
-/** „ab 2.999 €" → „2.999 €", „ab 99 € / Monat" → „99 €" */
-function betrag(label: string) {
-  return label.replace(/^ab\s*/, "").replace(/\s*\/\s*Monat$/, "");
-}
 
 /** „ab 99 € / Monat" → „ab 99 €" */
 function monatlich(p: Paket) {
@@ -317,13 +314,12 @@ const FAQ: { q: string; a: string; link?: { href: string; label: string } }[] = 
   },
 ];
 
+/** Anker der lokalen Produktleiste (Abschnitte dieser Seite). */
 const SPRUNGMARKEN: { href: string; label: string }[] = [
   { href: "#kosten", label: "Preise" },
   { href: "#fuer-wen", label: "Für wen" },
   { href: "#ablauf", label: "Ablauf" },
-  { href: "#wege", label: "Wege im Vergleich" },
-  { href: "#beispiele", label: "Branchen" },
-  { href: "#zusagen", label: "Zusagen" },
+  { href: "#wege", label: "Vergleich" },
   { href: "#fragen", label: "Fragen" },
 ];
 
@@ -379,12 +375,28 @@ export default function WebsiteErstellenLassenPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
+      <MarketingHeader tone="dark" cta={false} />
+      {/* Lokale Produktleiste: direktes Kind des Wrappers (klebt am iPhone). */}
+      <Produktleiste
+        titel="Website erstellen lassen"
+        links={SPRUNGMARKEN}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Website erstellen lassen"
           eyebrow="Webdesign zum Festpreis"
           title={`Website erstellen lassen zum Festpreis ${STARTER.setup}`}
+          aktionen={
+            <>
+              <Link href="/anfrage" className="btn-signal">
+                Anfrage schreiben
+              </Link>
+              <MehrLink href="#kosten" groesse="unter">
+                Preise ansehen
+              </MehrLink>
+            </>
+          }
           meta={<HeroMeta />}
         >
           Sie schicken uns Stichpunkte und Handyfotos, wir schreiben die Texte, gestalten und bauen Ihre Website und
@@ -405,15 +417,15 @@ export default function WebsiteErstellenLassenPage() {
         <Fragen />
         <Abschluss />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Website erstellen lassen" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
     </div>
   );
 }
 
-const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
-const H2 = "text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]";
-const H3 = "text-balance text-[1.4rem] leading-[1.1] tracking-[-0.02em] sm:text-[1.6rem]";
+const INNER = "mx-auto w-full max-w-[1068px] px-[max(var(--rinne),env(safe-area-inset-left))] py-20 sm:py-[100px] lg:py-[120px]";
+const H2 = "text-balance text-[32px] leading-[1.1] tracking-[-0.02em] sm:text-[40px] lg:text-[48px] lg:leading-[1.08]";
+const H3 = "text-balance text-[24px] leading-[1.16] tracking-[-0.015em] sm:text-[28px]";
 /** Textlink mit Pfeil. inline-block statt inline-flex, damit der Pfeil bei
  *  Umbruch hinter dem letzten Wort steht und nicht am rechten Rand. Inhalt
  *  über <MitPfeil>, damit der Pfeil nie allein in einer Zeile landet. */
@@ -427,46 +439,26 @@ const INLINELINK =
  * ---------------------------------------------------------------- */
 function HeroMeta() {
   return (
-    <div className="space-y-7 pt-2">
-      <p className="text-stahl-hell -mt-2 text-[13.5px] leading-relaxed">{PREIS_HINWEIS_KURZ}</p>
-      {/* Jede Zusage mit eigenem Marker statt Trennpunkt: bricht die Zeile um,
-          beginnt sie nie mit einem „·". Mobil untereinander. */}
-      <ul className="label-mono text-stahl-hell grid gap-y-1.5 text-[11px] leading-relaxed sm:flex sm:flex-wrap sm:gap-x-6">
+    <div className="space-y-5">
+      <p>{PREIS_HINWEIS_KURZ}</p>
+      {/* Zusagen als ruhige Zeile mit orangen Häkchen, mobil untereinander. */}
+      <ul className="text-foreground flex flex-col items-center gap-y-2 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-6">
         {["Festpreis schriftlich vor Start", "Test-Link vor Freigabe", "Hosting in der EU", "Antwort meist am selben Werktag"].map(
           (z) => (
-            <li key={z} className="flex items-center gap-2.5">
-              <span aria-hidden="true" className="bg-gold inline-block h-[5px] w-[5px] shrink-0" />
+            <li key={z} className="flex items-center gap-2">
+              <svg aria-hidden="true" viewBox="0 0 16 16" className="text-gold-ink h-4 w-4 shrink-0">
+                <path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
               {z}
             </li>
           ),
         )}
       </ul>
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-        <Link href="/anfrage" className="btn-signal">
-          Anfrage schreiben {ARROW}
-        </Link>
-        <a
-          href="tel:+491607621876"
-          className="text-background inline-flex min-h-11 items-center text-[15.5px] font-semibold underline-offset-[6px] hover:underline"
-        >
-          0160&nbsp;7621876
+      <p>
+        <a href="tel:+491607621876" className="inline-flex min-h-11 items-center">
+          Lieber anrufen: 0160&nbsp;7621876
         </a>
-      </div>
-      <nav aria-label="Auf dieser Seite" className="border-background/15 border-t pt-5">
-        <p className="label-mono text-stahl-hell text-[11px]">Auf dieser Seite</p>
-        <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[12.5px]">
-          {SPRUNGMARKEN.map((s) => (
-            <li key={s.href}>
-              <a
-                href={s.href}
-                className="text-background/85 hover:text-background underline decoration-background/30 underline-offset-4 hover:decoration-current"
-              >
-                {s.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      </p>
     </div>
   );
 }
@@ -475,7 +467,6 @@ function HeroMeta() {
  * Preise und Dauer: Preisliste je Paket, darunter der Monatsbeitrag.
  * ---------------------------------------------------------------- */
 function Kosten() {
-  const kopf = "label-mono text-[11px]";
   return (
     <section id="kosten" className="scroll-mt-20">
       <div className={INNER}>
@@ -488,47 +479,37 @@ function Kosten() {
         </div>
 
         <div className="mt-10 lg:mt-12">
-          <div className="border-foreground text-muted-foreground hidden grid-cols-[10rem_minmax(0,1fr)_9.5rem_7.5rem_7rem] gap-x-8 border-b-[1.5px] pb-3 lg:grid">
-            <span className={kopf}>Paket</span>
-            <span className={kopf}>Für wen</span>
-            <span className={kopf}>Online in</span>
-            <span className={`${kopf} text-right`}>Einmalig</span>
-            <span className={`${kopf} text-right`}>Monatlich</span>
-          </div>
-          <ul className="border-foreground border-t-[1.5px] lg:border-t-0">
-            {PAKETE.map((p) => (
-              <li key={p.slug} className="group border-border relative border-b">
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-2 py-5 lg:grid-cols-[10rem_minmax(0,1fr)_9.5rem_7.5rem_7rem] lg:gap-x-8">
-                  <Link
-                    href={`/pakete/${p.slug}`}
-                    className="text-[18px] font-semibold tracking-[-0.01em] underline-offset-4 group-hover:underline after:absolute after:inset-0"
-                  >
-                    {p.name}
-                  </Link>
-                  <span className="col-start-2 row-start-1 text-right lg:col-start-4">
-                    <span className="text-muted-foreground mr-1.5 text-[13px]">ab</span>
-                    <span className="serif text-[1.6rem] leading-none tracking-[-0.02em] whitespace-nowrap">
-                      {betrag(p.setup)}
-                    </span>
-                  </span>
-                  <div className="col-span-2 row-start-2 lg:col-span-1 lg:col-start-2 lg:row-start-1">
-                    <p className="text-muted-foreground text-[14.5px] leading-snug">{p.description}</p>
-                    {p.limits.length > 0 ? (
-                      <p className="text-muted-foreground/90 mt-2 text-[13px] leading-snug">
-                        <span className="label-mono mr-2 text-[10px]">Nicht enthalten</span>
-                        {p.limits.join(" · ")}
-                      </p>
-                    ) : null}
+          <ul role="list" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+            {PAKETE.map((p, i) => (
+              <li key={p.slug} className="flex">
+                <article
+                  data-auftritt=""
+                  className="karte karte-hover relative flex w-full flex-col items-center p-7 text-center"
+                >
+                  <div className="modell-bild" aria-hidden="true">
+                    <ContainerMotiv stapel={Array.from({ length: i + 1 }, () => PAKET_TON[p.slug] ?? "zink")} />
                   </div>
-                  <span className="row-start-3 text-[14px] lg:col-start-3 lg:row-start-1">
-                    <span className="text-muted-foreground lg:hidden">Online </span>
-                    {p.dauer}
+                  <h3 className="t-karte mt-4">
+                    <Link href={`/pakete/${p.slug}`} className="karte-link">
+                      {p.name}
+                    </Link>
+                  </h3>
+                  <p className="modell-preis">{p.setup}</p>
+                  <p className="modell-monat">{p.monthly}</p>
+                  <p className="text-muted-foreground mt-3 text-[14px] leading-[1.43]">Online {p.dauer}</p>
+                  <p className="mt-5 border-t border-[var(--border)] pt-5 text-left text-[15px] leading-[1.47] tracking-[-0.012em]">
+                    {p.description}
+                  </p>
+                  {p.limits.length > 0 ? (
+                    <p className="text-muted-foreground mt-3 w-full text-left text-[14px] leading-[1.43]">
+                      <span className="font-semibold">Nicht enthalten: </span>
+                      {p.limits.join(" · ")}
+                    </p>
+                  ) : null}
+                  <span className="link-chevron mt-auto pt-6 text-[14px]" aria-hidden="true">
+                    Mehr erfahren <span className="chev">›</span>
                   </span>
-                  <span className="text-muted-foreground col-start-2 row-start-3 text-right text-[13.5px] lg:col-start-5 lg:row-start-1">
-                    <span className="lg:hidden">monatlich </span>ab{" "}
-                    <span className="serif text-foreground text-[1.05rem]">{betrag(p.monthly)}</span>
-                  </span>
-                </div>
+                </article>
               </li>
             ))}
           </ul>
@@ -620,7 +601,7 @@ function Kosten() {
  * ---------------------------------------------------------------- */
 function Leistungen() {
   return (
-    <section id="leistungen" className="bg-card border-foreground scroll-mt-20 border-t">
+    <section id="leistungen" className="flaeche-hell scroll-mt-20">
       <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
         <div className="lg:col-span-4">
           <p className="label-mono text-muted-foreground">Leistungen</p>
@@ -666,7 +647,7 @@ function Leistungen() {
  * ---------------------------------------------------------------- */
 function FuerWen() {
   return (
-    <section id="fuer-wen" className="border-foreground scroll-mt-20 border-t">
+    <section id="fuer-wen" className="flaeche-weiss scroll-mt-20">
       <div className={INNER}>
         <h2 className={`${H2} max-w-3xl`}>Für wen es sich lohnt, eine Webseite erstellen zu lassen</h2>
         <div className="mt-10 grid gap-12 md:grid-cols-2 md:gap-10 lg:mt-12">
@@ -720,7 +701,7 @@ function ListeSpalte({
 function Ablauf() {
   const last = ABLAUF_HALTE.length - 1;
   return (
-    <section id="ablauf" className="grain bg-foreground text-background scroll-mt-20">
+    <section id="ablauf" className="flaeche-schwarz scroll-mt-20">
       <div className={INNER}>
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <h2 className={`${H2} max-w-2xl`}>Von der ersten Nachricht bis zum Start</h2>
@@ -750,7 +731,7 @@ function Ablauf() {
  * ---------------------------------------------------------------- */
 function Wege() {
   return (
-    <section id="wege" className="border-foreground scroll-mt-20 border-t">
+    <section id="wege" className="flaeche-hell scroll-mt-20">
       <div className={INNER}>
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <h2 className={`${H2} lg:col-span-7`}>Baukasten, Designservice, Freelancer, Agentur: die Wege im Vergleich</h2>
@@ -775,7 +756,7 @@ function Wege() {
               <div
                 key={w.name}
                 className={`border-border grid gap-x-8 gap-y-2 border-b py-5 lg:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)] ${
-                  w.sitalo ? "bg-card -mx-5 px-5 sm:-mx-6 sm:px-6" : ""
+                  w.sitalo ? "-mx-4 rounded-[18px] border-transparent bg-white px-4" : ""
                 }`}
               >
                 <dt className="text-[17px] leading-snug font-semibold tracking-[-0.01em]">{w.name}</dt>
@@ -877,7 +858,7 @@ function Wege() {
  * ---------------------------------------------------------------- */
 function Beispiele() {
   return (
-    <section id="beispiele" className="bg-card border-border scroll-mt-20 border-t">
+    <section id="beispiele" className="flaeche-weiss scroll-mt-20">
       <div className={INNER}>
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <h2 className={`${H2} lg:col-span-7`}>Seitenpläne und Musterseiten nach Branche</h2>
@@ -894,7 +875,7 @@ function Beispiele() {
             // Pflege und Praxis haben eigene Landingpages, die „erstellen lassen" führen.
             const ziel = erstellenLassenZiel(b.slug, b.label);
             return (
-              <article key={b.slug} className="border-foreground flex flex-col border-t-2 pt-5">
+              <article key={b.slug} data-auftritt="" className="karte flex flex-col p-7 sm:p-8">
                 <p className="label-mono text-muted-foreground text-[11px]">Seitenplan</p>
                 <h3 className="mt-2 text-[1.35rem] leading-tight tracking-[-0.015em]">{b.label}</h3>
                 <p className="mt-5 flex items-center gap-3 text-[15px] font-semibold">
@@ -905,7 +886,7 @@ function Beispiele() {
                   {pages.map((page) => (
                     <li
                       key={page}
-                      className="before:bg-foreground/35 last:after:bg-card relative py-1.5 pl-5 text-[14.5px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
+                      className="before:bg-foreground/35 last:after:bg-[var(--hell)] relative py-1.5 pl-5 text-[14.5px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
                     >
                       {page}
                     </li>
@@ -967,7 +948,7 @@ function Beispiele() {
  * ---------------------------------------------------------------- */
 function Zusagen() {
   return (
-    <section id="zusagen" className="border-border scroll-mt-20 border-t">
+    <section id="zusagen" className="flaeche-hell scroll-mt-20">
       <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
         <div className="lg:col-span-4">
           <h2 className={H2}>Woran Sie uns festhalten können</h2>
@@ -976,9 +957,9 @@ function Zusagen() {
           </p>
         </div>
         <div className="lg:col-span-8">
-          <dl className="border-foreground border-t-[1.5px]">
+          <dl className="karte karte-weiss divide-y divide-[var(--border)] px-6 sm:px-8">
             {ZUSAGEN.map((z) => (
-              <div key={z.titel} className="border-border grid gap-1.5 border-b py-5 sm:grid-cols-[14rem_minmax(0,1fr)] sm:gap-8">
+              <div key={z.titel} className="grid gap-1.5 py-5 sm:grid-cols-[14rem_minmax(0,1fr)] sm:gap-8">
                 <dt className="text-[17px] leading-snug font-semibold tracking-[-0.01em]">{z.titel}</dt>
                 <dd className="text-muted-foreground text-[15.5px] leading-relaxed">{z.text}</dd>
               </div>
@@ -990,14 +971,17 @@ function Zusagen() {
             <h3 className="text-[1.25rem] leading-tight tracking-[-0.015em]">
               Die sechs Fragen an jedes Angebot, für uns beantwortet
             </h3>
-            <ol className="border-foreground mt-5 border-t-[1.5px]">
+            <ol className="karte karte-weiss mt-5 divide-y divide-[var(--border)] px-6 sm:px-8">
               {ANGEBOT_CHECKLISTE.map((c, i) => (
                 <li
                   key={c.frage}
-                  className="border-border grid gap-1.5 border-b py-4 sm:grid-cols-[2rem_minmax(0,1fr)] sm:gap-x-4"
+                  className="grid gap-1.5 py-4 sm:grid-cols-[2rem_minmax(0,1fr)] sm:gap-x-4"
                 >
-                  <span className="label-mono text-muted-foreground pt-[3px] text-[11px]" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
+                  <span
+                    className="bg-[var(--hell)] text-muted-foreground inline-flex h-7 w-7 items-center justify-center rounded-full text-[12px] font-semibold tabular-nums"
+                    aria-hidden="true"
+                  >
+                    {i + 1}
                   </span>
                   <div className="min-w-0">
                     <p className="text-[15.5px] leading-snug font-semibold">{c.frage}</p>
@@ -1029,8 +1013,8 @@ function Zusagen() {
  * ---------------------------------------------------------------- */
 function Hamburg() {
   return (
-    <section className="bg-card border-border border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:items-end lg:gap-8">
+    <section className="flaeche-weiss">
+      <div className="mx-auto grid w-full max-w-[1068px] gap-6 px-[max(var(--rinne),env(safe-area-inset-left))] pt-20 lg:grid-cols-12 lg:items-end lg:gap-8 lg:pt-[120px]">
         <h2 className="text-balance text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem] lg:col-span-7">
           In Hamburg persönlich, in ganz Deutschland per Telefon und Video
         </h2>
@@ -1053,7 +1037,7 @@ function Hamburg() {
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <section id="fragen" className="border-foreground scroll-mt-20 border-t">
+    <section id="fragen" className="flaeche-weiss scroll-mt-20">
       <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
         <div className="lg:col-span-4">
           <h2 className={H2}>Häufige Fragen, bevor Sie eine Homepage erstellen lassen</h2>
@@ -1061,11 +1045,11 @@ function Fragen() {
             <MitPfeil>Alle Fragen</MitPfeil>
           </Link>
         </div>
-        <dl className="grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:col-span-8">
+        <dl className="grid gap-3 sm:grid-cols-2 lg:col-span-8">
           {FAQ.map((f) => (
-            <div key={f.q} className="border-foreground border-t pt-5">
-              <dt className="text-[17.5px] leading-snug font-semibold tracking-[-0.01em]">{f.q}</dt>
-              <dd className="text-muted-foreground mt-3 text-[15.5px] leading-relaxed">
+            <div key={f.q} data-auftritt="" className="karte p-7">
+              <dt className="text-[19px] leading-[1.21] font-semibold tracking-[-0.015em]">{f.q}</dt>
+              <dd className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">
                 {f.a}
                 {f.link ? (
                   <>
@@ -1086,39 +1070,21 @@ function Fragen() {
 }
 
 /* ------------------------------------------------------------------
- * Abschluss: Telefonnummer groß, daneben Mail und Anfrage.
+ * Abschluss: schwarz, Telefonnummer groß, Pille und Mail.
  * ---------------------------------------------------------------- */
 function Abschluss() {
   return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-7">
-          <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
-            Den Festpreis nennen wir Ihnen nach einem kurzen Gespräch.
-          </h2>
-          <a
-            href="tel:+491607621876"
-            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
-            style={{ fontStretch: "118%", fontWeight: 780 }}
-          >
-            0160&nbsp;7621876
-          </a>
-        </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag.
-          </p>
-          <a href={`mailto:${CONTACT_EMAIL}`} className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold">
-            {CONTACT_EMAIL}
-          </a>
-          <div className="mt-7">
-            <Link href="/anfrage" className="btn-signal">
-              Anfrage schreiben {ARROW}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <AppleAbschluss
+      id="kontakt"
+      titel="Den Festpreis nennen wir Ihnen nach einem kurzen Gespräch."
+      zwischen={
+        <a href="tel:+491607621876" className="abschluss-nummer">
+          0160&nbsp;7621876
+        </a>
+      }
+      unter="Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag."
+      link={{ href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }}
+    />
   );
 }
 

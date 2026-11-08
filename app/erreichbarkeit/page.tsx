@@ -48,7 +48,7 @@ export default function ErreichbarkeitPage() {
         <WennNichtsKommt />
         <Kontakt />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Erreichbarkeit" />
     </div>
   );
 }

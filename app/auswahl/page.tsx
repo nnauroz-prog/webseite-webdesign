@@ -66,7 +66,7 @@ export default function AuswahlPage() {
         <Process />
         <ClosingNote />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Auswahl" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

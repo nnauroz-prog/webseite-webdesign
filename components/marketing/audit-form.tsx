@@ -39,7 +39,7 @@ type Status =
   | { kind: "success" }
   | { kind: "error"; message: string };
 
-const FIELD = "mt-2.5 h-12 rounded-[2px] text-[16px] shadow-none";
+const FIELD = "mt-2.5 h-12 rounded-[12px] text-[16px] shadow-none";
 const LABEL = "text-foreground text-[15px] font-semibold";
 
 export function AuditForm() {
@@ -107,12 +107,12 @@ export function AuditForm() {
     return (
       <div
         role="status"
-        className="bg-card border-border rounded-[3px] border"
+        className="bg-card rounded-[18px] lg:rounded-[28px]"
       >
         <div className="flex items-start gap-4 p-6 sm:p-8">
           <span
             aria-hidden="true"
-            className="bg-ink-petrol text-background inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[2px]"
+            className="bg-ink-petrol text-background inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
           >
             <Check className="h-5 w-5" />
           </span>
@@ -160,7 +160,7 @@ export function AuditForm() {
     <form
       onSubmit={submit}
       noValidate
-      className="bg-card border-border rounded-[3px] border"
+      className="bg-card rounded-[18px] lg:rounded-[28px]"
     >
       <div className="space-y-6 p-5 sm:p-8">
         <div>
@@ -227,7 +227,7 @@ export function AuditForm() {
             placeholder="z. B. „Die Speisekarte ist veraltet“ oder „Am Handy fehlt die Telefonnummer“."
             value={data.note}
             onChange={(e) => setData({ ...data, note: e.target.value })}
-            className="mt-2.5 rounded-[2px] text-[16px] shadow-none sm:text-[15px]"
+            className="mt-2.5 rounded-[12px] text-[16px] shadow-none sm:text-[15px]"
           />
         </div>
 
@@ -250,7 +250,7 @@ export function AuditForm() {
             type="checkbox"
             checked={data.consent}
             onChange={(e) => setData({ ...data, consent: e.target.checked })}
-            className="border-border accent-foreground mt-1 h-4 w-4 shrink-0 rounded-[2px] border"
+            className="border-border accent-foreground mt-1 h-4 w-4 shrink-0 rounded-[5px] border"
             required
           />
           <span className="text-foreground/80">
@@ -268,7 +268,7 @@ export function AuditForm() {
         </label>
 
         {status.kind === "error" && (
-          <Alert variant="destructive" className="rounded-[3px]">
+          <Alert variant="destructive" className="rounded-[12px]">
             <AlertDescription>{status.message}</AlertDescription>
           </Alert>
         )}

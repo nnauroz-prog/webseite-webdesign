@@ -108,7 +108,7 @@ export default function AuditPage() {
 
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
-          crumb="Durchsicht"
+          crumb="Durchsicht" aktionen={false}
           eyebrow="Kostenlose Durchsicht Ihrer Website"
           title="Wir sehen uns Ihre Website an."
         >
@@ -180,7 +180,7 @@ export default function AuditPage() {
               </div>
 
               <figure className="min-w-0 lg:col-span-7">
-                <div className="bg-background border-border rounded-[3px] border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]">
+                <div className="bg-background rounded-[18px] lg:rounded-[28px] shadow-karte">
                   <dl className="border-border space-y-1.5 border-b px-5 py-4 font-mono text-[12.5px] sm:px-7">
                     <div className="flex gap-3">
                       <dt className="text-muted-foreground w-16 shrink-0">Von</dt>
@@ -255,7 +255,7 @@ export default function AuditPage() {
         </section>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter crumb="Durchsicht" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

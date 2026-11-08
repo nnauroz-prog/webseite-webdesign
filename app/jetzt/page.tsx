@@ -196,7 +196,7 @@ export default function JetztPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Jetzt" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

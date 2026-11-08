@@ -1,11 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { Calculator, Globe, ListChecks, PencilLine, Server, TrendingUp } from "lucide-react";
 
+import {
+  Abschluss,
+  ContainerMotiv,
+  IconMotiv,
+  MehrLink,
+  PAKET_TON,
+  ProduktKopf,
+  Regal,
+  RegalKarte,
+} from "@/components/marketing/apple";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { PaketKacheln } from "@/components/marketing/hafen/paket-kacheln";
-import { PageHero } from "@/components/marketing/page-hero";
+import {
+  STRICH,
+  VergleichZelle,
+  type PaketSpalte,
+  type VergleichGruppe,
+  type VergleichZeile,
+} from "@/components/marketing/pakete/vergleich-daten";
+import { VergleichMobil } from "@/components/marketing/pakete/vergleich-mobil";
 import { PAKETE, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { CONTACT_EMAIL } from "@/lib/site";
 
@@ -27,8 +45,6 @@ function betrag(label: string) {
   return label.replace(/^ab\s*/, "").replace(/\s*\/\s*Monat$/, "");
 }
 
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
-
 /** Richtwert bis online aus pakete-data, „meist 5–10 Werktage“. */
 function dauer(slug: Slug) {
   return getPaketBySlug(slug)?.dauer ?? "–";
@@ -41,13 +57,15 @@ function gross(text: string) {
 /**
  * Vergleich als Tabelle: Pakete sind Spalten, Leistungen sind Zeilen.
  * Preise kommen aus lib/pakete-data.ts, die Zeilen fassen die
- * Leistungslisten dort zusammen. Ein Strich heißt: nicht in diesem Paket.
+ * Leistungslisten dort zusammen. Ein Strich heißt: nicht in diesem Paket
+ * (dargestellt als „—“ mit „Nicht enthalten“ für Screenreader).
  * Die Dauer folgt den kanonischen Richtwerten (ab vollständigen
  * Unterlagen), siehe auch pakete-data detailIntro.
  */
-const ZEILEN: { label: string; werte: Record<Slug, string> }[] = [
+const ZEILEN: VergleichZeile[] = [
   {
     label: "Umfang",
+    art: "text",
     werte: {
       starter: "Eine Seite mit allem Wichtigen",
       business: "Bis zu fünf Unterseiten",
@@ -57,6 +75,7 @@ const ZEILEN: { label: string; werte: Record<Slug, string> }[] = [
   },
   {
     label: "Typisch dabei",
+    art: "text",
     werte: {
       starter: "Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten",
       business: "Team mit Fotos, Leistungen, Galerie, Formular für Bewerbung oder Terminanfrage",
@@ -66,23 +85,27 @@ const ZEILEN: { label: string; werte: Record<Slug, string> }[] = [
   },
   {
     label: "Inhalte selbst pflegen",
+    art: "hakenText",
     werte: {
-      starter: "–",
-      business: "–",
+      starter: STRICH,
+      business: STRICH,
       premium: "Auf Wunsch: Speisekarte, Angebote, Termine",
       studio: "In bis zu zwölf Bereichen",
     },
   },
   {
     label: "Google-Profil und lokale Suche",
-    werte: { starter: "–", business: "Richten wir ein", premium: "Richten wir ein", studio: "Richten wir ein" },
+    art: "haken",
+    werte: { starter: STRICH, business: "Richten wir ein", premium: "Richten wir ein", studio: "Richten wir ein" },
   },
   {
     label: "Kleine Änderungen im Monat",
+    art: "zahl",
     werte: { starter: "Bis zu 1", business: "Bis zu 3", premium: "Bis zu 6", studio: "Bis zu 10" },
   },
   {
     label: "Dauer bis online",
+    art: "text",
     werte: {
       starter: gross(dauer("starter")),
       business: gross(dauer("business")),
@@ -92,6 +115,7 @@ const ZEILEN: { label: string; werte: Record<Slug, string> }[] = [
   },
   {
     label: "Persönliches Treffen",
+    art: "text",
     werte: {
       starter: "In Hamburg auf Wunsch, sonst Telefon oder Video",
       business: "In Hamburg auf Wunsch, sonst Telefon oder Video",
@@ -101,72 +125,160 @@ const ZEILEN: { label: string; werte: Record<Slug, string> }[] = [
   },
 ];
 
+const zeile = (label: string) => ZEILEN.find((z) => z.label === label)!;
+
+/** Zeilen gruppiert wie im Apple-Vergleich: Preis, Umfang, Nach dem Start. */
+const GRUPPEN: VergleichGruppe[] = [
+  {
+    titel: "Preis",
+    zeilen: [
+      {
+        label: "Einmalig",
+        art: "preis",
+        werte: Object.fromEntries(PAKETE.map((p) => [p.slug, p.setup])) as Record<Slug, string>,
+      },
+      {
+        label: "Monatlich",
+        art: "preis",
+        werte: Object.fromEntries(PAKETE.map((p) => [p.slug, `ab\u00A0${betrag(p.monthly)}`])) as Record<Slug, string>,
+      },
+    ],
+  },
+  {
+    titel: "Umfang",
+    zeilen: [
+      zeile("Umfang"),
+      zeile("Typisch dabei"),
+      {
+        label: "Typisches Projekt",
+        art: "text",
+        werte: Object.fromEntries(PAKETE.map((p) => [p.slug, p.examples[0]])) as Record<Slug, string>,
+      },
+    ],
+  },
+  {
+    titel: "Nach dem Start",
+    zeilen: [
+      zeile("Inhalte selbst pflegen"),
+      zeile("Google-Profil und lokale Suche"),
+      zeile("Kleine Änderungen im Monat"),
+      zeile("Dauer bis online"),
+      zeile("Persönliches Treffen"),
+    ],
+  },
+];
+
+/** Was der mobile Vergleich (Client) von den Paketen braucht. */
+const SPALTEN: PaketSpalte[] = PAKETE.map((p) => ({
+  slug: p.slug,
+  name: p.name,
+  setup: p.setup,
+  monthly: p.monthly,
+  highlight: !!p.highlight,
+}));
+
+/*
+ * Aufbau wie eine Apple-Produktseite. Flächen: Kopf #fff · Modelle
+ * #f5f5f7 · Vergleich #fff · Monatsbeitrag #f5f5f7 · Weiterlesen #fff ·
+ * Abschluss #000. Die Produktleiste verlinkt die Anker der Abschnitte.
+ */
 export default function PaketePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
+      <MarketingHeader cta={false} />
+      {/* Lokale Produktleiste: direktes Kind des Wrappers (klebt am iPhone). */}
+      <Produktleiste
+        titel="Pakete"
+        titelHref="#modelle"
+        links={[
+          { href: "#modelle", label: "Modelle" },
+          { href: "#vergleich", label: "Vergleich" },
+          { href: "#monatsbeitrag", label: "Monatsbeitrag" },
+          { href: "#weiterlesen", label: "Weiterlesen" },
+        ]}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
       <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero
-          crumb="Pakete"
+        <ProduktKopf
           eyebrow="Pakete und Preise"
-          title={`Website-Pakete ${STARTER_SETUP}`}
-          meta={
-            <span className="text-stahl-hell font-mono text-[12px]">
-              {PREIS_HINWEIS_KURZ} · Mindestlaufzeit 6 Monate
-            </span>
+          titel={`Website-Pakete ${STARTER_SETUP}`}
+          unter={
+            <>
+              Dazu kommt ein Monatsbeitrag {STARTER_MONTHLY} für Hosting, Updates und kleine Änderungen. Den Festpreis
+              bekommen Sie schriftlich, bevor wir anfangen.
+            </>
           }
-        >
-          Dazu kommt ein Monatsbeitrag {STARTER_MONTHLY} für
-          Hosting, Updates und kleine Änderungen. Den Festpreis bekommen Sie schriftlich, bevor wir anfangen.
-        </PageHero>
+          aktionen={
+            <>
+              <Link href="/anfrage" className="btn-signal btn-gross">
+                Anfrage schreiben
+              </Link>
+              <MehrLink href="#vergleich">Pakete vergleichen</MehrLink>
+            </>
+          }
+          meta={<>{PREIS_HINWEIS_KURZ} · Mindestlaufzeit 6 Monate</>}
+        />
         <Modelle />
         <Vergleich />
         <Monatsbeitrag />
         <Weiterlesen />
-        <Abschluss />
+        <Abschluss
+          id="abschluss"
+          titel="Welches Paket passt, klären wir am Telefon."
+          zwischen={
+            <a href="tel:+491607621876" className="abschluss-nummer">
+              0160&nbsp;7621876
+            </a>
+          }
+          unter="Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag."
+          link={{ href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }}
+        />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Pakete" />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------
- * Modellreihe: die vier Pakete als Kacheln. Die Kacheln tragen die
+ * Modelle: die vier Pakete als große Karten. Die Karten tragen die
  * Anker #starter, #business usw. (Deep-Links aus Branchen-Seiten).
  * ---------------------------------------------------------------- */
 function Modelle() {
   return (
-    <section id="modelle" className="pt-12 sm:pt-16 lg:pt-20">
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <PaketKacheln idPrefix="" />
+    <section id="modelle" aria-labelledby="modelle-titel" className="flaeche-hell pt-16 pb-16 sm:pt-20 sm:pb-24">
+      <div className="inhalt">
+        <h2 id="modelle-titel" data-auftritt="titel" className="zweiton">
+          <span>Alle Pakete.</span> <span className="grau">Wählen Sie, was Ihr Betrieb braucht.</span>
+        </h2>
       </div>
+      <PaketKacheln idPrefix="" flaeche="weiss" className="mt-8 sm:mt-10" />
     </section>
   );
 }
 
 /* ------------------------------------------------------------------
- * Vergleichstabelle. Ab md als echte Tabelle mit klebender Kopfzeile
- * aus Milchglas (Name, Preis, Anfrage), darunter je Paket ein Block
- * mit denselben Angaben. Die Haarlinien hängen an den Zellen
- * (border-collapse: separate), damit sie beim Kleben nicht verloren
- * gehen. Kein Vorfahr der Tabelle darf overflow setzen, sonst klebt
- * der Kopf nicht.
+ * Vergleich. Ab 834 px eine Apple-Vergleichstabelle mit klebendem
+ * Glas-Kopf (Produktbild, Name, Preis, Anfragen) und Gruppenzeilen;
+ * darunter zwei Auswahlen (vergleich-mobil.tsx). Kein Vorfahr der
+ * Tabelle darf overflow setzen, sonst klebt der Kopf nicht.
  * ---------------------------------------------------------------- */
 function Vergleich() {
   return (
-    <section id="vergleich" className="buehne-abschnitt scroll-mt-16">
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-        <div className="buehne-kopf buehne-mitte">
-          <h2 className="buehne-titel">Die vier Pakete im Vergleich</h2>
-          <p className="buehne-unter">Wir empfehlen meistens Business. Wenn Starter reicht, sagen wir Ihnen das auch.</p>
+    <section id="vergleich" className="flaeche-weiss abschnitt">
+      <div className="inhalt-breit max-w-[1200px]">
+        <div className="abschnitt-kopf">
+          <h2 data-auftritt="titel" className="t-abschnitt">
+            Die vier Pakete im Vergleich
+          </h2>
+          <p className="t-unter">Wir empfehlen meistens Business. Wenn Starter reicht, sagen wir Ihnen das auch.</p>
         </div>
 
-        {/* Tabelle ab md */}
-        <div className="hidden md:block">
-          <table className="w-full table-fixed border-separate border-spacing-0 text-left">
+        {/* Tabelle ab 834 px */}
+        <div className="hidden min-[834px]:block">
+          <table className="vergleich-tabelle">
             <caption className="sr-only">Pakete im Vergleich: Preise und Leistungen</caption>
             <colgroup>
-              <col className="w-[19%]" />
+              <col className="w-[18%]" />
               <col />
               <col />
               <col />
@@ -174,34 +286,30 @@ function Vergleich() {
             </colgroup>
             <thead>
               <tr>
-                <td className="kopf-glas border-foreground sticky top-[var(--kopf-h)] z-10 border-t-[3px] pt-4 pb-3 pr-4 align-top">
-                  <span className="label-mono text-muted-foreground text-[11px]">Paket</span>
+                <td className="text-left">
+                  <span className="sr-only">Paket</span>
                 </td>
                 {PAKETE.map((p) => (
-                  <th
-                    key={p.slug}
-                    id={`vergleich-${p.slug}`}
-                    scope="col"
-                    className={`kopf-glas sticky top-[var(--kopf-h)] z-10 border-t-[3px] px-4 pt-4 pb-3 align-top lg:text-center ${p.highlight ? "border-t-gold" : "border-t-foreground"}`}
-                  >
-                    <Link href={`/pakete/${p.slug}`} className="text-[17px] leading-tight tracking-[-0.02em] hover:underline" style={{ fontStretch: "110%", fontWeight: 720 }}>
+                  <th key={p.slug} id={`vergleich-${p.slug}`} scope="col" className="text-center font-normal">
+                    <span className="flex h-[30px] items-end justify-center" aria-hidden="true">
+                      <ContainerMotiv ton={PAKET_TON[p.slug] ?? "zink"} groesse="s" className="vergleich-motiv" />
+                    </span>
+                    {p.highlight ? (
+                      <span className="text-gold-ink mt-2 block h-4 text-[12px] leading-4 font-semibold">Empfehlung</span>
+                    ) : (
+                      <span className="mt-2 block h-4" aria-hidden="true" />
+                    )}
+                    <Link
+                      href={`/pakete/${p.slug}`}
+                      className="relative mt-1 block text-[17px] leading-[1.24] font-semibold tracking-[-0.022em] after:absolute after:inset-x-0 after:-inset-y-3 hover:underline"
+                    >
                       {p.name}
                     </Link>
-                    <span className="text-muted-foreground mt-0.5 block text-[13px] font-normal">{p.setup}</span>
-                    {/* Gleiche Höhe in allen Spalten, damit die Knöpfe auf einer Linie stehen.
-                        Die Zeile bricht nie um: Unter lg ist die Spalte zu schmal für
-                        beide Wörter, dort steht „Unsere“ nur für Screenreader. */}
-                    {p.highlight ? (
-                      <span className="label-mono text-gold mt-1 block h-4 overflow-hidden text-[10.5px] leading-4 whitespace-nowrap">
-                        <span className="sr-only lg:not-sr-only">Unsere </span>Empfehlung
-                      </span>
-                    ) : (
-                      <span className="mt-1 block h-4" aria-hidden="true" />
-                    )}
+                    <span className="text-muted-foreground mt-0.5 block text-[14px]">{p.setup}</span>
                     <Link
                       href={`/anfrage?paket=${p.slug}`}
                       aria-describedby={`vergleich-${p.slug}`}
-                      className={`${p.highlight ? "btn-signal" : "btn-line"} btn-ruhig mt-2 w-full px-3`}
+                      className={`${p.highlight ? "btn-signal" : "btn-line"} btn-mittel mt-3`}
                     >
                       Anfragen
                     </Link>
@@ -209,81 +317,44 @@ function Vergleich() {
                 ))}
               </tr>
             </thead>
-            <tbody className="text-[14.5px] leading-snug hyphens-auto [hyphenate-limit-chars:14_6_6] [&_td]:border-b [&_td]:border-[var(--border)] [&_th]:border-b [&_th]:border-[var(--border)]">
-              <tr>
-                <th scope="row" className="py-5 pr-4 align-baseline font-semibold">
-                  Einmalig
-                </th>
-                {PAKETE.map((p) => (
-                  <td key={p.slug} className={`px-5 py-5 align-baseline lg:text-center ${p.highlight ? "bg-card" : ""}`}>
-                    <span className="text-muted-foreground mr-1.5 text-[13px]">ab</span>
-                    <span className="serif text-[1.55rem] leading-none tracking-[-0.03em] whitespace-nowrap lg:text-[1.9rem] xl:text-[2.2rem]">
-                      {betrag(p.setup)}
-                    </span>
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row" className="py-5 pr-4 align-baseline font-semibold">
-                  Monatlich
-                </th>
-                {PAKETE.map((p) => (
-                  <td key={p.slug} className={`px-5 py-5 align-baseline lg:text-center ${p.highlight ? "bg-card" : ""}`}>
-                    <span className="text-muted-foreground mr-1.5 text-[13px]">ab</span>
-                    <span className="serif text-[1.25rem] whitespace-nowrap">{betrag(p.monthly)}</span>
-                  </td>
-                ))}
-              </tr>
-              {ZEILEN.map((z) => (
-                <tr key={z.label}>
-                  <th scope="row" className="py-5 pr-4 align-top font-semibold">
-                    {z.label}
+            {GRUPPEN.map((g) => (
+              <tbody key={g.titel}>
+                <tr className="gruppe">
+                  <th colSpan={5} scope="rowgroup">
+                    {g.titel}
                   </th>
-                  {PAKETE.map((p) => (
-                    <td
-                      key={p.slug}
-                      className={`px-5 py-5 align-top lg:text-center ${p.highlight ? "bg-card" : ""} ${
-                        z.werte[p.slug] === "–" ? "text-muted-foreground" : "text-foreground/85"
-                      }`}
-                    >
-                      {z.werte[p.slug]}
-                    </td>
-                  ))}
                 </tr>
-              ))}
-              <tr>
-                <th scope="row" className="py-5 pr-4 align-top font-semibold">
-                  Typisches Projekt
-                </th>
-                {PAKETE.map((p) => (
-                  <td key={p.slug} className={`text-foreground/85 px-5 py-5 align-top lg:text-center ${p.highlight ? "bg-card" : ""}`}>
-                    {p.examples[0]}
-                  </td>
+                {g.zeilen.map((z) => (
+                  <tr key={z.label}>
+                    <th scope="row">{z.label}</th>
+                    {PAKETE.map((p) => (
+                      <td key={p.slug}>
+                        <VergleichZelle zeile={z} slug={p.slug} />
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            </tbody>
+              </tbody>
+            ))}
             <tfoot>
               <tr>
-                <td className="pt-6 pr-4 align-top">
-                  <span className="text-muted-foreground block text-[13px] leading-snug">Preise inkl. 19&nbsp;% MwSt.</span>
-                  <span className="text-muted-foreground mt-2 block text-[13px] leading-snug">
-                    Dauer jeweils ab vollständigen Unterlagen.
-                  </span>
+                <td className="text-left">
+                  <span className="t-fuss block text-left">Preise inkl. 19&nbsp;% MwSt.</span>
+                  <span className="t-fuss mt-2 block text-left">Dauer jeweils ab vollständigen Unterlagen.</span>
                 </td>
                 {PAKETE.map((p) => (
-                  <td key={p.slug} className={`px-4 pt-6 pb-6 align-top lg:text-center ${p.highlight ? "bg-card" : ""}`}>
+                  <td key={p.slug}>
                     <Link
                       href={`/anfrage?paket=${p.slug}`}
-                      className={`${p.highlight ? "btn-signal" : "btn-line"} btn-ruhig w-full px-3`}
+                      className={`${p.highlight ? "btn-signal" : "btn-line"} btn-mittel`}
                     >
-                      Anfragen {ARROW}
+                      {p.name} anfragen
                     </Link>
-                    <Link
-                      href={`/pakete/${p.slug}`}
-                      className="text-muted-foreground hover:text-foreground mt-3 inline-block text-[13.5px] underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
-                    >
-                      Alles zu {p.name}
-                    </Link>
+                    <div className="mt-1">
+                      <MehrLink href={`/pakete/${p.slug}`} groesse="klein">
+                        Alles zu {p.name}
+                      </MehrLink>
+                    </div>
                   </td>
                 ))}
               </tr>
@@ -291,175 +362,96 @@ function Vergleich() {
           </table>
         </div>
 
-        {/* Mobil: je Paket ein Block */}
-        <div className="mt-12 space-y-12 sm:mt-16 md:hidden">
-          {PAKETE.map((p) => (
-            <PaketMobil key={p.slug} p={p} />
-          ))}
-          <p className="text-muted-foreground text-[13px]">
-            Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen Unterlagen.
-          </p>
+        {/* Mobil: zwei Auswahlen nebeneinander */}
+        <div className="mt-10 min-[834px]:hidden">
+          <VergleichMobil pakete={SPALTEN} gruppen={GRUPPEN} />
+          <p className="t-fuss mt-6">Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen Unterlagen.</p>
         </div>
       </div>
     </section>
   );
 }
 
-/**
- * Ein Paket für schmale Bildschirme. Zeilen, die in diesem Paket nur
- * einen Strich hätten, fasst eine Notiz unter der Liste zusammen; so
- * zeigt jeder Block, was drin ist, und bleibt kurz.
- */
-function PaketMobil({ p }: { p: Paket }) {
-  const dabei = ZEILEN.filter((z) => z.werte[p.slug] !== "–");
-  const spaeter = ZEILEN.filter((z) => z.werte[p.slug] === "–");
-  return (
-    <article className={`border-t-[3px] pt-4 ${p.highlight ? "border-gold" : "border-foreground"}`}>
-      <div className="flex items-baseline justify-between gap-4">
-        <h3 className="text-[1.4rem] leading-tight tracking-[-0.02em]">
-          <Link href={`/pakete/${p.slug}`}>{p.name}</Link>
-        </h3>
-        {p.highlight ? <span className="label-mono text-gold shrink-0 text-[10.5px]">Unsere Empfehlung</span> : null}
-      </div>
-      <p className="mt-3 flex flex-wrap items-baseline gap-x-2">
-        <span className="text-muted-foreground text-[13px]">ab</span>
-        <span className="serif text-[2.2rem] leading-none tracking-[-0.03em]">{betrag(p.setup)}</span>
-        <span className="text-muted-foreground text-[14px]">einmalig, dann ab {betrag(p.monthly)} im Monat</span>
-      </p>
-      <dl className="border-border mt-5 border-t text-[14.5px]">
-        {dabei.map((z) => (
-          <div key={z.label} className="border-border grid grid-cols-[8.5rem_minmax(0,1fr)] gap-3 border-b py-3">
-            <dt className="text-muted-foreground text-[13.5px]">{z.label}</dt>
-            <dd>{z.werte[p.slug]}</dd>
-          </div>
-        ))}
-        <div className="border-border grid grid-cols-[8.5rem_minmax(0,1fr)] gap-3 border-b py-3">
-          <dt className="text-muted-foreground text-[13.5px]">Typisches Projekt</dt>
-          <dd>{p.examples[0]}</dd>
-        </div>
-      </dl>
-      {spaeter.length > 0 ? (
-        <p className="text-muted-foreground mt-3 text-[13.5px] leading-relaxed">
-          Erst in einem größeren Paket: {spaeter.map((z) => z.label).join(", ")}.
-        </p>
-      ) : null}
-      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-        <Link href={`/anfrage?paket=${p.slug}`} className={`${p.highlight ? "btn-signal" : "btn-line"} h-11 text-[14.5px]`}>
-          {p.name} anfragen {ARROW}
-        </Link>
-        <Link href={`/pakete/${p.slug}`} className="link-pfeil link-pfeil-zeile my-0 text-[14.5px] font-semibold">
-          Alle Details&nbsp;<span className="pfeil" aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </article>
-  );
-}
-
 /* ------------------------------------------------------------------
- * Monatsbeitrag in Klartext.
+ * Monatsbeitrag: drei Kacheln, Texte wortgleich.
  * ---------------------------------------------------------------- */
+const MONAT_KACHELN = [
+  {
+    icon: Server,
+    text: "Ihre Seite liegt auf einem Server in der EU. Das SSL-Zertifikat verlängert sich von selbst, Sicherheits-Updates spielen wir ein. Gesichert wird jeden Tag, die Backups reichen 30 Tage zurück.",
+  },
+  {
+    icon: PencilLine,
+    text: "Kleine Änderungen sind ebenfalls im Beitrag: neue Öffnungszeiten, ein anderes Foto, ein neuer Name im Team. Starter hat eine pro Monat, Business drei, Premium sechs und Studio zehn. Sie schicken uns eine Mail, wir setzen es um.",
+  },
+  {
+    icon: Globe,
+    text: "Domain und E-Mail-Adressen richten wir auf Wunsch mit ein. Größere Erweiterungen beziffern wir vorher. Der Vertrag läuft mindestens sechs Monate und ist danach monatlich kündbar.",
+  },
+];
+
 function Monatsbeitrag() {
   return (
-    <section className="bg-card border-foreground border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-5">
-          <p className="label-mono text-muted-foreground">Monatsbeitrag · {STARTER_MONTHLY}</p>
-          <h2 className="mt-5 text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
+    <section id="monatsbeitrag" className="flaeche-hell abschnitt">
+      <div className="inhalt">
+        <div className="abschnitt-kopf">
+          <p className="t-eyebrow">Monatsbeitrag · {STARTER_MONTHLY}</p>
+          <h2 data-auftritt="titel" className="t-abschnitt mt-2">
             Was nach dem Start jeden Monat dazukommt
           </h2>
         </div>
-        <div className="text-foreground/85 space-y-5 text-[16.5px] leading-[1.7] lg:col-span-6 lg:col-start-7 lg:pt-1">
-          <p>
-            Ihre Seite liegt auf einem Server in der EU. Das SSL-Zertifikat verlängert sich von selbst, Sicherheits-Updates
-            spielen wir ein. Gesichert wird jeden Tag, die Backups reichen 30 Tage zurück.
-          </p>
-          <p>
-            Kleine Änderungen sind ebenfalls im Beitrag: neue Öffnungszeiten, ein anderes Foto, ein neuer Name im Team.
-            Starter hat eine pro Monat, Business drei, Premium sechs und Studio zehn. Sie schicken uns eine Mail, wir setzen
-            es um.
-          </p>
-          <p>
-            Domain und E-Mail-Adressen richten wir auf Wunsch mit ein. Größere Erweiterungen beziffern wir vorher. Der Vertrag
-            läuft mindestens sechs Monate und ist danach monatlich kündbar.
-          </p>
-          <p className="pt-1">
-            <Link href="/wartung" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-              Mehr zu Wartung und Pflege {ARROW}
-            </Link>
-          </p>
+        <div className="grid gap-3 min-[834px]:grid-cols-3 lg:gap-5">
+          {MONAT_KACHELN.map(({ icon: Icon, text }) => (
+            <div key={text} data-auftritt="" className="karte karte-weiss px-7 py-9 lg:px-8 lg:py-10">
+              <Icon aria-hidden="true" className="text-gold h-10 w-10" strokeWidth={1.5} />
+              <p className="mt-6 text-[17px] leading-[1.47] tracking-[-0.022em]">{text}</p>
+            </div>
+          ))}
         </div>
+        <p className="mt-8 text-center">
+          <MehrLink href="/wartung">Mehr zu Wartung und Pflege</MehrLink>
+        </p>
       </div>
     </section>
   );
 }
 
 /* ------------------------------------------------------------------
- * Querverweise zu Empfehlung, Kalkulation und Rechner.
+ * Weiterlesen: Regal zu Empfehlung, Kalkulation und Rechner.
  * ---------------------------------------------------------------- */
 const VERWEISE = [
-  { href: "/empfehlung", label: "Empfehlung", text: "Fünf Fragen zu Betrieb und Zeitplan, danach schlagen wir ein Paket vor." },
-  { href: "/honorar", label: "Kalkulation", text: "Stundensatz und Stunden je Paket: So kommen die Preise zustande." },
-  { href: "/rechner", label: "3-Jahres-Rechner", text: "Die Gesamtkosten über drei Jahre neben Wix, Squarespace und Jimdo." },
+  {
+    href: "/empfehlung",
+    label: "Empfehlung",
+    text: "Fünf Fragen zu Betrieb und Zeitplan, danach schlagen wir ein Paket vor.",
+    icon: ListChecks,
+  },
+  {
+    href: "/honorar",
+    label: "Kalkulation",
+    text: "Stundensatz und Stunden je Paket: So kommen die Preise zustande.",
+    icon: Calculator,
+  },
+  {
+    href: "/rechner",
+    label: "3-Jahres-Rechner",
+    text: "Die Gesamtkosten über drei Jahre neben Wix, Squarespace und Jimdo.",
+    icon: TrendingUp,
+  },
 ];
 
 function Weiterlesen() {
   return (
-    <section className="border-border border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-6 sm:py-16">
-        <ul className="grid gap-x-8 sm:grid-cols-3">
-          {VERWEISE.map((v) => (
-            <li key={v.href} className="border-border border-t">
-              <Link href={v.href} className="group block py-5">
-                <span className="label-mono text-muted-foreground text-[11px]">{v.label}</span>
-                <span className="mt-2 flex items-start justify-between gap-4 text-[15.5px] leading-snug">
-                  <span className="group-hover:underline group-hover:underline-offset-4">{v.text}</span>
-                  <ArrowRight className="mt-1 h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Abschluss: Telefonnummer groß, daneben Mail und Anfrage.
- * ---------------------------------------------------------------- */
-function Abschluss() {
-  return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-7">
-          <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
-            Welches Paket passt, klären wir am Telefon.
-          </h2>
-          <a
-            href="tel:+491607621876"
-            className="hover:text-gold mt-4 inline-block py-1 text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
-            style={{ fontStretch: "118%", fontWeight: 780 }}
-          >
-            0160&nbsp;7621876
-          </a>
-        </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag.
-          </p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="border-gold relative mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold after:absolute after:inset-x-0 after:-inset-y-2"
-          >
-            {CONTACT_EMAIL}
-          </a>
-          <div className="mt-7">
-            <Link href="/anfrage" className="btn-signal">
-              Anfrage schreiben {ARROW}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <Regal id="weiterlesen" fett="Noch unsicher?" grau="Hier hilft Ihnen die Entscheidung." flaeche="weiss">
+      {VERWEISE.map((v) => (
+        <RegalKarte
+          key={v.href}
+          titel={v.label}
+          text={v.text}
+          href={v.href}
+          motiv={<IconMotiv icon={v.icon} />}
+        />
+      ))}
+    </Regal>
   );
 }

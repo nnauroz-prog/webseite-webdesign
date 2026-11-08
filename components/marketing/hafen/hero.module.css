@@ -1,118 +1,118 @@
 /* ==================================================================
    Kopf der Startseite: Bühne, Überschrift, Zeichnung, Licht.
 
-   Bewegt wird die Zeichnung von hero-buehne.tsx (Zeitleiste, Parallax,
-   Zeiger). Hier stehen Layout, die ruhigen Dauer-Animationen (Wellen,
+   Bewegt wird die Zeichnung von hero-buehne.tsx (Zeitleiste; kein
+   Parallax mehr, die Bühne steht ruhig). Hier stehen Layout, die ruhigen Dauer-Animationen (Wellen,
    Lichtreflexe, Fähre, Warnlicht), die Tageszeit-Stimmungen und die
    Endzustände für prefers-reduced-motion.
    ================================================================== */
 
 .hero {
-  --art-w: 100%;
   position: relative;
-  overflow: hidden;
-  /* Der Verlauf beginnt hinter dem durchsichtigen Header (h-16), damit
-     dort keine Farbkante zur Grundfläche entsteht. Der Header liegt als
-     sticky z-40 darüber. */
-  margin-top: -4rem;
-  padding-top: 4rem;
-  background: linear-gradient(180deg, #f4f4f1 0%, var(--background) 60%);
+  overflow: clip;
+  background: #fff;
 }
 
-@media (min-width: 1024px) {
-  .hero {
-    --art-w: min(1040px, 60vw, calc((100svh - 4rem) * 1.24));
-    /* + 4rem: der Bereich hinter dem Header zählt jetzt mit */
-    min-height: calc(min(max(680px, calc(100svh - 4rem)), 940px) + 4rem);
-  }
-}
+/* ---------- Text: zentriert wie eine Produktseite ---------- */
 
 .copy {
   position: relative;
   z-index: 2;
+  padding-top: 24px;
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .copy {
+    padding-top: 40px;
+  }
+}
+@media (min-width: 1280px) and (min-height: 860px) {
+  .copy {
+    padding-top: 56px;
+  }
 }
 
-/* ---------- Überschrift: Wörter steigen aus einer Maske ---------- */
-
-.wort {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  /* Luft für Umlaut-Punkte und Unterlängen, ohne die Zeile zu verschieben */
-  padding: 0.12em 0.04em 0.16em;
-  margin: -0.12em -0.04em -0.16em;
+/* Kennzeile (H1): klein, orange, ohne Versalien. */
+.kennzeile {
+  font-size: 15px;
+  line-height: 1.33;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--gold-ink);
 }
-.wortIn {
-  display: inline-block;
-}
-
-/* Orange Quadrat: sitzt auf der Versalhöhe der ersten Zeile. */
-.quadrat {
-  display: inline-block;
-  flex-shrink: 0;
-  /* Kantenlänge = Versalhöhe der IBM Plex Mono (0,7 em), Oberkante auf
-     der Versalhöhe der ersten Zeile, Unterkante auf der Grundlinie:
-     halber Durchschuss + (Oberlänge − Versalhöhe). */
-  width: 0.7em;
-  height: 0.7em;
-  margin-top: 5.1px;
-  background: var(--gold);
-  transform-origin: 0 100%;
+@media (min-width: 640px) {
+  .kennzeile {
+    font-size: 17px;
+    letter-spacing: -0.022em;
+  }
 }
 
-/* Einstieg, eine Hand, ein Takt: Quadrat (0 ms) → Mono-Zeile (60 ms) →
-   Wörter der Botschaft (ab 120 ms) → Absatz und Knöpfe. Läuft ohne JS
-   genauso und endet immer im sichtbaren Zustand. */
+/* Botschaft: riesige Zeile, am Rechner zwei Zeilen
+   („Wir bauen Websites / für Betriebe.“). */
+.botschaft {
+  max-width: 15ch;
+  margin: 8px auto 0;
+}
+
+.unter {
+  max-width: 34em;
+  margin: 12px auto 0;
+  font-size: 19px;
+  line-height: 1.32;
+  letter-spacing: 0.012em;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+@media (min-width: 640px) {
+  .unter {
+    margin-top: 16px;
+    font-size: 21px;
+    letter-spacing: 0.011em;
+  }
+}
+@media (min-width: 1280px) {
+  .unter {
+    font-size: 24px;
+    letter-spacing: 0.009em;
+  }
+}
+
+.aktionen {
+  margin-top: 20px;
+  gap: 12px 20px;
+}
+@media (min-width: 640px) {
+  .aktionen {
+    margin-top: 28px;
+    gap: 16px 32px;
+  }
+}
+
+/* Auftritt: die ganze Botschaft rückt 24 px nach oben, ohne Deckkraft
+   (bleibt sofort LCP-fähig); Untertitel und Aktionen folgen weich.
+   Endet immer im sichtbaren Zustand, auch ohne JS. */
 @media (prefers-reduced-motion: no-preference) {
-  .quadrat {
-    animation: quadrat-auf var(--t-kurz) var(--ease-aus) both;
+  .botschaft {
+    animation: botschaft-auf 800ms var(--ease-apple) both;
   }
-  .hTitel {
-    animation: zeile-auf var(--t-mittel) var(--ease-wechsel) 60ms both;
+  .unter {
+    animation: folgt-text 800ms var(--ease-apple) 120ms both;
   }
-  .wortIn {
-    animation: wort-auf var(--t-lang) var(--ease-aus) both;
-    animation-delay: calc(120ms + var(--i, 0) * 65ms);
-  }
-  .folgt {
-    animation: folgt var(--t-lang) var(--ease-aus) both;
-    animation-delay: var(--d, 480ms);
-  }
-  /* Die Unterzeile ist das größte Textelement im ersten Bildschirm. Sie
-     steht sofort da (kein Ausblenden), damit der Browser sie gleich malt
-     (LCP); sie setzt sich nur mit einer kurzen Bewegung. */
-  .folgtText {
-    animation: folgt-text var(--t-lang) var(--ease-aus) both;
-    animation-delay: var(--d, 380ms);
+  .aktionen {
+    animation: folgt 700ms var(--ease-apple) 260ms both;
   }
 }
-@keyframes quadrat-auf {
+@keyframes botschaft-auf {
   from {
-    transform: scale(0);
+    transform: translateY(24px);
   }
   to {
     transform: none;
-  }
-}
-@keyframes zeile-auf {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0);
   }
 }
 @keyframes folgt-text {
   from {
-    transform: translateY(10px);
-  }
-  to {
-    transform: none;
-  }
-}
-@keyframes wort-auf {
-  from {
-    transform: translateY(112%);
+    transform: translateY(16px);
   }
   to {
     transform: none;
@@ -121,7 +121,7 @@
 @keyframes folgt {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -129,36 +129,61 @@
   }
 }
 
+/* ---------- Produktbild: Rahmen mit Zeichnung ----------
+   Am Handy randlos über die volle Breite. Ab 834 px ein gerundeter
+   Rahmen (max. 1200 px). Die Zeichnung steht mittig im Rahmen und ist
+   höchstens so hoch wie das Fenster minus Leisten; links füllt die
+   Stadt, rechts der Kai (die Szene zeichnet über ihre viewBox hinaus)
+   den Rahmen. */
+.rahmen {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 28px auto 0;
+  overflow: clip;
+  background: var(--hell);
+}
+@media (min-width: 834px) {
+  .rahmen {
+    width: calc(100% - 2 * var(--rinne));
+    max-width: 1200px;
+    margin-top: 36px;
+    border-radius: 28px;
+  }
+}
+
+.fuss {
+  padding-top: 12px;
+  padding-bottom: 48px;
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .fuss {
+    padding-bottom: 72px;
+  }
+}
+.nebenZeile {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 24px;
+  margin-top: 4px;
+}
+
 /* ---------- Zeichnung ---------- */
 
 .art {
   position: relative;
-  width: var(--art-w);
-  /* Über der Kranspitze liegt nur Himmel (82 von 760 Einheiten); die
-     Zeichnung darf deshalb ein Stück unter die Knopfzeile rücken. */
-  margin-top: -1.25rem;
-}
-@media (min-width: 640px) {
-  .art {
-    margin-top: 1.5rem;
-  }
-  .quadrat {
-    margin-top: 5.85px;
-  }
+  z-index: 1;
+  flex: none;
+  width: min(100%, calc((100svh - 120px) * 960 / 760));
 }
 .art svg {
   display: block;
   width: 100%;
   height: auto;
   overflow: visible;
-}
-@media (min-width: 1024px) {
-  .art {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin: 0;
-  }
 }
 
 .dach {
@@ -220,14 +245,6 @@
 .lichtNacht {
   background: linear-gradient(180deg, rgb(27 29 30 / 0.03) 0%, rgb(27 29 30 / 0.035) 58%, rgb(27 29 30 / 0.16) 74%, rgb(27 29 30 / 0.2) 100%);
 }
-@media (min-width: 1024px) {
-  .lichtNacht {
-    background: linear-gradient(180deg, rgb(27 29 30 / 0.06) 0%, rgb(27 29 30 / 0.22) 100%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 45%, #000 60%);
-    mask-image: linear-gradient(90deg, transparent 45%, #000 60%);
-  }
-}
-
 .dach,
 .wahrzeichen,
 .wasser {
@@ -321,7 +338,7 @@
   transform-origin: 100% 50%;
 }
 .schildNr {
-  font-family: var(--font-mono), ui-monospace, monospace;
+  font-family: var(--font-sf-mono), ui-monospace, monospace;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -418,136 +435,18 @@
 
 /* ---------- Bildunterschrift mit Pegel ---------- */
 
-/* Am Rechner steht die Bildunterschrift in der Zeichnung, bündig zur
-   Textspalte, 12 px über der Kaikante, ohne eigenen Kasten. Am Handy
-   steht sie unter der Kante (hafen-hero.tsx). */
-.unterschrift {
-  position: absolute;
-  inset-inline: 0;
-  bottom: calc(var(--kante) + 12px);
-  z-index: 4;
-  pointer-events: none;
-}
 .caption {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 1px;
-  font-family: var(--font-mono), ui-monospace, monospace;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.9em;
   font-size: 12px;
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-  color: #33383a;
-}
-@media (min-width: 640px) {
-  .caption {
-    flex-direction: row;
-    gap: 0 0.9em;
-  }
-}
-
-/* ---------- Kopfende: gezeichnete Kaikante ----------
-   Eine Teer-Spundwand über die volle Breite mit feinen Pollern alle
-   120 Einheiten der Zeichnung (960 Einheiten = --art-w), vom rechten
-   Bildrand aus gezählt, damit sie im Raster des Kais stehen. Sie liegt
-   außerhalb der bewegten Zeichnung und bleibt beim Scrollen stehen;
-   darüber dunkelt das Wasser auf den letzten 28 px leicht ab. */
-.hero {
-  --kante: 9px;
-}
-.kaikante {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 3;
-  height: var(--kante);
-  background: #1b1d1e;
-  box-shadow: inset 0 1px 0 #3a3e40;
-  pointer-events: none;
-}
-.kaikante::before {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  bottom: 100%;
-  height: 28px;
-  background: linear-gradient(180deg, rgb(27 29 30 / 0), rgb(27 29 30 / 0.09));
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000);
-  mask-image: linear-gradient(180deg, transparent, #000);
-}
-.kaikante::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  bottom: 100%;
-  height: 4px;
-  background: repeating-linear-gradient(
-    270deg,
-    transparent 0 calc(var(--art-w) * 0.0625 - 3px),
-    #3a3e40 calc(var(--art-w) * 0.0625 - 3px) calc(var(--art-w) * 0.0625 + 3px),
-    transparent calc(var(--art-w) * 0.0625 + 3px) calc(var(--art-w) * 0.125)
-  );
-  /* Unter 1024 px ist --art-w = 100 %: im Verlauf ist das die Breite der
-     Kante, und die ist dort so breit wie die Zeichnung. */
-  background-position: right 0 top 0;
-  clip-path: inset(0 0 0 0 round 1.5px 1.5px 0 0);
-}
-
-/* Nebenlinks: Grundlinie als Hintergrund, darüber läuft beim Zeigen
-   eine Teer-Linie von links ein. Tippfläche 44 px über Polsterung mit
-   negativem Rand, die Optik bleibt dieselbe. */
-.neben {
-  display: inline-flex;
-  align-items: center;
-  padding-block: 11.5px;
-  margin-block: -11.5px;
-  background-image:
-    linear-gradient(var(--foreground), var(--foreground)),
-    linear-gradient(rgb(27 29 30 / 0.18), rgb(27 29 30 / 0.18));
-  background-repeat: no-repeat;
-  background-origin: content-box;
-  background-clip: content-box;
-  background-position:
-    0 100%,
-    0 100%;
-  background-size:
-    0 1px,
-    100% 1px;
-  transition:
-    background-size var(--t-mittel) var(--ease-wechsel),
-    color var(--t-kurz) var(--ease-wechsel);
-}
-.neben:focus-visible {
-  color: var(--foreground);
-  background-size:
-    100% 1px,
-    100% 1px;
-}
-@media (hover: hover) and (pointer: fine) {
-  .neben:hover {
-    color: var(--foreground);
-    background-size:
-      100% 1px,
-      100% 1px;
-  }
-}
-.neben:active {
-  color: var(--foreground);
-}
-.nebenBlock .neben {
-  /* Im Block am Handy stehen die Links untereinander: dort ist die
-     Zeile selbst 44 px hoch, ohne Überlappung der Tippflächen. */
-  min-height: 44px;
-  margin-block: 0;
-  padding-block: 0;
-  background-origin: padding-box;
-  background-clip: padding-box;
-  background-position:
-    0 calc(50% + 0.8em),
-    0 calc(50% + 0.8em);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--muted-foreground);
 }
 .pegel {
-  color: var(--foreground);
-  pointer-events: auto;
+  color: var(--muted-foreground);
 }
 .pegelPunkt {
   display: inline-block;
@@ -814,17 +713,5 @@
   }
   .hero[data-licht] .lichter {
     animation: none;
-  }
-}
-
-/* Knopfzeile am Handy: 48 px hoch, schmaler gepolstert, damit beide
-   Knöpfe ab etwa 384 px nebeneinander passen (sonst untereinander). */
-@media (max-width: 639px) {
-  .knoepfe > :global(.btn-signal),
-  .knoepfe > :global(.btn-line) {
-    height: 3rem;
-    padding-inline: 1rem;
-    gap: 0.5rem;
-    font-size: 15px;
   }
 }

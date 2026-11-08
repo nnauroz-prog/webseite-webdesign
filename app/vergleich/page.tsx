@@ -96,7 +96,7 @@ export default function VergleichPage() {
         <TableSummary />
         <FinalCta />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Vergleich" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

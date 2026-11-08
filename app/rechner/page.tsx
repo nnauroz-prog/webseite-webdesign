@@ -182,7 +182,7 @@ export default function RechnerPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="3-Jahres-Rechner" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

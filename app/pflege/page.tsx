@@ -74,7 +74,7 @@ export default function PflegeLandingPage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <VerticalLanding data={DATA} faq={FAQ} />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Pflegedienste" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

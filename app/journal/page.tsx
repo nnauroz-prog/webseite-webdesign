@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
+import { MehrLink } from "@/components/marketing/apple";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   },
 };
 
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 /** Datum für die Tabellenspalte: 12.06.2026. */
 function shortDate(iso: string): string {
@@ -84,97 +83,70 @@ export default function JournalPage() {
       <MarketingHeader />
       <EditorialMasthead section="Journal" />
       <main id="main" tabIndex={-1} className="flex-1">
-        {/* Kopf */}
-        <section>
-          <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 pt-14 pb-12 sm:px-6 sm:pt-20 sm:pb-16 lg:grid-cols-12 lg:items-end lg:gap-8">
-            <div className="lg:col-span-7">
-              <p className="label-mono text-muted-foreground">
-                Sitalo · {JOURNAL_POSTS.length} Beiträge
-              </p>
-              <h1 className="mt-5 text-[3.4rem] leading-[0.92] tracking-[-0.045em] sm:text-[6rem] lg:text-[7rem]">
-                Journal
-              </h1>
-            </div>
-            <div className="lg:col-span-4 lg:col-start-9">
-              <p className="text-muted-foreground text-pretty text-[16.5px] leading-relaxed">
-                Längere Texte über das, was uns bei der Arbeit an Websites für kleine Betriebe auffällt. Zum Beispiel,
-                was eine Website kostet und wann sie besser noch warten kann.
-              </p>
-              <a
-                href="/journal/feed.xml"
-                className="text-muted-foreground hover:text-foreground mt-4 inline-block font-mono text-[12.5px] underline-offset-4 hover:underline"
-              >
+        {/* Kopf: zentriert wie eine Apple-Produktseite */}
+        <section className="flaeche-weiss pt-12 pb-14 text-center sm:pt-16 sm:pb-16 lg:pt-20">
+          <div className="inhalt">
+            <p className="t-eyebrow">Sitalo · {JOURNAL_POSTS.length} Beiträge</p>
+            <h1 className="t-hero mt-2">Journal</h1>
+            <p className="t-unter mx-auto mt-4 sm:mt-5">
+              Längere Texte über das, was uns bei der Arbeit an Websites für kleine Betriebe auffällt. Zum Beispiel,
+              was eine Website kostet und wann sie besser noch warten kann.
+            </p>
+            <div className="aktionen mt-6">
+              <MehrLink href="/journal/feed.xml" groesse="klein">
                 RSS-Feed abonnieren
-              </a>
+              </MehrLink>
             </div>
           </div>
         </section>
 
-        {/* Aufmacher */}
+        {/* Aufmacher: große schwarze Kachel */}
         {hero && (
-          <section className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-            <Link
-              href={`/journal/${hero.slug}`}
-              className="group border-foreground grid gap-6 border-t-2 pt-6 pb-14 sm:pb-20 lg:grid-cols-12 lg:gap-8"
-            >
-              <p className="label-mono text-muted-foreground lg:col-span-3 lg:pt-3">
-                {istNeu(hero.publishedAt) ? (
-                  <span className="text-gold">Neu</span>
-                ) : (
-                  <span>Zuletzt erschienen</span>
-                )}
-                <span className="mt-1 block">
-                  {formatDate(hero.publishedAt)} ·{" "}
+          <section className="flaeche-weiss pb-3">
+            <div className="mx-auto max-w-[1200px] px-[max(var(--rinne),env(safe-area-inset-left))]">
+              <article data-auftritt="skala" className="karte karte-schwarz karte-hover px-7 py-14 text-center sm:px-14 sm:py-20">
+                <p className="t-eyebrow text-[14px]">
+                  {istNeu(hero.publishedAt) ? "Neu" : "Zuletzt erschienen"} · {formatDate(hero.publishedAt)} ·{" "}
                   <span className="whitespace-nowrap">{hero.readingMinutes} Min Lesezeit</span>
-                </span>
-              </p>
-              <div className="min-w-0 lg:col-span-9">
-                <h2 className="text-balance text-[2.6rem] leading-[0.98] tracking-[-0.038em] underline-offset-[6px] group-hover:underline sm:text-6xl lg:text-[4.4rem]">
-                  {hero.title}
-                </h2>
-                <p className="text-foreground/80 mt-6 max-w-2xl text-pretty text-[18px] leading-relaxed sm:text-[19px]">
-                  {hero.dek}
                 </p>
-                <span className="mt-7 inline-flex items-center gap-1.5 text-[15px] font-semibold">
-                  Beitrag lesen {ARROW}
-                </span>
-              </div>
-            </Link>
+                <h2 className="t-abschnitt mx-auto mt-3 !max-w-[22ch] text-[#f5f5f7]">{hero.title}</h2>
+                <p className="t-unter mx-auto mt-5">{hero.dek}</p>
+                <div className="mt-8">
+                  <MehrLink href={`/journal/${hero.slug}`} kontext={hero.title} groesse="unter" className="karte-link">
+                    Beitrag lesen
+                  </MehrLink>
+                </div>
+              </article>
+            </div>
           </section>
         )}
 
-        {/* Übrige Beiträge als Tabelle */}
+        {/* Übrige Beiträge als Karten-Raster */}
         {rest.length > 0 && (
-          <section className="mx-auto w-full max-w-6xl px-5 pb-16 sm:px-6 sm:pb-24" aria-labelledby="weitere-titel">
-            <div className="border-foreground flex items-baseline justify-between gap-4 border-t pt-4 pb-3">
-              <h2 id="weitere-titel" className="label-mono text-muted-foreground">
-                Ältere Beiträge
+          <section className="flaeche-weiss pt-16 pb-20 sm:pb-24 lg:pt-20" aria-labelledby="weitere-titel">
+            <div className="inhalt">
+              <h2 id="weitere-titel" data-auftritt="titel" className="zweiton">
+                <span>Ältere Beiträge.</span> <span className="grau">Ratgeber für Betriebe.</span>
               </h2>
-              <span className="label-mono text-muted-foreground hidden sm:inline">Lesezeit</span>
             </div>
-            <ul>
+            <ul role="list" className="mx-auto mt-8 grid max-w-[1200px] gap-3 px-[max(var(--rinne),env(safe-area-inset-left))] sm:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-4">
               {rest.map((post) => (
-                <li key={post.slug} className="border-border border-t">
-                  <Link
-                    href={`/journal/${post.slug}`}
-                    className="group grid gap-x-8 gap-y-2 py-6 sm:grid-cols-[7.5rem_minmax(0,1fr)_4rem] sm:py-8"
-                  >
-                    <span className="text-muted-foreground font-mono text-[13px] tabular-nums sm:pt-2">
-                      <time dateTime={post.publishedAt}>{shortDate(post.publishedAt)}</time>
-                      <span className="sm:hidden"> · {post.readingMinutes} Min</span>
-                    </span>
-                    <div className="min-w-0">
-                      <h3 className="text-balance text-[1.45rem] leading-[1.12] tracking-[-0.022em] underline-offset-4 group-hover:underline sm:text-[1.85rem]">
-                        {post.title}
-                      </h3>
-                      <p className="text-muted-foreground mt-2 max-w-2xl text-pretty text-[15.5px] leading-relaxed">
-                        {post.dek}
-                      </p>
+                <li key={post.slug} className="flex">
+                  <article data-auftritt="" className="karte karte-hover flex w-full flex-col p-7 sm:p-8">
+                    <p className="text-muted-foreground text-[12px] leading-[1.33] font-semibold">
+                      <time dateTime={post.publishedAt}>{shortDate(post.publishedAt)}</time> · {post.readingMinutes} Min
+                      Lesezeit
+                    </p>
+                    <h3 className="t-karte mt-2 text-balance">{post.title}</h3>
+                    <p className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty">
+                      {post.dek}
+                    </p>
+                    <div className="mt-auto pt-6">
+                      <MehrLink href={`/journal/${post.slug}`} kontext={post.title} groesse="klein" frei={false} className="karte-link">
+                        Beitrag lesen
+                      </MehrLink>
                     </div>
-                    <span className="text-muted-foreground hidden text-right font-mono text-[13px] tabular-nums sm:block sm:pt-2">
-                      {post.readingMinutes} Min
-                    </span>
-                  </Link>
+                  </article>
                 </li>
               ))}
             </ul>
@@ -182,37 +154,32 @@ export default function JournalPage() {
         )}
 
         {/* Schluss */}
-        <section className="bg-card border-border border-t">
-          <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-14 sm:px-6 sm:py-20 lg:grid-cols-12 lg:items-end lg:gap-8">
-            <div className="lg:col-span-7">
-              <h2 className="text-balance text-[1.8rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.4rem]">
-                Fragen zu einem Beitrag beantworten wir am Telefon
-              </h2>
-              <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-[16.5px] leading-relaxed">
-                Jeden ersten Donnerstag im Monat von {uhrzeitKurz(SPRECHSTUNDE_BEGINN_HHMM)} bis{" "}
-                {uhrzeitKurz(SPRECHSTUNDE_ENDE_HHMM)}&nbsp;Uhr ist unsere offene Sprechstunde. Wer nicht so lange
-                warten will, ruft einfach an oder schreibt an{" "}
-                <a href="mailto:info@sitalo.de" className="text-foreground underline underline-offset-4">
-                  info@sitalo.de
-                </a>
-                .
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-4 lg:col-start-9 lg:justify-end">
-              <Link href="/sprechstunde" className="btn-line">
-                Zur Sprechstunde {ARROW}
-              </Link>
-              <a
-                href="tel:+491607621876"
-                className="font-mono text-[15px] font-medium tabular-nums underline-offset-4 hover:underline"
-              >
-                0160&nbsp;7621876
+        <section className="flaeche-hell abschnitt">
+          <div className="inhalt abschnitt-kopf">
+            <h2 data-auftritt="titel" className="t-abschnitt">
+              Fragen zu einem Beitrag beantworten wir am Telefon
+            </h2>
+            <p className="t-unter">
+              Jeden ersten Donnerstag im Monat von {uhrzeitKurz(SPRECHSTUNDE_BEGINN_HHMM)} bis{" "}
+              {uhrzeitKurz(SPRECHSTUNDE_ENDE_HHMM)}&nbsp;Uhr ist unsere offene Sprechstunde. Wer nicht so lange
+              warten will, ruft einfach an oder schreibt an{" "}
+              <a href="mailto:info@sitalo.de" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+                info@sitalo.de
               </a>
+              .
+            </p>
+            <div className="aktionen mt-8">
+              <Link href="/sprechstunde" className="btn-signal">
+                Zur Sprechstunde
+              </Link>
+              <MehrLink href="tel:+491607621876" groesse="unter">
+                0160&nbsp;7621876
+              </MehrLink>
             </div>
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Journal" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

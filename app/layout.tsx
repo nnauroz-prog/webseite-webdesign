@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Doto, IBM_Plex_Mono, Mona_Sans } from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
 
 import { GlobalExtras } from "@/components/marketing/global-extras";
 import { buildSearchIndex } from "@/lib/search-index";
@@ -7,42 +7,17 @@ import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
 import { PlausibleScript } from "@/components/marketing/plausible-script";
 import "./globals.css";
 import "./hafen.css";
+// Apple-Bausteine nach den Hafen-Regeln, damit sie diese überstimmen.
+import "./apple.css";
 import { PAKETE } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
-// Display: "swap" auf allen Fonts — der Browser nimmt sofort den
-// Fallback und tauscht aus, sobald die Web-Font geladen ist. Vermeidet
-// FOIT (Flash of Invisible Text) und damit eine LCP-Verzögerung.
-//
-// Grundschrift: Mona Sans, variabel in Breite und Stärke. Überschriften
-// stehen breit und kräftig wie Beschriftungen im Hafen (Containerbrücken,
-// Kaischilder), Fließtext in normaler Breite.
-const brandSans = Mona_Sans({
-  variable: "--font-brand-sans",
-  subsets: ["latin"],
-  axes: ["wdth"],
-  display: "swap",
-});
-
-// IBM Plex Mono für Beschriftungen: Containernummern, Uhrzeit,
-// Bildunterschriften – und die H1-Kennzeile im ersten Bildschirm der
-// Startseite. Deshalb vorladen: Lighthouse misst diese Zeile als größtes
-// Element, ohne Vorladen wartete die Messung auf den späten Schrifttausch.
-const brandMono = IBM_Plex_Mono({
-  variable: "--font-brand-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-// Punktmatrix nur für die Abfahrtstafel mit den Preisen.
-const dotMatrix = Doto({
-  variable: "--font-dot",
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  display: "swap",
-  preload: false,
-});
+// Grundschrift ist die Systemschrift (San Francisco auf iPhone und Mac,
+// sonst Segoe UI/Roboto), siehe --font-sf in app/globals.css. Keine
+// Web-Font im ersten Bildschirm: Text malt sofort, kein Schrifttausch.
+// Nur eine Sonderschrift bleibt (Cormorant für die Wortmarke), ohne
+// Vorladen (preload: false). Doto (Punktmatrix der Abfahrtstafel) ist
+// entfallen; die Tafel nutzt bei Bedarf die Mono-Systemschrift.
 
 // Cormorant nur noch für die Wortmarke (SITAL + Doppelring), so wie
 // im ursprünglichen Logo.
@@ -60,9 +35,9 @@ const cormorant = Cormorant_Garamond({
 // zum nächsten Deploy. Gilt per niedrigstem Wert für jede Route.
 export const revalidate = 3600;
 
-/** Browserleiste am Handy (Safari, Chrome) im Elbnebel-Ton der Seite. */
+/** Browserleiste am Handy (Safari, Chrome) weiß wie die Seite. */
 export const viewport: Viewport = {
-  themeColor: "#eeeeeb",
+  themeColor: "#ffffff",
 };
 
 export const metadata: Metadata = {
@@ -206,12 +181,12 @@ export default function RootLayout({
       // Die Startseite setzt html.js per Inline-Script vor dem Hydrieren
       // (components/marketing/hafen/hafen-hero.tsx).
       suppressHydrationWarning
-      className={`${brandSans.variable} ${brandMono.variable} ${dotMatrix.variable} ${cormorant.variable} h-full motion-safe:scroll-smooth antialiased`}
+      className={`${cormorant.variable} h-full motion-safe:scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
-          className="bg-foreground text-background sr-only z-[100] rounded-[2px] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"
+          className="bg-foreground text-background sr-only z-[100] rounded-full px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"
         >
           Direkt zum Inhalt
         </a>

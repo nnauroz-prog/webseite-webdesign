@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
+import { Abschluss as AppleAbschluss, ContainerMotiv, MehrLink } from "@/components/marketing/apple";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { WARTUNG_PREISE } from "@/lib/pakete-data";
 import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
 
@@ -28,14 +29,13 @@ export const metadata: Metadata = {
  * Neubau sucht, landet auf /anfrage. Hier geht es um den ruhigen
  * Hintergrund-Dienst plus optional die Werkbank.
  *
- * Aufbau: Tarife als Zeilen (kein Kartentrio), Anlässe als Liste,
- * Fragen offen gesetzt, Abschluss mit Telefonnummer und Durchsicht.
+ * Aufbau (Apple-Stil): Tarife als drei gerundete Karten wie die
+ * Paket-Modelle, Anlässe als Bento-Kacheln, Fragen als Karten,
+ * schwarzer Abschluss mit Telefonnummer und Durchsicht.
  */
 
 /** „359 €" → 359 für die strukturierten Daten. */
 const zahl = (betrag: string) => Number(betrag.replace(/\D/g, ""));
-
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 type Plan = {
   slug: string;
@@ -195,17 +195,32 @@ export default function WartungPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
+      <MarketingHeader tone="dark" cta={false} />
+      <Produktleiste
+        titel="Wartung"
+        links={[
+          { href: "#tarife", label: "Tarife" },
+          { href: "#anlaesse", label: "Anlässe" },
+          { href: "#fragen", label: "Fragen" },
+        ]}
+        cta={{ href: "/anfrage?vorhaben=Wartung", label: "Anfragen" }}
+      />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Wartung"
           eyebrow="Wartung und Pflege"
           title="Website-Wartung für Seiten, die schon laufen"
-          meta={
-            <span className="text-stahl-hell font-mono text-[12px]">
-              Ab {WARTUNG_PREISE.basis} im Monat · nach 6 Monaten monatlich kündbar
-            </span>
+          aktionen={
+            <>
+              <Link href="/anfrage?vorhaben=Wartung" className="btn-signal">
+                Anfrage schreiben
+              </Link>
+              <MehrLink href="#tarife" groesse="unter">
+                Tarife ansehen
+              </MehrLink>
+            </>
           }
+          meta={<span>Ab {WARTUNG_PREISE.basis} im Monat · nach 6 Monaten monatlich kündbar</span>}
         >
           Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das
           geht mit WordPress, Wix oder Squarespace. Bei WordPress fallen jeden Monat Updates an, deshalb sehen wir uns
@@ -216,7 +231,7 @@ export default function WartungPage() {
         <Faq />
         <Abschluss />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Wartung" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -226,81 +241,86 @@ export default function WartungPage() {
 }
 
 /* ------------------------------------------------------------------
- * Tarife als Zeilen: Name und Preis links, Inhalt in der Mitte,
- * Abgrenzung und Knopf rechts.
+ * Tarife als drei gerundete Karten (wie die Paket-Modelle): Name
+ * groß, Preis groß, Satz, Pille und Inhalt; „Nicht enthalten“ grau.
  * ---------------------------------------------------------------- */
 function Plans() {
   return (
-    <section id="tarife" className="scroll-mt-20">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <h2 className="max-w-2xl text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
-            Drei Tarife für die laufende Pflege
-          </h2>
-          <p className="text-muted-foreground max-w-sm text-[14.5px] leading-relaxed">
-            Preise inkl. 19&nbsp;% MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab{" "}
-            {WARTUNG_PREISE.uebernahme} und
-            entfällt, wenn Sie auf unser Hosting umziehen.
-          </p>
-        </div>
-
-        <div className="border-foreground mt-10 border-b lg:mt-12">
-          {PLANS.map((plan) => (
-            <PlanRow key={plan.slug} plan={plan} />
-          ))}
-        </div>
+    <section id="tarife" className="flaeche-hell abschnitt scroll-mt-20">
+      <div className="inhalt abschnitt-kopf">
+        <h2 data-auftritt="titel" className="t-abschnitt">
+          Drei Tarife für die laufende Pflege
+        </h2>
+        <p className="t-unter">
+          Preise inkl. 19&nbsp;% MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab{" "}
+          {WARTUNG_PREISE.uebernahme} und entfällt, wenn Sie auf unser Hosting umziehen.
+        </p>
       </div>
+      <ul role="list" className="mx-auto grid max-w-[1200px] gap-3 px-[max(var(--rinne),env(safe-area-inset-left))] md:grid-cols-3 lg:gap-5">
+        {PLANS.map((plan, i) => (
+          <PlanKarte key={plan.slug} plan={plan} stapel={i + 1} />
+        ))}
+      </ul>
     </section>
   );
 }
 
-function PlanRow({ plan }: { plan: Plan }) {
+const TARIF_TON = ["zink", "signal", "teer"] as const;
+
+function PlanKarte({ plan, stapel }: { plan: Plan; stapel: number }) {
   // „Alles aus Basis" steht als Vorzeile über der Liste, nicht als Punkt darin.
   const basis = plan.contents[0]?.startsWith("Alles aus") ? plan.contents[0] : null;
   const items = basis ? plan.contents.slice(1) : plan.contents;
+  const nameId = `tarif-${plan.slug}-name`;
   return (
-    <article
-      id={plan.slug}
-      className="border-foreground grid scroll-mt-24 gap-6 border-t-[3px] py-8 lg:grid-cols-12 lg:gap-8 lg:py-10"
-    >
-      <div className="lg:col-span-3">
-        <h3 className="text-[1.5rem] leading-tight tracking-[-0.02em]">{plan.name}</h3>
-        <p className="mt-3 flex items-baseline gap-2">
-          <span className="text-muted-foreground text-[13px]">ab</span>
-          <span className="serif text-[2.4rem] leading-none tracking-[-0.03em]">{plan.price}</span>
-          <span className="text-muted-foreground text-[13px]">im Monat</span>
+    <li className="flex">
+      <article id={plan.slug} data-auftritt="" className="karte karte-weiss flex w-full scroll-mt-24 flex-col p-7 text-center sm:p-9">
+        <div className="modell-bild" aria-hidden="true">
+          <ContainerMotiv stapel={Array.from({ length: stapel }, () => TARIF_TON[stapel - 1])} />
+        </div>
+        <h3 id={nameId} className="t-karte mt-5">
+          {plan.name}
+        </h3>
+        <p className="modell-satz mx-auto !max-w-[28ch] text-pretty lg:min-h-[5.88em]">
+          {plan.description}
         </p>
-      </div>
-
-      <div className="min-w-0 lg:col-span-6">
-        <p className="text-foreground/85 max-w-xl text-[16px] leading-relaxed">{plan.description}</p>
-        {basis ? <p className="label-mono text-muted-foreground mt-5 text-[11px]">{basis}, dazu</p> : null}
-        <ul className={`${basis ? "mt-2" : "mt-5"} grid gap-x-6 text-[14.5px] leading-snug sm:grid-cols-2`}>
-          {items.map((item) => (
-            <li key={item} className="border-border border-t py-2.5">
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="flex min-w-0 flex-col gap-6 lg:col-span-3">
-        <div>
-          <p className="label-mono text-muted-foreground text-[11px]">Nicht enthalten</p>
-          <ul className="text-muted-foreground mt-2 space-y-1.5 text-[13.5px] leading-snug">
+        <p className="modell-preis">ab {plan.price}</p>
+        <p className="modell-monat">im Monat</p>
+        <div className="modell-aktionen">
+          <Link href={`/anfrage?vorhaben=Wartung+${plan.name}`} aria-describedby={nameId} className="btn-signal btn-mittel">
+            Anfragen
+          </Link>
+        </div>
+        <div className="mt-8 border-t border-[var(--border)] pt-6 text-left">
+          {basis ? <p className="text-muted-foreground text-[14px] leading-[1.43] font-semibold">{basis}, dazu</p> : null}
+          <ul role="list" className={`${basis ? "mt-3" : ""} space-y-3 text-[15px] leading-[1.4] tracking-[-0.012em]`}>
+            {items.map((item) => (
+              <li key={item} className="flex gap-3">
+                <Haken />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-muted-foreground mt-7 text-[14px] leading-[1.43] font-semibold">Nicht enthalten</p>
+          <ul role="list" className="text-muted-foreground mt-3 space-y-2 text-[14px] leading-[1.43]">
             {plan.limits.map((l) => (
-              <li key={l}>{l}</li>
+              <li key={l} className="flex gap-3">
+                <span aria-hidden="true" className="mt-[0.6em] h-px w-3 shrink-0 bg-current" />
+                <span>{l}</span>
+              </li>
             ))}
           </ul>
         </div>
-        <Link
-          href={`/anfrage?vorhaben=Wartung+${plan.name}`}
-          className="btn-line mt-auto h-11 self-start px-4 text-[14.5px] lg:self-stretch"
-        >
-          {plan.name} anfragen {ARROW}
-        </Link>
-      </div>
-    </article>
+      </article>
+    </li>
+  );
+}
+
+function Haken() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16" className="text-gold-ink mt-[0.2em] h-4 w-4 shrink-0">
+      <path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
@@ -328,23 +348,25 @@ const CASES = [
 
 function Anlaesse() {
   return (
-    <section className="bg-card border-foreground border-t">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-4">
-          <p className="label-mono text-muted-foreground">Typische Anlässe</p>
-          <h2 className="mt-4 text-balance text-[1.9rem] leading-[1.04] tracking-[-0.03em] sm:text-[2.3rem]">
-            Wann eine Übergabe sinnvoll ist
-          </h2>
-        </div>
-        <ul className="grid gap-x-10 sm:grid-cols-2 lg:col-span-8">
-          {CASES.map((c) => (
-            <li key={c.title} className="border-border border-t py-5">
-              <h3 className="text-[17px] leading-snug tracking-[-0.01em]">{c.title}</h3>
-              <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">{c.body}</p>
-            </li>
-          ))}
-        </ul>
+    <section id="anlaesse" className="flaeche-weiss abschnitt scroll-mt-20">
+      <div className="inhalt abschnitt-kopf">
+        <p className="t-eyebrow">Typische Anlässe</p>
+        <h2 data-auftritt="titel" className="t-abschnitt mt-2">
+          Wann eine Übergabe sinnvoll ist
+        </h2>
       </div>
+      <ul role="list" className="bento mx-auto max-w-[1200px] px-[max(var(--rinne),env(safe-area-inset-left))]">
+        {CASES.map((c, i) => (
+          <li
+            key={c.title}
+            data-auftritt="skala"
+            className={`karte ${i === 1 || i === 2 ? "karte-schwarz" : ""} flex min-h-[220px] flex-col items-center justify-center p-8 text-center sm:p-12`}
+          >
+            <h3 className="t-kachel max-w-[18ch] text-[clamp(24px,20px+1vw,32px)]">{c.title}</h3>
+            <p className="text-muted-foreground mt-3 max-w-[34ch] text-[17px] leading-[1.47] tracking-[-0.022em]">{c.body}</p>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -387,14 +409,16 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
  * ---------------------------------------------------------------- */
 function Faq() {
   return (
-    <section className="border-border border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <h2 className="text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">Fragen zur Wartung</h2>
-        <dl className="border-foreground mt-10 border-b lg:mt-12">
+    <section id="fragen" className="flaeche-hell abschnitt scroll-mt-20">
+      <div className="inhalt">
+        <h2 data-auftritt="titel" className="zweiton">
+          <span>Fragen zur Wartung.</span> <span className="grau">Kurz beantwortet.</span>
+        </h2>
+        <dl className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:mt-10">
           {FAQ_ITEMS.map((item) => (
-            <div key={item.q} className="border-border grid gap-2 border-t py-6 first:border-foreground lg:grid-cols-12 lg:gap-8">
-              <dt className="text-[17.5px] font-semibold leading-snug tracking-[-0.01em] lg:col-span-5">{item.q}</dt>
-              <dd className="text-muted-foreground text-[15.5px] leading-relaxed lg:col-span-7">{item.a}</dd>
+            <div key={item.q} data-auftritt="" className="karte karte-weiss p-7 sm:p-8">
+              <dt className="text-[21px] leading-[1.19] font-semibold tracking-[-0.015em]">{item.q}</dt>
+              <dd className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">{item.a}</dd>
             </div>
           ))}
         </dl>
@@ -404,45 +428,23 @@ function Faq() {
 }
 
 /* ------------------------------------------------------------------
- * Abschluss: Telefonnummer groß, daneben Durchsicht und Mail.
+ * Abschluss: schwarz, Telefonnummer groß, Pille zur Durchsicht.
  * ---------------------------------------------------------------- */
 function Abschluss() {
   return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-7">
-          <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
-            Bevor Sie einen Tarif wählen, sehen wir uns Ihre Seite an.
-          </h2>
-          <a
-            href="tel:+491607621876"
-            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
-            style={{ fontStretch: "118%", fontWeight: 780 }}
-          >
-            0160&nbsp;7621876
-          </a>
-        </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf Punkte
-            per Mail, kostenlos.
-          </p>
-          <a href={`mailto:${CONTACT_EMAIL}`} className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold">
-            {CONTACT_EMAIL}
-          </a>
-          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Link href="/audit" className="btn-signal">
-              Durchsicht anfordern {ARROW}
-            </Link>
-            <Link
-              href="/anfrage?vorhaben=Wartung"
-              className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
-            >
-              Anfrage schreiben
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <AppleAbschluss
+      id="kontakt"
+      titel="Bevor Sie einen Tarif wählen, sehen wir uns Ihre Seite an."
+      zwischen={
+        <a href="tel:+491607621876" className="abschluss-nummer">
+          0160&nbsp;7621876
+        </a>
+      }
+      unter="Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf Punkte per Mail, kostenlos."
+      pille={{ href: "/audit", label: "Durchsicht anfordern" }}
+      link={{ href: "/anfrage?vorhaben=Wartung", label: "Anfrage schreiben" }}
+    >
+      <MehrLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</MehrLink>
+    </AppleAbschluss>
   );
 }

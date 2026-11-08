@@ -97,7 +97,7 @@ export default function CheckPage() {
       <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
-          crumb="Ladezeit-Test"
+          crumb="Ladezeit-Test" aktionen={false}
           eyebrow="Ladezeit-Test · gemessen mit Google PageSpeed"
           title="Testen Sie, wie schnell Ihre Website lädt."
         >
@@ -198,7 +198,7 @@ export default function CheckPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Ladezeit-Test" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

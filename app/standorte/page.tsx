@@ -38,7 +38,7 @@ export default function StandortePage() {
           vorbei.
         </Briefkarte>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Standorte" />
     </div>
   );
 }

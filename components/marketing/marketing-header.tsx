@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { SitaloLogo } from "@/components/sitalo-logo";
 import { cn } from "@/lib/utils";
@@ -11,14 +12,11 @@ type NavItem = { href: string; label: string };
 
 /**
  * Default nav for the marketing site. Each entry points to a real
- * page route — these used to be `/#anchor` references back when the
- * site was a single long onepager. Now every nav item opens a
- * dedicated subpage with full content, while the homepage carries a
- * short overview that deep-links into the same routes.
+ * page route. „Preise" zeigt auf die Geldseite /website-erstellen-lassen:
+ * Dort stehen alle Pakete mit Preis und Dauer, und sie ist das Ziel für
+ * den wichtigsten Suchbegriff. /pakete bleibt über die Geldseite und die
+ * Fußzeile erreichbar.
  */
-// „Preise" zeigt auf die Geldseite /website-erstellen-lassen: Dort stehen
-// alle Pakete mit Preis und Dauer, und sie ist das Ziel für den wichtigsten
-// Suchbegriff. /pakete bleibt über die Geldseite und die Fußzeile erreichbar.
 const DEFAULT_NAV: NavItem[] = [
   { href: "/leistungen", label: "Leistungen" },
   { href: "/branchen", label: "Branchen" },
@@ -28,13 +26,8 @@ const DEFAULT_NAV: NavItem[] = [
   { href: "/kontakt", label: "Kontakt" },
 ];
 
-// Auf Mobile zeigen wir das Vollbild-Menü mit "Startseite" als
-// erstem Eintrag — das Logo oben ist im Vollbild-Menü versteckt,
-// also brauchts den expliziten Home-Link. FAQ ist aus der
-// Desktop-Nav gewichen (Journal trägt dort mehr Profil), bleibt
-// aber im Mobile-Menü, das mehr Platz hat. Abgeleitet aus
-// DEFAULT_NAV, damit Desktop und Mobile nicht auseinanderdriften:
-// FAQ wird vor dem letzten Eintrag (Kontakt) eingeschoben.
+// Mobil: „Startseite" als erster Eintrag, FAQ vor Kontakt. Abgeleitet aus
+// DEFAULT_NAV, damit Desktop und Mobile nicht auseinanderdriften.
 const MOBILE_NAV: NavItem[] = [
   { href: "/", label: "Startseite" },
   ...DEFAULT_NAV.slice(0, -1),
@@ -42,52 +35,51 @@ const MOBILE_NAV: NavItem[] = [
   ...DEFAULT_NAV.slice(-1),
 ];
 
+const SCHNELL: NavItem[] = [
+  { href: "/termin", label: "Termin buchen" },
+  { href: "/audit", label: "Kostenlose Durchsicht" },
+  { href: "/anfrage", label: "Anfrage schreiben" },
+];
+
+/** Öffnet die Suche (command-palette.tsx, geladen über global-extras.tsx). */
+function sucheOeffnen() {
+  window.dispatchEvent(new Event("sitalo:suche"));
+}
+
+function istAktiv(pathname: string | null, href: string) {
+  if (!pathname) return false;
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 /**
- * Shared marketing header used on /, /pricing, /anfrage.
+ * Globale Leiste im Apple-Stil (.globalnav, app/apple.css): 44 px hoch
+ * (mobil 48 px), immer helles Milchglas, kleine 12-px-Links über die
+ * ganze Breite verteilt, Logo klein links, rechts Suche und – nur auf
+ * Seiten ohne lokale Produktleiste – eine kleine Pille „Anfragen“.
  *
- * CTA hierarchy reflects the "we build it for you" positioning:
- *   - "Website anfragen" is the primary action — solid button
- * No login / register / dashboard links in the public surface —
- * Sitalo is positioned as a done-for-you agency, not a self-service
- * SaaS portal. Existing customers reach /login by direct URL.
+ * Kein Scroll-Listener: Das Glas ist immer an, nichts wechselt beim
+ * Scrollen (ruhig am iPhone). Auf Seiten mit Produktleiste
+ * (produktleiste.tsx) scrollt diese Leiste weg (position: relative),
+ * nur die Produktleiste klebt.
  *
- * Klebende Kopfzeile: oben auf der Seite ruhig (transparent bzw. auf
- * Teer), nach 80 px Scrollweg aus hellem Milchglas mit dünner Haarlinie
- * (.kopf-glas, app/globals.css, Block „Laden-Linie“), auch auf Seiten
- * mit dunklem Hero. Die Linie ist ein box-shadow, die Höhe bleibt 64 px.
+ * Mobil: Logo, Suche und Burger; das Menü ist vollflächig hell.
  */
 export function MarketingHeader({
   nav = DEFAULT_NAV,
   className,
-  tone = "light",
+  cta = true,
 }: {
   nav?: NavItem[];
   className?: string;
-  /** "dark": die Seite beginnt mit einem dunklen Hero — Logo, Links und
-   *  Knöpfe sind hell, bis der Besucher scrollt und der Header seinen
-   *  hellen Hintergrund bekommt. */
+  /** Kleine „Anfragen“-Pille rechts. Seiten mit Produktleiste: false. */
+  cta?: boolean;
+  /** @deprecated Wirkungslos seit der Apple-Leiste (immer hell).
+   *  Bleibt im Typ, damit bestehende Aufrufe nicht brechen. */
   tone?: "light" | "dark";
 }) {
-  const [scrolled, setScrolled] = useState(false);
-  // Dunkle Seiten: Ungescrollt steht der Kopf auf Teer mit hellem Logo.
-  // Nach dem Hero wird er zu hellem Milchglas mit dunklem Logo, denn
-  // darunter folgen helle Abschnitte; dunkles Glas darüber würde grau.
-  const onDark = tone === "dark" && !scrolled;
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // Subtle visual shift when the user scrolls past the hero.
-  // Trigger erst bei 80px, damit der Effekt nicht beim leichten
-  // Scrollen flackert. Ein einziger sauberer Übergang.
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Each link in the sheet calls onClose directly, so menu state is
-  // already shut by the time navigation happens — no pathname effect
-  // needed.
 
   // Lock body scroll while the mobile sheet is open.
   useEffect(() => {
@@ -111,107 +103,82 @@ export function MarketingHeader({
 
   return (
     <>
-      <header
-        className={cn(
-          "sticky top-0 z-40 transition-[background-color,box-shadow] duration-[var(--t-mittel)] ease-[var(--ease-wechsel)] motion-reduce:transition-none print:hidden",
-          scrolled
-            ? "kopf-glas"
-            : onDark
-              ? "bg-foreground"
-              : "bg-transparent",
-          className,
-        )}
-      >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:px-6">
-        <Link
-          href="/"
-          className="flex min-h-11 shrink-0 items-center"
-          onClick={() => setMenuOpen(false)}
-        >
-          <SitaloLogo size="md" hideTaglineOnMobile tone={onDark ? "light" : "dark"} />
-        </Link>
+      <header className={cn("globalnav print:hidden", className)}>
+        <nav aria-label="Hauptnavigation" className="globalnav-innen">
+          <ul className="globalnav-liste">
+            <li>
+              <Link href="/" className="globalnav-link -ml-2">
+                <SitaloLogo size="xs" hideTagline />
+              </Link>
+            </li>
+            {nav.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="globalnav-link"
+                  aria-current={istAktiv(pathname, item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+            <li className="flex items-center">
+              <button
+                type="button"
+                onClick={sucheOeffnen}
+                aria-label="Seite durchsuchen"
+                className="globalnav-icon"
+              >
+                <Search className="h-[15px] w-[15px]" strokeWidth={1.75} aria-hidden="true" />
+              </button>
+              {cta ? (
+                <Link href="/anfrage" className="btn-signal btn-klein ml-2">
+                  Anfragen
+                </Link>
+              ) : null}
+            </li>
+          </ul>
 
-        {/* Desktop nav — Gold-Underline-Animation auf Hover über das
-            ::after-Pseudo-Element via .nav-link-underline (globals.css). */}
-        <nav className="hidden items-center gap-1 text-[14.5px] lg:flex">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "nav-link-underline relative px-2.5 py-2 font-medium transition-colors lg:px-3",
-                onDark ? "text-background/80 hover:text-background" : "text-foreground/80 hover:text-foreground",
-              )}
+          {/* Mobil: Logo links, Suche und Burger rechts. */}
+          <Link
+            href="/"
+            className="flex min-h-11 items-center min-[834px]:hidden"
+           
+            onClick={() => setMenuOpen(false)}
+          >
+            <SitaloLogo size="xs" hideTagline />
+          </Link>
+          <div className="globalnav-mobil">
+            <button
+              type="button"
+              onClick={sucheOeffnen}
+              aria-label="Seite durchsuchen"
+              className="globalnav-icon"
             >
-              {item.label}
-            </Link>
-          ))}
+              <Search className="h-[17px] w-[17px]" strokeWidth={1.75} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setMenuOpen((v) => !v)}
+              className="globalnav-icon"
+            >
+              <Burger offen={menuOpen} />
+            </button>
+          </div>
         </nav>
-
-        <div className="flex items-center gap-2">
-          <a
-            href="tel:+491607621876"
-            className={cn(
-              "mr-2 hidden text-[14.5px] font-semibold tabular-nums transition-colors xl:inline",
-              onDark ? "text-background hover:text-gold" : "text-foreground hover:text-gold-ink",
-            )}
-          >
-            0160&nbsp;7621876
-          </a>
-          {/* Desktop CTA */}
-          <Link
-            href="/anfrage"
-            className={cn(
-              "hidden h-10 items-center justify-center rounded-[2px] px-5 text-[14px] font-semibold transition-colors lg:inline-flex",
-              onDark ? "bg-gold text-foreground hover:bg-background" : "bg-foreground text-background hover:bg-gold hover:text-foreground",
-            )}
-          >
-            Website anfragen
-          </Link>
-
-          {/* Mobile compact CTA + burger. Sichtbar 36 px hoch, die
-              Trefferfläche reicht per ::after auf 44 px. */}
-          <Link
-            href="/anfrage"
-            className={cn(
-              "relative inline-flex h-9 items-center after:absolute after:-inset-1 justify-center rounded-[2px] px-3.5 text-[13px] font-semibold transition-colors lg:hidden",
-              onDark ? "bg-gold text-foreground" : "bg-foreground text-background",
-            )}
-          >
-            Anfragen
-          </Link>
-          <button
-            type="button"
-            aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            onClick={() => setMenuOpen((v) => !v)}
-            className={cn(
-              "relative inline-flex h-9 w-9 items-center justify-center rounded-[2px] border transition-colors after:absolute after:-inset-1 lg:hidden",
-              onDark ? "border-background/40 text-background hover:bg-background/10" : "border-foreground/70 bg-transparent hover:bg-secondary",
-            )}
-          >
-            <Burger offen={menuOpen} />
-          </button>
-        </div>
-      </div>
-
       </header>
 
-      {/* Vollbild-Mobile-Menü — bewusst AUSSERHALB vom <header>,
-          weil der Header backdrop-blur hat. backdrop-filter erzeugt
-          einen Containing Block, der fixed-positionierte Kinder auf
-          die Header-Größe (64px) clippt — das Menü wäre sonst
-          unsichtbar. */}
-      <MobileFullscreenMenu
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-      />
+      {/* Vollbild-Menü bewusst AUSSERHALB vom <header>: backdrop-filter
+          erzeugt einen Containing Block, der fixed-Kinder clippt. */}
+      <MobileFullscreenMenu open={menuOpen} onClose={() => setMenuOpen(false)} pathname={pathname} />
     </>
   );
 }
 
-/** Zwei Striche, die zum X werden (.burger, app/globals.css). */
+/** Zwei Striche, die zum X werden (.burger, app/globals.css + apple.css). */
 function Burger({ offen }: { offen: boolean }) {
   return (
     <span className="burger" data-offen={offen} aria-hidden="true">
@@ -221,23 +188,32 @@ function Burger({ offen }: { offen: boolean }) {
   );
 }
 
-const KONTAKT_KNOPF =
-  "border-background/40 text-background hover:bg-background hover:text-foreground inline-flex h-11 items-center rounded-[2px] border px-5 text-[13.5px] font-semibold transition-colors";
-
 /**
- * Vollbild-Menü auf dem Handy: dunkles Milchglas (.menue-glas), oben
- * dieselbe Zeile wie die Kopfzeile (64 px, Logo links, X genau auf dem
- * Burger), darunter große ruhige Einträge mit Haarlinien. Die Einträge
- * kommen gestaffelt von oben (opacity, transform), beim Schließen gehen
- * sie ohne Staffel. Bei reduzierter Bewegung nur eine kurze Blende.
+ * Vollbild-Menü auf dem Handy im Apple-Stil: helles Milchglas
+ * (.menue-glas), Kopfzeile wie die Leiste (48 px, X genau auf dem
+ * Burger), große Einträge ohne Haarlinien. Auftritt gestaffelt
+ * (opacity, 4 px von oben, 20 ms je Eintrag), Schließen ohne Staffel,
+ * bei reduzierter Bewegung nur eine kurze Blende.
  */
 function MobileFullscreenMenu({
   open,
   onClose,
+  pathname,
 }: {
   open: boolean;
   onClose: () => void;
+  pathname: string | null;
 }) {
+  const eintrag = (i: number) => ({
+    className: cn(
+      "transition-[opacity,transform] motion-reduce:transform-none motion-reduce:transition-none",
+      open
+        ? "translate-y-0 opacity-100 duration-[320ms] ease-[var(--ease-apple)]"
+        : "-translate-y-1 opacity-0 duration-[160ms] ease-[var(--ease-ab)]",
+    ),
+    style: { transitionDelay: open ? `${Math.min(20 * i, 200)}ms` : "0ms" },
+  });
+
   return (
     <div
       id="mobile-menu"
@@ -247,74 +223,95 @@ function MobileFullscreenMenu({
       aria-hidden={!open}
       inert={!open}
       className={cn(
-        "menue-glas text-background fixed inset-0 z-[60] flex flex-col transition-[opacity,visibility] lg:hidden print:hidden motion-reduce:duration-150",
+        "menue-glas fixed inset-0 z-[60] flex flex-col transition-[opacity,visibility] min-[834px]:hidden print:hidden motion-reduce:duration-150",
         open
-          ? "visible opacity-100 duration-[var(--t-mittel)] ease-[var(--ease-aus)]"
-          : "pointer-events-none invisible opacity-0 duration-[var(--t-kurz)] ease-[var(--ease-ab)]",
+          ? "visible opacity-100 duration-[240ms] ease-[var(--ease-apple)]"
+          : "pointer-events-none invisible opacity-0 duration-[160ms] ease-[var(--ease-ab)]",
       )}
       style={{
         paddingTop: "env(safe-area-inset-top, 0px)",
-        paddingBottom: "max(env(safe-area-inset-bottom, 0px), 1rem)",
+        paddingBottom: "max(env(safe-area-inset-bottom, 0px), 16px)",
       }}
     >
-      {/* Gleiche Geometrie wie die Kopfzeile: nichts springt beim Öffnen. */}
-      <div className="flex h-16 shrink-0 items-center justify-between gap-3 px-5 sm:px-6">
-        <SitaloLogo size="md" hideTaglineOnMobile tone="light" />
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Menü schließen"
-          className="border-background/40 text-background hover:bg-background/10 relative inline-flex h-9 w-9 items-center justify-center rounded-[2px] border transition-colors after:absolute after:-inset-1"
-        >
-          <Burger offen={open} />
-        </button>
+      {/* Gleiche Geometrie wie die Leiste: nichts springt beim Öffnen. */}
+      <div className="globalnav-innen h-12 w-full shrink-0">
+        <Link href="/" onClick={onClose} className="flex min-h-11 items-center">
+          <SitaloLogo size="xs" hideTagline />
+        </Link>
+        <div className="globalnav-mobil">
+          <button type="button" onClick={onClose} aria-label="Menü schließen" className="globalnav-icon">
+            <Burger offen={open} />
+          </button>
+        </div>
       </div>
 
-      {/* Hauptnavigation, scrollbar wenn der Viewport zu klein ist.
-          min-h-0 lässt die flex-1 Fläche unter ihre Inhaltshöhe
-          schrumpfen; overscroll-contain hält das Scrollen im Menü. */}
-      <nav
-        className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-5 pt-4 pb-6 sm:px-6"
-        style={{ WebkitOverflowScrolling: "touch" }}
+      <div
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain pt-4 pb-6"
+        style={{
+          WebkitOverflowScrolling: "touch",
+          paddingLeft: "max(48px, env(safe-area-inset-left))",
+          paddingRight: "max(24px, env(safe-area-inset-right))",
+        }}
       >
-        {MOBILE_NAV.map((item, i) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onClose}
-            className={cn(
-              "border-background/10 text-background flex min-h-12 shrink-0 items-center border-b py-2 text-[1.75rem] font-bold tracking-[-0.025em] [font-stretch:112%] transition-[opacity,transform] motion-reduce:transform-none motion-reduce:transition-none sm:text-4xl",
-              open
-                ? "translate-y-0 opacity-100 duration-[var(--t-mittel)] ease-[var(--ease-aus)]"
-                : "-translate-y-2 opacity-0 duration-[var(--t-kurz)] ease-[var(--ease-ab)]",
-            )}
-            style={{ transitionDelay: open ? `${Math.min(40 * i, 240)}ms` : "0ms" }}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+        <nav aria-label="Hauptmenü">
+          <ul>
+            {MOBILE_NAV.map((item, i) => {
+              const e = eintrag(i);
+              return (
+                <li key={item.href} className={e.className} style={e.style}>
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className="menue-eintrag"
+                    aria-current={istAktiv(pathname, item.href) ? "page" : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-      {/* Fußzeile mit Hauptaktion und Kontakt */}
-      <div className="border-background/10 space-y-6 border-t px-5 pt-6 pb-4 sm:px-6">
-        <Link href="/anfrage" onClick={onClose} className="btn-signal w-full">
-          Website anfragen
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-wrap gap-2.5">
-            <a href="tel:+491607621876" className={KONTAKT_KNOPF}>
-              Anrufen
-            </a>
-            <a href="mailto:info@sitalo.de" className={KONTAKT_KNOPF}>
-              Schreiben
-            </a>
-            <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className={KONTAKT_KNOPF}>
-              Speichern
-            </a>
-          </div>
-          <span className="label-mono text-stahl-hell">0160&nbsp;7621876 · Hamburg</span>
+        <div className={cn("mt-10", eintrag(MOBILE_NAV.length).className)} style={eintrag(MOBILE_NAV.length).style}>
+          <p className="text-muted-foreground text-[12px] leading-[1.33]" id="menue-schnell">
+            Schnellzugriff
+          </p>
+          <ul aria-labelledby="menue-schnell" className="mt-2">
+            {SCHNELL.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} onClick={onClose} className="menue-eintrag-klein">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
+      </div>
+
+      {/* Fuß mit Hauptaktion und Kontakt */}
+      <div
+        className="space-y-3 pt-4"
+        style={{
+          paddingLeft: "max(24px, env(safe-area-inset-left))",
+          paddingRight: "max(24px, env(safe-area-inset-right))",
+        }}
+      >
+        <Link href="/anfrage" onClick={onClose} className="btn-signal btn-gross w-full">
+          Website anfragen
+        </Link>
+        <div className="flex flex-wrap items-center justify-center gap-x-6 text-[17px]">
+          <a href="tel:+491607621876" className="link-chevron min-h-11">
+            Anrufen<span aria-hidden="true" className="chev">›</span>
+          </a>
+          <a href="mailto:info@sitalo.de" className="link-chevron min-h-11">
+            Schreiben<span aria-hidden="true" className="chev">›</span>
+          </a>
+          <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="link-chevron min-h-11">
+            Speichern<span aria-hidden="true" className="chev">›</span>
+          </a>
+        </div>
+        <p className="text-muted-foreground text-center text-[12px] leading-[1.33]">0160&nbsp;7621876 · Hamburg</p>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -383,20 +383,14 @@ export default function WebseiteErstellenPage() {
                 <p className="label-mono text-stahl-hell text-[11px]">
                   Auf dieser Seite
                 </p>
-                <ul className="mt-3 grid grid-cols-2 gap-x-6 sm:grid-cols-3">
+                <ul className="mt-3 flex flex-wrap justify-center gap-2">
                   {INHALT.map((i) => (
-                    <li key={i.href} className="border-background/15 border-t">
+                    <li key={i.href}>
                       <a
                         href={i.href}
-                        className="text-background/90 hover:text-background group flex items-center justify-between gap-3 py-2.5 text-[14.5px]"
+                        className="text-foreground inline-flex min-h-11 items-center rounded-full bg-[var(--hell)] px-[18px] text-[14px] hover:bg-[var(--hell-2)]"
                       >
-                        <span className="group-hover:underline group-hover:underline-offset-4">
-                          {i.label}
-                        </span>
-                        <ArrowDown
-                          className="text-stahl-hell h-3.5 w-3.5 shrink-0"
-                          aria-hidden="true"
-                        />
+                        {i.label}
                       </a>
                     </li>
                   ))}
@@ -1042,7 +1036,7 @@ export default function WebseiteErstellenPage() {
                   >
                     <span
                       aria-hidden="true"
-                      className="border-foreground mt-0.5 inline-block h-[18px] w-[18px] shrink-0 rounded-[2px] border-[1.5px]"
+                      className="border-foreground mt-0.5 inline-block h-[18px] w-[18px] shrink-0 rounded-[5px] border-[1.5px]"
                     />
                     {c}
                   </li>
@@ -1192,7 +1186,7 @@ export default function WebseiteErstellenPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Webseite erstellen" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}

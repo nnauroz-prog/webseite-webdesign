@@ -68,7 +68,7 @@ export default function AtelierPage() {
         <Register />
         <Kontakt />
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Über uns" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -87,7 +87,7 @@ function Werkstattbericht() {
     <section>
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         <figure className="lg:col-span-5">
-          <div className="border-border relative aspect-[4/3] w-full overflow-hidden rounded-[3px] border">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] lg:rounded-[28px]">
             <Image
               src="/images/workspace-macbook.webp"
               alt="Blick von oben auf einen Schreibtisch: Hände auf einer Laptop-Tastatur, daneben ein Notizbuch mit Skizzen und eine Tasse Kaffee."
@@ -174,7 +174,7 @@ function Hamburg() {
           </h2>
           <div
             aria-hidden="true"
-            className="border-background/25 text-background/85 mt-8 flex max-w-md items-center gap-3 rounded-[2px] border px-4 py-3 font-mono text-[14px]"
+            className="border-background/25 text-background/85 mt-8 flex max-w-md items-center gap-3 rounded-[12px] border px-4 py-3 font-mono text-[14px]"
           >
             <Search className="text-stahl-hell h-4 w-4 shrink-0" />
             <span className="truncate">physiotherapie ottensen</span>

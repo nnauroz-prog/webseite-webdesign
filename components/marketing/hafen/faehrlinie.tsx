@@ -72,7 +72,7 @@ export function Faehrlinie() {
     const szene = window.matchMedia(SZENE);
     const spur = el.closest<HTMLElement>(".ablauf-spur");
     const html = document.documentElement;
-    const kopfH = parseFloat(getComputedStyle(html).getPropertyValue("--kopf-h")) || 64;
+    const kopfH = parseFloat(getComputedStyle(html).getPropertyValue("--sticky-top")) || 52;
     // Die Szene klebt per CSS nur unter html.js-reveal (RevealRoot).
     const inSzene = () => !!spur && szene.matches && html.classList.contains("js-reveal");
 
@@ -230,9 +230,13 @@ export function Faehrlinie() {
               <i />
             </span>
             <div className="stop-body">
-              <span className="label-mono text-gold">{h.halt}</span>
-              <h3 className="mt-2 text-[1.6rem] tracking-[-0.02em]">{h.title}</h3>
-              <p className="text-stahl-hell mt-2.5 max-w-[26em] text-[15.5px] leading-relaxed">{h.text}</p>
+              <span className="text-signal-on-dark text-[12px] leading-[1.33] font-semibold tracking-[-0.01em]">
+                {h.halt}
+              </span>
+              <h3 className="mt-2 text-[21px] leading-[1.19] font-semibold tracking-[0.011em] text-[#f5f5f7]">
+                {h.title}
+              </h3>
+              <p className="text-text-2-dark mt-2 max-w-[26em] text-[17px] leading-[1.47] tracking-[-0.022em]">{h.text}</p>
             </div>
           </li>
         ))}

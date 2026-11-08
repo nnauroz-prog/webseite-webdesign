@@ -140,7 +140,7 @@ export default function LexikonPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Lexikon" />
 
       <script
         type="application/ld+json"

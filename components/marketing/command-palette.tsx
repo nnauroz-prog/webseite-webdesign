@@ -70,7 +70,14 @@ export function CommandPalette({
 }: {
   searchIndex?: PaletteSearchDoc[];
 }) {
-  const [open, setOpen] = useState(false);
+  // Über den Suche-Knopf der Kopfzeile geladen? Dann gleich offen.
+  const [open, setOpen] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const w = window as Window & { __sucheOffen?: boolean };
+    const offen = !!w.__sucheOffen;
+    w.__sucheOffen = false;
+    return offen;
+  });
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -91,8 +98,16 @@ export function CommandPalette({
         setOpen(false);
       }
     };
+    const onSuche = () => {
+      (window as Window & { __sucheOffen?: boolean }).__sucheOffen = false;
+      setOpen(true);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("sitalo:suche", onSuche);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("sitalo:suche", onSuche);
+    };
   }, [open]);
 
   // Beim Öffnen: Input fokussieren, Index resetten. Query NICHT
@@ -450,7 +465,7 @@ export function CommandPalette({
 
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-card border-foreground/20 relative w-full max-w-xl overflow-hidden rounded-[3px] border shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]"
+        className="bg-card relative w-full max-w-xl overflow-hidden rounded-[18px] lg:rounded-[28px] shadow-karte"
       >
         {/* Input + Hinweis-Kürzel */}
         <div className="border-border flex items-center gap-3 border-b px-4 py-3.5">
@@ -468,7 +483,7 @@ export function CommandPalette({
             placeholder="Seite, Branche oder Begriff suchen"
             className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-[16px] outline-none"
           />
-          <kbd className="border-border text-muted-foreground hidden rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px] sm:inline-block">
+          <kbd className="border-border text-muted-foreground hidden rounded-[6px] border px-1.5 py-0.5 font-mono text-[11px] sm:inline-block">
             Esc
           </kbd>
         </div>
@@ -523,19 +538,19 @@ export function CommandPalette({
         {/* Footer Hint */}
         <div className="border-border text-muted-foreground flex items-center justify-between gap-2 border-t px-4 py-2.5 text-[13px]">
           <span className="inline-flex items-center gap-2">
-            <kbd className="border-border rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px]">
+            <kbd className="border-border rounded-[6px] border px-1.5 py-0.5 font-mono text-[11px]">
               ↑↓
             </kbd>
             auswählen
           </span>
           <span className="inline-flex items-center gap-2">
-            <kbd className="border-border rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px]">
+            <kbd className="border-border rounded-[6px] border px-1.5 py-0.5 font-mono text-[11px]">
               ↵
             </kbd>
             öffnen
           </span>
           <span className="hidden items-center gap-2 sm:inline-flex">
-            <kbd className="border-border rounded-[2px] border px-1.5 py-0.5 font-mono text-[11px]">
+            <kbd className="border-border rounded-[6px] border px-1.5 py-0.5 font-mono text-[11px]">
               ⌘K
             </kbd>
             schließen

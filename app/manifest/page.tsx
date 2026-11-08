@@ -166,7 +166,7 @@ export default function ManifestPage() {
           </div>
         </section>
       </main>
-      <MarketingFooter />
+      <MarketingFooter crumb="Manifest" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

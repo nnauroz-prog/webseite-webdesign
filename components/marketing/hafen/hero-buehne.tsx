@@ -15,18 +15,14 @@
  *   Inline-Script in hafen-hero.tsx vor dem ersten Bild.
  * - Seile pendeln: gedämpftes Pendel, angetrieben von der Beschleunigung
  *   der Katze, Pendellänge aus der Seillänge; vor dem Absetzen geführt.
- * - Tiefe: Die Zeichnung scrollt als Ganzes etwas langsamer, darin die
- *   Stadt (mit Wasserkante und Horizont) noch etwas langsamer und das
- *   Vordergrund-Wasser schneller; relativ höchstens 13 Einheiten, damit
- *   nichts unter die Wasserkante taucht. Textspalte schiebt sich hoch und
- *   wird blasser (nur breite Fenster). Mit Maus verschieben sich die
- *   Ebenen um wenige Einheiten, weich nachgeführt.
+ * - Keine Tiefe mehr: Zeiger- und Scroll-Parallax sind entfallen, die
+ *   Bühne steht ruhig im Rahmen wie ein Produktbild.
  * - Licht nach dem Sonnenstand über Hamburg (hero-licht.ts), Vorschau
  *   mit ?licht=morgen|tag|abend|nacht.
  * - prefers-reduced-motion: nichts davon läuft (außer dem Licht), das
  *   CSS zeigt ein vollständiges Standbild.
  * - Sparsam: Der Takt läuft nur, solange es etwas zu bewegen gibt (Lade-
- *   betrieb gestartet, Scrollen, Zeiger). Volle Bildrate, solange Katze,
+ *   betrieb gestartet). Volle Bildrate, solange Katze,
  *   Haken, Pendel, Schiffe oder Schlepper sich bewegen; in Ruhephasen,
  *   in denen nur Wellen laufen, 30 Bilder pro Sekunde. Auf Touch-Geräten
  *   laufen die CSS-Daueranimationen der Zeichnung (Wellen, Reflexe,
@@ -199,12 +195,9 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     nah: eins("nah"),
     leader: alle("leader"),
     schilder: Array.from(root.querySelectorAll<HTMLElement>('[data-kb="schild"]')),
-    copy: root.querySelector<HTMLElement>('[data-kb="copy"]'),
   };
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const fein = window.matchMedia("(hover: hover) and (pointer: fine)");
-  const breit = window.matchMedia("(min-width: 1024px)");
   const grob = window.matchMedia("(pointer: coarse)");
 
   /* Nur schreiben, was sich geändert hat. */
@@ -221,11 +214,6 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     if (name === "data-on") (e as HTMLElement).dataset.on = wert;
     else if (wert === "") e.removeAttribute(name);
     else e.setAttribute(name, wert);
-  };
-  const setzeStil = (e: HTMLElement | null, transform: string, opacity: string) => {
-    if (!e) return;
-    if (e.style.transform !== transform) e.style.transform = transform;
-    if (e.style.opacity !== opacity) e.style.opacity = opacity;
   };
   const faerben = (g: Element | null, idx: number) => {
     if (!g || idx < 0) return;
@@ -244,16 +232,8 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
   let winkel = 0;
   let drehung = 0;
   let frei = 1;
-  // Zeiger, Ziel und geglättet (-1 bis 1)
-  let zielX = 0;
-  let zielY = 0;
-  let zx = 0;
-  let zy = 0;
-  // Tiefe nur neu rechnen, wenn gescrollt wurde, sich die Größe geändert
-  // hat oder die Zeiger-Glättung noch läuft. getBoundingClientRect in
-  // jedem Frame erzwingt sonst ein synchrones Layout, beim Laden der
-  // Seite (Hydrieren, Schriften, Bilder) jedes Mal über die ganze Seite.
-  let tiefeOffen = true;
+  // Erstes Bild nach dem Wecken immer zeichnen.
+  let erstesBild = true;
 
   // Touch-Geräte: endlose CSS-Animationen der Zeichnung im 30-fps-Takt.
   const imTakt = grob.matches && typeof art.getAnimations === "function" && typeof CSSAnimation !== "undefined";
@@ -325,50 +305,7 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
       for (const f of el.fern) setze(f, "transform", "");
       for (const u of el.ufer) setze(u, "transform", "");
       setze(el.nah, "transform", "");
-      setzeStil(el.copy, "", "");
-      setzeStil(art, "", "");
     }
-  };
-
-  const zeigerRuhig = () => Math.abs(zielX - zx) < 0.002 && Math.abs(zielY - zy) < 0.002;
-
-  const tiefe = () => {
-    if (!tiefeOffen && zeigerRuhig()) return;
-    tiefeOffen = false;
-    const vh = window.innerHeight || 1;
-    const r = art.getBoundingClientRect();
-    // 0, solange die Zeichnung unterhalb der Bildmitte liegt; danach wächst der Wert.
-    const o = Math.max(0, -(r.top + r.height / 2 - vh / 2) / vh);
-    let copyT = "";
-    let copyO = "";
-    if (breit.matches && el.copy) {
-      const h = root.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, -h.top / Math.max(1, h.height)));
-      if (p > 0.0005) {
-        copyT = `translate3d(0, ${(-p * 64).toFixed(1)}px, 0)`;
-        // Nicht unter 0,9: Die Linkzeile behält so AA-Kontrast, solange
-        // sie noch im Bild steht.
-        copyO = Math.max(0.9, 1 - p * 0.6).toFixed(3);
-      }
-    }
-    zx += (zielX - zx) * 0.06;
-    zy += (zielY - zy) * 0.06;
-    // Relativ zueinander höchstens 8 + 5 = 13 Einheiten. Wasserkante und
-    // Horizont gehen mit der Stadt (nur senkrecht), damit Landungs-
-    // brücken und Dächer nie unter die Kante tauchen.
-    const fernX = -zx * 6;
-    const fernY = o * 8 - zy * 2.5;
-    const nahX = zx * 9;
-    const nahY = -o * 5 + zy * 1.5;
-    const fT = Math.abs(fernX) + Math.abs(fernY) < 0.01 ? "" : `translate(${fernX.toFixed(2)} ${fernY.toFixed(2)})`;
-    for (const f of el.fern) setze(f, "transform", fT);
-    const uT = Math.abs(fernY) < 0.01 ? "" : `translate(0 ${fernY.toFixed(2)})`;
-    for (const u of el.ufer) setze(u, "transform", uT);
-    setze(el.nah, "transform", Math.abs(nahX) + Math.abs(nahY) < 0.01 ? "" : `translate(${nahX.toFixed(2)} ${nahY.toFixed(2)})`);
-    setzeStil(el.copy, copyT, copyO);
-    // Die ganze Zeichnung bleibt beim Scrollen etwas zurück (Tiefe). Die
-    // Kaikante liegt außerhalb und steht.
-    setzeStil(art, o > 0.0005 ? `translate3d(0, ${(o * 18).toFixed(1)}px, 0)` : "", "");
   };
 
   /* Gedämpftes Pendel, angetrieben von der Katzbeschleunigung. Kurz vor
@@ -401,7 +338,7 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
 
   const laeuft = () => sichtbar && !document.hidden && !reduce.matches;
   /** Gibt es im nächsten Bild etwas zu tun? */
-  const gebraucht = () => gestartet || tiefeOffen || !zeigerRuhig() || css.length > 0;
+  const gebraucht = () => gestartet || erstesBild || css.length > 0;
 
   // Ruhephase (nur Wellen): das nächste Bild erst nach einer Pause
   // anfordern (30 fps, auch bei 120 Hz). Ein angefordertes, aber
@@ -435,13 +372,13 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
       if (verzug > 0) verzug -= dt;
       else zeit += dt;
     }
-    const tiefeLief = tiefeOffen || !zeigerRuhig();
-    tiefe();
+    const erstes = erstesBild;
+    erstesBild = false;
     const st = z.zustand(zeit);
     pendeln(dt, st);
     anwenden(st);
     cssWeiter(dt);
-    bewegt = tiefeLief || bewegtSich(st, dt);
+    bewegt = erstes || bewegtSich(st, dt);
     if (gebraucht()) planen();
   };
 
@@ -476,7 +413,7 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     const an = laeuft();
     root.toggleAttribute("data-kb-pause", !an);
     if (an) {
-      tiefeOffen = true;
+      erstesBild = true;
       wecken();
     } else {
       anhalten();
@@ -514,29 +451,14 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     }
     steuern();
   };
-  const onZeiger = (e: PointerEvent) => {
-    if (!fein.matches || e.pointerType !== "mouse") return;
-    const r = root.getBoundingClientRect();
-    zielX = Math.max(-1, Math.min(1, ((e.clientX - r.left) / Math.max(1, r.width)) * 2 - 1));
-    zielY = Math.max(-1, Math.min(1, ((e.clientY - r.top) / Math.max(1, r.height)) * 2 - 1));
-    wecken();
-  };
-  const onRaus = () => {
-    zielX = 0;
-    zielY = 0;
-    wecken();
-  };
-  const onScroll = () => {
-    tiefeOffen = true;
-    wecken();
-  };
-  // Größe geändert: Tiefe neu rechnen. Media Queries können dabei CSS-
-  // Animationen an- oder abschalten, deshalb die Liste neu holen.
+  // Größe geändert: Media Queries können CSS-Animationen an- oder
+  // abschalten, deshalb die Liste neu holen.
   const ro =
     "ResizeObserver" in window
       ? new ResizeObserver(() => {
           cssHolen();
-          onScroll();
+          erstesBild = true;
+          wecken();
         })
       : null;
   cssHolen();
@@ -544,23 +466,14 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
 
   document.addEventListener("visibilitychange", steuern);
   reduce.addEventListener("change", onReduce);
-  root.addEventListener("pointermove", onZeiger, { passive: true });
-  root.addEventListener("pointerleave", onRaus, { passive: true });
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll, { passive: true });
 
   return () => {
     io.disconnect();
     document.removeEventListener("visibilitychange", steuern);
     reduce.removeEventListener("change", onReduce);
-    root.removeEventListener("pointermove", onZeiger);
-    root.removeEventListener("pointerleave", onRaus);
-    window.removeEventListener("scroll", onScroll);
-    window.removeEventListener("resize", onScroll);
     ro?.disconnect();
     anhalten();
     root.removeAttribute("data-kb-pause");
-    setzeStil(art, "", "");
     kopien.forEach((k) => k.remove());
   };
 }
