@@ -1,36 +1,94 @@
 import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
-import { SitaloLogo } from "@/components/sitalo-logo";
 import { PREIS_HINWEIS } from "@/lib/pakete-data";
 
 /**
  * Marketing-Fuß im Apple-Stil: helle Fläche (#f5f5f7), 12-px-Schrift in
- * #6e6e73, oben Fußnoten, darunter Brotkrumen, vier Spalten mit kleinen
- * fetten Titeln, Kontaktzeile und Rechtszeile unter Haarlinien.
+ * #6e6e73, oben Fußnoten, darunter Brotkrumen, die Linkgruppen und die
+ * Rechtszeile unter Haarlinien.
+ *
+ * Mobil (< 640 px) wie bei Apple: jede Gruppe ist eine aufklappbare Zeile
+ * (details, ohne Script), ab 640 px stehen die Gruppen als Spalten. Beide
+ * Fassungen stehen im Markup, sichtbar ist je Breite genau eine.
+ * Kontaktangaben stehen nur in der Gruppe „Kontakt“.
  *
  * Ankertexte mit Absicht: „Website erstellen lassen" zeigt nur auf die
  * Geldseite, „Webseite erstellen" ohne „lassen" nur auf den Ratgeber.
  *
  * crumb: Name der aktuellen Seite für die Brotkrumen-Zeile (optional).
+ * ohnePreisHinweis: Seiten, die den Preishinweis schon direkt bei den
+ * Preisen zeigen (Startseite), wiederholen ihn hier nicht.
+ * ohneNachOben: ohne den runden „Nach oben“-Knopf (Startseite: die
+ * klebende Produktleiste übernimmt die Navigation).
  */
-export function MarketingFooter({ crumb }: { crumb?: string } = {}) {
+
+type FussLink = { href: string; label: React.ReactNode; extern?: boolean };
+type FussGruppe = { titel: string; links: FussLink[] };
+
+const GRUPPEN: FussGruppe[] = [
+  {
+    titel: "Angebot",
+    links: [
+      { href: "/website-erstellen-lassen", label: "Website erstellen lassen" },
+      { href: "/leistungen", label: "Leistungen" },
+      { href: "/pakete", label: "Pakete" },
+      { href: "/wartung", label: "Wartung" },
+      { href: "/branchen", label: "Branchen" },
+      { href: "/pflege", label: "Website für Pflegedienste" },
+      { href: "/praxen", label: "Praxis-Website" },
+      { href: "/audit", label: "Kostenlose Durchsicht Ihrer Website" },
+    ],
+  },
+  {
+    titel: "Ratgeber",
+    links: [
+      { href: "/webseite-erstellen", label: "Webseite erstellen: Anleitung" },
+      { href: "/website-kosten", label: "Was kostet eine Website?" },
+      { href: "/vergleich", label: "Baukasten oder Webdesigner: Vergleich" },
+      { href: "/lexikon", label: "Lexikon" },
+    ],
+  },
+  {
+    titel: "Sitalo",
+    links: [
+      { href: "/atelier", label: "Über uns" },
+      { href: "/ablauf", label: "Ablauf" },
+      { href: "/journal", label: "Journal" },
+      { href: "/faq", label: "FAQ" },
+    ],
+  },
+  {
+    titel: "Kontakt",
+    links: [
+      { href: "tel:+491607621876", label: "0160\u00A07621876", extern: true },
+      { href: "mailto:info@sitalo.de", label: "info@sitalo.de", extern: true },
+      { href: "/termin", label: "Termin buchen" },
+    ],
+  },
+];
+
+export function MarketingFooter({
+  crumb,
+  ohnePreisHinweis = false,
+  ohneNachOben = false,
+}: { crumb?: string; ohnePreisHinweis?: boolean; ohneNachOben?: boolean } = {}) {
   const year = new Date().getFullYear();
   return (
     <>
-      <BackToTop />
+      {ohneNachOben ? null : <BackToTop />}
       <footer className="flaeche-hell text-muted-foreground relative text-[12px] leading-[1.33] tracking-[-0.01em] print:hidden">
         <div className="inhalt pt-[17px] pb-[calc(21px+env(safe-area-inset-bottom))]">
           {/* Fußnoten */}
           <div className="space-y-2 border-b border-[var(--border)] pb-4">
             <p>Websites für Betriebe in ganz Deutschland. Gestaltet und gebaut in Hamburg.</p>
-            <p>{PREIS_HINWEIS}</p>
+            {ohnePreisHinweis ? null : <p>{PREIS_HINWEIS}</p>}
           </div>
 
-          {/* Brotkrumen */}
+          {/* Brotkrumen: der Name in der Systemschrift wie die übrige Zeile */}
           <nav aria-label="Fußzeile, Standort" className="flex min-h-11 items-center gap-2">
-            <Link href="/" className="inline-flex min-h-11 items-center text-[#1d1d1f]">
-              <SitaloLogo size="xs" hideTagline className="!text-[#1d1d1f] [&_.font-logo]:!text-[14px]" />
+            <Link href="/" className="inline-flex min-h-11 items-center font-semibold text-[#1d1d1f]">
+              Sitalo Webdesign
             </Link>
             {crumb ? (
               <>
@@ -42,59 +100,49 @@ export function MarketingFooter({ crumb }: { crumb?: string } = {}) {
             ) : null}
           </nav>
 
-          {/* Spalten */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-6 border-b border-[var(--border)] pt-2 pb-6 sm:grid-cols-4 sm:gap-x-8 lg:pt-4 lg:pb-8">
-            <FooterCol title="Angebot">
-              <FooterLink href="/website-erstellen-lassen">Website erstellen lassen</FooterLink>
-              <FooterLink href="/leistungen">Leistungen</FooterLink>
-              <FooterLink href="/pakete">Pakete</FooterLink>
-              <FooterLink href="/wartung">Wartung</FooterLink>
-              <FooterLink href="/branchen">Branchen</FooterLink>
-              <FooterLink href="/pflege">Website für Pflegedienste</FooterLink>
-              <FooterLink href="/praxen">Praxis-Website</FooterLink>
-              <FooterLink href="/audit">Kostenlose Durchsicht Ihrer Website</FooterLink>
-            </FooterCol>
-            <FooterCol title="Ratgeber">
-              <FooterLink href="/webseite-erstellen">Webseite erstellen: Anleitung</FooterLink>
-              <FooterLink href="/website-kosten">Was kostet eine Website?</FooterLink>
-              <FooterLink href="/vergleich">Baukasten oder Webdesigner: Vergleich</FooterLink>
-              <FooterLink href="/lexikon">Lexikon</FooterLink>
-            </FooterCol>
-            <FooterCol title="Sitalo">
-              <FooterLink href="/atelier">Über uns</FooterLink>
-              <FooterLink href="/ablauf">Ablauf</FooterLink>
-              <FooterLink href="/journal">Journal</FooterLink>
-              <FooterLink href="/faq">FAQ</FooterLink>
-            </FooterCol>
-            <FooterCol title="Kontakt">
-              <FooterLink href="tel:+491607621876" extern>
-                0160&nbsp;7621876
-              </FooterLink>
-              <FooterLink href="mailto:info@sitalo.de" extern>
-                info@sitalo.de
-              </FooterLink>
-              <FooterLink href="/termin">Termin buchen</FooterLink>
-            </FooterCol>
+          {/* Mobil: Gruppen zum Aufklappen */}
+          <div className="border-t border-[var(--border)] sm:hidden">
+            {GRUPPEN.map((g) => (
+              <details key={g.titel} className="fuss-gruppe border-b border-[var(--border)]">
+                <summary className="fuss-gruppe-kopf">
+                  <h2 className="text-[14px] font-semibold tracking-[-0.016em] text-[#1d1d1f]">{g.titel}</h2>
+                  <span aria-hidden="true" className="fuss-gruppe-chev" />
+                </summary>
+                <ul className="pb-3">
+                  {g.links.map((l) => (
+                    <li key={l.href}>
+                      <FussA link={l} className="flex min-h-8 items-center text-[14px] tracking-[-0.016em] text-[#424245]" />
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
           </div>
 
-          {/* Kontaktzeile */}
-          <p className="flex flex-wrap items-center gap-x-1 pt-3">
-            <a href="tel:+491607621876" className="text-gold-ink inline-flex min-h-11 items-center hover:underline lg:min-h-0">
-              0160&nbsp;7621876
-            </a>
-            <span aria-hidden="true">·</span>
-            <a href="mailto:info@sitalo.de" className="text-gold-ink inline-flex min-h-11 items-center hover:underline lg:min-h-0">
-              info@sitalo.de
-            </a>
-            <span aria-hidden="true">·</span>
-            <Link href="/termin" className="text-gold-ink inline-flex min-h-11 items-center hover:underline lg:min-h-0">
-              Termin buchen
-            </Link>
-          </p>
+          {/* Ab 640 px: Spalten */}
+          <div className="hidden grid-cols-4 gap-x-8 border-b border-[var(--border)] pt-2 pb-6 sm:grid lg:pt-4 lg:pb-8">
+            {GRUPPEN.map((g) => (
+              <div key={g.titel}>
+                <h2 className="mb-1 text-[12px] leading-[1.33] font-semibold tracking-[-0.01em] text-[#1d1d1f] lg:mb-2">
+                  {g.titel}
+                </h2>
+                <ul>
+                  {g.links.map((l) => (
+                    <li key={l.href}>
+                      <FussA
+                        link={l}
+                        className="inline-flex py-[5px] text-[#424245] hover:text-[#1d1d1f] hover:underline lg:py-[3px]"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
 
           {/* Rechtszeile */}
-          <div className="mt-2 flex flex-col gap-y-1 border-t border-[var(--border)] pt-2 lg:mt-3 lg:flex-row lg:items-center lg:justify-between lg:pt-3">
-            <div className="flex flex-col gap-y-1 lg:flex-row lg:items-center lg:gap-x-8">
+          <div className="mt-3 flex flex-col gap-y-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-8 sm:border-t-0 sm:pt-2 lg:pt-3">
+            <div className="flex flex-col gap-y-1 sm:flex-row sm:items-center sm:gap-x-8">
               <span>Copyright © {year} Sitalo Webdesign. Alle Rechte vorbehalten.</span>
               <ul className="flex items-center">
                 <RechtLink href="/impressum">Impressum</RechtLink>
@@ -112,40 +160,15 @@ export function MarketingFooter({ crumb }: { crumb?: string } = {}) {
   );
 }
 
-function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h2 className="mb-1 text-[12px] leading-[1.33] font-semibold tracking-[-0.01em] text-[#1d1d1f] lg:mb-2">
-        {title}
-      </h2>
-      <ul>{children}</ul>
-    </div>
-  );
-}
-
-const LINK = "inline-flex min-h-11 items-center text-[#424245] hover:text-[#1d1d1f] hover:underline lg:min-h-0 lg:py-[3px]";
-
-function FooterLink({
-  href,
-  children,
-  extern = false,
-}: {
-  href: string;
-  children: React.ReactNode;
-  extern?: boolean;
-}) {
-  return (
-    <li>
-      {extern ? (
-        <a href={href} className={LINK}>
-          {children}
-        </a>
-      ) : (
-        <Link href={href} className={LINK}>
-          {children}
-        </Link>
-      )}
-    </li>
+function FussA({ link, className }: { link: FussLink; className: string }) {
+  return link.extern ? (
+    <a href={link.href} className={className}>
+      {link.label}
+    </a>
+  ) : (
+    <Link href={link.href} className={className}>
+      {link.label}
+    </Link>
   );
 }
 
@@ -163,7 +186,7 @@ function RechtLink({
       <Link
         href={href}
         rel={nofollow ? "nofollow" : undefined}
-        className="inline-flex min-h-11 items-center text-[#424245] hover:text-[#1d1d1f] hover:underline lg:min-h-0"
+        className="inline-flex min-h-8 items-center text-[#424245] hover:text-[#1d1d1f] hover:underline sm:min-h-0 sm:py-1"
       >
         {children}
       </Link>

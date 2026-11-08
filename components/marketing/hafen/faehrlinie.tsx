@@ -27,7 +27,8 @@ import { imBildBeimStart, useLaufzeit } from "@/components/marketing/hafen/revea
  * Listener: dieselbe rAF-Schleife rechnet nur anders.
  */
 
-const SZENE = "(min-width: 1024px) and (min-height: 820px) and (prefers-reduced-motion: no-preference)";
+const SZENE =
+  "(min-width: 1024px) and (min-height: 820px) and (max-height: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
 
 const HALTE = [
   {

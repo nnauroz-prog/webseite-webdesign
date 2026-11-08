@@ -80,6 +80,9 @@ export function CommandPalette({
   });
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  // Markierung des aktiven Eintrags nur, wo man mit Tastatur wählt: mit
+  // feinem Zeiger von Anfang an, auf Touch erst nach einer Pfeiltaste.
+  const [tastatur, setTastatur] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
 
@@ -116,6 +119,7 @@ export function CommandPalette({
   useEffect(() => {
     if (open) {
       setActiveIndex(0);
+      setTastatur(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
       // Kurze Verzögerung — Modal muss erst im DOM sein
       setTimeout(() => inputRef.current?.focus(), 20);
       document.body.style.overflow = "hidden";
@@ -430,9 +434,11 @@ export function CommandPalette({
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
+      setTastatur(true);
       setActiveIndex((i) => Math.min(i + 1, flat.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
+      setTastatur(true);
       setActiveIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter") {
       e.preventDefault();
@@ -513,7 +519,7 @@ export function CommandPalette({
                   <ul>
                     {g.items.map((item) => {
                       idx += 1;
-                      const active = idx === activeIndex;
+                      const active = tastatur && idx === activeIndex;
                       const Icon = item.icon;
                       const itemIndex = idx;
                       return (
@@ -535,8 +541,8 @@ export function CommandPalette({
           )}
         </div>
 
-        {/* Footer Hint */}
-        <div className="border-border text-muted-foreground flex items-center justify-between gap-2 border-t px-4 py-2.5 text-[13px]">
+        {/* Tastatur-Hinweise: nur mit Maus/Trackpad, auf Touch sinnlos. */}
+        <div className="border-border text-muted-foreground flex items-center justify-between gap-2 border-t px-4 py-2.5 text-[13px] [@media(pointer:coarse)]:hidden">
           <span className="inline-flex items-center gap-2">
             <kbd className="border-border rounded-[6px] border px-1.5 py-0.5 font-mono text-[11px]">
               ↑↓

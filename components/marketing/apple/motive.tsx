@@ -91,18 +91,21 @@ export function IconMotiv({ icon: Icon }: { icon: LucideIcon }) {
 }
 
 /** Ein schlichtes Pflege-Fenster: Liste mit Einträgen, Schaltern und
- *  einem Stift – „Inhalte selbst ändern“, ohne Geräteform. */
+ *  einem runden Stift-Knopf unten rechts – „Inhalte selbst ändern“, ohne
+ *  Geräteform. Alles liegt im Fenster, die viewBox ist genau so groß wie
+ *  das Fenster (sonst sitzt es in der Kachel schief). Die letzte Zeile ist
+ *  kürzer und ohne Schalter: Dort sitzt der Knopf. */
 export function PflegeMotiv({ className }: { className?: string }) {
   const zeilen = [
-    { y: 58, w1: 96, w2: 58, an: true },
-    { y: 106, w1: 120, w2: 44, an: true },
-    { y: 154, w1: 84, w2: 64, an: false },
+    { y: 58, w1: 96, w2: 58, an: true as boolean | null, breite: 352 },
+    { y: 106, w1: 120, w2: 44, an: true as boolean | null, breite: 352 },
+    { y: 154, w1: 84, w2: 64, an: null, breite: 280 },
   ];
   return (
     <svg
-      viewBox="0 0 440 236"
-      width="440"
-      height="236"
+      viewBox="0 0 400 220"
+      width="400"
+      height="220"
       className={className}
       aria-hidden="true"
       focusable="false"
@@ -113,22 +116,28 @@ export function PflegeMotiv({ className }: { className?: string }) {
       <rect x="300" y="18" width="76" height="22" rx="11" fill="#f45b1e" />
       {zeilen.map((z) => (
         <g key={z.y}>
-          <rect x="24" y={z.y - 10} width="352" height="40" rx="12" fill="#f5f5f7" />
+          <rect x="24" y={z.y - 10} width={z.breite} height="40" rx="12" fill="#f5f5f7" />
           <rect x="40" y={z.y} width={z.w1} height="8" rx="4" fill="#1d1d1f" opacity=".85" />
           <rect x="40" y={z.y + 13} width={z.w2} height="6" rx="3" fill="#a1a1a6" />
-          <rect x="328" y={z.y - 1} width="34" height="20" rx="10" fill={z.an ? "#f45b1e" : "#d2d2d7"} />
-          <circle cx={z.an ? 352 : 338} cy={z.y + 9} r="8" fill="#fff" />
+          {z.an !== null ? (
+            <>
+              <rect x="328" y={z.y - 1} width="34" height="20" rx="10" fill={z.an ? "#f45b1e" : "#d2d2d7"} />
+              <circle cx={z.an ? 352 : 338} cy={z.y + 9} r="8" fill="#fff" />
+            </>
+          ) : null}
         </g>
       ))}
-      <circle cx="398" cy="196" r="34" fill="#1d1d1f" />
-      <path
-        d="M386 208l4-12 16-16a4 4 0 0 1 6 6l-16 16-12 4z"
-        fill="none"
-        stroke="#fff"
-        strokeWidth="3"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
+      <circle cx="350" cy="168" r="24" fill="#1d1d1f" />
+      <g transform="translate(350 168) scale(.78) translate(-399 -194)">
+        <path
+          d="M386 208l4-12 16-16a4 4 0 0 1 6 6l-16 16-12 4z"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="3.4"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      </g>
     </svg>
   );
 }

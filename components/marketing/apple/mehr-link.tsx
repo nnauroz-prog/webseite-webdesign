@@ -37,10 +37,11 @@ export function MehrLink({
   const inhalt = (
     <>
       {children}
-      {kontext ? <span className="sr-only"> {kontext}</span> : null}
+      {/* Kein Leerzeichen vor dem Chevron: Er bricht nie allein um. */}
       <span aria-hidden="true" className="chev">
         ›
       </span>
+      {kontext ? <span className="sr-only"> {kontext}</span> : null}
     </>
   );
   // Anker, tel:, mailto: und externe Ziele ohne next/link.

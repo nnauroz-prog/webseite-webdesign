@@ -335,7 +335,7 @@ function Weiter({ branche }: { branche: Branche }) {
                 {post.title}
               </span>
               <span className="text-muted-foreground mt-2 block text-[14.5px] leading-relaxed">{post.dek}</span>
-              <span className="link-chevron mt-3 text-[14px]">
+              <span className="link-chevron mt-3 inline-block text-[14px]">
                 Lesen, {post.readingMinutes} Min <span aria-hidden="true" className="chev">›</span>
               </span>
             </Link>

@@ -63,7 +63,7 @@ export function BentoKachel({
   const kontext = typeof titel === "string" ? titel : undefined;
   return (
     <article
-      data-auftritt="skala"
+      data-auftritt=""
       className={cn(
         "karte bento-kachel",
         ton === "schwarz" && "karte-schwarz",

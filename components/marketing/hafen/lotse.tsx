@@ -6,7 +6,7 @@ import s from "./lotse.module.css";
  * „Was Sie tun, was wir tun“ im Bild des Hamburger Hafenlotsen: Der
  * Lotse bringt das Schiff an den Liegeplatz, das Kommando behält der
  * Kapitän. Zwei große Kacheln: links weiß der kurze Teil des Kunden
- * (leere Kästchen), rechts schwarz unser Teil (gefüllte Kästchen). Was die Leistungen
+ * (nummerierte Schritte), rechts schwarz unser Teil (orange Haken). Was die Leistungen
  * im Einzelnen enthalten, steht schon im Containerstapel darüber; hier
  * steht nur dort ein Satz, wo er etwas Neues sagt.
  *
@@ -63,17 +63,14 @@ const WIR: { title: string; tag?: string; text?: string }[] = [
 export function Lotse() {
   return (
     <div className="inhalt">
+      {/* Kopf wie alle zentrierten Köpfe: Überschrift und ein Untertitel. */}
       <div className="abschnitt-kopf">
-        <p className="t-eyebrow">Zusammenarbeit</p>
-        <h2 data-auftritt="titel" className="t-abschnitt mt-2">
+        <h2 data-auftritt="titel" className="t-abschnitt">
           Was Sie tun, was wir tun
         </h2>
         <p className="t-unter">
-          Im Hamburger Hafen bringt der Lotse das Schiff an den Liegeplatz, das Kommando behält der Kapitän.
-        </p>
-        {/* Erklärung zur Aufteilung direkt über den beiden Kacheln. */}
-        <p className="text-muted-foreground mx-auto mt-5 max-w-[38em] text-[17px] leading-[1.47]">
-          So teilen wir die Arbeit an Ihrer Website: Sie entscheiden, wir übernehmen den Rest.
+          Im Hamburger Hafen bringt der Lotse das Schiff an den Liegeplatz, das Kommando behält der Kapitän. So teilen
+          wir die Arbeit an Ihrer Website: Sie entscheiden, wir übernehmen den Rest.
         </p>
       </div>
 
@@ -83,17 +80,19 @@ export function Lotse() {
             <h3 className="t-karte">Ihr Teil</h3>
             <span className={s.colNote}>Kurz und planbar</span>
           </div>
-          <ul className={s.list}>
-            {SIE.map((item) => (
+          <ol className={s.list}>
+            {SIE.map((item, i) => (
               <li key={item.title} className={s.item}>
-                <span className={`${s.box} ${s.boxOpen}`} aria-hidden="true" />
+                <span className={s.nr} aria-hidden="true">
+                  {i + 1}
+                </span>
                 <div className="min-w-0">
                   <p className={s.itemTitle}>{item.title}</p>
                   <p className={s.itemText}>{item.text}</p>
                 </div>
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
 
         <div data-auftritt="" className={`karte karte-schwarz ${s.col} ${s.colWir}`}>
@@ -104,7 +103,7 @@ export function Lotse() {
           <ul className={`${s.list} ${s.listWir}`}>
             {WIR.map((item) => (
               <li key={item.title} className={s.item}>
-                <span className={`${s.box} ${s.boxDone}`} aria-hidden="true" />
+                <span className={s.haken} aria-hidden="true" />
                 <div className="min-w-0">
                   <p className={s.itemTitle}>
                     {item.title}

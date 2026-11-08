@@ -587,8 +587,8 @@
 
 /* Mit Script: Halte warten, bis die Linie sie erreicht. Der Text bleibt
    dabei voll lesbar (die orange Halt-Zeile hält AA auf Teer nur in
-   voller Deckkraft) und rückt nur 8 px nach; Punkt und Ring kommen erst
-   mit der Linie. */
+   voller Deckkraft) und steht still auf seiner Linie; Punkt und Ring
+   kommen erst mit der Linie. */
 .route[data-armed] .stop-dot::before {
   opacity: 0;
   transition: opacity 0.35s ease;
@@ -598,10 +598,7 @@
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
 .route[data-armed] .stop-body {
-  transform: translateY(8px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.7s cubic-bezier(0.2, 0.8, 0.25, 1);
+  transition: opacity 0.6s ease;
 }
 .route[data-armed] .stop[data-reached] .stop-dot::before {
   opacity: 1;
@@ -1104,7 +1101,7 @@ a.board-row:focus-visible .board-arrow circle {
    Mobil, auf niedrigen Fenstern und bei reduzierter Bewegung ein
    normaler Abschnitt.
    ================================================================== */
-@media (min-width: 1024px) and (min-height: 820px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1024px) and (min-height: 820px) and (max-height: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   html.js-reveal .ablauf-spur {
     height: calc(100svh + 900px);
     contain-intrinsic-block-size: auto calc(100svh + 900px);
@@ -1126,22 +1123,9 @@ a.board-row:focus-visible .board-arrow circle {
   html.js-reveal .ablauf-buehne .ablauf-fuss {
     margin-top: 48px;
   }
-  /* Texte bleiben voll lesbar (die orange Halt-Zeile hält AA auf Teer
-     nur in voller Deckkraft); den Aufbau tragen Linie, Punkt, Ring und
-     ein kurzes Nachrücken um 12 px. */
-  .route[data-szene] .stop-body {
-    transform: translateY(12px);
-    transition: transform var(--t-mittel) var(--ease-aus);
-  }
-  .route[data-szene] .stop[data-reached] .stop-body {
-    transform: none;
-    transition-delay: 0s;
-  }
-  .route[data-szene] .stop:focus-within .stop-body {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
+  /* Texte bleiben voll lesbar und auf einer Linie (kein Nachrücken,
+     sonst steht die ruhende Szene als Treppe da); den Aufbau tragen
+     Linie, Punkt und Ring. */
 }
 
 /* ==================================================================
@@ -1157,7 +1141,7 @@ a.board-row:focus-visible .board-arrow circle {
     .buehne-einzug {
       animation: einzug linear both;
       animation-timing-function: var(--ease-aus);
-      animation-timeline: view();
+      animation-timeline: view(0px);
       animation-range: entry 0% cover 38%;
     }
     .buehne-einzug:focus-within {

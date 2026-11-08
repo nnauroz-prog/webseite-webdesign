@@ -32,13 +32,30 @@
   }
 }
 
-/* Kennzeile (H1): klein, orange, ohne Versalien. */
+/* Kennzeile (H1): klein, orange, ohne Versalien, eine Zeile. Beide
+   Hälften brechen nie in sich um; passt die Zeile nicht, bricht sie nur
+   am Mittelpunkt. Unter 375 px steht sichtbar nur die zweite Hälfte,
+   die erste bleibt für Screenreader und Google in der H1. */
 .kennzeile {
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.33;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--gold-ink);
+  text-wrap: balance;
+}
+.kennzeile > span {
+  white-space: nowrap;
+}
+@media (max-width: 374px) {
+  .kennzeileErste {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 @media (min-width: 640px) {
   .kennzeile {
@@ -155,20 +172,26 @@
 
 .fuss {
   padding-top: 12px;
-  padding-bottom: 48px;
+  padding-bottom: 16px;
   text-align: center;
 }
 @media (min-width: 640px) {
   .fuss {
-    padding-bottom: 72px;
+    padding-bottom: 32px;
   }
 }
+/* Zwei kleine Nebenlinks als Fußnote: dicht gesetzt, die Tippfläche
+   kommt aus dem Innenabstand (6 px oben und unten). */
 .nebenZeile {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 24px;
-  margin-top: 4px;
+  margin-top: 6px;
+  text-wrap: balance;
+}
+.nebenZeile > a {
+  padding-block: 6px;
 }
 
 /* ---------- Zeichnung ---------- */
@@ -178,6 +201,15 @@
   z-index: 1;
   flex: none;
   width: min(100%, calc((100svh - 120px) * 960 / 760));
+}
+/* Kran und Maschinenhaus reichen bis an den rechten Rand der viewBox.
+   Ab 640 px bleibt rechts und links Luft (Stadt und Kai zeichnen über die
+   viewBox hinaus und füllen sie), damit die Rahmenrundung nichts
+   anschneidet. */
+@media (min-width: 640px) {
+  .art {
+    width: min(100% - 64px, calc((100svh - 120px) * 960 / 760));
+  }
 }
 .art svg {
   display: block;
@@ -315,9 +347,15 @@
 
 /* ---------- Beschriftung am abgesetzten Container ---------- */
 
+/* Heller Hof um die Schrift: Fahren Hubseile oder Spreader hinter der
+   Beschriftung durch, bleibt jede Ziffer lesbar statt durchgestrichen. */
 .schild {
   position: absolute;
   z-index: 1;
+  text-shadow:
+    0 0 2px var(--hell),
+    0 0 3px var(--hell),
+    0 0 6px var(--hell);
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -403,6 +441,13 @@
 .leader circle {
   opacity: 0;
   transition: opacity var(--t-kurz) var(--ease-aus);
+}
+/* Abgang im selben Takt wie die Beschriftung (.schild[data-on="0"]),
+   sonst steht kurz ein loser Strich ohne Text über dem Schiff. */
+.leader[data-on="0"] path,
+.leader[data-on="0"] circle {
+  transition-duration: var(--t-druck);
+  transition-timing-function: var(--ease-ab);
 }
 .leader[data-on="1"] path {
   stroke-dashoffset: 0;

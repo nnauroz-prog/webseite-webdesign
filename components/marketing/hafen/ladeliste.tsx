@@ -10,8 +10,9 @@ import type { PaketeKurz } from "./paket-kurz";
 /**
  * Ladeliste je Branche: oben die Auswahl als Pillen (Tabs), darunter
  * eine große helle Karte: die drei wichtigsten Positionen als weiße
- * Kacheln (Ladung, Stauplatz, Vermerk), die übrigen hinter
- * „Alle … Positionen ›“ (details, ohne JS bedienbar). Unten das empfohlene Paket
+ * Kacheln (Ladung, Stauplatz, Vermerk), die übrigen in derselben Gestalt
+ * hinter „Alle … Positionen ›“ / „Weniger anzeigen“ (details, ohne JS
+ * bedienbar). Unten das empfohlene Paket
  * mit Preis aus lib/pakete-data.ts (auf dem Server aufgelöst, Prop
  * `pakete`, siehe paket-kurz.ts) und der Knopf ins Anfrageformular, das
  * Branche, Paket und Liste schon ausgefüllt mitbringt.
@@ -207,25 +208,29 @@ function Frachtpapier({
       {b.positionen.length > 3 ? (
         <details className={s.mehr}>
           <summary className={s.mehrKnopf}>
-            Alle {b.positionen.length} Positionen <span aria-hidden="true" className={s.chev}>›</span>
+            <span className={s.mehrZu}>Alle {b.positionen.length} Positionen</span>
+            <span className={s.mehrAuf}>Weniger anzeigen</span>
+            <span aria-hidden="true" className={s.chev}>
+              ›
+            </span>
           </summary>
-          <ol start={4} className={s.rows}>
+          {/* Dieselbe Gestalt wie die ersten drei: weiße Kacheln mit
+              orangem Kreis, keine zweite Bauart. */}
+          <ol start={4} className={`${s.kacheln} ${s.kachelnMehr}`}>
             {b.positionen.slice(3).map((pos, i) => (
-              <li key={pos.ladung} className={s.row}>
+              <li key={pos.ladung} className={s.kachel}>
                 <span className={s.pos} aria-hidden="true">
                   {i + 4}
                 </span>
-                <div className="min-w-0">
-                  <p className={s.ladung}>{pos.ladung}</p>
-                  <p className={s.stau}>
-                    <span className="sr-only">Wo auf der Seite: </span>
-                    {pos.stauplatz}
-                  </p>
-                  <p className={`${s.vermerk} mt-1`}>
-                    <span className="sr-only">Warum: </span>
-                    {pos.vermerk}
-                  </p>
-                </div>
+                <p className={s.ladung}>{pos.ladung}</p>
+                <p className={s.stau}>
+                  <span className="sr-only">Wo auf der Seite: </span>
+                  {pos.stauplatz}
+                </p>
+                <p className={s.vermerk}>
+                  <span className="sr-only">Warum: </span>
+                  {pos.vermerk}
+                </p>
               </li>
             ))}
           </ol>

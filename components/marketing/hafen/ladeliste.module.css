@@ -26,11 +26,47 @@
   min-width: 0;
 }
 
+/* Unter 1024 px eine einzeilige Leiste zum Wischen, randlos mit
+   Anschnitt; passt sie ganz, steht sie mittig (auto-Ränder an erstem und
+   letztem Knopf). Ab 1024 px umbrechend und zentriert. */
 .tabs {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;
   gap: 8px;
+  margin-inline: calc(-1 * var(--rinne));
+  padding: 2px var(--rinne);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--rinne);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+.tabs > .tab {
+  flex: none;
+  scroll-snap-align: start;
+}
+.tabs > .tab:first-child {
+  margin-left: auto;
+}
+.tabs > .tab:last-child {
+  margin-right: auto;
+}
+@media (min-width: 1024px) {
+  .tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+  .tabs > .tab:first-child,
+  .tabs > .tab:last-child {
+    margin-inline: 0;
+  }
 }
 
 .tab {
@@ -131,9 +167,17 @@
   }
 }
 
-/* Branchen-Code als kleine Plakette (echter Code: Tafel-Schrift). */
+/* Branchen-Code als kleine Plakette (echter Code: Tafel-Schrift). Erst
+   ab 640 px; am Handy nähme sie der Kopfzeile den Platz. */
 .stamp {
-  display: inline-flex;
+  display: none;
+}
+@media (min-width: 640px) {
+  .stamp {
+    display: inline-flex;
+  }
+}
+.stamp {
   flex: none;
   align-items: center;
   height: 28px;
@@ -216,34 +260,36 @@
 .mehrKnopf::-webkit-details-marker {
   display: none;
 }
-.mehrKnopf:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  .mehrKnopf:hover {
+    text-decoration: underline;
+  }
+}
+.mehrAuf,
+.mehr[open] .mehrZu {
+  display: none;
+}
+.mehr[open] .mehrAuf {
+  display: inline;
 }
 .mehrKnopf:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
   border-radius: 6px;
 }
+/* Chevron zeigt nach unten, offen nach oben; um die eigene Mitte. */
 .chev {
   display: inline-block;
+  line-height: 1;
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
   transition: transform 200ms var(--ease-apple);
 }
 .mehr[open] .chev {
-  transform: rotate(90deg);
+  transform: rotate(-90deg);
 }
-
-.rows {
-  list-style: none;
-}
-.row {
-  display: grid;
-  grid-template-columns: 2.25rem minmax(0, 1fr);
-  gap: 4px 12px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border);
-}
-.row:last-child {
-  border-bottom: 0;
+.kachelnMehr {
+  margin-top: 4px;
 }
 
 .pos {

@@ -279,7 +279,7 @@ export function LivePreview() {
       </div>
 
       {/* Browserfenster */}
-      <div className="overflow-hidden rounded-[12px] ring-1 ring-black/15">
+      <div className="mx-1 overflow-hidden rounded-[12px] ring-1 ring-black/15 sm:mx-2">
         <div className="bg-foreground flex items-center gap-2 px-3 py-2">
           <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
             <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
