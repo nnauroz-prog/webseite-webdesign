@@ -185,14 +185,14 @@ function Abschluss() {
   return (
     <AppleAbschluss
       id="kontakt"
-      titel="Der erste Halt ist ein Anruf oder eine Mail."
+      titel="Der erste Halt ist ein Anruf oder eine Anfrage."
       zwischen={
         <a href="tel:+491607621876" className="abschluss-nummer">
           0160&nbsp;7621876
         </a>
       }
-      unter="Wer lieber schreibt, nutzt das Formular oder schickt eine Mail. Danach geht es mit Halt 2 weiter."
-      link={{ href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }}
+      unter="Wer lieber schreibt, nutzt das Anfrageformular. Danach geht es mit Halt 2 weiter."
+      link={{ href: "/anfrage", label: "Anfrage schreiben" }}
     />
   );
 }

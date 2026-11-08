@@ -304,9 +304,9 @@ function MobileFullscreenMenu({
           <a href="tel:+491607621876" className="link-chevron link-chevron-frei">
             Anrufen<span aria-hidden="true" className="chev">›</span>
           </a>
-          <a href="mailto:info@sitalo.de" className="link-chevron link-chevron-frei">
-            Schreiben<span aria-hidden="true" className="chev">›</span>
-          </a>
+          <Link href="/termin" onClick={onClose} className="link-chevron link-chevron-frei">
+            Termin<span aria-hidden="true" className="chev">›</span>
+          </Link>
           <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="link-chevron link-chevron-frei">
             Speichern<span aria-hidden="true" className="chev">›</span>
           </a>

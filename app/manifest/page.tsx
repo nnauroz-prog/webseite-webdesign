@@ -144,9 +144,9 @@ export default function ManifestPage() {
                     0160&nbsp;7621876
                   </a>
                   {" · "}
-                  <a href="mailto:info@sitalo.de" className="hover:text-foreground underline-offset-4 hover:underline">
-                    info@sitalo.de
-                  </a>
+                  <Link href="/anfrage" className="hover:text-foreground underline-offset-4 hover:underline">
+                    Anfrage schreiben
+                  </Link>
                 </p>
                 <SitaloStempel size="md" className="text-ink-olive -rotate-6 opacity-90" />
               </footer>

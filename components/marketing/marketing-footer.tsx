@@ -62,7 +62,7 @@ const GRUPPEN: FussGruppe[] = [
     titel: "Kontakt",
     links: [
       { href: "tel:+491607621876", label: "0160\u00A07621876", extern: true },
-      { href: "mailto:info@sitalo.de", label: "info@sitalo.de", extern: true },
+      { href: "/anfrage", label: "Anfrage schreiben" },
       { href: "/termin", label: "Termin buchen" },
     ],
   },
@@ -111,7 +111,7 @@ export function MarketingFooter({
                 <ul className="pb-3">
                   {g.links.map((l) => (
                     <li key={l.href}>
-                      <FussA link={l} className="flex min-h-8 items-center text-[14px] tracking-[-0.016em] text-[#424245]" />
+                      <FussA link={l} className="flex min-h-11 items-center text-[14px] tracking-[-0.016em] text-[#424245]" />
                     </li>
                   ))}
                 </ul>
@@ -186,7 +186,7 @@ function RechtLink({
       <Link
         href={href}
         rel={nofollow ? "nofollow" : undefined}
-        className="inline-flex min-h-8 items-center text-[#424245] hover:text-[#1d1d1f] hover:underline sm:min-h-0 sm:py-1"
+        className="inline-flex min-h-11 items-center text-[#424245] hover:text-[#1d1d1f] hover:underline sm:min-h-0 sm:py-1"
       >
         {children}
       </Link>

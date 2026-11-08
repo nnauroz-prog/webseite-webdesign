@@ -125,14 +125,14 @@ export default function LexikonPage() {
                 Fehlt ein Begriff, schicken Sie ihn uns.
               </h2>
               <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-[16px] leading-relaxed">
-                Sie bekommen eine Erklärung per Mail, und bei der nächsten Überarbeitung nehmen wir den Begriff ins Lexikon
+                Schreiben Sie ihn kurz ins Anfrageformular. Sie bekommen eine Erklärung, und bei der nächsten Überarbeitung nehmen wir den Begriff ins Lexikon
                 auf.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 lg:col-span-5 lg:justify-end">
-              <a href="mailto:info@sitalo.de?subject=Lexikon-Frage" className="btn-signal grow sm:grow-0">
-                Begriff per Mail schicken {ARROW}
-              </a>
+              <Link href="/anfrage" className="btn-signal grow sm:grow-0">
+                Begriff schicken {ARROW}
+              </Link>
               <Link href="/check" className="btn-line grow sm:grow-0">
                 Ladezeit Ihrer Seite testen
               </Link>

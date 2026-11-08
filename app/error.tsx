@@ -37,12 +37,12 @@ export default function GlobalError({
         Die Seite ließ sich gerade nicht laden.
       </h1>
       <p className="text-muted-foreground mt-6 max-w-xl text-pretty text-[16.5px] leading-relaxed sm:text-lg">
-        Versuchen Sie es bitte noch einmal. Bleibt der Fehler, schreiben Sie uns an{" "}
+        Versuchen Sie es bitte noch einmal. Bleibt der Fehler, rufen Sie uns an unter{" "}
         <a
-          href="mailto:info@sitalo.de"
+          href="tel:+491607621876"
           className="text-foreground font-semibold underline decoration-[var(--gold)] decoration-2 underline-offset-4"
         >
-          info@sitalo.de
+          0160&nbsp;7621876
         </a>
         , dann sehen wir nach.
       </p>

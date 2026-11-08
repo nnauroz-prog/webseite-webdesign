@@ -162,10 +162,10 @@ export default function JournalPage() {
             <p className="t-unter">
               Jeden ersten Donnerstag im Monat von {uhrzeitKurz(SPRECHSTUNDE_BEGINN_HHMM)} bis{" "}
               {uhrzeitKurz(SPRECHSTUNDE_ENDE_HHMM)}&nbsp;Uhr ist unsere offene Sprechstunde. Wer nicht so lange
-              warten will, ruft einfach an oder schreibt an{" "}
-              <a href="mailto:info@sitalo.de" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
-                info@sitalo.de
-              </a>
+              warten will, ruft einfach an oder schreibt uns über das{" "}
+              <Link href="/anfrage" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+                Anfrageformular
+              </Link>
               .
             </p>
             <div className="aktionen mt-8">

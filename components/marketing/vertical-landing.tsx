@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 
 import { MehrLink } from "@/components/marketing/apple/mehr-link";
 import { getPaketBySlug } from "@/lib/pakete-data";
-import { CONTACT_EMAIL } from "@/lib/site";
 import type { VertikalLanding } from "@/lib/vertikal-landings";
 
 /**
@@ -275,9 +274,9 @@ export function Briefkarte({
           0160&nbsp;7621876
         </a>
         <p className="t-fuss mt-3 text-[14px]">
-          <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#f5f5f7] underline underline-offset-2">
-            {CONTACT_EMAIL}
-          </a>{" "}
+          <Link href="/anfrage" className="text-[#f5f5f7] underline underline-offset-2">
+            Anfrage schreiben
+          </Link>{" "}
           · Antwort meist am selben Werktag
         </p>
         <div className="aktionen mt-8">

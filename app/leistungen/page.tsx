@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { Abschluss as AppleAbschluss, MehrLink } from "@/components/marketing/apple";
+import { Abschluss as AppleAbschluss } from "@/components/marketing/apple";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
 import { Produktleiste } from "@/components/marketing/produktleiste";
 import { getPaketBySlug } from "@/lib/pakete-data";
-import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Webdesign-Leistungen für lokale Unternehmen",
@@ -393,10 +393,9 @@ function Abschluss() {
           0160&nbsp;7621876
         </a>
       }
-      unter="Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag."
+      unter="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
+      pille={{ href: "/anfrage", label: "Anfrage schreiben" }}
       link={{ href: "/pakete", label: "Preise ansehen" }}
-    >
-      <MehrLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</MehrLink>
-    </AppleAbschluss>
+    />
   );
 }

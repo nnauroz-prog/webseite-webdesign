@@ -25,7 +25,6 @@ import {
 } from "@/components/marketing/pakete/vergleich-daten";
 import { VergleichMobil } from "@/components/marketing/pakete/vergleich-mobil";
 import { PAKETE, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pakete-data";
-import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `Pakete & Preise — Websites ${PAKETE[0].setup}`,
@@ -230,8 +229,8 @@ export default function PaketePage() {
               0160&nbsp;7621876
             </a>
           }
-          unter="Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag."
-          link={{ href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }}
+          unter="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
+          link={{ href: "/anfrage", label: "Anfrage schreiben" }}
         />
       </main>
       <MarketingFooter crumb="Pakete" />

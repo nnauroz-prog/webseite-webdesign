@@ -76,13 +76,13 @@ export default function NotFound() {
                 ))}
               </ul>
               <p className="text-muted-foreground mt-8 max-w-lg text-pretty text-[15.5px] leading-relaxed">
-                Führt ein Link auf sitalo.de ins Leere, schreiben Sie uns kurz an{" "}
-                <a
-                  href="mailto:info@sitalo.de"
+                Führt ein Link auf sitalo.de ins Leere, schreiben Sie uns kurz über das{" "}
+                <Link
+                  href="/anfrage"
                   className="text-foreground font-semibold underline decoration-[var(--gold)] decoration-2 underline-offset-4"
                 >
-                  info@sitalo.de
-                </a>
+                  Anfrageformular
+                </Link>
                 . Dann reparieren wir ihn.
               </p>
             </nav>

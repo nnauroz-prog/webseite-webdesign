@@ -387,6 +387,9 @@ function Box({ x, y, c, kb, hidden, className, marke }: BoxProps) {
         strokeWidth="1.1"
       />
       <path d="M0 0h5v4H0zM41 0h5v4h-5zM0 45h5v4H0zM41 45h5v4h-5z" fill="#000" fillOpacity=".35" />
+      {/* Licht von oben links: helle Oberkante, Schattenseite rechts */}
+      <path d="M0 0h46v1H0z" fill="#fff" fillOpacity=".35" />
+      <path d="M40 1h6v48h-6z" fill="#000" fillOpacity=".15" />
       {marke ? <rect x="27" y="7" width="13" height="3" fill="#F45B1E" /> : null}
     </g>
   );
@@ -403,6 +406,11 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
       {/* ---------------- Szene ---------------- */}
       <svg className={s.szene} viewBox="-160 0 960 760" preserveAspectRatio="xMaxYMax meet" focusable="false">
         <defs>
+          {/* Zweiter Wasserton: nach vorn kräftiger (#c9d3d6) */}
+          <linearGradient id="kb-wasser-ton" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#c9d3d6" stopOpacity="0" />
+            <stop offset="1" stopColor="#c9d3d6" stopOpacity=".85" />
+          </linearGradient>
           <clipPath id="kb-wasser">
             <rect data-kb="ufer" x="-1800" y="641" width="2390" height="180" />
           </clipPath>
@@ -459,6 +467,8 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
               abtaucht. */}
           <g data-kb="ufer">
             <rect className={s.wasser} x="-1800" y={SKY_LINE} width="2400" height="180" />
+            <rect x="-1800" y={SKY_LINE + 1} width="2400" height="179" fill="url(#kb-wasser-ton)" />
+            <path d="M-120 676h70M30 708h110M180 690h60" stroke="#fff" strokeOpacity=".55" strokeWidth="1.6" strokeLinecap="round" />
             <line
               className={s.horizont}
               x1="-1800"
