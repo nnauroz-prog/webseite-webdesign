@@ -14,7 +14,6 @@ import {
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import {
   BRANCHEN,
   getAllBrancheSlugs,
@@ -221,7 +220,6 @@ export default async function BranchePage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste titel={branche.label} links={[]} cta={{ href: inquiryHref, label: "Anfragen" }} />
 
       <UnterseiteMain>
         <Hero branche={branche} inquiryHref={inquiryHref} />
@@ -406,7 +404,7 @@ function Schwerpunkte({ branche }: { branche: Branche }) {
             <p aria-hidden="true" className="text-[12px] leading-4 font-semibold text-[#ff9f5a] tabular-nums">
               {String(i + 1).padStart(2, "0")}
             </p>
-            <dt className="mt-2 text-[21px] leading-[25px] font-bold text-[#f5f5f7]">{feat.title}</dt>
+            <dt className="mt-2 text-[21px] leading-[25px] font-bold text-[#f3f2ee]">{feat.title}</dt>
             <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#a1a1a6]">{feat.body}</dd>
           </div>
         ))}

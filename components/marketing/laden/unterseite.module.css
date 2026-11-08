@@ -1,104 +1,192 @@
 /* ==================================================================
    Unterseiten im Stil der Startseite (components/marketing/laden/
-   unterseite.tsx): Fläche #f5f5f7, Seitenkopf mit großem Foto,
+   unterseite.tsx): Fläche #f3f2ee, Seitenkopf mit großem Foto,
    Bildkacheln, Abschnittsköpfe im Zweiton, dunkle Kontaktkarte.
 
    Skala (Rechner / Handy): H1 64 / 40, Abschnitt 40 / 28, Kartentitel
    24 / 21, Fließtext 17. Inhaltsbreite .inhalt (980 px + Rinne).
    ================================================================== */
 
-/* ---------- Seitenkopf ---------- */
+/* ---------- Seitenkopf (linksbündig, Atelier-Satz) ---------- */
 .kopf {
-  padding-top: 48px;
-  text-align: center;
+  padding-top: 20px;
+  text-align: left;
 }
 @media (min-width: 734px) {
   .kopf {
-    padding-top: 72px;
+    padding-top: 28px;
   }
 }
 .kopfOhneBild {
   padding-bottom: 8px;
 }
+.kopfText {
+  max-width: 46rem;
+  margin-top: 40px;
+}
+@media (min-width: 734px) {
+  .kopfText {
+    margin-top: 56px;
+  }
+}
+.kopfZweispaltig {
+  display: grid;
+  gap: 32px;
+}
+.kopfZweispaltig > .kopfText {
+  max-width: none;
+}
+@media (min-width: 1024px) {
+  .kopfZweispaltig {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 56px;
+    align-items: end;
+  }
+}
+.kopfNeben {
+  min-width: 0;
+}
+
+/* Brotkrumen in Mono */
+.krumen ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--muted-foreground);
+}
+.krumen li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.krumen a {
+  color: inherit;
+  text-decoration: none;
+  padding-block: 12px;
+  margin-block: -12px;
+}
+@media (hover: hover) {
+  .krumen a:hover {
+    color: var(--foreground);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 3px;
+  }
+}
+.krumen [aria-current="page"] {
+  color: var(--foreground);
+}
+:global(.on-dark) .krumen ol {
+  color: var(--stahl-hell);
+}
+:global(.on-dark) .krumen [aria-current="page"] {
+  color: #f3f2ee;
+}
+
 .titel {
-  margin-inline: auto;
-  max-width: 16ch;
+  max-width: 20ch;
   font-size: 40px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.032em;
+  font-weight: 760;
+  font-stretch: 116%;
   text-wrap: balance;
 }
 @media (max-width: 359px) {
   .titel {
-    font-size: 34px;
+    font-size: 33px;
   }
 }
 @media (min-width: 734px) {
   .titel {
     font-size: 56px;
-    line-height: 1.07;
   }
 }
 @media (min-width: 1068px) {
   .titel {
-    font-size: 64px;
-    line-height: 1.0625;
+    font-size: 66px;
+    line-height: 0.98;
   }
 }
+.akzent {
+  color: rgb(86 91 93 / 0.6);
+  color: color-mix(in srgb, var(--stahl) 60%, transparent);
+}
+:global(.on-dark) .akzent {
+  color: rgb(243 242 238 / 0.6);
+}
+/* Hafenwort in Mono mit orangem Quadrat */
 .eyebrow {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--gold-ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
 }
-@media (min-width: 734px) {
-  .eyebrow {
-    font-size: 17px;
-    line-height: 24px;
-  }
+.eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  background: var(--gold);
+}
+.dunkel .eyebrow,
+:global(.on-dark) .eyebrow {
+  color: var(--stahl-hell);
 }
 .eyebrow + .titel {
-  margin-top: 8px;
+  margin-top: 20px;
+}
+.eyebrow + .zweiton {
+  margin-top: 16px;
 }
 .unter {
-  margin: 16px auto 0;
-  max-width: 34em;
-  font-size: 19px;
-  line-height: 1.32;
-  letter-spacing: -0.005em;
-  color: #6e6e73;
+  margin-top: 20px;
+  max-width: 36em;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--muted-foreground);
   text-wrap: pretty;
 }
 @media (min-width: 734px) {
   .unter {
-    margin-top: 20px;
-    font-size: 21px;
+    margin-top: 24px;
+    font-size: 19px;
   }
 }
 .aktionen {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px 28px;
-  margin-top: 24px;
-}
-@media (min-width: 734px) {
-  .aktionen {
-    margin-top: 28px;
-  }
+  margin-top: 28px;
 }
 .meta {
-  margin-top: 16px;
-  font-size: 14px;
+  margin-top: 20px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
   line-height: 20px;
-  color: #6e6e73;
+  letter-spacing: 0.02em;
+  color: var(--muted-foreground);
 }
 .meta a {
-  color: var(--gold-ink);
-  font-weight: 600;
+  color: var(--foreground);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
 }
 .kopfBild {
   margin-top: 40px;
@@ -114,13 +202,13 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: 20px;
-  background: #e8e8ed;
+  border-radius: var(--radius-foto);
+  background: #e7e6e1;
   aspect-ratio: var(--a-m, var(--a, 3 / 2));
 }
 @media (min-width: 734px) {
   .rahmen {
-    border-radius: 28px;
+    border-radius: var(--radius-foto);
     aspect-ratio: var(--a, 3 / 2);
   }
 }
@@ -132,15 +220,16 @@
   left: 12px;
   bottom: 12px;
   z-index: 1;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.88);
-  padding: 4px 12px;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-  color: #1d1d1f;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  border-radius: 2px;
+  background: #fafaf8;
+  padding: 4px 8px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1b1d1e;
 }
 @media (min-width: 734px) {
   .pille {
@@ -189,11 +278,24 @@
   }
 }
 .unterschrift {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   margin-top: 12px;
-  font-size: 14px;
-  line-height: 20px;
-  color: #6e6e73;
-  text-align: center;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.02em;
+  color: var(--muted-foreground);
+  text-align: left;
+}
+.unterschrift::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  margin-top: 9px;
+  flex: none;
+  background: var(--gold);
 }
 
 /* ---------- Abschnitt ---------- */
@@ -214,27 +316,27 @@
   }
 }
 .zweiton {
-  max-width: 24ch;
+  max-width: 26ch;
   font-size: 28px;
-  line-height: 1.14;
-  letter-spacing: -0.015em;
-  font-weight: 600;
-  color: #1d1d1f;
-  text-wrap: pretty;
+  line-height: 1.1;
+  letter-spacing: -0.024em;
+  font-weight: 720;
+  font-stretch: 114%;
+  color: #1b1d1e;
+  text-wrap: balance;
 }
 .zweiton > span + span {
-  display: inline-block;
-  color: #6e6e73;
+  color: #565b5d;
 }
 @media (min-width: 734px) {
   .zweiton {
     font-size: 40px;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    line-height: 1.06;
+    letter-spacing: -0.028em;
   }
 }
 .dunkel .zweiton {
-  color: #f5f5f7;
+  color: #f3f2ee;
 }
 .dunkel .zweiton > span + span {
   color: #a1a1a6;
@@ -264,10 +366,11 @@
 
 /* Dunkler Abschnitt (Hell-Dunkel-Wechsel) */
 .dunkelFlaeche {
+  position: relative;
   margin-top: 56px;
   padding-block: 56px;
-  background: #000;
-  color: #f5f5f7;
+  background: #1b1d1e;
+  color: #f3f2ee;
 }
 @media (min-width: 734px) {
   .dunkelFlaeche {
@@ -326,17 +429,17 @@
   min-width: 0;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 18px;
-  background: #fff;
-  color: #1d1d1f;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
-  --grau: #6e6e73;
+  border-radius: var(--radius-karte);
+  background: #fafaf8;
+  color: #1b1d1e;
+  box-shadow: inset 0 0 0 1px rgb(27 29 30 / 0.1);
+  --grau: #565b5d;
   --akzent: var(--gold-ink);
   transition: box-shadow 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .kachelSchwarz {
-  background: #0f2a3a;
-  color: #f5f5f7;
+  background: #1b1d1e;
+  color: #f3f2ee;
   box-shadow:
     inset 0 3px 0 #f45b1e,
     0 4px 16px rgb(0 0 0 / 0.08);
@@ -344,13 +447,13 @@
   --akzent: #ff9f5a;
 }
 .kachelNacht {
-  background: #000;
-  color: #f5f5f7;
+  background: #1b1d1e;
+  color: #f3f2ee;
   box-shadow: none;
   --grau: #a1a1a6;
   --akzent: #ff9f5a;
 }
-/* Auf der Laden-Fläche #f5f5f7 eine Stufe dunkler, sonst unsichtbar */
+/* Auf der Laden-Fläche #f3f2ee eine Stufe dunkler, sonst unsichtbar */
 .kachelHell {
   background: #e8e8ed;
   box-shadow: none;
@@ -385,11 +488,13 @@
   }
 }
 .kachelEyebrow {
-  font-size: 12px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
   line-height: 16px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--akzent);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grau);
 }
 .kachelTitel {
   margin-top: 6px;
@@ -556,9 +661,9 @@ section.ladeliste {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   overflow: hidden;
-  border-radius: 18px;
-  background: #0f2a3a;
-  color: #f5f5f7;
+  border-radius: var(--radius-karte);
+  background: #1b1d1e;
+  color: #f3f2ee;
 }
 .kontaktBild {
   position: relative;
@@ -598,7 +703,7 @@ section.ladeliste {
     grid-template-columns: 540px 1fr;
   }
 }
-.kontaktEyebrow {
+.kontaktEyebrowAlt {
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
@@ -638,7 +743,7 @@ section.ladeliste {
   line-height: 40px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #f5f5f7;
+  color: #f3f2ee;
   white-space: nowrap;
 }
 @media (hover: hover) {
@@ -684,14 +789,14 @@ section.ladeliste {
 
 /* ---------- Weiße Inhaltskarte ---------- */
 .blatt {
-  border-radius: 18px;
+  border-radius: var(--radius-karte);
   background: #fff;
   padding: 24px 22px;
   box-shadow: 0 4px 16px rgb(0 0 0 / 0.06);
 }
 @media (min-width: 734px) {
   .blatt {
-    border-radius: 28px;
+    border-radius: var(--radius-karte);
     padding: 40px;
   }
 }

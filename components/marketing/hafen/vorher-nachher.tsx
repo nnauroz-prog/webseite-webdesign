@@ -88,7 +88,7 @@ export function VorherNachher({
         </span>
       </div>
       <div className={geraetKlasse}>
-        <div className="shadow-karte overflow-hidden rounded-[18px] bg-white lg:rounded-[28px]">
+        <div className="shadow-karte overflow-hidden rounded-[8px] bg-white">
           <div className="bg-foreground flex items-center gap-2 px-3 py-2">
             <svg
               viewBox="0 0 12 14"

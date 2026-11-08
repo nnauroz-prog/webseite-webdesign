@@ -18,7 +18,6 @@ import {
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import { PAKETE, getAllPaketSlugs, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
@@ -211,16 +210,10 @@ export default async function PaketDetailPage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste
-        titel={paket.name}
-        titelHref="/pakete"
-        links={[]}
-        cta={{ href: `/anfrage?paket=${paket.slug}`, label: "Anfragen" }}
-      />
 
       <UnterseiteMain>
         {/* Kopf schwarz: Name und Einleitung links, Produktbild und Preis rechts */}
-        <section className="on-dark bg-black text-[#f5f5f7]" data-flaeche-dunkel="">
+        <section className="on-dark bg-black text-[#f3f2ee]" data-flaeche-dunkel="">
           <div className="inhalt pt-6 pb-14 sm:pt-8 sm:pb-20">
             <nav aria-label="Brotkrumen">
               <ol className="flex flex-wrap items-center gap-2 text-[12px] text-[#a1a1a6]">
@@ -236,7 +229,7 @@ export default async function PaketDetailPage({
                   </Link>
                 </li>
                 <li aria-hidden="true">›</li>
-                <li aria-current="page" className="text-[#f5f5f7]">
+                <li aria-current="page" className="text-[#f3f2ee]">
                   {paket.name}
                 </li>
               </ol>

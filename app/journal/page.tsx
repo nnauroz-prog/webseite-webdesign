@@ -14,7 +14,6 @@ import {
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import { JOURNAL_POSTS, formatDate, type JournalPost } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
@@ -194,15 +193,6 @@ export default function JournalPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste
-        titel="Journal"
-        links={[
-          { href: "#aufmacher", label: "Neu" },
-          { href: "#weitere", label: "Beiträge" },
-          { href: "#kontakt", label: "Fragen" },
-        ]}
-        cta={{ href: "/anfrage", label: "Anfragen" }}
-      />
       <UnterseiteMain>
         <SeitenKopf
           eyebrow={`Journal · ${JOURNAL_POSTS.length} Beiträge`}

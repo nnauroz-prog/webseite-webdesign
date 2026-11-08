@@ -19,7 +19,6 @@ import {
   UnterseiteMain,
   unterseiteStil as u,
 } from "@/components/marketing/laden/unterseite";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import { ABLAUF_HALTE, type AblaufHalt } from "@/lib/ablauf-data";
 import { ANGEBOT_CHECKLISTE } from "@/lib/angebot-checkliste";
 import { BRANCHEN, getBrancheBySlug, type Branche } from "@/lib/branchen-data";
@@ -389,12 +388,6 @@ export default function WebsiteErstellenLassenPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      {/* Lokale Produktleiste: direktes Kind des Wrappers (klebt am iPhone). */}
-      <Produktleiste
-        titel="Website erstellen lassen"
-        links={SPRUNGMARKEN}
-        cta={{ href: "/anfrage", label: "Anfragen" }}
-      />
       <UnterseiteMain>
         <SeitenKopf
           eyebrow="Webdesign zum Festpreis"
@@ -832,7 +825,7 @@ function Wege() {
               <div
                 key={w.name}
                 className={`border-border grid gap-x-8 gap-y-2 border-b py-5 lg:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)] ${
-                  w.sitalo ? "-mx-4 rounded-[18px] border-transparent bg-[#f5f5f7] px-4" : ""
+                  w.sitalo ? "-mx-4 rounded-[18px] border-transparent bg-[#f3f2ee] px-4" : ""
                 }`}
               >
                 <dt className="text-[17px] leading-snug font-semibold tracking-[-0.01em]">{w.name}</dt>

@@ -223,20 +223,16 @@ export function Faehrlinie() {
           </svg>
         </div>
       </div>
-      <ol className="grid gap-10 md:grid-cols-4 md:gap-(--halt-gap)">
+      <ol className="grid gap-8 md:grid-cols-4 md:gap-(--halt-gap)">
         {HALTE.map((h) => (
           <li key={h.title} className="stop">
             <span className="stop-dot" aria-hidden="true">
               <i />
             </span>
             <div className="stop-body">
-              <span className="text-signal-on-dark text-[12px] leading-[1.33] font-semibold tracking-[-0.01em]">
-                {h.halt}
-              </span>
-              <h3 className="mt-2 text-[21px] leading-[1.19] font-semibold tracking-[0.011em] text-[#f5f5f7]">
-                {h.title}
-              </h3>
-              <p className="text-text-2-dark mt-2 max-w-[26em] text-[17px] leading-[1.47] tracking-[-0.022em]">{h.text}</p>
+              <span className="label-mono text-signal-on-dark">{h.halt}</span>
+              <h3 className="mt-2 text-[1.5rem] leading-[1.15] tracking-[-0.02em] text-[var(--papier)]">{h.title}</h3>
+              <p className="text-stahl-hell mt-2.5 max-w-[26em] text-[15.5px] leading-relaxed">{h.text}</p>
             </div>
           </li>
         ))}

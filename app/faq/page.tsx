@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import { FotoRahmen, KontaktKarte, SeitenKopf, UnterseiteMain, unterseiteStil as u } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import type { FaqGroup } from "@/lib/faq-data";
 
 import { FAQ_GROUPS } from "@/lib/faq-data";
@@ -36,11 +35,6 @@ export default function FaqPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste
-        titel="Fragen"
-        links={GROUPS.map((g) => ({ href: `#${g.id}`, label: g.label }))}
-        cta={{ href: "/anfrage", label: "Anfragen" }}
-      />
       <UnterseiteMain>
         <SeitenKopf
           eyebrow={`FAQ · ${QUESTION_COUNT} Antworten`}
@@ -160,7 +154,7 @@ function Closer() {
         <>
           Dann fragen Sie uns direkt. Anfragen über das Formular beantworten wir meist am selben Werktag. Am ersten
           Donnerstag im Monat gibt es außerdem eine{" "}
-          <Link href="/sprechstunde" className="text-[#f5f5f7] underline underline-offset-4">
+          <Link href="/sprechstunde" className="text-[#f3f2ee] underline underline-offset-4">
             offene Telefonsprechstunde
           </Link>
           .

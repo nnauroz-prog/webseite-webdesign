@@ -158,7 +158,7 @@ export function NordholzMobil() {
       </text>
       {[590, 652, 714].map((y) => (
         <g key={y}>
-          <rect x="22" y={y} width="346" height="50" rx="12" fill="#f5f5f7" />
+          <rect x="22" y={y} width="346" height="50" rx="12" fill="#f3f2ee" />
           <rect
             x="36"
             y={y + 13}

@@ -1,30 +1,26 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-import { MehrLink } from "@/components/marketing/apple";
+import { Abfahrtstafel } from "@/components/marketing/hafen/abfahrtstafel";
+import { ContainerStack } from "@/components/marketing/hafen/container-stack";
+import { Faehrlinie } from "@/components/marketing/hafen/faehrlinie";
+import { Ladeliste, type LadelisteFoto } from "@/components/marketing/hafen/ladeliste";
+import { Lotse } from "@/components/marketing/hafen/lotse";
+import { Notiz } from "@/components/marketing/hafen/notiz";
+import { paketeKurz } from "@/components/marketing/hafen/paket-kurz";
+import { RevealRoot } from "@/components/marketing/hafen/reveal";
+import s from "@/components/marketing/hafen/start.module.css";
+import { Steigend } from "@/components/marketing/hafen/steigend";
 import { VorherNachher as VorherNachherRegler } from "@/components/marketing/hafen/vorher-nachher";
-import { Bildreihe } from "@/components/marketing/laden/bildreihe";
-import { LadenDefs } from "@/components/marketing/laden/bilder/defs";
-import { WegBand } from "@/components/marketing/laden/bilder/weg-band";
-import {
-  KarteEndeBild,
-  KarteGross,
-  KarteMittel,
-  KarteWeg,
-  kartenStil as s,
-  LadenBild,
-  LadenFoto,
-} from "@/components/marketing/laden/karten";
 import { KranBanner } from "@/components/marketing/laden/kran-banner";
 import { LadenKopf } from "@/components/marketing/laden/laden-kopf";
-import { LadenRegal } from "@/components/marketing/laden/laden-regal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { STUNDENSATZ_EUR } from "@/lib/honorar-data";
 import { JOURNAL_POSTS } from "@/lib/journal-data";
-import { brancheFuerPreset } from "@/lib/muster-presets";
-import { getPaketBySlug, MONATSBEITRAEGE, PAKETE, PREIS_HINWEIS, WARTUNG_PREISE, type Paket } from "@/lib/pakete-data";
+import { PAKETE, PREIS_HINWEIS, MONATSBEITRAEGE } from "@/lib/pakete-data";
 
 // Der Pegel St. Pauli im Kopf (components/marketing/hafen/pegel.ts) wird
 // alle zehn Minuten neu geholt; die Seite folgt im selben Takt. Steht hier
@@ -94,284 +90,266 @@ const FAQ_LD = {
   })),
 };
 
-/** Einmal- und Monatspreis eines Pakets, „ab 599 €“ und „ab 59 € / Monat“. */
-function paket(slug: Paket["slug"]) {
-  const p = getPaketBySlug(slug);
-  return { name: p?.name ?? slug, setup: p?.setup ?? "", monat: p?.monthly ?? "" };
-}
-const STARTER = paket("starter");
-const BUSINESS = paket("business");
-const PREMIUM = paket("premium");
-const STUDIO = paket("studio");
-/** Die vier neuesten Ratgeber fürs Journal-Regal. */
-const JOURNAL_NEU = JOURNAL_POSTS.slice(0, 4);
-
-/** Journal-Motiv nach Slug (Dateien aus scripts/laden-bilder.mjs). */
-function journalBild(slug: string) {
-  if (slug.includes("google")) return "journal-google";
-  if (slug.includes("pflichtangaben")) return "journal-pflichtangaben";
-  if (slug.includes("domain")) return "journal-domain";
-  return "journal-skyline";
-}
+/** Name und Preise je Paket für Ladeliste und Abfahrtstafel (Client). */
+const PAKETE_KURZ = paketeKurz();
+/** Die drei neuesten Beiträge fürs Verzeichnis. */
+const JOURNAL_NEU = JOURNAL_POSTS.slice(0, 3);
+const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 /**
- * Muster-Websites als Fotos (public/images/sitalo-*-laptop.webp): echte
- * Geräte statt gezeichneter Hüllen. Titel nennen die Branche, nicht den
- * Betrieb, weil die Seiten im Foto eigene, frei erfundene Namen tragen.
- * Friseur, Café und Hotel stehen schon bei den Paketen.
- * pos: Bildausschnitt (object-position), damit der Bildschirm in der
- * Bildzone sitzt.
+ * Je Branche der Ladeliste genau ein Foto (public/images). Die Seiten im
+ * Foto tragen frei erfundene Namen. Der Friseur nimmt das Raumfoto, das
+ * Handyfoto bleibt /pakete vorbehalten.
  */
-const MUSTER = [
-  { key: "praxis", titel: "Arztpraxis", zeile: "Sprechzeiten, Leistungen, Terminanfrage.", bild: "sitalo-praxis-laptop", pos: "50% 62%", alt: "Laptop mit der Musterseite einer Zahnarztpraxis auf einem Empfangstresen" },
-  { key: "handwerk", titel: "Handwerk", zeile: "Leistungen, Referenzen, Anfrage.", bild: "sitalo-handwerker-laptop", pos: "50% 58%", alt: "Laptop mit der Musterseite einer Tischlerei in einer Werkstatt" },
-  { key: "pflege", titel: "Pflegedienst", zeile: "Leistungen, Team, Rückruf.", bild: "sitalo-pflege-laptop", pos: "50% 62%", alt: "Laptop mit der Musterseite eines Pflegedienstes in einem hellen Büro" },
-  { key: "kanzlei", titel: "Kanzlei", zeile: "Rechtsgebiete, Team, Termin.", bild: "sitalo-kanzlei-laptop", pos: "50% 60%", alt: "Laptop mit der Musterseite einer Kanzlei auf einem Schreibtisch mit Leselampe" },
-  { key: "reinigung", titel: "Gebäudereinigung", zeile: "Leistungen, Einsatzgebiet, Angebot.", bild: "sitalo-reinigung-laptop", pos: "38% 50%", alt: "Laptop mit der Musterseite einer Gebäudereinigung auf einer Edelstahlfläche" },
-  { key: "fitness", titel: "Fitnessstudio", zeile: "Kurse, Preise, Probetraining.", bild: "sitalo-fitness-laptop", pos: "50% 64%", alt: "Laptop mit der Musterseite eines Fitnessstudios am Empfang" },
-  { key: "kosmetik", titel: "Kosmetik", zeile: "Behandlungen, Preise, Termin.", bild: "sitalo-kosmetik-laptop", pos: "55% 62%", alt: "Laptop mit der Musterseite eines Kosmetikstudios auf einer Marmorablage" },
-];
+const LADELISTE_FOTOS: Record<string, LadelisteFoto> = {
+  pflege: { src: "/images/sitalo-pflege-laptop.webp", pos: "50% 62%", alt: "Laptop mit der Musterseite eines Pflegedienstes in einem hellen Büro" },
+  praxis: { src: "/images/sitalo-praxis-laptop.webp", pos: "50% 62%", alt: "Laptop mit der Musterseite einer Zahnarztpraxis auf einem Empfangstresen" },
+  handwerk: { src: "/images/sitalo-handwerker-laptop.webp", pos: "50% 58%", alt: "Laptop mit der Musterseite einer Tischlerei in einer Werkstatt" },
+  gastro: { src: "/images/atmosphere/gastro-cafe.webp", pos: "50% 50%", alt: "Tresen eines kleinen Cafés mit Siebträgermaschine" },
+  friseur: { src: "/images/atmosphere/friseur-stuhl.webp", pos: "50% 50%", alt: "Friseurstuhl vor einem Spiegel in einem hellen Salon" },
+  kanzlei: { src: "/images/sitalo-kanzlei-laptop.webp", pos: "50% 60%", alt: "Laptop mit der Musterseite einer Kanzlei auf einem Schreibtisch mit Leselampe" },
+  reinigung: { src: "/images/sitalo-reinigung-laptop.webp", pos: "38% 50%", alt: "Laptop mit der Musterseite einer Gebäudereinigung auf einer Edelstahlfläche" },
+  fitness: { src: "/images/sitalo-fitness-laptop.webp", pos: "50% 64%", alt: "Laptop mit der Musterseite eines Fitnessstudios am Empfang" },
+  hotel: { src: "/images/sitalo-hotel-laptop.webp", pos: "42% 64%", alt: "Laptop mit der mehrseitigen Musterseite eines Hotels an einer Rezeption" },
+};
+
+/** Startgröße für .spaeter und .spaeter-geladen (app/hafen.css): Höhe in
+ *  px schmal / ab 1024 px. Grob gemessen; bei Textänderungen nachziehen. */
+function spaeter(h: number, hLg: number) {
+  return { "--spaeter-h": `${h}px`, "--spaeter-h-lg": `${hLg}px` } as CSSProperties;
+}
 
 /*
- * Startseite wie die Startseite eines Ladens: Kopf mit Hilfe-Hinweisen,
- * Bildreihe, dann Regal an Regal mit Karten zum Wischen. Fläche
- * durchgehend #f5f5f7 (main.buehne.laden), Karten weiß, Business und
- * Kontakt schwarz, Branchenkarten getönt. Bilder sind Inline-SVG
- * (components/marketing/laden/bilder), die Kran-Szene ist das Banner im
- * ersten Regal. Ab dem zweiten Regal content-visibility:auto.
+ * Startseite im Atelier. Reihenfolge und Form, nie zweimal dieselbe
+ * Form hintereinander:
+ *  1. Kopf: Mono-Kennzeile (H1), großer Satz, persönlicher Absatz.
+ *  2. Kran: randlos, Bildunterschrift mit Pegel.
+ *  3. Containerstapel: was zu jeder Website gehört.
+ *  4. Notiz aus dem Büro: reiner Text-Moment, ohne Karte und Knopf.
+ *  5. Ladeliste als Frachtpapier mit Stempel (Teer).
+ *  6. Abfahrtstafel mit den Preisen.
+ *  7. Lotse: Ihr Teil, unser Teil (Kästchen).
+ *  8. Vorher/Nachher-Regler.
+ *  9. Fährlinie: der Weg zur fertigen Seite (Teer).
+ * 10. Verzeichnis: Werkzeuge und Journal, nummeriert wie ein
+ *     Leistungsverzeichnis.
+ * 11. Fragen offen gesetzt (am Handy zum Aufklappen).
+ * 12. Telefon-Finale (Teer mit Korn), danach der Fuß mit der Elbe-Linie.
+ * RevealRoot blendet data-reveal-Elemente beim Scrollen ein; die H2
+ * steigen Wort für Wort aus Masken (Steigend). Nie die H1, nie das LCP.
  */
 export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }} />
-      {/* Eine Leiste: keine zweite Produktleiste auf der Startseite,
-          „Anfragen“ steht in der Hauptleiste, am Handy neben der Suche. */}
-      <MarketingHeader ctaMobil />
-      <main id="main" tabIndex={-1} className={`buehne laden flex-1 ${s.seite}`}>
-        <LadenDefs />
+      {/* Ein gefüllter Knopf je Bildschirm: Der Kopf trägt „Anfrage
+          schreiben“, die Leiste deshalb keine zweite Pille. */}
+      <MarketingHeader cta={false} />
+      <main id="main" tabIndex={-1} className="buehne flex-1">
+        <RevealRoot />
         <LadenKopf />
         <KranBanner />
-        <Bildreihe />
-        <Pakete />
-        <Muster />
-        <Unterschied />
+        <Leistungen />
+        <Notiz id="notiz">
+          Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will. Deshalb fängt
+          jede Seite bei uns mit einem Gespräch an.
+        </Notiz>
+        <Ladeliste
+          id="branchen"
+          head={<LadelisteKopf />}
+          pakete={PAKETE_KURZ}
+          fotos={LADELISTE_FOTOS}
+          className="on-dark spaeter-geladen"
+          style={spaeter(1900, 1500)}
+        />
+        <Preise />
+        <section id="lotse" className="spaeter-geladen buehne-abschnitt bg-card scroll-mt-20" style={spaeter(1700, 1250)}>
+          <Lotse />
+        </section>
         <VorherNachher />
-        <Weg />
-        <Werkzeuge />
-        <Journal />
+        <Ablauf />
+        <Verzeichnis />
         <Fragen />
         <Kontakt />
       </main>
-      <div className={s.fussRand}>
-        <MarketingFooter ohnePreisHinweis ohneNachOben />
-      </div>
+      <MarketingFooter ohnePreisHinweis />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------
- * 3. Die Pakete: vier Pakete und die Wartung (Kran-Banner steht davor).
+ * 3. Containerstapel.
  * ---------------------------------------------------------------- */
-function Pakete() {
+function Leistungen() {
   return (
-    <LadenRegal
-      id="preise"
-      fett="Die Pakete."
-      grau={`Festpreis ${STARTER.setup}, schriftlich vor dem Start.`}
-      link={{ href: "/pakete#vergleich", label: "Pakete vergleichen" }}
-      notiz={PREIS_HINWEIS}
-    >
-      <KarteGross
-        eyebrow="Eine Seite"
-        titel={STARTER.name}
-        zeile="Leistungen, Öffnungszeiten und Kontakt."
-        preis={STARTER.setup}
-        monat={STARTER.monat}
-        href="/pakete/starter"
-        bildBeschrieben
-        bild={<LadenFoto src="/images/sitalo-friseur-mobile.webp" position="58% 50%" alt="Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten" />}
-      />
-      <KarteGross
-        ton="schwarz"
-        eyebrow="Für die meisten Betriebe"
-        titel={BUSINESS.name}
-        zeile="Eigene Seiten für Leistungen, Team und Galerie."
-        preis={BUSINESS.setup}
-        monat={BUSINESS.monat}
-        href="/pakete/business"
-        bildBeschrieben
-        bild={<LadenFoto src="/images/sitalo-hotel-laptop.webp" position="42% 64%" alt="Laptop mit der mehrseitigen Musterseite eines Hotels an einer Rezeption" />}
-      />
-      <KarteGross
-        eyebrow="Selbst pflegen"
-        titel={PREMIUM.name}
-        zeile="Speisekarte, Wochenangebot oder Termine ändern Sie selbst."
-        preis={PREMIUM.setup}
-        monat={PREMIUM.monat}
-        href="/pakete/premium"
-        bildBeschrieben
-        bild={<LadenFoto src="/images/sitalo-cafe-mobile.webp" position="50% 50%" alt="Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch" />}
-      />
-      <KarteGross
-        eyebrow="Neues Erscheinungsbild"
-        titel={STUDIO.name}
-        zeile="Schrift, Farben und Bildsprache, neu entworfen."
-        preis={STUDIO.setup}
-        monat={STUDIO.monat}
-        href="/pakete/studio"
-        bildBeschrieben
-        bild={<LadenFoto src="/images/workspace-prints.webp" position="50% 40%" alt="Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand" />}
-      />
-      <KarteGross
-        eyebrow="Schon eine Website?"
-        titel="Wartung"
-        zeile="Updates, Backups und kleine Änderungen."
-        preis={`ab ${WARTUNG_PREISE.basis}`}
-        monat="im Monat"
-        href="/wartung"
-        bildBeschrieben
-        bild={<LadenFoto src="/images/workspace-macbook.webp" position="40% 40%" alt="Hände an einer Laptop-Tastatur, daneben ein Notizbuch und eine Tasse" />}
-      />
-    </LadenRegal>
+    <section id="leistungen" className="spaeter-geladen buehne-abschnitt bg-card scroll-mt-20" style={spaeter(1850, 1250)}>
+      <div className="inhalt">
+        <div className="buehne-kopf buehne-kopf-zweispaltig">
+          <div>
+            <p className={s.eyebrow}>Liegeplatz 1 · Ladung</p>
+            <h2 data-reveal="rise" className="buehne-titel">
+              <Steigend text="Was zu Ihrer Website gehört" />
+            </h2>
+          </div>
+          <div>
+            <p data-reveal="fade" className="buehne-unter">
+              Auf jedem Container steht, ab welchem Paket er mitfährt. Geladen wird nur, was Ihr Betrieb braucht.
+            </p>
+            <p className="mt-4">
+              <Link href="/leistungen" className="link-pfeil text-[15px] font-semibold">
+                Alle Leistungen im <span className="whitespace-nowrap">Einzelnen{ARROW}</span>
+              </Link>
+            </p>
+          </div>
+        </div>
+        <ContainerStack />
+      </div>
+    </section>
   );
 }
 
 /* ------------------------------------------------------------------
- * 4. Muster-Websites: zehn Branchen, Geräte im Wechsel.
+ * 5. Ladeliste: Kopf der linken Spalte. Auswahl, Frachtpapier, Stempel
+ * und Foto liegen in components/marketing/hafen/ladeliste.tsx.
  * ---------------------------------------------------------------- */
-function Muster() {
+function LadelisteKopf() {
   return (
-    <LadenRegal
-      id="branchen"
-      fett="Muster-Websites."
-      grau="Für Ihre Branche."
-      link={{ href: "/branchen", label: "Alle Branchen" }}
-      notiz="Alle Betriebe sind frei erfundene Beispiele."
-      spaet={{ h: 660, hMobil: 640 }}
-    >
-      {MUSTER.map((m) => {
-        const slug = brancheFuerPreset(m.key);
-        return (
-          <KarteGross
-            key={m.key}
-            eyebrow="Musterseite"
-            titel={m.titel}
-            zeile={m.zeile}
-            mehr="Was auf Ihre Seite gehört"
-            href={slug ? `/branchen/${slug}` : "/branchen"}
-            bildBeschrieben
-            bild={<LadenFoto src={`/images/${m.bild}.webp`} position={m.pos} alt={m.alt} />}
-          />
-        );
-      })}
-      <KarteEndeBild
-        eyebrow="Erste Skizze"
-        titel="Mit Ihrem Namen."
-        zeile="Namen eingeben, Branche wählen."
-        href="/branchen#vorschau"
-        bild={<LadenFoto src="/images/workspace-typing.webp" position="40% 50%" sizes="(min-width: 734px) 300px, 320px" alt="" />}
-      />
-    </LadenRegal>
+    <>
+      <div className="buehne-kopf buehne-kopf-zweispaltig">
+        <div>
+          <p className={s.eyebrow}>Liegeplatz 2 · Frachtpapier</p>
+          <h2 data-reveal="rise" className="buehne-titel">
+            <Steigend text="Die Ladeliste für Ihre Branche" />
+          </h2>
+        </div>
+        <div>
+          <p data-reveal="fade" className="buehne-unter">
+            Wählen Sie Ihre Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum. Alle
+            Betriebe in den Fotos sind frei erfundene Beispiele.
+          </p>
+          <p className="mt-4">
+            <Link href="/branchen" className="link-pfeil link-pfeil-dunkel text-[15px] font-semibold">
+              Alle Branchen im <span className="whitespace-nowrap">Einzelnen{ARROW}</span>
+            </Link>
+          </p>
+        </div>
+      </div>
+    </>
   );
 }
 
 /* ------------------------------------------------------------------
- * 5. Der Unterschied: was zu jeder Website gehört (wortnah aus BOXES).
+ * 6. Preise als Abfahrtstafel. Für Screenreader und Suchmaschinen
+ * stehen die Preise zusätzlich als Tabelle mit Beschriftung.
  * ---------------------------------------------------------------- */
-const UNTERSCHIED = [
-  {
-    eyebrow: "Gestaltung",
-    fett: "Für Ihren Betrieb gestaltet.",
-    grau: "Ohne Baukasten, direkt im Code gebaut.",
-    href: "/leistungen",
-    foto: { src: "/images/atmosphere/handwerker-werkbank.webp", pos: "50% 55%" },
-  },
-  {
-    eyebrow: "Hosting",
-    fett: "Hosting und Pflege.",
-    grau: "Server in der EU, Updates und Backups.",
-    href: "/wartung",
-    foto: { src: "/images/atmosphere/reinigung-flur.webp", pos: "50% 50%" },
-  },
-  {
-    eyebrow: "Texte",
-    fett: "Texte.",
-    grau: "Sie schicken Stichpunkte, wir formulieren.",
-    href: "/ablauf",
-    foto: { src: "/images/atmosphere/kanzlei-buecher.webp", pos: "40% 50%" },
-  },
-  {
-    eyebrow: "Anfragen",
-    fett: "Anfragen.",
-    grau: "Formular mit Spamschutz und Anruf-Knopf.",
-    href: "/leistungen",
-    foto: { src: "/images/atmosphere/praxis-raum.webp", pos: "60% 60%" },
-  },
-  {
-    eyebrow: "Ab Business",
-    fett: "Bei Google.",
-    grau: "Titel, Sitemap und Unternehmensprofil.",
-    href: "/pakete/business",
-    foto: { src: "/images/atmosphere/pflege-eingang.webp", pos: "50% 60%" },
-  },
-  {
-    eyebrow: "Ab Premium",
-    fett: "Selbst pflegen.",
-    grau: "Speisekarte oder Termine selbst ändern.",
-    href: "/pakete/premium",
-    foto: { src: "/images/atmosphere/gastro-cafe.webp", pos: "50% 50%" },
-  },
-  {
-    eyebrow: "Kontakt",
-    fett: "Direkt mit uns.",
-    grau: "Vom ersten Anruf an, auch wenn die Seite online ist.",
-    href: "/kontakt",
-    foto: { src: "/images/cafe-eimsbuettel.webp", pos: "50% 60%" },
-  },
-];
-
-function Unterschied() {
+function Preise() {
   return (
-    <LadenRegal
-      id="leistungen"
-      einfach
-      fett="Der Unterschied."
-      grau="Was zu jeder Website gehört."
-      link={{ href: "/leistungen", label: "Alle Leistungen" }}
-      spaet={{ h: 540, hMobil: 500 }}
-    >
-      {UNTERSCHIED.map((u) => (
-        <KarteMittel
-          key={u.fett}
-          eyebrow={u.eyebrow}
-          titel={u.fett.replace(/\.$/, "")}
-          zeile={u.grau}
-          href={u.href}
-          bild={<LadenFoto src={u.foto.src} position={u.foto.pos} alt="" sizes="(min-width: 734px) 320px, 280px" />}
-        />
-      ))}
-    </LadenRegal>
+    <section id="preise" className="spaeter-geladen buehne-abschnitt scroll-mt-20" style={spaeter(1400, 1150)}>
+      <div className="inhalt">
+        <div className="buehne-kopf buehne-kopf-zweispaltig">
+          <div>
+            <p className={s.eyebrow}>Liegeplatz 3 · Pakete</p>
+            <h2 data-reveal="rise" className="buehne-titel">
+              <Steigend text="Was Ihre Website kostet" />
+            </h2>
+          </div>
+          <p data-reveal="fade" className="buehne-unter">
+            Den Preis bekommen Sie schriftlich, bevor wir anfangen. Welches Paket passt, klären wir im ersten
+            Telefonat.
+          </p>
+        </div>
+        <div className="mx-auto max-w-3xl min-w-0">
+          <Abfahrtstafel pakete={PAKETE_KURZ} />
+          <table className="sr-only">
+            <caption>Festpreise und Monatsbeiträge der Pakete, inklusive 19 % MwSt.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Paket</th>
+                <th scope="col">Festpreis</th>
+                <th scope="col">Monatsbeitrag</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PAKETE.map((p) => (
+                <tr key={p.slug}>
+                  <th scope="row">{p.name}</th>
+                  <td>{p.setup}</td>
+                  <td>{p.monthly}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className={s.preisFuss}>
+            <p className={s.preisNotiz}>
+              Einmalpreise, dazu der Monatsbeitrag ({MONATSBEITRAEGE}). {PREIS_HINWEIS}
+            </p>
+            <Link href="/pakete" className="link-pfeil text-[15px] font-semibold">
+              Alle Pakete im <span className="whitespace-nowrap">Einzelnen{ARROW}</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
 /* ------------------------------------------------------------------
- * 6. Vorher / Nachher als breite Karte (außerhalb jeder Spur).
+ * 8. Vorher / Nachher.
  * ---------------------------------------------------------------- */
 function VorherNachher() {
   return (
-    <section id="vorher-nachher" aria-labelledby="vn-titel" className={`${s.regal} ${s.spaet}`} style={{ "--h": "620px", "--h-mobil": "500px" } as React.CSSProperties}>
-      <div className={`inhalt ${s.block}`}>
-        <div className={s.breit}>
-          <div className={s.vnText}>
-            <p className={s.eyebrow}>Vorher / Nachher</p>
-            <h2 id="vn-titel" className={s.vnTitel}>
-              Dieselben Inhalte, neu gebaut.
-            </h2>
-            <p className={s.vnZeile}>Links die alte Seite, rechts dieselben Texte und Fotos in neuer Gestaltung.</p>
-            <p className={s.vnHinweis}>Regler ziehen · Betrieb frei erfunden</p>
+    <section id="vorher-nachher" className="spaeter buehne-abschnitt scroll-mt-20" style={spaeter(900, 760)}>
+      <div className={`inhalt ${s.vnRaster}`}>
+        <div>
+          <p className={s.eyebrow}>Werkbank · Vorher / Nachher</p>
+          <h2 data-reveal="rise" className="buehne-titel-klein">
+            <Steigend text="Dieselben Inhalte, neu gebaut" />
+          </h2>
+          <p data-reveal="fade" className="text-muted-foreground mt-5 max-w-[30em] text-[16.5px] leading-relaxed">
+            Links steht eine Seite, wie sie viele Betriebe seit Jahren haben. Rechts stehen dieselben Angaben, geordnet
+            nach dem, was Kunden zuerst wissen wollen. Die Tischlerei ist frei erfunden.
+          </p>
+          <p className={s.vnHinweis}>Ziehen Sie den Regler.</p>
+        </div>
+        <div className="min-w-0">
+          <VorherNachherRegler griffRing />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------
+ * 9. Ablauf als Fährlinie (die eine klebende Szene der Seite).
+ * ---------------------------------------------------------------- */
+function Ablauf() {
+  return (
+    <section
+      id="ablauf"
+      className="ablauf-spur spaeter-geladen buehne-abschnitt bg-foreground text-background scroll-mt-16"
+      style={spaeter(1250, 1000)}
+    >
+      <div className="ablauf-buehne">
+        <div className="inhalt">
+          <div className="buehne-kopf buehne-kopf-zweispaltig">
+            <div>
+              <p className={s.eyebrow}>Fährlinie · Vier Halte</p>
+              <h2 data-reveal="rise" className="buehne-titel">
+                <Steigend text="Der Weg zur fertigen Seite" />
+              </h2>
+            </div>
+            <p data-reveal="fade" className="buehne-unter">
+              Vom ersten Anruf an sprechen Sie mit uns selbst, auch wenn die Seite längst online ist.
+            </p>
           </div>
-          <div className={s.vnGeraet}>
-            <VorherNachherRegler griffRing />
+          <div>
+            <Faehrlinie />
+          </div>
+          <div className="ablauf-fuss border-background/15 text-stahl-hell mt-10 flex flex-col justify-between gap-2 border-t pt-5 font-mono text-[12px] sm:mt-16 sm:flex-row">
+            <span>Antwort meist am selben Werktag.</span>
+            <Link href="/ablauf" className="link-pfeil link-pfeil-dunkel link-pfeil-zeile self-start">
+              Ablauf im Detail <span className="pfeil">→</span>
+            </Link>
           </div>
         </div>
       </div>
@@ -380,207 +358,197 @@ function VorherNachher() {
 }
 
 /* ------------------------------------------------------------------
- * 7. Der Weg: vier Halte, ein durchgehendes Elbe-Band.
+ * 10. Verzeichnis: Werkzeuge links, die drei neuesten Beiträge rechts,
+ * nummeriert wie ein Leistungsverzeichnis, ohne Fotos.
  * ---------------------------------------------------------------- */
-const HALTE = [
-  { eyebrow: "Halt 1", fett: "Anruf.", grau: "Eine Viertelstunde, danach Festpreis und Termin." },
-  { eyebrow: "Halt 2", fett: "Entwurf.", grau: "Mit Ihren Fotos und Stichpunkten." },
-  { eyebrow: "Halt 3", fett: "Test-Link.", grau: "In Ruhe ansehen, am Handy und am Rechner." },
-  { eyebrow: "Endhalt", fett: "Online.", grau: "Kleine Seiten oft nach ein bis zwei Werktagen." },
+const WERKZEUGE = [
+  { href: "/audit", titel: "Kostenlose Durchsicht", satz: "Drei bis fünf konkrete Punkte zu Ihrer Website, von Hand." },
+  { href: "/check", titel: "Ladezeit testen", satz: "Ergebnis in etwa 30 Sekunden." },
+  { href: "/empfehlung", titel: "Welches Paket passt?", satz: "Fünf Fragen, eine begründete Empfehlung." },
+  { href: "/rechner", titel: "Kosten über drei Jahre", satz: "Ihre eigene Arbeitszeit eingerechnet." },
+  { href: "/termin", titel: "Kostenloses Erstgespräch", satz: "Bis zu 30 Minuten, am Telefon." },
+  { href: "/honorar", titel: "Honorar offen vorgerechnet", satz: `Stundensatz ${STUNDENSATZ_EUR}\u00A0€ inkl. MwSt.` },
 ];
 
-function Weg() {
+const DATUM = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+
+function Verzeichnis() {
   return (
-    <LadenRegal
-      id="ablauf"
-      fett="Der Weg."
-      grau="Vier Halte bis online."
-      link={{ href: "/ablauf", label: "Ablauf im Detail" }}
-      notiz="Antwort auf Anrufe und Anfragen meist am selben Werktag."
-      spaet={{ h: 350, hMobil: 360 }}
-    >
-      {HALTE.map((h, i) => (
-        <KarteWeg key={h.fett} band={<WegBand i={i} />} eyebrow={h.eyebrow} fett={h.fett} grau={h.grau} />
-      ))}
-    </LadenRegal>
+    <section id="werkzeuge" className="spaeter buehne-abschnitt bg-card scroll-mt-20" style={spaeter(1500, 820)}>
+      <div className="inhalt">
+        <div className="buehne-kopf">
+          <p className={s.eyebrow}>Werkstatt · Verzeichnis</p>
+          <h2 data-reveal="rise" className="buehne-titel-klein">
+            <Steigend text="Werkzeuge und Notizen für Betriebe" />
+          </h2>
+        </div>
+        <div className={s.lv}>
+          <div>
+            <p className={s.lvKopf}>
+              <span>5 · Werkzeuge</span>
+              <span>kostenlos</span>
+            </p>
+            <ol className={`${s.lvListe} ${s.lvWerkzeuge}`}>
+              {WERKZEUGE.map((w, i) => (
+                <li key={w.href} className={s.lvZeile}>
+                  <Link href={w.href} className={s.lvLink}>
+                    <span className={s.lvNr}>5.{i + 1}</span>
+                    <span>
+                      <span className={s.lvTitel}>{w.titel}</span>
+                      <span className={s.lvSatz}>{w.satz}</span>
+                    </span>
+                    <span className={s.lvPfeil} aria-hidden="true">
+                      →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div>
+            <p className={s.lvKopf}>
+              <span>6 · Journal</span>
+              <span>neueste Beiträge</span>
+            </p>
+            <ol className={`${s.lvListe} ${s.lvJournal}`}>
+              {JOURNAL_NEU.map((post, i) => (
+                <li key={post.slug} className={s.lvZeile}>
+                  <Link href={`/journal/${post.slug}`} className={s.lvLink}>
+                    <span className={s.lvNr}>6.{i + 1}</span>
+                    <span>
+                      <span className={s.lvTitel}>{post.title}</span>
+                      <span className={s.lvSatz}>
+                        <time dateTime={post.publishedAt}>{DATUM.format(new Date(post.publishedAt))}</time> ·{" "}
+                        {post.readingMinutes} Min. Lesezeit
+                      </span>
+                    </span>
+                    <span className={s.lvPfeil} aria-hidden="true">
+                      →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+        <div className={s.lvFuss}>
+          <span>Gezählt wird wie im Handwerk.</span>
+          <Link href="/journal" className="link-pfeil link-pfeil-zeile font-sans text-[15px] font-semibold">
+            Alle Beiträge im <span className="whitespace-nowrap">Journal{ARROW}</span>
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
 /* ------------------------------------------------------------------
- * 8. Werkzeuge: sechs mittlere Karten mit Bild unten.
- * ---------------------------------------------------------------- */
-function Werkzeuge() {
-  const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
-  return (
-    <LadenRegal id="werkzeuge" einfach fett="Werkzeuge." grau="Kostenlos ausprobieren." spaet={{ h: 540, hMobil: 500 }}>
-      <KarteMittel
-        eyebrow="Werkzeug"
-        titel="Kostenlose Durchsicht"
-        zeile="Drei bis fünf konkrete Punkte, von Hand."
-        href="/audit"
-        bild={<LadenBild name="werkzeug-durchsicht" w={320} h={240} />}
-        bildHintergrund={weiss}
-      />
-      <KarteMittel
-        eyebrow="Werkzeug"
-        titel="Ladezeit testen"
-        zeile="Ergebnis in etwa 30 Sekunden."
-        href="/check"
-        bild={<LadenBild name="werkzeug-ladezeit" w={320} h={240} />}
-        bildHintergrund={weiss}
-      />
-      <KarteMittel
-        eyebrow="Werkzeug"
-        titel="Welches Paket passt?"
-        zeile="Fünf Fragen, eine begründete Empfehlung."
-        href="/empfehlung"
-        bild={<LadenBild name="werkzeug-paketwahl" w={320} h={240} />}
-        bildHintergrund="linear-gradient(180deg, #fff 0%, #eef1f2 100%)"
-      />
-      <KarteMittel
-        eyebrow="Kalkulation"
-        titel="Kosten über 3 Jahre"
-        zeile="Ihre eigene Arbeitszeit eingerechnet."
-        href="/rechner"
-        bild={<LadenBild name="werkzeug-kosten" w={320} h={240} />}
-        bildHintergrund={weiss}
-      />
-      <KarteMittel
-        eyebrow="Termin"
-        titel="Kostenloses Erstgespräch"
-        zeile="Bis zu 30 Minuten."
-        href="/termin"
-        bild={<LadenBild name="werkzeug-termin" w={320} h={240} />}
-        bildHintergrund="linear-gradient(180deg, #fff 0%, #fbeee6 100%)"
-      />
-      <KarteMittel
-        eyebrow="Kalkulation"
-        titel="Honorar offen vorgerechnet"
-        zeile={`Stundensatz ${STUNDENSATZ_EUR}\u00A0€ inkl. MwSt.`}
-        href="/honorar"
-        bild={<LadenBild name="werkzeug-honorar" w={320} h={240} />}
-        bildHintergrund="linear-gradient(180deg, #fff 0%, #ececf0 100%)"
-      />
-    </LadenRegal>
-  );
-}
-
-/* ------------------------------------------------------------------
- * 9. Journal: die vier neuesten Ratgeber, Bild oben.
- * ---------------------------------------------------------------- */
-function Journal() {
-  return (
-    <LadenRegal
-      id="journal"
-      einfach
-      fett="Journal."
-      grau="Ratgeber für Betriebe."
-      link={{ href: "/journal", label: "Alle Artikel" }}
-      spaet={{ h: 520, hMobil: 500 }}
-    >
-      {JOURNAL_NEU.map((post) => (
-        <KarteMittel
-          key={post.slug}
-          bildOben
-          kurz
-          eyebrowUnten
-          eyebrow={`${post.readingMinutes} Min. Lesezeit`}
-          titel={post.title}
-          href={`/journal/${post.slug}`}
-          bild={<LadenBild name={journalBild(post.slug)} w={320} h={200} position="50% 50%" />}
-        />
-      ))}
-    </LadenRegal>
-  );
-}
-
-/* ------------------------------------------------------------------
- * 10. Fragen: eine weiße Karte, sechs Fragen zum Aufklappen.
+ * 11. Fragen: am Rechner offen gesetzt wie ein Interview, am Handy zum
+ * Aufklappen (die ersten drei offen). FAQ und JSON-LD wie zuvor.
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <section
-      id="faq"
-      aria-labelledby="faq-titel"
-      className={`${s.regal} ${s.spaet}`}
-      style={{ "--h": "560px", "--h-mobil": "760px" } as React.CSSProperties}
-    >
-      <div className={`inhalt ${s.block}`}>
-        <div className={s.fragenRaster}>
-          <div className={s.fragenSeite}>
-            <h2 id="faq-titel" className={s.regalTitel}>
-              Häufige Fragen
-            </h2>
-            <p className={s.regalUnter}>Was vor dem ersten Anruf oft gefragt wird.</p>
-            <MehrLink href="/faq" frei={false} className={s.fragenLink}>
-              Alle Fragen
-            </MehrLink>
-            <MehrLink href="/webseite-erstellen" frei={false} className={s.fragenLink}>
-              Selbst bauen: in sieben Schritten
-            </MehrLink>
-          </div>
-          <div className={s.fragen}>
-            {FAQ.map((item) => (
-              <details key={item.q} className={s.frage}>
-                <summary className={s.frageKopf}>
-                  <h3 className={s.frageTitel}>{item.q}</h3>
-                  <span aria-hidden="true" className={s.plus} />
-                </summary>
-                <p className={s.antwort}>{item.a}</p>
-              </details>
-            ))}
-          </div>
+    <section id="faq" className="spaeter buehne-abschnitt scroll-mt-20" style={spaeter(1200, 900)}>
+      <div className="inhalt">
+        <div className="buehne-kopf">
+          <p className={s.eyebrow}>Kaimauer · Fragen</p>
+          <h2 data-reveal="rise" className="buehne-titel-klein">
+            <Steigend text="Was vor dem ersten Anruf oft gefragt wird" />
+          </h2>
+          <p className={s.fragenLinks}>
+            <Link href="/faq" className="link-pfeil text-[15px] font-semibold">
+              Alle <span className="whitespace-nowrap">Fragen{ARROW}</span>
+            </Link>
+            <Link href="/webseite-erstellen" className="link-pfeil text-[15px] font-semibold">
+              Selbst bauen: in sieben <span className="whitespace-nowrap">Schritten{ARROW}</span>
+            </Link>
+          </p>
+        </div>
+        <dl className={s.interview}>
+          {FAQ.map((item) => (
+            <div key={item.q}>
+              <dt className={s.frageMono}>{item.q}</dt>
+              <dd className={s.antwort}>{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className={s.fragenMobil}>
+          {FAQ.map((item, i) => (
+            <details key={item.q} open={i < 3}>
+              <summary>
+                <h3 className={s.frageMono}>{item.q}</h3>
+              </summary>
+              <p className={s.antwort}>{item.a}</p>
+            </details>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
+/** Telefonnummer als Ziffern in Masken (Kontakt-Finale). --n zählt die
+ *  Ziffern, --p ist die Pause zwischen Vorwahl und Rufnummer. */
+const TEL_TEILE = ["0160", "7621876"];
+
+function TelZiffern() {
+  let n = 0;
+  return (
+    <span aria-hidden="true" className="tel-ziffern">
+      {TEL_TEILE.map((teil, t) => (
+        <span key={teil}>
+          {t > 0 ? "\u00A0" : null}
+          {teil.split("").map((z, i) => (
+            <span key={i} className="tel-m">
+              <span style={{ "--n": n++, "--p": t } as CSSProperties}>{z}</span>
+            </span>
+          ))}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 /* ------------------------------------------------------------------
- * 11. Kontakt: schwarze breite Karte, Anfrageformular als Hauptweg,
- * Telefon als Alternative, Nachthafen. Bewusst ohne E-Mail-Link: Anfragen
- * sollen über das Formular kommen (landen gesammelt im Admin).
+ * 12. Telefon-Finale: Beim ersten Sichtkontakt steigen die Ziffern
+ * einzeln aus ihren Masken, darunter zeichnet sich die orange Linie
+ * (app/hafen.css, Block „Reveal“, data-reveal="tel"). Kein Foto, keine
+ * Mail: Schriftlich geht es über das Anfrageformular.
  * ---------------------------------------------------------------- */
 function Kontakt() {
   return (
     <section
       id="kontakt"
-      aria-labelledby="kontakt-titel"
-      className={`${s.regal} ${s.spaet}`}
-      style={{ "--h": "550px", "--h-mobil": "600px" } as React.CSSProperties}
+      className="spaeter buehne-abschnitt grain bg-foreground text-background scroll-mt-20"
+      style={spaeter(620, 560)}
     >
-      <div className={`inhalt ${s.block}`}>
-        <div className={`on-dark ${s.kontakt}`} data-flaeche-dunkel="">
-          <div className={s.kontaktText}>
-            <p className={s.eyebrow}>Kontakt</p>
-            <h2 id="kontakt-titel" className={s.titelGross}>
-              Erzählen Sie uns von Ihrem Betrieb.
-            </h2>
-            <p className={s.zeile}>
-              Das Anfrageformular hat drei Pflichtfelder. Wir antworten meist am selben Werktag.
-            </p>
-            <div className={s.bannerAktionen}>
-              <Link href="/anfrage" className="btn-signal">
-                Anfrage schreiben
-              </Link>
-              <MehrLink href="/termin">Erstgespräch buchen</MehrLink>
-            </div>
-            <p className={s.kontaktTel}>
-              Lieber am Telefon?{" "}
-              <a href="tel:+491607621876">
-                0160&nbsp;7621876<span aria-hidden="true"> ›</span>
-              </a>
-            </p>
-          </div>
-          <div className={s.kontaktBild}>
-            <Image
-              src="/images/hamburg-speicherstadt.webp"
-              alt="Speicherstadt in Hamburg in der Abendsonne, im Hintergrund die Elbphilharmonie"
-              fill
-              sizes="(min-width: 1068px) 440px, (min-width: 734px) 50vw, 100vw"
-              className={s.foto}
-            />
-          </div>
+      <div className={`inhalt ${s.telRaster}`}>
+        <div className="min-w-0">
+          <p className={s.eyebrow}>Anleger · Kontakt</p>
+          <h2 data-reveal="rise" className="buehne-titel-klein">
+            <Steigend text="Am schnellsten geht es am Telefon." />
+          </h2>
+          <a
+            href="tel:+491607621876"
+            aria-label="0160 7621876 anrufen"
+            data-reveal="tel"
+            className="tel-finale mt-6 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap sm:text-[4.2rem] lg:mt-10 lg:text-[4.4rem] xl:text-[4.9rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
+          >
+            <TelZiffern />
+            <span className="tel-linie" aria-hidden="true" />
+          </a>
+        </div>
+        <div>
+          <p data-reveal="fade" className="text-stahl-hell text-[16.5px] leading-relaxed">
+            Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und den Termin. Die Antwort auf Anrufe
+            und Anfragen kommt meist am selben Werktag.
+          </p>
+          <p className={s.telSchriftlich}>
+            <Link href="/anfrage" className="link-pfeil link-pfeil-dunkel font-semibold">
+              Lieber schriftlich? Das Anfrageformular hat drei <span className="whitespace-nowrap">Pflichtfelder{ARROW}</span>
+            </Link>
+          </p>
         </div>
       </div>
     </section>

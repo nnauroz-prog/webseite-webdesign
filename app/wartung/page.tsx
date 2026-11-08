@@ -13,7 +13,6 @@ import {
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import { WARTUNG_PREISE } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
@@ -204,15 +203,6 @@ export default function WartungPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste
-        titel="Wartung"
-        links={[
-          { href: "#tarife", label: "Tarife" },
-          { href: "#anlaesse", label: "Anlässe" },
-          { href: "#fragen", label: "Fragen" },
-        ]}
-        cta={{ href: "/anfrage?vorhaben=Wartung", label: "Anfragen" }}
-      />
       <UnterseiteMain>
         <SeitenKopf
           eyebrow="Wartung und Pflege"
@@ -415,7 +405,7 @@ function UpdateHinweis() {
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ff9f0a] text-[13px] leading-none font-bold text-[#1c1c1e]">
           !
         </span>
-        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">3 Punkte veraltet</p>
+        <p className="text-[14px] leading-5 font-semibold text-[#f3f2ee]">3 Punkte veraltet</p>
       </div>
       <ul role="list" className="mt-3 divide-y divide-white/10">
         {zeilen.map((r) => (
@@ -425,7 +415,7 @@ function UpdateHinweis() {
           </li>
         ))}
       </ul>
-      <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[12px] font-semibold text-[#f5f5f7]">
+      <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[12px] font-semibold text-[#f3f2ee]">
         <span className="h-1.5 w-1.5 rounded-full bg-[#30d158]" />
         Nach der Übernahme: alles aktuell
       </p>
@@ -437,7 +427,7 @@ function UpdateHinweis() {
 function FormularFehler() {
   return (
     <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
-      <p className="text-[13px] font-semibold text-[#f5f5f7]">Kontakt</p>
+      <p className="text-[13px] font-semibold text-[#f3f2ee]">Kontakt</p>
       <span className="mt-2 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">Jana Beispiel</span>
       <span className="mt-1.5 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">
         Termin für Samstag möglich?

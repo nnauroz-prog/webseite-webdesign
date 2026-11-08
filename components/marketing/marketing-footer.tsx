@@ -1,26 +1,26 @@
 import Link from "next/link";
 
 import { BackToTop } from "@/components/marketing/back-to-top";
+import { ElbeLinie } from "@/components/marketing/hafen/elbe-linie";
+import { SitaloLogo } from "@/components/sitalo-logo";
 import { PREIS_HINWEIS } from "@/lib/pakete-data";
 
 /**
- * Marketing-Fuß im Apple-Stil: helle Fläche (#f5f5f7), 12-px-Schrift in
- * #6e6e73, oben Fußnoten, darunter Brotkrumen, die Linkgruppen und die
- * Rechtszeile unter Haarlinien.
+ * Marketing-Fuß: Teerfläche mit Korn, oben als Kante die Elbe-Linie
+ * (zwei langsam driftende Wellen). Logo mit einem Satz, vier kurze
+ * Linkspalten mit Mono-Köpfen (am Handy zwei Spalten nebeneinander,
+ * kein Akkordeon), darunter die Mono-Rechtszeile.
  *
- * Mobil (< 640 px) wie bei Apple: jede Gruppe ist eine aufklappbare Zeile
- * (details, ohne Script), ab 640 px stehen die Gruppen als Spalten. Beide
- * Fassungen stehen im Markup, sichtbar ist je Breite genau eine.
- * Kontaktangaben stehen nur in der Gruppe „Kontakt“.
+ * Bewusst ohne E-Mail-Adresse: Schriftliche Anfragen laufen über
+ * /anfrage, der zweite Weg ist das Telefon.
  *
  * Ankertexte mit Absicht: „Website erstellen lassen" zeigt nur auf die
  * Geldseite, „Webseite erstellen" ohne „lassen" nur auf den Ratgeber.
  *
  * crumb: Name der aktuellen Seite für die Brotkrumen-Zeile (optional).
- * ohnePreisHinweis: Seiten, die den Preishinweis schon direkt bei den
- * Preisen zeigen (Startseite), wiederholen ihn hier nicht.
- * ohneNachOben: ohne den runden „Nach oben“-Knopf (Startseite: die
- * klebende Produktleiste übernimmt die Navigation).
+ * ohnePreisHinweis: Seiten, die den Preishinweis schon im Inhalt zeigen,
+ * wiederholen ihn hier nicht (der Hinweis steht einmal je Seite).
+ * ohneNachOben: ohne den runden „Nach oben“-Knopf.
  */
 
 type FussLink = { href: string; label: React.ReactNode; extern?: boolean };
@@ -77,61 +77,31 @@ export function MarketingFooter({
   return (
     <>
       {ohneNachOben ? null : <BackToTop />}
-      <footer className="flaeche-hell text-muted-foreground relative text-[12px] leading-[1.33] tracking-[-0.01em] print:hidden">
-        <div className="inhalt pt-[17px] pb-[calc(21px+env(safe-area-inset-bottom))]">
-          {/* Fußnoten */}
-          <div className="space-y-2 border-b border-[var(--border)] pb-4">
-            <p>Websites für Betriebe in ganz Deutschland. Gestaltet und gebaut in Hamburg.</p>
-            {ohnePreisHinweis ? null : <p>{PREIS_HINWEIS}</p>}
-          </div>
-
-          {/* Brotkrumen: der Name in der Systemschrift wie die übrige Zeile */}
-          <nav aria-label="Fußzeile, Standort" className="flex min-h-11 items-center gap-2">
-            <Link href="/" className="inline-flex min-h-11 items-center font-semibold text-[#1d1d1f]">
-              Sitalo Webdesign
-            </Link>
-            {crumb ? (
-              <>
-                <span aria-hidden="true">›</span>
-                <span aria-current="page" className="text-[#424245]">
-                  {crumb}
-                </span>
-              </>
-            ) : null}
-          </nav>
-
-          {/* Mobil: Gruppen zum Aufklappen */}
-          <div className="border-t border-[var(--border)] sm:hidden">
+      <footer className="grain bg-foreground text-background relative -mt-px overflow-hidden print:hidden">
+        <ElbeLinie />
+        <div className="inhalt relative pt-8 pb-12 sm:pt-10 sm:pb-16">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
+            <div className="col-span-2 max-w-xs lg:col-span-1">
+              <SitaloLogo size="sm" tone="light" />
+              <p className="text-background/75 mt-5 text-[14.5px] leading-relaxed">
+                Ein kleines Büro in Hamburg, das bundesweit arbeitet.
+              </p>
+              {ohnePreisHinweis ? null : (
+                <p className="text-stahl-hell mt-3 font-mono text-[11.5px] leading-relaxed">{PREIS_HINWEIS}</p>
+              )}
+            </div>
+            {/* Am Handy zwei kurze Spalten (Angebot mit den ersten fünf
+                Links, Kontakt). Ratgeber und Sitalo ab 640 px; am Handy
+                über das Menü erreichbar. */}
             {GRUPPEN.map((g) => (
-              <details key={g.titel} className="fuss-gruppe border-b border-[var(--border)]">
-                <summary className="fuss-gruppe-kopf">
-                  <h2 className="text-[14px] font-semibold tracking-[-0.016em] text-[#1d1d1f]">{g.titel}</h2>
-                  <span aria-hidden="true" className="fuss-gruppe-chev" />
-                </summary>
-                <ul className="pb-3">
-                  {g.links.map((l) => (
-                    <li key={l.href}>
-                      <FussA link={l} className="flex min-h-11 items-center text-[14px] tracking-[-0.016em] text-[#424245]" />
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            ))}
-          </div>
-
-          {/* Ab 640 px: Spalten */}
-          <div className="hidden grid-cols-4 gap-x-8 border-b border-[var(--border)] pt-2 pb-6 sm:grid lg:pt-4 lg:pb-8">
-            {GRUPPEN.map((g) => (
-              <div key={g.titel}>
-                <h2 className="mb-1 text-[12px] leading-[1.33] font-semibold tracking-[-0.01em] text-[#1d1d1f] lg:mb-2">
-                  {g.titel}
-                </h2>
-                <ul>
-                  {g.links.map((l) => (
-                    <li key={l.href}>
+              <div key={g.titel} className={g.titel === "Ratgeber" || g.titel === "Sitalo" ? "hidden sm:block" : undefined}>
+                <h2 className="label-mono text-stahl-hell mb-2">{g.titel}</h2>
+                <ul className="text-[14.5px]">
+                  {g.links.map((l, i) => (
+                    <li key={l.href} className={i >= 5 ? "hidden sm:list-item" : undefined}>
                       <FussA
                         link={l}
-                        className="inline-flex py-[5px] text-[#424245] hover:text-[#1d1d1f] hover:underline lg:py-[3px]"
+                        className="text-background/85 hover:text-background inline-flex min-h-11 items-center py-1 leading-snug transition-colors lg:min-h-9"
                       />
                     </li>
                   ))}
@@ -139,20 +109,31 @@ export function MarketingFooter({
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Rechtszeile */}
-          <div className="mt-3 flex flex-col gap-y-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-8 sm:border-t-0 sm:pt-2 lg:pt-3">
-            <div className="flex flex-col gap-y-1 sm:flex-row sm:items-center sm:gap-x-8">
-              <span>Copyright © {year} Sitalo Webdesign. Alle Rechte vorbehalten.</span>
-              <ul className="flex items-center">
-                <RechtLink href="/impressum">Impressum</RechtLink>
-                <RechtLink href="/datenschutz">Datenschutz</RechtLink>
-                <RechtLink href="/admin" nofollow>
-                  Login
-                </RechtLink>
-              </ul>
-            </div>
-            <span>Hamburg, Deutschland</span>
+        {/* Rechtszeile in Mono, darin die Brotkrumen. */}
+        <div className="border-background/10 relative border-t">
+          <div className="inhalt text-background/60 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))] font-mono text-[12px]">
+            <nav aria-label="Fußzeile, Standort" className="flex min-h-11 items-center gap-2">
+              <Link href="/" className="hover:text-background inline-flex min-h-11 items-center transition-colors">
+                <span className="link-fuss-text">© {year} Sitalo Webdesign · Hamburg</span>
+              </Link>
+              {crumb ? (
+                <>
+                  <span aria-hidden="true">/</span>
+                  <span aria-current="page" className="text-background/80">
+                    {crumb}
+                  </span>
+                </>
+              ) : null}
+            </nav>
+            <ul className="flex gap-5">
+              <RechtLink href="/impressum">Impressum</RechtLink>
+              <RechtLink href="/datenschutz">Datenschutz</RechtLink>
+              <RechtLink href="/admin" nofollow>
+                Login
+              </RechtLink>
+            </ul>
           </div>
         </div>
       </footer>
@@ -161,13 +142,14 @@ export function MarketingFooter({
 }
 
 function FussA({ link, className }: { link: FussLink; className: string }) {
+  const inhalt = <span className="link-fuss-text">{link.label}</span>;
   return link.extern ? (
     <a href={link.href} className={className}>
-      {link.label}
+      {inhalt}
     </a>
   ) : (
     <Link href={link.href} className={className}>
-      {link.label}
+      {inhalt}
     </Link>
   );
 }
@@ -182,13 +164,13 @@ function RechtLink({
   nofollow?: boolean;
 }) {
   return (
-    <li className="flex items-center leading-none not-first:before:mx-[10px] not-first:before:h-3 not-first:before:w-px not-first:before:bg-[var(--border)] not-first:before:content-['']">
+    <li>
       <Link
         href={href}
         rel={nofollow ? "nofollow" : undefined}
-        className="inline-flex min-h-11 items-center text-[#424245] hover:text-[#1d1d1f] hover:underline sm:min-h-0 sm:py-1"
+        className="hover:text-background inline-flex min-h-11 items-center transition-colors"
       >
-        {children}
+        <span className="link-fuss-text">{children}</span>
       </Link>
     </li>
   );

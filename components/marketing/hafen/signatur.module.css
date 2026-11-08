@@ -1,0 +1,88 @@
+/* Signatur (sitalo-signatur.tsx): Strich für Strich per
+   stroke-dashoffset. Vor dem Mount steht sie (ohne JS sichtbar), erst
+   „wartet“ blendet die Striche aus. */
+.signatur {
+  color: var(--foreground);
+}
+.svg {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+}
+.text {
+  stroke-dasharray: 520;
+}
+.schwung {
+  stroke-dasharray: 280;
+}
+.punkt {
+  fill: var(--gold);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.signatur[data-zustand="wartet"] .text {
+  stroke-dashoffset: 520;
+}
+.signatur[data-zustand="wartet"] .schwung {
+  stroke-dashoffset: 280;
+}
+.signatur[data-zustand="wartet"] .punkt {
+  opacity: 0;
+  transform: scale(0);
+}
+.signatur[data-zustand="zeichnet"] .text {
+  animation: zeichnen-text 1400ms cubic-bezier(0.5, 0.1, 0.3, 1) both;
+}
+.signatur[data-zustand="zeichnet"] .schwung {
+  animation: zeichnen-schwung 600ms cubic-bezier(0.5, 0.1, 0.3, 1) 1250ms both;
+}
+.signatur[data-zustand="zeichnet"] .punkt {
+  animation: punkt-auf 320ms var(--ease-aus) 1800ms both;
+}
+@keyframes zeichnen-text {
+  from {
+    stroke-dashoffset: 520;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes zeichnen-schwung {
+  from {
+    stroke-dashoffset: 280;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes punkt-auf {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signatur .text,
+  .signatur .schwung {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  .signatur .punkt {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+.caption {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
