@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -51,7 +52,11 @@ export function KarteGross({
   href,
   bild,
   dunkel,
+  bildBeschrieben = false,
+  id,
 }: {
+  /** Sprungziel auf der Karte (z. B. /pakete#business) */
+  id?: string;
   ton?: Ton;
   /** Kartenfläche (z. B. Tönung der Musterseite) */
   hintergrund?: string;
@@ -68,9 +73,11 @@ export function KarteGross({
   bild: ReactNode;
   /** Kartenfläche dunkel (für die Produktleiste) */
   dunkel?: boolean;
+  /** Bild trägt einen eigenen Alt-Text (Foto): Bildzone nicht aria-hidden */
+  bildBeschrieben?: boolean;
 }) {
   return (
-    <li>
+    <li id={id} className={id ? "scroll-mt-28" : undefined}>
       <article
         className={cn(s.karte, s.gross_, tonKlasse(ton))}
         style={hintergrund ? { background: hintergrund } : undefined}
@@ -98,7 +105,7 @@ export function KarteGross({
         <div
           className={s.bild}
           style={bildHintergrund ? { background: bildHintergrund } : undefined}
-          aria-hidden="true"
+          aria-hidden={bildBeschrieben ? undefined : "true"}
         >
           {bild}
         </div>
@@ -117,6 +124,7 @@ export function KarteMittel({
   bildOben = false,
   kurz = false,
   bildHintergrund,
+  eyebrowUnten = false,
 }: {
   eyebrow: string;
   titel: string;
@@ -127,6 +135,8 @@ export function KarteMittel({
   /** kürzere Karte (Journal: Bild oben füllt rund 60 %) */
   kurz?: boolean;
   bildHintergrund?: string;
+  /** Eyebrow als Fußzeile am Kartenende (Journal: Lesezeit) */
+  eyebrowUnten?: boolean;
 }) {
   const bildEl = (
     <div
@@ -141,12 +151,13 @@ export function KarteMittel({
     <li>
       <article className={cn(s.karte, s.mittel, kurz && s.mittelKurz)}>
         {bildOben ? bildEl : null}
-        <div className={s.text}>
-          <p className={s.eyebrow}>{eyebrow}</p>
+        <div className={cn(s.text, eyebrowUnten && s.textFuss)}>
+          {eyebrowUnten ? null : <p className={s.eyebrow}>{eyebrow}</p>}
           <h3 className={s.titelMittel}>
             <KartenLink href={href}>{titel}</KartenLink>
           </h3>
           {zeile ? <p className={s.zeile}>{zeile}</p> : null}
+          {eyebrowUnten ? <p className={cn(s.zeile, s.fusszeile)}>{eyebrow}</p> : null}
         </div>
         {bildOben ? null : bildEl}
       </article>
@@ -154,7 +165,10 @@ export function KarteMittel({
   );
 }
 
-/** Kleine Karte (300 × 200) mit Symbolkachel und Satz: fett schwarz, Rest grau. */
+/**
+ * Kleine Karte (300 × 176 / 264 × 160): Linienzeichnung (40 px) und
+ * Titel in einer Zeile, darunter der Satz in Grau.
+ */
 export function KarteKlein({
   symbol,
   fett,
@@ -169,12 +183,15 @@ export function KarteKlein({
   return (
     <li>
       <article className={cn(s.karte, s.klein)}>
-        <span className={s.symbol} aria-hidden="true">
-          {symbol}
-        </span>
-        <p className={s.satz}>
-          <KartenLink href={href}>{fett}</KartenLink> <span>{grau}</span>
-        </p>
+        <div className={s.kleinKopf}>
+          <span className={s.symbol} aria-hidden="true">
+            {symbol}
+          </span>
+          <h3 className={s.kleinTitel}>
+            <KartenLink href={href}>{fett.replace(/\.$/, "")}</KartenLink>
+          </h3>
+        </div>
+        <p className={s.kleinSatz}>{grau}</p>
       </article>
     </li>
   );
@@ -275,6 +292,35 @@ export function LadenBild({
       decoding="async"
       className={s.bildDatei}
       style={position === "50% 100%" ? undefined : { objectPosition: position }}
+    />
+  );
+}
+
+/**
+ * Foto in der Bildzone einer Karte (next/image, füllt die Zone, deren
+ * Höhe im CSS fest steht: kein Springen). Immer lazy; sizes nach der
+ * Kartenbreite (400 / 360 / bis 320 px).
+ */
+export function LadenFoto({
+  src,
+  alt,
+  position = "50% 50%",
+  sizes = "(min-width: 1068px) 400px, (min-width: 734px) 360px, 320px",
+}: {
+  src: string;
+  /** Beschreibung des Fotos; die Bildzone ist dann nicht aria-hidden (bildAlt an der Karte). */
+  alt: string;
+  position?: string;
+  sizes?: string;
+}) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes}
+      className={s.foto}
+      style={{ objectPosition: position }}
     />
   );
 }

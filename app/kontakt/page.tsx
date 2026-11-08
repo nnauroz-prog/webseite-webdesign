@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Download } from "lucide-react";
 
 import { MehrLink } from "@/components/marketing/apple";
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import { HamburgMap } from "@/components/marketing/hamburg-map";
+import {
+  Abschnitt,
+  BildKachel,
+  BildRaster,
+  FotoRahmen,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { SitaloLogo } from "@/components/sitalo-logo";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { SITE_URL } from "@/lib/site";
 import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
 import { STANDORTE } from "@/lib/standorte-data";
@@ -15,7 +21,7 @@ import { STANDORTE } from "@/lib/standorte-data";
 export const metadata: Metadata = {
   title: "Kontakt · schreiben Sie uns direkt",
   description:
-    "Rufen Sie an oder schreiben Sie uns über das Formular oder per E-Mail. Wir antworten meist am selben Werktag.",
+    "Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Anfragen über das Formular beantworten wir meist am selben Werktag.",
   alternates: { canonical: "/kontakt" },
 };
 
@@ -55,14 +61,14 @@ export default function KontaktPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Kontakt" />
+      <MarketingHeader cta={false} />
+      <Produktleiste titel="Kontakt" links={[]} cta={{ href: "/anfrage", label: "Anfragen" }} />
 
-      <main id="main" tabIndex={-1} className="flex-1">
+      <UnterseiteMain className="pb-16 sm:pb-24">
         <Briefkopf />
         <Wege />
         <Treffen />
-      </main>
+      </UnterseiteMain>
 
       <MarketingFooter crumb="Kontakt" />
       <script
@@ -76,68 +82,61 @@ export default function KontaktPage() {
 }
 
 /* ------------------------------------------------------------------
- * Briefkopf als zentrierter Apple-Kopf: Nummer groß, Mail als Link,
- * darunter die Visitenkarte als „Produktbild“.
+ * Kopf: Nummer groß, Formular als Hauptweg, darunter die Speicherstadt
+ * als breites Bild. Die Visitenkarte ist eine Zeile mit Download-Pille.
  * ---------------------------------------------------------------- */
 function Briefkopf() {
   return (
-    <section className="flaeche-weiss pt-12 pb-20 text-center sm:pt-16 lg:pt-20 lg:pb-24">
-      <div className="inhalt">
-        <p className="t-eyebrow">Sitalo Webdesign · Hamburg</p>
-        <h1 className="t-hero mt-2">Kontakt</h1>
-        <p className="t-unter mx-auto mt-4 sm:mt-5">
-          Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Mails beantworten wir meist am selben
-          Werktag.
-        </p>
-        <a href="tel:+491607621876" className="abschluss-nummer !text-foreground hover:!text-gold-ink mt-8">
-          0160&nbsp;7621876
-        </a>
-        <div className="aktionen mt-6">
-          <Link href="/anfrage" className="btn-signal">
+    <SeitenKopf
+      eyebrow="Sitalo Webdesign · Hamburg"
+      titel="Kontakt"
+      unter="Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Anfragen über das Formular beantworten wir meist am selben Werktag."
+      aktionen={
+        <>
+          <a
+            href="tel:+491607621876"
+            className="text-foreground hover:text-gold-ink basis-full text-[40px] leading-[48px] font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums sm:text-[56px] sm:leading-[64px]"
+          >
+            0160&nbsp;7621876
+          </a>
+          <Link href="/anfrage" className="btn-signal btn-gross">
             Anfrage schreiben
           </Link>
           <MehrLink href="/termin" groesse="unter">
             Erstgespräch buchen
           </MehrLink>
-        </div>
-      </div>
-      <div data-auftritt="skala" className="inhalt mt-14 sm:mt-16">
-        <Visitenkarte />
-      </div>
-    </section>
-  );
-}
-
-function Visitenkarte() {
-  return (
-    <figure className="mx-auto w-full max-w-[26rem]">
-      <div className="karte karte-regal relative flex aspect-[85/55] flex-col justify-between p-6 text-left sm:p-8">
-        <SitaloLogo size="sm" />
-        <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[14px] sm:text-[15px]">
-          <span className="text-muted-foreground pt-px text-[12px]">Telefon</span>
-          <span className="tabular-nums">0160&nbsp;7621876</span>
-          <span className="text-muted-foreground pt-px text-[12px]">Web</span>
-          <span>sitalo.de</span>
-          <span className="text-muted-foreground pt-px text-[12px]">Ort</span>
-          <span>Hamburg</span>
-        </div>
-      </div>
-      <figcaption className="mt-6 flex flex-col items-center gap-2">
-        <span className="text-muted-foreground text-[14px]">Für das Adressbuch im Handy</span>
-        <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="btn-line btn-mittel">
-          <Download className="h-4 w-4" aria-hidden="true" />
-          Visitenkarte speichern
-        </a>
-      </figcaption>
-    </figure>
+        </>
+      }
+      meta={
+        <>
+          Für das Adressbuch im Handy:{" "}
+          <a
+            href="/sitalo-kontakt.vcf"
+            download="Sitalo-Webdesign.vcf"
+            className="inline-flex min-h-11 items-center underline-offset-2 hover:underline"
+          >
+            Visitenkarte speichern
+          </a>
+        </>
+      }
+      bild={
+        <FotoRahmen
+          vorab
+          src="/images/hamburg-speicherstadt.webp"
+          alt="Speicherstadt in Hamburg in der Abendsonne, im Hintergrund die Elbphilharmonie"
+          aspect="21 / 9"
+          aspectMobil="16 / 10"
+          position="50% 55%"
+        />
+      }
+    />
   );
 }
 
 /* ------------------------------------------------------------------
- * Alle Wege als Tabelle: was es ist, was Sie erwartet, wohin der Link
- * führt.
+ * Alle Wege als 2×2-Raster, das Formular schwarz hervorgehoben.
  * ---------------------------------------------------------------- */
-const WEGE: { name: string; text: string; href: string; link: string; extern?: boolean }[] = [
+const WEGE: { name: string; text: string; href: string; link: string }[] = [
   {
     name: "Formular",
     text: "Drei Felder für Ihr Vorhaben. Die Antwort kommt meist am selben Werktag.",
@@ -166,60 +165,58 @@ const WEGE: { name: string; text: string; href: string; link: string; extern?: b
 
 function Wege() {
   return (
-    <section className="flaeche-hell abschnitt" aria-labelledby="wege-titel">
-      <div className="inhalt">
-        <h2 id="wege-titel" data-auftritt="titel" className="zweiton">
-          <span>Weitere Wege zu uns.</span> <span className="grau">Wählen Sie, was Ihnen liegt.</span>
-        </h2>
-      </div>
-      <ul role="list" className="mx-auto mt-8 grid max-w-[1200px] gap-3 px-[max(var(--rinne),env(safe-area-inset-left))] sm:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-4">
+    <Abschnitt id="wege" fett="Weitere Wege zu uns." grau="Wählen Sie, was Ihnen liegt.">
+      <BildRaster>
         {WEGE.map((w, i) => (
-          <li
+          <BildKachel
             key={w.name}
-            data-auftritt=""
-            className={`karte karte-weiss karte-hover flex flex-col p-7 sm:p-8 ${i === 0 ? "lg:col-span-1" : ""}`}
-          >
-            <h3 className="t-karte">{w.name}</h3>
-            <p className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty">{w.text}</p>
-            <div className="mt-auto pt-6">
-              <MehrLink href={w.href} kontext={w.name} groesse="klein" frei={false} className="karte-link">
-                {w.link}
-              </MehrLink>
-            </div>
-          </li>
+            ton={i === 0 ? "schwarz" : "weiss"}
+            titel={w.name}
+            zeile={w.text}
+            mehr={w.link}
+            href={w.href}
+          />
         ))}
-      </ul>
-    </section>
+      </BildRaster>
+    </Abschnitt>
   );
 }
 
 /* ------------------------------------------------------------------
- * Treffen in Hamburg, daneben die Karte mit den Stadtteil-Seiten.
+ * Treffen in Hamburg: Bildkachel, darunter die Stadtteile als Chips.
  * ---------------------------------------------------------------- */
 function Treffen() {
   return (
-    <section className="flaeche-weiss abschnitt" aria-labelledby="treffen-titel">
-      <div className="mx-auto grid w-full max-w-[1068px] items-center gap-12 px-[max(var(--rinne),env(safe-area-inset-left))] lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-5">
-          <h2 id="treffen-titel" data-auftritt="titel" className="t-abschnitt">
-            Treffen in Hamburg
-          </h2>
-          <p className="mt-5 max-w-md text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty">
-            Wer in Hamburg sitzt, kann uns gern treffen: in Ihrem Betrieb oder in einem Café. Alle anderen
-            sprechen mit uns am Telefon oder per Video. Die Website wird dieselbe.
-          </p>
-          <p className="text-muted-foreground mt-4 max-w-md text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty">
-            Für {STANDORTE.length} Hamburger Stadtteile gibt es eine eigene Seite. Ein Klick auf den Namen in der
-            Karte führt hin.
-          </p>
-          <MehrLink href="/standorte" className="mt-4">
-            Alle Stadtteile
-          </MehrLink>
-        </div>
-        <div className="karte min-w-0 p-4 sm:p-8 lg:col-span-7">
-          <HamburgMap />
-        </div>
-      </div>
-    </section>
+    <Abschnitt id="treffen" fett="Treffen in Hamburg." grau="In Ihrem Betrieb oder im Café.">
+      <BildRaster>
+        <BildKachel
+          breit
+          gross
+          titel="Die Website wird dieselbe."
+          zeile="Wer in Hamburg sitzt, kann uns gern treffen: in Ihrem Betrieb oder in einem Café. Alle anderen sprechen mit uns am Telefon oder per Video."
+          foto={{
+            src: "/images/cafe-eimsbuettel.webp",
+            alt: "Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel",
+            position: "50% 60%",
+            sizes: "(min-width: 1068px) 980px, calc(100vw - 32px)",
+          }}
+        />
+      </BildRaster>
+      <p className={`${u.abschnittUnter} mt-8`}>
+        Für {STANDORTE.length} Hamburger Stadtteile gibt es eine eigene Seite.
+      </p>
+      <ul role="list" className={`${u.chips} mt-4`}>
+        {STANDORTE.map((s) => (
+          <li key={s.slug}>
+            <Link href={`/standorte/${s.slug}`} className={u.chip}>
+              {s.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <MehrLink href="/standorte" className="mt-4">
+        Alle Stadtteile
+      </MehrLink>
+    </Abschnitt>
   );
 }

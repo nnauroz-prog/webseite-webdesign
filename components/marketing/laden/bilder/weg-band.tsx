@@ -130,11 +130,19 @@ const ZEICHEN = [
   "M-4.5.2l3 3 6-6.4",
 ];
 
-/** Band für Karte i (0–3). Karte 0 enthält die Szene, die übrigen nutzen sie. */
-export function WegBand({ i }: { i: number }) {
+/**
+ * Band für Karte i (0–3). Karte 0 enthält die Szene, die übrigen nutzen
+ * sie. teile: in wie viele Stücke die Szene geteilt wird (Startseite 4,
+ * /ablauf 6); zeichen: welches Zeichen (0 Telefon, 1 Stift, 2 Link,
+ * 3 Haken) im Kreis steht.
+ */
+export function WegBand({ i, teile = 4, zeichen }: { i: number; teile?: number; zeichen?: number }) {
+  const breite = W / teile;
+  const z = zeichen ?? Math.min(i, 3);
+  const voll = z === 0 || z === 1;
   return (
     <svg
-      viewBox={`${i * 300} 0 300 88`}
+      viewBox={`${i * breite} 0 ${breite} 88`}
       preserveAspectRatio="xMidYMax slice"
       aria-hidden="true"
       focusable="false"
@@ -143,13 +151,13 @@ export function WegBand({ i }: { i: number }) {
     >
       {i === 0 ? <WegDefs /> : null}
       {i === 0 ? <WegSzene /> : <use href="#ld-weg-szene" />}
-      <g transform={`translate(${i * 300 + 26} 24)`}>
+      <g transform={`translate(${i * breite + 26} 24)`}>
         <circle r="15" fill="#fff" />
         <path
-          d={ZEICHEN[i] ?? ZEICHEN[3]}
-          fill={i === 0 || i === 1 ? "#f45b1e" : "none"}
+          d={ZEICHEN[z] ?? ZEICHEN[3]}
+          fill={voll ? "#f45b1e" : "none"}
           stroke="#f45b1e"
-          strokeWidth={i === 0 || i === 1 ? 0 : 2}
+          strokeWidth={voll ? 0 : 2}
           strokeLinecap="round"
           strokeLinejoin="round"
         />

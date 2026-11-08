@@ -266,9 +266,8 @@ function MiniSite({ preset, name }: { preset: Preset; name: string }) {
             style={{ "--d": 5 + i } as React.CSSProperties}
           >
             <span className="block h-1.5 w-8 rounded-full" style={{ background: accent }} />
-            <p className="mt-3 text-[15px] font-semibold">{f}</p>
-            <span className="mt-2 block h-1.5 w-[85%] rounded-full bg-black/8" />
-            <span className="mt-1.5 block h-1.5 w-[60%] rounded-full bg-black/8" />
+            <p className="mt-3 text-[17px] font-semibold">{f}</p>
+            <p className="mt-1.5 text-[14px] leading-snug text-[#4b5563]">{preset.details?.[i] ?? preset.sub}</p>
           </div>
         ))}
       </div>

@@ -1,11 +1,24 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Abschluss as AppleAbschluss, ContainerMotiv, MehrLink, PAKET_TON } from "@/components/marketing/apple";
-import { PageHero } from "@/components/marketing/page-hero";
+import { MehrLink } from "@/components/marketing/apple";
+import { WegBand } from "@/components/marketing/laden/bilder/weg-band";
+import { KarteWeg } from "@/components/marketing/laden/karten";
+import { LadenRegal } from "@/components/marketing/laden/laden-regal";
+import {
+  BildKachel,
+  BildRaster,
+  FotoRahmen,
+  KontaktKarte,
+  MusterPille,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { Produktleiste } from "@/components/marketing/produktleiste";
 import { ABLAUF_HALTE, type AblaufHalt } from "@/lib/ablauf-data";
 import { ANGEBOT_CHECKLISTE } from "@/lib/angebot-checkliste";
@@ -375,21 +388,29 @@ export default function WebsiteErstellenLassenPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" cta={false} />
+      <MarketingHeader cta={false} />
       {/* Lokale Produktleiste: direktes Kind des Wrappers (klebt am iPhone). */}
       <Produktleiste
         titel="Website erstellen lassen"
         links={SPRUNGMARKEN}
         cta={{ href: "/anfrage", label: "Anfragen" }}
       />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero
-          crumb="Website erstellen lassen"
+      <UnterseiteMain>
+        <SeitenKopf
           eyebrow="Webdesign zum Festpreis"
-          title={`Website erstellen lassen zum Festpreis ${STARTER.setup}`}
+          titel={`Website erstellen lassen zum Festpreis ${STARTER.setup}`}
+          unter={
+            <>
+              Sie schicken uns Stichpunkte und Handyfotos, wir schreiben die Texte, gestalten und bauen Ihre Website und
+              halten sie danach aktuell. Eine einzelne Seite kostet {STARTER.setup} einmalig und steht{" "}
+              {nachDauer(STARTER.dauer)}, mehrere Seiten {BUSINESS.setup} {nachDauer(BUSINESS.dauer)}, jeweils ab
+              vollständigen Unterlagen. Dazu kommt ein Monatsbeitrag {monatlich(STARTER)} für Hosting, Updates und kleine
+              Änderungen.
+            </>
+          }
           aktionen={
             <>
-              <Link href="/anfrage" className="btn-signal">
+              <Link href="/anfrage" className="btn-signal btn-gross">
                 Anfrage schreiben
               </Link>
               <MehrLink href="#kosten" groesse="unter">
@@ -398,13 +419,18 @@ export default function WebsiteErstellenLassenPage() {
             </>
           }
           meta={<HeroMeta />}
-        >
-          Sie schicken uns Stichpunkte und Handyfotos, wir schreiben die Texte, gestalten und bauen Ihre Website und
-          halten sie danach aktuell. Eine einzelne Seite kostet {STARTER.setup} einmalig und steht{" "}
-          {nachDauer(STARTER.dauer)}, mehrere Seiten {BUSINESS.setup} {nachDauer(BUSINESS.dauer)}, jeweils ab
-          vollständigen Unterlagen. Dazu kommt ein Monatsbeitrag {monatlich(STARTER)} für Hosting, Updates und kleine
-          Änderungen.
-        </PageHero>
+          bild={
+            <FotoRahmen
+              vorab
+              muster
+              src="/images/sitalo-handwerker-laptop.webp"
+              alt="Laptop auf einem Holztisch in einer Tischlerwerkstatt mit einer Musterseite für einen Handwerksbetrieb"
+              aspect="3 / 2"
+              aspectMobil="4 / 3"
+              position="50% 40%"
+            />
+          }
+        />
 
         <Kosten />
         <Leistungen />
@@ -416,16 +442,17 @@ export default function WebsiteErstellenLassenPage() {
         <Hamburg />
         <Fragen />
         <Abschluss />
-      </main>
+      </UnterseiteMain>
       <MarketingFooter crumb="Website erstellen lassen" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
     </div>
   );
 }
 
-const INNER = "mx-auto w-full max-w-[1068px] px-[max(var(--rinne),env(safe-area-inset-left))] py-20 sm:py-[100px] lg:py-[120px]";
-const H2 = "text-balance text-[32px] leading-[1.1] tracking-[-0.02em] sm:text-[40px] lg:text-[48px] lg:leading-[1.08]";
-const H3 = "text-balance text-[24px] leading-[1.16] tracking-[-0.015em] sm:text-[28px]";
+/** Abschnitte im 980er-Raster der Startseite, Abstand 56 / 80 px. */
+const INNER = "inhalt pt-14 sm:pt-20";
+const H2 = "text-balance text-[28px] leading-[1.14] font-semibold tracking-[-0.015em] sm:text-[40px] sm:leading-[1.1] sm:tracking-[-0.02em]";
+const H3 = "text-balance text-[21px] leading-[1.19] font-semibold tracking-[-0.015em] sm:text-[24px]";
 /** Textlink mit Pfeil. inline-block statt inline-flex, damit der Pfeil bei
  *  Umbruch hinter dem letzten Wort steht und nicht am rechten Rand. Inhalt
  *  über <MitPfeil>, damit der Pfeil nie allein in einer Zeile landet. */
@@ -466,9 +493,17 @@ function HeroMeta() {
 /* ------------------------------------------------------------------
  * Preise und Dauer: Preisliste je Paket, darunter der Monatsbeitrag.
  * ---------------------------------------------------------------- */
+/** Gerätefotos der Musterseiten je Paket (wie auf /pakete), frei erfunden. */
+const KOSTEN_BILD = [
+  { src: "/images/sitalo-friseur-mobile.webp", alt: "Handy mit einer einseitigen Musterseite für einen Friseur", position: "60% 50%" },
+  { src: "/images/sitalo-pflege-laptop.webp", alt: "Laptop mit der mehrseitigen Musterseite eines Pflegedienstes", position: "42% 55%" },
+  { src: "/images/sitalo-cafe-mobile.webp", alt: "Handy mit der Musterseite eines Cafés mit Speisekarte", position: "50% 50%" },
+  { src: "/images/sitalo-kanzlei-laptop.webp", alt: "Laptop mit der Musterseite einer Kanzlei neben einer grünen Lampe", position: "50% 55%" },
+];
+
 function Kosten() {
   return (
-    <section id="kosten" className="scroll-mt-20">
+    <section id="kosten" className="scroll-mt-24">
       <div className={INNER}>
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <h2 className={`${H2} lg:col-span-6`}>Preise und Dauer je Paket</h2>
@@ -482,14 +517,19 @@ function Kosten() {
           <ul role="list" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
             {PAKETE.map((p, i) => (
               <li key={p.slug} className="flex">
-                <article
-                  data-auftritt=""
-                  className="karte karte-hover relative flex w-full flex-col items-center p-7 text-center"
-                >
-                  <div className="modell-bild" aria-hidden="true">
-                    <ContainerMotiv stapel={Array.from({ length: i + 1 }, () => PAKET_TON[p.slug] ?? "zink")} />
+                <article className="relative flex w-full flex-col items-center overflow-hidden rounded-[18px] bg-white px-6 pb-7 text-center shadow-[0_4px_16px_rgb(0_0_0/0.08)] transition-shadow hover:shadow-[0_18px_40px_-16px_rgb(16_32_48/0.28)] has-[.karte-link:focus-visible]:outline-2 has-[.karte-link:focus-visible]:outline-offset-2 has-[.karte-link:focus-visible]:outline-[#f45b1e]">
+                  <div className="relative -mx-6 aspect-[4/3] w-[calc(100%+3rem)] overflow-hidden bg-[#e8e8ed]">
+                    <Image
+                      src={KOSTEN_BILD[i].src}
+                      alt={KOSTEN_BILD[i].alt}
+                      fill
+                      sizes="(min-width: 1068px) 240px, (min-width: 640px) 50vw, calc(100vw - 32px)"
+                      className="object-cover"
+                      style={{ objectPosition: KOSTEN_BILD[i].position }}
+                    />
+                    <MusterPille text="Musterseite" />
                   </div>
-                  <h3 className="t-karte mt-4">
+                  <h3 className="t-karte mt-5">
                     <Link href={`/pakete/${p.slug}`} className="karte-link">
                       {p.name}
                     </Link>
@@ -601,7 +641,7 @@ function Kosten() {
  * ---------------------------------------------------------------- */
 function Leistungen() {
   return (
-    <section id="leistungen" className="flaeche-hell scroll-mt-20">
+    <section id="leistungen" className="scroll-mt-24">
       <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
         <div className="lg:col-span-4">
           <p className="label-mono text-muted-foreground">Leistungen</p>
@@ -610,7 +650,7 @@ function Leistungen() {
             <MitPfeil>Leistungsverzeichnis</MitPfeil>
           </Link>
         </div>
-        <div className="text-foreground/85 max-w-2xl space-y-5 text-[16.5px] leading-[1.7] lg:col-span-7 lg:col-start-6">
+        <div className="text-foreground/85 max-w-[680px] space-y-5 text-[17px] leading-[1.5] tracking-[-0.022em] lg:col-span-7 lg:col-start-6">
           <p>
             <strong className="text-foreground font-semibold">Gestaltung und Bau.</strong> Wir gestalten die Seite für
             Ihren Betrieb und bauen sie direkt im Code, ohne Baukasten. Vor dem Start prüfen wir sie auf echten Handys und
@@ -633,10 +673,48 @@ function Leistungen() {
           <p>
             <strong className="text-foreground font-semibold">Nach dem Start.</strong> Hosting auf einem Server in der EU,
             SSL-Zertifikat und Domain richten wir ein und halten alles aktuell. Kleine Änderungen sind im Monatsbeitrag
-            enthalten: Sie schreiben uns eine Mail, wir setzen sie um.
+            enthalten: Sie schreiben uns kurz über das Formular oder rufen an, wir setzen sie um.
           </p>
         </div>
       </div>
+      <BildRaster className="inhalt mt-10">
+        <BildKachel
+          spalten={4}
+          eyebrow="Gestaltung und Bau"
+          titel="Für Ihren Betrieb gestaltet."
+          foto={{
+            src: "/images/workspace-macbook.webp",
+            alt: "Hände an einer Laptop-Tastatur neben einem Notizbuch mit Skizzen",
+            position: "45% 40%",
+            sizes: "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)",
+          }}
+        />
+        <BildKachel
+          spalten={4}
+          eyebrow="Texte"
+          titel="Aus Ihren Stichpunkten."
+          foto={{
+            src: "/images/workspace-prints.webp",
+            alt: "Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand",
+            position: "50% 40%",
+            sizes: "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)",
+          }}
+        />
+        <BildKachel
+          spalten={4}
+          breit
+          className="min-[1068px]:!col-span-4"
+          eyebrow="Anfragen"
+          titel="Ein Tipp auf die Nummer."
+          foto={{
+            src: "/images/sitalo-cafe-mobile.webp",
+            alt: "Handy mit der Musterseite eines Cafés auf einem Holztisch",
+            position: "50% 45%",
+            muster: true,
+            sizes: "(min-width: 1068px) 320px, (min-width: 640px) 100vw, calc(100vw - 32px)",
+          }}
+        />
+      </BildRaster>
     </section>
   );
 }
@@ -647,10 +725,10 @@ function Leistungen() {
  * ---------------------------------------------------------------- */
 function FuerWen() {
   return (
-    <section id="fuer-wen" className="flaeche-weiss scroll-mt-20">
+    <section id="fuer-wen" className="scroll-mt-24">
       <div className={INNER}>
         <h2 className={`${H2} max-w-3xl`}>Für wen es sich lohnt, eine Webseite erstellen zu lassen</h2>
-        <div className="mt-10 grid gap-12 md:grid-cols-2 md:gap-10 lg:mt-12">
+        <div className="mt-8 grid gap-3 md:grid-cols-2 md:gap-5">
           <ListeSpalte titel="Es lohnt sich, wenn …" eintraege={LOHNT} />
           <ListeSpalte titel="Ein anderer Weg passt besser, wenn …" eintraege={ANDERER_WEG} gedaempft />
         </div>
@@ -669,8 +747,8 @@ function ListeSpalte({
   gedaempft?: boolean;
 }) {
   return (
-    <div>
-      <h3 className="text-[1.25rem] leading-tight tracking-[-0.015em]">{titel}</h3>
+    <div className={u.blatt}>
+      <h3 className="text-[1.25rem] leading-tight font-semibold tracking-[-0.015em]">{titel}</h3>
       <ul className={`mt-5 border-t-[1.5px] ${gedaempft ? "border-border" : "border-foreground"}`}>
         {eintraege.map((e) => (
           <li key={e.text} className="border-border border-b py-4 text-[16px] leading-relaxed">
@@ -695,33 +773,31 @@ function ListeSpalte({
 }
 
 /* ------------------------------------------------------------------
- * Ablauf auf dunkler Fläche: sechs Halte, nur Titel, wer dran ist und
- * Hinweis. Die Fließtexte stehen auf /ablauf.
+ * Ablauf als Regal wie auf der Startseite: sechs Karten mit dem
+ * Elbe-Band, nur Titel, wer dran ist und Hinweis. Die Fließtexte stehen
+ * auf /ablauf.
  * ---------------------------------------------------------------- */
 function Ablauf() {
   const last = ABLAUF_HALTE.length - 1;
+  const zeichen = [0, 0, 1, 1, 2, 3];
   return (
-    <section id="ablauf" className="flaeche-schwarz scroll-mt-20">
-      <div className={INNER}>
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <h2 className={`${H2} max-w-2xl`}>Von der ersten Nachricht bis zum Start</h2>
-          <Link href="/ablauf" className={`${TEXTLINK} text-background`}>
-            <MitPfeil>Ablauf im Detail</MitPfeil>
-          </Link>
-        </div>
-        <ol className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3">
-          {ABLAUF_HALTE.map((h, i) => (
-            <li key={h.number} className="border-background/25 border-t pt-5">
-              <p className="label-mono text-gold">
-                {i === last ? "Endhalt" : `Halt ${i + 1}`} · {TEIL[h.wer]}
-              </p>
-              <h3 className="mt-2 text-[1.3rem] leading-tight tracking-[-0.015em]">{h.title}</h3>
-              <p className="text-stahl-hell mt-2 text-[15px] leading-relaxed">{h.hinweis}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
+    <LadenRegal
+      id="ablauf"
+      fett="Von der ersten Nachricht bis zum Start."
+      grau="Sechs Halte."
+      link={{ href: "/ablauf", label: "Ablauf im Detail" }}
+      className="scroll-mt-24 !pt-14 sm:!pt-20"
+    >
+      {ABLAUF_HALTE.map((h, i) => (
+        <KarteWeg
+          key={h.number}
+          band={<WegBand i={i} teile={6} zeichen={zeichen[i]} />}
+          eyebrow={`${i === last ? "Endhalt" : `Halt ${i + 1}`} · ${TEIL[h.wer]}`}
+          fett={`${h.title}.`}
+          grau={h.hinweis}
+        />
+      ))}
+    </LadenRegal>
   );
 }
 
@@ -731,7 +807,7 @@ function Ablauf() {
  * ---------------------------------------------------------------- */
 function Wege() {
   return (
-    <section id="wege" className="flaeche-hell scroll-mt-20">
+    <section id="wege" className="scroll-mt-24">
       <div className={INNER}>
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <h2 className={`${H2} lg:col-span-7`}>Baukasten, Designservice, Freelancer, Agentur: die Wege im Vergleich</h2>
@@ -745,7 +821,7 @@ function Wege() {
           </div>
         </div>
 
-        <div className="mt-10 lg:mt-12">
+        <div className={`${u.blatt} mt-8`}>
           <div className="border-foreground text-muted-foreground hidden grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)] gap-x-8 border-b-[1.5px] pb-3 lg:grid">
             <span className="label-mono text-[11px]">Weg</span>
             <span className="label-mono text-[11px]">Was Sie bekommen</span>
@@ -756,7 +832,7 @@ function Wege() {
               <div
                 key={w.name}
                 className={`border-border grid gap-x-8 gap-y-2 border-b py-5 lg:grid-cols-[13rem_minmax(0,1fr)_minmax(0,1fr)] ${
-                  w.sitalo ? "-mx-4 rounded-[18px] border-transparent bg-white px-4" : ""
+                  w.sitalo ? "-mx-4 rounded-[18px] border-transparent bg-[#f5f5f7] px-4" : ""
                 }`}
               >
                 <dt className="text-[17px] leading-snug font-semibold tracking-[-0.01em]">{w.name}</dt>
@@ -799,7 +875,7 @@ function Wege() {
         </div>
 
         {/* Baukasten oder erstellen lassen, Zeile für Zeile */}
-        <div className="border-border mt-14 border-t pt-10 lg:mt-16 lg:pt-12">
+        <div className={`${u.blatt} mt-14 lg:mt-16`}>
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
             <h3 className={`${H3} lg:col-span-7`}>Baukasten oder erstellen lassen, Zeile für Zeile</h3>
             <div className="lg:col-span-4 lg:col-start-9">
@@ -858,7 +934,7 @@ function Wege() {
  * ---------------------------------------------------------------- */
 function Beispiele() {
   return (
-    <section id="beispiele" className="flaeche-weiss scroll-mt-20">
+    <section id="beispiele" className="scroll-mt-24">
       <div className={INNER}>
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
           <h2 className={`${H2} lg:col-span-7`}>Seitenpläne und Musterseiten nach Branche</h2>
@@ -875,7 +951,7 @@ function Beispiele() {
             // Pflege und Praxis haben eigene Landingpages, die „erstellen lassen" führen.
             const ziel = erstellenLassenZiel(b.slug, b.label);
             return (
-              <article key={b.slug} data-auftritt="" className="karte flex flex-col p-7 sm:p-8">
+              <article key={b.slug} className={`${u.blatt} flex flex-col`}>
                 <p className="label-mono text-muted-foreground text-[11px]">Seitenplan</p>
                 <h3 className="mt-2 text-[1.35rem] leading-tight tracking-[-0.015em]">{b.label}</h3>
                 <p className="mt-5 flex items-center gap-3 text-[15px] font-semibold">
@@ -886,7 +962,7 @@ function Beispiele() {
                   {pages.map((page) => (
                     <li
                       key={page}
-                      className="before:bg-foreground/35 last:after:bg-[var(--hell)] relative py-1.5 pl-5 text-[14.5px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
+                      className="before:bg-foreground/35 last:after:bg-white relative py-1.5 pl-5 text-[14.5px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
                     >
                       {page}
                     </li>
@@ -948,7 +1024,7 @@ function Beispiele() {
  * ---------------------------------------------------------------- */
 function Zusagen() {
   return (
-    <section id="zusagen" className="flaeche-hell scroll-mt-20">
+    <section id="zusagen" className="scroll-mt-24">
       <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
         <div className="lg:col-span-4">
           <h2 className={H2}>Woran Sie uns festhalten können</h2>
@@ -1013,9 +1089,9 @@ function Zusagen() {
  * ---------------------------------------------------------------- */
 function Hamburg() {
   return (
-    <section className="flaeche-weiss">
-      <div className="mx-auto grid w-full max-w-[1068px] gap-6 px-[max(var(--rinne),env(safe-area-inset-left))] pt-20 lg:grid-cols-12 lg:items-end lg:gap-8 lg:pt-[120px]">
-        <h2 className="text-balance text-[1.6rem] leading-[1.1] tracking-[-0.02em] sm:text-[2rem] lg:col-span-7">
+    <section aria-labelledby="hamburg-titel">
+      <div className="inhalt grid gap-6 pt-14 sm:pt-20 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <h2 id="hamburg-titel" className={`${H3} lg:col-span-7`}>
           In Hamburg persönlich, in ganz Deutschland per Telefon und Video
         </h2>
         <div className="lg:col-span-4 lg:col-start-9">
@@ -1037,7 +1113,7 @@ function Hamburg() {
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <section id="fragen" className="flaeche-weiss scroll-mt-20">
+    <section id="fragen" className="scroll-mt-24">
       <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
         <div className="lg:col-span-4">
           <h2 className={H2}>Häufige Fragen, bevor Sie eine Homepage erstellen lassen</h2>
@@ -1045,11 +1121,19 @@ function Fragen() {
             <MitPfeil>Alle Fragen</MitPfeil>
           </Link>
         </div>
-        <dl className="grid gap-3 sm:grid-cols-2 lg:col-span-8">
+        <div className={`${u.blatt} min-w-0 divide-y divide-black/10 !py-2 lg:col-span-8`}>
           {FAQ.map((f) => (
-            <div key={f.q} data-auftritt="" className="karte p-7">
-              <dt className="text-[19px] leading-[1.21] font-semibold tracking-[-0.015em]">{f.q}</dt>
-              <dd className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">
+            <details key={f.q} className="group">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
+                <h3 className="text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">{f.q}</h3>
+                <span
+                  aria-hidden="true"
+                  className="mt-0.5 shrink-0 text-[22px] leading-none font-light text-[#6e6e73] transition-transform group-open:rotate-45 group-open:text-[#1d1d1f]"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="pb-6 text-[17px] leading-[1.5] tracking-[-0.022em] text-pretty text-[#424245]">
                 {f.a}
                 {f.link ? (
                   <>
@@ -1060,10 +1144,10 @@ function Fragen() {
                     </Link>
                   </>
                 ) : null}
-              </dd>
-            </div>
+              </p>
+            </details>
           ))}
-        </dl>
+        </div>
       </div>
     </section>
   );
@@ -1074,16 +1158,15 @@ function Fragen() {
  * ---------------------------------------------------------------- */
 function Abschluss() {
   return (
-    <AppleAbschluss
-      id="kontakt"
+    <KontaktKarte
       titel="Den Festpreis nennen wir Ihnen nach einem kurzen Gespräch."
-      zwischen={
-        <a href="tel:+491607621876" className="abschluss-nummer">
-          0160&nbsp;7621876
-        </a>
-      }
-      unter="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
-      link={{ href: "/anfrage", label: "Anfrage schreiben" }}
+      zeile="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
+      foto={{
+        src: "/images/sitalo-hotel-laptop.webp",
+        alt: "Laptop an der Rezeption eines Hotels, auf dem Bildschirm die Musterseite des Hotels",
+        position: "50% 55%",
+        muster: true,
+      }}
     />
   );
 }

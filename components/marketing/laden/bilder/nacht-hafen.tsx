@@ -24,6 +24,14 @@ export function NachtHafen() {
           <stop offset="0" stopColor="#0b1a24" />
           <stop offset="1" stopColor="#1d3340" />
         </linearGradient>
+        <radialGradient id="nh-schein">
+          <stop offset="0" stopColor="#ffd27a" stopOpacity=".7" />
+          <stop offset="1" stopColor="#ffd27a" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="nh-schein-rot">
+          <stop offset="0" stopColor="#ff453a" stopOpacity=".8" />
+          <stop offset="1" stopColor="#ff453a" stopOpacity="0" />
+        </radialGradient>
         <linearGradient id="ld-nacht-wasser" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#13252f" />
           <stop offset="1" stopColor="#09141a" />
@@ -49,7 +57,7 @@ export function NachtHafen() {
         fill="#243d4b"
       />
       <path d="M61.5 162V128h1v34Z" fill="#243d4b" />
-      <circle cx="62" cy="128" r="9" fill="url(#ld-schein-rot)" />
+      <circle cx="62" cy="128" r="9" fill="url(#nh-schein-rot)" />
       <circle cx="62" cy="128" r="2" fill="#ff453a" />
       {/* Michel */}
       <path
@@ -75,7 +83,7 @@ export function NachtHafen() {
         cy="226"
         rx="90"
         ry="30"
-        fill="url(#ld-schein)"
+        fill="url(#nh-schein)"
         opacity=".35"
       />
       {/* Oranger Kran rechts */}
@@ -86,7 +94,7 @@ export function NachtHafen() {
       </g>
       <path d="M280 173V214M288 173V214" stroke="#8e9499" strokeWidth="1.5" />
       <rect x="270" y="214" width="30" height="14" fill="#1f5f6b" />
-      <circle cx="356" cy="132" r="10" fill="url(#ld-schein-rot)" />
+      <circle cx="356" cy="132" r="10" fill="url(#nh-schein-rot)" />
       <circle cx="356" cy="132" r="2.4" fill="#ff453a" />
       <rect x="320" y="270" width="80" height="20" fill="#2a3e48" />
       {/* Wasser mit Spiegelstreifen */}

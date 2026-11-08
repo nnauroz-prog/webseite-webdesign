@@ -44,7 +44,7 @@ export function Abschluss({
           <Link href={pille.href} className="btn-signal btn-gross">
             {pille.label}
           </Link>
-          {link ? (
+          {link && link.href !== pille.href ? (
             <MehrLink href={link.href} groesse="unter">
               {link.label}
             </MehrLink>

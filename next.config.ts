@@ -18,6 +18,9 @@ const nextConfig: NextConfig = {
   // automatisch WebP — die Source-Dateien selbst bleiben WebP.
   images: {
     formats: ["image/avif", "image/webp"],
+    // 75 ist der Standard; 60 für die Kopffotos der Unterseiten am
+    // Handy (LCP-Bild, kleinere Datei, kaum sichtbarer Unterschied).
+    qualities: [60, 75],
     // Cache optimierte Image-Varianten 31 Tage statt der 60 Sekunden
     // Default — die WebP-Sources ändern sich praktisch nie, lohnt
     // sich, die generierten AVIF/WebP-Variants lange im CDN zu

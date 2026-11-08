@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useId, useState } from "react";
 
-import { ContainerMotiv, PAKET_TON } from "@/components/marketing/apple/container-motiv";
+import { LinieBusiness, LiniePremium, LinieStarter, LinieStudio } from "@/components/marketing/laden/bilder/linien";
 
 import { VergleichZelle, type PaketSpalte, type Slug, type VergleichGruppe } from "./vergleich-daten";
 
@@ -65,8 +65,8 @@ export function VergleichMobil({
       <div className="mt-8 grid grid-cols-2 gap-3 text-center" aria-live="polite">
         {spalten.map((p, i) => (
           <div key={`${p.slug}-${i}`} className="flex flex-col items-center">
-            <span className="flex h-[60px] items-end" aria-hidden="true">
-              <ContainerMotiv ton={PAKET_TON[p.slug] ?? "zink"} groesse="s" />
+            <span className="flex h-[56px] items-end text-[#1d1d1f]" aria-hidden="true">
+              <PaketLinie slug={p.slug} />
             </span>
             {p.highlight ? (
               <span className="text-gold-ink mt-3 h-4 text-[12px] leading-4 font-semibold">Empfehlung</span>
@@ -109,4 +109,12 @@ export function VergleichMobil({
       ))}
     </div>
   );
+}
+
+/** Linienzeichnung je Paket wie in der Bildreihe der Startseite. */
+function PaketLinie({ slug }: { slug: Slug }) {
+  if (slug === "starter") return <LinieStarter />;
+  if (slug === "business") return <LinieBusiness />;
+  if (slug === "premium") return <LiniePremium />;
+  return <LinieStudio />;
 }

@@ -8,7 +8,7 @@ import s from "./laden.module.css";
 
 /**
  * Regal der Startseite: Zweiton-Kopf links („Die Pakete.“ schwarz, Satz
- * grau), rechts Kopf-Link und ab 1024 px die Pfeile; darunter eine
+ * grau; nur in wenigen Regalen) oder einfarbiger Titel mit Unterzeile, rechts Kopf-Link und ab 1024 px die Pfeile; darunter eine
  * waagerechte Spur, die an der Inhaltskante beginnt und rechts bis an
  * den Fensterrand läuft (scroll-snap). `Regal` aus components/marketing/
  * apple bleibt für die Unterseiten unverändert.
@@ -26,11 +26,14 @@ export function LadenRegal({
   spaet,
   ohneSpur = false,
   ohneMobilLink = false,
+  einfach = false,
   className,
 }: {
   id: string;
   fett: string;
   grau: string;
+  /** Statt Zweiton: einfarbige Überschrift, grau als kurze Unterzeile */
+  einfach?: boolean;
   link?: { href: string; label: string };
   children: ReactNode;
   notiz?: ReactNode;
@@ -58,9 +61,18 @@ export function LadenRegal({
     >
       <div className={cn("inhalt", s.regalKopf)}>
         <div>
-          <h2 id={`${id}-titel`} className={s.zweiton}>
-            <span>{fett}</span> <span>{grau}</span>
-          </h2>
+          {einfach ? (
+            <>
+              <h2 id={`${id}-titel`} className={s.regalTitel}>
+                {label}
+              </h2>
+              <p className={s.regalUnter}>{grau}</p>
+            </>
+          ) : (
+            <h2 id={`${id}-titel`} className={s.zweiton}>
+              <span>{fett}</span> <span>{grau}</span>
+            </h2>
+          )}
           {link && !ohneMobilLink ? (
             <MehrLink href={link.href} frei={false} className={s.kopfLinkMobil}>
               {link.label}

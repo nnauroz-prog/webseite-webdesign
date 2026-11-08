@@ -52,42 +52,29 @@
   }
 }
 .gross {
-  margin-top: 6px;
-  font-size: 48px;
-  line-height: 52px;
-  font-weight: 700;
-  letter-spacing: -0.015em;
+  margin-top: 10px;
+  font-size: clamp(48px, 5.6vw, 80px);
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: -0.03em;
   color: #1d1d1f;
 }
 .grossGrau {
   display: block;
-  margin-top: 2px;
-  font-size: 28px;
-  line-height: 32px;
+  margin-top: 8px;
+  font-size: clamp(24px, 3.2vw, 44px);
+  line-height: 1.12;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--grau);
   text-wrap: balance;
 }
-@media (min-width: 734px) {
+@media (max-width: 359px) {
   .gross {
-    font-size: 64px;
-    line-height: 68px;
+    font-size: 44px;
   }
   .grossGrau {
-    font-size: 40px;
-    line-height: 44px;
-  }
-}
-@media (min-width: 1068px) {
-  .gross {
-    font-size: 80px;
-    line-height: 84px;
-  }
-  .grossGrau {
-    margin-top: 4px;
-    font-size: 48px;
-    line-height: 52px;
+    font-size: 22px;
   }
 }
 .kennzeile {
@@ -112,6 +99,33 @@
   align-items: center;
   gap: 4px 22px;
   margin-top: 20px;
+}
+/* Unter 400 px untereinander: Pille, darunter der Textlink. */
+@media (max-width: 399px) {
+  .kopfAktionen {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+.kopfTel {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grau);
+}
+.kopfTel a {
+  display: inline-block;
+  margin-block: -12px;
+  padding-block: 12px;
+  font-weight: 600;
+  color: var(--gold-text);
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  .kopfTel a:hover {
+    text-decoration: underline;
+  }
 }
 .kopfAktionen :global(.btn-signal) {
   min-height: 44px;
@@ -189,10 +203,11 @@
 /* ---------- 2. Bildreihe ---------- */
 
 .reihe {
+  --linie-akzent: #f45b1e;
   margin-top: 28px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   scroll-padding-inline: var(--rand);
   scrollbar-width: none;
 }
@@ -223,14 +238,27 @@
   outline: 2px solid #f45b1e;
   outline-offset: 2px;
 }
-.reihe svg {
+/* Linienzeichnung 48 × 48, Strich #1d1d1f, ein Akzent in Orange. */
+.reiheBild {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  color: #1d1d1f;
+}
+.reiheBild svg {
   display: block;
-  width: 96px;
-  height: 63px;
-  transition: transform 300ms var(--ease-apple);
+  width: 48px;
+  height: 48px;
+  transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .reiheName {
-  margin-top: 8px;
+  margin-top: 10px;
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  transition: text-decoration-color 200ms ease;
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
@@ -250,10 +278,6 @@
   .reihe a {
     width: 104px;
   }
-  .reihe svg {
-    width: 104px;
-    height: 68px;
-  }
   .reiheName {
     font-size: 14px;
     line-height: 18px;
@@ -268,9 +292,20 @@
     padding-inline: var(--rinne);
   }
 }
+@media (hover: hover) {
+  .reihe a:hover .reiheName {
+    text-decoration-color: #f45b1e;
+  }
+}
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .reihe a:hover svg {
     transform: translateY(-3px);
+  }
+}
+/* Solange die Reihe wischt: rechter Auslauf zeigt, dass es weitergeht. */
+@media (max-width: 1067px) {
+  .reihe {
+    mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
   }
 }
 
@@ -337,6 +372,27 @@
     letter-spacing: 0.004em;
   }
 }
+/* Einfarbiger Regal-Titel mit kurzer Unterzeile (statt Zweiton). */
+.regalTitel {
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: #1d1d1f;
+}
+.regalUnter {
+  margin-top: 4px;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--grau);
+  text-wrap: pretty;
+}
+@media (min-width: 1068px) {
+  .regalTitel {
+    font-size: 32px;
+    line-height: 36px;
+  }
+}
 .kopfRechts {
   display: none;
   flex: none;
@@ -370,7 +426,7 @@
 .kopfRechts :global(.regal-pfeile) {
   display: none;
 }
-@media (min-width: 1024px) {
+@media (min-width: 734px) {
   .kopfRechts :global(.regal-pfeile) {
     display: flex;
     gap: 8px;
@@ -421,7 +477,7 @@
   scroll-snap-align: end;
 }
 .notiz {
-  margin-top: -14px;
+  margin-top: -20px;
   margin-bottom: 14px;
   font-size: 12px;
   line-height: 16px;
@@ -447,7 +503,9 @@
   background: #fff;
   color: #1d1d1f;
   box-shadow: var(--schatten);
-  transition: box-shadow 300ms var(--ease-apple);
+  transition:
+    box-shadow 280ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .karte:has(:global(.karte-link):focus-visible),
 .karte:has(a:focus-visible) {
@@ -460,25 +518,52 @@
 .karte :global(.karte-link) {
   color: inherit;
 }
+/* Hervorgehobene Karte: Tiefblau des Hafens mit oranger Oberkante. */
 .schwarz {
-  background: #000;
+  background: #0f2a3a;
+  box-shadow:
+    inset 0 3px 0 #f45b1e,
+    var(--schatten);
   color: #f5f5f7;
   --grau: #a1a1a6;
   --gold-text: #ff9f5a;
 }
 .getoent {
-  box-shadow: none;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.04);
   --grau: #5f5f64;
   --gold-text: #b23c0a;
 }
+@media (hover: hover) {
+  .karte:hover {
+    box-shadow: 0 18px 40px -16px rgb(16 32 48 / 0.28);
+  }
+  .schwarz:hover {
+    box-shadow:
+      inset 0 3px 0 #f45b1e,
+      0 18px 40px -16px rgb(16 32 48 / 0.4);
+  }
+}
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .karte:not(.getoent):hover {
-    box-shadow: var(--schatten-hover);
+  .spur .karte:hover {
+    transform: translateY(-4px);
   }
   .karte:hover .bild > :is(svg, img),
   .karte:hover .bildOben > :is(svg, img) {
     transform: scale(1.02);
   }
+}
+.karte:hover .bild > .foto {
+  transform: none;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .karte:hover .bild > .foto {
+    transform: scale(1.03);
+  }
+}
+/* Foto in einer Bildzone (next/image mit fill) */
+.foto {
+  object-fit: cover;
+  transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .text {
@@ -545,6 +630,10 @@
   font-weight: 400;
   color: var(--grau);
 }
+/* Große Karten: Zeile immer zwei Zeilen hoch, damit Preise auf einer Linie stehen. */
+.gross_ .zeile {
+  min-height: 40px;
+}
 .mehr {
   margin-top: 12px;
   font-size: 14px;
@@ -579,12 +668,12 @@
 
 /* Groß: 400 × 500 / 360 × 460 / bis 320 × 440 */
 .gross_ {
-  width: min(calc(100vw - 48px), 320px);
+  width: min(calc(100vw - 56px), 320px);
   height: 440px;
 }
 @media (max-width: 359px) {
   .gross_ {
-    width: 272px;
+    width: calc(100vw - 56px);
     height: 420px;
   }
 }
@@ -628,7 +717,22 @@
 }
 /* Journal: kürzer, Bild oben rund 60 % */
 .mittelKurz {
-  height: 330px;
+  height: 300px;
+}
+.textFuss {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+.textFuss .titelMittel {
+  margin-top: 0;
+}
+.fusszeile {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 12px;
+  line-height: 16px;
 }
 @media (min-width: 734px) {
   .mittelKurz {
@@ -660,24 +764,61 @@
 /* Klein: 300 × 200 / 264 × 184 */
 .klein {
   width: 264px;
-  height: 184px;
+  height: 160px;
   padding: 20px;
 }
 @media (min-width: 734px) {
   .klein {
     width: 300px;
-    height: 200px;
+    height: 176px;
     padding: 24px;
   }
 }
-.klein .satz {
-  margin-top: 16px;
+.kleinKopf {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
+.kleinTitel {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+@media (min-width: 734px) {
+  .kleinTitel {
+    font-size: 19px;
+    line-height: 24px;
+  }
+}
+.kleinSatz {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 21px;
+  letter-spacing: -0.01em;
+  color: var(--grau);
+  text-wrap: pretty;
+}
+@media (min-width: 734px) {
+  .kleinSatz {
+    font-size: 17px;
+    line-height: 23px;
+  }
+}
+/* Linienzeichnung 40 px (bilder/linien.tsx), kein Kasten, kein Verlauf. */
 .symbol {
+  --linie-akzent: #f45b1e;
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   flex: none;
+  color: #1d1d1f;
+}
+.symbol > svg {
+  display: block;
+  width: 40px;
+  height: 40px;
 }
 .satz {
   font-size: 17px;
@@ -698,7 +839,13 @@
 }
 /* Klein mit Bildband oben (Der Weg) */
 .weg {
+  height: 184px;
   padding: 0;
+}
+@media (min-width: 734px) {
+  .weg {
+    height: 200px;
+  }
 }
 .band {
   display: block;
@@ -738,7 +885,7 @@
   }
 }
 .endeMitBild {
-  width: min(calc(100vw - 48px), 320px);
+  width: min(calc(100vw - 56px), 320px);
   height: 440px;
   align-items: stretch;
   justify-content: flex-start;
@@ -747,7 +894,7 @@
 }
 @media (max-width: 359px) {
   .endeMitBild {
-    width: 272px;
+    width: calc(100vw - 56px);
     height: 420px;
   }
 }
@@ -775,11 +922,11 @@
 }
 .banner {
   width: 100%;
-  height: 500px;
+  height: 440px;
 }
 @media (max-width: 359px) {
   .banner {
-    height: 470px;
+    height: 420px;
   }
 }
 @media (min-width: 734px) {
@@ -874,11 +1021,12 @@
     #eef1f1 100%
   ) !important;
 }
+/* Handy: Zeichnung 120 % breit, läuft rechts aus, Kran rückt an die Knöpfe. */
 .buehneBild {
   position: absolute;
-  right: 4%;
+  right: -16%;
   bottom: 0;
-  width: 100%;
+  width: 120%;
 }
 .buehneBild > div {
   width: 100% !important;
@@ -954,17 +1102,83 @@
 }
 @media (min-width: 1068px) {
   .breit {
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: 40px;
-    padding: 40px;
+    padding: 48px 40px 48px 48px;
+  }
+}
+.vnText {
+  align-self: center;
+}
+.vnTitel {
+  margin-top: 6px;
+  font-size: 28px;
+  line-height: 1.14;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+@media (min-width: 1068px) {
+  .vnTitel {
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+}
+.vnZeile {
+  margin-top: 12px;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.022em;
+  color: var(--grau);
+  text-wrap: pretty;
+}
+@media (min-width: 1068px) {
+  .vnZeile {
+    font-size: 19px;
+    line-height: 1.42;
   }
 }
 .vnGeraet {
   min-width: 0;
 }
+.vnHinweis {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--grau);
+}
 
 /* ---------- Fragen ---------- */
 
+.fragenRaster {
+  display: grid;
+  gap: 16px;
+}
+.fragenSeite {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.fragenLink {
+  display: inline-block;
+  padding-block: 10px;
+  font-size: 15px;
+  line-height: 20px;
+}
+.fragenSeite .regalUnter + .fragenLink {
+  margin-top: 6px;
+}
+@media (min-width: 900px) {
+  .fragenRaster {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .fragenSeite {
+    padding-top: 12px;
+  }
+}
 .fragen {
   padding: 4px 22px;
   border-radius: 18px;
@@ -1046,19 +1260,16 @@
   grid-template-columns: minmax(0, 1fr);
   overflow: hidden;
   border-radius: 18px;
-  background: #000;
+  background: #0f2a3a;
   color: #f5f5f7;
   --grau: #a1a1a6;
   --gold-text: #ff9f5a;
 }
 .kontaktBild {
+  position: relative;
   order: -1;
-  height: 180px;
-}
-.kontaktBild > :is(svg, img) {
-  display: block;
-  width: 100%;
-  height: 100%;
+  height: 200px;
+  overflow: hidden;
 }
 .kontaktText {
   padding: 24px 22px 28px;
@@ -1137,12 +1348,14 @@
   outline-offset: 2px;
   border-radius: 6px;
 }
-.fuss {
-  padding-top: 64px;
+/* Abstand Kontaktkarte → Fußzeile 40 / 56 px (der Block bringt 32 mit). */
+.fussRand {
+  margin-top: 8px;
+  border-top: 1px solid #d2d2d7;
 }
 @media (min-width: 734px) {
-  .fuss {
-    padding-top: 88px;
+  .fussRand {
+    margin-top: 24px;
   }
 }
 .bannerText {
@@ -1154,32 +1367,4 @@
     gap: 0 14px;
   }
 }
-/* Laptop-Rahmen um den Vorher/Nachher-Regler (ab 900 px). Die Rundung
-   des Browserfensters entfällt im Rahmen. */
-@media (min-width: 900px) {
-  .vnLaptop {
-    position: relative;
-    margin-bottom: 18px;
-    padding: 12px 12px 14px;
-    border-radius: 20px 20px 8px 8px;
-    background: #0b0b0c;
-    box-shadow:
-      inset 0 0 0 1.5px #c7c7cc,
-      0 18px 30px -18px rgb(0 0 0 / 0.45);
-  }
-  .vnLaptop > div {
-    border-radius: 6px !important;
-    box-shadow: none !important;
-  }
-  .vnLaptop::after {
-    content: "";
-    position: absolute;
-    left: -6%;
-    right: -6%;
-    bottom: -14px;
-    height: 14px;
-    border-radius: 2px 2px 14px 14px;
-    background: linear-gradient(180deg, #ececf0 0%, #d2d2d7 50%, #a1a1a6 100%);
-    box-shadow: 0 10px 18px -8px rgb(0 0 0 / 0.35);
-  }
-}
+

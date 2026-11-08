@@ -6,11 +6,10 @@ import { cn } from "@/lib/utils";
 import s from "./laden.module.css";
 
 /**
- * Kopf der Startseite wie der Kopf eines Ladens: links die H1 (Such-
- * begriff, unverändert), die große Zeile „Websites.“ mit grauem Satz und
- * die beiden Aktionen (Anfrage als Hauptweg, Preise); rechts zwei kleine
- * Hilfe-Hinweise als reine Textzeilen mit Link. Der Hauptweg ist das
- * Anfrageformular, das Telefon die Alternative.
+ * Kopf der Startseite: die H1 (Suchbegriff, unverändert), die große
+ * Zeile „Websites.“ mit grauem Satz, die beiden Aktionen (Anfrage als
+ * Hauptweg, Preise) und darunter die Telefonnummer als zweiter Weg.
+ * Direkt darunter folgt die Kran-Bühne als erstes großes Bild.
  */
 export function LadenKopf() {
   return (
@@ -34,15 +33,7 @@ export function LadenKopf() {
               Preise ansehen
             </MehrLink>
           </div>
-        </div>
-        <div className={s.hilfe}>
-          <p className={s.hilfeZeile}>
-            Drei Pflichtfelder, Antwort meist am selben Werktag.{" "}
-            <Link href="/anfrage">
-              Zum Anfrageformular<span aria-hidden="true"> ›</span>
-            </Link>
-          </p>
-          <p className={s.hilfeZeile}>
+          <p className={s.kopfTel}>
             Lieber am Telefon?{" "}
             <a href="tel:+491607621876">
               0160&nbsp;7621876<span aria-hidden="true"> ›</span>

@@ -69,11 +69,15 @@ export function MarketingHeader({
   nav = DEFAULT_NAV,
   className,
   cta = true,
+  ctaMobil = false,
 }: {
   nav?: NavItem[];
   className?: string;
   /** Kleine „Anfragen“-Pille rechts. Seiten mit Produktleiste: false. */
   cta?: boolean;
+  /** „Anfragen“ auch am Handy, links neben der Suche (Startseite ohne
+   *  Produktleiste). Standard aus, damit Unterseiten unverändert bleiben. */
+  ctaMobil?: boolean;
   /** @deprecated Wirkungslos seit der Apple-Leiste (immer hell).
    *  Bleibt im Typ, damit bestehende Aufrufe nicht brechen. */
   tone?: "light" | "dark";
@@ -149,6 +153,15 @@ export function MarketingHeader({
             <SitaloLogo size="xs" hideTagline />
           </Link>
           <div className="globalnav-mobil">
+            {ctaMobil ? (
+              <Link
+                href="/anfrage"
+                className="btn-signal btn-klein mr-1 min-h-8 px-[14px] text-[14px]"
+                onClick={() => setMenuOpen(false)}
+              >
+                Anfragen
+              </Link>
+            ) : null}
             <button
               type="button"
               onClick={sucheOeffnen}

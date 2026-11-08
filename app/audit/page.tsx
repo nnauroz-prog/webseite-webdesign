@@ -184,7 +184,7 @@ export default function AuditPage() {
                   <dl className="border-border space-y-1.5 border-b px-5 py-4 font-mono text-[12.5px] sm:px-7">
                     <div className="flex gap-3">
                       <dt className="text-muted-foreground w-16 shrink-0">Von</dt>
-                      <dd className="text-foreground min-w-0">info@sitalo.de</dd>
+                      <dd className="text-foreground min-w-0">Sitalo Webdesign</dd>
                     </div>
                     <div className="flex gap-3">
                       <dt className="text-muted-foreground w-16 shrink-0">An</dt>

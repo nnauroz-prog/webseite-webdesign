@@ -1,5 +1,3 @@
-import { CONTACT_EMAIL } from "@/lib/site";
-
 /**
  * Die sechs Halte des Ablaufs, eine Quelle für /ablauf (ausführlich, mit
  * HowTo-Schema) und /website-erstellen-lassen (nur Titel, wer dran ist
@@ -8,10 +6,6 @@ import { CONTACT_EMAIL } from "@/lib/site";
  * `number` bleibt zweistellig, weil die Anker auf /ablauf (#step-01 …)
  * und das HowTo-Schema darauf zeigen. Dauer-Angaben folgen
  * lib/pakete-data.ts (Paket.dauer).
- *
- * Offen: app/ablauf/page.tsx führt die Halte noch als eigene Konstante
- * STEPS mit identischem Inhalt. Beim nächsten Durchgang dort
- * `import { ABLAUF_HALTE as STEPS } from "@/lib/ablauf-data"` setzen.
  */
 export type AblaufHalt = {
   number: string;
@@ -26,7 +20,7 @@ export const ABLAUF_HALTE: AblaufHalt[] = [
   {
     number: "01",
     title: "Sie schreiben uns",
-    body: `Über das Formular mit drei Feldern oder per Mail an ${CONTACT_EMAIL}. Ein paar Sätze dazu, was Sie brauchen, reichen.`,
+    body: "Über das Anfrageformular mit drei Pflichtfeldern oder am Telefon unter 0160 7621876. Ein paar Sätze dazu, was Sie brauchen, reichen.",
     wer: "Sie",
     hinweis: "Antwort meist am selben Werktag",
   },

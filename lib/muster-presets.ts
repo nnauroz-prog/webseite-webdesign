@@ -19,6 +19,8 @@ export type Preset = {
   nav: string[];
   cta: string;
   features: string[];
+  /** Je Leistungskarte eine kurze Zeile Text (keine Preise). */
+  details?: string[];
 };
 
 export const PRESETS: Preset[] = [
@@ -39,6 +41,7 @@ export const PRESETS: Preset[] = [
       "Pflegegrad-Beratung",
       "Jetzt bewerben",
     ],
+    details: ["Hausbesuche in Ihrem Stadtteil.", "Wir kommen zu Ihnen nach Hause.", "Pflegekräfte in Voll- und Teilzeit."],
   },
   {
     key: "praxis",
@@ -53,6 +56,7 @@ export const PRESETS: Preset[] = [
     nav: ["Praxis", "Leistungen", "Team", "Termin"],
     cta: "Termin anfragen",
     features: ["Terminanfrage", "Sprechzeiten", "Unsere Leistungen"],
+    details: ["Online oder am Telefon.", "Mo–Fr 8–12, Di und Do 15–18 Uhr.", "Vorsorge, Impfungen, Hausbesuche."],
   },
   {
     key: "friseur",
@@ -67,6 +71,7 @@ export const PRESETS: Preset[] = [
     nav: ["Preise", "Team", "Galerie", "Termin"],
     cta: "Termin anfragen",
     features: ["Terminanfrage", "Preisliste", "Galerie"],
+    details: ["Online oder am Telefon.", "Schnitt, Farbe und Pflege.", "Arbeiten aus dem Salon."],
   },
   {
     key: "gastro",
@@ -81,6 +86,7 @@ export const PRESETS: Preset[] = [
     nav: ["Karte", "Über uns", "Events", "Reservieren"],
     cta: "Tisch reservieren",
     features: ["Speisekarte", "Öffnungszeiten", "Reservierung"],
+    details: ["Frühstück, Mittag, Kuchen.", "Täglich 8–18 Uhr.", "Für Gruppen ab sechs Personen."],
   },
   {
     key: "handwerk",
@@ -95,6 +101,7 @@ export const PRESETS: Preset[] = [
     nav: ["Leistungen", "Referenzen", "Über uns", "Kontakt"],
     cta: "Rückruf anfordern",
     features: ["Innenausbau", "Referenzen", "Kostenloses Angebot"],
+    details: ["Küchen, Einbauschränke, Treppen.", "Arbeiten aus der Werkstatt.", "Nach Aufmaß bei Ihnen vor Ort."],
   },
   {
     key: "reinigung",
@@ -109,6 +116,7 @@ export const PRESETS: Preset[] = [
     nav: ["Leistungen", "Gebiete", "Preise", "Kontakt"],
     cta: "Angebot anfragen",
     features: ["Büroreinigung", "Einsatzgebiete", "Festpreis-Angebot"],
+    details: ["Abends oder am Wochenende.", "Hamburg und Umland.", "Nach einer Besichtigung."],
   },
   {
     key: "kanzlei",
@@ -123,6 +131,7 @@ export const PRESETS: Preset[] = [
     nav: ["Rechtsgebiete", "Anwälte", "Kosten", "Kontakt"],
     cta: "Erstberatung vereinbaren",
     features: ["Rechtsgebiete", "Erstberatung", "Ihr Team"],
+    details: ["Arbeits-, Familien- und Mietrecht.", "Auch per Video.", "Erfahrung aus vielen Jahren."],
   },
   {
     key: "fitness",
@@ -137,6 +146,7 @@ export const PRESETS: Preset[] = [
     nav: ["Kurse", "Preise", "Trainer", "Probetraining"],
     cta: "Probetraining vereinbaren",
     features: ["Kursplan", "Mitgliedschaft", "Probetraining"],
+    details: ["Kurse ab 7 Uhr.", "Monatlich kündbar.", "Kostenlos und ohne Vertrag."],
   },
 ];
 
@@ -156,6 +166,7 @@ export const EXTRA_PRESETS: Preset[] = [
     nav: ["Behandlungen", "Preise", "Gutscheine", "Termin"],
     cta: "Termin anfragen",
     features: ["Behandlungen", "Preisliste", "Gutscheine"],
+    details: ["Gesicht, Wimpern, Maniküre.", "Alle Preise auf einen Blick.", "Zum Verschenken."],
   },
   {
     key: "hotel",
@@ -170,6 +181,7 @@ export const EXTRA_PRESETS: Preset[] = [
     nav: ["Zimmer", "Lage", "Frühstück", "Buchen"],
     cta: "Zimmer anfragen",
     features: ["Zimmer und Preise", "Anreise", "Direkt buchen"],
+    details: ["Zwölf Zimmer mit Frühstück.", "Fünf Minuten zur Speicherstadt.", "Ohne Umweg über ein Portal."],
   },
 ];
 

@@ -1,10 +1,7 @@
 import { honorarPaket } from "@/lib/honorar-data";
-import { presetFuer } from "@/lib/muster-presets";
 import { getPaketBySlug, STUNDENSATZ_EUR } from "@/lib/pakete-data";
 
-import { ContainerPlastisch, CONTAINER } from "./container-plastisch";
-import { Boden, Handy, Laptop, rr } from "./geraete";
-import { MusterSeite, MotivVorlage, SEITE_DESKTOP } from "./muster-seite";
+import { rr } from "./geraete";
 
 /**
  * Bilder der Werkzeug-Karten: viewBox 320 × 240 (Bildzone einer
@@ -44,54 +41,38 @@ function Blatt({ x, y, w, h, r = 12, dreh = 0, children }: { x: number; y: numbe
   );
 }
 
-/* ---------- Durchsicht: Musterseite mit Markern, davor die Liste ---------- */
+/* ---------- Durchsicht: die Liste selbst, randlos, ohne Gerät ---------- */
 
-const PUNKTE = ["Ladezeit am Handy", "Anruf mit einem Tipp", "Pflichtangaben", "Titel bei Google"];
+const PUNKTE: [string, string][] = [
+  ["Ladezeit am Handy", "Bilder kleiner speichern"],
+  ["Anruf mit einem Tipp", "Nummer als Knopf oben"],
+  ["Pflichtangaben", "Impressum im Fuß verlinken"],
+  ["Titel bei Google", "Ort und Leistung nennen"],
+];
 
 export function BildDurchsicht() {
-  const p = presetFuer("praxis");
   return (
     <Svg>
-      <MotivVorlage preset={p} id="ld-motiv-durchsicht" />
-      <Laptop
-        x={18}
-        y={30}
-        w={226}
-        h={144}
-        vb={SEITE_DESKTOP}
-        inhalt={
-          <g>
-            <MusterSeite preset={p} format="desktop" motivRef="ld-motiv-durchsicht" />
-            {[
-              [520, 150],
-              [880, 40],
-              [190, 430],
-            ].map(([x, y], i) => (
-              <g key={i}>
-                <circle cx={x} cy={y} r="44" fill={ORANGE} fillOpacity=".2" />
-                <circle cx={x} cy={y} r="28" fill={ORANGE} />
-                <text x={x} y={y + 11} textAnchor="middle" fontSize="32" fontWeight="700" fill="#fff">
-                  {i + 1}
-                </text>
-              </g>
-            ))}
-          </g>
-        }
-      />
-      <Blatt x={172} y={78} w={136} h={128} dreh={-3}>
-        <text x={186} y={100} fontSize="10.5" fontWeight="700" fill={TINTE}>
+      <Blatt x={34} y={6} w={252} h={208} r={14}>
+        <text x={52} y={34} fontSize="12.5" fontWeight="700" fill={TINTE}>
           Ihre Durchsicht
         </text>
-        {PUNKTE.map((t, i) => (
-          <g key={t} transform={`translate(186 ${114 + i * 22})`}>
-            <circle cx="6" cy="0" r="6" fill={ORANGE} />
-            <text x="6" y="3" textAnchor="middle" fontSize="7.5" fontWeight="700" fill="#fff">
+        <text x={52} y={49} fontSize="9" fill={GRAU}>
+          Beispiel · von Hand geprüft
+        </text>
+        {PUNKTE.map(([t, hinweis], i) => (
+          <g key={t} transform={`translate(52 ${70 + i * 36})`}>
+            <circle cx="9" cy="8" r="9" fill={i === 0 ? ORANGE : TINTE} />
+            <text x="9" y="11.5" textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
               {i + 1}
             </text>
-            <text x="17" y="3" fontSize="8.2" fontWeight="500" fill={TINTE}>
+            <text x="26" y="7" fontSize="10.5" fontWeight="600" fill={TINTE}>
               {t}
             </text>
-            {i < PUNKTE.length - 1 ? <path d="M17 11h88" stroke="#e5e5ea" /> : null}
+            <text x="26" y="20" fontSize="9" fill={GRAU}>
+              {hinweis}
+            </text>
+            {i < PUNKTE.length - 1 ? <path d="M26 28h190" stroke="#e5e5ea" /> : null}
           </g>
         ))}
       </Blatt>
@@ -99,82 +80,39 @@ export function BildDurchsicht() {
   );
 }
 
-/* ---------- Ladezeit: Handy mit Tacho und drei Kennzahlen (ohne Werte) ---------- */
-
-function Tacho() {
-  const bogen = (von: number, bis: number) => {
-    const p = (w: number) => {
-      const a = Math.PI * (1 - w);
-      return `${(195 + Math.cos(a) * 120).toFixed(1)} ${(330 - Math.sin(a) * 120).toFixed(1)}`;
-    };
-    return `M${p(von)}A120 120 0 0 1 ${p(bis)}`;
-  };
-  return (
-    <g fontFamily="inherit">
-      <rect width="390" height="780" fill="#fff" />
-      <text x="34" y="96" fontSize="26" fontWeight="700" fill={TINTE}>
-        Ladezeit
-      </text>
-      <text x="34" y="128" fontSize="19" fill={GRAU}>
-        Ihre Adresse, am Handy gemessen
-      </text>
-      <path d={bogen(0, 0.32)} stroke="#e5484d" strokeWidth="26" fill="none" />
-      <path d={bogen(0.34, 0.64)} stroke="#f5a524" strokeWidth="26" fill="none" />
-      <path d={bogen(0.66, 1)} stroke="#30a46c" strokeWidth="26" fill="none" />
-      <path d="M195 330L278 262" stroke={TINTE} strokeWidth="9" strokeLinecap="round" />
-      <circle cx="195" cy="330" r="18" fill={TINTE} />
-      <circle cx="195" cy="330" r="7" fill={ORANGE} />
-      {["Erster Inhalt", "Größter Inhalt", "Verschiebung"].map((t, i) => (
-        <g key={t} transform={`translate(0 ${384 + i * 78})`}>
-          <rect x="26" width="338" height="68" rx="16" fill="#f5f5f7" />
-          <circle cx="62" cy="34" r="14" fill="#30a46c" />
-          <path d="M55 34l5 5 9-10" stroke="#fff" strokeWidth="3.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          <text x="90" y="42" fontSize="22" fontWeight="600" fill={TINTE}>
-            {t}
-          </text>
-        </g>
-      ))}
-      <rect x="26" y="624" width="338" height="58" rx="29" fill={ORANGE} />
-      <text x="195" y="660" textAnchor="middle" fontSize="21" fontWeight="650" fill="#fff">
-        Erneut testen
-      </text>
-    </g>
-  );
-}
+/* ---------- Ladezeit: Ergebniskarte, ohne Uhr und ohne Gerät ---------- */
 
 export function BildLadezeit() {
+  const zeilen = ["Erster Inhalt", "Größter Inhalt", "Verschiebung"];
   return (
     <Svg>
-      {/* Halbkreis-Schein hinter dem Gerät */}
-      <circle cx="160" cy="150" r="96" fill="#30a46c" fillOpacity=".08" />
-      <circle cx="160" cy="150" r="66" fill="#30a46c" fillOpacity=".08" />
-      <Handy x={104} y={14} w={112} h={232} vb="0 0 390 780" inhalt={<Tacho />} />
-      {/* Stoppuhr links */}
-      <g transform="translate(44 132)">
-        <Boden cx={2} cy={50} rx={34} ry={5} />
-        <rect x="-6" y="-38" width="16" height="8" rx="3" fill="#3a3a3c" />
-        <circle cx="2" cy="6" r="34" fill={TINTE} />
-        <circle cx="2" cy="6" r="27" fill="#fff" />
-        {Array.from({ length: 12 }, (_, i) => {
-          const a = (i / 12) * Math.PI * 2;
-          return (
-            <path
-              key={i}
-              d={`M${(2 + Math.sin(a) * 22).toFixed(1)} ${(6 - Math.cos(a) * 22).toFixed(1)}L${(2 + Math.sin(a) * 25).toFixed(1)} ${(6 - Math.cos(a) * 25).toFixed(1)}`}
-              stroke={GRAU}
-              strokeWidth="1.6"
-            />
-          );
-        })}
-        <path d="M2 6L14 -10" stroke={ORANGE} strokeWidth="3" strokeLinecap="round" />
-        <circle cx="2" cy="6" r="3" fill={ORANGE} />
-      </g>
-      {/* grüner Haken rechts */}
-      <g transform="translate(262 120)">
-        <circle r="22" fill="#e9f6ef" />
-        <circle r="16" fill={GRUEN} />
-        <path d="M-7 0l5 5 9-10" stroke="#fff" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      </g>
+      <Blatt x={34} y={6} w={252} h={208} r={14}>
+        <text x={52} y={34} fontSize="12.5" fontWeight="700" fill={TINTE}>
+          Ladezeit am Handy
+        </text>
+        {/* Adresszeile mit Knopf */}
+        <path d={rr(52, 46, 216, 30, 8)} fill="#f5f5f7" />
+        <text x={64} y={65} fontSize="10" fill={TINTE}>
+          www.ihr-betrieb.de
+        </text>
+        <path d={rr(208, 50, 56, 22, 6)} fill={ORANGE} />
+        <text x={236} y={64.5} textAnchor="middle" fontSize="9.5" fontWeight="650" fill="#fff">
+          Testen
+        </text>
+        {zeilen.map((z, i) => (
+          <g key={z} transform={`translate(52 ${94 + i * 34})`}>
+            <circle cx="9" cy="9" r="9" fill="#e9f6ef" />
+            <path d="M5 9.2l2.8 2.8 5.2-5.6" stroke={GRUEN} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <text x="26" y="12.5" fontSize="10.5" fontWeight="600" fill={TINTE}>
+              {z}
+            </text>
+            <text x="216" y="12.5" textAnchor="end" fontSize="9.5" fill={GRUEN} fontWeight="600">
+              im grünen Bereich
+            </text>
+            {i < zeilen.length - 1 ? <path d="M26 26h190" stroke="#e5e5ea" /> : null}
+          </g>
+        ))}
+      </Blatt>
     </Svg>
   );
 }
@@ -185,11 +123,8 @@ export function BildPaketWahl() {
   const optionen = ["Eine Seite reicht", "Mehrere Seiten", "Inhalte selbst ändern"];
   return (
     <Svg>
-      {/* Spreader mit Seilen, Container hängt rechts oben */}
-      <path d="M244 0V30M286 0V30" stroke="#3a3a3c" strokeWidth="2" />
-      <rect x="228" y="30" width="74" height="7" rx="2" fill={ORANGE} />
-      <ContainerPlastisch x={230} y={44} L={70} H={26} t={14} farbe={CONTAINER.petrol} rippen={8} schatten={false} />
-      <Blatt x={22} y={58} w={226} h={150} r={16}>
+      <Blatt x={47} y={40} w={226} h={150} r={16}>
+        <g transform="translate(25 -18)">
         {/* Fortschritt: Frage 2 von 5 */}
         {[0, 1, 2, 3, 4].map((i) => (
           <rect key={i} x={38 + i * 22} y={74} width="18" height="4" rx="2" fill={i < 2 ? ORANGE : "#e5e5ea"} />
@@ -213,6 +148,7 @@ export function BildPaketWahl() {
             </g>
           );
         })}
+        </g>
       </Blatt>
     </Svg>
   );
@@ -271,34 +207,14 @@ export function BildKosten() {
   );
 }
 
-/* ---------- Erstgespräch: Kalender mit Zeitfenstern, Handy bestätigt ---------- */
-
-function Bestaetigt() {
-  return (
-    <g fontFamily="inherit">
-      <rect width="390" height="780" fill="#fff" />
-      <circle cx="195" cy="260" r="92" fill="#30a46c" fillOpacity=".14" />
-      <circle cx="195" cy="260" r="64" fill="#30a46c" />
-      <path d="M165 260l20 20 40-44" stroke="#fff" strokeWidth="16" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <text x="195" y="420" textAnchor="middle" fontSize="34" fontWeight="700" fill={TINTE}>
-        Termin steht
-      </text>
-      <text x="195" y="466" textAnchor="middle" fontSize="24" fill={GRAU}>
-        Erstgespräch
-      </text>
-      <rect x="40" y="620" width="310" height="70" rx="35" fill={ORANGE} />
-      <text x="195" y="664" textAnchor="middle" fontSize="24" fontWeight="650" fill="#fff">
-        Im Kalender sichern
-      </text>
-    </g>
-  );
-}
+/* ---------- Erstgespräch: Kalender mit Zeitfenstern ---------- */
 
 export function BildTermin() {
   const tage = ["Mo", "Di", "Mi", "Do", "Fr"];
   const zeiten = ["09:00", "10:30", "14:00", "16:30"];
   return (
     <Svg>
+      <g transform="translate(40 -10)">
       <Blatt x={22} y={40} w={196} h={168} r={16}>
         <path d={`M38 40H202A16 16 0 0 1 218 56V70H22V56A16 16 0 0 1 38 40Z`} fill={ORANGE} />
         <text x={36} y={60} fontSize="11" fontWeight="700" fill="#fff">
@@ -329,7 +245,7 @@ export function BildTermin() {
           );
         })}
       </Blatt>
-      <Handy x={214} y={58} w={84} h={172} vb="0 0 390 780" inhalt={<Bestaetigt />} dreh={6} />
+      </g>
     </Svg>
   );
 }
