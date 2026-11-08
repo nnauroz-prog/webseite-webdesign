@@ -174,9 +174,9 @@ export default function HomePage() {
           head={<LadelisteKopf />}
           pakete={PAKETE_KURZ}
           className="spaeter-geladen"
-          style={spaeter(2480, 1850)}
+          style={spaeter(1880, 1280)}
         />
-        <section id="lotse" className="spaeter-geladen flaeche-hell abschnitt" style={spaeter(2150, 1320)}>
+        <section id="lotse" className="spaeter-geladen flaeche-hell abschnitt" style={spaeter(1990, 1060)}>
           <Lotse />
         </section>
         <Ablauf />
@@ -187,7 +187,7 @@ export default function HomePage() {
         <Journal />
         <Kontakt />
       </main>
-      <MarketingFooter />
+      <MarketingFooter ohnePreisHinweis ohneNachOben />
     </div>
   );
 }
@@ -195,8 +195,8 @@ export default function HomePage() {
 /** Startgröße für .spaeter und .spaeter-geladen (app/hafen.css): Höhe in
  *  px schmal / ab 1024 px. WICHTIG: contain-intrinsic-block-size gilt nur
  *  für die Inhaltsbox, also die gemessene Gesamthöhe MINUS Innenabstand
- *  oben und unten eintragen (.abschnitt 160/240 px, .abschluss 192/280 px,
- *  Regal nur oben 64/96 px), sonst springen Anker beim weichen Scrollen. Gemessen bei 390, 1024 und 1440 px; bei
+ *  oben und unten eintragen (.abschnitt 128/224 px, .abschluss 160/256 px,
+ *  Regal nur oben 64/112 px), sonst springen Anker beim weichen Scrollen. Gemessen bei 390, 1024 und 1440 px; bei
  *  Textänderungen grob nachziehen. Die Ablauf-Szene setzt ihre Höhe am
  *  Rechner selbst (app/hafen.css, Block „Ablauf-Szene“). */
 function spaeter(h: number, hLg: number) {
@@ -205,17 +205,30 @@ function spaeter(h: number, hLg: number) {
 
 /* ------------------------------------------------------------------
  * 2. Leistungen als Bento-Kacheln (Texte: lib/leistungen-kacheln.ts).
- * Desktop: [Website · 7] [Hosting · 5] / [Texte · 4] [Anfragen · 4]
- * [Google · 4] / [Selbst pflegen · 12, Querformat].
+ * Desktop: [Website · 6] [Hosting · 6] / [Texte · 4] [Anfragen · 4]
+ * [Google · 4] / [Selbst pflegen · 12, Querformat]. Erste Reihe halb und
+ * halb, damit „Hosting und Pflege“ einzeilig bleibt wie sein Nachbar;
+ * zweispaltig (640–1067 px) steht die Website breit über allen.
+ * Töne so gewählt, dass Schwarz und Hell in jeder Anordnung wechseln:
+ * gestapelt (s h s h s h), zweispaltig (app/apple.css tauscht dort
+ * Anfragen und Google) und im 12er-Raster. Die letzte Kachel ist hell,
+ * weil danach die schwarze Text-Szene kommt.
  * ---------------------------------------------------------------- */
 const BENTO: Record<
   string,
-  { ton: "hell" | "schwarz"; spalten: 4 | 5 | 7 | 12; gross?: boolean; quer?: boolean; motiv: React.ReactNode }
+  {
+    ton: "hell" | "schwarz";
+    spalten: 4 | 5 | 6 | 7 | 12;
+    breit?: boolean;
+    gross?: boolean;
+    quer?: boolean;
+    motiv: React.ReactNode;
+  }
 > = {
-  "Die Website selbst": { ton: "hell", spalten: 7, gross: true, motiv: <BrowserMotiv /> },
+  "Die Website selbst": { ton: "schwarz", spalten: 6, breit: true, gross: true, motiv: <BrowserMotiv /> },
   "Hosting und Pflege": {
-    ton: "schwarz",
-    spalten: 5,
+    ton: "hell",
+    spalten: 6,
     gross: true,
     motiv: <ContainerMotiv groesse="l" stapel={["signal", "zink", "gruen"]} />,
   },
@@ -227,7 +240,7 @@ const BENTO: Record<
 
 function Leistungen() {
   return (
-    <section id="leistungen" className="spaeter-geladen flaeche-weiss abschnitt" style={spaeter(3360, 1960)}>
+    <section id="leistungen" className="spaeter-geladen flaeche-weiss abschnitt" style={spaeter(3160, 1800)}>
       <div className="inhalt abschnitt-kopf">
         <h2 data-auftritt="titel" className="t-abschnitt">
           Was zu Ihrer Website gehört
@@ -247,6 +260,7 @@ function Leistungen() {
               key={b.title}
               ton={k?.ton ?? "hell"}
               spalten={k?.spalten}
+              span={k?.breit ? "breit" : undefined}
               gross={k?.gross}
               quer={k?.quer}
               eyebrow={b.tag}
@@ -330,12 +344,10 @@ function LadelisteKopf() {
         Die Ladeliste für Ihre Branche
       </h2>
       <p className="t-unter">
-        Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will.
+        Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will. Wählen Sie Ihre
+        Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
       </p>
-      <p className="text-muted-foreground mx-auto mt-5 max-w-[38em] text-[17px] leading-[1.47]">
-        Wählen Sie Ihre Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
-      </p>
-      <p className="mt-1">
+      <p className="mt-2">
         <MehrLink href="/branchen">Alle Branchen im Einzelnen</MehrLink>
       </p>
     </div>
@@ -349,8 +361,8 @@ function Ablauf() {
   return (
     <section
       id="ablauf"
-      className="ablauf-spur spaeter-geladen buehne-abschnitt bg-black text-[#f5f5f7]"
-      style={spaeter(1120, 890)}
+      className="ablauf-spur spaeter-geladen abschnitt bg-black text-[#f5f5f7]"
+      style={spaeter(960, 890)}
     >
       {/* Die eine Scroll-Szene der Seite: Am Rechner bleibt die Bühne
           stehen, während die Fähre die Halte abfährt (app/hafen.css,
@@ -384,7 +396,7 @@ function Ablauf() {
  * ---------------------------------------------------------------- */
 function Vorschau() {
   return (
-    <section id="vorschau" className="spaeter-geladen flaeche-weiss abschnitt" style={spaeter(1170, 1520)}>
+    <section id="vorschau" className="spaeter-geladen flaeche-weiss abschnitt" style={spaeter(1000, 1230)}>
       <div className="inhalt">
         <div className="abschnitt-kopf">
           <h2 data-auftritt="titel" className="t-abschnitt">
@@ -392,11 +404,10 @@ function Vorschau() {
           </h2>
           <p className="t-unter">Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche.</p>
         </div>
-        {/* Bühne: das Gerät fährt beim Hinscrollen ein (.buehne-einzug). */}
-        <div className="karte p-3 sm:p-10 lg:p-16">
-          <div className="buehne-einzug mx-auto max-w-5xl min-w-0">
-            <LivePreview />
-          </div>
+        {/* Das Gerät steht frei auf der Fläche (keine Karte um die Karte)
+            und fährt beim Hinscrollen ein (.buehne-einzug). */}
+        <div className="buehne-einzug mx-auto max-w-5xl min-w-0">
+          <LivePreview />
         </div>
         <div className="text-muted-foreground mx-auto mt-10 max-w-[36em] space-y-3 text-center text-[17px] leading-[1.47] md:mt-12">
           <p>Die Skizze entsteht sofort hier im Browser, gespeichert wird nichts.</p>
@@ -415,7 +426,7 @@ function Vorschau() {
  * ---------------------------------------------------------------- */
 function Preise() {
   return (
-    <section id="preise" className="spaeter-geladen flaeche-hell abschnitt" style={spaeter(1350, 1600)}>
+    <section id="preise" className="spaeter-geladen flaeche-hell abschnitt" style={spaeter(1150, 1300)}>
       <div className="inhalt abschnitt-kopf">
         <h2 data-auftritt="titel" className="t-abschnitt">
           Festpreis ab {STARTER_PRICE}
@@ -430,7 +441,7 @@ function Preise() {
         <p className="text-muted-foreground mx-auto max-w-[40em] text-[17px] leading-[1.47] text-pretty">
           Kommt später etwas dazu, sprechen wir vorher darüber. Welches Paket passt, klären wir im ersten Telefonat. Für
           die meisten Betriebe empfehlen wir Business; die{" "}
-          <Link href="#ladeliste" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+          <Link href="#ladeliste" className="text-gold-ink hover:underline">
             Ladeliste
           </Link>{" "}
           nennt die Empfehlung für Ihre Branche.
@@ -447,7 +458,7 @@ function Preise() {
             <>
               {" "}
               Für ein neues Erscheinungsbild gibt es{" "}
-              <Link href={`/pakete/${STUDIO.slug}`} className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+              <Link href={`/pakete/${STUDIO.slug}`} className="text-gold-ink inline-block py-1 hover:underline">
                 {STUDIO.name} {STUDIO.setup}
               </Link>
               .
@@ -470,7 +481,7 @@ function Preise() {
  * ---------------------------------------------------------------- */
 function VorherNachher() {
   return (
-    <section className="spaeter flaeche-weiss abschnitt" style={spaeter(610, 1090)}>
+    <section className="spaeter flaeche-weiss abschnitt" style={spaeter(600, 1080)}>
       <div className="inhalt">
         <div className="abschnitt-kopf">
           <h2 data-auftritt="titel" className="t-abschnitt">
@@ -478,7 +489,9 @@ function VorherNachher() {
           </h2>
           <p className="t-unter">Ziehen Sie den Regler.</p>
         </div>
-        <div className="karte p-3 sm:p-10 lg:p-16">
+        {/* Bühne erst ab 640 px; am Handy steht das Gerät frei auf der
+            Fläche (sonst Karte in Karte mit schmalem grauem Rand). */}
+        <div className="karte max-sm:overflow-visible max-sm:rounded-none max-sm:bg-transparent sm:p-10 lg:p-16">
           <div className="buehne-einzug">
             <VorherNachherRegler />
           </div>
@@ -493,16 +506,18 @@ function VorherNachher() {
 }
 
 /* ------------------------------------------------------------------
- * 11. Fragen: offen gesetzt als Karten, nichts zum Aufklappen.
+ * 11. Fragen: eine ruhige Liste zum Aufklappen wie bei Apple (details,
+ * ohne Script). Die Antworten stehen im Markup (FAQ_LD und Suchmaschinen
+ * sehen sie), sichtbar werden sie per Tipp auf die Frage.
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <section id="faq" aria-labelledby="faq-titel" className="spaeter flaeche-hell abschnitt" style={spaeter(1720, 840)}>
+    <section id="faq" aria-labelledby="faq-titel" className="spaeter flaeche-hell abschnitt" style={spaeter(690, 560)}>
       <div className="inhalt">
         <h2 id="faq-titel" data-auftritt="titel" className="zweiton">
           <span>Häufige Fragen.</span> <span className="grau">Was vor dem ersten Anruf oft gefragt wird.</span>
         </h2>
-        <ul className="mt-3 flex flex-wrap gap-x-8">
+        <ul className="mt-2 flex flex-col items-start sm:flex-row sm:flex-wrap sm:gap-x-8">
           <li>
             <MehrLink href="/faq">Alle Fragen</MehrLink>
           </li>
@@ -510,14 +525,17 @@ function Fragen() {
             <MehrLink href="/webseite-erstellen">Selbst bauen: Webseite erstellen in sieben Schritten</MehrLink>
           </li>
         </ul>
-        <dl className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:mt-10 lg:grid-cols-3 lg:gap-5">
+        <div className="karte karte-weiss fragen-liste mt-6 lg:mt-8">
           {FAQ.map((item) => (
-            <div key={item.q} data-auftritt="" className="karte karte-weiss p-7">
-              <dt className="text-[21px] leading-[1.19] font-semibold tracking-[-0.015em]">{item.q}</dt>
-              <dd className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">{item.a}</dd>
-            </div>
+            <details key={item.q} className="frage">
+              <summary className="frage-kopf">
+                <h3 className="frage-titel">{item.q}</h3>
+                <span aria-hidden="true" className="frage-zeichen" />
+              </summary>
+              <p className="frage-antwort">{item.a}</p>
+            </details>
           ))}
-        </dl>
+        </div>
       </div>
     </section>
   );
@@ -533,8 +551,9 @@ function Journal() {
       fett="Journal."
       grau="Ratgeber für Betriebe."
       flaeche="weiss"
+      raster
       className="spaeter"
-      style={spaeter(570, 650)}
+      style={spaeter(550, 910)}
     >
       {JOURNAL_NEU.map((post) => (
         <RegalKarte
@@ -582,7 +601,7 @@ function Kontakt() {
     <Abschluss
       id="kontakt"
       className="spaeter"
-      style={spaeter(420, 430)}
+      style={spaeter(400, 430)}
       titel="Am schnellsten geht es am Telefon."
       zwischen={
         <a

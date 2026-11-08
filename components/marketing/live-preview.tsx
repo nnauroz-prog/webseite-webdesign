@@ -200,20 +200,33 @@ const BRANCHE_PRESET: Record<string, string> = {
 const SITE_W = 960;
 const SITE_H = 600;
 
+// Füllwörter und Rechtsformen gehören nicht in eine Wunschadresse.
+const DOMAIN_WEGLASSEN = new Set(["und", "gmbh", "mbh", "ug", "ag", "kg", "ohg", "gbr", "ek", "co", "haftungsbeschraenkt"]);
+const DOMAIN_MAX = 32;
+
 function domainFor(name: string) {
-  const slug = name
+  const woerter = name
     .toLowerCase()
     .replace(/ä/g, "ae")
     .replace(/ö/g, "oe")
     .replace(/ü/g, "ue")
     .replace(/ß/g, "ss")
-    .replace(/&/g, "und")
+    // „e.K.“ → „ek“, „Co.“ → „co“, bevor Punkte zu Trennern werden.
+    .replace(/\b(e)\.\s?(k)\./g, "$1$2")
     // Akzente abtrennen und entfernen: „Café“ → „cafe“.
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 32);
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w && !DOMAIN_WEGLASSEN.has(w));
+  // Nur ganze Wörter: an der letzten Wortgrenze vor 32 Zeichen kürzen,
+  // nie mitten in einer Silbe und nie mit einem Bindestrich vor „.de“.
+  let slug = "";
+  for (const w of woerter) {
+    const next = slug ? `${slug}-${w}` : w;
+    if (next.length > DOMAIN_MAX) break;
+    slug = next;
+  }
+  if (!slug && woerter[0]) slug = woerter[0].slice(0, DOMAIN_MAX);
   return `www.${slug || "ihr-betrieb"}.de`;
 }
 
@@ -279,7 +292,7 @@ export function LivePreview() {
       </div>
 
       {/* Browserfenster */}
-      <div className="overflow-hidden rounded-[12px] ring-1 ring-black/15">
+      <div className="mx-1 overflow-hidden rounded-[12px] ring-1 ring-black/15 sm:mx-2">
         <div className="bg-foreground flex items-center gap-2 px-3 py-2">
           <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
             <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />

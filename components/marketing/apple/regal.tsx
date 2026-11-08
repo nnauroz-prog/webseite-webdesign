@@ -27,6 +27,7 @@ export function Regal({
   className,
   style,
   flaeche = "hell",
+  raster = false,
 }: {
   /** Anker-id des Abschnitts; die Spur bekommt `${id}-spur`. */
   id: string;
@@ -37,6 +38,9 @@ export function Regal({
   style?: React.CSSProperties;
   /** Fläche des Abschnitts: Karten sind weiß mit Schatten. */
   flaeche?: "hell" | "weiss";
+  /** Wenige Karten (bis vier): ab 1068 px ein ruhiges 2-×-2-Raster ohne Pfeile
+   *  statt einer Spur, die nur ein Stück weit blättert. */
+  raster?: boolean;
 }) {
   const spurId = `${id}-spur`;
   return (
@@ -44,7 +48,7 @@ export function Regal({
       id={id}
       aria-labelledby={`${id}-titel`}
       style={style}
-      className={cn("regal pt-16 sm:pt-20 lg:pt-24", flaeche === "hell" ? "flaeche-hell" : "flaeche-weiss", className)}
+      className={cn("regal", raster && "regal-raster", flaeche === "hell" ? "flaeche-hell" : "flaeche-weiss", className)}
     >
       <div className="inhalt regal-kopf">
         <h2 id={`${id}-titel`} className="zweiton" data-auftritt="titel">
@@ -60,7 +64,9 @@ export function Regal({
       <div id={spurId} className="regal-spur" tabIndex={0} role="group" aria-label={`${fett.replace(/\.$/, "")}: Karten`}>
         <ul role="list">{children}</ul>
       </div>
-      <div className="pb-12 sm:pb-16 lg:pb-20">
+      {/* Fuß: mobil nur der Rest des Abschnittsabstands (die Spur bringt
+          40 px Schattenraum mit), mit Pfeilen deren Zeile. */}
+      <div className="regal-fuss">
         <RegalPfeile spurId={spurId} label={fett.replace(/\.$/, "")} />
       </div>
     </section>
@@ -69,7 +75,7 @@ export function Regal({
 
 /**
  * Karte im Regal: weiß, Schatten, Hover scale(1.01). Ganze Karte klickbar
- * (Link mit .karte-link), Text oben, optional ein Motiv unten.
+ * (Link mit .karte-link), optional ein Motiv oben, darunter der Text.
  */
 export function RegalKarte({
   eyebrow,
@@ -99,11 +105,12 @@ export function RegalKarte({
           dunkel && "karte-schwarz",
         )}
       >
+        {/* Wie im Apple-Regal: Bild oben, Text darunter, Link am Fuß. */}
+        {motiv ? <div className="regal-motiv">{motiv}</div> : null}
         {eyebrow ? <p className="t-eyebrow text-[12px] lg:text-[12px]">{eyebrow}</p> : null}
         <h3 className={cn("t-karte", eyebrow && "mt-2")}>{titel}</h3>
         {text ? <p className="text-muted-foreground mt-3 text-[17px] leading-[1.47]">{text}</p> : null}
-        {motiv ? <div className="mt-auto flex justify-center pt-8">{motiv}</div> : null}
-        <div className={cn(motiv ? "mt-6" : "mt-auto pt-6")}>
+        <div className="mt-auto pt-6">
           <MehrLink href={href} kontext={titel} groesse="klein" frei={false} className="karte-link">
             {linkText}
           </MehrLink>

@@ -36,13 +36,12 @@ export async function HafenHero() {
     <HeroBuehne id="start" className={s.hero}>
       <div className={`${s.copy} inhalt`}>
         {/* Die H1 trägt den Suchbegriff (für Google), der große Satz
-            darunter ist die Botschaft (für Menschen). Am Handy zwei
-            gesetzte Zeilen, ab sm eine Zeile mit Mittelpunkt; der Trenner
-            ist am Handy nur für Screenreader da. */}
+            darunter ist die Botschaft (für Menschen). Eine Zeile mit
+            Mittelpunkt; unter 375 px ist die erste Hälfte nur für
+            Screenreader da (hero.module.css, .kennzeile). */}
         <h1 className={s.kennzeile}>
-          <span className="block sm:inline">Website erstellen lassen</span>
-          <span className="sr-only sm:not-sr-only"> · </span>
-          <span className="block sm:inline">Webdesign aus Hamburg</span>
+          <span className={s.kennzeileErste}>Website erstellen lassen</span>
+          <span className={s.kennzeileErste}>{" ·"}</span> <span>Webdesign aus Hamburg</span>
         </h1>
         <p className={`t-hero ${s.botschaft}`}>Wir bauen Websites für Betriebe.</p>
         <p className={s.unter}>
@@ -86,10 +85,10 @@ export async function HafenHero() {
           ) : null}
         </p>
         <p className={s.nebenZeile}>
-          <MehrLink href="/wartung" groesse="klein">
+          <MehrLink href="/wartung" groesse="klein" frei={false}>
             Schon eine Website? Pflege ab {WARTUNG_PREISE.basis} im Monat
           </MehrLink>
-          <MehrLink href="/audit" groesse="klein">
+          <MehrLink href="/audit" groesse="klein" frei={false}>
             Kostenlose Durchsicht Ihrer Website
           </MehrLink>
         </p>

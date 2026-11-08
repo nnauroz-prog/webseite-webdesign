@@ -301,13 +301,13 @@ function MobileFullscreenMenu({
           Website anfragen
         </Link>
         <div className="flex flex-wrap items-center justify-center gap-x-6 text-[17px]">
-          <a href="tel:+491607621876" className="link-chevron min-h-11">
+          <a href="tel:+491607621876" className="link-chevron link-chevron-frei">
             Anrufen<span aria-hidden="true" className="chev">›</span>
           </a>
-          <a href="mailto:info@sitalo.de" className="link-chevron min-h-11">
+          <a href="mailto:info@sitalo.de" className="link-chevron link-chevron-frei">
             Schreiben<span aria-hidden="true" className="chev">›</span>
           </a>
-          <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="link-chevron min-h-11">
+          <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="link-chevron link-chevron-frei">
             Speichern<span aria-hidden="true" className="chev">›</span>
           </a>
         </div>

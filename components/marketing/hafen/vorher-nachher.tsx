@@ -20,11 +20,15 @@ import { useEffect, useRef, useState } from "react";
 
 const W = 960;
 const H = 600;
+const START = 45;
 
 export function VorherNachher() {
   const frameRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
-  const [pos, setPos] = useState(38);
+  // Start genau an der Kante zwischen Foto und Textspalte der neuen
+  // Seite: links steht die alte Seite mit Kopf, Überschrift und Text,
+  // rechts die neue mit Überschrift und Knöpfen (kein Fotostreifen).
+  const [pos, setPos] = useState(START);
 
   useEffect(() => {
     const el = frameRef.current;
@@ -48,7 +52,7 @@ export function VorherNachher() {
       ([e]) => {
         if (!e.isIntersecting) return;
         io.disconnect();
-        [24, 62, 38].forEach((v, i) =>
+        [28, 64, START].forEach((v, i) =>
           timers.push(window.setTimeout(() => !touched.current && setPos(v), 400 + i * 700)),
         );
       },
@@ -104,18 +108,21 @@ export function VorherNachher() {
             </div>
           </div>
 
-          {/* Griff */}
+          {/* Trennlinie (läuft bis 0/100 %) und Griff (bleibt ganz im
+              Rahmen: Mitte zwischen 22 px und Breite − 22 px). */}
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-y-0 ${dragging ? "" : "transition-[left] duration-500 ease-out"}`}
+            className={`pointer-events-none absolute inset-y-0 -ml-px w-0.5 bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.12)] ${dragging ? "" : "transition-[left] duration-500 ease-out"}`}
             style={{ left: `${pos}%` }}
+          />
+          <div
+            aria-hidden="true"
+            className={`text-foreground pointer-events-none absolute top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgb(0_0_0/0.22)] ${dragging ? "" : "transition-[left] duration-500 ease-out"}`}
+            style={{ left: `clamp(22px, ${pos}%, calc(100% - 22px))` }}
           >
-            <div className="absolute inset-y-0 -left-px w-0.5 bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.12)]" />
-            <div className="text-foreground absolute top-1/2 left-0 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgb(0_0_0/0.22)]">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 6l-6 6 6 6M15 6l6 6-6 6" strokeLinecap="square" />
-              </svg>
-            </div>
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 6l-6 6 6 6M15 6l6 6-6 6" strokeLinecap="square" />
+            </svg>
           </div>
 
           <input
@@ -143,9 +150,11 @@ export function VorherNachher() {
 }
 
 /** Typische Baukasten-Seite von etwa 2016: großes Titelbild mit dünner
- *  Schrift, zentrierter Willkommenstext in kleinem Grau, Öffnungszeiten
- *  als PDF, Cookie-Banner über dem Inhalt. Keine Parodie, sondern so,
- *  wie viele Betriebsseiten heute noch aussehen. */
+ *  Schrift, Willkommenstext in kleinem Grau, Öffnungszeiten als PDF,
+ *  Cookie-Banner über dem Inhalt. Keine Parodie, sondern so, wie viele
+ *  Betriebsseiten heute noch aussehen. Alles Wesentliche steht in den
+ *  linken 45 % (bis START), damit der Regler im Ruhezustand die ganze
+ *  alte Seite neben der neuen zeigt und nichts angeschnitten ist. */
 function Vorher() {
   return (
     <div className="relative h-full w-full bg-white text-[#666]" style={{ fontFamily: "'Open Sans', Arial, sans-serif" }}>
@@ -168,32 +177,29 @@ function Vorher() {
           sizes="960px"
           className="object-cover brightness-75 saturate-50"
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+        <div className="absolute inset-y-0 left-0 flex w-[420px] flex-col justify-center px-10 text-white">
           <p className="text-[34px] font-light tracking-[0.04em]">Willkommen</p>
           <p className="mt-1 text-[13px] font-light">bei Ihrer Tischlerei im Hamburger Raum</p>
         </div>
-        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+        <div className="absolute bottom-3 left-10 flex gap-1.5">
           <span className="h-2 w-2 rounded-full bg-white" />
           <span className="h-2 w-2 rounded-full bg-white/50" />
           <span className="h-2 w-2 rounded-full bg-white/50" />
         </div>
       </div>
-      <div className="mx-auto max-w-[620px] px-6 py-6 text-center text-[11.5px] leading-[1.7]">
+      <div className="w-[420px] px-10 py-6 text-[11.5px] leading-[1.7]">
         <p className="text-[17px] font-light text-[#555]">Herzlich willkommen auf unserer Homepage</p>
         <p className="mt-3">
           Wir sind ein Familienbetrieb und fertigen Möbel, Treppen, Fenster, Türen und vieles mehr nach Ihren Wünschen.
-          Qualität und Zuverlässigkeit sind für uns selbstverständlich. Weitere Informationen finden Sie unter dem
-          Menüpunkt Leistungen. Wir freuen uns auf Ihren Besuch!
+          Qualität und Zuverlässigkeit sind für uns selbstverständlich. Wir freuen uns auf Ihren Besuch!
         </p>
         <p className="mt-3">
           <span className="text-[#c0392b] underline">Öffnungszeiten (PDF, 1,2 MB)</span> · Anfahrt siehe Kontakt
         </p>
-        <p className="mt-2 text-[10px] text-[#6f6f6f]">© 2016 Tischlerei Nordholz · Erstellt mit einem Homepage-Baukasten</p>
+        <p className="mt-2 text-[10px] text-[#6f6f6f]">© 2016 Tischlerei Nordholz</p>
       </div>
-      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-6 bg-[#333]/95 px-8 py-4 text-[11px] text-white">
-        <span>
-          Diese Website verwendet Cookies. Wenn Sie die Website weiter nutzen, gehen wir von Ihrem Einverständnis aus.
-        </span>
+      <div className="absolute inset-x-0 bottom-0 flex items-center gap-6 bg-[#333]/95 px-10 py-4 text-[11px] text-white">
+        <span>Diese Website verwendet Cookies.</span>
         <span className="shrink-0 bg-[#c0392b] px-4 py-1.5">OK</span>
       </div>
     </div>

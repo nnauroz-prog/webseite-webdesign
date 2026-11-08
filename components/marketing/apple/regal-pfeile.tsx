@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+/** Fehlen weniger als so viele Pixel bis zum Rand, gilt er als erreicht. */
+const REST = 24;
+
 /**
  * Seitenpfeile fürs Regal (ab 1024 px sichtbar, .regal-pfeile). Blättert
  * die Spur mit der id spurId um etwa eine Kartenbreite weiter und
@@ -18,8 +21,8 @@ export function RegalPfeile({ spurId, label }: { spurId: string; label: string }
     let raf = 0;
     const pruefen = () => {
       raf = 0;
-      setAnfang(spur.scrollLeft <= 4);
-      setEnde(spur.scrollLeft + spur.clientWidth >= spur.scrollWidth - 4);
+      setAnfang(spur.scrollLeft <= REST);
+      setEnde(spur.scrollLeft + spur.clientWidth >= spur.scrollWidth - REST);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(pruefen);
@@ -38,9 +41,18 @@ export function RegalPfeile({ spurId, label }: { spurId: string; label: string }
     const spur = document.getElementById(spurId);
     if (!spur) return;
     const karte = spur.querySelector("li");
-    const schritt = karte ? karte.getBoundingClientRect().width + 20 : spur.clientWidth * 0.8;
+    const liste = karte?.parentElement;
+    const abstand = liste ? parseFloat(getComputedStyle(liste).columnGap) || 0 : 0;
+    const schritt = karte ? karte.getBoundingClientRect().width + abstand : spur.clientWidth * 0.8;
+    const max = spur.scrollWidth - spur.clientWidth;
+    let ziel = spur.scrollLeft + richtung * schritt;
+    // Geht der Rest nicht in Kartenschritten auf, beim letzten Schritt
+    // ganz bis ans Ende: Die letzte Karte steht dann bündig an der
+    // Inhaltskante, und kein Mini-Schritt von 20 px bleibt übrig.
+    if (max - ziel < schritt * 0.5) ziel = max;
+    if (ziel < schritt * 0.5) ziel = 0;
     const ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    spur.scrollBy({ left: richtung * schritt, behavior: ruhig ? "auto" : "smooth" });
+    spur.scrollTo({ left: ziel, behavior: ruhig ? "auto" : "smooth" });
   };
 
   return (

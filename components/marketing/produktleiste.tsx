@@ -41,22 +41,37 @@ export function Produktleiste({
   const leiste = useRef<HTMLElement | null>(null);
   const panelId = useId();
 
-  // Über schwarzen Abschnitten (volle Breite) wechselt das Glas auf die
-  // dunkle Variante, wie Apple es auf dunklen Seiten tut. Beobachtet wird
-  // nur ein Streifen in Höhe der Leiste am oberen Rand.
+  // Über schwarzen Flächen wechselt das Glas auf die dunkle Variante, wie
+  // Apple es auf dunklen Seiten tut. Zählt jede schwarze Fläche, die
+  // (fast) so breit ist wie das Fenster: Abschnitte, unter 1024 px auch
+  // die schwarzen Kacheln und Karten. Ab 1024 px nicht: Dort stehen
+  // Kacheln mit sichtbarem weißem Rand auf weißer Seite, und die Leiste
+  // soll nicht je Kachelreihe zwischen hell und dunkel springen. Beobachtet wird die erste Pixelzeile
+  // UNTER der Leiste: Die Leiste zeigt die Farbe dessen, was direkt unter
+  // ihr weitergeht. Ein Abschnitt, der als Sprungziel genau an der
+  // Unterkante beginnt, schaltet sie also hell, auch wenn hinter dem Glas
+  // noch das Ende des vorigen schwarzen Abschnitts liegt.
   useEffect(() => {
     if (!("IntersectionObserver" in window)) return;
     let io: IntersectionObserver | null = null;
-    const dunkleFlaechen = () =>
-      Array.from(document.querySelectorAll<HTMLElement>("main :is(.flaeche-schwarz, .bg-black, [data-flaeche-dunkel])")).filter(
-        (el) => el.offsetWidth >= window.innerWidth * 0.9,
+    const dunkleFlaechen = () => {
+      const auswahl =
+        window.innerWidth < 1024
+          ? "main :is(.flaeche-schwarz, .bg-black, .karte-schwarz, [data-flaeche-dunkel])"
+          : "main :is(.flaeche-schwarz, .bg-black, [data-flaeche-dunkel])";
+      return Array.from(document.querySelectorAll<HTMLElement>(auswahl)).filter(
+        (el) => el.offsetWidth >= window.innerWidth * 0.85,
       );
+    };
     const start = () => {
       io?.disconnect();
       const ziele = dunkleFlaechen();
       if (!ziele.length) return;
       const h = leiste.current?.offsetHeight ?? 52;
-      const unten = Math.max(0, window.innerHeight - Math.ceil(h / 2));
+      // Streifen 2 px unter der Unterkante: Eine Fläche, die genau an der
+      // Kante endet, berührt ihn nicht (IO zählt bloßes Berühren mit).
+      const oben = h + 2;
+      const unten = Math.max(0, window.innerHeight - oben - 1);
       const drin = new Set<Element>();
       io = new IntersectionObserver(
         (eintraege) => {
@@ -66,7 +81,7 @@ export function Produktleiste({
           }
           setDunkel(drin.size > 0);
         },
-        { rootMargin: `0px 0px -${unten}px 0px` },
+        { rootMargin: `-${oben}px 0px -${unten}px 0px` },
       );
       ziele.forEach((z) => io!.observe(z));
     };
@@ -114,14 +129,45 @@ export function Produktleiste({
     return () => io.disconnect();
   }, [links]);
 
+  // Offenes Abschnittsmenü schließt wie bei Apple: Escape, ein Tipp
+  // außerhalb der Leiste (auch auf den Schleier) oder Scrollen.
   useEffect(() => {
     if (!offen) return;
+    const zu = () => setOffen(false);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOffen(false);
+      if (e.key === "Escape") zu();
+    };
+    const onPointer = (e: PointerEvent) => {
+      const ziel = e.target as Element;
+      if (!leiste.current?.contains(ziel) || ziel.classList?.contains("produktleiste-schleier")) zu();
+    };
+    const startY = window.scrollY;
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - startY) > 8) zu();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [offen]);
+
+  // Der Seitenname führt wie bei Apple ganz nach oben (scrollY 0), nicht
+  // nur an den Anfang des Ziels: Der Abstand für die klebende Leiste
+  // (scroll-padding-top) ließe sonst einen Streifen der globalen
+  // Navigation stehen. Der Fokus springt trotzdem auf das Ziel.
+  const nachOben = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setOffen(false);
+    if (!titelHref.startsWith("#") || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    window.scrollTo({ top: 0 });
+    const ziel = titelHref.length > 1 ? document.getElementById(titelHref.slice(1)) : null;
+    if (ziel?.hasAttribute("tabindex")) ziel.focus({ preventScroll: true });
+    if (window.location.hash) history.replaceState(null, "", window.location.pathname + window.location.search);
+  };
 
   return (
     <>
@@ -136,7 +182,7 @@ export function Produktleiste({
         className="produktleiste print:hidden"
       >
         <div className="produktleiste-innen">
-          <a href={titelHref} className="produktleiste-titel" onClick={() => setOffen(false)}>
+          <a href={titelHref} className="produktleiste-titel" onClick={nachOben}>
             <span className="truncate">{titel}</span>
           </a>
           <div className="produktleiste-rechts">
@@ -180,6 +226,9 @@ export function Produktleiste({
             ) : null}
           </div>
         </div>
+        {/* Schleier unter dem offenen Menü: dämpft die Seite, ein Tipp
+            darauf schließt (pointerdown oben). */}
+        {offen ? <div aria-hidden="true" className="produktleiste-schleier" /> : null}
         {links.length ? (
           <div id={panelId} hidden={!offen} className="produktleiste-panel">
             <ul>

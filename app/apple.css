@@ -100,9 +100,14 @@
     letter-spacing: -0.018em;
     font-weight: 600;
     color: var(--foreground);
-    text-wrap: balance;
+    text-wrap: pretty;
   }
+  /* Der graue Teil ist ein Block in der Zeile: Passt er nicht mehr
+     hinter den schwarzen, beginnt er geschlossen in der nächsten Zeile
+     („Häufige Fragen.“ / „Was vor dem ersten Anruf …“), statt mit einem
+     einzelnen grauen Wort am Ende der schwarzen Zeile. */
   .zweiton > .grau {
+    display: inline-block;
     color: var(--muted-foreground);
   }
   /* Auf Schwarz: Nebentöne heller. */
@@ -208,8 +213,31 @@
     margin-inline: auto;
     padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
   }
+  /* Abschnittsabstand wie bei Apple: mobil 64, Tablet 88, Rechner
+     112 px je Seite. --abschnitt-y nutzen auch Regal und Abschluss. */
+  :root {
+    --abschnitt-y: 64px;
+  }
   .abschnitt {
-    padding-block: 80px;
+    padding-block: var(--abschnitt-y);
+  }
+  /* Zwei Abschnitte derselben Fläche hintereinander: kein doppelter
+     Abstand (sonst ein Loch ohne Farbwechsel). */
+  :is(
+      .flaeche-weiss:is(.abschnitt, .regal) + .flaeche-weiss,
+      .flaeche-hell:is(.abschnitt, .regal) + .flaeche-hell
+    ):is(.abschnitt, .regal) {
+    padding-top: 0;
+  }
+  /* Direkt nach dem Kopf der Startseite (#start, weiß): nur ein kleiner
+     Anlauf, der Kopf bringt seinen Fußabstand selbst mit. */
+  #start + .abschnitt {
+    padding-top: 40px;
+  }
+  @media (min-width: 1024px) {
+    #start + .abschnitt {
+      padding-top: 56px;
+    }
   }
   .abschnitt-kopf {
     margin-inline: auto;
@@ -225,16 +253,16 @@
     margin-top: 40px;
   }
   @media (min-width: 640px) {
-    .abschnitt {
-      padding-block: 100px;
+    :root {
+      --abschnitt-y: 88px;
     }
     .abschnitt-kopf + * {
       margin-top: 56px;
     }
   }
   @media (min-width: 1024px) {
-    .abschnitt {
-      padding-block: 120px;
+    :root {
+      --abschnitt-y: 112px;
     }
     .abschnitt-kopf > .t-unter {
       margin-top: 16px;
@@ -300,18 +328,23 @@
   /* ----------------------------------------------------------------
      5. Links mit Chevron (neues Markup, mehr-link.tsx)
      ---------------------------------------------------------------- */
+  /* Inline, nicht inline-flex: Bricht der Text um, bleibt der Chevron
+     direkt am letzten Wort (zwischen Text und „›“ steht kein Leerzeichen,
+     also auch keine Umbruchstelle). */
   .link-chevron {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.15em;
+    display: inline;
     color: var(--gold-ink);
     text-decoration: none;
     text-underline-offset: 0.18em;
   }
   .link-chevron .chev {
-    display: inline-block;
-    transform: translateY(-0.02em);
-    transition: transform 200ms var(--ease-apple);
+    position: relative;
+    top: -0.02em;
+    margin-left: 0.15em;
+    white-space: nowrap;
+  }
+  .link-chevron > .chev:first-child {
+    margin-left: 0;
   }
   @media (hover: hover) {
     .link-chevron:hover {
@@ -321,8 +354,13 @@
   .link-chevron:focus-visible {
     text-decoration: underline;
   }
+  /* Freistehend: ein Block mit 44 px Tippfläche (Zeile + Innenabstand). */
   .link-chevron-frei {
+    display: inline-block;
     min-height: 44px;
+    padding-block: 10px;
+    line-height: 24px;
+    text-wrap: balance;
   }
   :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz, .bg-foreground, .on-dark) .link-chevron {
     color: var(--signal-on-dark);
@@ -599,6 +637,22 @@
       inset 0 -1px 0 var(--haarlinie),
       0 12px 24px -16px rgb(0 0 0 / 0.18);
   }
+  /* Schleier unter dem offenen Menü. Die Leiste ist wegen ihres Glases
+     (backdrop-filter) der Bezugsrahmen, darum absolute statt fixed:
+     beginnt an ihrer Unterkante und reicht über das ganze Fenster. */
+  .produktleiste-schleier {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    height: 100lvh;
+    background-color: rgb(0 0 0 / 0.24);
+    animation: schleier-an 240ms var(--ease-apple) both;
+  }
+  @keyframes schleier-an {
+    from {
+      opacity: 0;
+    }
+  }
   .produktleiste-panel a {
     display: flex;
     min-height: 44px;
@@ -628,10 +682,24 @@
       display: none;
     }
   }
+  /* Schrift wechselt im selben Takt wie das Glas (sonst kurz dunkle
+     Schrift auf dunklem Glas). */
+  .produktleiste :is(.produktleiste-titel, .produktleiste-toggle) {
+    transition: color 240ms var(--ease-apple);
+  }
+  @media (min-width: 834px) {
+    .produktleiste-schleier {
+      display: none;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     .produktleiste,
-    .produktleiste-toggle svg {
+    .produktleiste-toggle svg,
+    .produktleiste :is(.produktleiste-titel, .produktleiste-toggle, .produktleiste-link) {
       transition: none;
+    }
+    .produktleiste-schleier {
+      animation: none;
     }
   }
 
@@ -643,9 +711,12 @@
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
+  /* Gestapelt (mobil) so hoch wie der Inhalt: Text oben, Motiv mit
+     festem Luftraum darunter, keine Leerfläche dazwischen. Erst wenn
+     Kacheln nebeneinander stehen, gleichen Mindesthöhen sie an; das
+     Motiv steht dann mittig im freien Raum (nur große Kacheln unten). */
   .bento-kachel {
     display: flex;
-    min-height: 420px;
     flex-direction: column;
     align-items: center;
     padding: 40px 24px 0;
@@ -657,11 +728,16 @@
   .bento-motiv {
     display: flex;
     width: 100%;
-    flex: 1;
-    align-items: flex-end;
+    flex: none;
+    align-items: center;
     justify-content: center;
-    padding-top: 24px;
-    padding-bottom: 32px;
+    padding-top: 32px;
+    padding-bottom: 40px;
+  }
+  .bento-motiv .container-motiv[data-groesse="l"]:only-child,
+  .bento-motiv .motiv-auf .container-motiv[data-groesse="l"] {
+    --b: 248px;
+    --h: 80px;
   }
   @media (min-width: 834px) {
     .bento {
@@ -669,11 +745,13 @@
       gap: 20px;
     }
     .bento-kachel {
-      min-height: 520px;
       padding: 56px 40px 0;
     }
     .bento-breit {
       grid-column: span 2;
+    }
+    .bento-motiv {
+      flex: 1;
     }
   }
 
@@ -684,6 +762,12 @@
      ---------------------------------------------------------------- */
   .regal {
     position: relative;
+    padding-top: var(--abschnitt-y);
+  }
+  /* Unter der Spur: die Spur bringt 40 px Schattenraum mit, der Fuß
+     ergänzt bis zum Abschnittsabstand (mit Pfeilen darunter). */
+  .regal-fuss {
+    padding-bottom: calc(var(--abschnitt-y) - 40px);
   }
   .regal-kopf {
     position: relative;
@@ -695,6 +779,10 @@
   }
   .regal-spur {
     --regal-rand: max(var(--rinne), calc((100% - var(--inhalt-max)) / 2 + var(--rinne)));
+    /* Dasselbe in Container-Einheiten, für Kartenbreiten (dort wäre
+       100 % die Breite des li, nicht die der Spur). */
+    --regal-rand-cq: max(var(--rinne), calc((100cqw - var(--inhalt-max)) / 2 + var(--rinne)));
+    container-type: inline-size;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
@@ -722,12 +810,22 @@
     flex: 0 0 auto;
     scroll-snap-align: start;
   }
+  /* Die letzte Karte rastet bündig an der rechten Inhaltskante ein
+     (dort endet die Spur dank gleichem Innenabstand rechts). */
+  .regal-spur > ul > li:last-child:not(:first-child) {
+    scroll-snap-align: end;
+  }
+  /* Alle Karten einer Spur sind so hoch wie die höchste (li ist flex);
+     keine feste Mindesthöhe, sonst steht unter kurzen Texten ein Loch. */
   .regal-karte {
     display: flex;
     width: min(78vw, 300px);
-    min-height: 380px;
     flex-direction: column;
     padding: 28px;
+  }
+  .regal-motiv {
+    display: flex;
+    margin-bottom: 24px;
   }
   .regal-karte-breit {
     width: min(84vw, 400px);
@@ -762,14 +860,23 @@
     }
     .regal-karte {
       width: 320px;
-      min-height: 420px;
       padding: 32px;
     }
     .regal-karte-breit {
       width: 440px;
     }
   }
-  @media (min-width: 1024px) {
+  /* Ab 980 px fielen bei fester Breite (320 + 20) drei Karten fast genau
+     bis an den Fensterrand (bei 1024 px: Ende bei 1022), und von der
+     vierten wäre nichts zu sehen. Darum hier relativ zur Spur: vom
+     linken Rand bis zum Fensterrand passen 3,4 Karten, die vierte ist
+     also immer gut sichtbar angeschnitten. Ab etwa 1400 px wieder 320. */
+  @media (min-width: 980px) {
+    .regal-karte:not(.regal-karte-breit) {
+      width: clamp(260px, calc((100cqw - var(--regal-rand-cq)) / 3.4 - 20px), 320px);
+    }
+  }
+  @media (min-width: 768px) {
     .regal-pfeile {
       display: flex;
       justify-content: flex-end;
@@ -777,6 +884,29 @@
       max-width: var(--inhalt-max);
       margin-inline: auto;
       padding-inline: var(--rinne);
+    }
+  }
+  /* Raster statt Spur (Regal raster): vier Karten als 2 × 2 bündig zur
+     Inhaltskante, ohne Pfeile. Vier Spalten wären nur 230 px breit, und
+     die Titel liefen über vier Zeilen. */
+  @media (min-width: 1068px) {
+    .regal-raster .regal-spur {
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+    .regal-raster .regal-spur > ul {
+      display: grid;
+      width: auto;
+      max-width: var(--inhalt-max);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-inline: auto;
+      padding-inline: var(--rinne);
+    }
+    .regal-raster .regal-karte {
+      width: auto;
+    }
+    .regal-raster .regal-pfeile {
+      display: none;
     }
   }
 
@@ -862,11 +992,11 @@
     color: #f5f5f7;
   }
   .text-szene {
-    padding-block: 112px;
+    padding-block: 88px;
   }
   @media (min-width: 1024px) {
     .text-szene {
-      padding-block: 160px;
+      padding-block: 140px;
     }
   }
   .text-szene-satz {
@@ -894,21 +1024,46 @@
    - data-auftritt="titel" nur 40 px von unten (Überschriften: keine
                            Deckkraft, damit nie ein Kontrastfehler)
    ------------------------------------------------------------------ */
+/* Die Deckkraft ist nach 40 % des Wegs voll (bei 160 px Weg also nach
+   64 px Sichtbarkeit), der Rest ist nur noch Bewegung. Der Weg ist eine
+   feste Länge, nicht ein Anteil der Elementhöhe: Auch eine 900 px hohe
+   Karte steht deckend da, sobald ihre Oberkante im Bild ist. */
 @keyframes auftritt {
-  from {
+  0% {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(32px);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
   }
 }
 @keyframes auftritt-skala {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.97);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Schwarze Karten nie halb transparent (sonst graue Geisterkiste auf
+   Weiß), Überschriften nie (Kontrast): nur Bewegung. */
+@keyframes auftritt-weg {
+  from {
+    transform: translateY(32px);
   }
 }
 @keyframes auftritt-titel {
   from {
-    transform: translateY(40px);
+    transform: translateY(24px);
   }
 }
 /* Schleier fährt nach unten weg: Zeile für Zeile wird der Satz hell. */
@@ -922,17 +1077,30 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
+    /* view(0px): Die Zeitleiste misst am echten Bildrand. Ohne die 0 px
+       zöge sie scroll-padding ab (unter 768 px unten 88 px für die
+       CTA-Leiste, app/hafen.css) und jede Karte begänne erst 88 px über
+       dem Rand sichtbar zu werden. */
     [data-auftritt] {
       animation: auftritt linear both;
-      animation-timing-function: var(--ease-apple);
-      animation-timeline: view();
-      animation-range: entry 5% entry 70%;
+      animation-timeline: view(0px);
+      animation-range: entry 0% entry 160px;
     }
     [data-auftritt="skala"] {
       animation-name: auftritt-skala;
     }
-    [data-auftritt="titel"] {
-      animation-name: auftritt-titel;
+    [data-auftritt].karte-schwarz {
+      animation-name: auftritt-weg;
+    }
+    /* Kopf: Titel, Untertitel und Link gleiten gemeinsam. Jedes
+       Geschwister läuft auf seiner eigenen Zeitleiste; das tiefere
+       startet später und hat darum immer den größeren Versatz, so dass
+       nie eine Zeile auf der nächsten liegt. */
+    [data-auftritt="titel"],
+    [data-auftritt="titel"] ~ :not([data-auftritt]) {
+      animation: auftritt-titel linear both;
+      animation-timeline: view(0px);
+      animation-range: entry 0% entry 160px;
     }
     /* Text-Szene: Schleier über dem Satz löst sich beim Einscrollen. */
     .text-szene-schleier {
@@ -944,8 +1112,10 @@
       pointer-events: none;
       background: linear-gradient(to bottom, rgb(0 0 0 / 0) 0, #000 28%);
       animation: szene-schleier linear both;
-      animation-timeline: view();
-      animation-range: cover 15% cover 55%;
+      animation-timeline: view(0px);
+      /* Fertig, sobald die Szene ganz im Bild steht (nicht erst über der
+         Bildmitte): Niemand hält vor einem halb verschleierten Satz. */
+      animation-range: cover 10% cover 40%;
     }
   }
 }
@@ -1039,16 +1209,10 @@
      14. Bento im 12er-Raster (bento.tsx mit zwoelf/spalten)
      ---------------------------------------------------------------- */
   .bento-12 {
-    max-width: 1200px;
+    max-width: var(--inhalt-max);
     margin-inline: auto;
     padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
     gap: 12px;
-  }
-  .bento-kachel {
-    min-height: 440px;
-  }
-  .bento-kachel.bento-gross {
-    min-height: 480px;
   }
   .bento-kopf {
     display: flex;
@@ -1058,6 +1222,36 @@
   .bento-kopf > .bento-text {
     max-width: 30ch;
   }
+  .bento-link {
+    padding-top: 8px;
+  }
+  /* Ab 640 px stehen Kacheln nebeneinander. Jede Kachel nimmt zwei
+     Zeilen des Rasters (Kopf, Motiv) und übernimmt sie per Subgrid. So
+     sind die Köpfe einer Reihe gleich hoch, der Link steht am Fuß des
+     Kopfs und die Motive sitzen am Kachelboden: Link und Motiv liegen in
+     Nachbarkacheln auf einer Linie. Die Kachelhöhe kommt aus Mindest-
+     höhen der Motiv-Zeile (nicht der Kachel, sonst verteilte das Raster
+     die Zusatzhöhe auch in die Kopf-Zeile). */
+  @media (min-width: 640px) {
+    .bento-12 > .bento-kachel {
+      grid-row: span 2;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) {
+      display: grid;
+      grid-template-rows: subgrid;
+      align-items: stretch;
+      row-gap: 0;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-kopf {
+      min-width: 0;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) .bento-link {
+      margin-top: auto;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-motiv {
+      align-items: flex-end;
+    }
+  }
   .bento-eyebrow {
     font-size: 12px;
     line-height: 1.33;
@@ -1066,27 +1260,55 @@
   .bento-kachel.karte-schwarz .t-kachel {
     color: #f5f5f7;
   }
+  /* Zweispaltig von 640 bis 1067 px: Website (breit) und Selbst pflegen über
+     die volle Breite, dazwischen zwei Paare. Anfragen und Google tauschen
+     die Plätze, damit Schwarz und Hell schachbrettartig wechseln. */
+  @media (min-width: 640px) and (max-width: 1067px) {
+    .bento-12 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .bento-12 > :is(.bento-breit, .bento-s7, .bento-s12) {
+      grid-column: span 2;
+    }
+    .bento-12 > :nth-child(4) {
+      order: 1;
+    }
+    .bento-12 > :nth-child(n + 6) {
+      order: 2;
+    }
+    .bento-12 > :not(.bento-breit, .bento-s7, .bento-s12) > .bento-motiv {
+      min-height: 200px;
+    }
+  }
   @media (min-width: 834px) {
     .bento-12 {
       gap: 12px;
     }
     .bento-kachel {
-      min-height: 440px;
       padding: 56px 40px 0;
-    }
-    .bento-kachel.bento-gross {
-      min-height: 580px;
     }
   }
   @media (min-width: 1068px) {
     .bento-12 {
       grid-template-columns: repeat(12, minmax(0, 1fr));
     }
+    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-motiv {
+      min-height: 210px;
+    }
+    .bento-12 > .bento-gross > .bento-motiv {
+      min-height: 330px;
+    }
+    .bento-gross > .bento-motiv {
+      align-items: flex-end;
+    }
     .bento-12 > .bento-s4 {
       grid-column: span 4;
     }
     .bento-12 > .bento-s5 {
       grid-column: span 5;
+    }
+    .bento-12 > .bento-s6 {
+      grid-column: span 6;
     }
     .bento-12 > .bento-s7 {
       grid-column: span 7;
@@ -1154,13 +1376,15 @@
     width: 100%;
     flex-direction: column;
     align-items: center;
-    padding: 40px 24px 32px;
+    padding: 28px 24px 32px;
     text-align: center;
   }
+  /* Bildzone 136 px: Der höchste Stapel (4 × 25 + 3 × 4 = 112 px) und
+     der einzelne Starter-Container (64 px, breiter) füllen sie ähnlich. */
   .modell-bild {
     position: relative;
     display: flex;
-    height: 180px;
+    height: 136px;
     width: 100%;
     align-items: flex-end;
     justify-content: center;
@@ -1178,11 +1402,27 @@
     background: radial-gradient(closest-side, rgb(0 0 0 / 0.14), rgb(0 0 0 / 0));
   }
   .modell-bild .container-motiv {
-    --b: 150px;
-    --h: 40px;
+    --b: 160px;
+    --h: 25px;
     box-shadow:
       inset 0 4px 0 rgb(0 0 0 / 0.14),
       inset 0 -4px 0 rgb(0 0 0 / 0.16);
+  }
+  .modell-bild[data-anzahl="1"] .container-motiv {
+    --b: 204px;
+    --h: 64px;
+  }
+  .modell-bild[data-anzahl="2"] .container-motiv {
+    --b: 184px;
+    --h: 42px;
+  }
+  .modell-bild[data-anzahl="3"] .container-motiv {
+    --b: 170px;
+    --h: 32px;
+  }
+  /* Starter: Zink mit sichtbarer Kante statt fast weiß auf Weiß. */
+  .modell-bild .container-motiv[data-ton="zink"] {
+    --ton: #8e8e93;
   }
   .modell-eyebrow {
     min-height: 16px;
@@ -1223,7 +1463,7 @@
     margin-top: auto;
     padding-top: 24px;
   }
-  @media (min-width: 834px) {
+  @media (min-width: 640px) {
     .modelle {
       overflow: visible;
       scroll-snap-type: none;
@@ -1231,9 +1471,9 @@
     .modelle > ul {
       display: grid;
       width: auto;
-      max-width: 1200px;
+      max-width: var(--inhalt-max);
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
+      gap: 12px;
       margin-inline: auto;
       padding: 0 var(--rinne);
     }
@@ -1241,13 +1481,23 @@
       width: auto;
     }
   }
+  @media (min-width: 834px) {
+    .modelle > ul {
+      gap: 20px;
+    }
+  }
+  /* Vier Spalten: der längste Satz bricht hier auf vier Zeilen, also vier
+     Zeilen reservieren, damit Preis und Monat in allen Karten fluchten. */
   @media (min-width: 1068px) {
     .modelle > ul {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
     }
-    .modell-bild .container-motiv {
-      --b: 170px;
-      --h: 40px;
+    .modell-karte {
+      padding-inline: 20px;
+    }
+    .modell-satz {
+      min-height: 5.88em;
     }
   }
   @media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -1422,12 +1672,7 @@
      18. Abschluss (abschluss.tsx)
      ---------------------------------------------------------------- */
   .abschluss {
-    padding-block: 96px;
-  }
-  @media (min-width: 1024px) {
-    .abschluss {
-      padding-block: 140px;
-    }
+    padding-block: calc(var(--abschnitt-y) + 16px);
   }
   .abschluss .t-abschnitt {
     color: #f5f5f7;
@@ -1547,4 +1792,130 @@
 }
 :is(.karte-schwarz, .flaeche-schwarz) :is(.text-gold, .text-gold-ink) {
   color: var(--signal-on-dark);
+}
+
+/* ==================================================================
+   20. Fragen zum Aufklappen (Startseite #faq): weiße Karte, Zeilen mit
+   Haarlinie, Plus wird zum Minus. Ohne Script (details/summary).
+   ================================================================== */
+@layer components {
+  .fragen-liste {
+    padding-inline: 20px;
+  }
+  .frage + .frage {
+    border-top: 1px solid var(--border);
+  }
+  .frage-kopf {
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 18px;
+    list-style: none;
+    cursor: pointer;
+  }
+  .frage-kopf::-webkit-details-marker {
+    display: none;
+  }
+  .frage-kopf:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+  .frage-titel {
+    font-size: 19px;
+    line-height: 1.26;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    text-wrap: pretty;
+  }
+  /* Plus aus zwei Strichen; offen bleibt nur der waagerechte. */
+  .frage-zeichen {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex: none;
+    color: var(--muted-foreground);
+  }
+  .frage-zeichen::before,
+  .frage-zeichen::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1.5px;
+    margin-top: -0.75px;
+    border-radius: 1px;
+    background-color: currentColor;
+    transition: transform 240ms var(--ease-apple);
+  }
+  .frage-zeichen::after {
+    transform: rotate(90deg);
+  }
+  .frage[open] .frage-zeichen::after {
+    transform: rotate(0deg);
+  }
+  .frage-antwort {
+    max-width: 40em;
+    padding-bottom: 22px;
+    font-size: 17px;
+    line-height: 1.47;
+    letter-spacing: -0.022em;
+    color: var(--muted-foreground);
+  }
+  @media (min-width: 834px) {
+    .fragen-liste {
+      padding-inline: 32px;
+    }
+    .frage-titel {
+      font-size: 21px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .frage-zeichen::before,
+    .frage-zeichen::after {
+      transition: none;
+    }
+  }
+}
+
+/* ==================================================================
+   21. Fuß mobil: Linkgruppen als aufklappbare Zeilen (marketing-footer).
+   ================================================================== */
+@layer components {
+  .fuss-gruppe-kopf {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    cursor: pointer;
+  }
+  .fuss-gruppe-kopf::-webkit-details-marker {
+    display: none;
+  }
+  .fuss-gruppe-kopf:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: -2px;
+  }
+  /* Chevron nach unten, offen nach oben. */
+  .fuss-gruppe-chev {
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+    border-right: 1.5px solid #6e6e73;
+    border-bottom: 1.5px solid #6e6e73;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 240ms var(--ease-apple);
+  }
+  .fuss-gruppe[open] .fuss-gruppe-chev {
+    transform: translateY(2px) rotate(-135deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fuss-gruppe-chev {
+      transition: none;
+    }
+  }
 }
