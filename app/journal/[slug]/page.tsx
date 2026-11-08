@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { MehrLink } from "@/components/marketing/apple";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
-import a from "@/components/marketing/hafen/atelier.module.css";
-import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 import { SitaloSignatur } from "@/components/marketing/hafen/sitalo-signatur";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -139,32 +138,34 @@ export default async function JournalPostPage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader />
-      <EditorialMasthead section="Journal › Beitrag" links={{ Journal: "/journal" }} />
+      <EditorialMasthead section="Journal" />
       <main id="main" tabIndex={-1} className="flex-1">
         <article>
           <header>
-            <div className="mx-auto w-full max-w-3xl px-5 pt-8 pb-12 sm:px-6 sm:pt-12 sm:pb-16">
-              <Link href="/journal" className="link-pfeil font-mono text-[12px] tracking-[0.04em]">
-                <span aria-hidden="true">←{"\u00A0"}</span>Alle Beiträge im Journal
+            <div className="mx-auto w-full max-w-3xl px-5 pt-8 pb-12 text-center sm:px-6 sm:pt-12 sm:pb-16">
+              <Link
+                href="/journal"
+                className="link-chevron link-chevron-frei text-[14px]"
+              >
+                <span aria-hidden="true" className="chev">‹</span>
+                Alle Beiträge
               </Link>
-              <p className={`${a.eyebrow} mt-10`}>
-                <span>
-                  <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> · {post.readingMinutes} Min
-                  Lesezeit
-                </span>
+              <p className="t-eyebrow mt-8 text-[14px]">
+                <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> · {post.readingMinutes} Min
+                Lesezeit
               </p>
-              <h1 className="mt-5 text-balance text-[38px] leading-[1.04] font-[760] tracking-[-0.03em] [font-stretch:114%] sm:text-[52px] lg:text-[60px]">
+              <h1 className="mt-3 text-balance text-[40px] leading-[1.05] tracking-[-0.025em] sm:text-[56px] sm:tracking-[-0.03em] lg:text-[64px]">
                 {post.title}
               </h1>
-              <p className="text-muted-foreground mt-6 max-w-[36em] text-[18px] leading-[1.55] text-pretty sm:text-[19px]">
+              <p className="t-unter mx-auto mt-5">
                 {post.dek}
               </p>
               {post.tags.length > 0 && (
-                <ul className="mt-8 flex flex-wrap gap-2" aria-label="Themen">
+                <ul className="mt-8 flex flex-wrap justify-center gap-2" aria-label="Themen">
                   {post.tags.map((tag) => (
                     <li
                       key={tag}
-                      className="text-muted-foreground inline-flex h-7 items-center rounded-[2px] border border-[#1b1d1e]/20 px-2.5 font-mono text-[11px] tracking-[0.08em] uppercase"
+                      className="text-muted-foreground inline-flex h-8 items-center rounded-full bg-[var(--hell)] px-3.5 text-[12px]"
                     >
                       {tag}
                     </li>
@@ -176,56 +177,65 @@ export default async function JournalPostPage({
 
           <PostBody post={post} />
 
-          <footer className="mx-auto w-full max-w-3xl px-5 sm:px-6">
+          <footer className="mx-auto w-full max-w-[980px] px-[max(var(--rinne),env(safe-area-inset-left))]">
             <SitaloSignatur caption="Aus dem Büro in Hamburg" className="mb-14" />
-            <nav aria-label="Weitere Beiträge" className="kante-stark grid font-mono sm:grid-cols-2">
+            <nav aria-label="Weitere Beiträge" className="grid gap-3 sm:grid-cols-2">
               {prev ? (
-                <Link
-                  href={`/journal/${prev.slug}`}
-                  className="group border-b border-[#1b1d1e]/15 py-5 sm:border-r sm:pr-6"
-                >
-                  <span className="text-muted-foreground text-[11.5px] tracking-[0.12em] uppercase">
-                    <span className="text-gold-ink" aria-hidden="true">
-                      ←{" "}
-                    </span>
+                <article className="karte karte-hover p-7">
+                  <Link href={`/journal/${prev.slug}`} className="link-chevron karte-link text-[14px]">
+                    <span aria-hidden="true" className="chev">‹</span>
                     Neuerer Beitrag
-                  </span>
-                  <span className="mt-2 block font-sans text-[18px] leading-snug font-[650] group-hover:underline group-hover:decoration-[var(--gold)] group-hover:underline-offset-4">
-                    {prev.title}
-                  </span>
-                </Link>
+                  </Link>
+                  <p className="t-karte mt-2 text-[21px]">{prev.title}</p>
+                </article>
               ) : (
-                <span className="hidden border-b border-[#1b1d1e]/15 sm:block sm:border-r" />
+                <span className="hidden sm:block" />
               )}
               {next ? (
-                <Link href={`/journal/${next.slug}`} className="group border-b border-[#1b1d1e]/15 py-5 sm:pl-6 sm:text-right">
-                  <span className="text-muted-foreground text-[11.5px] tracking-[0.12em] uppercase">
+                <article className="karte karte-hover p-7 sm:text-right">
+                  <Link href={`/journal/${next.slug}`} className="link-chevron karte-link text-[14px]">
                     Älterer Beitrag
-                    <span className="text-gold-ink" aria-hidden="true">
-                      {" "}
-                      →
-                    </span>
-                  </span>
-                  <span className="mt-2 block font-sans text-[18px] leading-snug font-[650] group-hover:underline group-hover:decoration-[var(--gold)] group-hover:underline-offset-4">
-                    {next.title}
-                  </span>
-                </Link>
-              ) : (
-                <span className="hidden border-b border-[#1b1d1e]/15 sm:block" />
-              )}
+                    <span aria-hidden="true" className="chev">›</span>
+                  </Link>
+                  <p className="t-karte mt-2 text-[21px]">{next.title}</p>
+                </article>
+              ) : null}
             </nav>
           </footer>
         </article>
 
-        <Briefkarte
-          id="fragen-zum-beitrag"
-          title="Fragen zu einem Beitrag beantworten wir am Telefon."
-          inquiryHref={links[0].href}
-          knopf={links[0].label}
-          link={links[1] ?? { href: "/journal", label: "Alle Beiträge" }}
-        >
-          Oder Sie schreiben uns über das Anfrageformular. Wir antworten meist am selben Werktag.
-        </Briefkarte>
+        <section className="flaeche-hell abschnitt mt-16 sm:mt-20">
+          <div className="inhalt abschnitt-kopf">
+            <p className="t-eyebrow">Fragen zum Beitrag</p>
+            <a href="tel:+491607621876" className="abschluss-nummer !text-foreground hover:!text-gold-ink mt-3">
+              0160&nbsp;7621876
+            </a>
+            <p className="t-unter mx-auto mt-4">
+              Oder schreiben Sie uns über das{" "}
+              <Link href="/anfrage" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+                Anfrageformular
+              </Link>
+              . Wir antworten meist am selben Werktag.
+            </p>
+            <h2 className="t-karte mt-12">Weiter zum Thema</h2>
+            <div className="aktionen mt-5">
+              {links.map((l, i) =>
+                i === 0 ? (
+                  <Link key={l.href} href={l.href} className="btn-signal">
+                    {l.label}
+                  </Link>
+                ) : (
+                  <MehrLink key={l.href} href={l.href} groesse="unter">
+                    {l.label}
+                  </MehrLink>
+                ),
+              )}
+            </div>
+            <p className="mt-6">
+              <MehrLink href="/journal">Alle Beiträge</MehrLink>
+            </p>
+          </div>
+        </section>
       </main>
       <MarketingFooter crumb="Journal" />
 

@@ -1,12 +1,13 @@
-/* Notiz aus dem Büro (notiz.tsx): Papier mit Haarlinien im Abstand der
-   Zeilenhöhe, ein roter Rand links wie im Schulheft, nur hier in Orange
-   und sehr fein. Keine Karte, kein Schatten. */
+/* Notiz aus dem Büro (notiz.tsx): reiner Text-Moment auf der Fläche,
+   ohne Karte und ohne Linien. Links ein dünner oranger Randstrich,
+   oben der Mono-Kopf, der Satz in der Systemschrift, darunter die
+   Signatur. */
 .abschnitt {
-  padding-block: 36px 44px;
+  padding-block: 48px 16px;
 }
 @media (min-width: 1024px) {
   .abschnitt {
-    padding-block: 96px 104px;
+    padding-block: 88px 32px;
   }
 }
 .raster {
@@ -18,60 +19,48 @@
   }
 }
 .blatt {
-  --zeile: 2.25rem;
   position: relative;
-  padding: 0.6rem 0 0.5rem 1.25rem;
-  background-image: repeating-linear-gradient(
-    180deg,
-    transparent 0 calc(var(--zeile) - 1px),
-    rgb(27 29 30 / 0.1) calc(var(--zeile) - 1px) var(--zeile)
-  );
-  background-position: 0 0.35rem;
+  padding: 2px 0 2px 20px;
 }
 .blatt::before {
   content: "";
   position: absolute;
   inset-block: 0;
   left: 0;
-  width: 1px;
-  background: rgb(244 91 30 / 0.55);
+  width: 2px;
+  border-radius: 1px;
+  background: var(--gold);
 }
 @media (min-width: 1024px) {
   .blatt {
-    --zeile: 2.75rem;
     grid-column: 2 / span 9;
-    padding-left: 2.5rem;
+    padding-left: 32px;
   }
 }
 .kopf {
   display: flex;
   flex-wrap: wrap;
   gap: 0 0.6em;
-  min-height: var(--zeile);
-  align-items: center;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted-foreground);
+  letter-spacing: 0.12em;
 }
 .satz {
-  max-width: 34ch;
-  font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.125rem);
-  line-height: var(--zeile);
-  font-weight: 500;
-  font-stretch: 104%;
-  letter-spacing: -0.018em;
-  color: var(--foreground);
+  max-width: 30ch;
+  margin-top: 14px;
+  font-size: clamp(1.6rem, 1.25rem + 1.5vw, 2.4rem);
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  color: #1d1d1f;
   text-wrap: pretty;
 }
 .signatur {
-  margin-top: 0.75rem;
-  width: 160px;
+  margin-top: 12px;
+  width: 150px;
+  color: #1d1d1f;
 }
 @media (min-width: 1024px) {
   .signatur {
-    width: 190px;
+    width: 180px;
   }
 }

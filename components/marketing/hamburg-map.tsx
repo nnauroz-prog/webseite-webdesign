@@ -6,8 +6,7 @@ import { STANDORTE } from "@/lib/standorte-data";
  * Schematische Hamburg-Karte mit den Stadtteilen, die eine eigene
  * Seite haben. Keine maßstabsgetreue Karte, sondern eine Skizze wie
  * auf einem Hafenplan: gestrichelte Stadtgrenze, Elbe und Alster als
- * graue Wasserflächen, Stadtteile als kleine Quadrate (orange). Beim
- * Hover wird der Name unterstrichen und das Quadrat wechselt die Farbe.
+ * graue Wasserflächen, Stadtteile als kleine Quadrate.
  *
  * Jeder Stadtteil verlinkt auf /standorte/[slug]. Mit `active` wird ein
  * Stadtteil hervorgehoben (Detailseite), die übrigen treten zurück.
@@ -189,6 +188,7 @@ function Pin({
         y={y - size / 2}
         width={size}
         height={size}
+        rx={size / 2}
         className={`transition-colors duration-200 ${squareClass}`}
       />
       <text

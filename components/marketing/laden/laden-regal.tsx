@@ -13,6 +13,9 @@ import s from "./laden.module.css";
  * den Fensterrand läuft (scroll-snap). `Regal` aus components/marketing/
  * apple bleibt für die Unterseiten unverändert.
  *
+ * ort: kleine Mono-Ortsmarke über dem Titel („Liegeplatz 1 · Pakete“),
+ * notiz: Mono-Notiz unter der Spur.
+ *
  * spaet: content-visibility:auto mit geschätzter Höhe (h am Rechner,
  * hMobil am Handy), für Regale unterhalb der ersten Ansicht.
  */
@@ -23,6 +26,7 @@ export function LadenRegal({
   link,
   children,
   notiz,
+  ort,
   spaet,
   ohneSpur = false,
   ohneMobilLink = false,
@@ -37,6 +41,8 @@ export function LadenRegal({
   link?: { href: string; label: string };
   children: ReactNode;
   notiz?: ReactNode;
+  /** Mono-Ortsmarke über dem Titel */
+  ort?: string;
   spaet?: { h: number; hMobil: number };
   /** Inhalt ohne waagerechte Spur (Fragen, breite Karten) */
   ohneSpur?: boolean;
@@ -61,6 +67,7 @@ export function LadenRegal({
     >
       <div className={cn("inhalt", s.regalKopf)}>
         <div>
+          {ort ? <p className={cn("kennzeile-mono", s.ortsmarke)}>{ort}</p> : null}
           {einfach ? (
             <>
               <h2 id={`${id}-titel`} className={s.regalTitel}>
@@ -101,7 +108,7 @@ export function LadenRegal({
           <ul role="list">{children}</ul>
         </div>
       )}
-      {notiz ? <p className={cn("inhalt", s.notiz)}>{notiz}</p> : null}
+      {notiz ? <p className={cn("inhalt notiz-mono", s.notiz)}>{notiz}</p> : null}
     </section>
   );
 }

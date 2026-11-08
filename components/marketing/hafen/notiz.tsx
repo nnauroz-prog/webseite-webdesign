@@ -3,8 +3,8 @@ import s from "./notiz.module.css";
 
 /**
  * Notiz aus dem Büro: ein reiner Text-Moment ohne Karte und ohne Knopf.
- * Linierte Fläche aus Haarlinien, Mono-Kopf mit Ort und Wochentag, ein
- * Satz in Mona Sans, darunter die Signatur als Strich.
+ * Dünner oranger Randstrich, Mono-Kopf mit Ort und Wochentag, ein Satz
+ * in der Systemschrift, darunter die Signatur als Strich.
  *
  * Der Wochentag kommt vom Server (die Seite rendert ohnehin regelmäßig
  * neu); er steht nur im Kopf und ist für niemanden kritisch.
@@ -17,7 +17,7 @@ export function Notiz({ children, id }: { children: React.ReactNode; id?: string
     <section id={id} aria-label="Notiz aus dem Büro" className={s.abschnitt}>
       <div className={`inhalt ${s.raster}`}>
         <div className={s.blatt}>
-          <p className={s.kopf}>
+          <p className={`notiz-mono ${s.kopf}`}>
             <span>Notiz</span>
             <span aria-hidden="true">·</span>
             <span>Hamburg, {tag}</span>

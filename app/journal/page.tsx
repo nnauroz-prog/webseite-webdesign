@@ -4,15 +4,17 @@ import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
 import { JournalBild } from "@/components/marketing/laden/bilder/journal-bilder";
-import a from "@/components/marketing/hafen/atelier.module.css";
 import {
   Abschnitt,
+  BildKachel,
+  BildRaster,
   KontaktKarte,
   SeitenKopf,
   UnterseiteMain,
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { JOURNAL_POSTS, formatDate, type JournalPost } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
@@ -101,9 +103,9 @@ function Aufmacher({ post }: { post: JournalPost }) {
   return (
     <article
       id="aufmacher"
-      className="kante-stark relative grid scroll-mt-28 overflow-hidden bg-[#fafaf8] text-left has-[.karte-link:focus-visible]:outline-2 has-[.karte-link:focus-visible]:outline-offset-2 has-[.karte-link:focus-visible]:outline-[#f45b1e] lg:grid-cols-12"
+      className="relative grid scroll-mt-28 overflow-hidden rounded-[20px] bg-white text-left shadow-[0_4px_16px_rgb(0_0_0/0.08)] transition-shadow hover:shadow-[0_18px_40px_-16px_rgb(16_32_48/0.28)] has-[.karte-link:focus-visible]:outline-2 has-[.karte-link:focus-visible]:outline-offset-2 has-[.karte-link:focus-visible]:outline-[#f45b1e] sm:rounded-[28px] lg:grid-cols-12"
     >
-      <div className="relative aspect-[16/10] bg-[#e7e6e1] lg:col-span-7 lg:aspect-auto lg:min-h-[400px]">
+      <div className="relative aspect-[16/10] bg-[#e8e8ed] lg:col-span-7 lg:aspect-auto lg:min-h-[400px]">
         {b.src.endsWith(".svg") ? (
           // Zeichnung inline: kein Bild-Download vor dem ersten Bild (LCP bleibt die Überschrift).
           <div role="img" aria-label={b.alt} className="absolute inset-0 [&>svg]:h-full [&>svg]:w-full">
@@ -132,18 +134,20 @@ function Aufmacher({ post }: { post: JournalPost }) {
         )}
       </div>
       <div className="flex flex-col justify-center px-[22px] py-7 sm:p-10 lg:col-span-5">
-        <p className="text-muted-foreground font-mono text-[11.5px] leading-5 tracking-[0.06em] uppercase">
-          <span className="text-gold-ink">{istNeu(post.publishedAt) ? "Neu" : "Zuletzt erschienen"}</span> ·{" "}
-          {formatDate(post.publishedAt)} · <span className="whitespace-nowrap">{post.readingMinutes} Min Lesezeit</span>
+        <p className="text-gold-ink text-[12px] leading-4 font-semibold sm:text-[14px] sm:leading-5">
+          {istNeu(post.publishedAt) ? "Neu" : "Zuletzt erschienen"} · {formatDate(post.publishedAt)} ·{" "}
+          <span className="whitespace-nowrap">{post.readingMinutes} Min Lesezeit</span>
         </p>
-        <h2 className="mt-3 text-[26px] leading-[1.1] font-[740] tracking-[-0.025em] text-balance [font-stretch:114%] sm:text-[34px]">
+        <h2 className="mt-2 text-[24px] leading-[28px] font-bold tracking-[-0.01em] text-balance sm:text-[32px] sm:leading-[36px]">
           <Link href={`/journal/${post.slug}`} className="karte-link after:absolute after:inset-0 focus-visible:outline-none">
             {post.title}
           </Link>
         </h2>
-        <p className="text-muted-foreground mt-3 text-[15px] leading-[1.55] text-pretty sm:text-[17px]">{post.dek}</p>
-        <p className="mt-5 text-[15px] leading-5 font-semibold">
-          Beitrag lesen<span aria-hidden="true" className="text-gold-ink">{"\u00A0"}→</span>
+        <p className="mt-3 text-[15px] leading-[22px] text-pretty text-[#6e6e73] sm:text-[17px] sm:leading-[25px]">
+          {post.dek}
+        </p>
+        <p className="text-gold-ink mt-5 text-[15px] leading-5 font-semibold">
+          Beitrag lesen<span aria-hidden="true"> ›</span>
         </p>
       </div>
     </article>
@@ -190,6 +194,15 @@ export default function JournalPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
+      <Produktleiste
+        titel="Journal"
+        links={[
+          { href: "#aufmacher", label: "Neu" },
+          { href: "#weitere", label: "Beiträge" },
+          { href: "#kontakt", label: "Fragen" },
+        ]}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
       <UnterseiteMain>
         <SeitenKopf
           krumen="Journal"
@@ -205,28 +218,29 @@ export default function JournalPage() {
         />
 
         {rest.length > 0 ? (
-          <Abschnitt id="weitere" eyebrow="Logbuch · ältere Einträge" fett="Ältere Beiträge, der Reihe nach">
-            <ol className={a.logbuch}>
-              {rest.map((post) => (
-                <li key={post.slug}>
-                  <Link href={`/journal/${post.slug}`} className={a.logZeile}>
-                    <time dateTime={post.publishedAt} className={a.logDatum}>
-                      {shortDate(post.publishedAt)}
-                    </time>
-                    <span>
-                      <span className={a.logTitel}>{post.title}</span>
-                      <span className={a.logSatz}>{post.dek}</span>
-                    </span>
-                    <span className={a.logMeta}>
-                      {post.readingMinutes} Min <span className="text-gold-ink">→</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-            <p className={a.lvFuss}>
-              <span>Eingetragen im Büro in Hamburg.</span>
-            </p>
+          <Abschnitt id="weitere" fett="Ältere Beiträge." grau="Ratgeber für Betriebe.">
+            <BildRaster>
+              {rest.map((post) => {
+                const b = beitragBild(post.slug);
+                return (
+                  <BildKachel
+                    key={post.slug}
+                    spalten={4}
+                    eyebrow={`${shortDate(post.publishedAt)} · ${post.readingMinutes} Min Lesezeit`}
+                    titel={post.title}
+                    zeile={post.dek}
+                    mehr="Beitrag lesen"
+                    href={`/journal/${post.slug}`}
+                    foto={{
+                      src: b.src,
+                      alt: b.alt,
+                      position: b.position,
+                      sizes: "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)",
+                    }}
+                  />
+                );
+              })}
+            </BildRaster>
           </Abschnitt>
         ) : null}
 

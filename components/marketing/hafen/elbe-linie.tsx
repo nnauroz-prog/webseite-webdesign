@@ -28,7 +28,7 @@ function wave(period: number, amp: number, y: number, invert = false) {
 const LINE_A = wave(360, 9, 45);
 const LINE_B = wave(288, 6, 45, true);
 
-export function ElbeLinie({ className = "" }: { className?: string }) {
+export function ElbeLinie({ className = "", flach = false }: { className?: string; flach?: boolean }) {
   const ref = useRef<SVGSVGElement>(null);
   useLaufzeit(ref);
   return (
@@ -37,7 +37,7 @@ export function ElbeLinie({ className = "" }: { className?: string }) {
       viewBox="0 0 1440 90"
       preserveAspectRatio="none"
       aria-hidden="true"
-      className={`elbe-linie block h-[60px] w-full sm:h-[90px] ${className}`}
+      className={`elbe-linie block w-full ${flach ? "h-[36px] sm:h-[48px]" : "h-[60px] sm:h-[90px]"} ${className}`}
     >
       <path
         className="elbe-a"

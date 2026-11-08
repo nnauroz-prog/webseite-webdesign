@@ -1,7 +1,0 @@
-mona-sans-atelier.woff2
-Zugeschnittene Fassung von Mona Sans (Breite 100–125 %, Stärke 400–800,
-lateinische Grundzeichen, deutsche Umlaute und Satzzeichen).
-
-Mona Sans: Copyright (c) 2023 GitHub, Inc.
-Lizenz: SIL Open Font License, Version 1.1
-https://openfontlicense.org

@@ -1,10 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import a from "@/components/marketing/hafen/atelier.module.css";
 import { BRANCHE_PRESET, EXTRA_PRESETS, PRESETS, type Preset } from "@/lib/muster-presets";
 
 /**
@@ -77,13 +77,10 @@ export function LivePreview() {
   )}`;
 
   return (
-    <div className={a.skizze}>
+    <div className="rounded-[18px] bg-white p-3 shadow-karte sm:p-4 lg:rounded-[28px]">
       {/* Steuerung */}
-      <div className="pb-4">
-        <label htmlFor="lp-name" className="text-foreground flex items-baseline gap-2.5 text-[14px] font-semibold">
-          <span aria-hidden="true" className="text-gold-ink font-mono text-[11.5px] font-medium">
-            01
-          </span>
+      <div className="px-1 pt-1 pb-3 sm:px-2">
+        <label htmlFor="lp-name" className="text-foreground text-[14px] font-semibold">
           Wie heißt Ihr Betrieb?
         </label>
         <input
@@ -93,15 +90,9 @@ export function LivePreview() {
           onChange={(e) => setName(e.target.value.slice(0, 40))}
           placeholder={preset.defaultName}
           autoComplete="organization"
-          className="mt-1 h-12 w-full border-0 border-b border-[#1b1d1e]/35 bg-transparent px-0 text-[17px] outline-none focus-visible:border-b-2 focus-visible:border-[var(--gold)]"
+          className="border-input bg-background focus-visible:border-foreground mt-2 h-12 w-full rounded-[12px] border px-4 text-[17px] outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/40"
         />
-        <p className="text-foreground mt-5 flex items-baseline gap-2.5 text-[14px] font-semibold" id="lp-branche">
-          <span aria-hidden="true" className="text-gold-ink font-mono text-[11.5px] font-medium">
-            02
-          </span>
-          Branche
-        </p>
-        <div role="radiogroup" aria-labelledby="lp-branche" className="mt-2 flex flex-wrap gap-x-1 gap-y-1">
+        <div role="radiogroup" aria-label="Branche" className="mt-3 flex flex-wrap gap-2">
           {PRESETS.map((p) => {
             const active = p.key === presetKey;
             return (
@@ -111,8 +102,10 @@ export function LivePreview() {
                 role="radio"
                 aria-checked={active}
                 onClick={() => setPresetKey(p.key)}
-                className={`lp-chip h-11 shrink-0 rounded-[2px] border-b-2 px-2.5 font-mono text-[12.5px] tracking-[0.04em] sm:h-9 ${
-                  active ? "text-foreground border-[var(--gold)]" : "text-muted-foreground hover:text-foreground border-transparent"
+                className={`lp-chip h-11 shrink-0 rounded-full border px-4 text-[14px] font-medium sm:h-9 ${
+                  active
+                    ? "bg-foreground text-background border-foreground"
+                    : "border-border text-foreground/80 hover:border-foreground/40"
                 }`}
               >
                 {p.chip}
@@ -122,17 +115,20 @@ export function LivePreview() {
         </div>
       </div>
 
-      {/* Flache Skizze auf Papier, ohne Browserrahmen */}
-      <div className="border-t border-[#1b1d1e]/20 pt-3">
-        <p className={a.skizzeKopf} aria-hidden="true">
-          <span>Skizze · {domainFor(shownName)}</span>
-          <span>Maßstab 1:2</span>
-        </p>
+      {/* Browserfenster */}
+      <div className="mx-1 overflow-hidden rounded-[12px] ring-1 ring-black/15 sm:mx-2">
+        <div className="bg-foreground flex items-center gap-2 px-3 py-2">
+          <svg viewBox="0 0 12 14" className="text-stahl-hell h-3 w-3 shrink-0" aria-hidden="true">
+            <path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+            <rect x="1.5" y="6" width="9" height="7" rx="1" fill="currentColor" />
+          </svg>
+          <span className="text-background/85 min-w-0 truncate font-mono text-[11.5px]">{domainFor(shownName)}</span>
+        </div>
         <div
           ref={frameRef}
           role="img"
-          aria-label={`Skizze einer Website für ${shownName}, Branche ${preset.chip}`}
-          className="relative w-full overflow-hidden border border-[#1b1d1e]/40 bg-[#fafaf8]"
+          aria-label={`Vorschau einer Website für ${shownName}, Branche ${preset.chip}`}
+          className="relative w-full overflow-hidden bg-white"
           style={{ height: scale ? SITE_H * scale : undefined, aspectRatio: scale ? undefined : `${SITE_W}/${SITE_H}` }}
         >
           <div
@@ -145,10 +141,8 @@ export function LivePreview() {
         </div>
       </div>
 
-      <div className="flex flex-col items-start gap-3 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-muted-foreground font-mono text-[11.5px] leading-[1.5]">
-          Eine Skizze zur Orientierung. Ihre Seite gestalten wir eigens für Ihren Betrieb.
-        </p>
+      <div className="flex flex-col items-start gap-2 px-1 pt-4 pb-1 sm:flex-row sm:items-center sm:justify-between sm:px-2">
+        <p className="text-muted-foreground text-[12px] leading-[1.33]">Eine Skizze zur Orientierung. Ihre Seite gestalten wir eigens für Ihren Betrieb.</p>
         <Link href={href} className="btn-signal shrink-0">
           Mit dieser Skizze anfragen
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -218,77 +212,62 @@ export function MusterFenster({
   );
 }
 
-/**
- * Die verkleinerte Website als Strichskizze: Papier, Linien, die
- * Branchenfarbe nur als Strich. Statt des Fotos ein schraffiertes Feld
- * mit „Foto“, wie auf einem Entwurf. Abschnitte bauen sich bei jedem
- * Branchenwechsel neu auf.
- */
+/** Die verkleinerte Website. Abschnitte bauen sich bei jedem Branchenwechsel neu auf. */
 function MiniSite({ preset, name }: { preset: Preset; name: string }) {
-  const { accent } = preset;
-  const linie = "1.5px solid #1b1d1e";
+  const { accent, tint } = preset;
   return (
-    <div className="lp-build flex h-full flex-col text-[#1b1d1e]" style={{ fontFamily: "var(--font-sf)" }}>
+    <div className="lp-build flex h-full flex-col text-[#1b2333]" style={{ fontFamily: "var(--font-sf)" }}>
       {/* Navigation */}
-      <div
-        className="lp-step flex h-16 items-center justify-between px-10"
-        style={{ "--d": 0, borderBottom: linie } as React.CSSProperties}
-      >
-        <span className="max-w-[340px] truncate text-[24px] font-semibold tracking-[-0.01em]">{name}</span>
-        <span className="flex items-center gap-7 text-[14px] text-[#565b5d]">
+      <div className="lp-step flex h-16 items-center justify-between border-b border-black/5 px-10" style={{ "--d": 0 } as React.CSSProperties}>
+        <span className="serif max-w-[340px] truncate text-[24px] font-medium tracking-[-0.01em]" style={{ color: accent }}>
+          {name}
+        </span>
+        <span className="flex items-center gap-7 text-[14px] text-[#4b5563]">
           {preset.nav.slice(0, 3).map((n) => (
             <span key={n}>{n}</span>
           ))}
-          <span className="px-4 py-2 text-[13px] font-medium" style={{ border: `1.5px solid ${accent}` }}>
+          <span className="rounded-full px-4 py-2 text-[13px] font-medium text-white" style={{ background: accent }}>
             {preset.nav[3]}
           </span>
         </span>
       </div>
 
       {/* Hero */}
-      <div className="grid flex-1 grid-cols-[1.05fr_1fr] gap-10 px-10 pt-10 pb-8">
+      <div className="grid flex-1 grid-cols-[1.05fr_1fr] gap-10 px-10 pt-10 pb-8" style={{ background: tint }}>
         <div className="flex flex-col justify-center">
-          <p className="lp-step font-mono text-[12px] tracking-[0.12em] uppercase" style={{ "--d": 1 } as React.CSSProperties}>
-            <span className="mr-2 inline-block h-2 w-2" style={{ background: accent }} />
+          <p className="lp-step text-[12px] font-semibold" style={{ color: accent, "--d": 1 } as React.CSSProperties}>
             {name}
           </p>
           {/* Absatz statt h3: die Musterseite ist Bild, keine Gliederung der echten Seite. */}
           <p className="lp-step mt-3 text-[40px] font-semibold leading-[1.05] tracking-[-0.03em]" style={{ "--d": 2 } as React.CSSProperties}>
             {preset.headline}
           </p>
-          <p className="lp-step mt-4 text-[16px] leading-relaxed text-[#565b5d]" style={{ "--d": 3 } as React.CSSProperties}>
+          <p className="lp-step mt-4 text-[16px] leading-relaxed text-[#4b5563]" style={{ "--d": 3 } as React.CSSProperties}>
             {preset.sub}
           </p>
           <div className="lp-step mt-6 flex gap-3" style={{ "--d": 4 } as React.CSSProperties}>
-            <span className="px-5 py-2.5 text-[14px] font-medium" style={{ border: `1.5px solid ${accent}`, color: "#1b1d1e" }}>
+            <span className="rounded-full px-5 py-2.5 text-[14px] font-medium text-white" style={{ background: accent }}>
               {preset.cta}
             </span>
-            <span className="px-5 py-2.5 text-[14px] font-medium" style={{ border: linie }}>
-              Anrufen
-            </span>
+            <span className="rounded-full border border-black/15 bg-white px-5 py-2.5 text-[14px] font-medium">Anrufen</span>
           </div>
         </div>
-        <div
-          className="lp-step relative flex items-center justify-center"
-          style={
-            {
-              "--d": 2,
-              border: linie,
-              backgroundImage: "repeating-linear-gradient(135deg, rgb(27 29 30 / 0.16) 0 1px, transparent 1px 12px)",
-            } as React.CSSProperties
-          }
-        >
-          <span className="bg-[#fafaf8] px-3 py-1 font-mono text-[13px] tracking-[0.16em] text-[#565b5d] uppercase">Foto</span>
+        <div className="lp-step relative overflow-hidden rounded-2xl shadow-[0_20px_40px_-20px_rgb(0_0_0/0.35)]" style={{ "--d": 2 } as React.CSSProperties}>
+          <Image src={preset.image} alt="" fill sizes="480px" className="object-cover" />
         </div>
       </div>
 
       {/* Leistungen */}
-      <div className="grid grid-cols-3 gap-4 px-10 py-6" style={{ borderTop: linie }}>
+      <div className="grid grid-cols-3 gap-4 bg-white px-10 py-6">
         {preset.features.map((f, i) => (
-          <div key={f} className="lp-step p-4" style={{ "--d": 5 + i, border: "1px solid rgb(27 29 30 / 0.35)" } as React.CSSProperties}>
-            <span className="block h-1.5 w-8" style={{ background: accent }} />
+          <div
+            key={f}
+            className="lp-step rounded-[12px] border border-black/8 p-4"
+            style={{ "--d": 5 + i } as React.CSSProperties}
+          >
+            <span className="block h-1.5 w-8 rounded-full" style={{ background: accent }} />
             <p className="mt-3 text-[17px] font-semibold">{f}</p>
-            <p className="mt-1.5 text-[14px] leading-snug text-[#565b5d]">{preset.details?.[i] ?? preset.sub}</p>
+            <p className="mt-1.5 text-[14px] leading-snug text-[#4b5563]">{preset.details?.[i] ?? preset.sub}</p>
           </div>
         ))}
       </div>

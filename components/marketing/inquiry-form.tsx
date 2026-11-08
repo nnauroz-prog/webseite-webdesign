@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, Check, ChevronDown } from "lucide-react";
 
-import a from "@/components/marketing/hafen/atelier.module.css";
-import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -189,12 +187,11 @@ export function InquiryForm({
     setData((d) => ({ ...d, [key]: value }));
 
   return (
-    <form onSubmit={submit} className={a.lieferschein}>
-      <p className={a.lsKopf} aria-hidden="true">
-        <span>Lieferschein · Anfrage</span>
-        <span>Sitalo · Hamburg</span>
-      </p>
-      <h2 className="text-foreground mt-6 text-2xl font-[740] tracking-[-0.025em] [font-stretch:114%] sm:text-3xl">
+    <form
+      onSubmit={submit}
+      className="relative rounded-[18px] bg-white p-6 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:p-10"
+    >
+      <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
         Anfrage senden
       </h2>
       <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
@@ -231,20 +228,16 @@ export function InquiryForm({
                 href="tel:+491607621876"
                 className="text-gold-ink font-medium underline-offset-4 hover:underline"
               >
-                Lieber anrufen: 0160&nbsp;7621876 →
+                Lieber anrufen: 0160&nbsp;7621876 ›
               </a>
             </span>
           </AlertDescription>
         </Alert>
       )}
 
-      <div className="mt-2 grid gap-x-6 sm:grid-cols-2">
-        <div className={a.lsFeld}>
-          <Label htmlFor="inq-name" className={a.lsLabel}>
-            <span className={a.lsNr} aria-hidden="true">01</span>
-            Name
-            <span className={a.lsPflicht}>Pflicht</span>
-          </Label>
+      <div className="mt-7 grid gap-5 sm:grid-cols-2 sm:gap-6">
+        <div className="space-y-2">
+          <Label htmlFor="inq-name">Name</Label>
           <Input
             id="inq-name"
             required
@@ -254,12 +247,8 @@ export function InquiryForm({
             placeholder="Vor- und Nachname"
           />
         </div>
-        <div className={a.lsFeld}>
-          <Label htmlFor="inq-email" className={a.lsLabel}>
-            <span className={a.lsNr} aria-hidden="true">02</span>
-            E-Mail
-            <span className={a.lsPflicht}>Pflicht</span>
-          </Label>
+        <div className="space-y-2">
+          <Label htmlFor="inq-email">E-Mail</Label>
           <Input
             id="inq-email"
             type="email"
@@ -272,12 +261,8 @@ export function InquiryForm({
         </div>
       </div>
 
-      <div className={a.lsFeld}>
-        <Label htmlFor="inq-message" className={a.lsLabel}>
-          <span className={a.lsNr} aria-hidden="true">03</span>
-          Was wir wissen sollten
-          <span className={a.lsPflicht}>Pflicht</span>
-        </Label>
+      <div className="mt-5 space-y-2 sm:mt-6">
+        <Label htmlFor="inq-message">Was wir wissen sollten</Label>
         <Textarea
           id="inq-message"
           required
@@ -290,7 +275,7 @@ export function InquiryForm({
 
       {/* Optionale Details — aufklappbar, kein Pflichtweg */}
       <details
-        className="border-border mt-8 rounded-[3px] border transition-colors"
+        className="border-border/60 mt-6 rounded-2xl border bg-secondary/30 transition-colors sm:mt-7"
         open={detailsOpen}
         onToggle={(e) => setDetailsOpen((e.target as HTMLDetailsElement).open)}
       >
@@ -431,14 +416,13 @@ export function InquiryForm({
 
 function SuccessScreen() {
   return (
-    <div className={a.lieferschein} role="status">
-      <p className={a.lsKopf} aria-hidden="true">
-        <span>Lieferschein · Anfrage</span>
-        <span>Sitalo · Hamburg</span>
-      </p>
-      <div className="mt-8 flex flex-col-reverse items-start gap-6 sm:flex-row sm:justify-between">
+    <div className="bg-card ring-border/50 rounded-3xl border p-8 shadow-xl ring-1 sm:p-10">
+      <div className="flex items-start gap-4">
+        <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
+          <Check className="h-7 w-7" />
+        </div>
         <div>
-          <h2 className="text-foreground text-2xl font-[740] tracking-[-0.025em] [font-stretch:114%] sm:text-3xl">
+          <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
             Angekommen.
           </h2>
           <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[15.5px] leading-relaxed">
@@ -447,17 +431,16 @@ function SuccessScreen() {
             Werktag.{" "}
             <Link
               href="/erreichbarkeit"
-              className="text-foreground underline decoration-[var(--gold)] underline-offset-4"
+              className="text-foreground underline-offset-4 hover:underline"
             >
               Mehr zu unseren Antwortzeiten
             </Link>
             .
           </p>
         </div>
-        <SitaloStempel size="lg" umschrift="EINGEGANGEN · HAMBURG" className={a.stempel} />
       </div>
-      <div className="border-border mt-8 border-t pt-6">
-        <p className="text-muted-foreground font-mono text-[11.5px] font-medium tracking-[0.14em] uppercase">
+      <div className="border-border/40 mt-8 border-t pt-6">
+        <p className="text-muted-foreground text-[13px] font-medium">
           Während Sie warten
         </p>
         <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[14.5px] leading-relaxed">
@@ -466,12 +449,19 @@ function SuccessScreen() {
           Gesprächstermin (bis zu 30 Minuten, meist reicht eine
           Viertelstunde).
         </p>
-        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
-          <Link href="/termin" className="btn-line btn-klein">
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <Link
+            href="/termin"
+            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight transition-all"
+          >
             Termin vereinbaren
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
-          <Link href="/sprechstunde" className="link-pfeil text-[15px] font-semibold">
-            Zur Sprechstunde&nbsp;<span className="pfeil" aria-hidden="true">→</span>
+          <Link
+            href="/sprechstunde"
+            className="text-foreground inline-flex h-11 items-center text-[14px] font-medium underline-offset-[6px] hover:underline"
+          >
+            Zur Sprechstunde
           </Link>
         </div>
       </div>

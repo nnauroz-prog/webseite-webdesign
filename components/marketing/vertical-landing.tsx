@@ -38,7 +38,12 @@ export function VerticalLanding({
       <Bauteile data={data} />
       <Process data={data} dauer={dauer} />
       {faq && faq.length > 0 ? <Faq faq={faq} /> : null}
-      <Briefkarte title={joinLine(data.schlussZitat, data.schlussZitatItalic)} inquiryHref={inquiryHref}>
+      <Briefkarte
+        title={joinLine(data.schlussZitat, data.schlussZitatItalic)}
+        inquiryHref={inquiryHref}
+        link={{ href: "/termin", label: "Termin buchen" }}
+        className="bg-[#f5f5f7]"
+      >
         Für ein erstes Gespräch reicht meist eine Viertelstunde am Telefon. Danach kennen Sie den Festpreis und den
         Termin, an dem die Seite online geht.
       </Briefkarte>
@@ -244,5 +249,9 @@ function Faq({ faq }: { faq: { q: string; a: string }[] }) {
   );
 }
 
-/** Briefkarte liegt jetzt in hafen/briefkarte.tsx; hier weitergereicht. */
+/**
+ * Briefkarte: gemeinsamer Abschluss der Branchen- und Stadtteilseiten,
+ * die helle runde Karte aus components/marketing/hafen/briefkarte.
+ * Hier nur weitergereicht, damit /standorte sie weiter von hier holt.
+ */
 export { Briefkarte };

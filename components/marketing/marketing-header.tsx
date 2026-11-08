@@ -53,19 +53,17 @@ function istAktiv(pathname: string | null, href: string) {
 }
 
 /**
- * Kopfzeile (.globalnav, app/apple.css): 56 px hoch (ab 834 px 60 px), Papier-Glas mit
- * Haarlinie. Logo mit dem Zusatz „Webdesign“, Links mit einem orangen
- * Unterstrich, der sich beim Hover von der Mitte aufzieht
- * (.nav-link-underline), ab 1280 px die Telefonnummer in Mono, rechts
- * Suche und – auf Seiten ohne lokale Produktleiste – „Anfragen“.
+ * Globale Leiste im Apple-Stil (.globalnav, app/apple.css): 44 px hoch
+ * (mobil 48 px), immer helles Milchglas, kleine 12-px-Links über die
+ * ganze Breite verteilt, Logo klein links, rechts Suche und – nur auf
+ * Seiten ohne lokale Produktleiste – eine kleine Pille „Anfragen“.
  *
  * Kein Scroll-Listener: Das Glas ist immer an, nichts wechselt beim
  * Scrollen (ruhig am iPhone). Auf Seiten mit Produktleiste
  * (produktleiste.tsx) scrollt diese Leiste weg (position: relative),
  * nur die Produktleiste klebt.
  *
- * Mobil: Logo, Suche und Burger; das Menü ist eine Teerfläche mit
- * gestaffelten Einträgen und der Mono-Fußzeile „0160 7621876 · Hamburg“.
+ * Mobil: Logo, Suche und Burger; das Menü ist vollflächig hell.
  */
 export function MarketingHeader({
   nav = DEFAULT_NAV,
@@ -113,8 +111,8 @@ export function MarketingHeader({
         <nav aria-label="Hauptnavigation" className="globalnav-innen">
           <ul className="globalnav-liste">
             <li>
-              <Link href="/" className="globalnav-link -ml-2.5">
-                <SitaloLogo size="sm" hideTaglineBelow="lg" />
+              <Link href="/" className="globalnav-link -ml-2">
+                <SitaloLogo size="xs" hideTagline />
               </Link>
             </li>
             {nav.map((item) => (
@@ -129,7 +127,7 @@ export function MarketingHeader({
               </li>
             ))}
             <li className="flex items-center">
-              <a href="tel:+491607621876" className="globalnav-tel">
+              <a href="tel:+491607621876" className="globalnav-tel" aria-label="0160 7621876 anrufen">
                 0160&nbsp;7621876
               </a>
               <button
@@ -152,9 +150,10 @@ export function MarketingHeader({
           <Link
             href="/"
             className="flex min-h-11 items-center min-[834px]:hidden"
+           
             onClick={() => setMenuOpen(false)}
           >
-            <SitaloLogo size="sm" hideTaglineOnMobile />
+            <SitaloLogo size="xs" hideTagline />
           </Link>
           <div className="globalnav-mobil">
             {ctaMobil ? (
@@ -206,11 +205,11 @@ function Burger({ offen }: { offen: boolean }) {
 }
 
 /**
- * Vollbild-Menü auf dem Handy: deckende Teerfläche (.menue-glas),
- * Kopfzeile wie die Leiste (48 px, X genau auf dem Burger), große
- * breite Einträge mit Mono-Nummer. Auftritt gestaffelt (opacity, 8 px
- * von unten, 40 ms je Eintrag), Schließen ohne Staffel, bei reduzierter
- * Bewegung nur eine kurze Blende.
+ * Vollbild-Menü auf dem Handy im Apple-Stil: helles Milchglas
+ * (.menue-glas), Kopfzeile wie die Leiste (48 px, X genau auf dem
+ * Burger), große Einträge ohne Haarlinien. Auftritt gestaffelt
+ * (opacity, 4 px von oben, 20 ms je Eintrag), Schließen ohne Staffel,
+ * bei reduzierter Bewegung nur eine kurze Blende.
  */
 function MobileFullscreenMenu({
   open,
@@ -225,10 +224,10 @@ function MobileFullscreenMenu({
     className: cn(
       "transition-[opacity,transform] motion-reduce:transform-none motion-reduce:transition-none",
       open
-        ? "translate-y-0 opacity-100 duration-[420ms] ease-[var(--ease-aus)]"
-        : "translate-y-2 opacity-0 duration-[160ms] ease-[var(--ease-ab)]",
+        ? "translate-y-0 opacity-100 duration-[320ms] ease-[var(--ease-apple)]"
+        : "-translate-y-1 opacity-0 duration-[160ms] ease-[var(--ease-ab)]",
     ),
-    style: { transitionDelay: open ? `${Math.min(40 * i + 60, 420)}ms` : "0ms" },
+    style: { transitionDelay: open ? `${Math.min(20 * i, 200)}ms` : "0ms" },
   });
 
   return (
@@ -251,12 +250,12 @@ function MobileFullscreenMenu({
       }}
     >
       {/* Gleiche Geometrie wie die Leiste: nichts springt beim Öffnen. */}
-      <div className="globalnav-innen h-[var(--kopf-h)] w-full shrink-0">
+      <div className="globalnav-innen h-12 w-full shrink-0">
         <Link href="/" onClick={onClose} className="flex min-h-11 items-center">
-          <SitaloLogo size="sm" tone="light" hideTaglineOnMobile />
+          <SitaloLogo size="xs" hideTagline />
         </Link>
         <div className="globalnav-mobil">
-          <button type="button" onClick={onClose} aria-label="Menü schließen" className="globalnav-icon text-[var(--papier)] hover:text-[var(--papier)]">
+          <button type="button" onClick={onClose} aria-label="Menü schließen" className="globalnav-icon">
             <Burger offen={open} />
           </button>
         </div>
@@ -282,9 +281,6 @@ function MobileFullscreenMenu({
                     className="menue-eintrag"
                     aria-current={istAktiv(pathname, item.href) ? "page" : undefined}
                   >
-                    <span className="menue-nr" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
                     {item.label}
                   </Link>
                 </li>
@@ -294,7 +290,7 @@ function MobileFullscreenMenu({
         </nav>
 
         <div className={cn("mt-10", eintrag(MOBILE_NAV.length).className)} style={eintrag(MOBILE_NAV.length).style}>
-          <p className="label-mono text-stahl-hell" id="menue-schnell">
+          <p className="text-muted-foreground text-[12px] leading-[1.33]" id="menue-schnell">
             Schnellzugriff
           </p>
           <ul aria-labelledby="menue-schnell" className="mt-2">
@@ -320,20 +316,18 @@ function MobileFullscreenMenu({
         <Link href="/anfrage" onClick={onClose} className="btn-signal btn-gross w-full">
           Website anfragen
         </Link>
-        <div className="flex flex-wrap items-center justify-center gap-x-6 text-[16px]">
-          <a href="tel:+491607621876" className="link-pfeil link-pfeil-dunkel link-pfeil-zeile">
-            Anrufen
+        <div className="flex flex-wrap items-center justify-center gap-x-6 text-[17px]">
+          <a href="tel:+491607621876" className="link-chevron link-chevron-frei">
+            Anrufen<span aria-hidden="true" className="chev">›</span>
           </a>
-          <Link href="/termin" onClick={onClose} className="link-pfeil link-pfeil-dunkel link-pfeil-zeile">
-            Termin
+          <Link href="/termin" onClick={onClose} className="link-chevron link-chevron-frei">
+            Termin<span aria-hidden="true" className="chev">›</span>
           </Link>
-          <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="link-pfeil link-pfeil-dunkel link-pfeil-zeile">
-            Speichern
+          <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="link-chevron link-chevron-frei">
+            Speichern<span aria-hidden="true" className="chev">›</span>
           </a>
         </div>
-        <p className="border-background/15 text-stahl-hell border-t pt-3 text-center font-mono text-[12px] tracking-[0.06em]">
-          0160&nbsp;7621876 · Hamburg
-        </p>
+        <p className="text-muted-foreground text-center text-[12px] leading-[1.33]">0160&nbsp;7621876 · Hamburg</p>
       </div>
     </div>
   );

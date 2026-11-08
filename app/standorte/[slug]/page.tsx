@@ -120,6 +120,7 @@ export default async function StandortPage({
         <Branchen standort={standort} />
         <Weiter standort={standort} />
         <Briefkarte
+          className="bg-[#f5f5f7]"
           title={`Das erste Gespräch führen wir am Telefon, per Video oder bei Ihnen ${standort.inName}.`}
           inquiryHref={`/anfrage?ort=${standort.slug}`}
         >

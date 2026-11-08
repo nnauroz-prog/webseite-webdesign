@@ -15,16 +15,13 @@ export function SitaloLogo({
   className,
   tone = "dark",
   hideTaglineOnMobile = false,
-  hideTaglineBelow,
   hideTagline = false,
 }: {
-  /** xs: sehr knapper Platz (Wortmarke 18 px), sm: Kopfleiste (22 px). */
+  /** xs: globale Leiste im Apple-Stil (Wortmarke ~17 px). */
   size?: "xs" | "sm" | "md" | "lg";
   className?: string;
   tone?: "dark" | "light";
   hideTaglineOnMobile?: boolean;
-  /** „Webdesign“ erst ab dieser Breite zeigen (lg = 1024 px), statt es zu verkleinern. */
-  hideTaglineBelow?: "lg";
   /** Nur die Wortmarke, ohne „Webdesign“ daneben. */
   hideTagline?: boolean;
   /** Früher fürs Bild-Preloading; bleibt für bestehende Aufrufe. */
@@ -59,13 +56,7 @@ export function SitaloLogo({
         aria-hidden="true"
         className={cn(
           "items-center gap-3",
-          hideTagline
-            ? "hidden"
-            : hideTaglineBelow === "lg"
-              ? "hidden lg:inline-flex"
-              : hideTaglineOnMobile
-                ? "hidden sm:inline-flex"
-                : "inline-flex",
+          hideTagline ? "hidden" : hideTaglineOnMobile ? "hidden sm:inline-flex" : "inline-flex",
         )}
       >
         <span className={cn("h-5 w-px", tone === "light" ? "bg-background/30" : "bg-foreground/20")} />
@@ -74,8 +65,7 @@ export function SitaloLogo({
             "font-medium uppercase tracking-[0.26em]",
             tone === "light" ? "text-background/75" : "text-foreground/70",
           )}
-          // Nie unter 11 px: kleiner ist der Zusatz nicht mehr lesbar.
-          style={{ fontSize: Math.max(11, Math.round(fontPx * 0.4)) }}
+          style={{ fontSize: Math.round(fontPx * 0.4) }}
         >
           Webdesign
         </span>

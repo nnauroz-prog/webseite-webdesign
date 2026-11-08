@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
-import a from "@/components/marketing/hafen/atelier.module.css";
+import { WegBand } from "@/components/marketing/laden/bilder/weg-band";
 import {
   Abschnitt,
   FotoRahmen,
@@ -13,6 +13,7 @@ import {
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { ABLAUF_HALTE } from "@/lib/ablauf-data";
 import { SITE_URL } from "@/lib/site";
 
@@ -62,6 +63,7 @@ export default function AblaufPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
+      <Produktleiste titel="Ablauf" links={[]} cta={{ href: "/anfrage", label: "Anfragen" }} />
       <UnterseiteMain>
         <SeitenKopf
           krumen="Ablauf"
@@ -95,6 +97,11 @@ export default function AblaufPage() {
           titel="Der erste Halt ist ein Anruf oder eine Anfrage."
           zeile="Wer lieber schreibt, nutzt das Anfrageformular. Danach geht es mit Halt 2 weiter."
           link={{ href: "/termin", label: "Termin buchen" }}
+          foto={{
+            src: "/images/cafe-eimsbuettel.webp",
+            alt: "Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel",
+            position: "50% 60%",
+          }}
         />
       </UnterseiteMain>
       <MarketingFooter crumb="Ablauf" />
@@ -109,65 +116,85 @@ export default function AblaufPage() {
 }
 
 /* ------------------------------------------------------------------
- * Fahrplan: senkrechte Fährlinie mit sechs Halten. Beim Scrollen färbt
- * sich die Linie Halt für Halt orange, die Punkte laufen an, am Ende
- * steht der Endhalt mit Ring (CSS-Scroll-Timeline, nur transform und
- * opacity). Ohne Unterstützung oder bei reduzierter Bewegung ist die
- * Linie von Anfang an ganz gefärbt. Anker #step-01 … bleiben (HowTo).
+ * Fahrplan: sechs weiße Karten mit dem Elbe-Band der Startseite oben
+ * (die Fähre fährt von Karte zu Karte weiter), darunter Titel, Text und
+ * „Wer · Hinweis“ (Subgrid). Danach ein großes Bild zum Test-Link
+ * (Musterseite, frei erfunden).
+ * Anker #step-01 … bleiben (HowTo-Schema).
  * ---------------------------------------------------------------- */
+const ZEICHEN = [0, 0, 1, 1, 2, 3];
+
+function HaltKarte({ step, i }: { step: (typeof STEPS)[number]; i: number }) {
+  const last = i === STEPS.length - 1;
+  // Subgrid: Band, Halt, Titel, Text und „Wer · Hinweis“ liegen in allen
+  // Karten einer Reihe auf derselben Linie.
+  return (
+    <li
+      id={`step-${step.number}`}
+      className={`row-span-5 grid scroll-mt-28 grid-rows-subgrid gap-0 overflow-hidden rounded-[18px] shadow-[0_4px_16px_rgb(0_0_0/0.08)] ${
+        last ? "on-dark bg-[#0f2a3a] text-[#f5f5f7]" : "bg-white"
+      }`}
+      data-flaeche-dunkel={last ? "" : undefined}
+    >
+      {/* Bildband im vollen Verhältnis der Szene (200 × 88), nichts abgeschnitten */}
+      <span className="block aspect-[200/88] w-full" aria-hidden="true">
+        <WegBand i={i} teile={6} zeichen={ZEICHEN[i]} />
+      </span>
+      <p className={`px-[22px] pt-5 text-[12px] leading-4 font-semibold sm:px-7 sm:pt-6 ${last ? "text-[#ff9f5a]" : "text-gold-ink"}`}>
+        {last ? "Endhalt" : `Halt ${i + 1}`}
+      </p>
+      <h3 className="mt-1.5 px-[22px] text-[21px] leading-[25px] font-bold text-balance sm:px-7 lg:text-[24px] lg:leading-[28px]">
+        {step.title}
+      </h3>
+      <p
+        className={`mt-3 px-[22px] pb-5 text-[15px] leading-[22px] tracking-[-0.016em] text-pretty sm:px-7 sm:text-[17px] sm:leading-[25px] ${last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}`}
+      >
+        {step.body}
+      </p>
+      <div className="px-[22px] pb-6 sm:px-7 sm:pb-7">
+        <dl
+          className={`grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 border-t pt-4 text-[14px] leading-5 ${
+            last ? "border-white/15" : "border-black/10"
+          }`}
+        >
+          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>Wer</dt>
+          <dd className="font-semibold">{step.wer}</dd>
+          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>Hinweis</dt>
+          <dd>{step.hinweis}</dd>
+        </dl>
+      </div>
+    </li>
+  );
+}
+
 function Fahrplan() {
-  const last = STEPS.length - 1;
   return (
     <Abschnitt
       id="halte"
-      eyebrow="Fährlinie · sechs Halte"
-      fett="Vom ersten Satz bis zur fertigen Seite"
+      fett="Sechs Halte."
+      grau="Vom ersten Satz bis online."
       unter="Was eine Seite kostet, steht vorher fest. Kommt etwas dazu, sprechen wir vorher darüber."
     >
-      <div className="text-muted-foreground hidden grid-cols-[2.5rem_minmax(0,1fr)_17rem] gap-x-10 pb-3 font-mono text-[11px] tracking-[0.14em] uppercase lg:grid">
-        <span aria-hidden="true" />
-        <span>Halt und was passiert</span>
-        <span>Wer · Hinweis</span>
-      </div>
-      <ol className={a.fahrplan}>
+      <ol role="list" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
         {STEPS.map((step, i) => (
-          <li key={step.number} id={`step-${step.number}`} className={`${a.halt} scroll-mt-24`}>
-            <div aria-hidden="true" className={a.haltSpur}>
-              <span className={`${a.linie} ${i === 0 ? a.linieErst : i === last ? a.linieLetzt : a.linieMitte}`}>
-                <span className={a.linieFarbe} />
-              </span>
-              <span className={a.punktOrt}>
-                <span className={a.punkt}>
-                  <span className={a.punktFarbe} />
-                  {i === last ? <span className={a.endRing} /> : null}
-                </span>
-              </span>
-            </div>
-            <div className={a.haltText}>
-              <p className={a.haltNr}>{i === last ? "Endhalt" : `Halt ${i + 1}`}</p>
-              <h3 className={a.haltTitel}>{step.title}</h3>
-              <p className={a.haltSatz}>{step.body}</p>
-            </div>
-            <dl className={a.haltWer}>
-              <dt>Wer</dt>
-              <dd>{step.wer}</dd>
-              <dt>Hinweis</dt>
-              <dd>{step.hinweis}</dd>
-            </dl>
-          </li>
+          <HaltKarte key={step.number} step={step} i={i} />
         ))}
       </ol>
-      <div className={`${a.lvFuss} mt-8!`}>
-        <span>Antwort meist am selben Werktag · Halt 5: Den Test-Link öffnen Sie auf Ihren eigenen Geräten.</span>
-        <span className="flex gap-6">
-          <MehrLink href="/pakete" frei={false} groesse="klein">
-            Pakete
-          </MehrLink>
-          <MehrLink href="/faq" frei={false} groesse="klein">
-            Fragen
-          </MehrLink>
-        </span>
+      <div className="mt-3 lg:mt-5">
+        <FotoRahmen
+          src="/images/sitalo-praxis-laptop.webp"
+          alt="Laptop am Empfang einer Zahnarztpraxis, auf dem Bildschirm die Musterseite der Praxis"
+          aspect="21 / 9"
+          aspectMobil="4 / 3"
+          position="50% 42%"
+          muster
+          satz="Erst ansehen, dann freigeben. Den Test-Link öffnen Sie auf Ihren eigenen Geräten."
+        />
       </div>
+      <p className="mt-8 flex flex-wrap gap-x-8">
+        <MehrLink href="/pakete">Pakete</MehrLink>
+        <MehrLink href="/faq">Fragen</MehrLink>
+      </p>
     </Abschnitt>
   );
 }

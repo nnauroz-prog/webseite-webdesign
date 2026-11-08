@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 
 /**
- * Begrüßung nach Tageszeit mit Uhrzeit in Hamburg, als Mono-Zeile:
+ * Begrüßung nach Tageszeit mit Uhrzeit in Hamburg, als Mono-Notiz mit
+ * rundem orangem Punkt:
  * „Guten Morgen aus Hamburg · 08:14“. Nur im Browser (Server und erstes
  * Bild zeigen „Aus Hamburg · --:--“), die Zeile hat eine feste
  * Mindestbreite und eine Zeile Höhe, damit nichts springt (CLS 0).
@@ -58,7 +59,7 @@ export function HamburgZeile({ className = "" }: { className?: string }) {
     <p
       className={`inline-flex min-h-[1.5em] min-w-[28ch] items-center gap-2 font-mono text-[12px] leading-[1.5] tracking-[0.04em] tabular-nums ${className}`}
     >
-      <span aria-hidden="true" className="bg-gold inline-block h-1.5 w-1.5 shrink-0" />
+      <span aria-hidden="true" className="bg-gold inline-block h-1.5 w-1.5 shrink-0 rounded-full" />
       <span>{stand ? stand.text : "Aus Hamburg"}</span>
       <span aria-hidden="true">·</span>
       <time suppressHydrationWarning>{stand ? stand.zeit : "--:--"}</time>

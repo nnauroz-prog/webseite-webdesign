@@ -4,9 +4,6 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import a from "@/components/marketing/hafen/atelier.module.css";
-import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
-import { Sprungleiste } from "@/components/marketing/hafen/sprungleiste";
 import { PageHero } from "@/components/marketing/page-hero";
 import { WegFinder } from "@/components/marketing/ratgeber/weg-finder";
 import { FAUSTREGEL } from "@/components/marketing/ratgeber/weg-finder-logic";
@@ -364,11 +361,11 @@ export default function WebseiteErstellenPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Webseite erstellen"
-          eyebrow="Ratgeber · sieben Schritte"
+          eyebrow="Ratgeber"
           title={H1}
           meta={
             <div className="space-y-8">
@@ -382,6 +379,23 @@ export default function WebseiteErstellenPage() {
                   Wer wir sind
                 </Link>
               </p>
+              <nav aria-label="Auf dieser Seite">
+                <p className="label-mono text-stahl-hell text-[11px]">
+                  Auf dieser Seite
+                </p>
+                <ul className="mt-3 flex flex-wrap justify-center gap-2">
+                  {INHALT.map((i) => (
+                    <li key={i.href}>
+                      <a
+                        href={i.href}
+                        className="text-foreground inline-flex min-h-11 items-center rounded-full bg-[var(--hell)] px-[18px] text-[14px] hover:bg-[var(--hell-2)]"
+                      >
+                        {i.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
           }
         >
@@ -393,7 +407,6 @@ export default function WebseiteErstellenPage() {
           uns nicht brauchen. Ob Webseite, Website oder Homepage: gemeint ist
           dasselbe.
         </PageHero>
-        <Sprungleiste links={INHALT} />
 
         {/* Vier Wege: Tabelle ab lg, darunter je Weg ein Block */}
         <section
@@ -635,7 +648,6 @@ export default function WebseiteErstellenPage() {
                 nr={3}
                 id="inhalte"
                 titel="Texte und Fotos sammeln"
-                rand="Handyfotos bei Tageslicht reichen für den Anfang meist aus. Wichtiger als ein Profi-Foto ist, dass man den Betrieb erkennt."
                 kurz="Meist der größte Zeitposten, egal auf welchem Weg."
               >
                 <p>Legen Sie ein Dokument an und sammeln Sie darin:</p>
@@ -716,7 +728,6 @@ export default function WebseiteErstellenPage() {
                 nr={5}
                 id="recht"
                 titel="Impressum, Datenschutzerklärung und Cookie-Hinweis"
-                rand="Notieren Sie beim Bauen jeden Dienst, der auf der Seite läuft: Hosting, Formular, Karte. Diese Liste brauchen Sie für die Datenschutzerklärung."
                 kurz="Pflicht für jede geschäftliche Seite, auch für eine kleine."
               >
                 <p>
@@ -1174,15 +1185,6 @@ export default function WebseiteErstellenPage() {
             </nav>
           </div>
         </section>
-        <Briefkarte
-          id="abschluss"
-          title="Wenn Sie lieber nicht selbst bauen, übernehmen wir das."
-          inquiryHref="/anfrage"
-          link={{ href: "/website-erstellen-lassen", label: "Festpreis und Ablauf" }}
-        >
-          Eine Viertelstunde am Telefon reicht meist, danach kennen Sie Festpreis und Termin. Auch wenn Sie selbst bauen,
-          dürfen Sie in der offenen Sprechstunde anrufen.
-        </Briefkarte>
       </main>
       <MarketingFooter crumb="Webseite erstellen" />
       <script
@@ -1203,15 +1205,12 @@ function Schritt({
   id,
   titel,
   kurz,
-  rand,
   children,
 }: {
   nr: number;
   id: string;
   titel: string;
   kurz: string;
-  /** Mono-Randnotiz unter dem Kurztext („Hinweis aus der Praxis“). */
-  rand?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -1226,12 +1225,6 @@ function Schritt({
         <p className="text-muted-foreground mt-2.5 max-w-xs text-[15px] leading-snug">
           {kurz}
         </p>
-        {rand ? (
-          <aside className={`${a.randnotiz} mt-6 max-w-xs`}>
-            <strong>Hinweis aus der Praxis</strong>
-            {rand}
-          </aside>
-        ) : null}
       </div>
       <div className="text-foreground/85 max-w-2xl min-w-0 space-y-5 text-[16.5px] leading-[1.7] lg:col-span-8">
         {children}

@@ -1,7 +1,7 @@
 /* ==================================================================
    Startseite „Laden“: Kopf, Bildreihe, Regale mit Karten.
 
-   Fläche durchgehend #f3f2ee (main.buehne.laden, app/apple.css), Karten
+   Fläche durchgehend #f5f5f7 (main.buehne.laden, app/apple.css), Karten
    weiß mit weichem Schatten, Business und Kontakt schwarz, Branchen-
    karten auf der Tönung ihrer Musterseite.
 
@@ -30,283 +30,318 @@
   }
 }
 
-/* ---------- 1. Kopf ---------- */
+/* ---------- 1. Kopf-Bühne: Text und Kran in einer runden Karte ---------- */
 
-.kopf {
-  padding-top: 32px;
-}
-@media (min-width: 1068px) {
-  .kopf {
-    padding-top: 52px;
-  }
-}
-.kopfRaster {
-  display: grid;
-  gap: 20px;
-}
-@media (min-width: 1068px) {
-  .kopfRaster {
-    grid-template-columns: 1fr 260px;
-    column-gap: 48px;
-    align-items: start;
-  }
-}
-.gross {
-  margin-top: 10px;
-  font-size: clamp(48px, 5.6vw, 80px);
-  line-height: 1;
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  color: #1d1d1f;
-}
-.grossGrau {
-  display: block;
-  margin-top: 8px;
-  font-size: clamp(24px, 3.2vw, 44px);
-  line-height: 1.12;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--grau);
-  text-wrap: balance;
-}
-@media (max-width: 359px) {
-  .gross {
-    font-size: 44px;
-  }
-  .grossGrau {
-    font-size: 22px;
-  }
-}
-.kennzeile {
-  font-size: 15px;
-  line-height: 20px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--gold-ink);
-}
-.kennzeile > span {
-  white-space: nowrap;
+.kopfAbschnitt {
+  padding-top: 12px;
 }
 @media (min-width: 734px) {
-  .kennzeile {
-    font-size: 17px;
-    line-height: 22px;
+  .kopfAbschnitt {
+    padding-top: 20px;
   }
 }
-.kopfAktionen {
+.kopfAbschnitt .kopfKarte {
+  --kante: 9px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  overflow: clip;
+  border-radius: var(--radius-karte);
+  background: linear-gradient(180deg, #fff 0%, #f5f5f7 100%);
+  box-shadow: var(--schatten);
+}
+.kopfText {
+  position: relative;
+  z-index: 2;
+  padding: 28px var(--pad) 4px;
+}
+@media (min-width: 734px) {
+  .kopfText {
+    padding: 48px 48px 8px;
+  }
+}
+
+.kennzeile {
+  color: #424245;
+}
+.kennzeileText {
+  min-width: 0;
+}
+
+.botschaft {
+  margin-top: 14px;
+  font-size: clamp(2.6rem, 1.6rem + 3.6vw, 4.75rem);
+  line-height: 1.02;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+@media (min-width: 734px) {
+  .botschaft {
+    margin-top: 20px;
+  }
+}
+/* Wörter steigen aus einer Maske. Luft für Umlaute und Unterlängen,
+   ohne die Zeile zu verschieben. */
+.wort {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.12em 0.04em 0.16em;
+  margin: -0.12em -0.04em -0.16em;
+}
+.wortIn {
+  display: inline-block;
+}
+
+.absatz {
+  max-width: 30em;
+  margin-top: 18px;
+  font-size: 17px;
+  line-height: 1.47;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+@media (min-width: 734px) {
+  .absatz {
+    margin-top: 24px;
+    font-size: 19px;
+    line-height: 1.42;
+  }
+}
+
+.aktionen {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 22px;
-  margin-top: 20px;
+  gap: 4px 24px;
+  margin-top: 22px;
 }
-/* Unter 400 px untereinander: Pille, darunter der Textlink. */
-@media (max-width: 399px) {
-  .kopfAktionen {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-  }
-}
-.kopfTel {
-  margin-top: 6px;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--grau);
-}
-.kopfTel a {
-  display: inline-block;
-  margin-block: -12px;
-  padding-block: 12px;
-  font-weight: 600;
-  color: var(--gold-text);
-  white-space: nowrap;
-}
-@media (hover: hover) {
-  .kopfTel a:hover {
-    text-decoration: underline;
-  }
-}
-.kopfAktionen :global(.btn-signal) {
-  min-height: 44px;
-  padding-inline: 20px;
-  font-size: 17px;
-}
-.kopfAktionen :global(.link-chevron) {
-  display: inline-block;
-  padding-block: 11px;
-  font-size: 17px;
-}
-@media (min-width: 1068px) {
-  .kopfAktionen {
+@media (min-width: 734px) {
+  .aktionen {
     margin-top: 28px;
   }
 }
-
-/* Hilfe-Hinweise: reine Textzeilen, Link darunter in Orange. */
-.hilfe {
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid #d2d2d7;
+.aktionen :global(.btn-signal) {
+  min-height: 44px;
+  padding-inline: 22px;
+  font-size: 17px;
 }
-.hilfeZeile {
-  padding-block: 10px;
+.telLink {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  min-height: 44px;
+  align-content: center;
+  color: var(--foreground);
+  text-decoration: none;
+}
+.telLabel {
   font-size: 14px;
-  line-height: 20px;
-  color: var(--grau);
-  text-wrap: pretty;
+  color: var(--muted-foreground);
 }
-.hilfeZeile + .hilfeZeile {
-  border-top: 1px solid #d2d2d7;
-}
-/* Unter 1068 px steht die Anfrage-Pille direkt darüber: nur die Telefonzeile. */
-@media (max-width: 1067px) {
-  .hilfeZeile:first-child {
-    display: none;
-  }
-  .hilfeZeile + .hilfeZeile {
-    border-top: 0;
-  }
-}
-.hilfeZeile a {
-  display: inline-block;
-  /* 44 px Trefferfläche ohne Einfluss auf die Zeile */
-  margin-block: -12px;
-  padding-block: 12px;
-  font-weight: 600;
-  color: var(--gold-text);
+.telNummer {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   white-space: nowrap;
-}
-@media (min-width: 1068px) {
-  .hilfe {
-    gap: 18px;
-    padding-top: 6px;
-    border-top: 0;
-  }
-  .hilfeZeile {
-    padding: 0;
-  }
-  .hilfeZeile + .hilfeZeile {
-    border-top: 0;
-  }
-  .hilfeZeile a {
-    display: block;
-    margin-top: -10px;
-  }
+  background-image: linear-gradient(var(--gold), var(--gold));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1.5px;
+  padding-bottom: 2px;
 }
 @media (hover: hover) {
-  .hilfeZeile a:hover {
-    text-decoration: underline;
+  .telLink:hover .telNummer {
+    color: var(--gold-ink);
+  }
+}
+.telLink:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.gruss {
+  margin-top: 14px;
+}
+/* Der Gruß steht erst im Browser fest („Aus Hamburg“ → „Spät am
+   Schreibtisch in Hamburg“) und kann am Handy auf zwei Zeilen gehen:
+   Platz für zwei Zeilen reservieren, damit nichts springt (CLS 0). */
+@media (max-width: 733px) {
+  .gruss {
+    min-height: 3em;
+    align-items: flex-start;
   }
 }
 
-/* ---------- 2. Bildreihe ---------- */
-
-.reihe {
-  --linie-akzent: #f45b1e;
-  margin-top: 28px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: var(--rand);
-  scrollbar-width: none;
+/* Der Kran. Am Handy die ganze viewBox unter dem Text: Kranführerhaus,
+   A-Bock und Beine stehen vollständig im Bild. */
+.kranBild {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin-top: 8px;
 }
-.reihe::-webkit-scrollbar {
-  display: none;
+.kranBild > div {
+  width: 100% !important;
 }
-.reihe > ul {
-  display: flex;
-  width: max-content;
-  gap: 16px;
-  margin: 0;
-  padding: 0 var(--rand) 4px;
-  list-style: none;
+@media (max-width: 733px) {
+  .kranBild p [class*="schildNr"] {
+    font-size: 10px;
+  }
+  .kranBild p [class*="schildText"] {
+    font-size: 11.5px;
+  }
 }
-.reihe li {
-  scroll-snap-align: start;
-}
-.reihe a {
-  display: flex;
-  width: 96px;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  border-radius: 12px;
-  color: #1d1d1f;
-}
-.reihe a:focus-visible {
-  outline: 2px solid #f45b1e;
-  outline-offset: 2px;
-}
-/* Linienzeichnung 48 × 48, Strich #1d1d1f, ein Akzent in Orange. */
-.reiheBild {
-  display: grid;
-  width: 56px;
-  height: 56px;
-  place-items: center;
-  color: #1d1d1f;
-}
-.reiheBild svg {
-  display: block;
-  width: 48px;
-  height: 48px;
-  transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.reiheName {
-  margin-top: 10px;
-  text-decoration-line: underline;
-  text-decoration-color: transparent;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
-  transition: text-decoration-color 200ms ease;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-}
-.reihePreis {
-  font-size: 12px;
-  line-height: 16px;
-  color: var(--grau);
+/* Unter 360 px ist der Himmel zu schmal: Etikett und Zeigerlinie gehen
+   gemeinsam aus, nie nur eins von beiden. */
+@media (max-width: 359px) {
+  .kranBild p,
+  .kranBild [data-kb="leader"] {
+    display: none !important;
+  }
 }
 @media (min-width: 734px) {
-  .reihe {
-    margin-top: 40px;
-  }
-  .reihe > ul {
-    gap: 20px;
-  }
-  .reihe a {
-    width: 104px;
-  }
-  .reiheName {
-    font-size: 14px;
-    line-height: 18px;
+  .kranBild {
+    width: min(100%, 680px);
+    margin-left: auto;
   }
 }
-@media (min-width: 1068px) {
-  .reihe > ul {
-    width: auto;
-    justify-content: space-between;
-    max-width: var(--inhalt-max);
-    margin-inline: auto;
-    padding-inline: var(--rinne);
+/* Ab 1024 px: Text links über 7 von 12 Spalten, die Zeichnung bündig
+   am rechten Kartenrand darunter. Die Wasserlinie (y = 640 der 760
+   hohen viewBox) liegt unter dem letzten Textblock. */
+@media (min-width: 1024px) {
+  .kopfAbschnitt .kopfKarte {
+    min-height: 640px;
+  }
+  .kopfText {
+    max-width: calc(100% * 7 / 12);
+    padding: 64px 0 112px 56px;
+  }
+  .absatz {
+    max-width: 25em;
+  }
+  .kranBild {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: min(600px, 61%);
+    margin: 0;
+    will-change: transform;
+  }
+  /* Tageslicht nur hinter der Zeichnung, die Textspalte bleibt hell. */
+  .kranLicht {
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 38%, #000 58%),
+      linear-gradient(180deg, transparent 0%, #000 34%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(90deg, transparent 38%, #000 58%),
+      linear-gradient(180deg, transparent 0%, #000 34%);
+    mask-composite: intersect;
   }
 }
-@media (hover: hover) {
-  .reihe a:hover .reiheName {
-    text-decoration-color: #f45b1e;
+
+/* Kaikante: schmales Teerband mit Pollern unten in der Karte, vom
+   Radius beschnitten. Liegt außerhalb der bewegten Zeichnung. */
+.kaikante {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 3;
+  height: var(--kante);
+  background: var(--teer-2);
+  box-shadow: inset 0 1px 0 #3a3e40;
+  pointer-events: none;
+}
+.kaikante::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 28px;
+  background: linear-gradient(180deg, rgb(29 29 31 / 0), rgb(29 29 31 / 0.08));
+}
+.kaikante::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    270deg,
+    transparent 0 54px,
+    #3a3e40 54px 60px,
+    transparent 60px 120px
+  );
+}
+
+.kranUnterschrift {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 1.2em;
+  padding: 12px 4px 0;
+}
+.pegelPunkt {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--ink-petrol);
+  vertical-align: 0.05em;
+}
+
+/* Einstieg: Kennzeile, dann die Wörter, dann Aktionen und Gruß. Ohne JS
+   genauso; endet immer sichtbar. Bei reduzierter Bewegung steht alles. */
+@media (prefers-reduced-motion: no-preference) {
+  .kennzeileText {
+    animation: zeile-auf var(--t-mittel) var(--ease-wechsel) 60ms both;
+  }
+  .wortIn {
+    animation: wort-auf 640ms var(--ease-aus) both;
+    animation-delay: calc(100ms + var(--i, 0) * 60ms);
+  }
+  .aktionen,
+  .gruss {
+    animation: folgt var(--t-lang) var(--ease-aus) 480ms both;
   }
 }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .reihe a:hover svg {
-    transform: translateY(-3px);
+@keyframes zeile-auf {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
   }
 }
-/* Solange die Reihe wischt: rechter Auslauf zeigt, dass es weitergeht. */
-@media (max-width: 1067px) {
-  .reihe {
-    mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
+@keyframes wort-auf {
+  from {
+    transform: translateY(112%);
   }
+  to {
+    transform: none;
+  }
+}
+@keyframes folgt {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Ortsmarke über dem Regaltitel und Notiz unter dem Regal: Mono. */
+.ortsmarke {
+  margin-bottom: 8px;
 }
 
 /* ---------- 3. Regal ---------- */
@@ -314,15 +349,9 @@
 .regal {
   padding-top: 32px;
 }
-.reihe + .regal {
-  padding-top: 40px;
-}
 @media (min-width: 734px) {
   .regal {
     padding-top: 48px;
-  }
-  .reihe + .regal {
-    padding-top: 56px;
   }
 }
 /* Ab dem zweiten Regal: erst rechnen, wenn es in die Nähe kommt. */
@@ -479,9 +508,6 @@
 .notiz {
   margin-top: -20px;
   margin-bottom: 14px;
-  font-size: 12px;
-  line-height: 16px;
-  color: var(--grau);
 }
 .notiz a {
   color: var(--gold-text);
@@ -499,7 +525,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: var(--radius-karte);
+  border-radius: 18px;
   background: #fff;
   color: #1d1d1f;
   box-shadow: var(--schatten);
@@ -520,11 +546,11 @@
 }
 /* Hervorgehobene Karte: Tiefblau des Hafens mit oranger Oberkante. */
 .schwarz {
-  background: #1b1d1e;
+  background: #0f2a3a;
   box-shadow:
     inset 0 3px 0 #f45b1e,
     var(--schatten);
-  color: #f3f2ee;
+  color: #f5f5f7;
   --grau: #a1a1a6;
   --gold-text: #ff9f5a;
 }
@@ -910,185 +936,13 @@
   }
 }
 
-/* ---------- Banner mit Kran ---------- */
-
-.bannerAbschnitt {
-  padding-top: 32px;
-}
-@media (min-width: 734px) {
-  .bannerAbschnitt {
-    padding-top: 48px;
-  }
-}
-.banner {
-  width: 100%;
-  height: 440px;
-}
-@media (max-width: 359px) {
-  .banner {
-    height: 420px;
-  }
-}
-@media (min-width: 734px) {
-  .banner {
-    height: 460px;
-  }
-}
-@media (min-width: 1068px) {
-  .banner {
-    height: 520px;
-  }
-}
-.banner .text {
-  max-width: 400px;
-}
-@media (min-width: 734px) {
-  .banner .text {
-    padding: 36px 40px 0;
-  }
-}
-@media (min-width: 1068px) {
-  .banner .text {
-    max-width: 440px;
-    padding: 48px 48px 0;
-  }
-}
-.titelBanner {
-  font-size: 28px;
-  line-height: 32px;
-  letter-spacing: 0.002em;
-}
-@media (min-width: 734px) {
-  .titelBanner {
-    font-size: 40px;
-    line-height: 44px;
-    letter-spacing: -0.01em;
-  }
-}
-@media (min-width: 1068px) {
-  .titelBanner {
-    font-size: 48px;
-    line-height: 52px;
-  }
-}
-.zeileBanner {
-  margin-top: 8px;
-  font-size: 15px;
-  line-height: 20px;
-  color: var(--grau);
-  text-wrap: pretty;
-}
-@media (min-width: 734px) {
-  .zeileBanner {
-    font-size: 17px;
-    line-height: 24px;
-  }
-}
-.bannerAktionen {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 20px;
-  margin-top: 12px;
-}
-.bannerAktionen :global(.btn-signal) {
-  min-height: 44px;
-  padding-inline: 18px;
-  font-size: 15px;
-}
-@media (min-width: 734px) {
-  .bannerAktionen :global(.btn-signal) {
-    font-size: 17px;
-  }
-}
-.bannerAktionen :global(.link-chevron) {
-  font-size: 15px;
-}
-@media (min-width: 734px) {
-  .bannerAktionen :global(.link-chevron) {
-    font-size: 17px;
-  }
-}
-/* Bühne: Himmel über die ganze Karte, Zeichnung unten rechts */
-.buehne {
-  position: absolute !important;
-  inset: 0;
-  overflow: hidden;
-  background: linear-gradient(
-    180deg,
-    #fff 0%,
-    #f7f8f8 46%,
-    #eef1f1 100%
-  ) !important;
-}
-/* Handy: Zeichnung 120 % breit, läuft rechts aus, Kran rückt an die Knöpfe. */
-.buehneBild {
-  position: absolute;
-  right: -16%;
-  bottom: 0;
-  width: 120%;
-}
-.buehneBild > div {
-  width: 100% !important;
-}
-/* Kai unter dem Portal heller und flacher: kein schwerer Block unten rechts. */
-.buehneBild :global(svg) rect[fill="#2A2E30"] {
-  fill: #5b6265;
-}
-@media (min-width: 734px) {
-  .buehneBild {
-    right: 36px;
-    width: auto;
-    height: 340px;
-    aspect-ratio: 960 / 760;
-  }
-}
-@media (min-width: 1068px) {
-  .buehneBild {
-    right: 56px;
-    height: 470px;
-  }
-}
-/* Schilder an den Containern: am Handy zu eng */
-@media (max-width: 733px) {
-  .buehneBild p {
-    display: none !important;
-  }
-}
-.unterschrift {
-  position: absolute;
-  left: var(--pad);
-  bottom: 14px;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  max-width: calc(100% - 2 * var(--pad));
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.9);
-  font-size: 12px;
-  line-height: 16px;
-  color: #424245;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.pegelPunkt {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 6px;
-  border-radius: 50%;
-  background: #1f5f6b;
-  vertical-align: 1px;
-}
-
 /* ---------- Vorher / Nachher ---------- */
 
 .breit {
   display: grid;
   gap: 20px;
   padding: var(--pad);
-  border-radius: var(--radius-karte);
+  border-radius: 18px;
   background: #fff;
   box-shadow: var(--schatten);
 }
@@ -1144,9 +998,6 @@
 }
 .vnHinweis {
   margin-top: 16px;
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--grau);
 }
 
 /* ---------- Fragen ---------- */
@@ -1181,7 +1032,7 @@
 }
 .fragen {
   padding: 4px 22px;
-  border-radius: var(--radius-karte);
+  border-radius: 18px;
   background: #fff;
   box-shadow: var(--schatten);
 }
@@ -1253,118 +1104,14 @@
   color: var(--grau);
 }
 
-/* ---------- Kontakt ---------- */
-
-.kontakt {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  overflow: hidden;
-  border-radius: var(--radius-karte);
-  background: #1b1d1e;
-  color: #f3f2ee;
-  --grau: #a1a1a6;
-  --gold-text: #ff9f5a;
-}
-.kontaktBild {
-  position: relative;
-  order: -1;
-  height: 200px;
-  overflow: hidden;
-}
-.kontaktText {
-  padding: 24px 22px 28px;
-}
-@media (min-width: 734px) {
-  .kontakt {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    min-height: 400px;
-  }
-  .kontaktBild {
-    order: 0;
-    height: auto;
-  }
-  .kontaktText {
-    align-self: center;
-    padding: 40px;
-  }
-}
-@media (min-width: 1068px) {
-  .kontakt {
-    grid-template-columns: 540px 1fr;
-  }
-}
-.kontaktTel {
-  margin-top: 20px;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--grau);
-}
-.kontaktTel a {
-  display: inline-block;
-  margin-block: -12px;
-  padding-block: 12px;
-  font-weight: 600;
-  color: #f3f2ee;
-  white-space: nowrap;
-}
-@media (hover: hover) {
-  .kontaktTel a:hover {
-    text-decoration: underline;
-  }
-}
-.tel {
-  display: inline-block;
-  margin-top: 12px;
-  font-size: clamp(32px, 11vw, 40px);
-  line-height: 44px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: #f3f2ee;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-@media (min-width: 734px) {
-  .tel {
-    font-size: 48px;
-    line-height: 56px;
-  }
-}
-@media (min-width: 1068px) {
-  .tel {
-    font-size: 56px;
-    line-height: 64px;
-  }
-}
-@media (hover: hover) {
-  .tel:hover {
-    color: #fff;
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
-  }
-}
-.tel:focus-visible {
-  outline: 2px solid #f45b1e;
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-/* Abstand Kontaktkarte → Fußzeile 40 / 56 px (der Block bringt 32 mit). */
+/* Abstand Briefkarte → Fußzeile, auf der Fläche der Seite (sonst
+   stünde ein weißer Streifen über der Elbe-Linie). */
 .fussRand {
-  margin-top: 8px;
-  border-top: 1px solid #d2d2d7;
+  padding-top: 8px;
+  background: #f5f5f7;
 }
 @media (min-width: 734px) {
   .fussRand {
-    margin-top: 24px;
+    padding-top: 24px;
   }
 }
-.bannerText {
-  position: relative;
-  z-index: 2;
-}
-@media (max-width: 733px) {
-  .bannerAktionen {
-    gap: 0 14px;
-  }
-}
-
