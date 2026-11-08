@@ -1,0 +1,1185 @@
+/* ==================================================================
+   Startseite „Laden“: Kopf, Bildreihe, Regale mit Karten.
+
+   Fläche durchgehend #f5f5f7 (main.buehne.laden, app/apple.css), Karten
+   weiß mit weichem Schatten, Business und Kontakt schwarz, Branchen-
+   karten auf der Tönung ihrer Musterseite.
+
+   Rhythmus (Rechner / Handy): Kartenunterkante → nächster Regal-Kopf
+   80 / 64 (32 Schattenraum der Spur + 48 / 32 Abschnitt oben),
+   Regal-Kopf → Kartenoberkante 24 / 20 (16 / 12 + 8 Spur oben).
+   ================================================================== */
+
+.seite {
+  --rand: max(
+    var(--rinne),
+    calc((100% - var(--inhalt-max)) / 2 + var(--rinne))
+  );
+  --gold-text: var(--gold-ink);
+  --grau: #6e6e73;
+  --schatten: 0 4px 16px rgb(0 0 0 / 0.08);
+  --schatten-hover: 0 8px 28px rgb(0 0 0 / 0.12);
+  --luecke: 12px;
+  --pad: 22px;
+  overflow-x: clip;
+}
+@media (min-width: 734px) {
+  .seite {
+    --luecke: 20px;
+    --pad: 28px;
+  }
+}
+
+/* ---------- 1. Kopf ---------- */
+
+.kopf {
+  padding-top: 32px;
+}
+@media (min-width: 1068px) {
+  .kopf {
+    padding-top: 52px;
+  }
+}
+.kopfRaster {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 1068px) {
+  .kopfRaster {
+    grid-template-columns: 1fr 260px;
+    column-gap: 48px;
+    align-items: start;
+  }
+}
+.gross {
+  margin-top: 6px;
+  font-size: 48px;
+  line-height: 52px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: #1d1d1f;
+}
+.grossGrau {
+  display: block;
+  margin-top: 2px;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--grau);
+  text-wrap: balance;
+}
+@media (min-width: 734px) {
+  .gross {
+    font-size: 64px;
+    line-height: 68px;
+  }
+  .grossGrau {
+    font-size: 40px;
+    line-height: 44px;
+  }
+}
+@media (min-width: 1068px) {
+  .gross {
+    font-size: 80px;
+    line-height: 84px;
+  }
+  .grossGrau {
+    margin-top: 4px;
+    font-size: 48px;
+    line-height: 52px;
+  }
+}
+.kennzeile {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--gold-ink);
+}
+.kennzeile > span {
+  white-space: nowrap;
+}
+@media (min-width: 734px) {
+  .kennzeile {
+    font-size: 17px;
+    line-height: 22px;
+  }
+}
+.kopfAktionen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 22px;
+  margin-top: 20px;
+}
+.kopfAktionen :global(.btn-signal) {
+  min-height: 44px;
+  padding-inline: 20px;
+  font-size: 17px;
+}
+.kopfAktionen :global(.link-chevron) {
+  display: inline-block;
+  padding-block: 11px;
+  font-size: 17px;
+}
+@media (min-width: 1068px) {
+  .kopfAktionen {
+    margin-top: 28px;
+  }
+}
+
+/* Hilfe-Hinweise: reine Textzeilen, Link darunter in Orange. */
+.hilfe {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #d2d2d7;
+}
+.hilfeZeile {
+  padding-block: 10px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grau);
+  text-wrap: pretty;
+}
+.hilfeZeile + .hilfeZeile {
+  border-top: 1px solid #d2d2d7;
+}
+/* Unter 1068 px steht die Anfrage-Pille direkt darüber: nur die Telefonzeile. */
+@media (max-width: 1067px) {
+  .hilfeZeile:first-child {
+    display: none;
+  }
+  .hilfeZeile + .hilfeZeile {
+    border-top: 0;
+  }
+}
+.hilfeZeile a {
+  display: inline-block;
+  /* 44 px Trefferfläche ohne Einfluss auf die Zeile */
+  margin-block: -12px;
+  padding-block: 12px;
+  font-weight: 600;
+  color: var(--gold-text);
+  white-space: nowrap;
+}
+@media (min-width: 1068px) {
+  .hilfe {
+    gap: 18px;
+    padding-top: 6px;
+    border-top: 0;
+  }
+  .hilfeZeile {
+    padding: 0;
+  }
+  .hilfeZeile + .hilfeZeile {
+    border-top: 0;
+  }
+  .hilfeZeile a {
+    display: block;
+    margin-top: -10px;
+  }
+}
+@media (hover: hover) {
+  .hilfeZeile a:hover {
+    text-decoration: underline;
+  }
+}
+
+/* ---------- 2. Bildreihe ---------- */
+
+.reihe {
+  margin-top: 28px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--rand);
+  scrollbar-width: none;
+}
+.reihe::-webkit-scrollbar {
+  display: none;
+}
+.reihe > ul {
+  display: flex;
+  width: max-content;
+  gap: 16px;
+  margin: 0;
+  padding: 0 var(--rand) 4px;
+  list-style: none;
+}
+.reihe li {
+  scroll-snap-align: start;
+}
+.reihe a {
+  display: flex;
+  width: 96px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-radius: 12px;
+  color: #1d1d1f;
+}
+.reihe a:focus-visible {
+  outline: 2px solid #f45b1e;
+  outline-offset: 2px;
+}
+.reihe svg {
+  display: block;
+  width: 96px;
+  height: 63px;
+  transition: transform 300ms var(--ease-apple);
+}
+.reiheName {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+}
+.reihePreis {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--grau);
+}
+@media (min-width: 734px) {
+  .reihe {
+    margin-top: 40px;
+  }
+  .reihe > ul {
+    gap: 20px;
+  }
+  .reihe a {
+    width: 104px;
+  }
+  .reihe svg {
+    width: 104px;
+    height: 68px;
+  }
+  .reiheName {
+    font-size: 14px;
+    line-height: 18px;
+  }
+}
+@media (min-width: 1068px) {
+  .reihe > ul {
+    width: auto;
+    justify-content: space-between;
+    max-width: var(--inhalt-max);
+    margin-inline: auto;
+    padding-inline: var(--rinne);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .reihe a:hover svg {
+    transform: translateY(-3px);
+  }
+}
+
+/* ---------- 3. Regal ---------- */
+
+.regal {
+  padding-top: 32px;
+}
+.reihe + .regal {
+  padding-top: 40px;
+}
+@media (min-width: 734px) {
+  .regal {
+    padding-top: 48px;
+  }
+  .reihe + .regal {
+    padding-top: 56px;
+  }
+}
+/* Ab dem zweiten Regal: erst rechnen, wenn es in die Nähe kommt. */
+.spaet {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--h-mobil, 560px);
+}
+@media (min-width: 734px) {
+  .spaet {
+    contain-intrinsic-size: auto var(--h, 640px);
+  }
+}
+
+.regalKopf {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 12px;
+}
+@media (min-width: 734px) {
+  .regalKopf {
+    margin-bottom: 16px;
+  }
+}
+.zweiton {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: #1d1d1f;
+  text-wrap: pretty;
+}
+.zweiton > span + span {
+  color: var(--grau);
+}
+@media (max-width: 359px) {
+  .zweiton {
+    font-size: 22px;
+    line-height: 26px;
+  }
+}
+@media (min-width: 734px) {
+  .zweiton {
+    font-size: 28px;
+    line-height: 32px;
+    letter-spacing: 0.004em;
+  }
+}
+.kopfRechts {
+  display: none;
+  flex: none;
+  align-items: center;
+  gap: 20px;
+}
+.kopfLink {
+  font-size: 17px;
+  line-height: 22px;
+}
+.kopfLinkMobil {
+  display: inline-block;
+  margin-top: 2px;
+  padding-block: 12px;
+  font-size: 14px;
+  line-height: 20px;
+}
+@media (min-width: 734px) {
+  .kopfRechts {
+    display: flex;
+  }
+  .kopfLinkMobil {
+    display: none;
+  }
+}
+.kopfRechts .kopfLink {
+  display: inline-block;
+  padding-block: 11px;
+}
+/* Pfeile (RegalPfeile, .regal-pfeil aus app/apple.css): sichtbar 36, Treffer 44. */
+.kopfRechts :global(.regal-pfeile) {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .kopfRechts :global(.regal-pfeile) {
+    display: flex;
+    gap: 8px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+.kopfRechts :global(.regal-pfeil) {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+.kopfRechts :global(.regal-pfeil)::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+.spur {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--rand);
+  scrollbar-width: none;
+}
+.spur::-webkit-scrollbar {
+  display: none;
+}
+.spur:focus-visible {
+  outline: 2px solid #f45b1e;
+  outline-offset: -2px;
+}
+.spur > ul {
+  display: flex;
+  width: max-content;
+  gap: var(--luecke);
+  margin: 0;
+  padding: 8px var(--rand) 32px;
+  list-style: none;
+}
+.spur > ul > li {
+  display: flex;
+  flex: none;
+  scroll-snap-align: start;
+}
+.spur > ul > li:last-child:not(:first-child) {
+  scroll-snap-align: end;
+}
+.notiz {
+  margin-top: -14px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--grau);
+}
+.notiz a {
+  color: var(--gold-text);
+}
+
+/* Breite Blöcke (Vorher/Nachher, Fragen, Kontakt): gleicher Fuß wie eine Spur. */
+.block {
+  padding-bottom: 32px;
+}
+
+/* ---------- Karten ---------- */
+
+.karte {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  color: #1d1d1f;
+  box-shadow: var(--schatten);
+  transition: box-shadow 300ms var(--ease-apple);
+}
+.karte:has(:global(.karte-link):focus-visible),
+.karte:has(a:focus-visible) {
+  outline: 2px solid #f45b1e;
+  outline-offset: 2px;
+}
+.karte :global(.karte-link):focus-visible {
+  outline: none;
+}
+.karte :global(.karte-link) {
+  color: inherit;
+}
+.schwarz {
+  background: #000;
+  color: #f5f5f7;
+  --grau: #a1a1a6;
+  --gold-text: #ff9f5a;
+}
+.getoent {
+  box-shadow: none;
+  --grau: #5f5f64;
+  --gold-text: #b23c0a;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .karte:not(.getoent):hover {
+    box-shadow: var(--schatten-hover);
+  }
+  .karte:hover .bild > :is(svg, img),
+  .karte:hover .bildOben > :is(svg, img) {
+    transform: scale(1.02);
+  }
+}
+
+.text {
+  padding: var(--pad) var(--pad) 0;
+}
+.eyebrow {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--gold-text);
+}
+.titelGross,
+.titelMittel,
+.titelBanner {
+  margin-top: 6px;
+  font-weight: 700;
+  text-wrap: balance;
+}
+.titelGross {
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: 0.004em;
+}
+@media (max-width: 359px) {
+  .titelGross {
+    font-size: 22px;
+    line-height: 26px;
+  }
+}
+@media (min-width: 1068px) {
+  .titelGross {
+    font-size: 28px;
+    line-height: 32px;
+  }
+}
+.titelMittel {
+  font-size: 21px;
+  line-height: 25px;
+  letter-spacing: 0.011em;
+}
+@media (min-width: 1068px) {
+  .titelMittel {
+    font-size: 24px;
+    line-height: 28px;
+  }
+}
+.zeile {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.016em;
+  color: var(--grau);
+  text-wrap: pretty;
+}
+.preis {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.016em;
+}
+.preis > span {
+  font-weight: 400;
+  color: var(--grau);
+}
+.mehr {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gold-text);
+}
+
+/* Bild randlos bis unten; feste Höhe, damit nichts springt. */
+.bild {
+  position: absolute;
+  inset: auto 0 0;
+  height: 61%;
+  overflow: hidden;
+}
+.bildDatei {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  transition: transform 400ms var(--ease-apple);
+  transform-origin: 50% 100%;
+}
+.bild > svg,
+.bildOben > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: transform 400ms var(--ease-apple);
+  transform-origin: 50% 100%;
+}
+
+/* Groß: 400 × 500 / 360 × 460 / bis 320 × 440 */
+.gross_ {
+  width: min(calc(100vw - 48px), 320px);
+  height: 440px;
+}
+@media (max-width: 359px) {
+  .gross_ {
+    width: 272px;
+    height: 420px;
+  }
+}
+@media (min-width: 734px) {
+  .gross_ {
+    width: 360px;
+    height: 460px;
+  }
+}
+@media (min-width: 1068px) {
+  .gross_ {
+    width: 400px;
+    height: 500px;
+  }
+}
+
+/* Mittel: 300 × 400 / 280 × 360 (Journal kürzer, .mittelKurz) */
+.mittel {
+  width: 280px;
+  height: 360px;
+}
+@media (max-width: 359px) {
+  .mittel {
+    width: 264px;
+  }
+}
+@media (min-width: 734px) {
+  .mittel {
+    width: 300px;
+    height: 400px;
+  }
+}
+/* Werkzeuge: Bild unten (viewBox 320 × 240), Text oben höchstens vier Zeilen. */
+.mittel .bild {
+  height: 236px;
+}
+@media (max-width: 733px) {
+  .mittel .bild {
+    height: 208px;
+  }
+}
+/* Journal: kürzer, Bild oben rund 60 % */
+.mittelKurz {
+  height: 330px;
+}
+@media (min-width: 734px) {
+  .mittelKurz {
+    height: 360px;
+  }
+}
+@media (min-width: 1068px) {
+  .mittelKurz {
+    height: 380px;
+  }
+}
+.bildOben {
+  position: relative;
+  flex: none;
+  height: 220px;
+  overflow: hidden;
+}
+@media (max-width: 733px) {
+  .bildOben {
+    height: 196px;
+  }
+}
+@media (min-width: 1068px) {
+  .bildOben {
+    height: 228px;
+  }
+}
+
+/* Klein: 300 × 200 / 264 × 184 */
+.klein {
+  width: 264px;
+  height: 184px;
+  padding: 20px;
+}
+@media (min-width: 734px) {
+  .klein {
+    width: 300px;
+    height: 200px;
+    padding: 24px;
+  }
+}
+.klein .satz {
+  margin-top: 16px;
+}
+.symbol {
+  display: block;
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+.satz {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+.satz > span {
+  color: var(--grau);
+}
+@media (min-width: 734px) {
+  .satz {
+    font-size: 19px;
+    line-height: 23px;
+    letter-spacing: 0.012em;
+  }
+}
+/* Klein mit Bildband oben (Der Weg) */
+.weg {
+  padding: 0;
+}
+.band {
+  display: block;
+  width: 100%;
+  height: 78px;
+  flex: none;
+}
+@media (min-width: 734px) {
+  .band {
+    height: 88px;
+  }
+}
+.weg .wegText {
+  padding: 14px 20px 0;
+}
+@media (min-width: 734px) {
+  .weg .wegText {
+    padding: 16px 24px 0;
+  }
+}
+.weg .satz {
+  margin-top: 4px;
+}
+
+/* Endkarte: Text mittig */
+.ende {
+  width: 264px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 28px;
+  text-align: center;
+}
+@media (min-width: 734px) {
+  .ende {
+    width: 300px;
+  }
+}
+.endeMitBild {
+  width: min(calc(100vw - 48px), 320px);
+  height: 440px;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+  text-align: left;
+}
+@media (max-width: 359px) {
+  .endeMitBild {
+    width: 272px;
+    height: 420px;
+  }
+}
+@media (min-width: 734px) {
+  .endeMitBild {
+    width: 300px;
+    height: 460px;
+  }
+}
+@media (min-width: 1068px) {
+  .endeMitBild {
+    height: 500px;
+  }
+}
+
+/* ---------- Banner mit Kran ---------- */
+
+.bannerAbschnitt {
+  padding-top: 32px;
+}
+@media (min-width: 734px) {
+  .bannerAbschnitt {
+    padding-top: 48px;
+  }
+}
+.banner {
+  width: 100%;
+  height: 500px;
+}
+@media (max-width: 359px) {
+  .banner {
+    height: 470px;
+  }
+}
+@media (min-width: 734px) {
+  .banner {
+    height: 460px;
+  }
+}
+@media (min-width: 1068px) {
+  .banner {
+    height: 520px;
+  }
+}
+.banner .text {
+  max-width: 400px;
+}
+@media (min-width: 734px) {
+  .banner .text {
+    padding: 36px 40px 0;
+  }
+}
+@media (min-width: 1068px) {
+  .banner .text {
+    max-width: 440px;
+    padding: 48px 48px 0;
+  }
+}
+.titelBanner {
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: 0.002em;
+}
+@media (min-width: 734px) {
+  .titelBanner {
+    font-size: 40px;
+    line-height: 44px;
+    letter-spacing: -0.01em;
+  }
+}
+@media (min-width: 1068px) {
+  .titelBanner {
+    font-size: 48px;
+    line-height: 52px;
+  }
+}
+.zeileBanner {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--grau);
+  text-wrap: pretty;
+}
+@media (min-width: 734px) {
+  .zeileBanner {
+    font-size: 17px;
+    line-height: 24px;
+  }
+}
+.bannerAktionen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 20px;
+  margin-top: 12px;
+}
+.bannerAktionen :global(.btn-signal) {
+  min-height: 44px;
+  padding-inline: 18px;
+  font-size: 15px;
+}
+@media (min-width: 734px) {
+  .bannerAktionen :global(.btn-signal) {
+    font-size: 17px;
+  }
+}
+.bannerAktionen :global(.link-chevron) {
+  font-size: 15px;
+}
+@media (min-width: 734px) {
+  .bannerAktionen :global(.link-chevron) {
+    font-size: 17px;
+  }
+}
+/* Bühne: Himmel über die ganze Karte, Zeichnung unten rechts */
+.buehne {
+  position: absolute !important;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    #fff 0%,
+    #f7f8f8 46%,
+    #eef1f1 100%
+  ) !important;
+}
+.buehneBild {
+  position: absolute;
+  right: 4%;
+  bottom: 0;
+  width: 100%;
+}
+.buehneBild > div {
+  width: 100% !important;
+}
+/* Kai unter dem Portal heller und flacher: kein schwerer Block unten rechts. */
+.buehneBild :global(svg) rect[fill="#2A2E30"] {
+  fill: #5b6265;
+}
+@media (min-width: 734px) {
+  .buehneBild {
+    right: 36px;
+    width: auto;
+    height: 340px;
+    aspect-ratio: 960 / 760;
+  }
+}
+@media (min-width: 1068px) {
+  .buehneBild {
+    right: 56px;
+    height: 470px;
+  }
+}
+/* Schilder an den Containern: am Handy zu eng */
+@media (max-width: 733px) {
+  .buehneBild p {
+    display: none !important;
+  }
+}
+.unterschrift {
+  position: absolute;
+  left: var(--pad);
+  bottom: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 2 * var(--pad));
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.9);
+  font-size: 12px;
+  line-height: 16px;
+  color: #424245;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.pegelPunkt {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #1f5f6b;
+  vertical-align: 1px;
+}
+
+/* ---------- Vorher / Nachher ---------- */
+
+.breit {
+  display: grid;
+  gap: 20px;
+  padding: var(--pad);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--schatten);
+}
+@media (min-width: 900px) {
+  .breit {
+    grid-template-columns: 240px 1fr;
+    align-items: center;
+    gap: 32px;
+    padding: 32px;
+  }
+}
+@media (min-width: 1068px) {
+  .breit {
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    padding: 40px;
+  }
+}
+.vnGeraet {
+  min-width: 0;
+}
+
+/* ---------- Fragen ---------- */
+
+.fragen {
+  padding: 4px 22px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--schatten);
+}
+@media (min-width: 734px) {
+  .fragen {
+    padding: 4px 32px;
+  }
+}
+.frage + .frage {
+  border-top: 1px solid #e5e5ea;
+}
+.frageKopf {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 14px;
+  list-style: none;
+  cursor: pointer;
+}
+.frageKopf::-webkit-details-marker {
+  display: none;
+}
+.frageKopf:focus-visible {
+  outline: 2px solid #f45b1e;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.frageTitel {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  text-wrap: pretty;
+}
+.plus {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--grau);
+}
+.plus::before,
+.plus::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1.5px;
+  margin-top: -0.75px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 240ms var(--ease-apple);
+}
+.plus::after {
+  transform: rotate(90deg);
+}
+.frage[open] .plus::after {
+  transform: none;
+}
+.antwort {
+  max-width: 40em;
+  padding-bottom: 20px;
+  font-size: 17px;
+  line-height: 25px;
+  letter-spacing: -0.022em;
+  color: var(--grau);
+}
+
+/* ---------- Kontakt ---------- */
+
+.kontakt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: 18px;
+  background: #000;
+  color: #f5f5f7;
+  --grau: #a1a1a6;
+  --gold-text: #ff9f5a;
+}
+.kontaktBild {
+  order: -1;
+  height: 180px;
+}
+.kontaktBild > :is(svg, img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.kontaktText {
+  padding: 24px 22px 28px;
+}
+@media (min-width: 734px) {
+  .kontakt {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 400px;
+  }
+  .kontaktBild {
+    order: 0;
+    height: auto;
+  }
+  .kontaktText {
+    align-self: center;
+    padding: 40px;
+  }
+}
+@media (min-width: 1068px) {
+  .kontakt {
+    grid-template-columns: 540px 1fr;
+  }
+}
+.kontaktTel {
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grau);
+}
+.kontaktTel a {
+  display: inline-block;
+  margin-block: -12px;
+  padding-block: 12px;
+  font-weight: 600;
+  color: #f5f5f7;
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  .kontaktTel a:hover {
+    text-decoration: underline;
+  }
+}
+.tel {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: clamp(32px, 11vw, 40px);
+  line-height: 44px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #f5f5f7;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (min-width: 734px) {
+  .tel {
+    font-size: 48px;
+    line-height: 56px;
+  }
+}
+@media (min-width: 1068px) {
+  .tel {
+    font-size: 56px;
+    line-height: 64px;
+  }
+}
+@media (hover: hover) {
+  .tel:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+}
+.tel:focus-visible {
+  outline: 2px solid #f45b1e;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.fuss {
+  padding-top: 64px;
+}
+@media (min-width: 734px) {
+  .fuss {
+    padding-top: 88px;
+  }
+}
+.bannerText {
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 733px) {
+  .bannerAktionen {
+    gap: 0 14px;
+  }
+}
+/* Laptop-Rahmen um den Vorher/Nachher-Regler (ab 900 px). Die Rundung
+   des Browserfensters entfällt im Rahmen. */
+@media (min-width: 900px) {
+  .vnLaptop {
+    position: relative;
+    margin-bottom: 18px;
+    padding: 12px 12px 14px;
+    border-radius: 20px 20px 8px 8px;
+    background: #0b0b0c;
+    box-shadow:
+      inset 0 0 0 1.5px #c7c7cc,
+      0 18px 30px -18px rgb(0 0 0 / 0.45);
+  }
+  .vnLaptop > div {
+    border-radius: 6px !important;
+    box-shadow: none !important;
+  }
+  .vnLaptop::after {
+    content: "";
+    position: absolute;
+    left: -6%;
+    right: -6%;
+    bottom: -14px;
+    height: 14px;
+    border-radius: 2px 2px 14px 14px;
+    background: linear-gradient(180deg, #ececf0 0%, #d2d2d7 50%, #a1a1a6 100%);
+    box-shadow: 0 10px 18px -8px rgb(0 0 0 / 0.35);
+  }
+}

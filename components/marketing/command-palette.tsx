@@ -204,10 +204,10 @@ export function CommandPalette({
         icon: Phone,
       },
       {
-        kind: "external",
-        label: "Schreiben",
-        description: "info@sitalo.de",
-        href: "mailto:info@sitalo.de",
+        kind: "link",
+        label: "Anfrage schreiben",
+        description: "Formular mit Ihren Angaben, Antwort meist am selben Werktag",
+        href: "/anfrage",
         icon: Mail,
       },
     ];

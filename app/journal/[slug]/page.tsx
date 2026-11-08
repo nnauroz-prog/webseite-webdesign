@@ -209,10 +209,10 @@ export default async function JournalPostPage({
               0160&nbsp;7621876
             </a>
             <p className="t-unter mx-auto mt-4">
-              Oder per Mail an{" "}
-              <a href="mailto:info@sitalo.de" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
-                info@sitalo.de
-              </a>
+              Oder schreiben Sie uns über das{" "}
+              <Link href="/anfrage" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
+                Anfrageformular
+              </Link>
               . Wir antworten meist am selben Werktag.
             </p>
             <h2 className="t-karte mt-12">Weiter zum Thema</h2>

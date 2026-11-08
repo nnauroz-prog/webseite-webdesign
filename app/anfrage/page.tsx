@@ -136,17 +136,6 @@ export default async function AnfragePage({
                   </a>
                   <dl className="mt-6 space-y-2.5 text-[14.5px]">
                     <div className="flex gap-3">
-                      <dt className="label-mono text-muted-foreground w-20 shrink-0 pt-0.5">Mail</dt>
-                      <dd className="min-w-0">
-                        <a
-                          href="mailto:info@sitalo.de"
-                          className="text-gold-ink underline underline-offset-2 hover:decoration-2"
-                        >
-                          info@sitalo.de
-                        </a>
-                      </dd>
-                    </div>
-                    <div className="flex gap-3">
                       <dt className="label-mono text-muted-foreground w-20 shrink-0 pt-0.5">Kontakt</dt>
                       <dd className="min-w-0">
                         <a

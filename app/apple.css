@@ -846,11 +846,12 @@
       background-color 200ms var(--ease-apple),
       opacity 200ms var(--ease-apple);
   }
-  .regal-pfeil:hover:not(:disabled) {
+  .regal-pfeil:hover:not(:disabled, [aria-disabled="true"]) {
     background-color: rgb(223 223 227 / 0.98);
     color: rgb(0 0 0 / 0.64);
   }
-  .regal-pfeil:disabled {
+  .regal-pfeil:disabled,
+  .regal-pfeil[aria-disabled="true"] {
     opacity: 0.42;
     cursor: default;
   }
@@ -1918,4 +1919,16 @@
       transition: none;
     }
   }
+}
+
+/* ==================================================================
+   Startseite „Laden“ (app/page.tsx, components/marketing/laden): eine
+   durchgehende Fläche #f5f5f7 hinter Kopf und Regalen. Sprungziele
+   landen knapp unter der klebenden Produktleiste.
+   ================================================================== */
+.buehne.laden {
+  background-color: #f5f5f7;
+}
+.buehne.laden section[id] {
+  scroll-margin-top: 0px;
 }

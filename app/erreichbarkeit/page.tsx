@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   },
 };
 
-const CONTACT_EMAIL = "info@sitalo.de";
 
 /** Erster Buchstabe groß, für Tabellenzellen („Meist am selben Werktag“). */
 function gross(text: string): string {
@@ -243,14 +242,8 @@ function Kontakt() {
         </div>
         <div className="lg:col-span-4 lg:col-start-9">
           <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Wer lieber schreibt, schickt eine Mail. Für ein längeres Gespräch gibt es die Sprechstunde.
+            Wer lieber schreibt, nutzt das Anfrageformular. Für ein längeres Gespräch gibt es die Sprechstunde.
           </p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold"
-          >
-            {CONTACT_EMAIL}
-          </a>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
             <Link href="/kontakt" className="btn-signal">
               Zum Kontakt <ArrowRight className="h-4 w-4" aria-hidden="true" />

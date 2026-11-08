@@ -6,7 +6,6 @@ import { ArrowRight, Check, Minus } from "lucide-react";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PAKETE, getAllPaketSlugs, getPaketBySlug, type Paket } from "@/lib/pakete-data";
-import { CONTACT_EMAIL } from "@/lib/site";
 import { SITE_URL } from "@/lib/site";
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
@@ -411,9 +410,6 @@ export default async function PaketDetailPage({
                 Oder Sie schicken die Anfrage gleich mit dem gewählten Paket. Wir antworten meist am selben Werktag, den Festpreis
                 bekommen Sie schriftlich.
               </p>
-              <a href={`mailto:${CONTACT_EMAIL}`} className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold">
-                {CONTACT_EMAIL}
-              </a>
               <div className="mt-7">
                 <Link href={`/anfrage?paket=${paket.slug}`} className="btn-signal">
                   {paket.name} anfragen {ARROW}

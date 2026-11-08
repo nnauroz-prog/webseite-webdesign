@@ -12,9 +12,9 @@ import { pegelHub, pegelStand, pegelStPauli, pegelText } from "./pegel";
    ersten Bild, damit Stadt und Horizont gar nicht erst sichtbar sind,
    wenn sie gleich danach einblenden. Nur mit JS, nur ohne reduzierte
    Bewegung und nur, wenn es einen IntersectionObserver gibt. */
-const AUFTAKT_SCRIPT = `(function(){try{var h=document.currentScript.parentNode;document.documentElement.classList.add("js");if(window.matchMedia("(prefers-reduced-motion: no-preference)").matches&&"IntersectionObserver" in window)h.setAttribute("data-auftakt","warten")}catch(e){}})()`;
+export const AUFTAKT_SCRIPT = `(function(){try{var h=document.currentScript.parentNode;document.documentElement.classList.add("js");if(window.matchMedia("(prefers-reduced-motion: no-preference)").matches&&"IntersectionObserver" in window)h.setAttribute("data-auftakt","warten")}catch(e){}})()`;
 
-const PEGEL_QUELLE = "Messwert von PEGELONLINE, Wasserstraßen- und Schifffahrtsverwaltung des Bundes";
+export const PEGEL_QUELLE = "Messwert von PEGELONLINE, Wasserstraßen- und Schifffahrtsverwaltung des Bundes";
 
 /* ------------------------------------------------------------------
  * Kopf der Startseite, zentriert wie eine Produktseite: kleine Kennzeile

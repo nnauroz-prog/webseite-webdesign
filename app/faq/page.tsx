@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { Abschluss as AppleAbschluss, MehrLink } from "@/components/marketing/apple";
+import { Abschluss as AppleAbschluss } from "@/components/marketing/apple";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
@@ -149,8 +149,6 @@ function Closer() {
       }
       pille={{ href: "/anfrage", label: "Website anfragen" }}
       link={{ href: "/kontakt", label: "Alle Kontaktwege" }}
-    >
-      <MehrLink href="mailto:info@sitalo.de">info@sitalo.de</MehrLink>
-    </AppleAbschluss>
+    />
   );
 }

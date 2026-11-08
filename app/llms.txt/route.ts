@@ -53,7 +53,7 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 - [Pakete](https://www.sitalo.de/pakete): ${ZAHLWORT[PAKETE.length] ?? PAKETE.length} Pakete im Vergleich, Details unter /pakete/[slug].
 - [Ablauf](https://www.sitalo.de/ablauf): Sechs Schritte von der ersten Nachricht bis zur fertigen Seite.
 - [FAQ](https://www.sitalo.de/faq): Fragen zu Preisen, Hosting, Ablauf und Google.
-- [Kontakt](https://www.sitalo.de/kontakt): Telefon, E-Mail an info@sitalo.de oder Anfrageformular.
+- [Kontakt](https://www.sitalo.de/kontakt): Anfrageformular, Telefon oder Termin.
 - [Anfrage](https://www.sitalo.de/anfrage): Formular mit drei Pflichtfeldern, Antwort meist am selben Werktag.
 - [Pflegedienste](https://www.sitalo.de/pflege) und [Praxen](https://www.sitalo.de/praxen): Eigene Seiten für diese beiden Branchen.
 

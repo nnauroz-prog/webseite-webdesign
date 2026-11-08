@@ -219,10 +219,10 @@ export function InquiryForm({
             {status.message}
             <span className="mt-3 block">
               <a
-                href="mailto:info@sitalo.de"
+                href="tel:+491607621876"
                 className="text-gold-ink font-medium underline-offset-4 hover:underline"
               >
-                Direkt an info@sitalo.de schreiben ›
+                Lieber anrufen: 0160&nbsp;7621876 ›
               </a>
             </span>
           </AlertDescription>

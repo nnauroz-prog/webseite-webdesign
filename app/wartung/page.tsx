@@ -7,7 +7,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
 import { Produktleiste } from "@/components/marketing/produktleiste";
 import { WARTUNG_PREISE } from "@/lib/pakete-data";
-import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `Website-Wartung und Pflege ab ${WARTUNG_PREISE.basis} im Monat`,
@@ -440,11 +440,9 @@ function Abschluss() {
           0160&nbsp;7621876
         </a>
       }
-      unter="Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf Punkte per Mail, kostenlos."
+      unter="Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf konkrete Punkte, kostenlos."
       pille={{ href: "/audit", label: "Durchsicht anfordern" }}
       link={{ href: "/anfrage?vorhaben=Wartung", label: "Anfrage schreiben" }}
-    >
-      <MehrLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</MehrLink>
-    </AppleAbschluss>
+    />
   );
 }

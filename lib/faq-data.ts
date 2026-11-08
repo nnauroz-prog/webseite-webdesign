@@ -49,7 +49,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "Kann ich auch per E-Mail anfragen?",
-        a: "Ja, an info@sitalo.de. Das Formular ist etwas praktischer, weil wir dann alle Angaben an einer Stelle haben und schneller antworten können.",
+        a: "Am besten über das Anfrageformular. Dann haben wir alle Angaben an einer Stelle und können schneller antworten. Wer lieber spricht, ruft an: 0160 7621876.",
       },
     ],
   },

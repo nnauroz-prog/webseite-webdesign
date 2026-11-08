@@ -60,8 +60,10 @@ export function RegalPfeile({ spurId, label }: { spurId: string; label: string }
       <button
         type="button"
         className="regal-pfeil"
-        onClick={() => blaettern(-1)}
-        disabled={anfang}
+        onClick={() => {
+          if (!anfang) blaettern(-1);
+        }}
+        aria-disabled={anfang}
         aria-label={`${label}: zurück`}
         aria-controls={spurId}
       >
@@ -72,8 +74,10 @@ export function RegalPfeile({ spurId, label }: { spurId: string; label: string }
       <button
         type="button"
         className="regal-pfeil"
-        onClick={() => blaettern(1)}
-        disabled={ende}
+        onClick={() => {
+          if (!ende) blaettern(1);
+        }}
+        aria-disabled={ende}
         aria-label={`${label}: weiter`}
         aria-controls={spurId}
       >

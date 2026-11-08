@@ -96,8 +96,8 @@ function Briefkopf() {
           <Link href="/anfrage" className="btn-signal">
             Anfrage schreiben
           </Link>
-          <MehrLink href="mailto:info@sitalo.de" groesse="unter">
-            info@sitalo.de
+          <MehrLink href="/termin" groesse="unter">
+            Erstgespräch buchen
           </MehrLink>
         </div>
       </div>
@@ -116,8 +116,6 @@ function Visitenkarte() {
         <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-[14px] sm:text-[15px]">
           <span className="text-muted-foreground pt-px text-[12px]">Telefon</span>
           <span className="tabular-nums">0160&nbsp;7621876</span>
-          <span className="text-muted-foreground pt-px text-[12px]">Mail</span>
-          <span className="truncate">info@sitalo.de</span>
           <span className="text-muted-foreground pt-px text-[12px]">Web</span>
           <span>sitalo.de</span>
           <span className="text-muted-foreground pt-px text-[12px]">Ort</span>
@@ -145,13 +143,6 @@ const WEGE: { name: string; text: string; href: string; link: string; extern?: b
     text: "Drei Felder für Ihr Vorhaben. Die Antwort kommt meist am selben Werktag.",
     href: "/anfrage",
     link: "Anfrage schreiben",
-  },
-  {
-    name: "E-Mail",
-    text: "An info@sitalo.de, gern mit Fotos oder der Adresse Ihrer jetzigen Seite.",
-    href: "mailto:info@sitalo.de",
-    link: "Mail schreiben",
-    extern: true,
   },
   {
     name: "Termin",

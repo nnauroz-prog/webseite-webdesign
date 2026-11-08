@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
 import { MehrLink } from "@/components/marketing/apple";
-import { MusterFenster } from "@/components/marketing/live-preview";
+import { Ladeliste } from "@/components/marketing/hafen/ladeliste";
+import { paketeKurz } from "@/components/marketing/hafen/paket-kurz";
+import { LivePreview, MusterFenster } from "@/components/marketing/live-preview";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { PageHero } from "@/components/marketing/page-hero";
@@ -25,6 +27,9 @@ const LANDINGS = BRANCHEN.flatMap((b) => {
   return landing ? [landing] : [];
 });
 
+/** Name und Preise je Paket für die Ladeliste (Client). */
+const PAKETE_KURZ = paketeKurz();
+
 export default function BranchenPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -39,6 +44,8 @@ export default function BranchenPage() {
           schaut, und eine Musterseite gebaut.
         </PageHero>
         <Register />
+        <Vorschau />
+        <Ladeliste id="ladeliste" head={<LadelisteKopf />} pakete={PAKETE_KURZ} />
         <Briefkarte title="Wir bauen auch für Betriebe, die hier nicht stehen.">
           Schreiben Sie uns zwei, drei Sätze zu Ihrem Betrieb. Den Festpreis bekommen Sie schriftlich, bevor wir
           anfangen.
@@ -104,5 +111,45 @@ function Register() {
         </ul>
       </div>
     </section>
+  );
+}
+
+/**
+ * Live-Vorschau (früher auf der Startseite): Betriebsname eintippen,
+ * Branche wählen, die Skizze entsteht sofort im Browser.
+ */
+function Vorschau() {
+  return (
+    <section id="vorschau" className="flaeche-weiss abschnitt scroll-mt-16">
+      <div className="inhalt">
+        <div className="abschnitt-kopf">
+          <h2 className="t-abschnitt">Eine erste Skizze mit Ihrem Namen</h2>
+          <p className="t-unter">Geben Sie den Namen Ihres Betriebs ein und wählen Sie die Branche.</p>
+        </div>
+        <div className="mx-auto max-w-5xl min-w-0">
+          <LivePreview />
+        </div>
+        <div className="text-muted-foreground mx-auto mt-10 max-w-[36em] space-y-3 text-center text-[17px] leading-[1.47] md:mt-12">
+          <p>Die Skizze entsteht sofort hier im Browser, gespeichert wird nichts.</p>
+          <p>
+            Gefällt Ihnen die Richtung, schicken Sie die Skizze als Anfrage. Die echte Seite entwerfen wir danach mit
+            Ihren Fotos und Texten.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Kopf der Ladeliste (früher auf der Startseite). */
+function LadelisteKopf() {
+  return (
+    <div className="abschnitt-kopf">
+      <h2 className="t-abschnitt">Die Ladeliste für Ihre Branche</h2>
+      <p className="t-unter">
+        Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will. Wählen Sie Ihre
+        Branche: Die Liste zeigt, was auf Ihre Seite gehört, wo es steht und warum.
+      </p>
+    </div>
   );
 }

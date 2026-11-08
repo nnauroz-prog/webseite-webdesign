@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/atelier" },
 };
 
-const CONTACT_EMAIL = "info@sitalo.de";
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
 
 /* ============================================================
@@ -261,14 +260,8 @@ function Kontakt() {
         </div>
         <div className="lg:col-span-4 lg:col-start-9">
           <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag.
+            Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag.
           </p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="border-gold mt-5 inline-block border-b-[1.5px] pb-0.5 text-[18px] font-semibold"
-          >
-            {CONTACT_EMAIL}
-          </a>
           <div className="mt-7">
             <Link href="/anfrage" className="btn-signal">
               Anfrage schreiben {ARROW}

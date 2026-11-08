@@ -19,7 +19,7 @@ import {
   nachDauer,
   type Paket,
 } from "@/lib/pakete-data";
-import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * Geldseite für „Website erstellen lassen", „Webseite erstellen lassen"
@@ -1082,8 +1082,8 @@ function Abschluss() {
           0160&nbsp;7621876
         </a>
       }
-      unter="Wer lieber schreibt, schickt eine Mail oder die Anfrage. Wir antworten meist am selben Werktag."
-      link={{ href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }}
+      unter="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
+      link={{ href: "/anfrage", label: "Anfrage schreiben" }}
     />
   );
 }

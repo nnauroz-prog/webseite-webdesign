@@ -10,7 +10,7 @@ export type SubmitLeadInput = {
 };
 
 const NETWORK_ERROR =
-  "Die Verbindung ist gerade abgebrochen. Bitte erneut versuchen — oder schreiben Sie uns direkt an info@sitalo.de.";
+  "Die Verbindung ist gerade abgebrochen. Bitte erneut versuchen — oder rufen Sie uns an: 0160 7621876.";
 
 /** Schickt ein Formular an /api/anfrage. Leere Felder werden weggelassen. */
 export async function submitLead(
