@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
  */
 type Props = {
   size?: "sm" | "md" | "lg";
+  /** Umschrift im Ring, wird zweimal herumgeführt. */
+  umschrift?: string;
   className?: string;
 };
 
@@ -26,11 +28,11 @@ const SIZE_PX: Record<NonNullable<Props["size"]>, number> = {
  *  Länge gesperrt, damit Anfang und Ende sauber aneinanderstoßen. */
 const RING_LENGTH = 297;
 
-export function SitaloStempel({ size = "md", className }: Props) {
+export function SitaloStempel({ size = "md", umschrift = "SITALO WEBDESIGN · HAMBURG", className }: Props) {
   const px = SIZE_PX[size];
   // Eigene id je Größe, damit zwei Stempel auf einer Seite sich
   // nicht denselben Pfad teilen.
-  const pathId = `sitalo-stempel-ring-${size}`;
+  const pathId = `sitalo-stempel-ring-${size}-${umschrift.length}`;
   return (
     <span
       aria-hidden="true"
@@ -51,7 +53,7 @@ export function SitaloStempel({ size = "md", className }: Props) {
           <textPath href={`#${pathId}`} textLength={RING_LENGTH} lengthAdjust="spacing">
             {/* Geschütztes Leerzeichen am Ende: sonst stößt der Punkt
                 ohne Abstand an den Anfang der Umschrift. */}
-            {"SITALO WEBDESIGN · HAMBURG · SITALO WEBDESIGN · HAMBURG ·\u00a0"}
+            {`${umschrift} · ${umschrift} ·\u00a0`}
           </textPath>
         </text>
 

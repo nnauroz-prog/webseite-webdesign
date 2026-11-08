@@ -3,7 +3,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import a from "@/components/marketing/hafen/atelier.module.css";
 import { HamburgMap } from "@/components/marketing/hamburg-map";
+import { HamburgPanorama } from "@/components/marketing/hamburg-panorama";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Briefkarte } from "@/components/marketing/vertical-landing";
@@ -32,6 +34,7 @@ export default function StandortePage() {
       <EditorialMasthead section="Standorte" />
       <main id="main" tabIndex={-1} className="flex-1">
         <Hero />
+        <Panorama />
         <Liste />
         <Briefkarte title="Betriebe außerhalb dieser Stadtteile bekommen dieselbe Website.">
           Das erste Gespräch führen wir am Telefon oder per Video. In Hamburg kommen wir auf Wunsch auch bei Ihnen
@@ -48,7 +51,7 @@ function Hero() {
     <section>
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:grid-cols-12 lg:gap-8">
         <div className="min-w-0 lg:col-span-5">
-          <p className="label-mono text-muted-foreground">Nach Stadtteil</p>
+          <p className={a.eyebrow}>Hafenplan · nach Stadtteil</p>
           <h1 className="mt-6 text-balance text-[2.4rem] leading-[0.98] tracking-[-0.038em] sm:text-6xl lg:text-[3.6rem]">
             {ANZAHL} Hamburger Stadtteile mit eigener Seite
           </h1>
@@ -71,6 +74,23 @@ function Hero() {
           <HamburgMap />
         </div>
       </div>
+    </section>
+  );
+}
+
+/**
+ * Das Hamburg-Panorama auf Teer: Die Linien zeichnen sich beim ersten
+ * Sichtkontakt, danach gehen die Lichter an (hamburg-skyline.tsx). Bei
+ * reduzierter Bewegung steht alles sofort.
+ */
+function Panorama() {
+  return (
+    <section aria-label="Hamburg-Panorama" className="on-dark grain relative bg-[#1b1d1e] pt-12 pb-8 text-[#f3f2ee] sm:pt-16">
+      <HamburgPanorama tone="dark" />
+      <p className="mx-auto mt-4 flex w-full max-w-6xl items-center gap-3 px-5 font-mono text-[11.5px] tracking-[0.14em] text-[#a3a8a9] uppercase sm:px-6">
+        <span aria-hidden="true" className="h-2 w-2 shrink-0 bg-[var(--gold)]" />
+        Ladehafen Hamburg · Köhlbrandbrücke bis Speicherstadt
+      </p>
     </section>
   );
 }

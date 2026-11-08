@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { MehrLink } from "@/components/marketing/apple/mehr-link";
+import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 import { getPaketBySlug } from "@/lib/pakete-data";
 import type { VertikalLanding } from "@/lib/vertikal-landings";
 
@@ -244,50 +244,5 @@ function Faq({ faq }: { faq: { q: string; a: string }[] }) {
   );
 }
 
-/**
- * Briefkarte: gemeinsamer Abschluss der Branchen- und Stadtteilseiten.
- * Aufgebaut wie eine Karte aus dem Kontor: Briefkopf mit Absender und
- * Ort, links eine sachliche Aussage zur Seite, rechts die Kontaktwege
- * wie Adresszeilen. Die Telefonnummer steht groß in Tabellenziffern,
- * kein Fragesatz.
- */
-export function Briefkarte({
-  title,
-  children,
-  inquiryHref = "/anfrage",
-}: {
-  /** Aussage der Seite, ein normaler Satz. */
-  title: string;
-  /** Ein, zwei Sätze darunter. */
-  children?: React.ReactNode;
-  inquiryHref?: string;
-}) {
-  // Apple-Abschluss: schwarz, zentriert, Nummer groß, Pille + Link.
-  return (
-    <section className="flaeche-schwarz abschnitt abschluss">
-      <div className="inhalt abschnitt-kopf">
-        <h2 data-auftritt="titel" className="t-abschnitt mx-auto">
-          {title}
-        </h2>
-        {children ? <p className="t-unter abschluss-unter mx-auto">{children}</p> : null}
-        <a href="tel:+491607621876" className="abschluss-nummer mt-8">
-          0160&nbsp;7621876
-        </a>
-        <p className="t-fuss mt-3 text-[14px]">
-          <Link href="/anfrage" className="text-[#f5f5f7] underline underline-offset-2">
-            Anfrage schreiben
-          </Link>{" "}
-          · Antwort meist am selben Werktag
-        </p>
-        <div className="aktionen mt-8">
-          <Link href={inquiryHref} className="btn-signal btn-gross">
-            Anfrage schreiben
-          </Link>
-          <MehrLink href="/termin" groesse="unter">
-            Termin buchen
-          </MehrLink>
-        </div>
-      </div>
-    </section>
-  );
-}
+/** Briefkarte liegt jetzt in hafen/briefkarte.tsx; hier weitergereicht. */
+export { Briefkarte };

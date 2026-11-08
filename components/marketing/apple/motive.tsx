@@ -30,10 +30,10 @@ export function BrowserMotiv({ className }: { className?: string }) {
       <rect x="24" y="80" width="104" height="8" rx="4" fill="#d2d2d7" />
       <rect x="24" y="96" width="120" height="8" rx="4" fill="#d2d2d7" />
       <rect x="24" y="122" width="84" height="26" rx="13" fill="#f45b1e" />
-      <rect x="176" y="52" width="120" height="100" rx="12" fill="#f5f5f7" />
+      <rect x="176" y="52" width="120" height="100" rx="12" fill="#f3f2ee" />
       <path d="M188 140l30-38 22 26 14-16 30 28Z" fill="#d2d2d7" />
       <circle cx="268" cy="78" r="9" fill="#f45b1e" opacity=".85" />
-      <rect x="24" y="168" width="272" height="8" rx="4" fill="#f5f5f7" />
+      <rect x="24" y="168" width="272" height="8" rx="4" fill="#f3f2ee" />
     </svg>
   );
 }
@@ -116,7 +116,7 @@ export function PflegeMotiv({ className }: { className?: string }) {
       <rect x="300" y="18" width="76" height="22" rx="11" fill="#f45b1e" />
       {zeilen.map((z) => (
         <g key={z.y}>
-          <rect x="24" y={z.y - 10} width={z.breite} height="40" rx="12" fill="#f5f5f7" />
+          <rect x="24" y={z.y - 10} width={z.breite} height="40" rx="12" fill="#f3f2ee" />
           <rect x="40" y={z.y} width={z.w1} height="8" rx="4" fill="#1d1d1f" opacity=".85" />
           <rect x="40" y={z.y + 13} width={z.w2} height="6" rx="3" fill="#a1a1a6" />
           {z.an !== null ? (

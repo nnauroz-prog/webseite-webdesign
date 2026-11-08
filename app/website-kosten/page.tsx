@@ -4,6 +4,8 @@ import { ArrowRight } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import a from "@/components/marketing/hafen/atelier.module.css";
+import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 import { PageHero } from "@/components/marketing/page-hero";
 import { ANGEBOT_CHECKLISTE } from "@/lib/angebot-checkliste";
 import { formatDate } from "@/lib/journal-data";
@@ -229,7 +231,7 @@ export default function WebsiteKostenPage() {
   ];
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
+      <MarketingHeader />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero
           crumb="Website-Kosten"
@@ -526,6 +528,11 @@ export default function WebsiteKostenPage() {
               <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">
                 Häufige Fragen zu Website-Kosten
               </h2>
+              <aside className={`${a.randnotiz} mt-8 max-w-xs`}>
+                <strong>Hinweis aus der Praxis</strong>
+                Fragen Sie im Angebot nach, wem die fertige Seite gehört. Bei uns gehört sie Ihnen, mit Quellcode und allen
+                Inhalten.
+              </aside>
             </div>
             <dl className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
               {FAQ.map((f) => (
@@ -539,26 +546,9 @@ export default function WebsiteKostenPage() {
         </section>
 
         {/* Abschluss */}
-        <section className="grain bg-foreground text-background">
-          <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-            <div className="lg:col-span-7">
-              <h2 className="text-balance text-[2rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.9rem]">
-                Ihren Festpreis bekommen Sie schriftlich, bevor wir anfangen.
-              </h2>
-              <p className="text-stahl-hell mt-6 max-w-xl text-[16.5px] leading-relaxed">
-                Schreiben Sie uns, was die Seite können soll. Wir antworten meist am selben Werktag. Telefon:{" "}
-                <a href="tel:+491607621876" className="text-background font-semibold whitespace-nowrap underline-offset-4 hover:underline">
-                  0160&nbsp;7621876
-                </a>
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3 lg:col-span-4 lg:col-start-9 lg:justify-end">
-              <Link href="/anfrage" className="btn-signal grow sm:grow-0">
-                Angebot anfragen {ARROW}
-              </Link>
-            </div>
-          </div>
-        </section>
+        <Briefkarte id="abschluss" title="Ihren Festpreis bekommen Sie schriftlich, bevor wir anfangen." knopf="Angebot anfragen">
+          Schreiben Sie uns, was die Seite können soll. Wir antworten meist am selben Werktag.
+        </Briefkarte>
       </main>
       <MarketingFooter crumb="Website-Kosten" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />

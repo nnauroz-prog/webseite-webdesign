@@ -8,4 +8,5 @@ export const TAFEL_ZEILEN = [
   { slug: "starter", linie: "S", desc: "Eine Seite mit Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten." },
   { slug: "business", linie: "B", desc: "Bis zu fünf Unterseiten, mit Team, Leistungen und Galerie." },
   { slug: "premium", linie: "P", desc: "Eigene Struktur. Speisekarte, Angebote oder Termine pflegen Sie selbst." },
+  { slug: "studio", linie: "St", desc: "Neues Erscheinungsbild, bis zu drei Korrekturrunden und ein Treffen vor Ort." },
 ] as const;

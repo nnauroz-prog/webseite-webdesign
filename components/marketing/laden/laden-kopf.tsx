@@ -1,45 +1,57 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-import { MehrLink } from "@/components/marketing/apple/mehr-link";
-import { cn } from "@/lib/utils";
+import { HamburgZeile } from "@/components/marketing/hafen/hamburg-zeile";
+import s from "@/components/marketing/hafen/start.module.css";
 
-import s from "./laden.module.css";
+const BOTSCHAFT = ["Wir", "bauen", "Websites", "für", "Betriebe."];
 
 /**
- * Kopf der Startseite: die H1 (Suchbegriff, unverändert), die große
- * Zeile „Websites.“ mit grauem Satz, die beiden Aktionen (Anfrage als
- * Hauptweg, Preise) und darunter die Telefonnummer als zweiter Weg.
- * Direkt darunter folgt die Kran-Bühne als erstes großes Bild.
+ * Kopf der Startseite. Die H1 trägt den Suchbegriff (für Google) als
+ * Mono-Kennzeile mit orangem Quadrat, der große Satz darunter ist die
+ * Botschaft (für Menschen); seine Wörter steigen einzeln aus einer
+ * Maske (nur CSS, start.module.css). Danach der persönliche Absatz, die
+ * Begrüßung nach Tageszeit, genau ein Knopf und die Telefonnummer als
+ * Textlink. Im 12er-Raster über 7 Spalten, linksbündig.
  */
 export function LadenKopf() {
   return (
-    <section id="start" className={cn("inhalt", s.kopf)} aria-labelledby="start-titel">
-      <div className={s.kopfRaster}>
-        <div data-auftritt="titel">
-          {/* Zwei Teile, die einzeln nicht umbrechen: bei 320 px zwei Zeilen statt Ausblenden. */}
-          <h1 id="start-titel" className={s.kennzeile}>
-            <span>Website erstellen lassen ·</span>{" "}
-            <span>Webdesign aus Hamburg</span>
-          </h1>
-          <p className={s.gross}>
-            Websites.
-            <span className={s.grossGrau}>Für Betriebe. Zum Festpreis.</span>
-          </p>
-          <div className={s.kopfAktionen}>
-            <Link href="/anfrage" className="btn-signal">
-              Anfrage schreiben
-            </Link>
-            <MehrLink href="#preise" frei>
-              Preise ansehen
-            </MehrLink>
-          </div>
-          <p className={s.kopfTel}>
-            Lieber am Telefon?{" "}
-            <a href="tel:+491607621876">
-              0160&nbsp;7621876<span aria-hidden="true"> ›</span>
-            </a>
-          </p>
+    <section id="start" className={`inhalt ${s.kopf}`} aria-labelledby="start-titel">
+      <div className={s.kopfText}>
+        <h1 id="start-titel" className={s.kennzeile}>
+          <span aria-hidden="true" className={s.quadrat} />
+          <span className={s.kennzeileText}>
+            <span className="whitespace-nowrap">Website erstellen lassen ·</span>{" "}
+            <span className="whitespace-nowrap">Webdesign aus Hamburg</span>
+          </span>
+        </h1>
+        <p className={s.botschaft}>
+          {BOTSCHAFT.map((w, i) => (
+            <span key={w}>
+              <span className={s.wort}>
+                <span className={s.wortIn} style={{ "--i": i } as CSSProperties}>
+                  {w}
+                </span>
+              </span>
+              {i < BOTSCHAFT.length - 1 ? " " : null}
+            </span>
+          ))}
+        </p>
+        <p className={s.absatz}>
+          Ein kleines Büro in Hamburg, das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre Seite
+          sehen Sie vorher auf einem Test-Link.
+        </p>
+        <div className={s.aktionen}>
+          <Link href="/anfrage" className="btn-signal">
+            Anfrage schreiben <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+          <a href="tel:+491607621876" className={s.telLink}>
+            <span className={s.telLabel}>oder anrufen</span>
+            <span className={s.telNummer}>0160&nbsp;7621876</span>
+          </a>
         </div>
+        <HamburgZeile className={s.gruss} />
       </div>
     </section>
   );

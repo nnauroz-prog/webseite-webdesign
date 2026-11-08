@@ -2,22 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
-import { KarteGross, KarteMittel, LadenBild, LadenFoto } from "@/components/marketing/laden/karten";
-import { LadenRegal } from "@/components/marketing/laden/laden-regal";
+import a from "@/components/marketing/hafen/atelier.module.css";
+import { PaketKacheln } from "@/components/marketing/hafen/paket-kacheln";
+import { Steigend } from "@/components/marketing/hafen/steigend";
 import {
   Abschnitt,
-  BildKachel,
-  BildRaster,
   FotoRahmen,
   KontaktKarte,
-  MusterPille,
   SeitenKopf,
   UnterseiteMain,
   unterseiteStil as u,
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import {
   STRICH,
   VergleichZelle,
@@ -179,30 +176,21 @@ const SPALTEN: PaketSpalte[] = PAKETE.map((p) => ({
 }));
 
 /*
- * Aufbau wie eine Apple-Produktseite. Flächen: Kopf #fff · Modelle
- * #f5f5f7 · Vergleich #fff · Monatsbeitrag #f5f5f7 · Weiterlesen #fff ·
- * Abschluss #000. Die Produktleiste verlinkt die Anker der Abschnitte.
+ * Aufbau im Atelier-Satz, jeder Abschnitt in eigener Form: Kopf mit
+ * Foto und Mono-Bildunterschrift · Paket-Kacheln mit 40-Fuß-Containern ·
+ * Vergleichstabelle mit Positionsnummern · Monatsbeitrag als Verzeichnis
+ * auf Teer · Werkzeuge als Liste mit Notiz · Briefkarte.
  */
 export default function PaketePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      {/* Lokale Produktleiste: direktes Kind des Wrappers (klebt am iPhone). */}
-      <Produktleiste
-        titel="Pakete"
-        titelHref="#modelle"
-        links={[
-          { href: "#modelle", label: "Modelle" },
-          { href: "#vergleich", label: "Vergleich" },
-          { href: "#monatsbeitrag", label: "Monatsbeitrag" },
-          { href: "#weiterlesen", label: "Weiterlesen" },
-        ]}
-        cta={{ href: "/anfrage", label: "Anfragen" }}
-      />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Pakete und Preise"
-          titel={`Website-Pakete ${STARTER_SETUP}`}
+          krumen="Pakete"
+          eyebrow="Liegeplatz 3 · Pakete und Preise"
+          titel="Website-Pakete"
+          akzent={STARTER_SETUP}
           unter={
             <>
               Dazu kommt ein Monatsbeitrag {STARTER_MONTHLY} für Hosting, Updates und kleine Änderungen. Den Festpreis
@@ -223,14 +211,14 @@ export default function PaketePage() {
           bild={
             <FotoRahmen
               vorab
-              muster
               src="/images/sitalo-kosmetik-laptop.webp"
               alt="Laptop auf einer Marmorplatte in einem Kosmetikstudio, auf dem Bildschirm die Musterseite des Studios"
-              aspect="21 / 10"
+              aspect="21 / 9"
               aspectMobil="4 / 3"
               position="50% 55%"
             />
           }
+          unterschrift={<>Musterseite eines Kosmetikstudios, frei erfunden · Paket Business</>}
         />
         <Modelle />
         <Vergleich />
@@ -238,92 +226,40 @@ export default function PaketePage() {
         <Weiterlesen />
         <KontaktKarte
           id="abschluss"
-          eyebrow="Beratung"
           titel="Welches Paket passt, klären wir am Telefon."
-          zeile="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
+          zeile="Eine Viertelstunde reicht meistens. Wer lieber schreibt, nimmt das Formular, wir antworten meist am selben Werktag."
           link={{ href: "/branchen", label: "Musterseiten ansehen" }}
-          foto={{
-            src: "/images/cafe-eimsbuettel.webp",
-            alt: "Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel",
-          }}
         />
       </UnterseiteMain>
-      <MarketingFooter crumb="Pakete" />
+      <MarketingFooter crumb="Pakete" ohnePreisHinweis />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------
- * Modelle: die vier Pakete als große Karten. Die Karten tragen die
- * Anker #starter, #business usw. (Deep-Links aus Branchen-Seiten).
+ * Modelle: die vier Pakete als Kacheln mit 40-Fuß-Container. Die
+ * Kacheln tragen die Anker #starter, #business usw. (Deep-Links aus
+ * Branchen-Seiten).
  * ---------------------------------------------------------------- */
-const MODELL_BILD: Record<Slug, { src: string; alt: string; position: string; eyebrow: string; zeile: string }> = {
-  starter: {
-    src: "/images/sitalo-friseur-mobile.webp",
-    alt: "Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten",
-    position: "58% 50%",
-    eyebrow: "Eine Seite",
-    zeile: "Leistungen, Öffnungszeiten und Kontakt.",
-  },
-  business: {
-    src: "/images/sitalo-pflege-laptop.webp",
-    alt: "Laptop mit der mehrseitigen Musterseite eines Pflegedienstes auf einem hellen Schreibtisch",
-    position: "40% 55%",
-    eyebrow: "Für die meisten Betriebe",
-    zeile: "Eigene Seiten für Leistungen, Team und Galerie.",
-  },
-  premium: {
-    src: "/images/sitalo-cafe-mobile.webp",
-    alt: "Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch",
-    position: "50% 50%",
-    eyebrow: "Selbst pflegen",
-    zeile: "Speisekarte, Wochenangebot oder Termine ändern Sie selbst.",
-  },
-  studio: {
-    src: "/images/sitalo-kanzlei-laptop.webp",
-    alt: "Laptop mit der Musterseite einer Kanzlei neben einer grünen Schreibtischlampe und alten Büchern",
-    position: "50% 55%",
-    eyebrow: "Neues Erscheinungsbild",
-    zeile: "Schrift, Farben und Bildsprache, neu entworfen.",
-  },
-};
-
 function Modelle() {
   return (
-    <LadenRegal
-      id="modelle"
-      fett="Alle Pakete."
-      grau="Wählen Sie, was Ihr Betrieb braucht."
-      notiz={PREIS_HINWEIS}
-      className="scroll-mt-24"
-    >
-      {PAKETE.map((p) => {
-        const b = MODELL_BILD[p.slug];
-        return (
-          <KarteGross
-            key={p.slug}
-            id={p.slug}
-            ton={p.highlight ? "schwarz" : "weiss"}
-            eyebrow={b.eyebrow}
-            titel={p.name}
-            zeile={b.zeile}
-            preis={p.setup}
-            monat={p.monthly.replace(/\s*\/\s*Monat$/, "") + " im Monat"}
-            href={`/pakete/${p.slug}`}
-            bildBeschrieben
-            bild={
-              <>
-                <LadenFoto src={b.src} position={b.position} alt={b.alt} />
-                <MusterPille text="Musterseite" />
-              </>
-            }
-          />
-        );
-      })}
-    </LadenRegal>
+    <section id="modelle" aria-labelledby="modelle-titel" className={`${u.abschnitt} scroll-mt-24`}>
+      <div className="inhalt">
+        <div className={u.abschnittKopf}>
+          <p className={u.eyebrow}>Ladeliste · vier Container</p>
+          <h2 id="modelle-titel" data-reveal="rise" className={u.zweiton}>
+            <Steigend text="Was in den vier Paketen steckt" />
+          </h2>
+          <p className={u.abschnittUnter}>
+            Jeder Container trägt seinen Festpreis als Nummer. Was Ihr Betrieb nicht braucht, laden wir nicht mit.
+          </p>
+        </div>
+        <PaketKacheln idPrefix="" />
+        <p className={`${a.mono} mt-5`}>{PREIS_HINWEIS}</p>
+      </div>
+    </section>
   );
 }
-
 /* ------------------------------------------------------------------
  * Vergleich. Ab 834 px eine Apple-Vergleichstabelle mit klebendem
  * Glas-Kopf (Produktbild, Name, Preis, Anfragen) und Gruppenzeilen;
@@ -335,16 +271,18 @@ function Vergleich() {
     <section id="vergleich" aria-labelledby="vergleich-titel" className={`${u.abschnitt} scroll-mt-24`}>
       <div className="inhalt">
         <div className={u.abschnittKopf}>
-          <h2 id="vergleich-titel" className={u.zweiton}>
-            <span>Die vier Pakete im Vergleich.</span>{" "}
-            <span>Wir empfehlen meistens Business.</span>
+          <p className={u.eyebrow}>Frachtliste · Positionen</p>
+          <h2 id="vergleich-titel" data-reveal="rise" className={u.zweiton}>
+            <Steigend text="Die vier Pakete nebeneinander" />
           </h2>
-          <p className={u.abschnittUnter}>Wenn Starter reicht, sagen wir Ihnen das auch.</p>
+          <p className={u.abschnittUnter}>
+            Meistens empfehlen wir Business. Wenn Starter reicht, sagen wir Ihnen das auch.
+          </p>
         </div>
 
         {/* Tabelle ab 834 px */}
-        <div className={`${u.blatt} hidden min-[834px]:block`}>
-          <table className="vergleich-tabelle">
+        <div className="hidden min-[834px]:block">
+          <table className="vergleich-tabelle kante-stark">
             <caption className="sr-only">Pakete im Vergleich: Preise und Leistungen</caption>
             <colgroup>
               <col className="w-[18%]" />
@@ -361,7 +299,9 @@ function Vergleich() {
                 {PAKETE.map((p) => (
                   <th key={p.slug} id={`vergleich-${p.slug}`} scope="col" className="text-center font-normal">
                     {p.highlight ? (
-                      <span className="text-gold-ink mt-2 block h-4 text-[12px] leading-4 font-semibold">Empfehlung</span>
+                      <span className="text-gold-ink mt-2 block h-4 font-mono text-[10.5px] leading-4 font-medium tracking-[0.14em] uppercase">
+                        Empfehlung
+                      </span>
                     ) : (
                       <span className="mt-2 block h-4" aria-hidden="true" />
                     )}
@@ -375,7 +315,7 @@ function Vergleich() {
                     <Link
                       href={`/anfrage?paket=${p.slug}`}
                       aria-describedby={`vergleich-${p.slug}`}
-                      className={`${p.highlight ? "btn-signal" : "btn-line"} btn-mittel mt-3`}
+                      className="btn-line btn-klein mt-3"
                     >
                       Anfragen
                     </Link>
@@ -383,16 +323,24 @@ function Vergleich() {
                 ))}
               </tr>
             </thead>
-            {GRUPPEN.map((g) => (
+            {GRUPPEN.map((g, gi) => (
               <tbody key={g.titel}>
                 <tr className="gruppe">
                   <th colSpan={5} scope="rowgroup">
+                    <span aria-hidden="true" className="mr-3 font-mono text-[12px] font-medium text-[#565b5d]">
+                      {gi + 1}
+                    </span>
                     {g.titel}
                   </th>
                 </tr>
-                {g.zeilen.map((z) => (
+                {g.zeilen.map((z, zi) => (
                   <tr key={z.label}>
-                    <th scope="row">{z.label}</th>
+                    <th scope="row">
+                      <span aria-hidden="true" className="mr-2 inline-block w-8 font-mono text-[12px] font-normal text-[#565b5d] tabular-nums">
+                        {gi + 1}.{zi + 1}
+                      </span>
+                      {z.label}
+                    </th>
                     {PAKETE.map((p) => (
                       <td key={p.slug}>
                         <VergleichZelle zeile={z} slug={p.slug} />
@@ -405,8 +353,8 @@ function Vergleich() {
             <tfoot>
               <tr>
                 <td className="text-left">
-                  <span className="t-fuss block text-left">Preise inkl. 19&nbsp;% MwSt.</span>
-                  <span className="t-fuss mt-2 block text-left">Dauer jeweils ab vollständigen Unterlagen.</span>
+                  <span className={`${a.mono} block text-left`}>Preise inkl. 19&nbsp;% MwSt.</span>
+                  <span className={`${a.mono} mt-2 block text-left`}>Dauer jeweils ab vollständigen Unterlagen.</span>
                 </td>
                 {PAKETE.map((p) => (
                   <td key={p.slug}>
@@ -431,7 +379,7 @@ function Vergleich() {
         {/* Mobil: zwei Auswahlen nebeneinander */}
         <div className="min-[834px]:hidden">
           <VergleichMobil pakete={SPALTEN} gruppen={GRUPPEN} />
-          <p className="t-fuss mt-6">Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen Unterlagen.</p>
+          <p className={`${a.mono} mt-6`}>Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen Unterlagen.</p>
         </div>
       </div>
     </section>
@@ -439,115 +387,141 @@ function Vergleich() {
 }
 
 /* ------------------------------------------------------------------
- * Monatsbeitrag: drei Kacheln. Links groß Hosting auf Schwarz, rechts
- * die Änderungen als große Zahlen und Domain/E-Mail. Texte wie bisher,
- * Änderungswünsche über das Formular oder das Telefon.
+ * Monatsbeitrag: auf Teer, links die Beiträge je Paket als Verzeichnis,
+ * rechts was jeden Monat dazugehört. Änderungswünsche über das
+ * Formular oder das Telefon.
  * ---------------------------------------------------------------- */
+const MONAT_LEISTUNGEN = [
+  { t: "Hosting in der EU", s: "Ihre Seite liegt auf einem Server in der EU." },
+  { t: "Sicherheit", s: "Das SSL-Zertifikat verlängert sich von selbst, Sicherheits-Updates spielen wir ein." },
+  { t: "Sicherungen", s: "Gesichert wird jeden Tag, die Backups reichen 30 Tage zurück." },
+  {
+    t: "Kleine Änderungen",
+    s: "Neue Öffnungszeiten, ein anderes Foto, ein neuer Name im Team. Sie schreiben uns kurz über das Formular oder rufen an.",
+  },
+  { t: "Domain und E-Mail", s: "Richten wir auf Wunsch mit ein. Größere Erweiterungen beziffern wir vorher." },
+];
+
 function Monatsbeitrag() {
   return (
     <Abschnitt
       id="monatsbeitrag"
-      fett="Jeden Monat dabei."
-      grau={`Monatsbeitrag ${STARTER_MONTHLY}.`}
-      rechts={<MehrLink href="/wartung">Mehr zu Wartung und Pflege</MehrLink>}
+      dunkel
+      eyebrow="Liegegeld · jeden Monat"
+      fett="Was der Monatsbeitrag abdeckt"
+      unter="Der Vertrag läuft mindestens sechs Monate und ist danach monatlich kündbar."
     >
-      <BildRaster>
-        <BildKachel
-          ton="nacht"
-          spalten={7}
-          gross
-          eyebrow="Hosting und Sicherheit"
-          titel="Server in der EU, Backups 30 Tage."
-          zeile="Ihre Seite liegt auf einem Server in der EU. Das SSL-Zertifikat verlängert sich von selbst, Sicherheits-Updates spielen wir ein. Gesichert wird jeden Tag, die Backups reichen 30 Tage zurück."
-          bildInhalt={<BackupKalender />}
-        />
-        <BildKachel
-          spalten={5}
-          eyebrow="Kleine Änderungen im Monat"
-          zahl="1 · 3 · 6 · 10"
-          titel="Starter, Business, Premium, Studio."
-          zeile="Neue Öffnungszeiten, ein anderes Foto, ein neuer Name im Team. Sie schreiben uns kurz über das Formular oder rufen an, wir setzen es um."
-          kinder={
-            <p className={`${u.kachelZeile} !mt-5 border-t border-black/10 pt-5`}>
-              Domain und E-Mail-Adressen richten wir auf Wunsch mit ein. Größere Erweiterungen beziffern wir vorher. Der
-              Vertrag läuft mindestens sechs Monate und ist danach monatlich kündbar.
-            </p>
-          }
-        />
-      </BildRaster>
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
+        <div className="lg:col-span-5">
+          <p className={a.lvKopf}>
+            <span>Beitrag je Paket</span>
+            <span>Änderungen</span>
+          </p>
+          <ol className={a.lvListe}>
+            {PAKETE.map((p, i) => (
+              <li key={p.slug} className={a.lvZeile}>
+                <span className={a.lvNr}>4.{i + 1}</span>
+                <span>
+                  <span className={a.lvTitel}>{p.name}</span>
+                  <span className={a.lvSatz}>ab {betrag(p.monthly)} im Monat</span>
+                </span>
+                <span className={a.lvWert}>{AENDERUNGEN[p.slug]}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div className="lg:col-span-7">
+          <p className={a.lvKopf}>
+            <span>Immer dabei</span>
+            <span>alle Pakete</span>
+          </p>
+          <ul role="list" className={a.lvListe}>
+            {MONAT_LEISTUNGEN.map((l) => (
+              <li key={l.t} className={a.lvZeile}>
+                <span className={a.lvNr} aria-hidden="true">
+                  ☑
+                </span>
+                <span>
+                  <span className={a.lvTitel}>{l.t}</span>
+                  <span className={a.lvSatz}>{l.s}</span>
+                </span>
+                <span />
+              </li>
+            ))}
+          </ul>
+          <div className={a.lvFuss}>
+            <span>Server in der EU · Backups 30 Tage</span>
+            <MehrLink href="/wartung" frei={false} className="link-pfeil-dunkel font-sans text-[15px] text-[#f3f2ee]">
+              Mehr zu Wartung und Pflege
+            </MehrLink>
+          </div>
+        </div>
+      </div>
     </Abschnitt>
   );
 }
 
-/**
- * Gestaltete Übersicht der täglichen Sicherungen (Beispiel): 30 Tage,
- * jeder Tag ein Backup, dazu Server-Standort und Zertifikat.
- */
-function BackupKalender() {
-  const tage = Array.from({ length: 30 }, (_, i) => i + 1);
-  return (
-    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] sm:p-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">Sicherungen, letzte 30 Tage</p>
-        <p className="text-[12px] text-[#a1a1a6]">jede Nacht um 02:00 Uhr</p>
-      </div>
-      <ul role="list" className="mt-4 grid grid-cols-10 gap-1.5">
-        {tage.map((t) => (
-          <li
-            key={t}
-            className={`flex aspect-square items-center justify-center rounded-[6px] text-[10px] tabular-nums ${
-              t === 30 ? "bg-[#f45b1e] font-bold text-[#1d1d1f]" : "bg-[#2c2c2e] text-[#a1a1a6]"
-            }`}
-          >
-            {t}
-          </li>
-        ))}
-      </ul>
-      <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-white/10 pt-4 text-[13px] leading-[18px]">
-        <div>
-          <dt className="text-[#a1a1a6]">Server</dt>
-          <dd className="mt-0.5 font-semibold text-[#f5f5f7]">in der EU</dd>
-        </div>
-        <div>
-          <dt className="text-[#a1a1a6]">SSL-Zertifikat</dt>
-          <dd className="mt-0.5 font-semibold text-[#f5f5f7]">verlängert sich selbst</dd>
-        </div>
-      </dl>
-    </div>
-  );
-}
+/** Kleine Änderungen im Monat je Paket, wie in der Vergleichstabelle. */
+const AENDERUNGEN: Record<Slug, string> = {
+  starter: "bis zu 1",
+  business: "bis zu 3",
+  premium: "bis zu 6",
+  studio: "bis zu 10",
+};
 
 /* ------------------------------------------------------------------
- * Weiterlesen: die Werkzeug-Karten der Startseite.
+ * Weiterlesen: drei Werkzeuge als nummerierte Liste, dazu eine leise
+ * Notiz aus dem Büro (Text-Moment ohne Karte und Knopf).
  * ---------------------------------------------------------------- */
+const WERKZEUGE = [
+  { href: "/empfehlung", titel: "Welches Paket passt?", satz: "Fünf Fragen, danach schlagen wir ein Paket vor." },
+  { href: "/honorar", titel: "So kommen die Preise zustande", satz: "Stundensatz und Stunden je Paket, offen vorgerechnet." },
+  { href: "/rechner", titel: "Kosten über drei Jahre", satz: "Neben Wix, Squarespace und Jimdo gerechnet." },
+];
+
 function Weiterlesen() {
-  const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
   return (
-    <LadenRegal id="weiterlesen" einfach fett="Noch unsicher?" grau="Hier hilft Ihnen die Entscheidung." className="scroll-mt-24">
-      <KarteMittel
-        eyebrow="Empfehlung"
-        titel="Welches Paket passt?"
-        zeile="Fünf Fragen, danach schlagen wir ein Paket vor."
-        href="/empfehlung"
-        bild={<LadenBild name="werkzeug-paketwahl" w={320} h={240} />}
-        bildHintergrund="linear-gradient(180deg, #fff 0%, #eef1f2 100%)"
-      />
-      <KarteMittel
-        eyebrow="Kalkulation"
-        titel="So kommen die Preise zustande"
-        zeile="Stundensatz und Stunden je Paket."
-        href="/honorar"
-        bild={<LadenBild name="werkzeug-honorar" w={320} h={240} />}
-        bildHintergrund="linear-gradient(180deg, #fff 0%, #ececf0 100%)"
-      />
-      <KarteMittel
-        eyebrow="3-Jahres-Rechner"
-        titel="Kosten über 3 Jahre"
-        zeile="Neben Wix, Squarespace und Jimdo."
-        href="/rechner"
-        bild={<LadenBild name="werkzeug-kosten" w={320} h={240} />}
-        bildHintergrund={weiss}
-      />
-    </LadenRegal>
+    <section id="weiterlesen" aria-labelledby="weiterlesen-titel" className={`${u.abschnitt} scroll-mt-24`}>
+      <div className="inhalt grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <div className="lg:col-span-5">
+          <p className={u.eyebrow}>Kontor · noch unsicher</p>
+          <h2 id="weiterlesen-titel" data-reveal="rise" className={`${u.zweiton} mt-4`}>
+            <Steigend text="Wenn Sie noch abwägen" />
+          </h2>
+          <blockquote className="mt-8 border-l-2 border-[var(--gold)] pl-4">
+            <p className="text-[17px] leading-[1.55] text-pretty">
+              „Die Frage nach dem richtigen Paket klären wir lieber am Telefon als mit einer Tabelle. Oft reicht weniger,
+              als man denkt.“
+            </p>
+            <footer className={`${a.mono} mt-3`}>Notiz aus dem Büro · Hamburg</footer>
+          </blockquote>
+        </div>
+        <div className="lg:col-span-7">
+          <p className={a.lvKopf}>
+            <span>5 · Werkzeuge</span>
+            <span>kostenlos</span>
+          </p>
+          <ol className={a.lvListe}>
+            {WERKZEUGE.map((w, i) => (
+              <li key={w.href}>
+                <Link href={w.href} className={a.lvZeile}>
+                  <span className={a.lvNr}>5.{i + 1}</span>
+                  <span>
+                    <span className={a.lvTitel}>{w.titel}</span>
+                    <span className={a.lvSatz}>{w.satz}</span>
+                  </span>
+                  <span className={a.lvPfeil} aria-hidden="true">
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+          <p className={a.lvFuss}>
+            <span>Gezählt wird wie im Handwerk.</span>
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }

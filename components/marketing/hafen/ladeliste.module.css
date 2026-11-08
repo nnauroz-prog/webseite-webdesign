@@ -1,124 +1,179 @@
-/* Ladeliste im Apple-Stil: weißer Abschnitt, oben die Branchen als
-   Pillen-Segmente, darunter das Frachtpapier als große helle Karte
-   (#f5f5f7, 18/28 px Rundung, Haarlinien). Mono nur für echte Codes. */
+/* Ladeliste: dunkler Abschnitt, links die Branchen, rechts ein
+   Frachtpapier. Der Abschnitt setzt seine Fläche selbst (nicht über
+   .bg-foreground), damit Knöpfe und Orange im hellen Papier ihre
+   Hell-Varianten behalten. */
 
 .section {
-  background: #fff;
-  color: var(--foreground);
-}
-
-.werk {
-  display: grid;
-  gap: 24px;
-  max-width: 980px;
-  margin-inline: auto;
-}
-@media (min-width: 834px) {
-  .werk {
-    gap: 32px;
-  }
+  background: var(--foreground);
+  color: var(--background);
 }
 
 /* ---------------------------------------------------------------
-   Auswahl: Pillen, ungewählt #f5f5f7, gewählt #1d1d1f
+   Auswahl
    --------------------------------------------------------------- */
 .side {
   min-width: 0;
 }
-
-/* Unter 1024 px eine einzeilige Leiste zum Wischen, randlos mit
-   Anschnitt; passt sie ganz, steht sie mittig (auto-Ränder an erstem und
-   letztem Knopf). Ab 1024 px umbrechend und zentriert. */
-.tabs {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
-  margin-inline: calc(-1 * var(--rinne));
-  padding: 2px var(--rinne);
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: var(--rinne);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.tabs::-webkit-scrollbar {
-  display: none;
-}
-.tabs > .tab {
-  flex: none;
-  scroll-snap-align: start;
-}
-.tabs > .tab:first-child {
-  margin-left: auto;
-}
-.tabs > .tab:last-child {
-  margin-right: auto;
-}
 @media (min-width: 1024px) {
-  .tabs {
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-inline: 0;
-    padding-inline: 0;
-    overflow: visible;
+  .side {
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
   }
-  .tabs > .tab:first-child,
-  .tabs > .tab:last-child {
-    margin-inline: 0;
-  }
+}
+
+.sideLabel {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stahl-hell);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 0.9rem;
 }
 
 .tab {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  gap: 8px;
-  padding: 0 18px;
-  border: 0;
-  border-radius: var(--radius-pille);
-  background: var(--hell);
-  color: var(--foreground);
-  font-size: 14px;
-  line-height: 1.2;
-  letter-spacing: -0.016em;
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 0.6rem 0.7rem 0.65rem;
+  border: 1px solid rgb(238 238 235 / 0.16);
+  border-radius: 2px;
+  color: var(--stahl-hell);
+  text-align: left;
   cursor: pointer;
   transition:
     color 0.2s,
-    background-color 0.2s;
+    background-color 0.2s,
+    border-color 0.2s;
 }
-@media (hover: hover) {
-  .tab:hover {
-    background: var(--hell-2);
-  }
+.tab:hover {
+  color: var(--background);
+  border-color: rgb(238 238 235 / 0.4);
 }
 .tab:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .tab[aria-selected="true"] {
-  background: var(--foreground);
-  color: #fff;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--foreground);
 }
 
-/* Der Branchen-Code ist ein echtes Kürzel: in der Tafel-Schrift. */
 .tabCode {
-  display: none;
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
 }
 .tabLabel {
-  font-weight: 600;
-  white-space: nowrap;
+  max-width: 100%;
+  font-size: 14px;
+  font-weight: 620;
+  line-height: 1.25;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+@media (max-width: 379px) {
+  .tab {
+    padding: 0.55rem 0.5rem 0.6rem;
+  }
+  .tabLabel {
+    font-size: 13px;
+  }
+}
+
+/* Ab lg: senkrechte Liste mit Haarlinien, die gewählte Branche
+   bekommt eine orange Kante und eine Leitlinie zum Papier. */
+@media (min-width: 1024px) {
+  .tabs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 0.9rem;
+    border-top: 1px solid rgb(238 238 235 / 0.14);
+  }
+  .tab {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: baseline;
+    padding: 0.85rem 2rem 0.85rem 0;
+    border: 0;
+    border-bottom: 1px solid rgb(238 238 235 / 0.14);
+    border-radius: 0;
+  }
+  .tab::before,
+  .tab::after {
+    content: "";
+    position: absolute;
+    background: var(--gold);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.25, 1);
+  }
+  /* Kante links */
+  .tab::before {
+    left: -1rem;
+    top: 0.7rem;
+    bottom: 0.7rem;
+    width: 3px;
+    transform: scaleY(0);
+  }
+  /* Leitlinie rechts, zeigt aufs Papier */
+  .tab::after {
+    right: 0;
+    top: 50%;
+    width: 1.5rem;
+    height: 1.5px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .tab:hover {
+    border-color: rgb(238 238 235 / 0.14);
+  }
+  .tab[aria-selected="true"] {
+    background: transparent;
+    border-color: rgb(238 238 235 / 0.14);
+    color: var(--background);
+  }
+  .tab[aria-selected="true"]::before {
+    transform: scaleY(1);
+  }
+  .tab[aria-selected="true"]::after {
+    transform: scaleX(1);
+  }
+  .tab[aria-selected="true"] .tabCode {
+    color: var(--gold);
+    opacity: 1;
+  }
+  .tabLabel {
+    font-size: 17px;
+  }
+  .tabCode {
+    font-size: 11.5px;
+  }
 }
 
 /* ---------------------------------------------------------------
-   Frachtpapier als Karte
+   Frachtpapier
    --------------------------------------------------------------- */
 .paper {
   position: relative;
-  border-radius: var(--radius-karte);
-  background: var(--hell);
+  border-radius: 3px;
+  background: var(--card);
   color: var(--foreground);
-  padding: 28px 20px 28px;
+  padding: 1.25rem 1.1rem 1.35rem;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.5),
+    0 34px 60px -34px rgb(0 0 0 / 0.75);
 }
 .paper[hidden] {
   display: none;
@@ -131,7 +186,7 @@
 }
 @media (min-width: 640px) {
   .paper {
-    padding: 48px 48px 44px;
+    padding: 1.9rem 2.1rem 2rem;
   }
 }
 
@@ -139,205 +194,333 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px double var(--foreground);
 }
 
 .kicker,
-.footLabel {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.33;
-  letter-spacing: -0.01em;
+.colhead,
+.fields dt,
+.footLabel,
+.stamp span {
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.kicker {
   color: var(--muted-foreground);
 }
 .title {
-  margin-top: 6px;
-  font-size: 28px;
-  line-height: 1.14;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  margin-top: 0.4rem;
+  font-size: 1.6rem;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
 }
 @media (min-width: 640px) {
   .title {
-    font-size: 40px;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    font-size: 2.05rem;
   }
 }
 
-.leser {
-  margin-top: 16px;
-  font-size: 14px;
-  line-height: 1.43;
-  letter-spacing: -0.016em;
+/* Stempel: doppelt gerahmt, leicht schräg, in dunklem Orange. */
+.stamp {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  margin: 0.1rem 0.2rem 0 0;
+  padding: 0.3rem 0.7rem 0.35rem;
+  border: 2px solid var(--gold-ink);
+  outline: 1px solid var(--gold-ink);
+  outline-offset: 2px;
+  color: var(--gold-ink);
+  transform: rotate(-5deg);
+  opacity: 0.9;
+  line-height: 1.15;
+}
+/* Am Handy: ohne Feldraster und nur die ersten vier Positionen, damit
+   das Frachtpapier nicht drei Bildschirme lang wird. */
+.mehrMobil {
+  display: none;
+}
+@media (max-width: 639px) {
+  .fields,
+  .alt,
+  .ctaNote {
+    display: none !important;
+  }
+  .row:nth-child(n + 4) {
+    display: none !important;
+  }
+  /* Auswahl als eine Zeile zum Wischen, ohne Kürzel. */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-inline: calc(-1 * var(--rinne));
+    padding: 2px var(--rinne) 6px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    flex: none;
+    min-height: 44px;
+    justify-content: center;
+    scroll-snap-align: start;
+  }
+  .tabCode {
+    display: none;
+  }
+  .mehrMobil {
+    display: block;
+    padding-top: 0.9rem;
+    font-family: var(--font-brand-mono), ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+}
+
+/* Foto der Branche, wie mit einer Klammer an das Frachtpapier geheftet. */
+.foto {
+  position: relative;
+  display: none;
+  flex: none;
+  width: 168px;
+  aspect-ratio: 3 / 2;
+  margin-left: auto;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--muted);
+  box-shadow:
+    0 0 0 4px #fff,
+    0 0 0 5px rgb(27 29 30 / 0.12),
+    0 10px 18px -10px rgb(27 29 30 / 0.45);
+  transform: rotate(1.5deg);
+}
+.foto::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 34px;
+  height: 10px;
+  margin-left: -17px;
+  border-radius: 1px;
+  background: rgb(27 29 30 / 0.55);
+}
+@media (min-width: 640px) {
+  .foto {
+    display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .foto {
+    width: 196px;
+  }
+}
+.stamp span {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+.stamp strong {
+  font-size: 1.55rem;
+  font-stretch: 118%;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 1px solid var(--foreground);
+}
+.fields > div {
+  min-width: 0;
+  padding: 0.7rem 0.9rem 0.75rem 0;
+}
+.fields > div + div:not(.fieldWide) {
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--border);
+}
+.fields dt {
   color: var(--muted-foreground);
 }
+.fields dd {
+  margin-top: 0.2rem;
+  font-size: 14.5px;
+  font-weight: 560;
+  line-height: 1.4;
+}
+.fieldWide {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border);
+}
+@media (min-width: 900px) {
+  .fields {
+    grid-template-columns: 9rem 12rem minmax(0, 1fr);
+  }
+  .fields > .fieldWide {
+    grid-column: auto;
+    padding-left: 0.9rem;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+}
 
-/* Die drei wichtigsten Positionen als weiße Kacheln. */
-.kacheln {
-  display: grid;
-  gap: 12px;
-  margin-top: 24px;
+.colhead {
+  display: none;
+  color: var(--muted-foreground);
+}
+@media (min-width: 640px) {
+  .colhead {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 13.5rem) minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.1rem 0 0.55rem;
+    border-bottom: 1px solid var(--foreground);
+  }
+}
+
+.rows {
   list-style: none;
 }
-@media (min-width: 834px) {
-  .kacheln {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.row {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.35rem 0.75rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s;
+}
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: 2.75rem minmax(0, 13.5rem) minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.05rem 0;
   }
-}
-.kachel {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 24px;
-  border-radius: 18px;
-  background: #fff;
-}
-.kachel .pos {
-  display: inline-flex;
-  width: 28px;
-  height: 28px;
-  margin-bottom: 8px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: var(--gold);
-  color: var(--foreground);
-  font-size: 13px;
-  line-height: 1;
-}
-.kachel .vermerk {
-  margin-top: 6px;
-}
-
-/* Bleibt bei sieben Positionen im Dreier-Raster eine allein, nimmt sie
-   die ganze Reihe statt eine Lücke daneben zu lassen. */
-@media (min-width: 834px) {
-  .kachel:last-child:nth-child(3n + 1) {
-    grid-column: 1 / -1;
-  }
-}
-
-/* Übrige Positionen: Apple-Link unter der letzten Kachel. */
-.mehrKnopf {
-  display: inline-flex;
-  min-height: 44px;
-  margin-top: 8px;
-  align-items: center;
-  gap: 0.2em;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  font: inherit;
-  font-size: 17px;
-  letter-spacing: -0.022em;
-  color: var(--gold-ink);
-}
-@media (hover: hover) {
-  .mehrKnopf:hover .mehrText {
-    text-decoration: underline;
-  }
-}
-.mehrKnopf:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-/* Chevron zeigt nach unten, offen nach oben; um die eigene Mitte. */
-.chev {
-  display: inline-block;
-  line-height: 1;
-  text-decoration: none;
-  transform: rotate(90deg);
-  transform-origin: 50% 50%;
-  transition: transform 200ms var(--ease-apple);
-}
-.chevAuf {
-  transform: rotate(-90deg);
 }
 
 .pos {
-  font-size: 14px;
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1.5;
-  color: var(--gold-ink);
+  line-height: 1.45;
+  color: var(--muted-foreground);
   font-variant-numeric: tabular-nums;
+  transition: color 0.2s;
 }
 .ladung {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 660;
   line-height: 1.3;
-  letter-spacing: -0.022em;
+  letter-spacing: -0.01em;
 }
 .stau {
-  margin-top: 4px;
-  font-size: 14px;
-  line-height: 1.4;
-  letter-spacing: -0.016em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.35;
   color: var(--muted-foreground);
 }
+.stau::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  translate: 0 -1px;
+  border: 1.5px solid currentColor;
+}
 .vermerk {
+  grid-column: 2;
   font-size: 15px;
-  line-height: 1.5;
-  letter-spacing: -0.016em;
-  color: var(--muted-foreground);
+  line-height: 1.55;
+  color: #3a3f41;
+}
+@media (min-width: 640px) {
+  .vermerk {
+    grid-column: auto;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover {
+    background-color: rgb(27 29 30 / 0.028);
+  }
+  .row:hover .pos {
+    color: var(--gold-ink);
+  }
+  .row:hover .stau::before {
+    border-color: var(--gold-ink);
+    background: var(--gold-ink);
+  }
 }
 
 /* Fuß: Paket und Knopf */
 .foot {
   display: grid;
-  gap: 20px;
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
+  gap: 1.4rem;
+  margin-top: 1.6rem;
+  padding-top: 1.25rem;
+  border-top: 3px double var(--foreground);
 }
 @media (min-width: 900px) {
   .foot {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    gap: 32px;
+    gap: 2rem;
   }
+}
+.footLabel {
+  color: var(--muted-foreground);
 }
 .paketName {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 14px;
-  margin-top: 4px;
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 1.14;
-  letter-spacing: -0.015em;
+  gap: 0.25rem 0.9rem;
+  margin-top: 0.35rem;
+  font-size: 1.55rem;
+  font-stretch: 112%;
+  font-weight: 760;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 .paketPreis {
-  font-size: 14px;
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-stretch: normal;
   font-weight: 600;
-  letter-spacing: -0.016em;
+  letter-spacing: 0;
   color: var(--gold-ink);
-  font-variant-numeric: tabular-nums;
 }
 .paketGrund {
-  margin-top: 8px;
+  margin-top: 0.5rem;
   max-width: 34em;
-  font-size: 17px;
-  line-height: 1.47;
-  letter-spacing: -0.022em;
+  font-size: 15px;
+  line-height: 1.5;
 }
 .alt {
-  margin-top: 6px;
+  margin-top: 0.35rem;
   max-width: 34em;
   font-size: 14px;
-  line-height: 1.43;
+  line-height: 1.5;
   color: var(--muted-foreground);
 }
 .cta {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 10px;
+  gap: 0.6rem;
 }
 @media (min-width: 900px) {
   .cta {
@@ -345,23 +528,27 @@
   }
 }
 .ctaNote {
-  font-size: 12px;
-  line-height: 1.33;
+  font-family: var(--font-brand-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 1.4;
   color: var(--muted-foreground);
 }
 
 /* ---------------------------------------------------------------
-   Wechsel: Positionen laufen gestaffelt ein.
+   Wechsel: Positionen laufen gestaffelt ein, der Stempel setzt auf.
    Nur nach einem Wechsel (.animate), nie beim Laden.
    --------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
   .animate .title,
-  .animate .leser {
+  .animate .fields {
     animation: paper-fade 0.38s ease both;
   }
-  .animate .kachel {
+  .animate .row {
     animation: row-in 0.46s cubic-bezier(0.2, 0.8, 0.25, 1) both;
     animation-delay: calc(60ms + var(--i, 0) * 42ms);
+  }
+  .animate .stamp {
+    animation: stamp-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) 0.18s both;
   }
   .animate .foot {
     animation: paper-fade 0.4s ease 0.3s both;
@@ -376,5 +563,14 @@
   from {
     opacity: 0;
     transform: translateY(8px);
+  }
+}
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    transform: rotate(-11deg) scale(1.35);
+  }
+  60% {
+    opacity: 0.95;
   }
 }

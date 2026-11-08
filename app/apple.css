@@ -119,7 +119,7 @@
     color: var(--signal-on-dark);
   }
   :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz) .zweiton {
-    color: #f5f5f7;
+    color: #f3f2ee;
   }
   @media (min-width: 641px) {
     .t-hero {
@@ -132,33 +132,36 @@
      ---------------------------------------------------------------- */
   .buehne-titel,
   .buehne-titel-klein {
-    max-width: 20ch;
-    font-size: var(--t-abschnitt);
-    line-height: 1.0625;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    font-stretch: normal;
+    max-width: 22ch;
+    font-size: clamp(2rem, 1.25rem + 2.9vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.032em;
+    font-weight: 720;
+    font-stretch: 116%;
+    text-wrap: balance;
   }
   .buehne-titel-klein {
-    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.6rem);
     line-height: 1.08;
   }
   .buehne-unter {
-    max-width: 34em;
-    font-size: var(--t-unter);
-    line-height: 1.24;
+    max-width: 36em;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.5;
     font-weight: 400;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.004em;
+    color: var(--muted-foreground);
+    text-wrap: pretty;
   }
   :is(.on-dark, .bg-foreground, .bg-black, .flaeche-schwarz) .buehne-unter,
   .buehne-dunkel .buehne-unter {
     color: var(--text-2-dark);
   }
   .buehne-abschnitt {
-    padding-block: 80px;
+    padding-block: 56px;
   }
   .buehne-kopf + * {
-    margin-top: 40px;
+    margin-top: 32px;
   }
   @media (min-width: 640px) {
     .buehne-titel {
@@ -197,8 +200,8 @@
     color: var(--foreground);
   }
   .flaeche-schwarz {
-    background-color: #000;
-    color: #f5f5f7;
+    background-color: var(--teer);
+    color: #f3f2ee;
   }
   /* Inhaltsbreite wie bei Apple: 980 px + Rinne. */
   .inhalt {
@@ -284,8 +287,8 @@
     background-color: #fff;
   }
   .karte-schwarz {
-    background-color: #000;
-    color: #f5f5f7;
+    background-color: var(--teer);
+    color: #f3f2ee;
   }
   .karte-schwarz :is(.text-muted-foreground) {
     color: var(--text-2-dark);
@@ -385,6 +388,7 @@
     background-color: var(--glas-nav);
     -webkit-backdrop-filter: var(--glas-filter);
     backdrop-filter: var(--glas-filter);
+    box-shadow: inset 0 -1px 0 var(--haarlinie);
     color: var(--foreground);
   }
   /* Seiten mit lokaler Produktleiste: globale Leiste scrollt weg. */
@@ -405,21 +409,43 @@
     display: none;
   }
   .globalnav-link {
+    position: relative;
     display: inline-flex;
     height: var(--kopf-h);
     align-items: center;
-    padding: 0 8px;
-    font-size: 12px;
+    padding: 0 10px;
+    font-size: 13.5px;
     line-height: 1;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    color: rgb(0 0 0 / 0.8);
+    font-weight: 500;
+    letter-spacing: 0;
+    color: rgb(27 29 30 / 0.78);
     text-decoration: none;
-    transition: color 240ms var(--ease-apple);
+    transition: color 240ms var(--ease-wechsel);
   }
   .globalnav-link:hover,
   .globalnav-link[aria-current="page"] {
-    color: #000;
+    color: var(--foreground);
+  }
+  /* Telefonnummer in Mono, erst ab 1280 px. */
+  .globalnav-tel {
+    display: none;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    color: rgb(27 29 30 / 0.78);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .globalnav-tel:hover {
+    color: var(--foreground);
+  }
+  @media (min-width: 1280px) {
+    .globalnav-tel {
+      display: inline-flex;
+    }
   }
   .globalnav-icon {
     display: inline-flex;
@@ -428,11 +454,11 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-pille);
-    color: rgb(0 0 0 / 0.8);
+    color: rgb(27 29 30 / 0.8);
     transition: color 240ms var(--ease-apple);
   }
   .globalnav-icon:hover {
-    color: #000;
+    color: var(--foreground);
   }
   .globalnav-mobil {
     display: flex;
@@ -470,18 +496,31 @@
     transform: translateY(3.5px);
   }
 
-  /* Mobilmenü: große Einträge wie bei Apple. */
+  /* Mobilmenü auf Teer: große, breite Einträge mit Mono-Nummer. */
   .menue-eintrag {
     display: flex;
     min-height: 44px;
-    align-items: center;
+    align-items: baseline;
+    gap: 14px;
     padding: 8px 0;
-    font-size: 28px;
-    line-height: 1.14;
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    color: var(--foreground);
+    font-size: 30px;
+    line-height: 1.12;
+    font-weight: 700;
+    font-stretch: 116%;
+    letter-spacing: -0.025em;
+    color: var(--papier);
     text-decoration: none;
+  }
+  .menue-eintrag[aria-current="page"] {
+    color: var(--signal-on-dark);
+  }
+  .menue-nr {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    font-stretch: 100%;
+    letter-spacing: 0.1em;
+    color: var(--stahl-hell);
   }
   .menue-eintrag-klein {
     display: flex;
@@ -489,9 +528,9 @@
     align-items: center;
     font-size: 17px;
     line-height: 1.24;
-    font-weight: 600;
-    letter-spacing: -0.022em;
-    color: var(--foreground);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: rgb(243 242 238 / 0.86);
     text-decoration: none;
   }
 
@@ -535,7 +574,7 @@
   .produktleiste[data-dunkel="true"] {
     background-color: rgb(22 22 23 / 0.8);
     box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.12);
-    color: #f5f5f7;
+    color: #f3f2ee;
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .produktleiste[data-dunkel="true"] {
@@ -543,7 +582,7 @@
     }
   }
   .produktleiste[data-dunkel="true"] :is(.produktleiste-titel, .produktleiste-toggle) {
-    color: #f5f5f7;
+    color: #f3f2ee;
   }
   .produktleiste[data-dunkel="true"] .produktleiste-link {
     color: rgb(255 255 255 / 0.8);
@@ -989,8 +1028,8 @@
   .text-szene {
     position: relative;
     overflow: clip;
-    background-color: #000;
-    color: #f5f5f7;
+    background-color: var(--teer);
+    color: #f3f2ee;
   }
   .text-szene {
     padding-block: 88px;
@@ -1111,7 +1150,7 @@
       height: 140%;
       z-index: 1;
       pointer-events: none;
-      background: linear-gradient(to bottom, rgb(0 0 0 / 0) 0, #000 28%);
+      background: linear-gradient(to bottom, rgb(0 0 0 / 0) 0, var(--teer) 28%);
       animation: szene-schleier linear both;
       animation-timeline: view(0px);
       /* Fertig, sobald die Szene ganz im Bild steht (nicht erst über der
@@ -1134,13 +1173,13 @@
 .seitenkopf [class*="hover:text-background"]:hover {
   color: var(--foreground);
 }
-/* Meta-Zeilen im Kopf: keine Mono-Labels mehr, Systemschrift 14 px,
-   Links in Apple-Orange; Themen-Navigation als graue Pillen. */
+/* Meta-Zeilen im Kopf: Mono-Notizen wie auf Frachtpapier, Links in
+   Orange; Themen-Navigation als Chips. */
 .seitenkopf-meta :is(.font-mono, .label-mono) {
-  font-family: inherit;
-  font-size: 14px;
-  letter-spacing: -0.016em;
-  text-transform: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 .seitenkopf-meta a:not(.btn-signal):not(.btn-outline) {
   color: var(--gold-ink);
@@ -1259,7 +1298,7 @@
     letter-spacing: -0.01em;
   }
   .bento-kachel.karte-schwarz .t-kachel {
-    color: #f5f5f7;
+    color: #f3f2ee;
   }
   /* Zweispaltig von 640 bis 1067 px: Website (breit) und Selbst pflegen über
      die volle Breite, dazwischen zwei Paare. Anfragen und Google tauschen
@@ -1676,7 +1715,7 @@
     padding-block: calc(var(--abschnitt-y) + 16px);
   }
   .abschluss .t-abschnitt {
-    color: #f5f5f7;
+    color: #f3f2ee;
   }
   .abschluss-unter {
     margin-top: 20px;
@@ -1693,7 +1732,7 @@
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    color: #f5f5f7;
+    color: #f3f2ee;
     text-decoration: none;
     transition: color 240ms var(--ease-apple);
   }
@@ -1709,11 +1748,11 @@
    Gilt nur für Marketing-Seiten (<main> neben der globalen Leiste),
    nie für /admin. Ungeschichtet, damit es die Utilities überstimmt.
    - schwarze 1,5–3-px-Linien → #d2d2d7-Haarlinien (1 px)
-   - dunkle Flächen (bg-foreground / bg-teer-2) → Apple-Schwarz #000
-   - Kästen mit Rand → große Rundung; graue Kästen ohne Rand
-   - quadratische Punkte → rund
-   - Mini-Labels unter 12 px → 12 px
-   - Pfeil-Icons in Textlinks → orange „›“ (wie MehrLink)
+   - dunkle Flächen (bg-foreground / bg-teer-2) → Teer #1b1d1e
+   - Kästen mit Rand → Kartenrundung (6 px); graue Kästen ohne Rand
+   Quadratische Marker, Mono-Mini-Labels und Pfeile bleiben, wie sie
+   im Markup stehen (Atelier-Handschrift). Eine kräftige 2-px-Oberkante
+   gibt es gezielt über .kante-stark (Preis- und Tabellenköpfe).
    ================================================================== */
 .globalnav ~ main
   :is(.border-foreground, [class*="border-foreground/"]):not(input, select, textarea, button, [role="radio"], [role="checkbox"], [role="switch"]) {
@@ -1735,56 +1774,17 @@
   border-width: 1px;
 }
 .globalnav ~ main :is(.bg-foreground, .bg-teer-2):not(.rounded-full) {
-  background-color: #000;
+  background-color: var(--teer);
+}
+.globalnav ~ main .kante-stark,
+.kante-stark {
+  border-top: 2px solid var(--foreground);
 }
 .globalnav ~ main :is(div, article, aside, figure, details, dl, ol, ul).border:not([class*="rounded"]) {
   border-radius: var(--radius-karte);
 }
 .globalnav ~ main :is(div, article, aside, figure, details).bg-card.border:not([class*="rounded"]) {
   border-color: transparent;
-}
-/* Kleine quadratische Marker (5–10 px) werden Punkte. */
-.globalnav ~ main
-  :is(span, i, li > div):is([class*="h-[5px]"], [class*="h-[6px]"], [class*="h-[7px]"], [class*="h-[8px]"], [class*="h-[9px]"], [class*="h-[10px]"], .h-1\.5, .h-2, .h-2\.5):is(.inline-block, .block, .shrink-0) {
-  border-radius: 999px;
-}
-.globalnav ~ main :is([class*="text-[9"], [class*="text-[10"], [class*="text-[11px]"], [class*="text-[11.5px]"]) {
-  font-size: 12px;
-}
-/* Pfeil-Icons in Textlinks: Icon aus, orange Chevron an. */
-.globalnav ~ main a:not(.btn-signal, .btn-line) svg:is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up-right) {
-  display: none;
-}
-.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-up-right) {
-  color: var(--gold-ink);
-  font-weight: 400;
-}
-.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-up-right)::after {
-  content: "\203A";
-  display: inline-block;
-  margin-left: 0.2em;
-  transform: translateY(-0.02em);
-}
-.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-left)::before {
-  content: "\2039";
-  display: inline-block;
-  margin-right: 0.2em;
-}
-.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-left) {
-  color: var(--gold-ink);
-}
-/* Zeilen-Links (ganze Zeile, Chevron rechts): Text dunkel, Chevron grau. */
-.globalnav ~ main a.justify-between:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right) {
-  color: var(--foreground);
-}
-.globalnav ~ main a.justify-between:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right)::after {
-  color: var(--muted-foreground);
-  font-size: 1.25em;
-  line-height: 1;
-}
-.globalnav ~ main :is(.bg-foreground, .bg-teer-2, .bg-black, .flaeche-schwarz, .karte-schwarz, .on-dark)
-  a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-left, svg.lucide-arrow-up-right) {
-  color: var(--signal-on-dark);
 }
 /* Grautext und oranger Text auf schwarzen Flächen und Karten:
    ungeschichtet, damit die Utility text-muted-foreground nicht gewinnt. */
@@ -1923,11 +1923,11 @@
 
 /* ==================================================================
    Startseite „Laden“ (app/page.tsx, components/marketing/laden): eine
-   durchgehende Fläche #f5f5f7 hinter Kopf und Regalen. Sprungziele
+   durchgehende Fläche #f3f2ee hinter Kopf und Regalen. Sprungziele
    landen knapp unter der klebenden Produktleiste.
    ================================================================== */
 .buehne.laden {
-  background-color: #f5f5f7;
+  background-color: #f3f2ee;
 }
 .buehne.laden section[id] {
   scroll-margin-top: 0px;

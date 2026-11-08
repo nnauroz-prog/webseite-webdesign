@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { ERREICHBARKEIT, TELEFON_ANZEIGE, TELEFON_HREF } from "@/lib/erreichbarkeit";
 import { SITE_URL } from "@/lib/site";
+import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 
 export const metadata: Metadata = {
   title: "Erreichbarkeit · wann wir antworten",
@@ -224,39 +223,16 @@ function WennNichtsKommt() {
 }
 
 /* ------------------------------------------------------------------
- * Kontakt: die Nummer groß.
+ * Abschluss wie auf allen Unterseiten: die Briefkarte.
  * ---------------------------------------------------------------- */
 function Kontakt() {
   return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-7">
-          <p className="label-mono text-stahl-hell">{ERREICHBARKEIT.fenster[0].label}</p>
-          <a
-            href="tel:+491607621876"
-            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
-            style={{ fontStretch: "118%", fontWeight: 780 }}
-          >
-            0160&nbsp;7621876
-          </a>
-        </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <p className="text-stahl-hell text-[16px] leading-relaxed">
-            Wer lieber schreibt, nutzt das Anfrageformular. Für ein längeres Gespräch gibt es die Sprechstunde.
-          </p>
-          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Link href="/kontakt" className="btn-signal">
-              Zum Kontakt <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              href="/sprechstunde"
-              className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
-            >
-              Zur Sprechstunde
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <Briefkarte
+      id="kontakt"
+      title="Am Telefon sprechen Sie direkt mit uns."
+      link={{ href: "/sprechstunde", label: "Zur Sprechstunde" }}
+    >
+      Wer lieber schreibt, nutzt das Anfrageformular. Für ein längeres Gespräch gibt es die Sprechstunde.
+    </Briefkarte>
   );
 }

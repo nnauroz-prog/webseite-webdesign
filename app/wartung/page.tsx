@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
+import a from "@/components/marketing/hafen/atelier.module.css";
 import {
   Abschnitt,
-  BildKachel,
-  BildRaster,
   FotoRahmen,
   KontaktKarte,
   SeitenKopf,
@@ -13,7 +12,6 @@ import {
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import { WARTUNG_PREISE } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
@@ -204,18 +202,10 @@ export default function WartungPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste
-        titel="Wartung"
-        links={[
-          { href: "#tarife", label: "Tarife" },
-          { href: "#anlaesse", label: "Anlässe" },
-          { href: "#fragen", label: "Fragen" },
-        ]}
-        cta={{ href: "/anfrage?vorhaben=Wartung", label: "Anfragen" }}
-      />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Wartung und Pflege"
+          krumen="Wartung"
+          eyebrow="Liegegeld · Wartung und Pflege"
           titel="Website-Wartung für Seiten, die schon laufen"
           unter="Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das geht mit WordPress, Wix oder Squarespace. Bei WordPress fallen jeden Monat Updates an, deshalb sehen wir uns die Seite vorher an und nennen Ihnen den passenden Tarif."
           aktionen={
@@ -232,13 +222,14 @@ export default function WartungPage() {
           bild={
             <FotoRahmen
               vorab
-              src="/images/workspace-macbook.webp"
-              alt="Hände an einer Laptop-Tastatur von oben, daneben ein aufgeschlagenes Notizbuch und eine Tasse Kaffee"
+              src="/images/workspace-laptop.webp"
+              alt="Aufgeklappter Laptop auf einem Holztisch, daneben ein Notizbuch, ein Glas Wasser und eine Tasse Kaffee"
               aspect="21 / 9"
               aspectMobil="16 / 10"
-              position="45% 45%"
+              position="50% 60%"
             />
           }
+          unterschrift="Am Schreibtisch: die Seite ansehen, bevor wir einen Tarif nennen"
         />
         <Plans />
         <Anlaesse />
@@ -365,99 +356,69 @@ const CASES = [
   },
 ];
 
+/**
+ * Muster eines Wartungsbuchs: was in einem Monat anfällt, mit Kästchen
+ * wie im Lotsen. Keine echten Daten, nur der Rhythmus der Arbeiten.
+ */
+const WARTUNGSBUCH: { wann: string; arbeit: string; erledigt: boolean }[] = [
+  { wann: "täglich, 02:00", arbeit: "Sicherung der ganzen Seite, 30 Tage aufbewahrt", erledigt: true },
+  { wann: "wöchentlich", arbeit: "Software und Erweiterungen auf Updates prüfen", erledigt: true },
+  { wann: "wöchentlich", arbeit: "Kontaktformular mit einer Testanfrage prüfen", erledigt: true },
+  { wann: "monatlich", arbeit: "SSL-Zertifikat und Ladezeit ansehen", erledigt: true },
+  { wann: "bei Bedarf", arbeit: "Ihre kleine Änderung: neue Öffnungszeiten, ein Foto", erledigt: false },
+];
+
 function Anlaesse() {
-  const [vorgaenger, lange, formular, klein] = CASES;
   return (
-    <Abschnitt id="anlaesse" fett="Typische Anlässe." grau="Wann eine Übergabe sinnvoll ist.">
-      <BildRaster>
-        <BildKachel
-          spalten={7}
-          gross
-          titel={vorgaenger.title}
-          zeile={vorgaenger.body}
-          foto={{
-            src: "/images/atmosphere/handwerker-werkbank.webp",
-            alt: "Werkbank mit Hobel, Stechbeiteln und Holzspänen in warmem Licht",
-            position: "50% 55%",
-            sizes: "(min-width: 1068px) 560px, calc(100vw - 32px)",
-          }}
-        />
-        <BildKachel ton="nacht" spalten={5} titel={lange.title} zeile={lange.body} bildInhalt={<UpdateHinweis />} />
-        <BildKachel ton="nacht" spalten={5} titel={formular.title} zeile={formular.body} bildInhalt={<FormularFehler />} />
-        <BildKachel
-          spalten={7}
-          gross
-          titel={klein.title}
-          zeile={klein.body}
-          foto={{
-            src: "/images/sitalo-pflege-laptop.webp",
-            alt: "Laptop am Empfang eines Pflegedienstes mit der Musterseite des Dienstes",
-            position: "50% 50%",
-            sizes: "(min-width: 1068px) 560px, calc(100vw - 32px)",
-            muster: true,
-          }}
-        />
-      </BildRaster>
+    <Abschnitt id="anlaesse" eyebrow="Wartungsbuch · Anlässe" fett="Wann eine Übergabe sinnvoll ist">
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
+        <ol className={`${a.lvListe} kante-stark lg:col-span-6`}>
+          {CASES.map((c, i) => (
+            <li key={c.title} className={a.lvZeile}>
+              <span className={a.lvNr}>{String(i + 1).padStart(2, "0")}</span>
+              <span>
+                <span className={a.lvTitel}>{c.title}</span>
+                <span className={a.lvSatz}>{c.body}</span>
+              </span>
+              <span />
+            </li>
+          ))}
+        </ol>
+        <div className="min-w-0 lg:col-span-6">
+          <table className={a.buch}>
+            <caption className={a.mono}>Muster eines Wartungsbuchs, so sieht ein Monat bei uns aus</caption>
+            <thead>
+              <tr>
+                <th scope="col">Wann</th>
+                <th scope="col">Arbeit</th>
+                <th scope="col">erledigt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {WARTUNGSBUCH.map((z) => (
+                <tr key={z.arbeit}>
+                  <td>{z.wann}</td>
+                  <th scope="row" className="font-normal!">
+                    {z.arbeit}
+                  </th>
+                  <td>
+                    <span className={`${a.kasten} ${z.erledigt ? a.kastenVoll : ""}`} aria-hidden="true" />
+                    <span className="sr-only">{z.erledigt ? "erledigt" : "offen"}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className={a.lvFuss}>
+            <span>☐ offen · ☑ erledigt</span>
+            <span>Ein Eintrag je Arbeit, damit Sie nachsehen können.</span>
+          </p>
+        </div>
+      </div>
     </Abschnitt>
   );
 }
 
-/** Gestalteter Hinweis einer lange nicht gepflegten Seite (Beispiel). */
-function UpdateHinweis() {
-  const zeilen = [
-    { t: "Seiten-Software", v: "6.1 → 6.7" },
-    { t: "Kontaktformular-Erweiterung", v: "3 Versionen alt" },
-    { t: "SSL-Zertifikat", v: "läuft in 6 Tagen ab" },
-  ];
-  return (
-    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ff9f0a] text-[13px] leading-none font-bold text-[#1c1c1e]">
-          !
-        </span>
-        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">3 Punkte veraltet</p>
-      </div>
-      <ul role="list" className="mt-3 divide-y divide-white/10">
-        {zeilen.map((r) => (
-          <li key={r.t} className="flex items-baseline justify-between gap-3 py-2 text-[13px] leading-[18px]">
-            <span className="min-w-0 text-[#e5e5ea]">{r.t}</span>
-            <span className="shrink-0 text-[12px] text-[#ff9f5a]">{r.v}</span>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[12px] font-semibold text-[#f5f5f7]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#30d158]" />
-        Nach der Übernahme: alles aktuell
-      </p>
-    </div>
-  );
-}
-
-/** Gestaltete Fehlermeldung eines Kontaktformulars (Beispiel). */
-function FormularFehler() {
-  return (
-    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
-      <p className="text-[13px] font-semibold text-[#f5f5f7]">Kontakt</p>
-      <span className="mt-2 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">Jana Beispiel</span>
-      <span className="mt-1.5 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">
-        Termin für Samstag möglich?
-      </span>
-      <div className="mt-3 flex items-start gap-2 rounded-md bg-[#3a1d1d] px-2.5 py-2 text-[12px] leading-[17px] text-[#ffb4ab]">
-        <svg viewBox="0 0 16 16" width="14" height="14" className="mt-[1px] shrink-0">
-          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M8 4.5v4M8 11h.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        </svg>
-        Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.
-      </div>
-      <p className="mt-3 text-[12px] leading-[17px] text-[#a1a1a6]">
-        Freitag, 17:48 Uhr. Ein Anruf bei uns, und das Formular läuft wieder.
-      </p>
-    </div>
-  );
-}
-
-// FAQ-Items modul-level gehoben, damit JSON-LD und Render aus
-// derselben Quelle ziehen können.
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: "Können Sie auch Wix oder Squarespace warten?",
@@ -489,27 +450,28 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
   },
 ];
 
+
 /* ------------------------------------------------------------------
  * Fragen zum Aufklappen in einem weißen Blatt wie auf /faq.
  * ---------------------------------------------------------------- */
 function Faq() {
   return (
-    <Abschnitt id="fragen" fett="Fragen zur Wartung." grau="Kurz beantwortet.">
-      <div className="min-w-0 divide-y divide-black/10 rounded-[18px] bg-white px-6 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:px-8">
+    <Abschnitt id="fragen" eyebrow="Kaimauer · Fragen" fett="Was zur Wartung oft gefragt wird">
+      <dl className={a.interview}>
         {FAQ_ITEMS.map((item) => (
-          <details key={item.q} className="group">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
-              <h3 className="text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">{item.q}</h3>
-              <span
-                aria-hidden="true"
-                className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[22px] leading-none font-light text-[#6e6e73] transition-colors group-open:text-[#1d1d1f] group-hover:text-[#1d1d1f]"
-              >
-                <span className="transition-transform group-open:rotate-45">+</span>
-              </span>
+          <div key={item.q}>
+            <dt className={a.frage}>{item.q}</dt>
+            <dd className={a.antwort}>{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className={a.fragenMobil}>
+        {FAQ_ITEMS.map((item, i) => (
+          <details key={item.q} open={i < 3}>
+            <summary>
+              <h3 className={a.frage}>{item.q}</h3>
             </summary>
-            <p className="max-w-2xl pb-6 text-[17px] leading-[1.5] tracking-[-0.022em] text-pretty text-[#424245] sm:pr-12">
-              {item.a}
-            </p>
+            <p className={a.antwort}>{item.a}</p>
           </details>
         ))}
       </div>

@@ -15,8 +15,9 @@
  *   Inline-Script in hafen-hero.tsx vor dem ersten Bild.
  * - Seile pendeln: gedämpftes Pendel, angetrieben von der Beschleunigung
  *   der Katze, Pendellänge aus der Seillänge; vor dem Absetzen geführt.
- * - Keine Tiefe mehr: Zeiger- und Scroll-Parallax sind entfallen, die
- *   Bühne steht ruhig im Rahmen wie ein Produktbild.
+ * - Tiefe: Beim Scrollen bleibt die Zeichnung ([data-tiefe]) etwas
+ *   zurück, höchstens 24 px. Nur ab 1024 px, nie mit der Maus, nicht bei
+ *   reduzierter Bewegung; die Kaikante liegt außerhalb und steht.
  * - Licht nach dem Sonnenstand über Hamburg (hero-licht.ts), Vorschau
  *   mit ?licht=morgen|tag|abend|nacht.
  * - prefers-reduced-motion: nichts davon läuft (außer dem Licht), das
@@ -57,9 +58,11 @@ export function HeroBuehne({ id, className, children }: { id?: string; className
     const auftakt = auftaktVorbereiten(root);
     const stopLicht = lichtStarten(root);
     const stopMotor = motorStarten(root, auftakt.starten);
+    const stopTiefe = tiefeStarten(root);
     return () => {
       stopLicht();
       stopMotor();
+      stopTiefe();
       auftakt.stop();
     };
   }, []);
@@ -89,6 +92,51 @@ function lichtStarten(root: HTMLElement) {
   setzen();
   const id = window.setInterval(setzen, 60_000);
   return () => window.clearInterval(id);
+}
+
+/* ------------------------------------------------------------------ */
+
+/** Größter Weg der Zeichnung beim Scrollen (px). */
+const TIEFE_MAX = 24;
+
+function tiefeStarten(root: HTMLElement) {
+  const bild = root.querySelector<HTMLElement>("[data-tiefe]");
+  const mq = window.matchMedia("(min-width: 1024px) and (prefers-reduced-motion: no-preference)");
+  if (!bild || !("IntersectionObserver" in window)) return () => {};
+  let frame = 0;
+  let sichtbar = false;
+  const rechnen = () => {
+    frame = 0;
+    if (!mq.matches) {
+      bild.style.transform = "";
+      return;
+    }
+    const r = root.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+    // 0, solange die Bühne unten im Bild steht; 1, wenn sie oben hinausgeht.
+    const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    bild.style.transform = `translate3d(0, ${(p * TIEFE_MAX).toFixed(1)}px, 0)`;
+  };
+  const planen = () => {
+    if (!sichtbar || frame) return;
+    frame = requestAnimationFrame(rechnen);
+  };
+  const io = new IntersectionObserver((e) => {
+    sichtbar = e.some((x) => x.isIntersecting);
+    planen();
+  });
+  io.observe(root);
+  window.addEventListener("scroll", planen, { passive: true });
+  window.addEventListener("resize", planen, { passive: true });
+  mq.addEventListener("change", planen);
+  return () => {
+    io.disconnect();
+    cancelAnimationFrame(frame);
+    window.removeEventListener("scroll", planen);
+    window.removeEventListener("resize", planen);
+    mq.removeEventListener("change", planen);
+    bild.style.transform = "";
+  };
 }
 
 /* ------------------------------------------------------------------ */

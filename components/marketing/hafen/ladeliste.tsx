@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { useId, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
 
 import { LADELISTEN, type BranchenLadeliste } from "./ladeliste-data";
@@ -8,11 +10,8 @@ import s from "./ladeliste.module.css";
 import type { PaketeKurz } from "./paket-kurz";
 
 /**
- * Ladeliste je Branche: oben die Auswahl als Pillen (Tabs), darunter
- * eine große helle Karte: die drei wichtigsten Positionen als weiße
- * Kacheln (Ladung, Stauplatz, Vermerk), die übrigen in derselben Gestalt
- * hinter „Alle … Positionen ›“ / „Weniger anzeigen“ (Knopf unter der
- * letzten Kachel, im selben Raster). Unten das empfohlene Paket
+ * Ladeliste je Branche: links die Auswahl (Tabs), rechts ein Frachtpapier
+ * mit Position, Ladung, Stauplatz und Vermerk. Unten das empfohlene Paket
  * mit Preis aus lib/pakete-data.ts (auf dem Server aufgelöst, Prop
  * `pakete`, siehe paket-kurz.ts) und der Knopf ins Anfrageformular, das
  * Branche, Paket und Liste schon ausgefüllt mitbringt.
@@ -20,12 +19,18 @@ import type { PaketeKurz } from "./paket-kurz";
  * Nur die gewählte Liste steht im Markup (die übrigen Panels sind leer,
  * damit das DOM klein bleibt und die Seite auf dem Handy schneller
  * hydriert); Server und Browser starten mit derselben. Beim Wechsel laufen die
- * Positionen kurz gestaffelt ein; bei
+ * Positionen kurz gestaffelt ein und der Stempel setzt neu auf; bei
  * reduzierter Bewegung wechselt die Liste ohne Übergang.
  *
  * Tastatur: Pfeiltasten wechseln die Branche, Pos1/Ende springen an
  * Anfang und Ende der Auswahl.
+ *
+ * fotos (optional): je Branche ein Foto, das wie angeheftet neben dem
+ * Stempel auf dem Frachtpapier steht (ab 640 px, lazy geladen). Es steht
+ * immer nur das Foto der gewählten Branche im Markup.
  */
+
+export type LadelisteFoto = { src: string; alt: string; pos?: string };
 
 function anfrageHref(b: BranchenLadeliste, pakete: PaketeKurz) {
   const p = pakete[b.paket];
@@ -42,6 +47,7 @@ export function Ladeliste({
   pakete,
   className = "",
   style,
+  fotos,
 }: {
   id?: string;
   /** Volle Breite über dem Inhalt, z. B. die Hamburg-Silhouette. */
@@ -50,6 +56,7 @@ export function Ladeliste({
   pakete: PaketeKurz;
   className?: string;
   style?: CSSProperties;
+  fotos?: Partial<Record<string, LadelisteFoto>>;
 }) {
   const [active, setActive] = useState(0);
   // Erst nach dem ersten Wechsel animieren, nicht beim Laden.
@@ -80,12 +87,19 @@ export function Ladeliste({
   };
 
   return (
-    <section id={id} className={`${s.section} abschnitt ${className}`} style={style}>
+    <section id={id} className={`${s.section} grain scroll-mt-20 ${className}`} style={style}>
       {top}
-      <div className="inhalt">
+      {/* Unten derselbe Abstand wie .buehne-abschnitt (96 / 128 / 160 px),
+          der Abstand zum Kopf kommt aus .buehne-kopf (app/hafen.css). */}
+      <div
+        className={`inhalt ${top ? "pt-12 pb-14 sm:pt-16 sm:pb-32 lg:pb-40" : "py-14 sm:py-32 lg:py-40"}`}
+      >
         {head}
-        <div className={s.werk}>
-          <div className={s.side}>
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+          <div className={`${s.side} lg:col-span-3`}>
+            <p className={s.sideLabel} aria-hidden="true">
+              Branche wählen
+            </p>
             <div role="tablist" aria-label="Branche wählen" className={s.tabs}>
               {LADELISTEN.map((b, i) => {
                 const on = i === active;
@@ -115,7 +129,7 @@ export function Ladeliste({
             </div>
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 lg:col-span-9">
             {/* Nur die gewählte Liste trägt Inhalt; die übrigen Panels
                 bleiben leer (für aria-controls). Spart rund 650 Knoten im
                 DOM und damit Zeit beim Hydrieren auf dem Handy. */}
@@ -125,6 +139,7 @@ export function Ladeliste({
                   key={b.key}
                   b={b}
                   pakete={pakete}
+                  foto={fotos?.[b.key]}
                   animate={moved}
                   id={`${uid}-panel-${b.key}`}
                   labelledBy={`${uid}-tab-${b.key}`}
@@ -149,28 +164,20 @@ export function Ladeliste({
 function Frachtpapier({
   b,
   pakete,
+  foto,
   animate,
   id,
   labelledBy,
 }: {
   b: BranchenLadeliste;
   pakete: PaketeKurz;
+  foto?: LadelisteFoto;
   animate: boolean;
   id: string;
   labelledBy: string;
 }) {
   const p = pakete[b.paket];
   const alt = b.alternative ? pakete[b.alternative.paket] : null;
-  const [alle, setAlle] = useState(false);
-  const knopf = useRef<HTMLButtonElement>(null);
-  const listeId = `${id}-liste`;
-
-  const umschalten = () => {
-    const zu = alle;
-    setAlle(!alle);
-    // Beim Zuklappen rückt der Knopf nach oben; im Bild halten.
-    if (zu) requestAnimationFrame(() => knopf.current?.scrollIntoView({ block: "nearest" }));
-  };
 
   return (
     <div
@@ -185,26 +192,58 @@ function Frachtpapier({
           <p className={s.kicker}>Ladeliste · Was auf Ihre Seite gehört</p>
           <h3 className={s.title}>{b.label}</h3>
         </div>
+        {foto ? (
+          <div className={s.foto}>
+            <Image
+              src={foto.src}
+              alt={foto.alt}
+              fill
+              sizes="180px"
+              className="object-cover"
+              style={{ objectPosition: foto.pos ?? "50% 50%" }}
+            />
+          </div>
+        ) : null}
+        <div className={s.stamp} aria-hidden="true">
+          <span>Sitalo</span>
+          <strong>{b.code}</strong>
+          <span>Hamburg</span>
+        </div>
       </div>
 
-      <p className={s.leser}>
-        <span className="font-semibold">Gelesen von</span> {b.leser.join(" · ")}
-      </p>
+      <dl className={s.fields}>
+        <div>
+          <dt>Ladehafen</dt>
+          <dd>Hamburg</dd>
+        </div>
+        <div>
+          <dt>Positionen</dt>
+          <dd>{b.positionen.length}, nach Wichtigkeit</dd>
+        </div>
+        <div className={s.fieldWide}>
+          <dt>Gelesen von</dt>
+          <dd>{b.leser.join(" · ")}</dd>
+        </div>
+      </dl>
 
-      {/* Die drei wichtigsten Positionen als Kacheln, der Rest auf Wunsch
-          im selben Raster direkt dahinter; der Umschalter steht immer unter
-          der letzten sichtbaren Kachel. */}
-      <ol id={listeId} className={s.kacheln}>
-        {b.positionen.slice(0, alle ? undefined : 3).map((pos, i) => (
-          <li key={pos.ladung} className={s.kachel} style={{ "--i": i } as React.CSSProperties}>
+      <div className={s.colhead} aria-hidden="true">
+        <span>Pos.</span>
+        <span>Ladung · Wo auf der Seite</span>
+        <span>Warum</span>
+      </div>
+      <ol className={s.rows}>
+        {b.positionen.map((pos, i) => (
+          <li key={pos.ladung} className={s.row} style={{ "--i": i } as React.CSSProperties}>
             <span className={s.pos} aria-hidden="true">
-              {i + 1}
+              {String(i + 1).padStart(2, "0")}
             </span>
-            <p className={s.ladung}>{pos.ladung}</p>
-            <p className={s.stau}>
-              <span className="sr-only">Wo auf der Seite: </span>
-              {pos.stauplatz}
-            </p>
+            <div className="min-w-0">
+              <p className={s.ladung}>{pos.ladung}</p>
+              <p className={s.stau}>
+                <span className="sr-only">Wo auf der Seite: </span>
+                {pos.stauplatz}
+              </p>
+            </div>
             <p className={s.vermerk}>
               <span className="sr-only">Warum: </span>
               {pos.vermerk}
@@ -213,19 +252,13 @@ function Frachtpapier({
         ))}
       </ol>
       {b.positionen.length > 3 ? (
-        <button
-          ref={knopf}
-          type="button"
-          className={s.mehrKnopf}
-          aria-expanded={alle}
-          aria-controls={listeId}
-          onClick={umschalten}
-        >
-          <span className={s.mehrText}>{alle ? "Weniger anzeigen" : `Alle ${b.positionen.length} Positionen`}</span>
-          <span aria-hidden="true" className={`${s.chev} ${alle ? s.chevAuf : ""}`}>
-            ›
-          </span>
-        </button>
+        <p className={s.mehrMobil}>
+          {b.positionen.length - 3} weitere Positionen stehen auf{" "}
+          <Link href="/branchen" className="underline decoration-[var(--gold)] underline-offset-4">
+            der Seite Branchen
+          </Link>
+          .
+        </p>
       ) : null}
 
       <div className={s.foot}>
@@ -245,6 +278,7 @@ function Frachtpapier({
         <div className={s.cta}>
           <Link href={anfrageHref(b, pakete)} className="btn-signal">
             Anfrage mit dieser Ladeliste
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
           <p className={s.ctaNote}>Branche, Paket und Liste stehen dann schon im Formular.</p>
         </div>

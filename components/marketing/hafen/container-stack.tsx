@@ -29,6 +29,18 @@ function stackDelay(i: number) {
   return BOXES[i].size === "40" ? 560 + i * 170 : (i - 2) * 120;
 }
 
+/** Am Handy nur der erste Satz, der Rest ab 640 px. */
+function ErsterSatz({ text }: { text: string }) {
+  const ende = text.indexOf(". ");
+  if (ende === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, ende + 1)}
+      <span className="hidden sm:inline"> {text.slice(ende + 2)}</span>
+    </>
+  );
+}
+
 export function ContainerStack() {
   return (
     <StapelMotor delays={BOXES.map((_, i) => stackDelay(i))}>
@@ -38,7 +50,7 @@ export function ContainerStack() {
           return (
             <article
               key={b.title}
-              className={`box box-${b.tone} ${big ? "col-span-2 lg:col-span-6" : "col-span-2 sm:col-span-1 lg:col-span-3"}`}
+              className={`box box-${b.tone} ${big ? "col-span-2 lg:col-span-6" : "box-klein col-span-1 lg:col-span-3"}`}
               style={{ "--z": BOXES.length - i } as CSSProperties}
             >
               {/* Spreader mit Kopfstück und Hubseilen, darunter die
@@ -65,15 +77,21 @@ export function ContainerStack() {
                 <span aria-hidden="true">{b.size} ft</span>
               </p>
               <h3
-                className={`pt-6 leading-[1.08] tracking-[-0.022em] sm:pt-10 lg:pt-14 ${
-                  big ? "text-[1.75rem] sm:text-[2.1rem]" : "text-[1.4rem] sm:text-[1.6rem]"
+                className={`pt-4 leading-[1.08] tracking-[-0.022em] sm:pt-10 lg:pt-14 ${
+                  big ? "text-[1.6rem] sm:text-[2.1rem]" : "text-[1.15rem] sm:text-[1.6rem]"
                 }`}
               >
                 <Link href={b.href} className="box-link">
                   {b.title}
                 </Link>
               </h3>
-              <p className={`mt-2.5 max-w-[32em] leading-relaxed ${big ? "text-[16px]" : "text-[15px]"}`}>{b.text}</p>
+              {/* Am Handy stehen die 20-Fuß-Container zu zweit nebeneinander,
+                  dort nur mit Paket und Name; den Satz gibt es ab 640 px. */}
+              <p
+                className={`mt-2.5 max-w-[32em] leading-relaxed ${big ? "text-[15.5px] sm:text-[16px]" : "hidden text-[15px] sm:block"}`}
+              >
+                {big ? <ErsterSatz text={b.text} /> : b.text}
+              </p>
             </article>
           );
         })}

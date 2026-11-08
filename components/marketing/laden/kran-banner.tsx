@@ -1,62 +1,51 @@
-import Link from "next/link";
-
-import { MehrLink } from "@/components/marketing/apple/mehr-link";
 import { Containerbruecke } from "@/components/marketing/hafen/containerbruecke";
 import { AUFTAKT_SCRIPT, PEGEL_QUELLE } from "@/components/marketing/hafen/hafen-hero";
 import heroStil from "@/components/marketing/hafen/hero.module.css";
 import { HeroBuehne } from "@/components/marketing/hafen/hero-buehne";
 import { pegelHub, pegelStand, pegelStPauli, pegelText } from "@/components/marketing/hafen/pegel";
-import { cn } from "@/lib/utils";
-
-import s from "./laden.module.css";
+import s from "@/components/marketing/hafen/start.module.css";
 
 /**
- * Große Banner-Karte direkt unter dem Kopf (erstes großes Bild): die Containerbrücke mit
- * Himmel nach Tageszeit (HeroBuehne, Zeitleiste und Auftakt wie bisher
- * im Kopf der Seite), volle Inhaltsbreite. Text oben links: Eyebrow,
- * kurzer Titel, zwei Aktionen. Kein gestreckter Karten-Link: Pille und
- * Link sind eigene Ziele. Unten rechts der Pegel St. Pauli live.
+ * Der Kran direkt unter dem Kopf: randlos über die volle Breite, Himmel
+ * nach dem Sonnenstand über Hamburg (HeroBuehne, hero-licht.ts), unten
+ * eine gezeichnete Kaikante. Die Zeichnung bleibt beim Scrollen am
+ * Rechner höchstens 24 px zurück (data-tiefe). Darunter die
+ * Bildunterschrift in Mono mit dem Pegel St. Pauli live (alle zehn
+ * Minuten). Die Container tragen ihre Nummern ab „SITALO 000599“.
+ *
+ * Die Zeichnung ist nicht das LCP-Element und lädt ohne Priorität;
+ * sie ist reines Inline-SVG.
  */
 export async function KranBanner() {
   const pegel = await pegelStPauli();
   const hub = pegelHub(pegel);
   return (
-    <section className={cn("inhalt", s.bannerAbschnitt)} aria-labelledby="banner-titel">
-      <article className={cn(s.karte, s.banner)}>
-        <HeroBuehne className={cn(heroStil.hero, s.buehne)}>
-          {/* Wartezustand des Auftakts vor dem ersten Bild; braucht die Bühne als Elternteil. */}
-          <script dangerouslySetInnerHTML={{ __html: AUFTAKT_SCRIPT }} />
-          <div className={heroStil.licht} aria-hidden="true">
-            <i className={heroStil.lichtMorgen} />
-            <i className={heroStil.lichtAbend} />
-            <i className={heroStil.lichtNacht} />
-          </div>
-          <div className={s.buehneBild}>
-            <Containerbruecke hub={hub} />
-          </div>
-        </HeroBuehne>
-        <div className={cn(s.text, s.bannerText)}>
-          <p className={s.eyebrow}>So arbeiten wir</p>
-          <h2 id="banner-titel" className={s.titelBanner}>
-            Test-Link vor dem Start.
-          </h2>
-          <p className={s.zeileBanner}>Erst ansehen, dann freigeben.</p>
-          <div className={s.bannerAktionen}>
-            <Link href="/anfrage" className="btn-signal">
-              Anfrage schreiben
-            </Link>
-            <MehrLink href="/website-erstellen-lassen" frei>
-              Preise und Ablauf
-            </MehrLink>
-          </div>
+    <figure className={s.kran}>
+      <HeroBuehne className={`${heroStil.hero} ${s.kranBuehne}`}>
+        {/* Wartezustand des Auftakts vor dem ersten Bild; braucht die Bühne als Elternteil. */}
+        <script dangerouslySetInnerHTML={{ __html: AUFTAKT_SCRIPT }} />
+        <div className={`${heroStil.licht} ${s.kranLicht}`} aria-hidden="true">
+          <i className={heroStil.lichtMorgen} />
+          <i className={heroStil.lichtAbend} />
+          <i className={heroStil.lichtNacht} />
         </div>
+        <div className={s.kranBild} data-tiefe="">
+          <Containerbruecke hub={hub} />
+        </div>
+        <div className={s.kaikante} aria-hidden="true" />
+      </HeroBuehne>
+      <figcaption className={`inhalt ${s.kranUnterschrift}`}>
+        <span>
+          Blick <span className="hidden sm:inline">von Steinwerder </span>über die Elbe, frei gezeichnet.
+        </span>
         {pegel ? (
-          <p className={s.unterschrift} title={PEGEL_QUELLE}>
+          <span title={PEGEL_QUELLE}>
             <span className={s.pegelPunkt} aria-hidden="true" />
-            Pegel St. Pauli: {pegelText(pegel)}, Stand {pegelStand(pegel)} Uhr
-          </p>
+            Pegel St.&nbsp;Pauli: {pegelText(pegel)}
+            <span className="hidden sm:inline">, Stand {pegelStand(pegel)}&nbsp;Uhr</span>
+          </span>
         ) : null}
-      </article>
-    </section>
+      </figcaption>
+    </figure>
   );
 }

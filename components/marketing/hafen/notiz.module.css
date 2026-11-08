@@ -1,0 +1,77 @@
+/* Notiz aus dem Büro (notiz.tsx): Papier mit Haarlinien im Abstand der
+   Zeilenhöhe, ein roter Rand links wie im Schulheft, nur hier in Orange
+   und sehr fein. Keine Karte, kein Schatten. */
+.abschnitt {
+  padding-block: 36px 44px;
+}
+@media (min-width: 1024px) {
+  .abschnitt {
+    padding-block: 96px 104px;
+  }
+}
+.raster {
+  display: grid;
+}
+@media (min-width: 1024px) {
+  .raster {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+.blatt {
+  --zeile: 2.25rem;
+  position: relative;
+  padding: 0.6rem 0 0.5rem 1.25rem;
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 calc(var(--zeile) - 1px),
+    rgb(27 29 30 / 0.1) calc(var(--zeile) - 1px) var(--zeile)
+  );
+  background-position: 0 0.35rem;
+}
+.blatt::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 1px;
+  background: rgb(244 91 30 / 0.55);
+}
+@media (min-width: 1024px) {
+  .blatt {
+    --zeile: 2.75rem;
+    grid-column: 2 / span 9;
+    padding-left: 2.5rem;
+  }
+}
+.kopf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.6em;
+  min-height: var(--zeile);
+  align-items: center;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.satz {
+  max-width: 34ch;
+  font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.125rem);
+  line-height: var(--zeile);
+  font-weight: 500;
+  font-stretch: 104%;
+  letter-spacing: -0.018em;
+  color: var(--foreground);
+  text-wrap: pretty;
+}
+.signatur {
+  margin-top: 0.75rem;
+  width: 160px;
+}
+@media (min-width: 1024px) {
+  .signatur {
+    width: 190px;
+  }
+}

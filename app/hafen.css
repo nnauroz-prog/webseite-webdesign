@@ -68,6 +68,18 @@
   /* Absetzen: weich abbremsen. */
   transition: transform 0.42s cubic-bezier(0.3, 0.7, 0.4, 1);
 }
+@media (max-width: 639px) {
+  .box {
+    min-height: 0;
+    padding: 1.6rem 1.15rem 1.35rem;
+  }
+  .box-klein {
+    min-height: 8.5rem;
+  }
+  .box-klein .box-code span:last-child {
+    display: none;
+  }
+}
 .box::after {
   content: "";
   position: absolute;
@@ -938,6 +950,17 @@ a.board-row:focus-visible .board-arrow circle {
   .board-schmal .board-linie {
     grid-row: auto;
   }
+  /* Am Handy steht die Tafel wie eine echte Anzeige: Linie, Name,
+     Preis. Was dabei ist, steht auf /pakete. */
+  .board-desc {
+    display: none;
+  }
+  .board-row {
+    padding-block: 0.8rem;
+  }
+  .board-linie {
+    grid-row: auto;
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -1104,7 +1127,7 @@ a.board-row:focus-visible .board-arrow circle {
 /* ==================================================================
    Ablauf-Szene (app/page.tsx, Ablauf): die eine klebende Scroll-Szene
    der Seite. Am Rechner ab 1024 × 820 bleibt die Bühne unter der
-   Kopfzeile stehen, während 900 px Scrollweg die Fähre die Halte
+   Kopfzeile stehen, während 600 px Scrollweg die Fähre die Halte
    abfahren lassen (Fortschritt: faehrlinie.tsx). Nur mit Script
    (html.js-reveal), damit ohne Script kein leerer Scrollweg entsteht.
    Mobil, auf niedrigen Fenstern und bei reduzierter Bewegung ein
@@ -1112,8 +1135,8 @@ a.board-row:focus-visible .board-arrow circle {
    ================================================================== */
 @media (min-width: 1024px) and (min-height: 820px) and (max-height: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   html.js-reveal .ablauf-spur {
-    height: calc(100svh + 900px);
-    contain-intrinsic-block-size: auto calc(100svh + 900px);
+    height: calc(100svh + 600px);
+    contain-intrinsic-block-size: auto calc(100svh + 600px);
     padding-block: 0;
   }
   html.js-reveal .ablauf-buehne {
@@ -1250,8 +1273,9 @@ html.js-reveal [data-reveal="rise"][data-reveal-state="in"]:has(.rv-w) {
   animation: none;
 }
 html.js-reveal [data-reveal="rise"][data-reveal-state="in"] .rv-w > span {
-  animation: rv-wort var(--t-lang) var(--ease-aus) both;
-  animation-delay: calc(var(--reveal-delay, 0ms) + min(var(--w, 0) * 28ms, 280ms));
+  /* 40 ms Staffel je Wort, höchstens 600 ms bis das letzte Wort steht. */
+  animation: rv-wort 440ms var(--ease-aus) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + min(var(--w, 0) * 40ms, 160ms));
 }
 @keyframes rv-wort {
   from {
@@ -1346,53 +1370,6 @@ html.js-reveal [data-reveal="stagger"][data-reveal-state="in"] > * {
   }
 }
 
-/* Startseite (main.buehne): ruhigere Einblendung. Überschriften steigen
-   als ganze Zeile statt Wort für Wort aus Masken, Absätze kommen leiser.
-   Unterseiten behalten das Wort-Steigen. */
-@media (prefers-reduced-motion: no-preference) {
-  html.js-reveal .buehne [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within) .rv-w > span {
-    transform: none;
-  }
-  html.js-reveal .buehne [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within),
-  html.js-reveal .buehne [data-reveal="rise"]:has(.rv-w):not([data-reveal-state]):not(:focus-within) {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"],
-  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"]:has(.rv-w) {
-    animation: rv-zeile var(--t-lang) var(--ease-aus) var(--reveal-delay, 0ms) both;
-  }
-  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"] .rv-w > span {
-    animation: none;
-  }
-  html.js-reveal .buehne [data-reveal="fade"]:not([data-reveal-state]):not(:focus-within) {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  html.js-reveal .buehne [data-reveal="fade"][data-reveal-state="in"] {
-    animation: rv-fade-ruhig var(--t-mittel) var(--ease-aus) calc(var(--reveal-delay, 0ms) + 90ms) both;
-  }
-}
-@keyframes rv-zeile {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes rv-fade-ruhig {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
 
 /* Kontakt-Finale: die Telefonnummer (app/page.tsx). Ziffern steigen
    einzeln aus ihren Masken (32 ms Staffel, 90 ms Pause zwischen Vorwahl
