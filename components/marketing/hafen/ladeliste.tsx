@@ -11,8 +11,8 @@ import type { PaketeKurz } from "./paket-kurz";
  * Ladeliste je Branche: oben die Auswahl als Pillen (Tabs), darunter
  * eine große helle Karte: die drei wichtigsten Positionen als weiße
  * Kacheln (Ladung, Stauplatz, Vermerk), die übrigen in derselben Gestalt
- * hinter „Alle … Positionen ›“ / „Weniger anzeigen“ (details, ohne JS
- * bedienbar). Unten das empfohlene Paket
+ * hinter „Alle … Positionen ›“ / „Weniger anzeigen“ (Knopf unter der
+ * letzten Kachel, im selben Raster). Unten das empfohlene Paket
  * mit Preis aus lib/pakete-data.ts (auf dem Server aufgelöst, Prop
  * `pakete`, siehe paket-kurz.ts) und der Knopf ins Anfrageformular, das
  * Branche, Paket und Liste schon ausgefüllt mitbringt.
@@ -20,7 +20,7 @@ import type { PaketeKurz } from "./paket-kurz";
  * Nur die gewählte Liste steht im Markup (die übrigen Panels sind leer,
  * damit das DOM klein bleibt und die Seite auf dem Handy schneller
  * hydriert); Server und Browser starten mit derselben. Beim Wechsel laufen die
- * Positionen kurz gestaffelt ein und der Stempel setzt neu auf; bei
+ * Positionen kurz gestaffelt ein; bei
  * reduzierter Bewegung wechselt die Liste ohne Übergang.
  *
  * Tastatur: Pfeiltasten wechseln die Branche, Pos1/Ende springen an
@@ -161,6 +161,16 @@ function Frachtpapier({
 }) {
   const p = pakete[b.paket];
   const alt = b.alternative ? pakete[b.alternative.paket] : null;
+  const [alle, setAlle] = useState(false);
+  const knopf = useRef<HTMLButtonElement>(null);
+  const listeId = `${id}-liste`;
+
+  const umschalten = () => {
+    const zu = alle;
+    setAlle(!alle);
+    // Beim Zuklappen rückt der Knopf nach oben; im Bild halten.
+    if (zu) requestAnimationFrame(() => knopf.current?.scrollIntoView({ block: "nearest" }));
+  };
 
   return (
     <div
@@ -175,20 +185,17 @@ function Frachtpapier({
           <p className={s.kicker}>Ladeliste · Was auf Ihre Seite gehört</p>
           <h3 className={s.title}>{b.label}</h3>
         </div>
-        <div className={s.stamp} aria-hidden="true">
-          <span>Sitalo</span>
-          <strong>{b.code}</strong>
-          <span>Hamburg</span>
-        </div>
       </div>
 
       <p className={s.leser}>
         <span className="font-semibold">Gelesen von</span> {b.leser.join(" · ")}
       </p>
 
-      {/* Die drei wichtigsten Positionen als Kacheln, der Rest auf Wunsch. */}
-      <ol className={s.kacheln}>
-        {b.positionen.slice(0, 3).map((pos, i) => (
+      {/* Die drei wichtigsten Positionen als Kacheln, der Rest auf Wunsch
+          im selben Raster direkt dahinter; der Umschalter steht immer unter
+          der letzten sichtbaren Kachel. */}
+      <ol id={listeId} className={s.kacheln}>
+        {b.positionen.slice(0, alle ? undefined : 3).map((pos, i) => (
           <li key={pos.ladung} className={s.kachel} style={{ "--i": i } as React.CSSProperties}>
             <span className={s.pos} aria-hidden="true">
               {i + 1}
@@ -206,35 +213,19 @@ function Frachtpapier({
         ))}
       </ol>
       {b.positionen.length > 3 ? (
-        <details className={s.mehr}>
-          <summary className={s.mehrKnopf}>
-            <span className={s.mehrZu}>Alle {b.positionen.length} Positionen</span>
-            <span className={s.mehrAuf}>Weniger anzeigen</span>
-            <span aria-hidden="true" className={s.chev}>
-              ›
-            </span>
-          </summary>
-          {/* Dieselbe Gestalt wie die ersten drei: weiße Kacheln mit
-              orangem Kreis, keine zweite Bauart. */}
-          <ol start={4} className={`${s.kacheln} ${s.kachelnMehr}`}>
-            {b.positionen.slice(3).map((pos, i) => (
-              <li key={pos.ladung} className={s.kachel}>
-                <span className={s.pos} aria-hidden="true">
-                  {i + 4}
-                </span>
-                <p className={s.ladung}>{pos.ladung}</p>
-                <p className={s.stau}>
-                  <span className="sr-only">Wo auf der Seite: </span>
-                  {pos.stauplatz}
-                </p>
-                <p className={s.vermerk}>
-                  <span className="sr-only">Warum: </span>
-                  {pos.vermerk}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </details>
+        <button
+          ref={knopf}
+          type="button"
+          className={s.mehrKnopf}
+          aria-expanded={alle}
+          aria-controls={listeId}
+          onClick={umschalten}
+        >
+          <span className={s.mehrText}>{alle ? "Weniger anzeigen" : `Alle ${b.positionen.length} Positionen`}</span>
+          <span aria-hidden="true" className={`${s.chev} ${alle ? s.chevAuf : ""}`}>
+            ›
+          </span>
+        </button>
       ) : null}
 
       <div className={s.foot}>

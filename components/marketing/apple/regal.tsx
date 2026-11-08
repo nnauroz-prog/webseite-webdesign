@@ -38,7 +38,7 @@ export function Regal({
   style?: React.CSSProperties;
   /** Fläche des Abschnitts: Karten sind weiß mit Schatten. */
   flaeche?: "hell" | "weiss";
-  /** Wenige Karten (bis vier): ab 1068 px ein ruhiges Raster ohne Pfeile
+  /** Wenige Karten (bis vier): ab 1068 px ein ruhiges 2-×-2-Raster ohne Pfeile
    *  statt einer Spur, die nur ein Stück weit blättert. */
   raster?: boolean;
 }) {

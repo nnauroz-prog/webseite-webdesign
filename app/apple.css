@@ -100,9 +100,14 @@
     letter-spacing: -0.018em;
     font-weight: 600;
     color: var(--foreground);
-    text-wrap: balance;
+    text-wrap: pretty;
   }
+  /* Der graue Teil ist ein Block in der Zeile: Passt er nicht mehr
+     hinter den schwarzen, beginnt er geschlossen in der nächsten Zeile
+     („Häufige Fragen.“ / „Was vor dem ersten Anruf …“), statt mit einem
+     einzelnen grauen Wort am Ende der schwarzen Zeile. */
   .zweiton > .grau {
+    display: inline-block;
     color: var(--muted-foreground);
   }
   /* Auf Schwarz: Nebentöne heller. */
@@ -774,6 +779,10 @@
   }
   .regal-spur {
     --regal-rand: max(var(--rinne), calc((100% - var(--inhalt-max)) / 2 + var(--rinne)));
+    /* Dasselbe in Container-Einheiten, für Kartenbreiten (dort wäre
+       100 % die Breite des li, nicht die der Spur). */
+    --regal-rand-cq: max(var(--rinne), calc((100cqw - var(--inhalt-max)) / 2 + var(--rinne)));
+    container-type: inline-size;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
@@ -800,6 +809,11 @@
     display: flex;
     flex: 0 0 auto;
     scroll-snap-align: start;
+  }
+  /* Die letzte Karte rastet bündig an der rechten Inhaltskante ein
+     (dort endet die Spur dank gleichem Innenabstand rechts). */
+  .regal-spur > ul > li:last-child:not(:first-child) {
+    scroll-snap-align: end;
   }
   /* Alle Karten einer Spur sind so hoch wie die höchste (li ist flex);
      keine feste Mindesthöhe, sonst steht unter kurzen Texten ein Loch. */
@@ -852,6 +866,16 @@
       width: 440px;
     }
   }
+  /* Ab 980 px fielen bei fester Breite (320 + 20) drei Karten fast genau
+     bis an den Fensterrand (bei 1024 px: Ende bei 1022), und von der
+     vierten wäre nichts zu sehen. Darum hier relativ zur Spur: vom
+     linken Rand bis zum Fensterrand passen 3,4 Karten, die vierte ist
+     also immer gut sichtbar angeschnitten. Ab etwa 1400 px wieder 320. */
+  @media (min-width: 980px) {
+    .regal-karte:not(.regal-karte-breit) {
+      width: clamp(260px, calc((100cqw - var(--regal-rand-cq)) / 3.4 - 20px), 320px);
+    }
+  }
   @media (min-width: 768px) {
     .regal-pfeile {
       display: flex;
@@ -862,8 +886,9 @@
       padding-inline: var(--rinne);
     }
   }
-  /* Raster statt Spur (Regal raster): vier Karten bündig zur Inhalts-
-     kante, ohne Pfeile. */
+  /* Raster statt Spur (Regal raster): vier Karten als 2 × 2 bündig zur
+     Inhaltskante, ohne Pfeile. Vier Spalten wären nur 230 px breit, und
+     die Titel liefen über vier Zeilen. */
   @media (min-width: 1068px) {
     .regal-raster .regal-spur {
       overflow: visible;
@@ -873,8 +898,7 @@
       display: grid;
       width: auto;
       max-width: var(--inhalt-max);
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(0, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       margin-inline: auto;
       padding-inline: var(--rinne);
     }
@@ -1198,6 +1222,36 @@
   .bento-kopf > .bento-text {
     max-width: 30ch;
   }
+  .bento-link {
+    padding-top: 8px;
+  }
+  /* Ab 640 px stehen Kacheln nebeneinander. Jede Kachel nimmt zwei
+     Zeilen des Rasters (Kopf, Motiv) und übernimmt sie per Subgrid. So
+     sind die Köpfe einer Reihe gleich hoch, der Link steht am Fuß des
+     Kopfs und die Motive sitzen am Kachelboden: Link und Motiv liegen in
+     Nachbarkacheln auf einer Linie. Die Kachelhöhe kommt aus Mindest-
+     höhen der Motiv-Zeile (nicht der Kachel, sonst verteilte das Raster
+     die Zusatzhöhe auch in die Kopf-Zeile). */
+  @media (min-width: 640px) {
+    .bento-12 > .bento-kachel {
+      grid-row: span 2;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) {
+      display: grid;
+      grid-template-rows: subgrid;
+      align-items: stretch;
+      row-gap: 0;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-kopf {
+      min-width: 0;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) .bento-link {
+      margin-top: auto;
+    }
+    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-motiv {
+      align-items: flex-end;
+    }
+  }
   .bento-eyebrow {
     font-size: 12px;
     line-height: 1.33;
@@ -1206,14 +1260,14 @@
   .bento-kachel.karte-schwarz .t-kachel {
     color: #f5f5f7;
   }
-  /* Zweispaltig von 640 bis 1067 px: Website und Selbst pflegen über
+  /* Zweispaltig von 640 bis 1067 px: Website (breit) und Selbst pflegen über
      die volle Breite, dazwischen zwei Paare. Anfragen und Google tauschen
      die Plätze, damit Schwarz und Hell schachbrettartig wechseln. */
   @media (min-width: 640px) and (max-width: 1067px) {
     .bento-12 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .bento-12 > :is(.bento-s7, .bento-s12) {
+    .bento-12 > :is(.bento-breit, .bento-s7, .bento-s12) {
       grid-column: span 2;
     }
     .bento-12 > :nth-child(4) {
@@ -1222,11 +1276,8 @@
     .bento-12 > :nth-child(n + 6) {
       order: 2;
     }
-    .bento-12 > :not(.bento-s7, .bento-s12) {
-      min-height: 400px;
-    }
-    .bento-12 > :not(.bento-s7, .bento-s12) > .bento-motiv {
-      flex: 1;
+    .bento-12 > :not(.bento-breit, .bento-s7, .bento-s12) > .bento-motiv {
+      min-height: 200px;
     }
   }
   @media (min-width: 834px) {
@@ -1241,11 +1292,11 @@
     .bento-12 {
       grid-template-columns: repeat(12, minmax(0, 1fr));
     }
-    .bento-kachel {
-      min-height: 440px;
+    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-motiv {
+      min-height: 210px;
     }
-    .bento-kachel.bento-gross {
-      min-height: 580px;
+    .bento-12 > .bento-gross > .bento-motiv {
+      min-height: 330px;
     }
     .bento-gross > .bento-motiv {
       align-items: flex-end;
@@ -1255,6 +1306,9 @@
     }
     .bento-12 > .bento-s5 {
       grid-column: span 5;
+    }
+    .bento-12 > .bento-s6 {
+      grid-column: span 6;
     }
     .bento-12 > .bento-s7 {
       grid-column: span 7;

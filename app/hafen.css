@@ -462,13 +462,18 @@
 .route {
   --p: 1;
   --v: 0;
+  /* Spaltenabstand der Halte (md:gap-(--halt-gap) in faehrlinie.tsx). */
+  --halt-gap: 2rem;
+  /* Die Linie läuft vom Rand bis zur Mitte des Endhalt-Punkts (20 px
+     Kreis am Anfang der vierten Spalte), nicht darüber hinaus. */
+  --route-ende: calc(25% - 0.75 * var(--halt-gap) - 10px);
   position: relative;
   padding-top: 4.75rem;
 }
 .route-line {
   position: absolute;
   left: 0;
-  right: 0;
+  right: var(--route-ende);
   top: 4.75rem;
   height: 4px;
   border-radius: 2px;
@@ -477,14 +482,17 @@
 .route-line i {
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   background: var(--gold);
   transform: scaleX(var(--p));
   transform-origin: left center;
 }
-/* Fahrrinne über die volle Breite; der Schlitten ist 84 px (Fähre)
-   schmaler und wird um --p seiner eigenen Breite verschoben. So
-   bewegt sich nur transform, und ohne Script steht die Fähre am
-   Endhalt. overflow: hidden schneidet die Heckwelle am Anleger ab. */
+/* Fahrrinne über die volle Breite (overflow: hidden schneidet die
+   Heckwelle am linken Rand ab). Die Fähre (84 px) steht mit ihrer Mitte
+   auf der Spitze der orangen Linie, also bei --p · Linienlänge, und legt
+   am Ende mittig am Endhalt an; am Start liegt sie bündig am Rand.
+   Gerechnet in Container-Einheiten, damit nur transform läuft und die
+   Fähre ohne Script schon am Endhalt liegt. */
 .route-ferry {
   position: absolute;
   top: 2.35rem;
@@ -493,12 +501,13 @@
   height: 52px;
   overflow: hidden;
   pointer-events: none;
+  container-type: inline-size;
 }
 .route-slide {
   position: relative;
-  width: calc(100% - 84px);
+  width: 84px;
   height: 100%;
-  transform: translateX(calc(var(--p) * 100%));
+  transform: translateX(max(0px, var(--p) * (75cqw + 0.75 * var(--halt-gap) + 10px) - 42px));
 }
 .route-boat {
   position: relative;

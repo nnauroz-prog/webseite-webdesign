@@ -8,8 +8,10 @@ import { MehrLink } from "./mehr-link";
  * nimmt beide Spalten. Abwechselnd hell (#f5f5f7) und schwarz.
  *
  * Mit zwoelf (Klasse .bento-12) ab 1068 px ein 12er-Raster; die
- * Kachel nimmt dann `spalten` Spalten (4, 5, 7 oder 12). quer legt eine
+ * Kachel nimmt dann `spalten` Spalten (4, 5, 6, 7 oder 12). quer legt eine
  * 12er-Kachel ab 1068 px ins Querformat (Text links, Motiv rechts).
+ * Nebeneinander stehende Kacheln teilen sich per Subgrid die Höhe von
+ * Kopf und Motiv: „Mehr erfahren“ und Motive liegen auf einer Linie.
  *
  * <BentoRaster zwoelf>
  *   <BentoKachel ton="hell" spalten={7} gross eyebrow="…" titel="…" text="…" href="/…" motiv={…} />
@@ -52,7 +54,7 @@ export function BentoKachel({
   motiv?: React.ReactNode;
   span?: "breit";
   /** Spalten im 12er-Raster ab 1068 px. */
-  spalten?: 4 | 5 | 7 | 12;
+  spalten?: 4 | 5 | 6 | 7 | 12;
   /** Große Kachel (höher). */
   gross?: boolean;
   /** Querformat ab 1068 px (nur mit spalten={12}). */
@@ -80,7 +82,7 @@ export function BentoKachel({
         <Ueberschrift className={cn("t-kachel", eyebrow && "mt-2")}>{titel}</Ueberschrift>
         {text ? <p className="bento-text text-muted-foreground mt-3 text-[17px] leading-[1.47]">{text}</p> : null}
         {href ? (
-          <div className="mt-2">
+          <div className="bento-link">
             <MehrLink href={href} kontext={kontext}>
               {linkText}
             </MehrLink>

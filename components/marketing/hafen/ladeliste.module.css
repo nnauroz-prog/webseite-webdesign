@@ -167,36 +167,6 @@
   }
 }
 
-/* Branchen-Code als kleine Plakette (echter Code: Tafel-Schrift). Erst
-   ab 640 px; am Handy nähme sie der Kopfzeile den Platz. */
-.stamp {
-  display: none;
-}
-@media (min-width: 640px) {
-  .stamp {
-    display: inline-flex;
-  }
-}
-.stamp {
-  flex: none;
-  align-items: center;
-  height: 28px;
-  margin-top: 2px;
-  padding: 0 12px;
-  border-radius: var(--radius-pille);
-  background: #fff;
-  color: var(--gold-ink);
-}
-.stamp span {
-  display: none;
-}
-.stamp strong {
-  font-family: var(--font-sf-mono), ui-monospace, monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
 .leser {
   margin-top: 16px;
   font-size: 14px;
@@ -242,35 +212,34 @@
   margin-top: 6px;
 }
 
-/* Übrige Positionen: aufklappbar mit Apple-Link. */
-.mehr {
-  margin-top: 8px;
+/* Bleibt bei sieben Positionen im Dreier-Raster eine allein, nimmt sie
+   die ganze Reihe statt eine Lücke daneben zu lassen. */
+@media (min-width: 834px) {
+  .kachel:last-child:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+  }
 }
+
+/* Übrige Positionen: Apple-Link unter der letzten Kachel. */
 .mehrKnopf {
   display: inline-flex;
   min-height: 44px;
+  margin-top: 8px;
   align-items: center;
   gap: 0.2em;
-  list-style: none;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
+  font: inherit;
   font-size: 17px;
   letter-spacing: -0.022em;
   color: var(--gold-ink);
 }
-.mehrKnopf::-webkit-details-marker {
-  display: none;
-}
 @media (hover: hover) {
-  .mehrKnopf:hover {
+  .mehrKnopf:hover .mehrText {
     text-decoration: underline;
   }
-}
-.mehrAuf,
-.mehr[open] .mehrZu {
-  display: none;
-}
-.mehr[open] .mehrAuf {
-  display: inline;
 }
 .mehrKnopf:focus-visible {
   outline: 2px solid var(--gold);
@@ -281,15 +250,13 @@
 .chev {
   display: inline-block;
   line-height: 1;
+  text-decoration: none;
   transform: rotate(90deg);
   transform-origin: 50% 50%;
   transition: transform 200ms var(--ease-apple);
 }
-.mehr[open] .chev {
+.chevAuf {
   transform: rotate(-90deg);
-}
-.kachelnMehr {
-  margin-top: 4px;
 }
 
 .pos {
@@ -384,7 +351,7 @@
 }
 
 /* ---------------------------------------------------------------
-   Wechsel: Positionen laufen gestaffelt ein, der Stempel setzt auf.
+   Wechsel: Positionen laufen gestaffelt ein.
    Nur nach einem Wechsel (.animate), nie beim Laden.
    --------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
@@ -395,9 +362,6 @@
   .animate .kachel {
     animation: row-in 0.46s cubic-bezier(0.2, 0.8, 0.25, 1) both;
     animation-delay: calc(60ms + var(--i, 0) * 42ms);
-  }
-  .animate .stamp {
-    animation: stamp-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) 0.18s both;
   }
   .animate .foot {
     animation: paper-fade 0.4s ease 0.3s both;
@@ -412,14 +376,5 @@
   from {
     opacity: 0;
     transform: translateY(8px);
-  }
-}
-@keyframes stamp-in {
-  from {
-    opacity: 0;
-    transform: rotate(-11deg) scale(1.35);
-  }
-  60% {
-    opacity: 0.95;
   }
 }

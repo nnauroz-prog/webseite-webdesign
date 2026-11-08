@@ -205,8 +205,10 @@ function spaeter(h: number, hLg: number) {
 
 /* ------------------------------------------------------------------
  * 2. Leistungen als Bento-Kacheln (Texte: lib/leistungen-kacheln.ts).
- * Desktop: [Website · 7] [Hosting · 5] / [Texte · 4] [Anfragen · 4]
- * [Google · 4] / [Selbst pflegen · 12, Querformat].
+ * Desktop: [Website · 6] [Hosting · 6] / [Texte · 4] [Anfragen · 4]
+ * [Google · 4] / [Selbst pflegen · 12, Querformat]. Erste Reihe halb und
+ * halb, damit „Hosting und Pflege“ einzeilig bleibt wie sein Nachbar;
+ * zweispaltig (640–1067 px) steht die Website breit über allen.
  * Töne so gewählt, dass Schwarz und Hell in jeder Anordnung wechseln:
  * gestapelt (s h s h s h), zweispaltig (app/apple.css tauscht dort
  * Anfragen und Google) und im 12er-Raster. Die letzte Kachel ist hell,
@@ -214,12 +216,19 @@ function spaeter(h: number, hLg: number) {
  * ---------------------------------------------------------------- */
 const BENTO: Record<
   string,
-  { ton: "hell" | "schwarz"; spalten: 4 | 5 | 7 | 12; gross?: boolean; quer?: boolean; motiv: React.ReactNode }
+  {
+    ton: "hell" | "schwarz";
+    spalten: 4 | 5 | 6 | 7 | 12;
+    breit?: boolean;
+    gross?: boolean;
+    quer?: boolean;
+    motiv: React.ReactNode;
+  }
 > = {
-  "Die Website selbst": { ton: "schwarz", spalten: 7, gross: true, motiv: <BrowserMotiv /> },
+  "Die Website selbst": { ton: "schwarz", spalten: 6, breit: true, gross: true, motiv: <BrowserMotiv /> },
   "Hosting und Pflege": {
     ton: "hell",
-    spalten: 5,
+    spalten: 6,
     gross: true,
     motiv: <ContainerMotiv groesse="l" stapel={["signal", "zink", "gruen"]} />,
   },
@@ -251,6 +260,7 @@ function Leistungen() {
               key={b.title}
               ton={k?.ton ?? "hell"}
               spalten={k?.spalten}
+              span={k?.breit ? "breit" : undefined}
               gross={k?.gross}
               quer={k?.quer}
               eyebrow={b.tag}
@@ -543,7 +553,7 @@ function Journal() {
       flaeche="weiss"
       raster
       className="spaeter"
-      style={spaeter(550, 680)}
+      style={spaeter(550, 910)}
     >
       {JOURNAL_NEU.map((post) => (
         <RegalKarte

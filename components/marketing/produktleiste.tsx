@@ -43,8 +43,10 @@ export function Produktleiste({
 
   // Über schwarzen Flächen wechselt das Glas auf die dunkle Variante, wie
   // Apple es auf dunklen Seiten tut. Zählt jede schwarze Fläche, die
-  // (fast) so breit ist wie das Fenster: Abschnitte, am Handy auch die
-  // schwarzen Kacheln und Karten. Beobachtet wird die erste Pixelzeile
+  // (fast) so breit ist wie das Fenster: Abschnitte, unter 1024 px auch
+  // die schwarzen Kacheln und Karten. Ab 1024 px nicht: Dort stehen
+  // Kacheln mit sichtbarem weißem Rand auf weißer Seite, und die Leiste
+  // soll nicht je Kachelreihe zwischen hell und dunkel springen. Beobachtet wird die erste Pixelzeile
   // UNTER der Leiste: Die Leiste zeigt die Farbe dessen, was direkt unter
   // ihr weitergeht. Ein Abschnitt, der als Sprungziel genau an der
   // Unterkante beginnt, schaltet sie also hell, auch wenn hinter dem Glas
@@ -52,10 +54,15 @@ export function Produktleiste({
   useEffect(() => {
     if (!("IntersectionObserver" in window)) return;
     let io: IntersectionObserver | null = null;
-    const dunkleFlaechen = () =>
-      Array.from(
-        document.querySelectorAll<HTMLElement>("main :is(.flaeche-schwarz, .bg-black, .karte-schwarz, [data-flaeche-dunkel])"),
-      ).filter((el) => el.offsetWidth >= window.innerWidth * 0.85);
+    const dunkleFlaechen = () => {
+      const auswahl =
+        window.innerWidth < 1024
+          ? "main :is(.flaeche-schwarz, .bg-black, .karte-schwarz, [data-flaeche-dunkel])"
+          : "main :is(.flaeche-schwarz, .bg-black, [data-flaeche-dunkel])";
+      return Array.from(document.querySelectorAll<HTMLElement>(auswahl)).filter(
+        (el) => el.offsetWidth >= window.innerWidth * 0.85,
+      );
+    };
     const start = () => {
       io?.disconnect();
       const ziele = dunkleFlaechen();
@@ -148,6 +155,20 @@ export function Produktleiste({
     };
   }, [offen]);
 
+  // Der Seitenname führt wie bei Apple ganz nach oben (scrollY 0), nicht
+  // nur an den Anfang des Ziels: Der Abstand für die klebende Leiste
+  // (scroll-padding-top) ließe sonst einen Streifen der globalen
+  // Navigation stehen. Der Fokus springt trotzdem auf das Ziel.
+  const nachOben = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setOffen(false);
+    if (!titelHref.startsWith("#") || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    window.scrollTo({ top: 0 });
+    const ziel = titelHref.length > 1 ? document.getElementById(titelHref.slice(1)) : null;
+    if (ziel?.hasAttribute("tabindex")) ziel.focus({ preventScroll: true });
+    if (window.location.hash) history.replaceState(null, "", window.location.pathname + window.location.search);
+  };
+
   return (
     <>
       <div ref={waechter} aria-hidden="true" className="-mb-px h-px" />
@@ -161,7 +182,7 @@ export function Produktleiste({
         className="produktleiste print:hidden"
       >
         <div className="produktleiste-innen">
-          <a href={titelHref} className="produktleiste-titel" onClick={() => setOffen(false)}>
+          <a href={titelHref} className="produktleiste-titel" onClick={nachOben}>
             <span className="truncate">{titel}</span>
           </a>
           <div className="produktleiste-rechts">

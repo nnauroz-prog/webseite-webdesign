@@ -83,12 +83,11 @@ export function Faehrlinie() {
     const measure = () => {
       const v = vertical.matches;
       marks = stops.map((s) => (v ? s.offsetTop + 12 - 6 : s.offsetLeft + 10));
+      // Die Linie endet am Endhalt (waagerecht per CSS, --route-ende).
+      length = Math.max(1, marks[marks.length - 1]);
       if (v) {
-        // Senkrecht endet die Linie am Endhalt.
-        length = Math.max(1, marks[marks.length - 1]);
         el.style.setProperty("--line-bottom", `${el.offsetHeight - 6 - length}px`);
       } else {
-        length = el.offsetWidth;
         el.style.removeProperty("--line-bottom");
       }
     };
@@ -224,7 +223,7 @@ export function Faehrlinie() {
           </svg>
         </div>
       </div>
-      <ol className="grid gap-10 md:grid-cols-4 md:gap-8">
+      <ol className="grid gap-10 md:grid-cols-4 md:gap-(--halt-gap)">
         {HALTE.map((h) => (
           <li key={h.title} className="stop">
             <span className="stop-dot" aria-hidden="true">
