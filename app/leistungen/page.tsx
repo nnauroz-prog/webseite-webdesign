@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
-import a from "@/components/marketing/hafen/atelier.module.css";
 import {
   Abschnitt,
+  BildKachel,
+  BildRaster,
   FotoRahmen,
   KontaktKarte,
   SeitenKopf,
@@ -14,6 +15,7 @@ import {
 } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { presetFuer } from "@/lib/muster-presets";
 import { getPaketBySlug } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
@@ -73,10 +75,18 @@ export default function LeistungenPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
+      <Produktleiste
+        titel="Leistungen"
+        links={[
+          { href: "#bauplan", label: "Startseite" },
+          { href: "#verzeichnis", label: "Verzeichnis" },
+          { href: "#kontakt", label: "Kontakt" },
+        ]}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
       <UnterseiteMain>
         <SeitenKopf
-          krumen="Leistungen"
-          eyebrow="Werkstatt · Leistungen"
+          eyebrow="Leistungen"
           titel="Was wir für Ihre Website machen"
           unter="Hier steht, was wir übernehmen und in welchem Paket es steckt. Von der ersten Zeile bis zum Hosting liegt die Arbeit bei uns, und Sie sprechen dabei immer mit uns selbst."
           aktionen={
@@ -98,9 +108,9 @@ export default function LeistungenPage() {
               aspect="21 / 9"
               aspectMobil="16 / 10"
               position="45% 55%"
+              muster
             />
           }
-          unterschrift="Musterseite einer Gebäudereinigung auf der Arbeitsfläche · frei erfunden"
         />
         <Bauplan />
         <Verzeichnis />
@@ -108,9 +118,13 @@ export default function LeistungenPage() {
           titel="Welche Positionen Sie brauchen, klären wir am Telefon."
           zeile="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
           link={{ href: "/pakete", label: "Preise ansehen" }}
+          foto={{
+            src: "/images/atmosphere/gastro-espresso.webp",
+            alt: "Helles Café mit Siebträgermaschine am Tresen und Holztischen am Fenster",
+          }}
         />
       </UnterseiteMain>
-      <MarketingFooter crumb="Leistungen" ohnePreisHinweis />
+      <MarketingFooter crumb="Leistungen" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_LD) }}
@@ -150,7 +164,7 @@ function Marke({ n, className = "" }: { n: number; className?: string }) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[2px] bg-[var(--gold)] font-mono text-[12px] leading-none font-medium text-[#1b1d1e] tabular-nums shadow-[0_0_0_3px_#fafaf8] ${className}`}
+      className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--gold)] text-[12px] leading-none font-bold text-[#1d1d1f] tabular-nums shadow-[0_0_0_3px_#fff] ${className}`}
     >
       {n}
     </span>
@@ -166,11 +180,15 @@ function MusterPraxis() {
   const p = presetFuer("praxis");
   const { accent, tint } = p;
   return (
-    <div className="kante-stark overflow-hidden rounded-b-[6px] bg-[#fafaf8] text-[#1b2333] shadow-[inset_0_0_0_1px_rgb(27_29_30/0.12)] select-none">
-      {/* Seitentitel, wie er im Tab und bei Google steht */}
-      <div className="flex items-center gap-2.5 border-b border-[#1b1d1e]/10 px-3 py-2">
-        <span className="shrink-0 font-mono text-[10.5px] tracking-[0.12em] text-[#565b5d] uppercase">Titel</span>
-        <span className="min-w-0 flex-1 truncate font-mono text-[12px] text-[#1b1d1e]">
+    <div className="overflow-hidden rounded-[18px] bg-white text-[#1b2333] shadow-[0_4px_16px_rgb(0_0_0/0.08)] select-none sm:rounded-[20px]">
+      {/* Browserzeile mit Seitentitel */}
+      <div className="flex items-center gap-2.5 border-b border-black/5 bg-[#f5f5f7] px-3 py-2">
+        <span className="flex gap-1.5" aria-hidden="true">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#d2d2d7]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#d2d2d7]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#d2d2d7]" />
+        </span>
+        <span className="min-w-0 flex-1 truncate rounded-md bg-white px-2.5 py-1 text-[12px] text-[#424245]">
           Hausarzt in Hamburg · {p.defaultName}
         </span>
         <Marke n={1} />
@@ -258,8 +276,8 @@ function Bauplan() {
   return (
     <Abschnitt
       id="bauplan"
-      eyebrow="Bauplan · fünf Stellen"
-      fett="Eine Startseite, beschriftet wie ein Bauplan"
+      fett="Eine Startseite, beschriftet."
+      grau="Fünf Stellen, die zuerst gesucht werden."
       unter="Die Musterseite zeigt fünf Stellen, an denen Kunden auf der Seite eines Betriebs zuerst suchen. Wir achten bei jeder Seite darauf, dass sie da sind und funktionieren."
     >
       <div className="grid gap-5 lg:grid-cols-12 lg:gap-5">
@@ -267,10 +285,12 @@ function Bauplan() {
           <div role="img" aria-label="Musterseite einer Hausarztpraxis mit fünf markierten Stellen">
             <MusterPraxis />
           </div>
-          <figcaption className={u.unterschrift}>Musterseite, frei erfunden. Die Zahlen gehören zur Liste.</figcaption>
+          <figcaption className="mt-3 text-[12px] leading-4 text-[#6e6e73]">
+            Musterseite, frei erfunden. Die Zahlen gehören zur Liste.
+          </figcaption>
         </figure>
 
-        <ol className="kante-stark min-w-0 divide-y divide-[#1b1d1e]/10 self-start lg:col-span-5">
+        <ol className={`${u.blatt} min-w-0 divide-y divide-black/10 self-start !py-2 lg:col-span-5`}>
           {STELLEN.map((s, i) => (
             <li key={s.titel} className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-4 py-5">
               <Marke n={i + 1} className="mt-0.5 !shadow-none" />
@@ -348,91 +368,223 @@ const VERZEICHNIS: { nr: string; titel: string; posten: Posten[] }[] = [
   },
 ];
 
-/** Containerfarbe je Gruppe, wie im Containerstapel der Startseite. */
-const GRUPPE_TON: Record<string, string> = {
-  "1": "kachel-box-signal",
-  "2": "",
-  "3": "kachel-box-teer",
-  "4": "kachel-box-gruen",
-  "5": "",
-};
+/** Die fünf Gruppen des Verzeichnisses als Kacheln (Kurzfassung). */
+const GRUPPEN_KACHEL: {
+  zeile: string;
+  ton: "weiss" | "nacht" | "hell";
+  spalten: 4 | 5 | 7;
+  foto?: { src: string; alt: string; position?: string; muster?: boolean };
+  /** gestalteter Ausschnitt statt Foto */
+  ui?: "google" | "pflege";
+}[] = [
+  {
+    zeile: "Gestaltet für Ihren Betrieb, ohne Baukasten. Vor dem Start auf echten Geräten geprüft.",
+    ton: "weiss",
+    spalten: 7,
+    foto: {
+      src: "/images/sitalo-fitness-laptop.webp",
+      alt: "Laptop in einem Fitnessstudio mit der Musterseite eines Studios",
+      position: "50% 60%",
+      muster: true,
+    },
+  },
+  {
+    zeile: "Texte aus Ihren Stichpunkten, Fotos für die Seite aufbereitet.",
+    ton: "weiss",
+    spalten: 5,
+    foto: {
+      src: "/images/workspace-prints.webp",
+      alt: "Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand",
+      position: "50% 40%",
+    },
+  },
+  {
+    zeile: "Formular mit Spam-Schutz, Anruf-Knopf, Karte und Öffnungszeiten.",
+    ton: "weiss",
+    spalten: 4,
+    foto: {
+      src: "/images/sitalo-friseur-mobile.webp",
+      alt: "Handy mit der Musterseite eines Friseurs und einem Knopf für die Terminanfrage",
+      position: "60% 50%",
+      muster: true,
+    },
+  },
+  { zeile: "Titel, Beschreibung und Unternehmensprofil, damit man Sie in Ihrer Region findet.", ton: "nacht", spalten: 4, ui: "google" },
+  { zeile: "Hosting in der EU, Updates, Backups und kleine Änderungen.", ton: "weiss", spalten: 4, ui: "pflege" },
+];
 
 /**
- * Leistungsverzeichnis offen gesetzt: je Gruppe links ein kleiner
- * gezeichneter 20-Fuß-Container (statisch) mit Gruppenname, rechts die
- * Positionen 1.1 … mit Haarlinien und dem Paket in Mono.
+ * Gestalteter Google-Treffer der Musterpraxis (frei erfunden): so stehen
+ * Seitentitel und Beschreibung aus Position 4.1 in der Suche.
  */
+function GoogleTreffer() {
+  const p = presetFuer("praxis");
+  return (
+    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
+      <div className="flex items-center gap-2 rounded-full bg-[#2c2c2e] px-3 py-2 text-[13px] text-[#e5e5ea]">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" className="shrink-0 text-[#a1a1a6]">
+          <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M10.5 10.5 14 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+        <span className="truncate">hausarzt hamburg</span>
+      </div>
+      <div className="mt-4 flex items-center gap-2.5">
+        <span
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white"
+          style={{ background: p.accent }}
+          aria-hidden="true"
+        >
+          {p.defaultName.charAt(0)}
+        </span>
+        <span className="min-w-0 leading-tight">
+          <span className="block truncate text-[13px] text-[#f5f5f7]">{p.defaultName}</span>
+          <span className="block truncate text-[12px] text-[#a1a1a6]">Hamburg · Allgemeinmedizin</span>
+        </span>
+      </div>
+      <p className="mt-2 text-[17px] leading-[22px] font-medium text-[#8ab4f8]">Hausarzt in Hamburg · {p.defaultName}</p>
+      <p className="mt-1 text-[13px] leading-[19px] text-[#bfbfc4]">
+        Allgemeinmedizin mit Sprechzeiten am Nachmittag. Termin online anfragen oder direkt anrufen.
+      </p>
+      <p className="mt-3 text-[11px] leading-4 text-[#8e8e93]">Musterpraxis, frei erfunden</p>
+    </div>
+  );
+}
+
+/** Pflegeprotokoll aus dem Monatsbeitrag: Hosting, Updates, Backups. */
+function PflegeProtokoll() {
+  const zeilen = [
+    { t: "Update eingespielt", z: "Di, 03:12" },
+    { t: "Backup erstellt", z: "Di, 02:00" },
+    { t: "Zertifikat gültig", z: "74 Tage" },
+    { t: "Zeiten geändert", z: "Mo, 16:40" },
+  ];
+  return (
+    <div className="rounded-[14px] bg-[#f5f5f7] p-4 text-left">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[13px] font-semibold text-[#1d1d1f]">Pflegeprotokoll</p>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap text-[#1d1d1f] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.06)]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#34c759]" aria-hidden="true" />
+          Online
+        </span>
+      </div>
+      <ul role="list" className="mt-3 divide-y divide-black/8">
+        {zeilen.map((r) => (
+          <li key={r.t} className="flex items-baseline justify-between gap-3 py-2 text-[13px] leading-[18px]">
+            <span className="flex min-w-0 items-baseline gap-2 text-[#1d1d1f]">
+              <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" className="shrink-0 translate-y-[1px]">
+                <path d="M2 6.5 4.8 9 10 3" fill="none" stroke="#f45b1e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="min-w-0">{r.t}</span>
+            </span>
+            <span className="shrink-0 text-[12px] text-[#6e6e73] tabular-nums">{r.z}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 text-[11px] leading-4 text-[#6e6e73]">Beispiel, so sieht der Monatsbericht aus.</p>
+    </div>
+  );
+}
+
 function Verzeichnis() {
   return (
     <Abschnitt
       id="verzeichnis"
-      eyebrow="Leistungsverzeichnis · Positionen"
-      fett="Was in welchem Paket steckt, Position für Position"
+      fett="Leistungsverzeichnis."
+      grau="Was in welchem Paket steckt."
       unter={
         <>
-          Die Preise der Pakete stehen auf der{" "}
-          <Link href="/pakete" className="text-foreground underline decoration-[var(--gold)] underline-offset-4">
+          Gezählt wird wie im Handwerk: Position für Position. Die Preise der Pakete stehen auf der{" "}
+          <Link href="/pakete" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
             Paketseite
           </Link>
           .
         </>
       }
     >
-      <table className="kante-stark w-full border-collapse text-left text-[15px]">
-        <caption className="sr-only">Leistungsverzeichnis mit Paketzuordnung</caption>
-        <thead className="sr-only">
-          <tr>
-            <th scope="col">Pos.</th>
-            <th scope="col">Leistung</th>
-            <th scope="col">Enthalten in</th>
-          </tr>
-        </thead>
-        {VERZEICHNIS.map((gruppe) => (
-          <tbody key={gruppe.nr} id={`gruppe-${gruppe.nr}`} className="scroll-mt-28">
-            <tr>
-              <th scope="colgroup" colSpan={3} className="border-b border-[#1b1d1e]/15 pt-10 pb-4 text-left">
-                <span className="flex items-end gap-4">
-                  <span aria-hidden="true" className={`kachel-box ${GRUPPE_TON[gruppe.nr]} w-[66px]! shrink-0`} />
-                  <span>
-                    <span className="block font-mono text-[11px] font-medium tracking-[0.14em] text-[#565b5d] uppercase">
-                      20 FT · Gruppe {gruppe.nr} · {gruppe.posten.length} Positionen
-                    </span>
-                    <span className="mt-1 block text-[19px] leading-tight font-[720] tracking-[-0.018em] [font-stretch:112%]">
-                      {gruppe.titel}
-                    </span>
-                  </span>
-                </span>
+      <BildRaster>
+        {VERZEICHNIS.map((g, i) => {
+          const k = GRUPPEN_KACHEL[i];
+          return (
+            <BildKachel
+              key={g.nr}
+              ton={k.ton}
+              spalten={k.spalten}
+              eyebrow={`${g.posten.length} Positionen`}
+              titel={g.nr === "5" ? "Nach dem Start" : g.titel}
+              zeile={k.zeile}
+              href={`#gruppe-${g.nr}`}
+              foto={
+                k.foto
+                  ? {
+                      ...k.foto,
+                      sizes:
+                        k.spalten === 7
+                          ? "(min-width: 1068px) 560px, (min-width: 640px) 50vw, calc(100vw - 32px)"
+                          : "(min-width: 1068px) 400px, (min-width: 640px) 50vw, calc(100vw - 32px)",
+                    }
+                  : undefined
+              }
+              bildInhalt={k.ui === "google" ? <GoogleTreffer /> : k.ui === "pflege" ? <PflegeProtokoll /> : undefined}
+            />
+          );
+        })}
+      </BildRaster>
+
+      <details className={`${u.blatt} group mt-5`}>
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+          <span className="text-[19px] leading-6 font-semibold tracking-[-0.015em] sm:text-[21px]">Alle Positionen</span>
+          <span aria-hidden="true" className="text-[22px] leading-none font-light text-[#6e6e73] transition-transform group-open:rotate-45">
+            +
+          </span>
+        </summary>
+        <table className="mt-2 w-full border-collapse text-left text-[15px]">
+          <caption className="sr-only">Leistungsverzeichnis mit Paketzuordnung</caption>
+          <thead>
+            <tr className="border-b border-black/15">
+              <th scope="col" className="w-[3.25rem] py-3 pr-3 text-[12px] font-semibold text-[#6e6e73] sm:w-20">
+                Pos.
+              </th>
+              <th scope="col" className="py-3 pr-4 text-[12px] font-semibold text-[#6e6e73]">
+                Leistung
+              </th>
+              <th scope="col" className="hidden w-44 py-3 text-right text-[12px] font-semibold text-[#6e6e73] sm:table-cell">
+                Enthalten in
               </th>
             </tr>
-            {gruppe.posten.map((p) => (
-              <tr key={p.nr} className="border-b border-[#1b1d1e]/10 align-baseline">
-                <td className="w-[3.25rem] py-3.5 pr-3 font-mono text-[12.5px] text-[#565b5d] tabular-nums sm:w-20">
-                  {p.nr}
-                </td>
-                <td className="py-3.5 pr-4 leading-snug">
-                  {p.text}
-                  <span className="mt-1 block font-mono text-[11.5px] text-[#565b5d] sm:hidden">{p.umfang}</span>
-                </td>
-                <td
-                  className={`hidden w-48 py-3.5 text-right font-mono text-[12px] sm:table-cell ${
-                    p.umfang === "Alle Pakete" ? "text-foreground font-medium" : "text-[#565b5d]"
-                  }`}
-                >
-                  {p.umfang}
-                </td>
+          </thead>
+          {VERZEICHNIS.map((gruppe) => (
+            <tbody key={gruppe.nr} id={`gruppe-${gruppe.nr}`} className="scroll-mt-28">
+              <tr>
+                <th scope="colgroup" colSpan={3} className="pt-7 pb-2 text-left">
+                  <span className="text-[17px] font-semibold tracking-[-0.016em]">
+                    {gruppe.nr}. {gruppe.titel}
+                  </span>
+                </th>
               </tr>
-            ))}
-          </tbody>
-        ))}
-      </table>
-      <p className={a.lvFuss}>
-        <span>Gezählt wird wie im Handwerk.</span>
-        <span>Preise inkl. 19&nbsp;% MwSt. auf der Paketseite</span>
-      </p>
+              {gruppe.posten.map((p) => (
+                <tr key={p.nr} className="border-t border-black/10 align-baseline">
+                  <td className="py-3 pr-3 text-[13px] text-[#6e6e73] tabular-nums">{p.nr}</td>
+                  <td className="py-3 pr-4 leading-snug">
+                    {p.text}
+                    <span className="mt-1 block text-[12px] text-[#6e6e73] sm:hidden">{p.umfang}</span>
+                  </td>
+                  <td
+                    className={`hidden py-3 text-right text-[14px] sm:table-cell ${
+                      p.umfang === "Alle Pakete" ? "font-semibold" : "text-[#6e6e73]"
+                    }`}
+                  >
+                    {p.umfang}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          ))}
+        </table>
+      </details>
 
-      <div className="mt-14 grid gap-6 lg:grid-cols-12">
-        <p className={`${a.eyebrow} lg:col-span-3`}>Nicht im Verzeichnis</p>
-        <p className={`${u.text} text-muted-foreground lg:col-span-8`}>
+      <div className="mt-10 max-w-[680px]">
+        <h3 className="text-[21px] leading-[25px] font-bold">Nicht im Verzeichnis</h3>
+        <p className={`${u.text} mt-3 text-[#6e6e73]`}>
           Werbekampagnen und Newsletter machen wir nicht. Logo-Entwicklung und Fotoshootings bieten wir ebenfalls nicht
           an: Fotos liefern Sie, Handyfotos reichen oft, und für einen Fotografen bekommen Sie von uns eine kurze
           Motivliste. Online-Shops und Apps besprechen wir im Einzelfall.

@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Doto, IBM_Plex_Mono } from "next/font/google";
-import localFont from "next/font/local";
+import { Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google";
 
 import { GlobalExtras } from "@/components/marketing/global-extras";
 import { buildSearchIndex } from "@/lib/search-index";
@@ -13,46 +12,12 @@ import "./apple.css";
 import { PAKETE } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
-// Hausschriften des Ateliers, alle mit display: "swap" und angepasster
-// Fallback-Metrik (adjustFontFallback, Standard bei next/font/google),
-// damit der Schrifttausch nichts verschiebt (CLS 0).
-//
-// Mona Sans (SIL Open Font License 1.1), variabel in Breite und Stärke:
-// Überschriften breit wie Beschriftungen im Hafen, Fließtext in normaler
-// Breite. Selbst gehostet als zugeschnittene Datei (app/fonts): Breite
-// 100–125 %, Stärke 400–800, deutsche Zeichen und Satzzeichen. Rund 50
-// statt 96 KB. Der große Satz im Kopf der Startseite ist das LCP-Element,
-// deshalb wird nur diese eine Datei vorgeladen.
-const brandSans = localFont({
-  variable: "--font-brand-sans",
-  src: "./fonts/mona-sans-atelier.woff2",
-  weight: "400 800",
-  style: "normal",
-  display: "swap",
-  declarations: [{ prop: "font-stretch", value: "100% 125%" }],
-  adjustFontFallback: "Arial",
-  fallback: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Arial", "sans-serif"],
-});
-
-// IBM Plex Mono für Notizen, Kennzeilen, Containernummern und Uhrzeit.
-// Nicht vorgeladen: Sie trägt nie das größte Element im ersten Bild.
-const brandMono = IBM_Plex_Mono({
-  variable: "--font-brand-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-  preload: false,
-  adjustFontFallback: true,
-});
-
-// Punktmatrix nur für die Abfahrtstafel mit den Preisen, ohne Vorladen.
-const dotMatrix = Doto({
-  variable: "--font-dot",
-  subsets: ["latin"],
-  weight: ["700"],
-  display: "swap",
-  preload: false,
-});
+// Grundschrift ist die Systemschrift (San Francisco auf iPhone und Mac,
+// sonst Segoe UI/Roboto), siehe --font-sf in app/globals.css. Keine
+// Web-Font im ersten Bildschirm: Text malt sofort, kein Schrifttausch.
+// Nur eine Sonderschrift bleibt (Cormorant für die Wortmarke), ohne
+// Vorladen (preload: false). Doto (Punktmatrix der Abfahrtstafel) ist
+// entfallen; die Tafel nutzt bei Bedarf die Mono-Systemschrift.
 
 // Cormorant nur noch für die Wortmarke (SITAL + Doppelring), so wie
 // im ursprünglichen Logo.
@@ -64,15 +29,27 @@ const cormorant = Cormorant_Garamond({
   preload: false,
 });
 
+// IBM Plex Mono nur für kleine Notizen, Labels und Bildunterschriften
+// (font-mono, .notiz-mono, .kennzeile-mono). Ein Schnitt, nicht
+// vorgeladen: Sie trägt nie das größte Element im ersten Bild.
+const brandMono = IBM_Plex_Mono({
+  variable: "--font-brand-mono",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+  preload: false,
+  adjustFontFallback: true,
+});
+
 // Alle Seiten stündlich neu rendern (ISR). Masthead, Footer-Jahr,
 // Sprechstunden-Termine und der nächste buchbare Gesprächstag hängen vom heutigen
 // Datum ab — ohne Revalidate würde der Build-Tag eingefroren, bis
 // zum nächsten Deploy. Gilt per niedrigstem Wert für jede Route.
 export const revalidate = 3600;
 
-/** Browserleiste am Handy (Safari, Chrome) im Papierton der Seite. */
+/** Browserleiste am Handy (Safari, Chrome) weiß wie die Seite. */
 export const viewport: Viewport = {
-  themeColor: "#f3f2ee",
+  themeColor: "#ffffff",
 };
 
 export const metadata: Metadata = {
@@ -216,12 +193,12 @@ export default function RootLayout({
       // Die Startseite setzt html.js per Inline-Script vor dem Hydrieren
       // (components/marketing/hafen/hafen-hero.tsx).
       suppressHydrationWarning
-      className={`${brandSans.variable} ${brandMono.variable} ${dotMatrix.variable} ${cormorant.variable} h-full motion-safe:scroll-smooth antialiased`}
+      className={`${cormorant.variable} ${brandMono.variable} h-full motion-safe:scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
-          className="bg-foreground text-background sr-only z-[100] rounded-[2px] px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"
+          className="bg-foreground text-background sr-only z-[100] rounded-full px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"
         >
           Direkt zum Inhalt
         </a>

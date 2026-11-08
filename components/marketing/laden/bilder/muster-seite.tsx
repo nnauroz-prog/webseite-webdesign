@@ -426,7 +426,7 @@ function KontaktSeite({ p }: { p: Preset }) {
         <circle cx="195" cy="266" r="10" fill="#fff" />
         {reihen.map((r, i) => (
           <g key={r} transform={`translate(0 ${410 + i * 64})`}>
-            <rect x="22" width="346" height="54" rx="14" fill="#f3f2ee" />
+            <rect x="22" width="346" height="54" rx="14" fill="#f5f5f7" />
             <circle cx="50" cy="27" r="9" fill={a} fillOpacity=".85" />
             <text x="72" y="35" fontSize="21" fontWeight="600" fill="#1d1d1f">
               {r}

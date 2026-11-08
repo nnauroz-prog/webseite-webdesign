@@ -91,7 +91,7 @@ export function BildLadezeit() {
           Ladezeit am Handy
         </text>
         {/* Adresszeile mit Knopf */}
-        <path d={rr(52, 46, 216, 30, 8)} fill="#f3f2ee" />
+        <path d={rr(52, 46, 216, 30, 8)} fill="#f5f5f7" />
         <text x={64} y={65} fontSize="10" fill={TINTE}>
           www.ihr-betrieb.de
         </text>
@@ -139,7 +139,7 @@ export function BildPaketWahl() {
           const aktiv = i === 1;
           return (
             <g key={t} transform={`translate(38 ${112 + i * 30})`}>
-              <path d={rr(0, 0, 194, 24, 12)} fill={aktiv ? "#fff3ec" : "#f3f2ee"} stroke={aktiv ? ORANGE : "none"} strokeWidth="1.5" />
+              <path d={rr(0, 0, 194, 24, 12)} fill={aktiv ? "#fff3ec" : "#f5f5f7"} stroke={aktiv ? ORANGE : "none"} strokeWidth="1.5" />
               <circle cx="14" cy="12" r="5.5" fill="#fff" stroke={aktiv ? ORANGE : "#c7c7cc"} strokeWidth="1.5" />
               {aktiv ? <circle cx="14" cy="12" r="2.8" fill={ORANGE} /> : null}
               <text x="27" y="15.5" fontSize="9.5" fontWeight={aktiv ? 650 : 500} fill={TINTE}>
@@ -224,7 +224,7 @@ export function BildTermin() {
           const aktiv = i === 2;
           return (
             <g key={t} transform={`translate(${34 + i * 36} 80)`}>
-              <path d={rr(0, 0, 30, 30, 9)} fill={aktiv ? TINTE : "#f3f2ee"} />
+              <path d={rr(0, 0, 30, 30, 9)} fill={aktiv ? TINTE : "#f5f5f7"} />
               <text x="15" y="19.5" textAnchor="middle" fontSize="10" fontWeight="650" fill={aktiv ? "#fff" : TINTE}>
                 {t}
               </text>

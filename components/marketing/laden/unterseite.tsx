@@ -1,24 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
-import { isValidElement, type CSSProperties, type ReactNode } from "react";
+import { cloneElement, isValidElement, type CSSProperties, type ReactElement, type ReactNode } from "react";
 
 import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
-import { RevealRoot } from "@/components/marketing/hafen/reveal";
-import { Steigend } from "@/components/marketing/hafen/steigend";
 import { cn } from "@/lib/utils";
 
 import s from "./laden.module.css";
 import u from "./unterseite.module.css";
 
 /**
- * Bausteine der Unterseiten im Atelier-Satz: Papierfläche #f3f2ee,
- * linksbündiger Seitenkopf mit Mono-Brotkrumen, Abschnittsköpfe als
- * ganze Sätze, Bildkacheln und die Briefkarte als Abschluss. Fotos aus public/images immer
+ * Bausteine der Unterseiten im Stil der Startseite: Fläche #f5f5f7,
+ * Seitenkopf mit Mono-Brotkrumen, Mono-Kennzeile und großem Foto samt
+ * Mono-Bildunterschrift, Bildkacheln, Zweiton-Abschnittsköpfe und die
+ * helle Briefkarte als Abschluss. Fotos aus public/images immer
  * mit next/image, festem Seitenverhältnis (CLS 0) und passenden sizes.
  * Nur das Kopfbild lädt vorab (preload), alle anderen lazy.
  *
- * Gerätefotos zeigen frei erfundene Betriebe: Sie tragen immer die
- * Pille „Musterseite, frei erfunden“ (muster).
+ * Gerätefotos zeigen frei erfundene Betriebe (muster): Im Seitenkopf
+ * steht das als Mono-Bildunterschrift unter dem Foto, in Kacheln als
+ * kleine Pille „Musterseite“.
  */
 
 export const unterseiteStil = u;
@@ -26,11 +26,10 @@ export const unterseiteStil = u;
 /** Kopfbild-Größen: 980 px im Raster, sonst Fensterbreite minus Rinne. */
 export const SIZES_KOPF = "(min-width: 1068px) 980px, calc(100vw - 32px)";
 /**
- * Kopfbild mit Vorabladen: am Handy steht es als angeheftetes Foto auf
- * 54 % der Breite, darüber als gerahmtes Foto mit höchstens 620 px
- * (ab 1024 px in der rechten Spalte, unterseite.module.css).
+ * Kopfbild mit Vorabladen (LCP): am Handy bewusst kleiner angefragt,
+ * damit bei 2,6-facher Pixeldichte höchstens die 750er-Variante lädt.
  */
-export const SIZES_KOPF_VORAB = "(min-width: 1024px) 460px, (min-width: 734px) 620px, 54vw";
+export const SIZES_KOPF_VORAB = "(min-width: 1068px) 980px, (min-width: 734px) calc(100vw - 32px), 70vw";
 export const SIZES_HALB = "(min-width: 1068px) 480px, (min-width: 640px) 50vw, calc(100vw - 32px)";
 export const SIZES_DRITTEL = "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)";
 
@@ -117,110 +116,72 @@ export function Brotkrumen({ krumen, className }: { krumen: Krume[] | string; cl
   );
 }
 
+type FotoRahmenProps = Parameters<typeof FotoRahmen>[0];
+
 /**
- * Seitenkopf der Unterseiten im Atelier-Satz: linksbündig auf der
- * Satzkante, Mono-Brotkrumen, Eyebrow in Mono mit orangem Quadrat,
- * einfarbige H1 (akzent mit kleinem orangem Unterstrich), ein Satz,
- * höchstens ein Knopf. Ein Kopffoto steht gerahmt mit Mono-
- * Bildunterschrift daneben (ab 1024 px) bzw. darunter.
+ * Seitenkopf der Unterseiten: Mono-Brotkrumen, Eyebrow als Mono-
+ * Kennzeile mit orangem Punkt, H1 (64 / 40 px), grauer Satz, Aktionen,
+ * kleine Zeile, darunter das große Foto (bild) im 980er-Raster mit
+ * Mono-Bildunterschrift. Ein FotoRahmen mit muster trägt keine Pille
+ * mehr: ohne eigene unterschrift steht „Musterseite, frei erfunden“
+ * darunter.
  */
 export function SeitenKopf({
   krumen,
   eyebrow,
   titel,
-  akzent,
   unter,
   aktionen,
   meta,
   bild,
   unterschrift,
-  neben,
   className,
 }: {
   krumen?: Krume[] | string;
   eyebrow?: ReactNode;
   titel: ReactNode;
-  /** zweiter Teil der H1, gleiche Farbe, orange unterstrichen */
-  akzent?: ReactNode;
   unter?: ReactNode;
   aktionen?: ReactNode;
   meta?: ReactNode;
   bild?: ReactNode;
   /** Mono-Bildunterschrift unter dem Foto */
   unterschrift?: ReactNode;
-  /** rechte Spalte neben dem Text (ab 1024 px), z. B. ein Frachtbrief */
-  neben?: ReactNode;
   className?: string;
 }) {
-  // Ein Foto im Kopf steht als gerahmtes Bild mit Unterschrift neben dem
-  // Text (ab 1024 px), nicht als Prospektfoto über die volle Breite.
-  const foto = isValidElement(bild) && bild.type === FotoRahmen;
-  const text = (
-    <div className={u.kopfText}>
-      {eyebrow ? <p className={u.eyebrow}>{eyebrow}</p> : null}
-      <h1 className={u.titel}>
-        {titel}
-        {akzent ? (
-          <>
-            {" "}
-            <span className={u.akzent}>{akzent}</span>
-          </>
-        ) : null}
-      </h1>
-      {unter ? <p className={u.unter}>{unter}</p> : null}
-      {aktionen ? <div className={u.aktionen}>{aktionen}</div> : null}
-      {meta ? <div className={u.meta}>{meta}</div> : null}
-    </div>
-  );
-  const figur = bild ? (
-    <figure className={cn(u.kopfBild, foto && u.kopfFoto)}>
-      {bild}
-      {unterschrift ? (
-        <figcaption className={u.unterschrift}>
-          <span>{unterschrift}</span>
-        </figcaption>
-      ) : null}
-    </figure>
-  ) : null;
+  let foto = bild;
+  let notiz = unterschrift;
+  if (isValidElement(bild) && bild.type === FotoRahmen) {
+    const el = bild as ReactElement<FotoRahmenProps>;
+    if (el.props.muster) {
+      foto = cloneElement(el, { muster: false });
+      notiz = unterschrift ?? "Musterseite, frei erfunden";
+    }
+  }
   return (
     <section className={cn(u.kopf, !bild && u.kopfOhneBild, className)}>
       <div className="inhalt">
         {krumen ? <Brotkrumen krumen={krumen} /> : null}
-        {neben ? (
-          <div className={u.kopfZweispaltig}>
-            {text}
-            <div className={u.kopfNeben}>{neben}</div>
-          </div>
-        ) : foto ? (
-          <div className={cn(u.kopfZweispaltig, u.kopfMitFoto)}>
-            {text}
-            {figur}
-          </div>
-        ) : (
-          text
-        )}
-        {foto && !neben ? null : bild ? (
-          figur
-        ) : unterschrift ? (
-          <p className={u.unterschrift}>
-            <span>{unterschrift}</span>
-          </p>
+        {eyebrow ? <p className={cn("kennzeile-mono", u.eyebrow)}>{eyebrow}</p> : null}
+        <h1 className={u.titel}>{titel}</h1>
+        {unter ? <p className={u.unter}>{unter}</p> : null}
+        {aktionen ? <div className={u.aktionen}>{aktionen}</div> : null}
+        {meta ? <div className={u.meta}>{meta}</div> : null}
+        {foto ? (
+          <figure className={u.kopfBild}>
+            {foto}
+            {notiz ? <figcaption className={cn("notiz-mono", u.unterschrift)}>{notiz}</figcaption> : null}
+          </figure>
+        ) : notiz ? (
+          <p className={cn("notiz-mono", u.unterschrift)}>{notiz}</p>
         ) : null}
       </div>
     </section>
   );
 }
 
-/**
- * Abschnitt mit ruhigem Kopf: optional ein Hafenwort in Mono mit orangem
- * Quadrat (eyebrow), darüber die H2 als ganzer Satz. Die Wörter steigen
- * beim Einscrollen aus einer Maske (RevealRoot in UnterseiteMain); bei
- * reduzierter Bewegung stehen sie sofort. grau ist ein Nachsatz unter
- * der H2, nicht mehr Teil der Überschrift.
- */
+/** Abschnitt mit Zweiton-Kopf (40 / 28 px), Inhalt im 980er-Raster. */
 export function Abschnitt({
   id,
-  eyebrow,
   fett,
   grau,
   unter,
@@ -230,7 +191,6 @@ export function Abschnitt({
   className,
 }: {
   id: string;
-  eyebrow?: string;
   fett: string;
   grau?: string;
   unter?: ReactNode;
@@ -244,17 +204,21 @@ export function Abschnitt({
     <section
       id={id}
       aria-labelledby={`${id}-titel`}
-      className={cn(dunkel ? cn(u.dunkelFlaeche, u.dunkel, "on-dark grain") : u.abschnitt, "scroll-mt-24", className)}
+      className={cn(dunkel ? cn(u.dunkelFlaeche, u.dunkel, "on-dark") : u.abschnitt, "scroll-mt-24", className)}
       data-flaeche-dunkel={dunkel ? "" : undefined}
     >
       <div className="inhalt">
         <div className={cn(u.abschnittKopf, rechts && "flex flex-wrap items-end justify-between gap-x-8 gap-y-2")}>
           <div>
-            {eyebrow ? <p className={u.eyebrow}>{eyebrow}</p> : null}
-            <h2 id={`${id}-titel`} data-reveal="rise" className={u.zweiton}>
-              <Steigend text={fett} />
+            <h2 id={`${id}-titel`} className={u.zweiton}>
+              <span>{fett}</span>
+              {grau ? (
+                <>
+                  {" "}
+                  <span>{grau}</span>
+                </>
+              ) : null}
             </h2>
-            {grau ? <p className={u.abschnittUnter}>{grau}</p> : null}
             {unter ? <p className={u.abschnittUnter}>{unter}</p> : null}
           </div>
           {rechts}
@@ -356,7 +320,7 @@ export function BildKachel({
         {mehr ? (
           <p className={u.kachelMehr}>
             {mehr}
-            <span aria-hidden="true">{"\u00A0"}→</span>
+            <span aria-hidden="true"> ›</span>
           </p>
         ) : null}
         {kinder}
@@ -385,11 +349,12 @@ export function BildKachel({
 }
 
 /**
- * Abschluss aller Unterseiten: die Briefkarte aus dem Kontor
- * (components/marketing/hafen/briefkarte.tsx). Kein Foto, keine Mail;
- * Telefon groß, schriftlich über /anfrage. Die alten Props bleiben, damit
- * die Seiten unverändert bauen: titel → Aussage, zeile → Satz, pille →
- * Knopf, link → Textlink. foto und eyebrow werden nicht mehr gezeigt.
+ * Abschluss aller Unterseiten: die helle Briefkarte (weiße runde Karte
+ * auf #f5f5f7) mit Mono-Briefkopf, Telefon groß, Formular als zweitem
+ * Weg und genau einer Pille. Die alten Props werden auf die Briefkarte
+ * gemappt (titel → title, zeile + children → Satz, pille → knopf).
+ * eyebrow bleibt aus Kompatibilität erhalten, die Briefkarte trägt statt
+ * dessen den Briefkopf. foto wird zum Fotomoment in der rechten Hälfte.
  */
 export function KontaktKarte({
   id = "kontakt",
@@ -397,6 +362,7 @@ export function KontaktKarte({
   zeile = "Das Anfrageformular hat drei Pflichtfelder. Wir antworten meist am selben Werktag.",
   pille = { href: "/anfrage", label: "Anfrage schreiben" },
   link = { href: "/termin", label: "Erstgespräch buchen" },
+  foto,
   children,
 }: {
   id?: string;
@@ -409,18 +375,17 @@ export function KontaktKarte({
   children?: ReactNode;
 }) {
   return (
-    <Briefkarte id={id} title={titel} inquiryHref={pille.href} knopf={pille.label} link={link}>
+    <Briefkarte id={id} title={titel} inquiryHref={pille.href} knopf={pille.label} link={link} foto={foto}>
       {zeile}
       {children ? <> {children}</> : null}
     </Briefkarte>
   );
 }
 
-/** Hauptfläche der Unterseiten: #f3f2ee wie die Startseite. */
+/** Hauptfläche der Unterseiten: #f5f5f7 wie die Startseite. */
 export function UnterseiteMain({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <main id="main" tabIndex={-1} className={cn("flex-1 bg-[#f3f2ee]", s.seite, className)}>
-      <RevealRoot />
+    <main id="main" tabIndex={-1} className={cn("flex-1 bg-[#f5f5f7]", s.seite, className)}>
       {children}
     </main>
   );

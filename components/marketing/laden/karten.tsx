@@ -126,7 +126,7 @@ export function KarteMittel({
   bildHintergrund,
   eyebrowUnten = false,
 }: {
-  eyebrow: string;
+  eyebrow: ReactNode;
   titel: string;
   zeile?: string;
   href: string;
@@ -135,7 +135,7 @@ export function KarteMittel({
   /** kürzere Karte (Journal: Bild oben füllt rund 60 %) */
   kurz?: boolean;
   bildHintergrund?: string;
-  /** Eyebrow als Fußzeile am Kartenende (Journal: Lesezeit) */
+  /** Eyebrow als Mono-Fußzeile am Kartenende (Journal: Datum, Lesezeit) */
   eyebrowUnten?: boolean;
 }) {
   const bildEl = (
@@ -157,7 +157,7 @@ export function KarteMittel({
             <KartenLink href={href}>{titel}</KartenLink>
           </h3>
           {zeile ? <p className={s.zeile}>{zeile}</p> : null}
-          {eyebrowUnten ? <p className={cn(s.zeile, s.fusszeile)}>{eyebrow}</p> : null}
+          {eyebrowUnten ? <p className={cn("notiz-mono", s.fusszeile)}>{eyebrow}</p> : null}
         </div>
         {bildOben ? null : bildEl}
       </article>

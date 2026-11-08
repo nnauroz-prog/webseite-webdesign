@@ -30,8 +30,7 @@ const ROWS = TAFEL_ZEILEN;
 function priceOf(pakete: PaketeKurz, slug: (typeof ROWS)[number]["slug"]) {
   const p = pakete[slug];
   // „ab 2.999 €" → „2.999"
-  // „Sitalo Studio“ → „Studio“: Die Tafel hat nur Platz für ein Wort.
-  return { name: p.name.replace(/^Sitalo\s+/, ""), value: p.setup.replace(/^ab\s*/, "").replace(/\s*€$/, ""), monthly: p.monthly };
+  return { name: p.name, value: p.setup.replace(/^ab\s*/, "").replace(/\s*€$/, ""), monthly: p.monthly };
 }
 
 const fmt = new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" });
@@ -227,6 +226,7 @@ export function Abfahrtstafel({ pakete, schmal = false }: { pakete: PaketeKurz; 
   const [run, setRun] = useState(false);
   const [armed, setArmed] = useState(false);
   const rows = ROWS.map((r) => ({ ...r, ...priceOf(pakete, r.slug) }));
+  const starterMonthly = rows[0].monthly.replace(/^ab\s*/, "").replace(/\s*\/\s*Monat$/, "");
 
   useLaufzeit(ref);
 
@@ -258,10 +258,8 @@ export function Abfahrtstafel({ pakete, schmal = false }: { pakete: PaketeKurz; 
     };
   }, []);
 
-  // „59 / 99 / 219 / 299 €“ aus den Monatsbeiträgen der Pakete.
-  const monatlich = `${rows.map((r) => r.monthly.replace(/^ab\s*/, "").replace(/\s*€.*$/, "")).join(" / ")}\u00A0€`;
   const ticker = [
-    `Monatsbeitrag ${monatlich} für Hosting, Pflege und kleine Änderungen`,
+    `Monatsbeitrag ab ${starterMonthly} für Hosting und kleine Änderungen`,
     "Kleine Seiten oft in 1–2 Werktagen online",
     "Festpreis vorab, Test-Link vor dem Start",
     "Telefon 0160\u00A07621876",

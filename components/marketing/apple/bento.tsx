@@ -5,7 +5,7 @@ import { MehrLink } from "./mehr-link";
 /**
  * Bento-Raster im Apple-Stil (.bento, app/apple.css): große gerundete
  * Kacheln, mobil untereinander, ab 834 px zweispaltig; span="breit"
- * nimmt beide Spalten. Abwechselnd hell (#f3f2ee) und schwarz.
+ * nimmt beide Spalten. Abwechselnd hell (#f5f5f7) und schwarz.
  *
  * Mit zwoelf (Klasse .bento-12) ab 1068 px ein 12er-Raster; die
  * Kachel nimmt dann `spalten` Spalten (4, 5, 6, 7 oder 12). quer legt eine

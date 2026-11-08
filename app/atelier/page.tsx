@@ -5,12 +5,7 @@ import { ArrowRight, Search } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import a from "@/components/marketing/hafen/atelier.module.css";
-import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
-import { SitaloSignatur } from "@/components/marketing/hafen/sitalo-signatur";
 import { PageHero } from "@/components/marketing/page-hero";
-import { ATELIER_GERADE, ATELIER_NOTES } from "@/lib/atelier-notes";
-import { getHamburgWeather, type HamburgWeather } from "@/lib/hamburg-weather";
 import { LEXIKON } from "@/lib/lexikon-data";
 import { SITE_URL } from "@/lib/site";
 
@@ -33,12 +28,7 @@ const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
  * Fließtext (Karte) → Hamburg (dunkel) → Register der übrigen
  * Seiten → Kontakt (dunkel). Jeder Abschnitt ist anders gebaut.
  * ============================================================ */
-/** Wetterzeile und Datum im Tagebuch: höchstens eine Stunde alt. */
-export const revalidate = 3600;
-
-export default async function AtelierPage() {
-  // Wetter vom Rathausmarkt, serverseitig mit 1 h Cache (lib/hamburg-weather.ts).
-  const wetter = await getHamburgWeather();
+export default function AtelierPage() {
   const aboutPageLd = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
@@ -65,14 +55,13 @@ export default async function AtelierPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
+      <MarketingHeader tone="dark" />
       <main id="main" tabIndex={-1} className="flex-1">
         <PageHero crumb="Über uns" eyebrow="Über Sitalo · Hamburg" title="Sitalo ist ein kleines Büro für Webdesign in Hamburg.">
           Wer bei uns anruft, spricht mit jemandem, der die Seiten auch selbst baut. Damit das so bleibt, nehmen wir nur
           so viele Aufträge an, wie wir sorgfältig fertig bekommen. Den Starttermin nennen wir Ihnen im ersten Gespräch.
         </PageHero>
         <Werkstattbericht />
-        <Tagebuch wetter={wetter} />
         <Grundsaetze />
         <Hamburg />
         <Register />
@@ -97,7 +86,7 @@ function Werkstattbericht() {
     <section>
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:gap-8">
         <figure className="lg:col-span-5">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[12px]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] lg:rounded-[28px]">
             <Image
               src="/images/workspace-macbook.webp"
               alt="Blick von oben auf einen Schreibtisch: Hände auf einer Laptop-Tastatur, daneben ein Notizbuch mit Skizzen und eine Tasse Kaffee."
@@ -128,7 +117,7 @@ function Werkstattbericht() {
             </p>
             <p>
               Online geht die Seite erst, wenn Sie sie freigeben. Danach bleiben wir Ihr Ansprechpartner: Kleine Änderungen
-              schicken Sie uns über das Formular oder sagen sie am Telefon durch, sie sind im Monatsbeitrag enthalten.
+              schicken Sie uns per Mail, sie sind im Monatsbeitrag enthalten.
             </p>
           </div>
           <Link
@@ -137,47 +126,6 @@ function Werkstattbericht() {
           >
             Der Ablauf im Detail {ARROW}
           </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Werkstatt-Tagebuch: eine linierte Notizbuchseite mit dem, was gerade
- * auf dem Schreibtisch liegt (lib/atelier-notes.ts, nur echte Einträge),
- * im Kopf das Wetter am Rathausmarkt. Das Wetter kommt serverseitig mit
- * einer Stunde Cache; fehlt es, steht nur der Ort da.
- * ---------------------------------------------------------------- */
-const DATUM = new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin", weekday: "long", day: "numeric", month: "long" });
-
-function Tagebuch({ wetter }: { wetter: HamburgWeather | null }) {
-  const eintraege = [...ATELIER_NOTES.map((n) => ({ label: n.when, text: n.text })), ...ATELIER_GERADE];
-  if (eintraege.length === 0) return null;
-  return (
-    <section aria-labelledby="tagebuch-titel">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 pb-16 sm:px-6 sm:pb-24 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-4">
-          <p className={a.eyebrow}>Werkstatt-Tagebuch</p>
-          <h2 id="tagebuch-titel" className="mt-5 text-balance text-[1.9rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.4rem]">
-            Was gerade auf dem Schreibtisch liegt
-          </h2>
-          <p className={`${a.mono} mt-5`}>
-            Nur was wirklich passiert. Kundenprojekte stehen hier erst, wenn der Kunde zugestimmt hat.
-          </p>
-        </div>
-        <div className={`${a.notizbuch} lg:col-span-7 lg:col-start-6`}>
-          <p className={a.notizDatum}>
-            {DATUM.format(new Date())} · Rathausmarkt
-            {wetter ? `, ${wetter.temperatureC}\u00A0°C, ${wetter.conditionLabel.toLowerCase()}` : ""}
-          </p>
-          {eintraege.map((e) => (
-            <div key={e.label + e.text} className={a.notizEintrag}>
-              <p className={a.notizDatum}>{e.label}</p>
-              <p className={a.notizText}>{e.text}</p>
-            </div>
-          ))}
-          <SitaloSignatur className="mt-4 max-w-[180px]" />
         </div>
       </div>
     </section>
@@ -292,17 +240,35 @@ function Register() {
 }
 
 /* ------------------------------------------------------------------
- * Abschluss wie auf allen Unterseiten: die Briefkarte aus dem Kontor.
+ * Kontakt: Telefonnummer groß, daneben Mail und Anfrage.
  * ---------------------------------------------------------------- */
 function Kontakt() {
   return (
-    <Briefkarte
-      id="kontakt"
-      title="Eine Viertelstunde am Telefon klärt das meiste."
-      link={{ href: "/ablauf", label: "So läuft ein Auftrag" }}
-    >
-      Am Telefon sprechen Sie mit dem, der Ihre Seite baut. Wer lieber schreibt, nimmt das Formular, wir antworten meist
-      am selben Werktag.
-    </Briefkarte>
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-stahl-hell text-balance text-[1.5rem] leading-[1.15] tracking-[-0.02em] sm:text-[1.9rem]">
+            Eine Viertelstunde am Telefon klärt das meiste.
+          </h2>
+          <a
+            href="tel:+491607621876"
+            className="hover:text-gold mt-5 inline-block text-[2.4rem] leading-none tracking-[-0.035em] whitespace-nowrap transition-colors sm:text-[4rem] lg:text-[4.4rem]"
+            style={{ fontStretch: "118%", fontWeight: 780 }}
+          >
+            0160&nbsp;7621876
+          </a>
+        </div>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="text-stahl-hell text-[16px] leading-relaxed">
+            Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag.
+          </p>
+          <div className="mt-7">
+            <Link href="/anfrage" className="btn-signal">
+              Anfrage schreiben {ARROW}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 
-import a from "@/components/marketing/hafen/atelier.module.css";
+import Image from "next/image";
+
 import { InquiryForm } from "@/components/marketing/inquiry-form";
-import { Brotkrumen, UnterseiteMain, unterseiteStil as u } from "@/components/marketing/laden/unterseite";
+import { UnterseiteMain, unterseiteStil as u } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { PREIS_HINWEIS } from "@/lib/pakete-data";
 import {
   INQUIRY_PACKAGES,
@@ -66,27 +68,31 @@ export default async function AnfragePage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
+      <Produktleiste titel="Anfrage" links={[]} />
 
       <UnterseiteMain>
-        {/* Kopf kompakt: Formular bleibt am Handy nah am Falz. Ab 1024 px
-            rechts eine Notiz aus dem Büro statt eines Fotos. */}
-        <section className="inhalt pt-5 sm:pt-7">
-          <Brotkrumen krumen="Anfrage" />
-          <div className="mt-8 grid items-end gap-8 sm:mt-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
+        {/* Kopf kompakt: Formular bleibt am Handy über dem Falz. Ab 1024 px
+            rechts ein kleines Bild. */}
+        <section className="inhalt pt-10 sm:pt-14 lg:pt-16">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
             <div>
-              <p className={u.eyebrow}>Kontor · Website anfragen</p>
-              <h1 className={`${u.titel} max-w-[15ch]!`}>Erzählen Sie uns, was Sie vorhaben.</h1>
-              <p className={u.unter}>
+              <p className={u.eyebrow}>Website anfragen</p>
+              <h1 className={`${u.titel} !mx-0 !max-w-[15ch] text-left`}>Erzählen Sie uns, was Sie vorhaben.</h1>
+              <p className={`${u.unter} !mx-0 text-left`}>
                 Name, E-Mail und eine kurze Beschreibung genügen. Ob Sie danach bei uns bauen lassen, entscheiden Sie,
                 wenn das Angebot vorliegt.
               </p>
             </div>
-            <aside className={`${a.notizbuch} hidden lg:block`} aria-label="Notiz">
-              <p className={a.notizDatum}>Notiz · Hamburg</p>
-              <p className={a.notizText}>
-                Zwei, drei Sätze reichen. Was fehlt, fragen wir in der Antwort, oder wir rufen kurz an.
-              </p>
-            </aside>
+            <div className="relative hidden aspect-[4/5] w-[320px] overflow-hidden rounded-[28px] bg-[#e8e8ed] lg:block">
+              <Image
+                src="/images/cafe-eimsbuettel.webp"
+                alt="Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel"
+                fill
+                sizes="320px"
+                className="object-cover"
+                style={{ objectPosition: "45% 50%" }}
+              />
+            </div>
           </div>
         </section>
 
@@ -101,13 +107,16 @@ export default async function AnfragePage({
             </div>
 
             <div className="space-y-3 lg:col-span-5">
-              <div className="on-dark grain rounded-[6px] bg-[#1b1d1e] p-7 text-[#f3f2ee] sm:p-8" data-flaeche-dunkel="">
-                <h2 className={a.eyebrow}>Danach · drei Halte</h2>
+              <div className="on-dark rounded-[18px] bg-black p-7 text-[#f5f5f7] sm:rounded-[28px] sm:p-8" data-flaeche-dunkel="">
+                <h2 className="text-[21px] leading-[25px] font-bold">Danach</h2>
                 <ol className="mt-3 divide-y divide-white/15">
                   {DANACH.map((s, i) => (
                     <li key={s.title} className="grid grid-cols-[2.5rem_1fr] py-4">
-                      <span aria-hidden="true" className="font-mono text-[13px] leading-[22px] text-[#a3a8a9] tabular-nums">
-                        {String(i + 1).padStart(2, "0")}
+                      <span
+                        aria-hidden="true"
+                        className="text-[24px] leading-[24px] font-bold text-[#ff9f5a] tabular-nums"
+                      >
+                        {i + 1}
                       </span>
                       <div className="min-w-0">
                         <p className="text-[17px] leading-[22px] font-semibold">{s.title}</p>
@@ -118,11 +127,11 @@ export default async function AnfragePage({
                 </ol>
               </div>
 
-              <div className="kante-stark border-border rounded-b-[6px] border-x border-b bg-[#fafaf8] p-7 sm:p-8">
-                <h2 className={a.eyebrow}>Lieber direkt</h2>
+              <div className="rounded-[18px] bg-white p-7 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:p-8">
+                <h2 className="text-[21px] leading-[25px] font-bold">Lieber direkt</h2>
                 <a
                   href="tel:+491607621876"
-                  className="text-foreground mt-3 inline-flex min-h-11 items-center text-[32px] leading-none font-[760] tracking-[-0.03em] whitespace-nowrap tabular-nums [font-stretch:116%] hover:underline hover:decoration-[var(--gold)] hover:decoration-2 hover:underline-offset-8"
+                  className="text-foreground hover:text-gold-ink mt-3 inline-flex min-h-11 items-center text-[32px] leading-none font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums transition-colors"
                 >
                   0160&nbsp;7621876
                 </a>
@@ -130,20 +139,20 @@ export default async function AnfragePage({
                   <a
                     href="/sitalo-kontakt.vcf"
                     download="Sitalo-Webdesign.vcf"
-                    className="link-pfeil font-semibold"
+                    className="text-gold-ink inline-flex min-h-11 items-center font-semibold underline-offset-2 hover:underline"
                   >
-                    Im Adressbuch speichern&nbsp;<span className="pfeil" aria-hidden="true">→</span>
+                    Im Adressbuch speichern
                   </a>
                 </p>
               </div>
 
-              <p className={`${a.mono} px-1 pt-3`}>{PREIS_HINWEIS}</p>
+              <p className="px-2 pt-3 text-[12px] leading-[1.33] text-[#6e6e73]">{PREIS_HINWEIS}</p>
             </div>
           </div>
         </section>
       </UnterseiteMain>
 
-      <MarketingFooter crumb="Anfrage" ohnePreisHinweis />
+      <MarketingFooter crumb="Anfrage" />
     </div>
   );
 }

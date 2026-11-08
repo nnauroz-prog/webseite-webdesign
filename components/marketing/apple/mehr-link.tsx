@@ -3,15 +3,13 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * Textlink der Werkstatt: dunkle Schrift, orange Linie, die sich beim
- * Hover von links aufzieht, und ein Pfeil →, der ein Stück nach rechts
- * gleitet (.link-pfeil, app/globals.css). Das letzte Wort und der Pfeil
- * brechen nie getrennt um. kontext ergänzt für Screenreader, worum es
- * geht (gegen mehrere gleichlautende Links auf einer Seite).
+ * Apple-Textlink in Orange mit „›“ (.link-chevron, app/apple.css), z. B.
+ * „Mehr erfahren ›“. kontext ergänzt für Screenreader, worum es geht
+ * (gegen mehrere gleichlautende Links auf einer Seite).
  *
- * frei: freistehend mit 44 px Tippfläche.
+ * frei: freistehend mit 44 px Tippfläche (min-height).
  * groesse: "text" 17 px (Standard), "klein" 14 px in Karten,
- * "unter" 19/21 px für Kopf-Aktionen.
+ * "unter" 21 px für Hero-Aktionen.
  */
 export function MehrLink({
   href,
@@ -29,26 +27,25 @@ export function MehrLink({
   className?: string;
 }) {
   const klassen = cn(
-    "link-pfeil font-semibold",
-    frei && "inline-block leading-6",
-    groesse === "klein" && "text-[14px] tracking-[-0.01em]",
-    groesse === "text" && "text-[16px] tracking-[-0.012em]",
-    groesse === "unter" && "text-[17px] tracking-[-0.012em] sm:text-[19px]",
+    "link-chevron",
+    frei && "link-chevron-frei",
+    groesse === "klein" && "text-[14px] tracking-[-0.016em]",
+    groesse === "text" && "text-[17px] tracking-[-0.022em]",
+    groesse === "unter" && "text-[19px] tracking-[-0.012em] sm:text-[21px]",
     className,
   );
   const inhalt = (
     <>
       {children}
-      {/* geschütztes Leerzeichen: Der Pfeil bricht nie allein um. */}
-      {" "}
-      <span aria-hidden="true" className="pfeil">
-        →
+      {/* Kein Leerzeichen vor dem Chevron: Er bricht nie allein um. */}
+      <span aria-hidden="true" className="chev">
+        ›
       </span>
       {kontext ? <span className="sr-only"> {kontext}</span> : null}
     </>
   );
-  // Anker und tel: ohne next/link.
-  if (/^(#|tel:|https?:)/.test(href)) {
+  // Anker, tel:, mailto: und externe Ziele ohne next/link.
+  if (/^(#|tel:|mailto:|https?:)/.test(href)) {
     return (
       <a href={href} className={klassen}>
         {inhalt}

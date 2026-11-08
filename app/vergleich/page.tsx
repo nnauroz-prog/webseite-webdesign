@@ -10,7 +10,6 @@ import { baukastenKosten } from "@/lib/fremdpreise";
 import { getPaketBySlug } from "@/lib/pakete-data";
 import { SEITEN_STAND } from "@/lib/seiten-stand";
 import { SITE_URL } from "@/lib/site";
-import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 
 const TITLE = "Wix, Jimdo, Squarespace oder Webdesigner?";
 const DESCRIPTION =
@@ -499,20 +498,36 @@ function Cell({ value, highlight }: { value: Wert; highlight?: boolean }) {
 }
 
 /* ------------------------------------------------------------------
- * Abschluss wie auf allen Unterseiten: die Briefkarte, hier mit der
- * kostenlosen Durchsicht als Knopf.
+ * Abschluss: aktuelle Seite prüfen lassen.
  * ---------------------------------------------------------------- */
 function FinalCta() {
   return (
-    <Briefkarte
-      id="abschluss"
-      title="Schicken Sie uns den Link zu Ihrer jetzigen Seite."
-      inquiryHref="/audit"
-      knopf="Seite prüfen lassen"
-      link={{ href: "/website-erstellen-lassen", label: "Website erstellen lassen" }}
-    >
-      Sie bekommen drei bis fünf konkrete Punkte, kostenlos. Darin steht auch, ob sich ein Neubau lohnt oder ob Ihr
-      Baukasten reicht.
-    </Briefkarte>
+    <section className="grain bg-foreground text-background">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
+        <div className="lg:col-span-7">
+          <h2 className="text-balance text-[2rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.9rem]">
+            Schicken Sie uns den Link zu Ihrer jetzigen Seite.
+          </h2>
+          <p className="text-stahl-hell mt-6 max-w-xl text-[16.5px] leading-relaxed">
+            Sie bekommen drei bis fünf konkrete Punkte per Mail, kostenlos. Darin steht auch, ob sich ein Neubau lohnt oder ob
+            Ihr Baukasten reicht.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-4 lg:col-start-9 lg:justify-end">
+          <Link href="/audit" className="btn-signal grow sm:grow-0">
+            Seite prüfen lassen {ARROW}
+          </Link>
+          <a href="tel:+491607621876" className="text-background inline-flex min-h-11 items-center text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
+            0160&nbsp;7621876
+          </a>
+          <Link
+            href="/website-erstellen-lassen"
+            className="text-stahl-hell hover:text-background inline-flex basis-full items-center gap-1.5 text-[14.5px] font-semibold underline-offset-4 hover:underline lg:justify-end"
+          >
+            Website erstellen lassen bei Sitalo {ARROW}
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }

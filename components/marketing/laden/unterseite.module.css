@@ -1,230 +1,104 @@
 /* ==================================================================
    Unterseiten im Stil der Startseite (components/marketing/laden/
-   unterseite.tsx): Fläche #f3f2ee, Seitenkopf mit großem Foto,
+   unterseite.tsx): Fläche #f5f5f7, Seitenkopf mit großem Foto,
    Bildkacheln, Abschnittsköpfe im Zweiton, dunkle Kontaktkarte.
 
    Skala (Rechner / Handy): H1 64 / 40, Abschnitt 40 / 28, Kartentitel
    24 / 21, Fließtext 17. Inhaltsbreite .inhalt (980 px + Rinne).
    ================================================================== */
 
-/* ---------- Seitenkopf (linksbündig, Atelier-Satz) ---------- */
+/* ---------- Seitenkopf ---------- */
 .kopf {
-  padding-top: 20px;
-  text-align: left;
+  padding-top: 48px;
+  text-align: center;
 }
 @media (min-width: 734px) {
   .kopf {
-    padding-top: 28px;
+    padding-top: 72px;
   }
 }
 .kopfOhneBild {
   padding-bottom: 8px;
 }
-.kopfText {
-  max-width: 46rem;
-  margin-top: 40px;
-}
-@media (min-width: 734px) {
-  .kopfText {
-    margin-top: 56px;
-  }
-}
-.kopfZweispaltig {
-  display: grid;
-  gap: 32px;
-}
-.kopfZweispaltig > .kopfText {
-  max-width: none;
-}
-@media (min-width: 1024px) {
-  .kopfZweispaltig {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 56px;
-    align-items: end;
-  }
-}
-.kopfNeben {
-  min-width: 0;
-}
-/* Kopf mit Foto: das Foto steht klein und gerahmt wie auf /atelier
-   („Am Schreibtisch in Hamburg“), mit Mono-Unterschrift über einer
-   feinen Linie. Ab 1024 px rechts neben dem Text. */
-.kopfMitFoto > .kopfBild {
-  margin-top: 0;
-}
-.kopfFoto > .rahmen {
-  border-radius: 4px;
-}
-@media (min-width: 734px) {
-  .kopfFoto {
-    max-width: 620px;
-  }
-  .kopfFoto > .rahmen {
-    aspect-ratio: 3 / 2;
-  }
-  .kopfFoto > .unterschrift {
-    flex-wrap: nowrap;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-}
-@media (min-width: 1024px) {
-  .kopfMitFoto .kopfFoto {
-    max-width: none;
-  }
-  .kopfMitFoto .kopfFoto > .rahmen {
-    aspect-ratio: 4 / 3;
-  }
-}
-@media (min-width: 1068px) {
-  .kopfMitFoto .titel {
-    font-size: 58px;
-  }
-}
-
-/* Brotkrumen in Mono */
-.krumen ol {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 8px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 12px;
-  line-height: 20px;
-  color: var(--muted-foreground);
-}
-.krumen li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-.krumen a {
-  color: inherit;
-  text-decoration: none;
-  padding-block: 12px;
-  margin-block: -12px;
-}
-@media (hover: hover) {
-  .krumen a:hover {
-    color: var(--foreground);
-    text-decoration: underline;
-    text-decoration-color: var(--gold);
-    text-underline-offset: 3px;
-  }
-}
-.krumen [aria-current="page"] {
-  color: var(--foreground);
-}
-:global(.on-dark) .krumen ol {
-  color: var(--stahl-hell);
-}
-:global(.on-dark) .krumen [aria-current="page"] {
-  color: #f3f2ee;
-}
-
 .titel {
-  max-width: 20ch;
+  margin-inline: auto;
+  max-width: 16ch;
   font-size: 40px;
-  line-height: 1.02;
-  letter-spacing: -0.032em;
-  font-weight: 760;
-  font-stretch: 116%;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
   text-wrap: balance;
 }
 @media (max-width: 359px) {
   .titel {
-    font-size: 33px;
+    font-size: 34px;
   }
 }
 @media (min-width: 734px) {
   .titel {
     font-size: 56px;
+    line-height: 1.07;
   }
 }
 @media (min-width: 1068px) {
   .titel {
-    font-size: 66px;
-    line-height: 0.98;
+    font-size: 64px;
+    line-height: 1.0625;
   }
 }
-/* Zweiter Teil der H1: gleiche Farbe wie der erste (wie auf der
-   Startseite), hervorgehoben nur durch einen kleinen orangen Strich. */
-.akzent {
-  color: inherit;
-  text-decoration-line: underline;
-  text-decoration-color: var(--gold);
-  text-decoration-thickness: 0.07em;
-  text-underline-offset: 0.14em;
-  text-decoration-skip-ink: auto;
-}
-/* Hafenwort in Mono mit orangem Quadrat */
 .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11.5px;
-  line-height: 1.4;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--gold-ink);
 }
-.eyebrow::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  flex: none;
-  background: var(--gold);
-}
-.dunkel .eyebrow,
-:global(.on-dark) .eyebrow {
-  color: var(--stahl-hell);
+@media (min-width: 734px) {
+  .eyebrow {
+    font-size: 17px;
+    line-height: 24px;
+  }
 }
 .eyebrow + .titel {
-  margin-top: 20px;
-}
-.eyebrow + .zweiton {
-  margin-top: 16px;
+  margin-top: 8px;
 }
 .unter {
-  margin-top: 20px;
-  max-width: 36em;
-  font-size: 18px;
-  line-height: 1.5;
-  letter-spacing: -0.01em;
-  color: var(--muted-foreground);
+  margin: 16px auto 0;
+  max-width: 34em;
+  font-size: 19px;
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+  color: #6e6e73;
   text-wrap: pretty;
 }
 @media (min-width: 734px) {
   .unter {
-    margin-top: 24px;
-    font-size: 19px;
+    margin-top: 20px;
+    font-size: 21px;
   }
 }
 .aktionen {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 12px 28px;
-  margin-top: 28px;
+  margin-top: 24px;
+}
+@media (min-width: 734px) {
+  .aktionen {
+    margin-top: 28px;
+  }
 }
 .meta {
-  margin-top: 20px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 12px;
+  margin-top: 16px;
+  font-size: 14px;
   line-height: 20px;
-  letter-spacing: 0.02em;
-  color: var(--muted-foreground);
+  color: #6e6e73;
 }
 .meta a {
-  color: var(--foreground);
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-color: var(--gold);
-  text-underline-offset: 3px;
+  color: var(--gold-ink);
+  font-weight: 600;
 }
 .kopfBild {
   margin-top: 40px;
@@ -240,13 +114,13 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: var(--radius-foto);
-  background: #e7e6e1;
+  border-radius: 20px;
+  background: #e8e8ed;
   aspect-ratio: var(--a-m, var(--a, 3 / 2));
 }
 @media (min-width: 734px) {
   .rahmen {
-    border-radius: var(--radius-foto);
+    border-radius: 28px;
     aspect-ratio: var(--a, 3 / 2);
   }
 }
@@ -258,16 +132,15 @@
   left: 12px;
   bottom: 12px;
   z-index: 1;
-  border-radius: 2px;
-  background: #fafaf8;
-  padding: 4px 8px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10.5px;
-  line-height: 14px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #1b1d1e;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.88);
+  padding: 4px 12px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #1d1d1f;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 @media (min-width: 734px) {
   .pille {
@@ -316,24 +189,11 @@
   }
 }
 .unterschrift {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
   margin-top: 12px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 12px;
-  line-height: 18px;
-  letter-spacing: 0.02em;
-  color: var(--muted-foreground);
-  text-align: left;
-}
-.unterschrift::before {
-  content: "";
-  width: 18px;
-  height: 1px;
-  margin-top: 9px;
-  flex: none;
-  background: var(--gold);
+  font-size: 14px;
+  line-height: 20px;
+  color: #6e6e73;
+  text-align: center;
 }
 
 /* ---------- Abschnitt ---------- */
@@ -354,26 +214,31 @@
   }
 }
 .zweiton {
-  max-width: 26ch;
+  max-width: 24ch;
   font-size: 28px;
-  line-height: 1.1;
-  letter-spacing: -0.024em;
-  font-weight: 720;
-  font-stretch: 114%;
-  color: #1b1d1e;
-  text-wrap: balance;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  color: #1d1d1f;
+  text-wrap: pretty;
+}
+.zweiton > span + span {
+  display: inline-block;
+  color: #6e6e73;
 }
 @media (min-width: 734px) {
   .zweiton {
     font-size: 40px;
-    line-height: 1.06;
-    letter-spacing: -0.028em;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
   }
 }
 .dunkel .zweiton {
-  color: #f3f2ee;
+  color: #f5f5f7;
 }
-
+.dunkel .zweiton > span + span {
+  color: #a1a1a6;
+}
 .abschnittUnter {
   margin-top: 12px;
   max-width: 40em;
@@ -399,11 +264,10 @@
 
 /* Dunkler Abschnitt (Hell-Dunkel-Wechsel) */
 .dunkelFlaeche {
-  position: relative;
   margin-top: 56px;
   padding-block: 56px;
-  background: #1b1d1e;
-  color: #f3f2ee;
+  background: #000;
+  color: #f5f5f7;
 }
 @media (min-width: 734px) {
   .dunkelFlaeche {
@@ -462,17 +326,17 @@
   min-width: 0;
   flex-direction: column;
   overflow: hidden;
-  border-radius: var(--radius-karte);
-  background: #fafaf8;
-  color: #1b1d1e;
-  box-shadow: inset 0 0 0 1px rgb(27 29 30 / 0.1);
-  --grau: #565b5d;
+  border-radius: 18px;
+  background: #fff;
+  color: #1d1d1f;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
+  --grau: #6e6e73;
   --akzent: var(--gold-ink);
   transition: box-shadow 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .kachelSchwarz {
-  background: #1b1d1e;
-  color: #f3f2ee;
+  background: #0f2a3a;
+  color: #f5f5f7;
   box-shadow:
     inset 0 3px 0 #f45b1e,
     0 4px 16px rgb(0 0 0 / 0.08);
@@ -480,13 +344,13 @@
   --akzent: #ff9f5a;
 }
 .kachelNacht {
-  background: #1b1d1e;
-  color: #f3f2ee;
+  background: #000;
+  color: #f5f5f7;
   box-shadow: none;
   --grau: #a1a1a6;
   --akzent: #ff9f5a;
 }
-/* Auf der Laden-Fläche #f3f2ee eine Stufe dunkler, sonst unsichtbar */
+/* Auf der Laden-Fläche #f5f5f7 eine Stufe dunkler, sonst unsichtbar */
 .kachelHell {
   background: #e8e8ed;
   box-shadow: none;
@@ -521,13 +385,11 @@
   }
 }
 .kachelEyebrow {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 16px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--grau);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--akzent);
 }
 .kachelTitel {
   margin-top: 6px;
@@ -694,9 +556,9 @@ section.ladeliste {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   overflow: hidden;
-  border-radius: var(--radius-karte);
-  background: #1b1d1e;
-  color: #f3f2ee;
+  border-radius: 18px;
+  background: #0f2a3a;
+  color: #f5f5f7;
 }
 .kontaktBild {
   position: relative;
@@ -736,7 +598,7 @@ section.ladeliste {
     grid-template-columns: 540px 1fr;
   }
 }
-.kontaktEyebrowAlt {
+.kontaktEyebrow {
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
@@ -776,7 +638,7 @@ section.ladeliste {
   line-height: 40px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #f3f2ee;
+  color: #f5f5f7;
   white-space: nowrap;
 }
 @media (hover: hover) {
@@ -822,39 +684,14 @@ section.ladeliste {
 
 /* ---------- Weiße Inhaltskarte ---------- */
 .blatt {
-  border-radius: var(--radius-karte);
+  border-radius: 18px;
   background: #fff;
   padding: 24px 22px;
   box-shadow: 0 4px 16px rgb(0 0 0 / 0.06);
 }
 @media (min-width: 734px) {
   .blatt {
-    border-radius: var(--radius-karte);
+    border-radius: 28px;
     padding: 40px;
-  }
-}
-
-/* Handy: das Kopffoto steht wie ein angeheftetes Foto rechts, die
-   Bildunterschrift links daneben. So bleibt der Satz im Kopf das größte
-   Element im ersten Bildschirm (LCP ist Text, nicht das Foto). */
-@media (max-width: 733px) {
-  .kopfBild {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 54%;
-    gap: 14px;
-    align-items: end;
-    margin-top: 32px;
-  }
-  .kopfBild > .rahmen {
-    grid-column: 2;
-    grid-row: 1;
-    transform: rotate(1.2deg);
-    box-shadow: 0 12px 26px -16px rgb(27 29 30 / 0.5);
-  }
-  .kopfBild > .unterschrift {
-    grid-column: 1;
-    grid-row: 1;
-    flex-direction: column;
-    margin-top: 0;
   }
 }
