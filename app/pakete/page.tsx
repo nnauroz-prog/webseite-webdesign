@@ -201,7 +201,8 @@ export default function PaketePage() {
       />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Pakete und Preise"
+          krumen="Pakete"
+          eyebrow="Liegeplatz 3 · Pakete und Preise"
           titel={`Website-Pakete ${STARTER_SETUP}`}
           unter={
             <>
@@ -231,6 +232,7 @@ export default function PaketePage() {
               position="50% 55%"
             />
           }
+          unterschrift={<>Musterseite eines Kosmetikstudios, frei erfunden · Paket Business</>}
         />
         <Modelle />
         <Vergleich />
@@ -238,9 +240,8 @@ export default function PaketePage() {
         <Weiterlesen />
         <KontaktKarte
           id="abschluss"
-          eyebrow="Beratung"
           titel="Welches Paket passt, klären wir am Telefon."
-          zeile="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
+          zeile="Eine Viertelstunde reicht meistens. Wer lieber schreibt, nimmt das Formular, wir antworten meist am selben Werktag."
           link={{ href: "/branchen", label: "Musterseiten ansehen" }}
           foto={{
             src: "/images/cafe-eimsbuettel.webp",

@@ -56,7 +56,8 @@ export default function BranchenPage() {
       />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow={`${ZAHLWORT[BRANCHEN.length] ?? BRANCHEN.length} Branchen`}
+          krumen="Branchen"
+          eyebrow={`Register · ${ZAHLWORT[BRANCHEN.length] ?? BRANCHEN.length} Branchen`}
           titel="Websites für Ihre Branche"
           unter="Eine Praxis braucht anderes als ein Café. Für jede Branche haben wir aufgeschrieben, worauf Ihre Kundschaft zuerst schaut, und eine Musterseite gebaut."
           aktionen={
@@ -80,6 +81,7 @@ export default function BranchenPage() {
               position="50% 45%"
             />
           }
+          unterschrift="Musterseite einer Zahnarztpraxis am Empfang · frei erfunden. Jede Branche bekommt ihre eigene Seite."
         />
         <Register />
         <Vorschau />

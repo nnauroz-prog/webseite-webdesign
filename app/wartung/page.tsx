@@ -215,7 +215,8 @@ export default function WartungPage() {
       />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Wartung und Pflege"
+          krumen="Wartung"
+          eyebrow="Liegegeld · Wartung und Pflege"
           titel="Website-Wartung für Seiten, die schon laufen"
           unter="Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das geht mit WordPress, Wix oder Squarespace. Bei WordPress fallen jeden Monat Updates an, deshalb sehen wir uns die Seite vorher an und nennen Ihnen den passenden Tarif."
           aktionen={
@@ -239,6 +240,7 @@ export default function WartungPage() {
               position="45% 45%"
             />
           }
+          unterschrift="Am Schreibtisch: die Seite ansehen, bevor wir einen Tarif nennen"
         />
         <Plans />
         <Anlaesse />

@@ -33,7 +33,7 @@ export default function StandortePage() {
       <main id="main" tabIndex={-1} className="flex-1">
         <Hero />
         <Liste />
-        <Briefkarte title="Betriebe außerhalb dieser Stadtteile bekommen dieselbe Website.">
+        <Briefkarte className="bg-[#f5f5f7]" title="Betriebe außerhalb dieser Stadtteile bekommen dieselbe Website.">
           Das erste Gespräch führen wir am Telefon oder per Video. In Hamburg kommen wir auf Wunsch auch bei Ihnen
           vorbei.
         </Briefkarte>

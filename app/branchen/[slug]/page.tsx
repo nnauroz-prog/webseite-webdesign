@@ -258,7 +258,8 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
   const zweitlink = "text-gold-ink underline underline-offset-2 hover:decoration-2";
   return (
     <SeitenKopf
-      eyebrow={landing ? "Seitenplan und Muster" : "Website erstellen lassen"}
+      krumen={[{ href: "/branchen", label: "Branchen" }, { label: branche.label }]}
+      eyebrow={landing ? "Ladeliste · Seitenplan und Muster" : "Ladeliste · Website erstellen lassen"}
       titel={<span className="hyphens-auto sm:hyphens-none">Website für {branche.label}</span>}
       unter={branche.shortBody}
       aktionen={

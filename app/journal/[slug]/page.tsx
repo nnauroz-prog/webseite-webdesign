@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { MehrLink } from "@/components/marketing/apple";
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { SitaloSignatur } from "@/components/marketing/hafen/sitalo-signatur";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
@@ -177,6 +178,7 @@ export default async function JournalPostPage({
           <PostBody post={post} />
 
           <footer className="mx-auto w-full max-w-[980px] px-[max(var(--rinne),env(safe-area-inset-left))]">
+            <SitaloSignatur caption="Aus dem Büro in Hamburg" className="mb-14" />
             <nav aria-label="Weitere Beiträge" className="grid gap-3 sm:grid-cols-2">
               {prev ? (
                 <article className="karte karte-hover p-7">

@@ -43,7 +43,8 @@ export default function FaqPage() {
       />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow={`FAQ · ${QUESTION_COUNT} Antworten`}
+          krumen="Fragen"
+          eyebrow={`Kaimauer · ${QUESTION_COUNT} Antworten`}
           titel="Häufige Fragen"
           unter="Nach Themen sortiert. Steht Ihre Frage nicht dabei, rufen Sie an oder schreiben Sie uns."
           bild={
@@ -160,7 +161,7 @@ function Closer() {
         <>
           Dann fragen Sie uns direkt. Anfragen über das Formular beantworten wir meist am selben Werktag. Am ersten
           Donnerstag im Monat gibt es außerdem eine{" "}
-          <Link href="/sprechstunde" className="text-[#f5f5f7] underline underline-offset-4">
+          <Link href="/sprechstunde" className="text-[#1d1d1f] underline decoration-[var(--gold)] underline-offset-4">
             offene Telefonsprechstunde
           </Link>
           .

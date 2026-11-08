@@ -1,7 +1,8 @@
 /* ==================================================================
    Unterseiten im Stil der Startseite (components/marketing/laden/
    unterseite.tsx): Fläche #f5f5f7, Seitenkopf mit großem Foto,
-   Bildkacheln, Abschnittsköpfe im Zweiton, dunkle Kontaktkarte.
+   Bildkacheln, Abschnittsköpfe im Zweiton. Abschluss: helle
+   Briefkarte (components/marketing/hafen/briefkarte.module.css).
 
    Skala (Rechner / Handy): H1 64 / 40, Abschnitt 40 / 28, Kartentitel
    24 / 21, Fließtext 17. Inhaltsbreite .inhalt (980 px + Rinne).
@@ -46,21 +47,51 @@
     line-height: 1.0625;
   }
 }
-.eyebrow {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--gold-ink);
+/* Brotkrumen in Mono über dem Eyebrow, zentriert wie der Kopf */
+.krumen {
+  margin-bottom: 20px;
 }
-@media (min-width: 734px) {
-  .eyebrow {
-    font-size: 17px;
-    line-height: 24px;
+.krumen ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.04em;
+  color: #6e6e73;
+}
+.krumen li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.krumen a {
+  color: inherit;
+  text-decoration: none;
+  padding-block: 12px;
+  margin-block: -12px;
+}
+@media (hover: hover) {
+  .krumen a:hover {
+    color: #1d1d1f;
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 3px;
   }
 }
+.krumen [aria-current="page"] {
+  color: #1d1d1f;
+}
+/* Eyebrow: .kennzeile-mono (global), hier nur zentriert */
+.eyebrow {
+  justify-content: center;
+}
 .eyebrow + .titel {
-  margin-top: 8px;
+  margin-top: 12px;
 }
 .unter {
   margin: 16px auto 0;
@@ -172,28 +203,20 @@
   text-wrap: balance;
 }
 @media (min-width: 734px) {
-  /* Mit Bildsatz unten wandert die Muster-Pille nach oben links */
-.pilleOben > .pille {
-  top: 12px;
-  bottom: auto;
-}
-@media (min-width: 734px) {
-  .pilleOben > .pille {
-    top: 20px;
-  }
-}
-.bildSatz {
+  .bildSatz {
     padding: 96px 40px 36px;
     font-size: 32px;
     line-height: 1.125;
   }
 }
+/* Mono-Bildunterschrift unter dem Kopfbild (.notiz-mono global) */
 .unterschrift {
   margin-top: 12px;
-  font-size: 14px;
-  line-height: 20px;
-  color: #6e6e73;
   text-align: center;
+  text-wrap: balance;
+}
+p.unterschrift {
+  margin-top: 28px;
 }
 
 /* ---------- Abschnitt ---------- */
@@ -492,21 +515,7 @@
   padding: 20px 22px 24px;
 }
 @media (min-width: 734px) {
-  /* Gestalteter Bildinhalt (Suchtreffer, Protokoll, Formular) statt Foto */
-.kachelUi {
-  margin-top: auto;
-  padding: 20px 22px 22px;
-  user-select: none;
-}
-@media (min-width: 734px) {
-  .kachelUi {
-    padding: 24px 32px 32px;
-  }
-}
-.kachelText:has(+ .kachelUi) {
-  padding-bottom: 0;
-}
-.kachelFuss {
+  .kachelFuss {
     padding: 24px 32px 32px;
   }
 }
@@ -541,120 +550,6 @@
 /* Ladeliste auf /branchen: Laden-Fläche statt Weiß */
 section.ladeliste {
   background: transparent;
-}
-
-/* ---------- Kontaktkarte (Abschluss) ---------- */
-.kontaktAbschnitt {
-  padding-block: 56px 64px;
-}
-@media (min-width: 734px) {
-  .kontaktAbschnitt {
-    padding-block: 80px 96px;
-  }
-}
-.kontakt {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  overflow: hidden;
-  border-radius: 18px;
-  background: #0f2a3a;
-  color: #f5f5f7;
-}
-.kontaktBild {
-  position: relative;
-  order: -1;
-  height: 200px;
-  overflow: hidden;
-}
-.kontaktText {
-  padding: 24px 22px 28px;
-}
-/* Ohne Foto: gezeichnete Hafenszene, unten bündig */
-.kontaktLinie {
-  background: #0b1a24;
-}
-.kontaktLinie > svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-@media (min-width: 734px) {
-  .kontakt {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    min-height: 400px;
-  }
-  .kontaktBild {
-    order: 0;
-    height: auto;
-  }
-  .kontaktText {
-    align-self: center;
-    padding: 40px;
-  }
-}
-@media (min-width: 1068px) {
-  .kontakt {
-    grid-template-columns: 540px 1fr;
-  }
-}
-.kontaktEyebrow {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-  color: #ff9f5a;
-}
-.kontaktTitel {
-  margin-top: 6px;
-  font-size: 24px;
-  line-height: 28px;
-  font-weight: 700;
-  text-wrap: balance;
-}
-@media (min-width: 1068px) {
-  .kontaktTitel {
-    font-size: 32px;
-    line-height: 36px;
-    letter-spacing: -0.01em;
-  }
-}
-.kontaktZeile {
-  margin-top: 10px;
-  font-size: 15px;
-  line-height: 22px;
-  color: #a1a1a6;
-  text-wrap: pretty;
-}
-@media (min-width: 734px) {
-  .kontaktZeile {
-    font-size: 17px;
-    line-height: 25px;
-  }
-}
-.kontaktNummer {
-  display: inline-block;
-  margin-top: 16px;
-  font-size: 32px;
-  line-height: 40px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: #f5f5f7;
-  white-space: nowrap;
-}
-@media (hover: hover) {
-  .kontaktNummer:hover {
-    color: #ff9f5a;
-  }
-}
-.kontaktAktionen {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 20px;
-  margin-top: 20px;
-}
-.kontaktAktionen :global(.link-chevron) {
-  color: #ff9f5a;
 }
 
 /* ---------- Chips ---------- */

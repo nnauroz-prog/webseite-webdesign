@@ -397,7 +397,8 @@ export default function WebsiteErstellenLassenPage() {
       />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Webdesign zum Festpreis"
+          krumen="Website erstellen lassen"
+          eyebrow="Kontor · Webdesign zum Festpreis"
           titel={`Website erstellen lassen zum Festpreis ${STARTER.setup}`}
           unter={
             <>
@@ -430,6 +431,7 @@ export default function WebsiteErstellenLassenPage() {
               position="50% 40%"
             />
           }
+          unterschrift="Musterseite einer Tischlerei auf der Hobelbank · frei erfunden"
         />
 
         <Kosten />

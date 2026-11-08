@@ -76,7 +76,7 @@ export default async function AnfragePage({
         <section className="inhalt pt-10 sm:pt-14 lg:pt-16">
           <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
             <div>
-              <p className={u.eyebrow}>Website anfragen</p>
+              <p className="kennzeile-mono">Kontor · Website anfragen</p>
               <h1 className={`${u.titel} !mx-0 !max-w-[15ch] text-left`}>Erzählen Sie uns, was Sie vorhaben.</h1>
               <p className={`${u.unter} !mx-0 text-left`}>
                 Name, E-Mail und eine kurze Beschreibung genügen. Ob Sie danach bei uns bauen lassen, entscheiden Sie,

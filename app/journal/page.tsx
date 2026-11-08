@@ -205,7 +205,8 @@ export default function JournalPage() {
       />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow={`Journal · ${JOURNAL_POSTS.length} Beiträge`}
+          krumen="Journal"
+          eyebrow={`Logbuch · ${JOURNAL_POSTS.length} Beiträge`}
           titel="Wissen für Betriebe mit Website"
           unter="Längere Texte über das, was uns bei der Arbeit an Websites für kleine Betriebe auffällt. Zum Beispiel, was eine Website kostet und wann sie besser noch warten kann."
           aktionen={

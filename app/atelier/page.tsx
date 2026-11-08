@@ -5,6 +5,7 @@ import { ArrowRight, Search } from "lucide-react";
 
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SitaloSignatur } from "@/components/marketing/hafen/sitalo-signatur";
 import { PageHero } from "@/components/marketing/page-hero";
 import { LEXIKON } from "@/lib/lexikon-data";
 import { SITE_URL } from "@/lib/site";
@@ -120,6 +121,7 @@ function Werkstattbericht() {
               schicken Sie uns per Mail, sie sind im Monatsbeitrag enthalten.
             </p>
           </div>
+          <SitaloSignatur caption="Aus dem Büro in Hamburg" className="mt-6 max-w-[180px]" />
           <Link
             href="/ablauf"
             className="mt-7 inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"

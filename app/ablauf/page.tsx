@@ -66,7 +66,8 @@ export default function AblaufPage() {
       <Produktleiste titel="Ablauf" links={[]} cta={{ href: "/anfrage", label: "Anfragen" }} />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Ablauf"
+          krumen="Ablauf"
+          eyebrow="Fahrplan · Ablauf"
           titel="So läuft Ihr Website-Projekt ab"
           unter="Sechs Halte vom ersten Anruf bis zur fertigen Seite. Sie sprechen dabei die ganze Zeit mit uns selbst, und den Termin, an dem die Seite online geht, nennen wir Ihnen vorab."
           aktionen={
@@ -89,6 +90,7 @@ export default function AblaufPage() {
               position="50% 45%"
             />
           }
+          unterschrift="Halt 4: Aus Ihren Stichpunkten werden Texte"
         />
         <Fahrplan />
         <KontaktKarte

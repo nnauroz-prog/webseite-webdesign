@@ -88,7 +88,8 @@ export default function KontaktPage() {
 function Briefkopf() {
   return (
     <SeitenKopf
-      eyebrow="Sitalo Webdesign · Hamburg"
+      krumen="Kontakt"
+      eyebrow="Kontor · Sitalo Webdesign"
       titel="Kontakt"
       unter="Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Anfragen über das Formular beantworten wir meist am selben Werktag."
       aktionen={
@@ -129,6 +130,7 @@ function Briefkopf() {
           position="50% 55%"
         />
       }
+      unterschrift="Speicherstadt, früher Abend · im Hintergrund die Elbphilharmonie"
     />
   );
 }

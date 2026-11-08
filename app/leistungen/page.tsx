@@ -86,7 +86,8 @@ export default function LeistungenPage() {
       />
       <UnterseiteMain>
         <SeitenKopf
-          eyebrow="Leistungen"
+          krumen="Leistungen"
+          eyebrow="Werkstatt · Leistungen"
           titel="Was wir für Ihre Website machen"
           unter="Hier steht, was wir übernehmen und in welchem Paket es steckt. Von der ersten Zeile bis zum Hosting liegt die Arbeit bei uns, und Sie sprechen dabei immer mit uns selbst."
           aktionen={
@@ -111,6 +112,7 @@ export default function LeistungenPage() {
               muster
             />
           }
+          unterschrift="Musterseite einer Gebäudereinigung auf der Arbeitsfläche · frei erfunden"
         />
         <Bauplan />
         <Verzeichnis />
