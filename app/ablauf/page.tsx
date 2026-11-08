@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
 
-import { Abschluss as AppleAbschluss, MehrLink } from "@/components/marketing/apple";
+import Link from "next/link";
+
+import { MehrLink } from "@/components/marketing/apple";
+import { WegBand } from "@/components/marketing/laden/bilder/weg-band";
+import {
+  Abschnitt,
+  FotoRahmen,
+  KontaktKarte,
+  SeitenKopf,
+  UnterseiteMain,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { PageHero } from "@/components/marketing/page-hero";
-import { CONTACT_EMAIL, SITE_URL } from "@/lib/site";
+import { Produktleiste } from "@/components/marketing/produktleiste";
+import { ABLAUF_HALTE } from "@/lib/ablauf-data";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Ablauf: So läuft Ihr Website-Projekt ab",
@@ -13,55 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/ablauf" },
 };
 
-/**
- * Die Halte des Ablaufs. `number` bleibt zweistellig, weil die Anker
- * (#step-01 …) im HowTo-Schema darauf zeigen. `wer` und `hinweis`
- * stehen als Fahrplan-Spalten neben dem Text.
- */
-const STEPS = [
-  {
-    number: "01",
-    title: "Sie schreiben uns",
-    body: `Über das Formular mit drei Pflichtfeldern oder per Mail an ${CONTACT_EMAIL}. Ein paar Sätze dazu, was Sie brauchen, reichen.`,
-    wer: "Sie",
-    hinweis: "Antwort meist am selben Werktag",
-  },
-  {
-    number: "02",
-    title: "Gespräch und Festpreis",
-    body: "Eine Viertelstunde am Telefon oder per Video, in Hamburg auf Wunsch bei einem Kaffee. Danach schicken wir Ihnen den Festpreis schriftlich.",
-    wer: "Sie und wir",
-    hinweis: "Meist eine Viertelstunde",
-  },
-  {
-    number: "03",
-    title: "Sie schicken Ihre Unterlagen",
-    body: "Ihr Logo in jedem Format, ein paar Fotos und Stichpunkte zu Ihren Leistungen. Handyfotos reichen, und wenn etwas fehlt, sagen wir Bescheid.",
-    wer: "Sie",
-    hinweis: "Fertige Texte brauchen wir nicht",
-  },
-  {
-    number: "04",
-    title: "Wir bauen die Seite",
-    body: "Aus Ihren Stichpunkten schreiben wir die Texte, dann gestalten und bauen wir die Seite für Handy und Rechner. Ab vollständigen Unterlagen steht eine einzelne Seite oft nach ein bis zwei Werktagen, Business meist nach fünf bis zehn. Für Premium und Studio rechnen Sie mit zwei bis fünf Wochen.",
-    wer: "Wir",
-    hinweis: "Starter oft 1–2, Business meist 5–10 Werktage",
-  },
-  {
-    number: "05",
-    title: "Sie prüfen den Test-Link",
-    body: "Sie sehen die fertige Seite unter einer Testadresse und schicken Ihre Änderungswünsche gesammelt. Eine Runde ist im Preis, bei Studio sind es bis zu drei. Freigegeben wird erst, wenn alles stimmt.",
-    wer: "Sie",
-    hinweis: "Eine Korrekturrunde inklusive, bei Studio bis zu drei",
-  },
-  {
-    number: "06",
-    title: "Die Seite geht online",
-    body: "Domain, SSL-Zertifikat und Hosting richten wir ein und prüfen Formular und Karte auf echten Geräten. Danach erreichen Sie uns unter derselben Nummer wie vorher.",
-    wer: "Wir",
-    hinweis: "Zum vereinbarten Termin",
-  },
-];
+const STEPS = ABLAUF_HALTE;
 
 export default function AblaufPage() {
   // HowTo-Schema mit den 6 Schritten plus BreadcrumbList für die
@@ -99,24 +62,46 @@ export default function AblaufPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero
-          crumb="Ablauf"
+      <MarketingHeader cta={false} />
+      <Produktleiste titel="Ablauf" links={[]} cta={{ href: "/anfrage", label: "Anfragen" }} />
+      <UnterseiteMain>
+        <SeitenKopf
           eyebrow="Ablauf"
-          title="So läuft Ihr Website-Projekt ab"
-          meta={
-            <a href="tel:+491607621876" className="inline-flex min-h-11 items-center">
-              Eine Nummer für alle Fragen: 0160&nbsp;7621876
-            </a>
+          titel="So läuft Ihr Website-Projekt ab"
+          unter="Sechs Halte vom ersten Anruf bis zur fertigen Seite. Sie sprechen dabei die ganze Zeit mit uns selbst, und den Termin, an dem die Seite online geht, nennen wir Ihnen vorab."
+          aktionen={
+            <>
+              <Link href="/anfrage" className="btn-signal btn-gross">
+                Anfrage schreiben
+              </Link>
+              <MehrLink href="/termin" groesse="unter">
+                Termin buchen
+              </MehrLink>
+            </>
           }
-        >
-          Sechs Halte vom ersten Anruf bis zur fertigen Seite. Sie sprechen dabei die ganze Zeit mit uns selbst, und den
-          Termin, an dem die Seite online geht, nennen wir Ihnen vorab.
-        </PageHero>
+          bild={
+            <FotoRahmen
+              vorab
+              src="/images/workspace-typing.webp"
+              alt="Hände auf der Tastatur eines Laptops in warmem Licht"
+              aspect="21 / 9"
+              aspectMobil="16 / 10"
+              position="50% 45%"
+            />
+          }
+        />
         <Fahrplan />
-        <Abschluss />
-      </main>
+        <KontaktKarte
+          titel="Der erste Halt ist ein Anruf oder eine Anfrage."
+          zeile="Wer lieber schreibt, nutzt das Anfrageformular. Danach geht es mit Halt 2 weiter."
+          link={{ href: "/termin", label: "Termin buchen" }}
+          foto={{
+            src: "/images/cafe-eimsbuettel.webp",
+            alt: "Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel",
+            position: "50% 60%",
+          }}
+        />
+      </UnterseiteMain>
       <MarketingFooter crumb="Ablauf" />
       <script
         type="application/ld+json"
@@ -129,70 +114,85 @@ export default function AblaufPage() {
 }
 
 /* ------------------------------------------------------------------
- * Fahrplan als Apple-Kacheln: sechs gerundete Karten, je mit runder
- * Nummer, Titel, Text und „Wer · Hinweis“ darunter. Der letzte Halt ist
- * schwarz (Höhepunkt). Anker #step-01 … bleiben (HowTo-Schema).
+ * Fahrplan: sechs weiße Karten mit dem Elbe-Band der Startseite oben
+ * (die Fähre fährt von Karte zu Karte weiter), darunter Titel, Text und
+ * „Wer · Hinweis“ (Subgrid). Danach ein großes Bild zum Test-Link
+ * (Musterseite, frei erfunden).
+ * Anker #step-01 … bleiben (HowTo-Schema).
  * ---------------------------------------------------------------- */
-function Fahrplan() {
-  const last = STEPS.length - 1;
+const ZEICHEN = [0, 0, 1, 1, 2, 3];
+
+function HaltKarte({ step, i }: { step: (typeof STEPS)[number]; i: number }) {
+  const last = i === STEPS.length - 1;
+  // Subgrid: Band, Halt, Titel, Text und „Wer · Hinweis“ liegen in allen
+  // Karten einer Reihe auf derselben Linie.
   return (
-    <section className="flaeche-hell abschnitt">
-      <ol role="list" className="mx-auto grid max-w-[1200px] gap-3 px-[max(var(--rinne),env(safe-area-inset-left))] md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
-        {STEPS.map((step, i) => (
-          <li
-            key={step.number}
-            id={`step-${step.number}`}
-            data-auftritt=""
-            className={`karte ${i === last ? "karte-schwarz" : "karte-weiss"} flex scroll-mt-24 flex-col p-7 sm:p-9`}
-          >
-            <span
-              aria-hidden="true"
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-[17px] font-semibold tabular-nums ${
-                i === last ? "bg-gold text-foreground" : "bg-[var(--hell)] text-foreground"
-              }`}
-            >
-              {i + 1}
-            </span>
-            <p className="t-eyebrow mt-5 text-[14px]">{i === last ? "Endhalt" : `Halt ${i + 1}`}</p>
-            <h2 className="t-karte mt-1">{step.title}</h2>
-            <p className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">{step.body}</p>
-            <dl className="mt-auto grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 border-t border-[var(--border)] pt-5 text-[14px] leading-[1.43] [.karte-schwarz_&]:border-[#424245]">
-              <dt className="text-muted-foreground">Wer</dt>
-              <dd className="font-semibold">{step.wer}</dd>
-              <dt className="text-muted-foreground">Hinweis</dt>
-              <dd>{step.hinweis}</dd>
-            </dl>
-          </li>
-        ))}
-      </ol>
-      <div className="inhalt mt-10 text-center">
-        <p className="t-fuss text-[14px]">
-          Was eine Seite kostet, steht vorher fest. Kommt etwas dazu, sprechen wir vorher darüber.
-        </p>
-        <p className="mt-2 flex flex-wrap justify-center gap-x-8">
-          <MehrLink href="/pakete">Pakete</MehrLink>
-          <MehrLink href="/faq">Fragen</MehrLink>
-        </p>
+    <li
+      id={`step-${step.number}`}
+      className={`row-span-5 grid scroll-mt-28 grid-rows-subgrid gap-0 overflow-hidden rounded-[18px] shadow-[0_4px_16px_rgb(0_0_0/0.08)] ${
+        last ? "on-dark bg-[#0f2a3a] text-[#f5f5f7]" : "bg-white"
+      }`}
+      data-flaeche-dunkel={last ? "" : undefined}
+    >
+      {/* Bildband im vollen Verhältnis der Szene (200 × 88), nichts abgeschnitten */}
+      <span className="block aspect-[200/88] w-full" aria-hidden="true">
+        <WegBand i={i} teile={6} zeichen={ZEICHEN[i]} />
+      </span>
+      <p className={`px-[22px] pt-5 text-[12px] leading-4 font-semibold sm:px-7 sm:pt-6 ${last ? "text-[#ff9f5a]" : "text-gold-ink"}`}>
+        {last ? "Endhalt" : `Halt ${i + 1}`}
+      </p>
+      <h3 className="mt-1.5 px-[22px] text-[21px] leading-[25px] font-bold text-balance sm:px-7 lg:text-[24px] lg:leading-[28px]">
+        {step.title}
+      </h3>
+      <p
+        className={`mt-3 px-[22px] pb-5 text-[15px] leading-[22px] tracking-[-0.016em] text-pretty sm:px-7 sm:text-[17px] sm:leading-[25px] ${last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}`}
+      >
+        {step.body}
+      </p>
+      <div className="px-[22px] pb-6 sm:px-7 sm:pb-7">
+        <dl
+          className={`grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 border-t pt-4 text-[14px] leading-5 ${
+            last ? "border-white/15" : "border-black/10"
+          }`}
+        >
+          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>Wer</dt>
+          <dd className="font-semibold">{step.wer}</dd>
+          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>Hinweis</dt>
+          <dd>{step.hinweis}</dd>
+        </dl>
       </div>
-    </section>
+    </li>
   );
 }
 
-/* ------------------------------------------------------------------
- * Abschluss: schwarz, Telefonnummer groß, Pille und Mail.
- * ---------------------------------------------------------------- */
-function Abschluss() {
+function Fahrplan() {
   return (
-    <AppleAbschluss
-      id="kontakt"
-      titel="Der erste Halt ist ein Anruf oder eine Anfrage."
-      zwischen={
-        <a href="tel:+491607621876" className="abschluss-nummer">
-          0160&nbsp;7621876
-        </a>
-      }
-      unter="Wer lieber schreibt, nutzt das Anfrageformular. Danach geht es mit Halt 2 weiter."
-      link={{ href: "/anfrage", label: "Anfrage schreiben" }}
-    />
+    <Abschnitt
+      id="halte"
+      fett="Sechs Halte."
+      grau="Vom ersten Satz bis online."
+      unter="Was eine Seite kostet, steht vorher fest. Kommt etwas dazu, sprechen wir vorher darüber."
+    >
+      <ol role="list" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        {STEPS.map((step, i) => (
+          <HaltKarte key={step.number} step={step} i={i} />
+        ))}
+      </ol>
+      <div className="mt-3 lg:mt-5">
+        <FotoRahmen
+          src="/images/sitalo-praxis-laptop.webp"
+          alt="Laptop am Empfang einer Zahnarztpraxis, auf dem Bildschirm die Musterseite der Praxis"
+          aspect="21 / 9"
+          aspectMobil="4 / 3"
+          position="50% 42%"
+          muster
+          satz="Erst ansehen, dann freigeben. Den Test-Link öffnen Sie auf Ihren eigenen Geräten."
+        />
+      </div>
+      <p className="mt-8 flex flex-wrap gap-x-8">
+        <MehrLink href="/pakete">Pakete</MehrLink>
+        <MehrLink href="/faq">Fragen</MehrLink>
+      </p>
+    </Abschnitt>
   );
 }

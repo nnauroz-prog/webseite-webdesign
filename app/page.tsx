@@ -1,45 +1,29 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
 import { VorherNachher as VorherNachherRegler } from "@/components/marketing/hafen/vorher-nachher";
 import { Bildreihe } from "@/components/marketing/laden/bildreihe";
 import { LadenDefs } from "@/components/marketing/laden/bilder/defs";
-import {
-  BildBusiness,
-  BildPremium,
-  BildStarter,
-  BildStudio,
-  BildWartung,
-} from "@/components/marketing/laden/bilder/paket-bilder";
-import {
-  KachelBlasen,
-  KachelContainer,
-  KachelFeder,
-  KachelHoerer,
-  KachelNadel,
-  KachelPinsel,
-  KachelStift,
-} from "@/components/marketing/laden/bilder/symbole";
 import { WegBand } from "@/components/marketing/laden/bilder/weg-band";
 import {
   KarteEndeBild,
   KarteGross,
-  KarteKlein,
   KarteMittel,
   KarteWeg,
   kartenStil as s,
   LadenBild,
+  LadenFoto,
 } from "@/components/marketing/laden/karten";
 import { KranBanner } from "@/components/marketing/laden/kran-banner";
 import { LadenKopf } from "@/components/marketing/laden/laden-kopf";
 import { LadenRegal } from "@/components/marketing/laden/laden-regal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { Produktleiste } from "@/components/marketing/produktleiste";
 import { STUNDENSATZ_EUR } from "@/lib/honorar-data";
 import { JOURNAL_POSTS } from "@/lib/journal-data";
-import { brancheFuerPreset, presetFuer } from "@/lib/muster-presets";
+import { brancheFuerPreset } from "@/lib/muster-presets";
 import { getPaketBySlug, MONATSBEITRAEGE, PAKETE, PREIS_HINWEIS, WARTUNG_PREISE, type Paket } from "@/lib/pakete-data";
 
 // Der Pegel St. Pauli im Kopf (components/marketing/hafen/pegel.ts) wird
@@ -119,7 +103,6 @@ const STARTER = paket("starter");
 const BUSINESS = paket("business");
 const PREMIUM = paket("premium");
 const STUDIO = paket("studio");
-const MONTHLY_FROM = STARTER.monat.replace(/\s*\/\s*Monat$/, "");
 /** Die vier neuesten Ratgeber fürs Journal-Regal. */
 const JOURNAL_NEU = JOURNAL_POSTS.slice(0, 4);
 
@@ -131,10 +114,23 @@ function journalBild(slug: string) {
   return "journal-skyline";
 }
 
-/** Reihenfolge der Muster-Websites; das Gerät je Karte wechselt (scripts/laden-bilder.mjs). */
-// Pflege (Business-Karte) und Handwerk (Starter-Karte) nicht vorn, damit
-// beim Wischen nicht zweimal dieselbe Musterseite nacheinander kommt.
-const MUSTER = ["praxis", "friseur", "gastro", "pflege", "reinigung", "handwerk", "kanzlei", "fitness", "hotel", "kosmetik"];
+/**
+ * Muster-Websites als Fotos (public/images/sitalo-*-laptop.webp): echte
+ * Geräte statt gezeichneter Hüllen. Titel nennen die Branche, nicht den
+ * Betrieb, weil die Seiten im Foto eigene, frei erfundene Namen tragen.
+ * Friseur, Café und Hotel stehen schon bei den Paketen.
+ * pos: Bildausschnitt (object-position), damit der Bildschirm in der
+ * Bildzone sitzt.
+ */
+const MUSTER = [
+  { key: "praxis", titel: "Arztpraxis", zeile: "Sprechzeiten, Leistungen, Terminanfrage.", bild: "sitalo-praxis-laptop", pos: "50% 62%", alt: "Laptop mit der Musterseite einer Zahnarztpraxis auf einem Empfangstresen" },
+  { key: "handwerk", titel: "Handwerk", zeile: "Leistungen, Referenzen, Anfrage.", bild: "sitalo-handwerker-laptop", pos: "50% 58%", alt: "Laptop mit der Musterseite einer Tischlerei in einer Werkstatt" },
+  { key: "pflege", titel: "Pflegedienst", zeile: "Leistungen, Team, Rückruf.", bild: "sitalo-pflege-laptop", pos: "50% 62%", alt: "Laptop mit der Musterseite eines Pflegedienstes in einem hellen Büro" },
+  { key: "kanzlei", titel: "Kanzlei", zeile: "Rechtsgebiete, Team, Termin.", bild: "sitalo-kanzlei-laptop", pos: "50% 60%", alt: "Laptop mit der Musterseite einer Kanzlei auf einem Schreibtisch mit Leselampe" },
+  { key: "reinigung", titel: "Gebäudereinigung", zeile: "Leistungen, Einsatzgebiet, Angebot.", bild: "sitalo-reinigung-laptop", pos: "38% 50%", alt: "Laptop mit der Musterseite einer Gebäudereinigung auf einer Edelstahlfläche" },
+  { key: "fitness", titel: "Fitnessstudio", zeile: "Kurse, Preise, Probetraining.", bild: "sitalo-fitness-laptop", pos: "50% 64%", alt: "Laptop mit der Musterseite eines Fitnessstudios am Empfang" },
+  { key: "kosmetik", titel: "Kosmetik", zeile: "Behandlungen, Preise, Termin.", bild: "sitalo-kosmetik-laptop", pos: "55% 62%", alt: "Laptop mit der Musterseite eines Kosmetikstudios auf einer Marmorablage" },
+];
 
 /*
  * Startseite wie die Startseite eines Ladens: Kopf mit Hilfe-Hinweisen,
@@ -148,25 +144,14 @@ export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }} />
-      <MarketingHeader cta={false} />
-      {/* Lokale Produktleiste: direktes Kind des Wrappers, sonst klebt
-          sie am iPhone nicht (components/marketing/produktleiste.tsx). */}
-      <Produktleiste
-        titel="Sitalo Webdesign"
-        titelHref="#start"
-        links={[
-          { href: "#preise", label: "Pakete" },
-          { href: "#branchen", label: "Branchen" },
-          { href: "#werkzeuge", label: "Werkzeuge" },
-          { href: "#faq", label: "Fragen" },
-        ]}
-        cta={{ href: "/anfrage", label: "Anfragen" }}
-      />
+      {/* Eine Leiste: keine zweite Produktleiste auf der Startseite,
+          „Anfragen“ steht in der Hauptleiste, am Handy neben der Suche. */}
+      <MarketingHeader ctaMobil />
       <main id="main" tabIndex={-1} className={`buehne laden flex-1 ${s.seite}`}>
         <LadenDefs />
         <LadenKopf />
-        <Bildreihe />
         <KranBanner />
+        <Bildreihe />
         <Pakete />
         <Muster />
         <Unterschied />
@@ -177,7 +162,7 @@ export default function HomePage() {
         <Fragen />
         <Kontakt />
       </main>
-      <div className="border-t border-[#d2d2d7]">
+      <div className={s.fussRand}>
         <MarketingFooter ohnePreisHinweis ohneNachOben />
       </div>
     </div>
@@ -194,11 +179,7 @@ function Pakete() {
       fett="Die Pakete."
       grau={`Festpreis ${STARTER.setup}, schriftlich vor dem Start.`}
       link={{ href: "/pakete#vergleich", label: "Pakete vergleichen" }}
-      notiz={
-        <>
-          Dazu ein Monatsbeitrag {MONTHLY_FROM}. {PREIS_HINWEIS}
-        </>
-      }
+      notiz={PREIS_HINWEIS}
     >
       <KarteGross
         eyebrow="Eine Seite"
@@ -207,20 +188,19 @@ function Pakete() {
         preis={STARTER.setup}
         monat={STARTER.monat}
         href="/pakete/starter"
-        bildHintergrund="linear-gradient(180deg, #fbe9df 0%, #f5f5f7 100%)"
-        bild={<BildStarter />}
+        bildBeschrieben
+        bild={<LadenFoto src="/images/sitalo-friseur-mobile.webp" position="58% 50%" alt="Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten" />}
       />
       <KarteGross
         ton="schwarz"
-        dunkel
-        eyebrow="Für die meisten Betriebe empfohlen"
+        eyebrow="Für die meisten Betriebe"
         titel={BUSINESS.name}
         zeile="Eigene Seiten für Leistungen, Team und Galerie."
         preis={BUSINESS.setup}
         monat={BUSINESS.monat}
         href="/pakete/business"
-        bildHintergrund="radial-gradient(120% 90% at 85% 10%, #2a2a2d 0%, #000 70%)"
-        bild={<BildBusiness />}
+        bildBeschrieben
+        bild={<LadenFoto src="/images/sitalo-hotel-laptop.webp" position="42% 64%" alt="Laptop mit der mehrseitigen Musterseite eines Hotels an einer Rezeption" />}
       />
       <KarteGross
         eyebrow="Selbst pflegen"
@@ -229,8 +209,8 @@ function Pakete() {
         preis={PREMIUM.setup}
         monat={PREMIUM.monat}
         href="/pakete/premium"
-        bildHintergrund="linear-gradient(180deg, #f3ebe4 0%, #f5f5f7 100%)"
-        bild={<BildPremium />}
+        bildBeschrieben
+        bild={<LadenFoto src="/images/sitalo-cafe-mobile.webp" position="50% 50%" alt="Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch" />}
       />
       <KarteGross
         eyebrow="Neues Erscheinungsbild"
@@ -239,8 +219,8 @@ function Pakete() {
         preis={STUDIO.setup}
         monat={STUDIO.monat}
         href="/pakete/studio"
-        bildHintergrund="linear-gradient(180deg, #ececf0 0%, #f5f5f7 100%)"
-        bild={<BildStudio />}
+        bildBeschrieben
+        bild={<LadenFoto src="/images/workspace-prints.webp" position="50% 40%" alt="Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand" />}
       />
       <KarteGross
         eyebrow="Schon eine Website?"
@@ -249,8 +229,8 @@ function Pakete() {
         preis={`ab ${WARTUNG_PREISE.basis}`}
         monat="im Monat"
         href="/wartung"
-        bildHintergrund="linear-gradient(180deg, #eef2f3 0%, #e3e8ea 100%)"
-        bild={<BildWartung />}
+        bildBeschrieben
+        bild={<LadenFoto src="/images/workspace-macbook.webp" position="40% 40%" alt="Hände an einer Laptop-Tastatur, daneben ein Notizbuch und eine Tasse" />}
       />
     </LadenRegal>
   );
@@ -264,25 +244,23 @@ function Muster() {
     <LadenRegal
       id="branchen"
       fett="Muster-Websites."
-      grau="So können Seiten für Ihre Branche aussehen."
+      grau="Für Ihre Branche."
       link={{ href: "/branchen", label: "Alle Branchen" }}
       notiz="Alle Betriebe sind frei erfundene Beispiele."
       spaet={{ h: 660, hMobil: 640 }}
     >
-      {MUSTER.map((key) => {
-        const p = presetFuer(key);
-        const slug = brancheFuerPreset(key);
+      {MUSTER.map((m) => {
+        const slug = brancheFuerPreset(m.key);
         return (
           <KarteGross
-            key={key}
-            ton="getoent"
-            hintergrund={p.tint}
-            eyebrow={`Musterseite · ${p.chip}`}
-            titel={p.defaultName}
-            zeile={p.headline}
+            key={m.key}
+            eyebrow="Musterseite"
+            titel={m.titel}
+            zeile={m.zeile}
             mehr="Was auf Ihre Seite gehört"
             href={slug ? `/branchen/${slug}` : "/branchen"}
-            bild={<LadenBild name={`branche-${key}`} w={400} h={310} />}
+            bildBeschrieben
+            bild={<LadenFoto src={`/images/${m.bild}.webp`} position={m.pos} alt={m.alt} />}
           />
         );
       })}
@@ -291,8 +269,7 @@ function Muster() {
         titel="Mit Ihrem Namen."
         zeile="Namen eingeben, Branche wählen."
         href="/branchen#vorschau"
-        bildHintergrund="linear-gradient(180deg, #fff 0%, #f5f5f7 100%)"
-        bild={<LadenBild name="skizze" w={400} h={310} />}
+        bild={<LadenFoto src="/images/workspace-typing.webp" position="40% 50%" sizes="(min-width: 734px) 300px, 320px" alt="" />}
       />
     </LadenRegal>
   );
@@ -302,27 +279,54 @@ function Muster() {
  * 5. Der Unterschied: was zu jeder Website gehört (wortnah aus BOXES).
  * ---------------------------------------------------------------- */
 const UNTERSCHIED = [
-  { fett: "Für Ihren Betrieb gestaltet.", grau: "Ohne Baukasten, direkt im Code gebaut.", href: "/leistungen", symbol: <KachelPinsel /> },
-  { fett: "Hosting und Pflege.", grau: "Server in der EU, Updates und Backups.", href: "/wartung", symbol: <KachelContainer /> },
-  { fett: "Texte.", grau: "Sie schicken Stichpunkte, wir formulieren.", href: "/ablauf", symbol: <KachelFeder /> },
-  { fett: "Anfragen.", grau: "Formular mit Spamschutz und Anruf-Knopf.", href: "/leistungen", symbol: <KachelHoerer /> },
   {
+    eyebrow: "Gestaltung",
+    fett: "Für Ihren Betrieb gestaltet.",
+    grau: "Ohne Baukasten, direkt im Code gebaut.",
+    href: "/leistungen",
+    foto: { src: "/images/atmosphere/handwerker-werkbank.webp", pos: "50% 55%" },
+  },
+  {
+    eyebrow: "Hosting",
+    fett: "Hosting und Pflege.",
+    grau: "Server in der EU, Updates und Backups.",
+    href: "/wartung",
+    foto: { src: "/images/atmosphere/reinigung-flur.webp", pos: "50% 50%" },
+  },
+  {
+    eyebrow: "Texte",
+    fett: "Texte.",
+    grau: "Sie schicken Stichpunkte, wir formulieren.",
+    href: "/ablauf",
+    foto: { src: "/images/atmosphere/kanzlei-buecher.webp", pos: "40% 50%" },
+  },
+  {
+    eyebrow: "Anfragen",
+    fett: "Anfragen.",
+    grau: "Formular mit Spamschutz und Anruf-Knopf.",
+    href: "/leistungen",
+    foto: { src: "/images/atmosphere/praxis-raum.webp", pos: "60% 60%" },
+  },
+  {
+    eyebrow: "Ab Business",
     fett: "Bei Google.",
-    grau: "Titel, Sitemap und Unternehmensprofil. Ab Business.",
+    grau: "Titel, Sitemap und Unternehmensprofil.",
     href: "/pakete/business",
-    symbol: <KachelNadel />,
+    foto: { src: "/images/atmosphere/pflege-eingang.webp", pos: "50% 60%" },
   },
   {
+    eyebrow: "Ab Premium",
     fett: "Selbst pflegen.",
-    grau: "Speisekarte oder Termine selbst ändern. Ab Premium.",
+    grau: "Speisekarte oder Termine selbst ändern.",
     href: "/pakete/premium",
-    symbol: <KachelStift />,
+    foto: { src: "/images/atmosphere/gastro-cafe.webp", pos: "50% 50%" },
   },
   {
+    eyebrow: "Kontakt",
     fett: "Direkt mit uns.",
     grau: "Vom ersten Anruf an, auch wenn die Seite online ist.",
     href: "/kontakt",
-    symbol: <KachelBlasen />,
+    foto: { src: "/images/cafe-eimsbuettel.webp", pos: "50% 60%" },
   },
 ];
 
@@ -330,13 +334,21 @@ function Unterschied() {
   return (
     <LadenRegal
       id="leistungen"
+      einfach
       fett="Der Unterschied."
       grau="Was zu jeder Website gehört."
       link={{ href: "/leistungen", label: "Alle Leistungen" }}
-      spaet={{ h: 356, hMobil: 368 }}
+      spaet={{ h: 540, hMobil: 500 }}
     >
       {UNTERSCHIED.map((u) => (
-        <KarteKlein key={u.fett} symbol={u.symbol} fett={u.fett} grau={u.grau} href={u.href} />
+        <KarteMittel
+          key={u.fett}
+          eyebrow={u.eyebrow}
+          titel={u.fett.replace(/\.$/, "")}
+          zeile={u.grau}
+          href={u.href}
+          bild={<LadenFoto src={u.foto.src} position={u.foto.pos} alt="" sizes="(min-width: 734px) 320px, 280px" />}
+        />
       ))}
     </LadenRegal>
   );
@@ -350,16 +362,16 @@ function VorherNachher() {
     <section id="vorher-nachher" aria-labelledby="vn-titel" className={`${s.regal} ${s.spaet}`} style={{ "--h": "620px", "--h-mobil": "500px" } as React.CSSProperties}>
       <div className={`inhalt ${s.block}`}>
         <div className={s.breit}>
-          <div>
+          <div className={s.vnText}>
             <p className={s.eyebrow}>Vorher / Nachher</p>
-            <h2 id="vn-titel" className={s.titelGross}>
+            <h2 id="vn-titel" className={s.vnTitel}>
               Dieselben Inhalte, neu gebaut.
             </h2>
-            <p className={s.zeile}>Ziehen Sie den Regler.</p>
-            <p className={`${s.zeile} mt-3 text-[12px] leading-4`}>Die Tischlerei ist frei erfunden.</p>
+            <p className={s.vnZeile}>Links die alte Seite, rechts dieselben Texte und Fotos in neuer Gestaltung.</p>
+            <p className={s.vnHinweis}>Regler ziehen · Betrieb frei erfunden</p>
           </div>
           <div className={s.vnGeraet}>
-            <VorherNachherRegler griffRing geraetKlasse={s.vnLaptop} />
+            <VorherNachherRegler griffRing />
           </div>
         </div>
       </div>
@@ -400,7 +412,7 @@ function Weg() {
 function Werkzeuge() {
   const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
   return (
-    <LadenRegal id="werkzeuge" fett="Werkzeuge." grau="Kostenlos ausprobieren." spaet={{ h: 540, hMobil: 500 }}>
+    <LadenRegal id="werkzeuge" einfach fett="Werkzeuge." grau="Kostenlos ausprobieren." spaet={{ h: 540, hMobil: 500 }}>
       <KarteMittel
         eyebrow="Werkzeug"
         titel="Kostenlose Durchsicht"
@@ -460,6 +472,7 @@ function Journal() {
   return (
     <LadenRegal
       id="journal"
+      einfach
       fett="Journal."
       grau="Ratgeber für Betriebe."
       link={{ href: "/journal", label: "Alle Artikel" }}
@@ -470,6 +483,7 @@ function Journal() {
           key={post.slug}
           bildOben
           kurz
+          eyebrowUnten
           eyebrow={`${post.readingMinutes} Min. Lesezeit`}
           titel={post.title}
           href={`/journal/${post.slug}`}
@@ -485,31 +499,40 @@ function Journal() {
  * ---------------------------------------------------------------- */
 function Fragen() {
   return (
-    <LadenRegal
+    <section
       id="faq"
-      fett="Häufige Fragen."
-      grau="Was vor dem ersten Anruf oft gefragt wird."
-      link={{ href: "/faq", label: "Alle Fragen" }}
-      spaet={{ h: 528, hMobil: 610 }}
-      ohneSpur
-      notiz={
-        <MehrLink href="/webseite-erstellen" frei={false} groesse="klein" className="inline-block py-[14px] text-[12px]">
-          Selbst bauen: Webseite erstellen in sieben Schritten
-        </MehrLink>
-      }
+      aria-labelledby="faq-titel"
+      className={`${s.regal} ${s.spaet}`}
+      style={{ "--h": "560px", "--h-mobil": "760px" } as React.CSSProperties}
     >
-      <div className={s.fragen}>
-        {FAQ.map((item) => (
-          <details key={item.q} className={s.frage}>
-            <summary className={s.frageKopf}>
-              <h3 className={s.frageTitel}>{item.q}</h3>
-              <span aria-hidden="true" className={s.plus} />
-            </summary>
-            <p className={s.antwort}>{item.a}</p>
-          </details>
-        ))}
+      <div className={`inhalt ${s.block}`}>
+        <div className={s.fragenRaster}>
+          <div className={s.fragenSeite}>
+            <h2 id="faq-titel" className={s.regalTitel}>
+              Häufige Fragen
+            </h2>
+            <p className={s.regalUnter}>Was vor dem ersten Anruf oft gefragt wird.</p>
+            <MehrLink href="/faq" frei={false} className={s.fragenLink}>
+              Alle Fragen
+            </MehrLink>
+            <MehrLink href="/webseite-erstellen" frei={false} className={s.fragenLink}>
+              Selbst bauen: in sieben Schritten
+            </MehrLink>
+          </div>
+          <div className={s.fragen}>
+            {FAQ.map((item) => (
+              <details key={item.q} className={s.frage}>
+                <summary className={s.frageKopf}>
+                  <h3 className={s.frageTitel}>{item.q}</h3>
+                  <span aria-hidden="true" className={s.plus} />
+                </summary>
+                <p className={s.antwort}>{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
       </div>
-    </LadenRegal>
+    </section>
   );
 }
 
@@ -526,7 +549,7 @@ function Kontakt() {
       className={`${s.regal} ${s.spaet}`}
       style={{ "--h": "550px", "--h-mobil": "600px" } as React.CSSProperties}
     >
-      <div className="inhalt">
+      <div className={`inhalt ${s.block}`}>
         <div className={`on-dark ${s.kontakt}`} data-flaeche-dunkel="">
           <div className={s.kontaktText}>
             <p className={s.eyebrow}>Kontakt</p>
@@ -549,12 +572,17 @@ function Kontakt() {
               </a>
             </p>
           </div>
-          <div className={s.kontaktBild} aria-hidden="true">
-            <LadenBild name="nachthafen" w={440} h={400} />
+          <div className={s.kontaktBild}>
+            <Image
+              src="/images/hamburg-speicherstadt.webp"
+              alt="Speicherstadt in Hamburg in der Abendsonne, im Hintergrund die Elbphilharmonie"
+              fill
+              sizes="(min-width: 1068px) 440px, (min-width: 734px) 50vw, 100vw"
+              className={s.foto}
+            />
           </div>
         </div>
       </div>
-      <div className={s.fuss} />
     </section>
   );
 }

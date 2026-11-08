@@ -14,6 +14,9 @@ const REST = 24;
 export function RegalPfeile({ spurId, label }: { spurId: string; label: string }) {
   const [anfang, setAnfang] = useState(true);
   const [ende, setEnde] = useState(false);
+  // Läuft die Spur nicht über (alle Karten passen), braucht es keine
+  // Pfeile: unsichtbar, aber mit Platz (kein Springen im Kopf).
+  const [ueberlauf, setUeberlauf] = useState(true);
 
   useEffect(() => {
     const spur = document.getElementById(spurId);
@@ -23,14 +26,31 @@ export function RegalPfeile({ spurId, label }: { spurId: string; label: string }
       raf = 0;
       setAnfang(spur.scrollLeft <= REST);
       setEnde(spur.scrollLeft + spur.clientWidth >= spur.scrollWidth - REST);
+      setUeberlauf(spur.scrollWidth > spur.clientWidth + 1);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(pruefen);
     };
+    // Tab-Fokus auf einer Karte: Chrome scrollt die Spur nicht, solange
+    // der Link noch ein paar Pixel ins Bild ragt (WCAG 2.4.11). Darum die
+    // ganze Karte (li) selbst einblenden.
+    const onFocusIn = (e: FocusEvent) => {
+      const ziel = e.target as HTMLElement | null;
+      if (!ziel || ziel === spur) return;
+      const karte = ziel.closest("li");
+      if (!karte || !spur.contains(karte)) return;
+      const s = spur.getBoundingClientRect();
+      const k = karte.getBoundingClientRect();
+      if (k.left >= s.left - 1 && k.right <= s.right + 1) return;
+      const ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      karte.scrollIntoView({ inline: "nearest", block: "nearest", behavior: ruhig ? "auto" : "smooth" });
+    };
     pruefen();
+    spur.addEventListener("focusin", onFocusIn);
     spur.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
+      spur.removeEventListener("focusin", onFocusIn);
       spur.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
@@ -56,7 +76,7 @@ export function RegalPfeile({ spurId, label }: { spurId: string; label: string }
   };
 
   return (
-    <div className="regal-pfeile">
+    <div className="regal-pfeile" style={ueberlauf ? undefined : { visibility: "hidden" }}>
       <button
         type="button"
         className="regal-pfeil"

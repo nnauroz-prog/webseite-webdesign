@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { Abschluss as AppleAbschluss } from "@/components/marketing/apple";
+import { FotoRahmen, KontaktKarte, SeitenKopf, UnterseiteMain, unterseiteStil as u } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { PageHero } from "@/components/marketing/page-hero";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import type { FaqGroup } from "@/lib/faq-data";
 
 import { FAQ_GROUPS } from "@/lib/faq-data";
@@ -35,30 +35,63 @@ export default function FaqPage() {
   };
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero
-          crumb="Fragen"
+      <MarketingHeader cta={false} />
+      <Produktleiste
+        titel="Fragen"
+        links={GROUPS.map((g) => ({ href: `#${g.id}`, label: g.label }))}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
+      <UnterseiteMain>
+        <SeitenKopf
           eyebrow={`FAQ · ${QUESTION_COUNT} Antworten`}
-          title="Häufige Fragen"
-          aktionen={false}
-          meta={
-            <nav aria-label="Themen" className="flex flex-wrap">
-              {GROUPS.map((g) => (
-                <a key={g.id} href={`#${g.id}`}>
-                  {g.label}
-                </a>
-              ))}
-            </nav>
+          titel="Häufige Fragen"
+          unter="Nach Themen sortiert. Steht Ihre Frage nicht dabei, rufen Sie an oder schreiben Sie uns."
+          bild={
+            <FotoRahmen
+              vorab
+              src="/images/cafe-eimsbuettel.webp"
+              alt="Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel, ein Platz für ein Gespräch"
+              aspect="21 / 9"
+              aspectMobil="16 / 9"
+              position="50% 55%"
+            />
           }
-        >
-          Nach Themen sortiert. Steht Ihre Frage nicht dabei, rufen Sie an oder schreiben Sie uns.
-        </PageHero>
+        />
+        <nav aria-label="Themen" className="inhalt pt-8 sm:pt-10">
+          <ul role="list" className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5">
+            {GROUPS.map((g) => (
+              <li key={g.id}>
+                <a
+                  href={`#${g.id}`}
+                  className="flex min-h-[88px] flex-col justify-between rounded-[18px] bg-white p-5 shadow-[0_4px_16px_rgb(0_0_0/0.08)] transition-shadow hover:shadow-[0_18px_40px_-16px_rgb(16_32_48/0.28)]"
+                >
+                  <span className="text-[17px] leading-[22px] font-semibold">{g.label}</span>
+                  <span className="mt-2 text-[14px] text-[#6e6e73]">{g.items.length} Fragen ›</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
         {GROUPS.map((g, i) => (
-          <GroupSection key={g.id} group={g} hell={i % 2 === 1} />
+          <div key={g.id}>
+            <GroupSection group={g} />
+            {i === 1 ? (
+              <p className="inhalt pt-8 text-[15px] leading-[1.47] text-[#6e6e73] sm:pt-10 sm:text-[17px]">
+                Nicht dabei? Rufen Sie an unter{" "}
+                <a href="tel:+491607621876" className="text-gold-ink font-semibold whitespace-nowrap">
+                  0160&nbsp;7621876
+                </a>{" "}
+                oder schreiben Sie uns über das{" "}
+                <Link href="/anfrage" className="text-gold-ink font-semibold underline-offset-4 hover:underline">
+                  Anfrageformular
+                </Link>
+                .
+              </p>
+            ) : null}
+          </div>
         ))}
         <Closer />
-      </main>
+      </UnterseiteMain>
       <MarketingFooter crumb="Fragen" />
       <script
         type="application/ld+json"
@@ -72,44 +105,36 @@ export default function FaqPage() {
  * Eine Themengruppe: links Name und Zahl der Fragen (auf breiten
  * Schirmen mitlaufend), rechts die Fragen zum Aufklappen.
  * ---------------------------------------------------------------- */
-function GroupSection({ group, hell }: { group: FaqGroup; hell: boolean }) {
+function GroupSection({ group }: { group: FaqGroup }) {
   return (
-    <section
-      id={group.id}
-      aria-labelledby={`${group.id}-titel`}
-      className={`scroll-mt-20 ${hell ? "flaeche-hell" : "flaeche-weiss"} py-16 sm:py-20 lg:py-24`}
-    >
-      <div className="mx-auto grid w-full max-w-[1068px] gap-6 px-[max(var(--rinne),env(safe-area-inset-left))] lg:grid-cols-12 lg:gap-8">
-        <div className="lg:sticky lg:top-24 lg:col-span-4 lg:self-start">
-          <p className="t-eyebrow text-[14px]">{group.items.length} Fragen</p>
-          <h2
-            id={`${group.id}-titel`}
-            className="mt-2 text-balance text-[32px] leading-[1.1] tracking-[-0.02em] sm:text-[40px]"
-          >
-            {group.label}
+    <section id={group.id} aria-labelledby={`${group.id}-titel`} className={`scroll-mt-28 ${u.abschnitt}`}>
+      <div className="inhalt grid gap-5 lg:grid-cols-12 lg:gap-5">
+        <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+          <h2 id={`${group.id}-titel`} className={u.zweiton}>
+            <span>{group.label}.</span> <span>{group.items.length} Fragen.</span>
           </h2>
         </div>
-        <div className={`karte ${hell ? "karte-weiss" : ""} min-w-0 divide-y divide-[var(--border)] px-6 sm:px-8 lg:col-span-8`}>
-          {group.items.map((item, i) => (
-            <details key={item.q} className="group" open={i === 0}>
+        <div className="min-w-0 divide-y divide-black/10 rounded-[18px] bg-white px-6 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:px-8 lg:col-span-8">
+          {group.items.map((item) => (
+            <details key={item.q} className="group">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
-                <h3 className="text-[17px] leading-snug tracking-[-0.01em] sm:text-[18.5px]">{item.q}</h3>
+                <h3 className="text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">{item.q}</h3>
                 <span
                   aria-hidden="true"
-                  className="group-open:bg-gold-ink mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--hell-2)] text-[17px] leading-none transition-colors group-open:text-white"
+                  className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[22px] leading-none font-light text-[#6e6e73] transition-colors group-open:text-[#1d1d1f] group-hover:text-[#1d1d1f]"
                 >
                   <span className="transition-transform group-open:rotate-45">+</span>
                 </span>
               </summary>
               <p
-                className={`text-foreground/80 max-w-2xl text-pretty text-[15.5px] leading-relaxed sm:pr-12 ${item.link ? "pb-2" : "pb-6"}`}
+                className={`max-w-2xl text-[17px] leading-[1.5] tracking-[-0.022em] text-pretty text-[#424245] sm:pr-12 ${item.link ? "pb-2" : "pb-6"}`}
               >
                 {item.a}
               </p>
               {item.link ? (
                 <Link
                   href={item.link.href}
-                  className="text-foreground mb-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
+                  className="text-gold-ink mb-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
                 >
                   {item.link.label}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -129,18 +154,12 @@ function GroupSection({ group, hell }: { group: FaqGroup; hell: boolean }) {
  * ---------------------------------------------------------------- */
 function Closer() {
   return (
-    <AppleAbschluss
-      id="kontakt"
+    <KontaktKarte
       titel="Ihre Frage war nicht dabei"
-      zwischen={
-        <a href="tel:+491607621876" className="abschluss-nummer">
-          0160&nbsp;7621876
-        </a>
-      }
-      unter={
+      zeile={
         <>
-          Dann fragen Sie uns direkt. Mails beantworten wir meist am selben Werktag. Am ersten Donnerstag im Monat gibt
-          es außerdem eine{" "}
+          Dann fragen Sie uns direkt. Anfragen über das Formular beantworten wir meist am selben Werktag. Am ersten
+          Donnerstag im Monat gibt es außerdem eine{" "}
           <Link href="/sprechstunde" className="text-[#f5f5f7] underline underline-offset-4">
             offene Telefonsprechstunde
           </Link>
@@ -149,6 +168,11 @@ function Closer() {
       }
       pille={{ href: "/anfrage", label: "Website anfragen" }}
       link={{ href: "/kontakt", label: "Alle Kontaktwege" }}
+      foto={{
+        src: "/images/atmosphere/kanzlei-buecher.webp",
+        alt: "Regal mit in Leder gebundenen Fachbüchern, davor eine Messinglampe in warmem Licht",
+        position: "50% 50%",
+      }}
     />
   );
 }

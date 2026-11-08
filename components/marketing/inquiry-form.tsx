@@ -5,7 +5,6 @@ import { useState } from "react";
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -117,18 +116,25 @@ export function InquiryForm({
   const hasPrefill = Boolean(validIndustry || initialPackage);
   const [detailsOpen, setDetailsOpen] = useState(hasPrefill);
 
-  const canSubmit =
-    data.name.trim().length >= 2 &&
-    /\S+@\S+\.\S+/.test(data.email) &&
-    data.message.trim().length >= 5 &&
-    data.consent;
+  // Was noch fehlt, in Formular-Reihenfolge (Hinweis unter dem Knopf,
+  // wird beim Ausfüllen kürzer; ein Klick springt ins erste Feld).
+  const fehlt: { feld: string; label: string }[] = [
+    ...(data.name.trim().length >= 2 ? [] : [{ feld: "inq-name", label: "Name" }]),
+    ...(/\S+@\S+\.\S+/.test(data.email) ? [] : [{ feld: "inq-email", label: "E-Mail" }]),
+    ...(data.message.trim().length >= 5 ? [] : [{ feld: "inq-message", label: "Nachricht" }]),
+    ...(data.consent ? [] : [{ feld: "inq-consent", label: "Häkchen" }]),
+  ];
+  const canSubmit = fehlt.length === 0;
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     // Doppel-Submit-Schutz: Status-Race verhindern, wenn Enter
     // mehrfach gedrückt oder Button gleichzeitig geklickt wird.
     if (status.kind === "submitting" || status.kind === "success") return;
-    if (!canSubmit) return;
+    if (!canSubmit) {
+      document.getElementById(fehlt[0].feld)?.focus();
+      return;
+    }
 
     setStatus({ kind: "submitting" });
 
@@ -183,7 +189,7 @@ export function InquiryForm({
   return (
     <form
       onSubmit={submit}
-      className="bg-card ring-border/50 rounded-3xl border p-6 shadow-xl ring-1 sm:p-8 lg:p-10"
+      className="relative rounded-[18px] bg-white p-6 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:p-10"
     >
       <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
         Anfrage senden
@@ -273,7 +279,7 @@ export function InquiryForm({
         open={detailsOpen}
         onToggle={(e) => setDetailsOpen((e.target as HTMLDetailsElement).open)}
       >
-        <summary className="text-foreground/85 hover:text-foreground flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-[14.5px] font-medium tracking-tight">
+        <summary className="text-foreground/85 hover:text-foreground flex cursor-pointer list-none flex-col items-start gap-1 px-5 py-4 text-[14.5px] font-medium tracking-tight sm:flex-row sm:items-center sm:justify-between sm:gap-3">
           <span className="inline-flex items-center gap-2.5">
             <ChevronDown
               aria-hidden="true"
@@ -281,7 +287,7 @@ export function InquiryForm({
             />
             Mehr verraten {hasPrefill ? "(übernommen)" : "(optional)"}
           </span>
-          <span className="text-muted-foreground text-xs">
+          <span className="text-muted-foreground pl-[26px] text-xs sm:pl-0">
             Branche · Paket · Zeitrahmen · Telefon
           </span>
         </summary>
@@ -384,22 +390,23 @@ export function InquiryForm({
         </label>
       </div>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-muted-foreground text-[13px]">
-          {canSubmit
-            ? "Bereit zum Senden."
-            : "Drei Felder ausfüllen und das Häkchen setzen, dann geht es los."}
-        </p>
-        <Button
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse sm:items-center sm:justify-between">
+        <button
           type="submit"
-          disabled={!canSubmit || status.kind === "submitting"}
-          className="bg-foreground text-background hover:bg-foreground/90 h-12 rounded-full px-7 text-[15px] font-medium tracking-tight shadow-md transition-all hover:shadow-lg disabled:opacity-40"
+          disabled={status.kind === "submitting"}
+          aria-describedby="inq-stand"
+          className="btn-signal btn-gross w-full sm:w-auto"
         >
           {status.kind === "submitting" ? "Wird gesendet…" : "Anfrage senden"}
           {status.kind !== "submitting" && (
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
           )}
-        </Button>
+        </button>
+        <p id="inq-stand" className="text-muted-foreground text-[13px]" aria-live="polite">
+          {canSubmit
+            ? "Bereit zum Senden."
+            : `Noch: ${fehlt.map((f) => f.label).join(", ")}`}
+        </p>
       </div>
     </form>
   );

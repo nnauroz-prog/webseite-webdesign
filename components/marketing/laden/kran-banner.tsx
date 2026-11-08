@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import s from "./laden.module.css";
 
 /**
- * Große Banner-Karte direkt unter der Bildreihe: die Containerbrücke mit
+ * Große Banner-Karte direkt unter dem Kopf (erstes großes Bild): die Containerbrücke mit
  * Himmel nach Tageszeit (HeroBuehne, Zeitleiste und Auftakt wie bisher
  * im Kopf der Seite), volle Inhaltsbreite. Text oben links: Eyebrow,
  * kurzer Titel, zwei Aktionen. Kein gestreckter Karten-Link: Pille und
@@ -36,7 +36,7 @@ export async function KranBanner() {
           </div>
         </HeroBuehne>
         <div className={cn(s.text, s.bannerText)}>
-          <p className={s.eyebrow}>Webdesign aus Hamburg</p>
+          <p className={s.eyebrow}>So arbeiten wir</p>
           <h2 id="banner-titel" className={s.titelBanner}>
             Test-Link vor dem Start.
           </h2>

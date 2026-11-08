@@ -120,13 +120,14 @@ function Pflichtblaetter() {
         >
           Impressum
         </text>
-        <path
-          d="M70 80h90M70 92h70M70 104h84M70 124h60M70 136h88M70 148h76"
-          stroke="#1d1d1f"
-          strokeOpacity=".18"
-          strokeWidth="5"
-          strokeLinecap="round"
-        />
+        <g fontFamily="inherit" fill="#1d1d1f">
+          <text x="70" y="82" fontSize="9" fontWeight="650">Angaben gemäß § 5 DDG</text>
+          <text x="70" y="97" fontSize="9" fill="#3a3a3c">Tischlerei Nordholz</text>
+          <text x="70" y="109" fontSize="9" fill="#3a3a3c">Musterweg 12</text>
+          <text x="70" y="121" fontSize="9" fill="#3a3a3c">20000 Hamburg</text>
+          <text x="70" y="139" fontSize="9" fill="#3a3a3c">Inhaber: Max Muster</text>
+          <text x="70" y="151" fontSize="9" fill="#3a3a3c">Tel. 040 000000</text>
+        </g>
       </g>
       <g transform="rotate(5 210 110)">
         <rect
@@ -150,13 +151,14 @@ function Pflichtblaetter() {
         >
           Datenschutz
         </text>
-        <path
-          d="M164 72h92M164 84h74M164 96h88M164 116h66M164 128h90M164 140h70M164 152h82"
-          stroke="#1d1d1f"
-          strokeOpacity=".18"
-          strokeWidth="5"
-          strokeLinecap="round"
-        />
+        <g fontFamily="inherit" fill="#1d1d1f">
+          <text x="164" y="74" fontSize="9" fontWeight="650">1. Verantwortlich</text>
+          <text x="164" y="87" fontSize="9" fill="#3a3a3c">Tischlerei Nordholz</text>
+          <text x="164" y="105" fontSize="9" fontWeight="650">2. Hosting</text>
+          <text x="164" y="118" fontSize="9" fill="#3a3a3c">Server in der EU</text>
+          <text x="164" y="136" fontSize="9" fontWeight="650">3. Ihre Rechte</text>
+          <text x="164" y="149" fontSize="9" fill="#3a3a3c">Auskunft, Löschung</text>
+        </g>
       </g>
       {/* Büroklammer */}
       <path

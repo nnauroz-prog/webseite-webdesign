@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Calculator, Globe, ListChecks, PencilLine, Server, TrendingUp } from "lucide-react";
 
+import { MehrLink } from "@/components/marketing/apple";
+import { KarteGross, KarteMittel, LadenBild, LadenFoto } from "@/components/marketing/laden/karten";
+import { LadenRegal } from "@/components/marketing/laden/laden-regal";
 import {
-  Abschluss,
-  ContainerMotiv,
-  IconMotiv,
-  MehrLink,
-  PAKET_TON,
-  ProduktKopf,
-  Regal,
-  RegalKarte,
-} from "@/components/marketing/apple";
+  Abschnitt,
+  BildKachel,
+  BildRaster,
+  FotoRahmen,
+  KontaktKarte,
+  MusterPille,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Produktleiste } from "@/components/marketing/produktleiste";
-import { PaketKacheln } from "@/components/marketing/hafen/paket-kacheln";
 import {
   STRICH,
   VergleichZelle,
@@ -24,7 +26,7 @@ import {
   type VergleichZeile,
 } from "@/components/marketing/pakete/vergleich-daten";
 import { VergleichMobil } from "@/components/marketing/pakete/vergleich-mobil";
-import { PAKETE, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pakete-data";
+import { PAKETE, PREIS_HINWEIS, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
   title: `Pakete & Preise — Websites ${PAKETE[0].setup}`,
@@ -197,8 +199,8 @@ export default function PaketePage() {
         ]}
         cta={{ href: "/anfrage", label: "Anfragen" }}
       />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <ProduktKopf
+      <UnterseiteMain>
+        <SeitenKopf
           eyebrow="Pakete und Preise"
           titel={`Website-Pakete ${STARTER_SETUP}`}
           unter={
@@ -212,27 +214,40 @@ export default function PaketePage() {
               <Link href="/anfrage" className="btn-signal btn-gross">
                 Anfrage schreiben
               </Link>
-              <MehrLink href="#vergleich">Pakete vergleichen</MehrLink>
+              <MehrLink href="#vergleich" groesse="unter">
+                Pakete vergleichen
+              </MehrLink>
             </>
           }
           meta={<>{PREIS_HINWEIS_KURZ} · Mindestlaufzeit 6 Monate</>}
+          bild={
+            <FotoRahmen
+              vorab
+              muster
+              src="/images/sitalo-kosmetik-laptop.webp"
+              alt="Laptop auf einer Marmorplatte in einem Kosmetikstudio, auf dem Bildschirm die Musterseite des Studios"
+              aspect="21 / 10"
+              aspectMobil="4 / 3"
+              position="50% 55%"
+            />
+          }
         />
         <Modelle />
         <Vergleich />
         <Monatsbeitrag />
         <Weiterlesen />
-        <Abschluss
+        <KontaktKarte
           id="abschluss"
+          eyebrow="Beratung"
           titel="Welches Paket passt, klären wir am Telefon."
-          zwischen={
-            <a href="tel:+491607621876" className="abschluss-nummer">
-              0160&nbsp;7621876
-            </a>
-          }
-          unter="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
-          link={{ href: "/anfrage", label: "Anfrage schreiben" }}
+          zeile="Wer lieber schreibt, schickt uns die Anfrage über das Formular. Wir antworten meist am selben Werktag."
+          link={{ href: "/branchen", label: "Musterseiten ansehen" }}
+          foto={{
+            src: "/images/cafe-eimsbuettel.webp",
+            alt: "Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel",
+          }}
         />
-      </main>
+      </UnterseiteMain>
       <MarketingFooter crumb="Pakete" />
     </div>
   );
@@ -242,16 +257,70 @@ export default function PaketePage() {
  * Modelle: die vier Pakete als große Karten. Die Karten tragen die
  * Anker #starter, #business usw. (Deep-Links aus Branchen-Seiten).
  * ---------------------------------------------------------------- */
+const MODELL_BILD: Record<Slug, { src: string; alt: string; position: string; eyebrow: string; zeile: string }> = {
+  starter: {
+    src: "/images/sitalo-friseur-mobile.webp",
+    alt: "Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten",
+    position: "58% 50%",
+    eyebrow: "Eine Seite",
+    zeile: "Leistungen, Öffnungszeiten und Kontakt.",
+  },
+  business: {
+    src: "/images/sitalo-pflege-laptop.webp",
+    alt: "Laptop mit der mehrseitigen Musterseite eines Pflegedienstes auf einem hellen Schreibtisch",
+    position: "40% 55%",
+    eyebrow: "Für die meisten Betriebe",
+    zeile: "Eigene Seiten für Leistungen, Team und Galerie.",
+  },
+  premium: {
+    src: "/images/sitalo-cafe-mobile.webp",
+    alt: "Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch",
+    position: "50% 50%",
+    eyebrow: "Selbst pflegen",
+    zeile: "Speisekarte, Wochenangebot oder Termine ändern Sie selbst.",
+  },
+  studio: {
+    src: "/images/sitalo-kanzlei-laptop.webp",
+    alt: "Laptop mit der Musterseite einer Kanzlei neben einer grünen Schreibtischlampe und alten Büchern",
+    position: "50% 55%",
+    eyebrow: "Neues Erscheinungsbild",
+    zeile: "Schrift, Farben und Bildsprache, neu entworfen.",
+  },
+};
+
 function Modelle() {
   return (
-    <section id="modelle" aria-labelledby="modelle-titel" className="flaeche-hell pt-16 pb-16 sm:pt-20 sm:pb-24">
-      <div className="inhalt">
-        <h2 id="modelle-titel" data-auftritt="titel" className="zweiton">
-          <span>Alle Pakete.</span> <span className="grau">Wählen Sie, was Ihr Betrieb braucht.</span>
-        </h2>
-      </div>
-      <PaketKacheln idPrefix="" flaeche="weiss" className="mt-8 sm:mt-10" />
-    </section>
+    <LadenRegal
+      id="modelle"
+      fett="Alle Pakete."
+      grau="Wählen Sie, was Ihr Betrieb braucht."
+      notiz={PREIS_HINWEIS}
+      className="scroll-mt-24"
+    >
+      {PAKETE.map((p) => {
+        const b = MODELL_BILD[p.slug];
+        return (
+          <KarteGross
+            key={p.slug}
+            id={p.slug}
+            ton={p.highlight ? "schwarz" : "weiss"}
+            eyebrow={b.eyebrow}
+            titel={p.name}
+            zeile={b.zeile}
+            preis={p.setup}
+            monat={p.monthly.replace(/\s*\/\s*Monat$/, "") + " im Monat"}
+            href={`/pakete/${p.slug}`}
+            bildBeschrieben
+            bild={
+              <>
+                <LadenFoto src={b.src} position={b.position} alt={b.alt} />
+                <MusterPille text="Musterseite" />
+              </>
+            }
+          />
+        );
+      })}
+    </LadenRegal>
   );
 }
 
@@ -263,17 +332,18 @@ function Modelle() {
  * ---------------------------------------------------------------- */
 function Vergleich() {
   return (
-    <section id="vergleich" className="flaeche-weiss abschnitt">
-      <div className="inhalt-breit max-w-[1200px]">
-        <div className="abschnitt-kopf">
-          <h2 data-auftritt="titel" className="t-abschnitt">
-            Die vier Pakete im Vergleich
+    <section id="vergleich" aria-labelledby="vergleich-titel" className={`${u.abschnitt} scroll-mt-24`}>
+      <div className="inhalt">
+        <div className={u.abschnittKopf}>
+          <h2 id="vergleich-titel" className={u.zweiton}>
+            <span>Die vier Pakete im Vergleich.</span>{" "}
+            <span>Wir empfehlen meistens Business.</span>
           </h2>
-          <p className="t-unter">Wir empfehlen meistens Business. Wenn Starter reicht, sagen wir Ihnen das auch.</p>
+          <p className={u.abschnittUnter}>Wenn Starter reicht, sagen wir Ihnen das auch.</p>
         </div>
 
         {/* Tabelle ab 834 px */}
-        <div className="hidden min-[834px]:block">
+        <div className={`${u.blatt} hidden min-[834px]:block`}>
           <table className="vergleich-tabelle">
             <caption className="sr-only">Pakete im Vergleich: Preise und Leistungen</caption>
             <colgroup>
@@ -290,9 +360,6 @@ function Vergleich() {
                 </td>
                 {PAKETE.map((p) => (
                   <th key={p.slug} id={`vergleich-${p.slug}`} scope="col" className="text-center font-normal">
-                    <span className="flex h-[30px] items-end justify-center" aria-hidden="true">
-                      <ContainerMotiv ton={PAKET_TON[p.slug] ?? "zink"} groesse="s" className="vergleich-motiv" />
-                    </span>
                     {p.highlight ? (
                       <span className="text-gold-ink mt-2 block h-4 text-[12px] leading-4 font-semibold">Empfehlung</span>
                     ) : (
@@ -362,7 +429,7 @@ function Vergleich() {
         </div>
 
         {/* Mobil: zwei Auswahlen nebeneinander */}
-        <div className="mt-10 min-[834px]:hidden">
+        <div className="min-[834px]:hidden">
           <VergleichMobil pakete={SPALTEN} gruppen={GRUPPEN} />
           <p className="t-fuss mt-6">Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen Unterlagen.</p>
         </div>
@@ -372,85 +439,115 @@ function Vergleich() {
 }
 
 /* ------------------------------------------------------------------
- * Monatsbeitrag: drei Kacheln, Texte wortgleich.
+ * Monatsbeitrag: drei Kacheln. Links groß Hosting auf Schwarz, rechts
+ * die Änderungen als große Zahlen und Domain/E-Mail. Texte wie bisher,
+ * Änderungswünsche über das Formular oder das Telefon.
  * ---------------------------------------------------------------- */
-const MONAT_KACHELN = [
-  {
-    icon: Server,
-    text: "Ihre Seite liegt auf einem Server in der EU. Das SSL-Zertifikat verlängert sich von selbst, Sicherheits-Updates spielen wir ein. Gesichert wird jeden Tag, die Backups reichen 30 Tage zurück.",
-  },
-  {
-    icon: PencilLine,
-    text: "Kleine Änderungen sind ebenfalls im Beitrag: neue Öffnungszeiten, ein anderes Foto, ein neuer Name im Team. Starter hat eine pro Monat, Business drei, Premium sechs und Studio zehn. Sie schicken uns eine Mail, wir setzen es um.",
-  },
-  {
-    icon: Globe,
-    text: "Domain und E-Mail-Adressen richten wir auf Wunsch mit ein. Größere Erweiterungen beziffern wir vorher. Der Vertrag läuft mindestens sechs Monate und ist danach monatlich kündbar.",
-  },
-];
-
 function Monatsbeitrag() {
   return (
-    <section id="monatsbeitrag" className="flaeche-hell abschnitt">
-      <div className="inhalt">
-        <div className="abschnitt-kopf">
-          <p className="t-eyebrow">Monatsbeitrag · {STARTER_MONTHLY}</p>
-          <h2 data-auftritt="titel" className="t-abschnitt mt-2">
-            Was nach dem Start jeden Monat dazukommt
-          </h2>
-        </div>
-        <div className="grid gap-3 min-[834px]:grid-cols-3 lg:gap-5">
-          {MONAT_KACHELN.map(({ icon: Icon, text }) => (
-            <div key={text} data-auftritt="" className="karte karte-weiss px-7 py-9 lg:px-8 lg:py-10">
-              <Icon aria-hidden="true" className="text-gold h-10 w-10" strokeWidth={1.5} />
-              <p className="mt-6 text-[17px] leading-[1.47] tracking-[-0.022em]">{text}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-8 text-center">
-          <MehrLink href="/wartung">Mehr zu Wartung und Pflege</MehrLink>
-        </p>
+    <Abschnitt
+      id="monatsbeitrag"
+      fett="Jeden Monat dabei."
+      grau={`Monatsbeitrag ${STARTER_MONTHLY}.`}
+      rechts={<MehrLink href="/wartung">Mehr zu Wartung und Pflege</MehrLink>}
+    >
+      <BildRaster>
+        <BildKachel
+          ton="nacht"
+          spalten={7}
+          gross
+          eyebrow="Hosting und Sicherheit"
+          titel="Server in der EU, Backups 30 Tage."
+          zeile="Ihre Seite liegt auf einem Server in der EU. Das SSL-Zertifikat verlängert sich von selbst, Sicherheits-Updates spielen wir ein. Gesichert wird jeden Tag, die Backups reichen 30 Tage zurück."
+          bildInhalt={<BackupKalender />}
+        />
+        <BildKachel
+          spalten={5}
+          eyebrow="Kleine Änderungen im Monat"
+          zahl="1 · 3 · 6 · 10"
+          titel="Starter, Business, Premium, Studio."
+          zeile="Neue Öffnungszeiten, ein anderes Foto, ein neuer Name im Team. Sie schreiben uns kurz über das Formular oder rufen an, wir setzen es um."
+          kinder={
+            <p className={`${u.kachelZeile} !mt-5 border-t border-black/10 pt-5`}>
+              Domain und E-Mail-Adressen richten wir auf Wunsch mit ein. Größere Erweiterungen beziffern wir vorher. Der
+              Vertrag läuft mindestens sechs Monate und ist danach monatlich kündbar.
+            </p>
+          }
+        />
+      </BildRaster>
+    </Abschnitt>
+  );
+}
+
+/**
+ * Gestaltete Übersicht der täglichen Sicherungen (Beispiel): 30 Tage,
+ * jeder Tag ein Backup, dazu Server-Standort und Zertifikat.
+ */
+function BackupKalender() {
+  const tage = Array.from({ length: 30 }, (_, i) => i + 1);
+  return (
+    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] sm:p-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">Sicherungen, letzte 30 Tage</p>
+        <p className="text-[12px] text-[#a1a1a6]">jede Nacht um 02:00 Uhr</p>
       </div>
-    </section>
+      <ul role="list" className="mt-4 grid grid-cols-10 gap-1.5">
+        {tage.map((t) => (
+          <li
+            key={t}
+            className={`flex aspect-square items-center justify-center rounded-[6px] text-[10px] tabular-nums ${
+              t === 30 ? "bg-[#f45b1e] font-bold text-[#1d1d1f]" : "bg-[#2c2c2e] text-[#a1a1a6]"
+            }`}
+          >
+            {t}
+          </li>
+        ))}
+      </ul>
+      <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-white/10 pt-4 text-[13px] leading-[18px]">
+        <div>
+          <dt className="text-[#a1a1a6]">Server</dt>
+          <dd className="mt-0.5 font-semibold text-[#f5f5f7]">in der EU</dd>
+        </div>
+        <div>
+          <dt className="text-[#a1a1a6]">SSL-Zertifikat</dt>
+          <dd className="mt-0.5 font-semibold text-[#f5f5f7]">verlängert sich selbst</dd>
+        </div>
+      </dl>
+    </div>
   );
 }
 
 /* ------------------------------------------------------------------
- * Weiterlesen: Regal zu Empfehlung, Kalkulation und Rechner.
+ * Weiterlesen: die Werkzeug-Karten der Startseite.
  * ---------------------------------------------------------------- */
-const VERWEISE = [
-  {
-    href: "/empfehlung",
-    label: "Empfehlung",
-    text: "Fünf Fragen zu Betrieb und Zeitplan, danach schlagen wir ein Paket vor.",
-    icon: ListChecks,
-  },
-  {
-    href: "/honorar",
-    label: "Kalkulation",
-    text: "Stundensatz und Stunden je Paket: So kommen die Preise zustande.",
-    icon: Calculator,
-  },
-  {
-    href: "/rechner",
-    label: "3-Jahres-Rechner",
-    text: "Die Gesamtkosten über drei Jahre neben Wix, Squarespace und Jimdo.",
-    icon: TrendingUp,
-  },
-];
-
 function Weiterlesen() {
+  const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
   return (
-    <Regal id="weiterlesen" fett="Noch unsicher?" grau="Hier hilft Ihnen die Entscheidung." flaeche="weiss">
-      {VERWEISE.map((v) => (
-        <RegalKarte
-          key={v.href}
-          titel={v.label}
-          text={v.text}
-          href={v.href}
-          motiv={<IconMotiv icon={v.icon} />}
-        />
-      ))}
-    </Regal>
+    <LadenRegal id="weiterlesen" einfach fett="Noch unsicher?" grau="Hier hilft Ihnen die Entscheidung." className="scroll-mt-24">
+      <KarteMittel
+        eyebrow="Empfehlung"
+        titel="Welches Paket passt?"
+        zeile="Fünf Fragen, danach schlagen wir ein Paket vor."
+        href="/empfehlung"
+        bild={<LadenBild name="werkzeug-paketwahl" w={320} h={240} />}
+        bildHintergrund="linear-gradient(180deg, #fff 0%, #eef1f2 100%)"
+      />
+      <KarteMittel
+        eyebrow="Kalkulation"
+        titel="So kommen die Preise zustande"
+        zeile="Stundensatz und Stunden je Paket."
+        href="/honorar"
+        bild={<LadenBild name="werkzeug-honorar" w={320} h={240} />}
+        bildHintergrund="linear-gradient(180deg, #fff 0%, #ececf0 100%)"
+      />
+      <KarteMittel
+        eyebrow="3-Jahres-Rechner"
+        titel="Kosten über 3 Jahre"
+        zeile="Neben Wix, Squarespace und Jimdo."
+        href="/rechner"
+        bild={<LadenBild name="werkzeug-kosten" w={320} h={240} />}
+        bildHintergrund={weiss}
+      />
+    </LadenRegal>
   );
 }

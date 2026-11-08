@@ -1,0 +1,697 @@
+/* ==================================================================
+   Unterseiten im Stil der Startseite (components/marketing/laden/
+   unterseite.tsx): Fläche #f5f5f7, Seitenkopf mit großem Foto,
+   Bildkacheln, Abschnittsköpfe im Zweiton, dunkle Kontaktkarte.
+
+   Skala (Rechner / Handy): H1 64 / 40, Abschnitt 40 / 28, Kartentitel
+   24 / 21, Fließtext 17. Inhaltsbreite .inhalt (980 px + Rinne).
+   ================================================================== */
+
+/* ---------- Seitenkopf ---------- */
+.kopf {
+  padding-top: 48px;
+  text-align: center;
+}
+@media (min-width: 734px) {
+  .kopf {
+    padding-top: 72px;
+  }
+}
+.kopfOhneBild {
+  padding-bottom: 8px;
+}
+.titel {
+  margin-inline: auto;
+  max-width: 16ch;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  text-wrap: balance;
+}
+@media (max-width: 359px) {
+  .titel {
+    font-size: 34px;
+  }
+}
+@media (min-width: 734px) {
+  .titel {
+    font-size: 56px;
+    line-height: 1.07;
+  }
+}
+@media (min-width: 1068px) {
+  .titel {
+    font-size: 64px;
+    line-height: 1.0625;
+  }
+}
+.eyebrow {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--gold-ink);
+}
+@media (min-width: 734px) {
+  .eyebrow {
+    font-size: 17px;
+    line-height: 24px;
+  }
+}
+.eyebrow + .titel {
+  margin-top: 8px;
+}
+.unter {
+  margin: 16px auto 0;
+  max-width: 34em;
+  font-size: 19px;
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+  color: #6e6e73;
+  text-wrap: pretty;
+}
+@media (min-width: 734px) {
+  .unter {
+    margin-top: 20px;
+    font-size: 21px;
+  }
+}
+.aktionen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 28px;
+  margin-top: 24px;
+}
+@media (min-width: 734px) {
+  .aktionen {
+    margin-top: 28px;
+  }
+}
+.meta {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #6e6e73;
+}
+.meta a {
+  color: var(--gold-ink);
+  font-weight: 600;
+}
+.kopfBild {
+  margin-top: 40px;
+}
+@media (min-width: 734px) {
+  .kopfBild {
+    margin-top: 56px;
+  }
+}
+
+/* ---------- Bildrahmen (Kopf, ganzbreit) ---------- */
+.rahmen {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #e8e8ed;
+  aspect-ratio: var(--a-m, var(--a, 3 / 2));
+}
+@media (min-width: 734px) {
+  .rahmen {
+    border-radius: 28px;
+    aspect-ratio: var(--a, 3 / 2);
+  }
+}
+.foto {
+  object-fit: cover;
+}
+.pille {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.88);
+  padding: 4px 12px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #1d1d1f;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+@media (min-width: 734px) {
+  .pille {
+    left: 20px;
+    bottom: 20px;
+  }
+}
+/* Mit Bildsatz unten wandert die Muster-Pille nach oben links */
+.pilleOben > .pille {
+  top: 12px;
+  bottom: auto;
+}
+@media (min-width: 734px) {
+  .pilleOben > .pille {
+    top: 20px;
+  }
+}
+.bildSatz {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  padding: 64px 20px 20px;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0));
+  color: #fff;
+  font-size: 21px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+@media (min-width: 734px) {
+  /* Mit Bildsatz unten wandert die Muster-Pille nach oben links */
+.pilleOben > .pille {
+  top: 12px;
+  bottom: auto;
+}
+@media (min-width: 734px) {
+  .pilleOben > .pille {
+    top: 20px;
+  }
+}
+.bildSatz {
+    padding: 96px 40px 36px;
+    font-size: 32px;
+    line-height: 1.125;
+  }
+}
+.unterschrift {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #6e6e73;
+  text-align: center;
+}
+
+/* ---------- Abschnitt ---------- */
+.abschnitt {
+  padding-block: 56px 0;
+}
+@media (min-width: 734px) {
+  .abschnitt {
+    padding-top: 80px;
+  }
+}
+.abschnittKopf {
+  margin-bottom: 20px;
+}
+@media (min-width: 734px) {
+  .abschnittKopf {
+    margin-bottom: 28px;
+  }
+}
+.zweiton {
+  max-width: 24ch;
+  font-size: 28px;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  color: #1d1d1f;
+  text-wrap: pretty;
+}
+.zweiton > span + span {
+  display: inline-block;
+  color: #6e6e73;
+}
+@media (min-width: 734px) {
+  .zweiton {
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+}
+.dunkel .zweiton {
+  color: #f5f5f7;
+}
+.dunkel .zweiton > span + span {
+  color: #a1a1a6;
+}
+.abschnittUnter {
+  margin-top: 12px;
+  max-width: 40em;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.022em;
+  color: #6e6e73;
+  text-wrap: pretty;
+}
+.dunkel .abschnittUnter {
+  color: #a1a1a6;
+}
+.text {
+  max-width: 680px;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.022em;
+  text-wrap: pretty;
+}
+.text + .text {
+  margin-top: 16px;
+}
+
+/* Dunkler Abschnitt (Hell-Dunkel-Wechsel) */
+.dunkelFlaeche {
+  margin-top: 56px;
+  padding-block: 56px;
+  background: #000;
+  color: #f5f5f7;
+}
+@media (min-width: 734px) {
+  .dunkelFlaeche {
+    margin-top: 80px;
+    padding-block: 80px;
+  }
+}
+
+/* ---------- Bildkacheln ---------- */
+.raster {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .raster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .raster > .breit {
+    grid-column: span 2;
+  }
+}
+@media (min-width: 1068px) {
+  .raster {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .raster > * {
+    grid-column: span 6;
+  }
+  .raster > .breit {
+    grid-column: span 12;
+  }
+  .raster > .s4 {
+    grid-column: span 4;
+  }
+  .raster > .s5 {
+    grid-column: span 5;
+  }
+  .raster > .s6 {
+    grid-column: span 6;
+  }
+  .raster > .s7 {
+    grid-column: span 7;
+  }
+  .raster > .s8 {
+    grid-column: span 8;
+  }
+  .raster > .s12 {
+    grid-column: span 12;
+  }
+}
+.kachel {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  color: #1d1d1f;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
+  --grau: #6e6e73;
+  --akzent: var(--gold-ink);
+  transition: box-shadow 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.kachelSchwarz {
+  background: #0f2a3a;
+  color: #f5f5f7;
+  box-shadow:
+    inset 0 3px 0 #f45b1e,
+    0 4px 16px rgb(0 0 0 / 0.08);
+  --grau: #a1a1a6;
+  --akzent: #ff9f5a;
+}
+.kachelNacht {
+  background: #000;
+  color: #f5f5f7;
+  box-shadow: none;
+  --grau: #a1a1a6;
+  --akzent: #ff9f5a;
+}
+/* Auf der Laden-Fläche #f5f5f7 eine Stufe dunkler, sonst unsichtbar */
+.kachelHell {
+  background: #e8e8ed;
+  box-shadow: none;
+}
+@media (hover: hover) {
+  .kachel:has(:global(.karte-link)):hover {
+    box-shadow: 0 18px 40px -16px rgb(16 32 48 / 0.28);
+  }
+}
+.kachel:has(:global(.karte-link):focus-visible) {
+  outline: 2px solid #f45b1e;
+  outline-offset: 2px;
+}
+.kachel :global(.karte-link) {
+  color: inherit;
+}
+.kachel :global(.karte-link):focus-visible {
+  outline: none;
+}
+.kachelText {
+  padding: 24px 22px 0;
+}
+.kachelText:last-child {
+  padding-bottom: 24px;
+}
+@media (min-width: 734px) {
+  .kachelText {
+    padding: 32px 32px 0;
+  }
+  .kachelText:last-child {
+    padding-bottom: 32px;
+  }
+}
+.kachelEyebrow {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--akzent);
+}
+.kachelTitel {
+  margin-top: 6px;
+  font-size: 21px;
+  line-height: 25px;
+  font-weight: 700;
+  letter-spacing: 0.004em;
+  text-wrap: balance;
+}
+.kachelEyebrow + .kachelTitel {
+  margin-top: 6px;
+}
+.kachelText > .kachelTitel:first-child {
+  margin-top: 0;
+}
+@media (min-width: 1068px) {
+  .kachelTitel {
+    font-size: 24px;
+    line-height: 28px;
+  }
+  .gross .kachelTitel {
+    font-size: 28px;
+    line-height: 32px;
+  }
+}
+.kachelZeile {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 21px;
+  letter-spacing: -0.016em;
+  color: var(--grau);
+  text-wrap: pretty;
+}
+@media (min-width: 734px) {
+  .kachelZeile {
+    font-size: 17px;
+    line-height: 25px;
+    letter-spacing: -0.022em;
+  }
+}
+.kachelZahl {
+  margin-top: 4px;
+  font-size: 48px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.kachelMehr {
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--akzent);
+}
+.kachelBild {
+  position: relative;
+  margin-top: 20px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #e8e8ed;
+}
+@media (min-width: 1068px) {
+  .gross .kachelBild {
+    aspect-ratio: auto;
+    flex: 1;
+    min-height: 300px;
+  }
+  .raster > .s4 .kachelBild,
+  .raster > .s5 .kachelBild {
+    aspect-ratio: auto;
+    flex: 1;
+    min-height: 220px;
+  }
+}
+.kachelBild > .foto {
+  transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .kachel:has(:global(.karte-link)):hover .kachelBild > .foto {
+    transform: scale(1.03);
+  }
+}
+/* Gestalteter Bildinhalt (Suchtreffer, Protokoll, Formular) statt Foto */
+.kachelUi {
+  margin-top: auto;
+  padding: 20px 22px 22px;
+  user-select: none;
+}
+@media (min-width: 734px) {
+  .kachelUi {
+    padding: 24px 32px 32px;
+  }
+}
+.kachelText:has(+ .kachelUi) {
+  padding-bottom: 0;
+}
+.kachelFuss {
+  margin-top: auto;
+  padding: 20px 22px 24px;
+}
+@media (min-width: 734px) {
+  /* Gestalteter Bildinhalt (Suchtreffer, Protokoll, Formular) statt Foto */
+.kachelUi {
+  margin-top: auto;
+  padding: 20px 22px 22px;
+  user-select: none;
+}
+@media (min-width: 734px) {
+  .kachelUi {
+    padding: 24px 32px 32px;
+  }
+}
+.kachelText:has(+ .kachelUi) {
+  padding-bottom: 0;
+}
+.kachelFuss {
+    padding: 24px 32px 32px;
+  }
+}
+
+/* Kompakte Kachel am Handy: Text links, kleines Bild rechts */
+@media (max-width: 639px) {
+  .kompaktMobil {
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 112px;
+  }
+  .kompaktMobil > .kachelText,
+  .kompaktMobil > .kachelText:last-child {
+    flex: 1;
+    align-self: center;
+    padding: 18px 16px 18px 20px;
+  }
+  .kompaktMobil > .kachelBild {
+    flex: none;
+    width: 128px;
+    margin-top: 0;
+    aspect-ratio: auto;
+  }
+  .kompaktMobil > .kachelBild > .pille {
+    left: 6px;
+    bottom: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+}
+
+/* Ladeliste auf /branchen: Laden-Fläche statt Weiß */
+section.ladeliste {
+  background: transparent;
+}
+
+/* ---------- Kontaktkarte (Abschluss) ---------- */
+.kontaktAbschnitt {
+  padding-block: 56px 64px;
+}
+@media (min-width: 734px) {
+  .kontaktAbschnitt {
+    padding-block: 80px 96px;
+  }
+}
+.kontakt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: 18px;
+  background: #0f2a3a;
+  color: #f5f5f7;
+}
+.kontaktBild {
+  position: relative;
+  order: -1;
+  height: 200px;
+  overflow: hidden;
+}
+.kontaktText {
+  padding: 24px 22px 28px;
+}
+/* Ohne Foto: gezeichnete Hafenszene, unten bündig */
+.kontaktLinie {
+  background: #0b1a24;
+}
+.kontaktLinie > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+@media (min-width: 734px) {
+  .kontakt {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 400px;
+  }
+  .kontaktBild {
+    order: 0;
+    height: auto;
+  }
+  .kontaktText {
+    align-self: center;
+    padding: 40px;
+  }
+}
+@media (min-width: 1068px) {
+  .kontakt {
+    grid-template-columns: 540px 1fr;
+  }
+}
+.kontaktEyebrow {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #ff9f5a;
+}
+.kontaktTitel {
+  margin-top: 6px;
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+  text-wrap: balance;
+}
+@media (min-width: 1068px) {
+  .kontaktTitel {
+    font-size: 32px;
+    line-height: 36px;
+    letter-spacing: -0.01em;
+  }
+}
+.kontaktZeile {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 22px;
+  color: #a1a1a6;
+  text-wrap: pretty;
+}
+@media (min-width: 734px) {
+  .kontaktZeile {
+    font-size: 17px;
+    line-height: 25px;
+  }
+}
+.kontaktNummer {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #f5f5f7;
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  .kontaktNummer:hover {
+    color: #ff9f5a;
+  }
+}
+.kontaktAktionen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 20px;
+}
+.kontaktAktionen :global(.link-chevron) {
+  color: #ff9f5a;
+}
+
+/* ---------- Chips ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  border-radius: 999px;
+  background: #fff;
+  padding: 6px 14px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #1d1d1f;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+@media (hover: hover) {
+  a.chip:hover {
+    box-shadow: inset 0 0 0 1px var(--gold-ink);
+    color: var(--gold-ink);
+  }
+}
+
+/* ---------- Weiße Inhaltskarte ---------- */
+.blatt {
+  border-radius: 18px;
+  background: #fff;
+  padding: 24px 22px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.06);
+}
+@media (min-width: 734px) {
+  .blatt {
+    border-radius: 28px;
+    padding: 40px;
+  }
+}

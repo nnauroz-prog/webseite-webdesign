@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { Abschluss as AppleAbschluss, ContainerMotiv, MehrLink } from "@/components/marketing/apple";
+import { MehrLink } from "@/components/marketing/apple";
+import {
+  Abschnitt,
+  BildKachel,
+  BildRaster,
+  FotoRahmen,
+  KontaktKarte,
+  SeitenKopf,
+  UnterseiteMain,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { PageHero } from "@/components/marketing/page-hero";
 import { Produktleiste } from "@/components/marketing/produktleiste";
 import { WARTUNG_PREISE } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
@@ -60,7 +68,7 @@ const PLANS: Plan[] = [
       "Sicherheits- und Software-Updates jeden Monat",
       "Tägliche Backups, 30 Tage zurück abrufbar",
       "Eine kleine Änderung am Inhalt pro Monat",
-      "Antwort auf Mails meist am selben Werktag",
+      "Antwort meist am selben Werktag",
     ],
     limits: ["Größere Umbauten der Gestaltung", "Mehr als eine kleine Änderung im Monat", "Neue Funktionen"],
   },
@@ -195,7 +203,7 @@ export default function WartungPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" cta={false} />
+      <MarketingHeader cta={false} />
       <Produktleiste
         titel="Wartung"
         links={[
@@ -205,14 +213,14 @@ export default function WartungPage() {
         ]}
         cta={{ href: "/anfrage?vorhaben=Wartung", label: "Anfragen" }}
       />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero
-          crumb="Wartung"
+      <UnterseiteMain>
+        <SeitenKopf
           eyebrow="Wartung und Pflege"
-          title="Website-Wartung für Seiten, die schon laufen"
+          titel="Website-Wartung für Seiten, die schon laufen"
+          unter="Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das geht mit WordPress, Wix oder Squarespace. Bei WordPress fallen jeden Monat Updates an, deshalb sehen wir uns die Seite vorher an und nennen Ihnen den passenden Tarif."
           aktionen={
             <>
-              <Link href="/anfrage?vorhaben=Wartung" className="btn-signal">
+              <Link href="/anfrage?vorhaben=Wartung" className="btn-signal btn-gross">
                 Anfrage schreiben
               </Link>
               <MehrLink href="#tarife" groesse="unter">
@@ -221,16 +229,28 @@ export default function WartungPage() {
             </>
           }
           meta={<span>Ab {WARTUNG_PREISE.basis} im Monat · nach 6 Monaten monatlich kündbar</span>}
-        >
-          Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das
-          geht mit WordPress, Wix oder Squarespace. Bei WordPress fallen jeden Monat Updates an, deshalb sehen wir uns
-          die Seite vorher an und nennen Ihnen den passenden Tarif.
-        </PageHero>
+          bild={
+            <FotoRahmen
+              vorab
+              src="/images/workspace-macbook.webp"
+              alt="Hände an einer Laptop-Tastatur von oben, daneben ein aufgeschlagenes Notizbuch und eine Tasse Kaffee"
+              aspect="21 / 9"
+              aspectMobil="16 / 10"
+              position="45% 45%"
+            />
+          }
+        />
         <Plans />
         <Anlaesse />
         <Faq />
-        <Abschluss />
-      </main>
+        <KontaktKarte
+          eyebrow="Durchsicht"
+          titel="Bevor Sie einen Tarif wählen, sehen wir uns Ihre Seite an."
+          zeile="Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf konkrete Punkte, kostenlos."
+          pille={{ href: "/audit", label: "Durchsicht anfordern" }}
+          link={{ href: "/anfrage?vorhaben=Wartung", label: "Anfrage schreiben" }}
+        />
+      </UnterseiteMain>
       <MarketingFooter crumb="Wartung" />
       <script
         type="application/ld+json"
@@ -241,77 +261,76 @@ export default function WartungPage() {
 }
 
 /* ------------------------------------------------------------------
- * Tarife als drei gerundete Karten (wie die Paket-Modelle): Name
- * groß, Preis groß, Satz, Pille und Inhalt; „Nicht enthalten“ grau.
+ * Tarife als drei weiße Karten. Per Subgrid liegen Name, Satz, Preis
+ * und Knopf in allen drei Karten auf einer Linie; Werkbank schwarz.
  * ---------------------------------------------------------------- */
 function Plans() {
   return (
-    <section id="tarife" className="flaeche-hell abschnitt scroll-mt-20">
-      <div className="inhalt abschnitt-kopf">
-        <h2 data-auftritt="titel" className="t-abschnitt">
-          Drei Tarife für die laufende Pflege
-        </h2>
-        <p className="t-unter">
+    <Abschnitt
+      id="tarife"
+      fett="Drei Tarife."
+      grau="Für die laufende Pflege."
+      unter={
+        <>
           Preise inkl. 19&nbsp;% MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab{" "}
           {WARTUNG_PREISE.uebernahme} und entfällt, wenn Sie auf unser Hosting umziehen.
-        </p>
-      </div>
-      <ul role="list" className="mx-auto grid max-w-[1200px] gap-3 px-[max(var(--rinne),env(safe-area-inset-left))] md:grid-cols-3 lg:gap-5">
-        {PLANS.map((plan, i) => (
-          <PlanKarte key={plan.slug} plan={plan} stapel={i + 1} />
+        </>
+      }
+    >
+      <ul role="list" className="grid gap-3 md:grid-cols-3 md:grid-rows-[auto_auto_auto_auto_1fr] md:gap-x-5 md:gap-y-0">
+        {PLANS.map((plan) => (
+          <PlanKarte key={plan.slug} plan={plan} />
         ))}
       </ul>
-    </section>
+    </Abschnitt>
   );
 }
 
-const TARIF_TON = ["zink", "signal", "teer"] as const;
-
-function PlanKarte({ plan, stapel }: { plan: Plan; stapel: number }) {
+function PlanKarte({ plan }: { plan: Plan }) {
   // „Alles aus Basis" steht als Vorzeile über der Liste, nicht als Punkt darin.
   const basis = plan.contents[0]?.startsWith("Alles aus") ? plan.contents[0] : null;
   const items = basis ? plan.contents.slice(1) : plan.contents;
   const nameId = `tarif-${plan.slug}-name`;
   return (
-    <li className="flex">
-      <article id={plan.slug} data-auftritt="" className="karte karte-weiss flex w-full scroll-mt-24 flex-col p-7 text-center sm:p-9">
-        <div className="modell-bild" aria-hidden="true">
-          <ContainerMotiv stapel={Array.from({ length: stapel }, () => TARIF_TON[stapel - 1])} />
-        </div>
-        <h3 id={nameId} className="t-karte mt-5">
-          {plan.name}
-        </h3>
-        <p className="modell-satz mx-auto !max-w-[28ch] text-pretty lg:min-h-[5.88em]">
-          {plan.description}
-        </p>
-        <p className="modell-preis">ab {plan.price}</p>
-        <p className="modell-monat">im Monat</p>
-        <div className="modell-aktionen">
-          <Link href={`/anfrage?vorhaben=Wartung+${plan.name}`} aria-describedby={nameId} className="btn-signal btn-mittel">
-            Anfragen
-          </Link>
-        </div>
-        <div className="mt-8 border-t border-[var(--border)] pt-6 text-left">
-          {basis ? <p className="text-muted-foreground text-[14px] leading-[1.43] font-semibold">{basis}, dazu</p> : null}
-          <ul role="list" className={`${basis ? "mt-3" : ""} space-y-3 text-[15px] leading-[1.4] tracking-[-0.012em]`}>
-            {items.map((item) => (
-              <li key={item} className="flex gap-3">
-                <Haken />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="text-muted-foreground mt-7 text-[14px] leading-[1.43] font-semibold">Nicht enthalten</p>
-          <ul role="list" className="text-muted-foreground mt-3 space-y-2 text-[14px] leading-[1.43]">
-            {plan.limits.map((l) => (
-              <li key={l} className="flex gap-3">
-                <span aria-hidden="true" className="mt-[0.6em] h-px w-3 shrink-0 bg-current" />
-                <span>{l}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </article>
+    <li
+      id={plan.slug}
+      className="grid scroll-mt-28 rounded-[18px] bg-white px-[22px] pt-7 pb-7 shadow-[0_4px_16px_rgb(0_0_0/0.08)] sm:px-7 md:row-span-5 md:grid-rows-subgrid"
+    >
+      <h3 id={nameId} className="text-[21px] leading-[25px] font-bold lg:text-[24px] lg:leading-[28px]">
+        {plan.name}
+      </h3>
+      <p className="mt-2 text-[15px] leading-[22px] text-pretty text-[#6e6e73] sm:text-[17px] sm:leading-[25px]">
+        {plan.description}
+      </p>
+      <p className="mt-5 text-[28px] leading-[32px] font-bold tracking-[-0.01em] tabular-nums">
+        ab {plan.price}
+        <span className="ml-1.5 text-[14px] font-normal tracking-normal text-[#6e6e73]">im Monat</span>
+      </p>
+      <div className="mt-5">
+        <Link href={`/anfrage?vorhaben=Wartung+${plan.name}`} aria-describedby={nameId} className="btn-signal btn-mittel">
+          Anfragen
+        </Link>
+      </div>
+      <div className="mt-7 border-t border-black/10 pt-6">
+        {basis ? <p className="text-[14px] leading-5 font-semibold text-[#6e6e73]">{basis}, dazu</p> : null}
+        <ul role="list" className={`${basis ? "mt-3" : ""} space-y-3 text-[15px] leading-[1.4] tracking-[-0.012em]`}>
+          {items.map((item) => (
+            <li key={item} className="flex gap-3">
+              <Haken />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-7 text-[14px] leading-5 font-semibold text-[#6e6e73]">Nicht enthalten</p>
+        <ul role="list" className="mt-3 space-y-2 text-[14px] leading-5 text-[#6e6e73]">
+          {plan.limits.map((l) => (
+            <li key={l} className="flex gap-3">
+              <span aria-hidden="true" className="mt-[0.6em] h-px w-3 shrink-0 bg-current" />
+              <span>{l}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </li>
   );
 }
@@ -347,27 +366,93 @@ const CASES = [
 ];
 
 function Anlaesse() {
+  const [vorgaenger, lange, formular, klein] = CASES;
   return (
-    <section id="anlaesse" className="flaeche-weiss abschnitt scroll-mt-20">
-      <div className="inhalt abschnitt-kopf">
-        <p className="t-eyebrow">Typische Anlässe</p>
-        <h2 data-auftritt="titel" className="t-abschnitt mt-2">
-          Wann eine Übergabe sinnvoll ist
-        </h2>
+    <Abschnitt id="anlaesse" fett="Typische Anlässe." grau="Wann eine Übergabe sinnvoll ist.">
+      <BildRaster>
+        <BildKachel
+          spalten={7}
+          gross
+          titel={vorgaenger.title}
+          zeile={vorgaenger.body}
+          foto={{
+            src: "/images/atmosphere/handwerker-werkbank.webp",
+            alt: "Werkbank mit Hobel, Stechbeiteln und Holzspänen in warmem Licht",
+            position: "50% 55%",
+            sizes: "(min-width: 1068px) 560px, calc(100vw - 32px)",
+          }}
+        />
+        <BildKachel ton="nacht" spalten={5} titel={lange.title} zeile={lange.body} bildInhalt={<UpdateHinweis />} />
+        <BildKachel ton="nacht" spalten={5} titel={formular.title} zeile={formular.body} bildInhalt={<FormularFehler />} />
+        <BildKachel
+          spalten={7}
+          gross
+          titel={klein.title}
+          zeile={klein.body}
+          foto={{
+            src: "/images/sitalo-pflege-laptop.webp",
+            alt: "Laptop am Empfang eines Pflegedienstes mit der Musterseite des Dienstes",
+            position: "50% 50%",
+            sizes: "(min-width: 1068px) 560px, calc(100vw - 32px)",
+            muster: true,
+          }}
+        />
+      </BildRaster>
+    </Abschnitt>
+  );
+}
+
+/** Gestalteter Hinweis einer lange nicht gepflegten Seite (Beispiel). */
+function UpdateHinweis() {
+  const zeilen = [
+    { t: "Seiten-Software", v: "6.1 → 6.7" },
+    { t: "Kontaktformular-Erweiterung", v: "3 Versionen alt" },
+    { t: "SSL-Zertifikat", v: "läuft in 6 Tagen ab" },
+  ];
+  return (
+    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
+      <div className="flex items-center gap-2.5">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ff9f0a] text-[13px] leading-none font-bold text-[#1c1c1e]">
+          !
+        </span>
+        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">3 Punkte veraltet</p>
       </div>
-      <ul role="list" className="bento mx-auto max-w-[1200px] px-[max(var(--rinne),env(safe-area-inset-left))]">
-        {CASES.map((c, i) => (
-          <li
-            key={c.title}
-            data-auftritt="skala"
-            className={`karte ${i === 1 || i === 2 ? "karte-schwarz" : ""} flex min-h-[220px] flex-col items-center justify-center p-8 text-center sm:p-12`}
-          >
-            <h3 className="t-kachel max-w-[18ch] text-[clamp(24px,20px+1vw,32px)]">{c.title}</h3>
-            <p className="text-muted-foreground mt-3 max-w-[34ch] text-[17px] leading-[1.47] tracking-[-0.022em]">{c.body}</p>
+      <ul role="list" className="mt-3 divide-y divide-white/10">
+        {zeilen.map((r) => (
+          <li key={r.t} className="flex items-baseline justify-between gap-3 py-2 text-[13px] leading-[18px]">
+            <span className="min-w-0 text-[#e5e5ea]">{r.t}</span>
+            <span className="shrink-0 text-[12px] text-[#ff9f5a]">{r.v}</span>
           </li>
         ))}
       </ul>
-    </section>
+      <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[12px] font-semibold text-[#f5f5f7]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#30d158]" />
+        Nach der Übernahme: alles aktuell
+      </p>
+    </div>
+  );
+}
+
+/** Gestaltete Fehlermeldung eines Kontaktformulars (Beispiel). */
+function FormularFehler() {
+  return (
+    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
+      <p className="text-[13px] font-semibold text-[#f5f5f7]">Kontakt</p>
+      <span className="mt-2 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">Jana Beispiel</span>
+      <span className="mt-1.5 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">
+        Termin für Samstag möglich?
+      </span>
+      <div className="mt-3 flex items-start gap-2 rounded-md bg-[#3a1d1d] px-2.5 py-2 text-[12px] leading-[17px] text-[#ffb4ab]">
+        <svg viewBox="0 0 16 16" width="14" height="14" className="mt-[1px] shrink-0">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M8 4.5v4M8 11h.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+        Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.
+      </div>
+      <p className="mt-3 text-[12px] leading-[17px] text-[#a1a1a6]">
+        Freitag, 17:48 Uhr. Ein Anruf bei uns, und das Formular läuft wieder.
+      </p>
+    </div>
   );
 }
 
@@ -405,44 +490,29 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
 ];
 
 /* ------------------------------------------------------------------
- * Fragen offen gesetzt: Frage links, Antwort rechts.
+ * Fragen zum Aufklappen in einem weißen Blatt wie auf /faq.
  * ---------------------------------------------------------------- */
 function Faq() {
   return (
-    <section id="fragen" className="flaeche-hell abschnitt scroll-mt-20">
-      <div className="inhalt">
-        <h2 data-auftritt="titel" className="zweiton">
-          <span>Fragen zur Wartung.</span> <span className="grau">Kurz beantwortet.</span>
-        </h2>
-        <dl className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:mt-10">
-          {FAQ_ITEMS.map((item) => (
-            <div key={item.q} data-auftritt="" className="karte karte-weiss p-7 sm:p-8">
-              <dt className="text-[21px] leading-[1.19] font-semibold tracking-[-0.015em]">{item.q}</dt>
-              <dd className="text-muted-foreground mt-3 text-[17px] leading-[1.47] tracking-[-0.022em]">{item.a}</dd>
-            </div>
-          ))}
-        </dl>
+    <Abschnitt id="fragen" fett="Fragen zur Wartung." grau="Kurz beantwortet.">
+      <div className="min-w-0 divide-y divide-black/10 rounded-[18px] bg-white px-6 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:px-8">
+        {FAQ_ITEMS.map((item) => (
+          <details key={item.q} className="group">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
+              <h3 className="text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">{item.q}</h3>
+              <span
+                aria-hidden="true"
+                className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[22px] leading-none font-light text-[#6e6e73] transition-colors group-open:text-[#1d1d1f] group-hover:text-[#1d1d1f]"
+              >
+                <span className="transition-transform group-open:rotate-45">+</span>
+              </span>
+            </summary>
+            <p className="max-w-2xl pb-6 text-[17px] leading-[1.5] tracking-[-0.022em] text-pretty text-[#424245] sm:pr-12">
+              {item.a}
+            </p>
+          </details>
+        ))}
       </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------
- * Abschluss: schwarz, Telefonnummer groß, Pille zur Durchsicht.
- * ---------------------------------------------------------------- */
-function Abschluss() {
-  return (
-    <AppleAbschluss
-      id="kontakt"
-      titel="Bevor Sie einen Tarif wählen, sehen wir uns Ihre Seite an."
-      zwischen={
-        <a href="tel:+491607621876" className="abschluss-nummer">
-          0160&nbsp;7621876
-        </a>
-      }
-      unter="Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf konkrete Punkte, kostenlos."
-      pille={{ href: "/audit", label: "Durchsicht anfordern" }}
-      link={{ href: "/anfrage?vorhaben=Wartung", label: "Anfrage schreiben" }}
-    />
+    </Abschnitt>
   );
 }

@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 
+import Image from "next/image";
+
 import { InquiryForm } from "@/components/marketing/inquiry-form";
+import { UnterseiteMain, unterseiteStil as u } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
-import { PageHero } from "@/components/marketing/page-hero";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { Produktleiste } from "@/components/marketing/produktleiste";
 import { PREIS_HINWEIS } from "@/lib/pakete-data";
 import {
   INQUIRY_PACKAGES,
@@ -16,15 +19,6 @@ export const metadata: Metadata = {
     "Name, E-Mail und eine kurze Beschreibung genügen. Wir antworten aus Hamburg, meist am selben Werktag.",
   alternates: { canonical: "/anfrage" },
 };
-
-/**
- * Apple-Formen für das Anfrageformular. inquiry-form.tsx ist gesperrt
- * (Lead-Logik); diese Regeln greifen nur, solange dort noch die alten
- * Klassen stehen: Karten bekommen 18/28 px, der weiche Schatten fällt
- * weg, Pillen bleiben Pillen, Felder 12 px.
- */
-const FORM_HAFEN =
-  "[&_.rounded-3xl]:rounded-[18px] lg:[&_.rounded-3xl]:rounded-[28px] [&_.rounded-2xl]:rounded-[18px] [&_.shadow-xl]:shadow-none [&_.ring-1]:ring-0 [&_.shadow-md]:shadow-none [&_.rounded-md]:rounded-[12px]";
 
 /** Was nach dem Absenden passiert. Echte Reihenfolge, daher nummeriert. */
 const DANACH: { title: string; body: string }[] = [
@@ -73,91 +67,90 @@ export default async function AnfragePage({
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
+      <MarketingHeader cta={false} />
+      <Produktleiste titel="Anfrage" links={[]} />
 
-      <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero
-          crumb="Anfrage" aktionen={false}
-          eyebrow="Website anfragen"
-          title="Erzählen Sie uns, was Sie vorhaben."
-        >
-          Name, E-Mail und eine kurze Beschreibung genügen. Ob Sie danach bei
-          uns bauen lassen, entscheiden Sie, wenn das Angebot vorliegt.
-        </PageHero>
-
-        <section aria-label="Anfrageformular" className="flaeche-hell">
-          <div className="mx-auto w-full max-w-[1200px] px-[max(var(--rinne),env(safe-area-inset-left))] py-12 sm:py-16 lg:py-20">
-            <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
-              <div className="min-w-0 lg:col-span-7">
-                <div className={`karte karte-weiss p-5 sm:p-8 lg:p-10 ${FORM_HAFEN}`}>
-                  <InquiryForm
-                    initialPackage={initialPackage}
-                    initialIndustry={initialIndustry}
-                    initialMessage={initialMessage}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-3 lg:col-span-5 lg:col-start-8">
-                <div className="karte karte-weiss p-7 sm:p-8">
-                  <h2 className="t-karte text-[21px]">Danach</h2>
-                  <ol className="mt-3 divide-y divide-[var(--border)]">
-                    {DANACH.map((s, i) => (
-                      <li
-                        key={s.title}
-                        className="grid grid-cols-[2.5rem_1fr] py-4"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="bg-gold text-foreground inline-flex h-7 w-7 items-center justify-center rounded-full text-[13px] font-semibold tabular-nums"
-                        >
-                          {i + 1}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="text-foreground text-[15.5px] font-semibold">
-                            {s.title}
-                          </p>
-                          <p className="text-muted-foreground mt-1 text-[14px] leading-relaxed">
-                            {s.body}
-                          </p>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-
-                <div className="karte karte-weiss p-7 sm:p-8">
-                  <h2 className="t-karte text-[21px]">Lieber direkt</h2>
-                  <a
-                    href="tel:+491607621876"
-                    className="text-foreground hover:text-gold-ink mt-3 inline-flex min-h-11 items-center text-[32px] leading-none font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums transition-colors"
-                  >
-                    0160&nbsp;7621876
-                  </a>
-                  <dl className="mt-6 space-y-2.5 text-[14.5px]">
-                    <div className="flex gap-3">
-                      <dt className="label-mono text-muted-foreground w-20 shrink-0 pt-0.5">Kontakt</dt>
-                      <dd className="min-w-0">
-                        <a
-                          href="/sitalo-kontakt.vcf"
-                          download="Sitalo-Webdesign.vcf"
-                          className="text-gold-ink underline underline-offset-2 hover:decoration-2"
-                        >
-                          Im Adressbuch speichern
-                        </a>
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
-
-                <p className="text-muted-foreground px-2 pt-3 text-[12px] leading-[1.33]">
-                  {PREIS_HINWEIS}
-                </p>
-              </div>
+      <UnterseiteMain>
+        {/* Kopf kompakt: Formular bleibt am Handy über dem Falz. Ab 1024 px
+            rechts ein kleines Bild. */}
+        <section className="inhalt pt-10 sm:pt-14 lg:pt-16">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
+            <div>
+              <p className={u.eyebrow}>Website anfragen</p>
+              <h1 className={`${u.titel} !mx-0 !max-w-[15ch] text-left`}>Erzählen Sie uns, was Sie vorhaben.</h1>
+              <p className={`${u.unter} !mx-0 text-left`}>
+                Name, E-Mail und eine kurze Beschreibung genügen. Ob Sie danach bei uns bauen lassen, entscheiden Sie,
+                wenn das Angebot vorliegt.
+              </p>
+            </div>
+            <div className="relative hidden aspect-[4/5] w-[320px] overflow-hidden rounded-[28px] bg-[#e8e8ed] lg:block">
+              <Image
+                src="/images/cafe-eimsbuettel.webp"
+                alt="Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel"
+                fill
+                sizes="320px"
+                className="object-cover"
+                style={{ objectPosition: "45% 50%" }}
+              />
             </div>
           </div>
         </section>
-      </main>
+
+        <section aria-label="Anfrageformular" className="inhalt pt-8 pb-16 sm:pt-12 sm:pb-24">
+          <div className="grid gap-5 lg:grid-cols-12 lg:gap-5">
+            <div className="min-w-0 lg:col-span-7">
+              <InquiryForm
+                initialPackage={initialPackage}
+                initialIndustry={initialIndustry}
+                initialMessage={initialMessage}
+              />
+            </div>
+
+            <div className="space-y-3 lg:col-span-5">
+              <div className="on-dark rounded-[18px] bg-black p-7 text-[#f5f5f7] sm:rounded-[28px] sm:p-8" data-flaeche-dunkel="">
+                <h2 className="text-[21px] leading-[25px] font-bold">Danach</h2>
+                <ol className="mt-3 divide-y divide-white/15">
+                  {DANACH.map((s, i) => (
+                    <li key={s.title} className="grid grid-cols-[2.5rem_1fr] py-4">
+                      <span
+                        aria-hidden="true"
+                        className="text-[24px] leading-[24px] font-bold text-[#ff9f5a] tabular-nums"
+                      >
+                        {i + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[17px] leading-[22px] font-semibold">{s.title}</p>
+                        <p className="mt-1 text-[14px] leading-[20px] text-[#a1a1a6]">{s.body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <div className="rounded-[18px] bg-white p-7 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:p-8">
+                <h2 className="text-[21px] leading-[25px] font-bold">Lieber direkt</h2>
+                <a
+                  href="tel:+491607621876"
+                  className="text-foreground hover:text-gold-ink mt-3 inline-flex min-h-11 items-center text-[32px] leading-none font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums transition-colors"
+                >
+                  0160&nbsp;7621876
+                </a>
+                <p className="mt-4 text-[14px]">
+                  <a
+                    href="/sitalo-kontakt.vcf"
+                    download="Sitalo-Webdesign.vcf"
+                    className="text-gold-ink inline-flex min-h-11 items-center font-semibold underline-offset-2 hover:underline"
+                  >
+                    Im Adressbuch speichern
+                  </a>
+                </p>
+              </div>
+
+              <p className="px-2 pt-3 text-[12px] leading-[1.33] text-[#6e6e73]">{PREIS_HINWEIS}</p>
+            </div>
+          </div>
+        </section>
+      </UnterseiteMain>
 
       <MarketingFooter crumb="Anfrage" />
     </div>
