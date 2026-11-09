@@ -1,0 +1,220 @@
+/* /anfrage: ruhiger, linksbündiger Kopf (am Handy kurz, damit das erste
+   Feld früh sichtbar ist), Formular links, rechts die kleinen Wege. */
+
+.kopf {
+  padding-top: 24px;
+}
+@media (min-width: 734px) {
+  .kopf {
+    padding-top: 56px;
+  }
+}
+.titel {
+  margin-top: 10px;
+  max-width: 18ch;
+  font-size: 32px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #1d1d1f;
+  text-wrap: balance;
+}
+@media (max-width: 359px) {
+  .titel {
+    font-size: 28px;
+  }
+}
+@media (min-width: 734px) {
+  .titel {
+    margin-top: 14px;
+    font-size: 48px;
+  }
+}
+@media (min-width: 1068px) {
+  .titel {
+    font-size: 56px;
+  }
+}
+.satz {
+  margin-top: 10px;
+  max-width: 34em;
+  font-size: 17px;
+  line-height: 1.4;
+  color: #6e6e73;
+  text-wrap: pretty;
+}
+@media (min-width: 734px) {
+  .satz {
+    margin-top: 16px;
+    font-size: 21px;
+    line-height: 1.32;
+  }
+}
+.versprechen {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: #fff;
+  padding: 6px 12px 6px 10px;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 600;
+  color: #1d1d1f;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.06);
+}
+@media (min-width: 734px) {
+  .versprechen {
+    margin-top: 20px;
+  }
+}
+.punkt {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #28a745;
+}
+
+.bereich {
+  padding-block: 16px 64px;
+}
+@media (min-width: 734px) {
+  .bereich {
+    padding-block: 36px 96px;
+  }
+}
+.raster {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 1024px) {
+  .raster {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: 24px;
+    align-items: start;
+  }
+}
+.seite {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .seite {
+    position: sticky;
+    top: 96px;
+  }
+}
+
+/* Telefonweg, klein */
+.telefon {
+  border-radius: 18px;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.06);
+}
+@media (min-width: 640px) {
+  .telefon {
+    border-radius: 28px;
+    padding: 24px 28px;
+  }
+}
+.nummer {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: #1d1d1f;
+  transition: color 0.15s ease;
+}
+.nummer:hover {
+  color: var(--gold-ink);
+}
+.klein {
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #6e6e73;
+}
+.klein a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-weight: 600;
+  color: var(--gold-ink);
+}
+
+/* Mono-Notiz: Was danach passiert */
+.notiz {
+  position: relative;
+  padding: 2px 0 2px 18px;
+}
+.notiz::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--gold);
+}
+.schritte {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+  counter-reset: schritt;
+}
+.schritte li {
+  display: grid;
+  grid-template-columns: 1.6em minmax(0, 1fr);
+}
+.schritte li::before {
+  counter-increment: schritt;
+  content: counter(schritt) ".";
+  color: #1d1d1f;
+}
+.schritte strong {
+  font-weight: 500;
+  color: #1d1d1f;
+}
+.datenschutz {
+  margin-top: 16px;
+}
+.datenschutz a {
+  color: #1d1d1f;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.foto {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .foto {
+    display: block;
+  }
+}
+.fotoRahmen {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #e8e8ed;
+}
+.fotoNotiz {
+  margin-top: 10px;
+}
+.hinweis {
+  padding-inline: 4px;
+  font-size: 12px;
+  line-height: 1.33;
+  color: #6e6e73;
+}

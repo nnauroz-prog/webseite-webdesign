@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import { InquiryForm } from "@/components/marketing/inquiry-form";
-import { UnterseiteMain, unterseiteStil as u } from "@/components/marketing/laden/unterseite";
+import { UnterseiteMain } from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Produktleiste } from "@/components/marketing/produktleiste";
@@ -12,6 +13,8 @@ import {
   INQUIRY_PACKAGES,
   type InquiryPackage,
 } from "@/lib/validations/inquiries";
+
+import a from "./anfrage.module.css";
 
 export const metadata: Metadata = {
   title: "Website anfragen",
@@ -23,16 +26,16 @@ export const metadata: Metadata = {
 /** Was nach dem Absenden passiert. Echte Reihenfolge, daher nummeriert. */
 const DANACH: { title: string; body: string }[] = [
   {
-    title: "Wir antworten",
-    body: "Meist am selben Werktag, per Mail oder am Telefon.",
+    title: "Wir melden uns",
+    body: "meist am selben Werktag, gern am Telefon.",
   },
   {
-    title: "Eine Viertelstunde Gespräch",
-    body: "Am Telefon, per Video oder in Hamburg. Danach kennen Sie Umfang und Termin.",
+    title: "Kurzes Gespräch",
+    body: "eine Viertelstunde am Telefon, per Video oder in Hamburg.",
   },
   {
     title: "Festpreis schriftlich",
-    body: "Sie bekommen den Preis, bevor wir anfangen. Erst dann entscheiden Sie.",
+    body: "bevor wir anfangen. Erst dann entscheiden Sie.",
   },
 ];
 
@@ -71,34 +74,22 @@ export default async function AnfragePage({
       <Produktleiste titel="Anfrage" links={[]} />
 
       <UnterseiteMain>
-        {/* Kopf kompakt: Formular bleibt am Handy über dem Falz. Ab 1024 px
-            rechts ein kleines Bild. */}
-        <section className="inhalt pt-10 sm:pt-14 lg:pt-16">
-          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
-            <div>
-              <p className="kennzeile-mono">Kontor · Website anfragen</p>
-              <h1 className={`${u.titel} !mx-0 !max-w-[15ch] text-left`}>Erzählen Sie uns, was Sie vorhaben.</h1>
-              <p className={`${u.unter} !mx-0 text-left`}>
-                Name, E-Mail und eine kurze Beschreibung genügen. Ob Sie danach bei uns bauen lassen, entscheiden Sie,
-                wenn das Angebot vorliegt.
-              </p>
-            </div>
-            <div className="relative hidden aspect-[4/5] w-[320px] overflow-hidden rounded-[28px] bg-[#e8e8ed] lg:block">
-              <Image
-                src="/images/cafe-eimsbuettel.webp"
-                alt="Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel"
-                fill
-                sizes="320px"
-                className="object-cover"
-                style={{ objectPosition: "45% 50%" }}
-              />
-            </div>
-          </div>
+        {/* Kopf bewusst kurz: am Handy steht das erste Feld früh im Bild. */}
+        <section className={`inhalt ${a.kopf}`}>
+          <p className="kennzeile-mono">Anfrage · Hamburg</p>
+          <h1 className={a.titel}>Erzählen Sie uns, was Sie vorhaben.</h1>
+          <p className={a.satz}>
+            Ein paar Zeilen genügen. Wir lesen jede Anfrage selbst und melden uns persönlich, ohne Verkaufsgespräch.
+          </p>
+          <p className={a.versprechen}>
+            <span aria-hidden="true" className={a.punkt} />
+            Antwort meist am selben Werktag
+          </p>
         </section>
 
-        <section aria-label="Anfrageformular" className="inhalt pt-8 pb-16 sm:pt-12 sm:pb-24">
-          <div className="grid gap-5 lg:grid-cols-12 lg:gap-5">
-            <div className="min-w-0 lg:col-span-7">
+        <section aria-label="Anfrageformular" className={`inhalt ${a.bereich}`}>
+          <div className={a.raster}>
+            <div className="min-w-0">
               <InquiryForm
                 initialPackage={initialPackage}
                 initialIndustry={initialIndustry}
@@ -106,48 +97,53 @@ export default async function AnfragePage({
               />
             </div>
 
-            <div className="space-y-3 lg:col-span-5">
-              <div className="on-dark rounded-[18px] bg-black p-7 text-[#f5f5f7] sm:rounded-[28px] sm:p-8" data-flaeche-dunkel="">
-                <h2 className="text-[21px] leading-[25px] font-bold">Danach</h2>
-                <ol className="mt-3 divide-y divide-white/15">
-                  {DANACH.map((s, i) => (
-                    <li key={s.title} className="grid grid-cols-[2.5rem_1fr] py-4">
-                      <span
-                        aria-hidden="true"
-                        className="text-[24px] leading-[24px] font-bold text-[#ff9f5a] tabular-nums"
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-[17px] leading-[22px] font-semibold">{s.title}</p>
-                        <p className="mt-1 text-[14px] leading-[20px] text-[#a1a1a6]">{s.body}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div className="rounded-[18px] bg-white p-7 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:p-8">
-                <h2 className="text-[21px] leading-[25px] font-bold">Lieber direkt</h2>
-                <a
-                  href="tel:+491607621876"
-                  className="text-foreground hover:text-gold-ink mt-3 inline-flex min-h-11 items-center text-[32px] leading-none font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums transition-colors"
-                >
+            <aside className={a.seite} aria-label="Andere Wege und Ablauf">
+              <div className={a.telefon}>
+                <p className="kennzeile-mono">Lieber sprechen</p>
+                <a href="tel:+491607621876" className={a.nummer}>
                   0160&nbsp;7621876
                 </a>
-                <p className="mt-4 text-[14px]">
-                  <a
-                    href="/sitalo-kontakt.vcf"
-                    download="Sitalo-Webdesign.vcf"
-                    className="text-gold-ink inline-flex min-h-11 items-center font-semibold underline-offset-2 hover:underline"
-                  >
+                <p className={a.klein}>
+                  <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf">
                     Im Adressbuch speichern
                   </a>
                 </p>
               </div>
 
-              <p className="px-2 pt-3 text-[12px] leading-[1.33] text-[#6e6e73]">{PREIS_HINWEIS}</p>
-            </div>
+              <div className={a.notiz}>
+                <h2 className="notiz-mono uppercase tracking-[0.12em]">Was danach passiert</h2>
+                <ol className={`notiz-mono ${a.schritte}`}>
+                  {DANACH.map((s) => (
+                    <li key={s.title}>
+                      <span>
+                        <strong>{s.title}</strong>, {s.body}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+                <p className={`notiz-mono ${a.datenschutz}`}>
+                  Datenschutz: Ihre Angaben nutzen wir nur, um Ihre Anfrage zu beantworten. Mehr in der{" "}
+                  <Link href="/datenschutz">Datenschutzerklärung</Link>.
+                </p>
+              </div>
+
+              <figure className={a.foto}>
+                <div className={a.fotoRahmen}>
+                  <Image
+                    src="/images/cafe-eimsbuettel.webp"
+                    alt="Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel"
+                    fill
+                    loading="lazy"
+                    sizes="(min-width: 1068px) 340px, 30vw"
+                    className="object-cover"
+                    style={{ objectPosition: "45% 50%" }}
+                  />
+                </div>
+                <figcaption className={`notiz-mono ${a.fotoNotiz}`}>Eimsbüttel, Hamburg</figcaption>
+              </figure>
+
+              <p className={a.hinweis}>{PREIS_HINWEIS}</p>
+            </aside>
           </div>
         </section>
       </UnterseiteMain>

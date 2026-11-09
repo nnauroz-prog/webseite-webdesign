@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { MehrLink } from "@/components/marketing/apple";
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { SitaloSignatur } from "@/components/marketing/hafen/sitalo-signatur";
+import {
+  FotoRahmen,
+  KontaktKarte,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
@@ -19,6 +24,7 @@ import {
 } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 
+import { kopfBild } from "./kopf-bild";
 
 type RouteParams = { slug: string };
 
@@ -123,67 +129,91 @@ export default async function JournalPostPage({
   // werden nur Ziel und Linktext; Kopfzeile und Frage-Satz der Daten
   // bleiben weg, der Schluss ist für alle Beiträge gleich gesetzt.
   // Ohne Eintrag: Durchsicht und Erstgespräch.
-  const cta: Pick<JournalCta, "primaryHref" | "primaryLabel" | "secondaryHref" | "secondaryLabel"> =
-    getCtaForPost(post.slug) ?? {
-      primaryHref: "/audit",
-      primaryLabel: "Kostenlose Durchsicht Ihrer Website",
-      secondaryHref: "/termin",
-      secondaryLabel: "Erstgespräch buchen",
-    };
+  const cta: Pick<
+    JournalCta,
+    "primaryHref" | "primaryLabel" | "secondaryHref" | "secondaryLabel"
+  > = getCtaForPost(post.slug) ?? {
+    primaryHref: "/audit",
+    primaryLabel: "Kostenlose Durchsicht Ihrer Website",
+    secondaryHref: "/termin",
+    secondaryLabel: "Erstgespräch buchen",
+  };
   const links = [
     { href: cta.primaryHref, label: cta.primaryLabel },
-    ...(cta.secondaryHref && cta.secondaryLabel ? [{ href: cta.secondaryHref, label: cta.secondaryLabel }] : []),
+    ...(cta.secondaryHref && cta.secondaryLabel
+      ? [{ href: cta.secondaryHref, label: cta.secondaryLabel }]
+      : []),
   ];
+
+  const bild = kopfBild(post.slug);
+  const [weiter, zweiter] = links;
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Journal" />
-      <main id="main" tabIndex={-1} className="flex-1">
+      <MarketingHeader cta={false} />
+      <UnterseiteMain>
         <article>
-          <header>
-            <div className="mx-auto w-full max-w-3xl px-5 pt-8 pb-12 text-center sm:px-6 sm:pt-12 sm:pb-16">
-              <Link
-                href="/journal"
-                className="link-chevron link-chevron-frei text-[14px]"
-              >
-                <span aria-hidden="true" className="chev">‹</span>
-                Alle Beiträge
-              </Link>
-              <p className="t-eyebrow mt-8 text-[14px]">
-                <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> · {post.readingMinutes} Min
-                Lesezeit
-              </p>
-              <h1 className="mt-3 text-balance text-[40px] leading-[1.05] tracking-[-0.025em] sm:text-[56px] sm:tracking-[-0.03em] lg:text-[64px]">
-                {post.title}
-              </h1>
-              <p className="t-unter mx-auto mt-5">
-                {post.dek}
-              </p>
-              {post.tags.length > 0 && (
-                <ul className="mt-8 flex flex-wrap justify-center gap-2" aria-label="Themen">
+          <SeitenKopf
+            krumen={[
+              { href: "/journal", label: "Journal" },
+              { label: post.title },
+            ]}
+            eyebrow={
+              <>
+                <time dateTime={post.publishedAt}>
+                  {formatDate(post.publishedAt)}
+                </time>{" "}
+                · {post.readingMinutes} Min Lesezeit
+              </>
+            }
+            titel={post.title}
+            unter={post.dek}
+            meta={
+              post.tags.length > 0 ? (
+                <ul
+                  className="flex flex-wrap justify-center gap-2"
+                  aria-label="Themen"
+                >
                   {post.tags.map((tag) => (
                     <li
                       key={tag}
-                      className="text-muted-foreground inline-flex h-8 items-center rounded-full bg-[var(--hell)] px-3.5 text-[12px]"
+                      className="inline-flex h-8 items-center rounded-full bg-white px-3.5 text-[12px] text-[#6e6e73] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)]"
                     >
                       {tag}
                     </li>
                   ))}
                 </ul>
-              )}
-            </div>
-          </header>
+              ) : null
+            }
+            bild={
+              <FotoRahmen
+                vorab
+                src={bild.src}
+                alt={bild.alt}
+                aspect="21 / 9"
+                aspectMobil="16 / 9"
+                position={bild.position ?? "50% 50%"}
+              />
+            }
+            unterschrift={bild.unterschrift}
+          />
 
           <PostBody post={post} />
 
-          <footer className="mx-auto w-full max-w-[980px] px-[max(var(--rinne),env(safe-area-inset-left))]">
-            <SitaloSignatur caption="Aus dem Büro in Hamburg" className="mb-14" />
-            <nav aria-label="Weitere Beiträge" className="grid gap-3 sm:grid-cols-2">
+          <footer className="inhalt pt-10 sm:pt-14">
+            <nav
+              aria-label="Weitere Beiträge"
+              className="grid gap-3 sm:grid-cols-2 sm:gap-5"
+            >
               {prev ? (
                 <article className="karte karte-hover p-7">
-                  <Link href={`/journal/${prev.slug}`} className="link-chevron karte-link text-[14px]">
-                    <span aria-hidden="true" className="chev">‹</span>
+                  <Link
+                    href={`/journal/${prev.slug}`}
+                    className="link-chevron karte-link text-[14px]"
+                  >
+                    <span aria-hidden="true" className="chev">
+                      ‹
+                    </span>
                     Neuerer Beitrag
                   </Link>
                   <p className="t-karte mt-2 text-[21px]">{prev.title}</p>
@@ -193,9 +223,14 @@ export default async function JournalPostPage({
               )}
               {next ? (
                 <article className="karte karte-hover p-7 sm:text-right">
-                  <Link href={`/journal/${next.slug}`} className="link-chevron karte-link text-[14px]">
+                  <Link
+                    href={`/journal/${next.slug}`}
+                    className="link-chevron karte-link text-[14px]"
+                  >
                     Älterer Beitrag
-                    <span aria-hidden="true" className="chev">›</span>
+                    <span aria-hidden="true" className="chev">
+                      ›
+                    </span>
                   </Link>
                   <p className="t-karte mt-2 text-[21px]">{next.title}</p>
                 </article>
@@ -204,39 +239,29 @@ export default async function JournalPostPage({
           </footer>
         </article>
 
-        <section className="flaeche-hell abschnitt mt-16 sm:mt-20">
-          <div className="inhalt abschnitt-kopf">
-            <p className="t-eyebrow">Fragen zum Beitrag</p>
-            <a href="tel:+491607621876" className="abschluss-nummer !text-foreground hover:!text-gold-ink mt-3">
-              0160&nbsp;7621876
-            </a>
-            <p className="t-unter mx-auto mt-4">
-              Oder schreiben Sie uns über das{" "}
-              <Link href="/anfrage" className="text-gold-ink underline underline-offset-2 hover:decoration-2">
-                Anfrageformular
+        <KontaktKarte
+          id="abschluss"
+          titel="Fragen zum Beitrag? Rufen Sie an."
+          zeile={
+            <>
+              Oder schreiben Sie uns über das Anfrageformular, wir antworten
+              meist am selben Werktag. Weiter zum Thema:{" "}
+              <Link
+                href={weiter.href}
+                className="text-[#1d1d1f] underline decoration-[var(--gold)] underline-offset-4"
+              >
+                {weiter.label}
               </Link>
-              . Wir antworten meist am selben Werktag.
-            </p>
-            <h2 className="t-karte mt-12">Weiter zum Thema</h2>
-            <div className="aktionen mt-5">
-              {links.map((l, i) =>
-                i === 0 ? (
-                  <Link key={l.href} href={l.href} className="btn-signal">
-                    {l.label}
-                  </Link>
-                ) : (
-                  <MehrLink key={l.href} href={l.href} groesse="unter">
-                    {l.label}
-                  </MehrLink>
-                ),
-              )}
-            </div>
-            <p className="mt-6">
-              <MehrLink href="/journal">Alle Beiträge</MehrLink>
-            </p>
-          </div>
-        </section>
-      </main>
+              .
+            </>
+          }
+          link={zweiter ?? { href: "/journal", label: "Alle Beiträge" }}
+          foto={{
+            src: "/images/texture-espresso.webp",
+            alt: "Eine Tasse Espresso auf einem Holztisch",
+          }}
+        />
+      </UnterseiteMain>
       <MarketingFooter crumb="Journal" />
 
       <script
@@ -254,31 +279,42 @@ function PostBody({ post }: { post: JournalPost }) {
   const leadIndex = post.body.findIndex((p) => p.kind === "p");
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-5 pb-14 sm:px-6 sm:pb-20">
-      <div className="border-border space-y-6 border-t pt-10 sm:pt-12">
-        {post.body.map((p, i) => (
-          <ParagraphView key={i} paragraph={p} isLead={i === leadIndex} />
-        ))}
+    <div className={u.abschnitt}>
+      <div className="inhalt">
+        <div className={`${u.blatt} sm:!px-14 sm:!py-14`}>
+          <div className="mx-auto max-w-[680px] space-y-6">
+            {post.body.map((p, i) => (
+              <ParagraphView key={i} paragraph={p} isLead={i === leadIndex} />
+            ))}
+            <SitaloSignatur
+              caption="Aus dem Büro in Hamburg"
+              className="!mt-12 max-w-[180px]"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-function ParagraphView({ paragraph, isLead }: { paragraph: Paragraph; isLead: boolean }) {
+function ParagraphView({
+  paragraph,
+  isLead,
+}: {
+  paragraph: Paragraph;
+  isLead: boolean;
+}) {
   if (paragraph.kind === "h2") {
     return (
-      <h2 className="mt-14 text-balance text-[1.55rem] leading-[1.12] tracking-[-0.025em] sm:text-[1.95rem]">
+      <h2 className="!mt-12 text-[24px] leading-[1.17] tracking-[-0.02em] text-balance sm:text-[28px]">
         {paragraph.text}
       </h2>
     );
   }
   if (paragraph.kind === "quote") {
     return (
-      <blockquote className="border-gold my-12 border-l-[3px] pl-6 sm:pl-8">
-        <p
-          className="text-balance text-[1.35rem] leading-[1.25] tracking-[-0.02em] sm:text-[1.7rem]"
-          style={{ fontStretch: "108%", fontWeight: 650 }}
-        >
+      <blockquote className="!my-10 rounded-[14px] bg-[#f5f5f7] px-6 py-5 sm:px-8 sm:py-6">
+        <p className="text-[21px] leading-[1.3] font-semibold tracking-[-0.018em] text-balance sm:text-[24px]">
           {paragraph.text}
         </p>
       </blockquote>
@@ -286,8 +322,11 @@ function ParagraphView({ paragraph, isLead }: { paragraph: Paragraph; isLead: bo
   }
   if (paragraph.kind === "li") {
     return (
-      <p className="text-foreground/85 flex items-start gap-3 text-[17px] leading-relaxed">
-        <span aria-hidden="true" className="bg-foreground mt-[0.7em] inline-block h-[3px] w-3 shrink-0" />
+      <p className="flex items-start gap-3 text-[17px] leading-[1.5] tracking-[-0.022em] text-[#424245]">
+        <span
+          aria-hidden="true"
+          className="mt-[0.6em] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--gold)]"
+        />
         <span>{paragraph.text}</span>
       </p>
     );
@@ -296,8 +335,8 @@ function ParagraphView({ paragraph, isLead }: { paragraph: Paragraph; isLead: bo
     <p
       className={
         isLead
-          ? "text-foreground text-pretty text-[19px] leading-[1.6] sm:text-[20px]"
-          : "text-foreground/85 text-pretty text-[17px] leading-[1.7]"
+          ? "text-[19px] leading-[1.5] tracking-[-0.018em] text-pretty text-[#1d1d1f] sm:text-[21px]"
+          : "text-[17px] leading-[1.6] tracking-[-0.022em] text-pretty text-[#424245]"
       }
     >
       {paragraph.text}

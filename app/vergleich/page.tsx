@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, Minus, X } from "lucide-react";
+import { Check, Minus, X } from "lucide-react";
 
+import { MehrLink } from "@/components/marketing/apple";
+import {
+  Abschnitt,
+  FotoRahmen,
+  KontaktKarte,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { PageHero } from "@/components/marketing/page-hero";
 import { formatDate } from "@/lib/journal-data";
 import { baukastenKosten } from "@/lib/fremdpreise";
 import { getPaketBySlug } from "@/lib/pakete-data";
@@ -15,7 +23,8 @@ const TITLE = "Wix, Jimdo, Squarespace oder Webdesigner?";
 const DESCRIPTION =
   "Wix, Squarespace, Jimdo, Selbstbau mit ChatGPT oder Webdesign-Büro: wann welcher Weg für lokale Betriebe passt, was er kostet und worauf Sie achten sollten.";
 /** Erstveröffentlichung und letzte inhaltliche Überarbeitung (ISO), lib/seiten-stand.ts. */
-const { veroeffentlicht: VEROEFFENTLICHT, stand: STAND } = SEITEN_STAND["/vergleich"];
+const { veroeffentlicht: VEROEFFENTLICHT, stand: STAND } =
+  SEITEN_STAND["/vergleich"];
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -73,7 +82,12 @@ export default function VergleichPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: `${SITE_URL}/`,
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -85,17 +99,45 @@ export default function VergleichPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero crumb="Vergleich" eyebrow="Baukasten · Selbstbau · Webdesign" title="Wix, Squarespace, Jimdo und Selbstbau im Vergleich">
-          Für manche Betriebe reicht ein Baukasten, und wer gern tüftelt, kommt mit ChatGPT inzwischen weit. Hier steht,
-          wann welcher Weg passt und wann es sich lohnt, uns zu beauftragen.
-        </PageHero>
+      <MarketingHeader cta={false} />
+      <UnterseiteMain>
+        <SeitenKopf
+          krumen="Vergleich"
+          eyebrow="Baukasten · Selbstbau · Webdesign"
+          titel="Wix, Squarespace, Jimdo und Selbstbau im Vergleich"
+          unter="Für manche Betriebe reicht ein Baukasten, und wer gern tüftelt, kommt mit ChatGPT inzwischen weit. Hier steht, wann welcher Weg passt und wann es sich lohnt, uns zu beauftragen."
+          aktionen={
+            <>
+              <Link href="/audit" className="btn-signal btn-gross">
+                Seite prüfen lassen
+              </Link>
+              <MehrLink href="#tabelle" groesse="unter">
+                Zur Kurzfassung
+              </MehrLink>
+            </>
+          }
+          meta={
+            <>
+              Stand <time dateTime={STAND}>{formatDate(STAND)}</time>
+            </>
+          }
+          bild={
+            <FotoRahmen
+              vorab
+              src="/images/workspace-laptop.webp"
+              alt="Aufgeklappter Laptop auf einem hellen Schreibtisch"
+              aspect="21 / 9"
+              aspectMobil="16 / 9"
+              position="50% 50%"
+            />
+          }
+          unterschrift="Drei Wege zur eigenen Website, ehrlich nebeneinander"
+        />
         <Faustregel />
         <DeepDives />
         <TableSummary />
         <FinalCta />
-      </main>
+      </UnterseiteMain>
       <MarketingFooter crumb="Vergleich" />
       <script
         type="application/ld+json"
@@ -107,8 +149,9 @@ export default function VergleichPage() {
   );
 }
 
-const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;
-const STARTER_MONTHLY = (getPaketBySlug("starter")?.monthly ?? "ab 59\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_MONTHLY = (
+  getPaketBySlug("starter")?.monthly ?? "ab 59\u00A0€ / Monat"
+).replace(/\s*\/\s*Monat$/, "");
 
 /* ------------------------------------------------------------------
  * Faustregel: drei Zeilen, wer womit am besten fährt.
@@ -125,7 +168,10 @@ const FAUSTREGEL: {
     wann: "Sie haben Zeit und Freude am Selbstbauen.",
     detail:
       "Günstig, solange Sie die Stunden für Texte, Bilder, die Ansicht am Handy und Google selbst aufbringen.",
-    link: { href: "/webseite-erstellen#schritte", label: "Webseite mit Baukasten selbst erstellen: die Schritte" },
+    link: {
+      href: "/webseite-erstellen#schritte",
+      label: "Webseite mit Baukasten selbst erstellen: die Schritte",
+    },
   },
   {
     weg: "Selbst programmieren mit ChatGPT",
@@ -138,45 +184,49 @@ const FAUSTREGEL: {
     wann: "Sie haben für die eigene Website keine freien Abende.",
     detail:
       "Sie schicken Stichpunkte und Fotos, wir schreiben die Texte und bauen die Seite. Hosting, Updates und kleine Änderungen laufen danach über den Monatsbeitrag.",
-    link: { href: "/website-erstellen-lassen", label: "Website erstellen lassen: Festpreis und Ablauf" },
+    link: {
+      href: "/website-erstellen-lassen",
+      label: "Website erstellen lassen: Festpreis und Ablauf",
+    },
     sitalo: true,
   },
 ];
 
 function Faustregel() {
   return (
-    <section>
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]">Die Faustregel</h2>
-        <ul className="border-foreground mt-10 border-t-[3px] lg:mt-12">
-          {FAUSTREGEL.map((f) => (
-            <li
-              key={f.weg}
-              className={`border-border grid gap-2 border-b py-6 sm:py-7 lg:grid-cols-12 lg:gap-8 ${f.sitalo ? "bg-card -mx-5 px-5 sm:-mx-6 sm:px-6" : ""}`}
-            >
-              <p className={`label-mono lg:col-span-3 lg:pt-2 ${f.sitalo ? "text-foreground" : "text-muted-foreground"}`}>
-                {f.weg}
-              </p>
-              <p className="text-[1.3rem] leading-snug tracking-[-0.015em] sm:text-[1.5rem] lg:col-span-4" style={{ fontStretch: "106%", fontWeight: 650 }}>
-                {f.wann}
-              </p>
-              <div className="lg:col-span-5">
-                <p className="text-foreground/80 text-[15.5px] leading-relaxed">{f.detail}</p>
-                {f.link ? (
-                  <Link
-                    href={f.link.href}
-                    className="text-foreground mt-2.5 inline-flex items-center gap-1 text-[14.5px] font-semibold underline decoration-[var(--border)] underline-offset-4 hover:decoration-current"
-                  >
-                    {f.link.label}
-                    <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                  </Link>
-                ) : null}
+    <Abschnitt
+      id="faustregel"
+      fett="Die Faustregel."
+      grau="Wer womit am besten fährt."
+    >
+      <ul role="list" className="grid gap-3 sm:gap-5 lg:grid-cols-3">
+        {FAUSTREGEL.map((f) => (
+          <li
+            key={f.weg}
+            className={`flex flex-col rounded-[18px] p-6 sm:rounded-[28px] sm:p-8 ${
+              f.sitalo
+                ? "bg-white shadow-[0_4px_16px_rgb(0_0_0/0.06),inset_0_0_0_2px_var(--gold)]"
+                : "bg-white shadow-[0_4px_16px_rgb(0_0_0/0.06)]"
+            }`}
+          >
+            <p className="kennzeile-mono">{f.weg}</p>
+            <p className="mt-4 text-[21px] leading-snug font-semibold tracking-[-0.018em] sm:text-[24px]">
+              {f.wann}
+            </p>
+            <p className="mt-3 text-[15px] leading-relaxed text-[#6e6e73] sm:text-[17px]">
+              {f.detail}
+            </p>
+            {f.link ? (
+              <div className="mt-auto pt-5">
+                <MehrLink href={f.link.href} groesse="klein">
+                  {f.link.label}
+                </MehrLink>
               </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </Abschnitt>
   );
 }
 
@@ -241,7 +291,8 @@ const DEEP_DIVES: DeepDive[] = [
     id: "ki-eigenbau",
     kategorie: "Selbstbau",
     label: "Selbstbau mit ChatGPT",
-    tagline: "Sie beschreiben einem Chat-Programm wie ChatGPT, was Sie wollen, und es schreibt den Code.",
+    tagline:
+      "Sie beschreiben einem Chat-Programm wie ChatGPT, was Sie wollen, und es schreibt den Code.",
     goodFor: [
       "Inhaber mit Technik-Interesse, die gern basteln",
       "Schnelle Entwürfe, um eine Idee auszuprobieren",
@@ -260,69 +311,89 @@ const DEEP_DIVES: DeepDive[] = [
 
 function DeepDives() {
   return (
-    <section className="bg-card border-foreground border-t">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-          <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem] lg:col-span-7">
-            Die vier Alternativen im Einzelnen
-          </h2>
-          <nav aria-label="Alternativen auf dieser Seite" className="lg:col-span-5">
-            <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[12.5px] lg:justify-end">
-              {DEEP_DIVES.map((d) => (
-                <li key={d.id}>
-                  <a href={`#${d.id}`} className="text-muted-foreground hover:text-foreground underline decoration-[var(--border)] underline-offset-4 hover:decoration-current">
-                    {d.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-
-        <div className="mt-12 lg:mt-14">
-          {DEEP_DIVES.map((d) => (
-            <DeepDiveBlock key={d.id} d={d} />
-          ))}
-        </div>
+    <Abschnitt
+      id="alternativen"
+      fett="Die vier Alternativen im Einzelnen."
+      grau="Auch wenn es gegen uns spricht."
+    >
+      <nav
+        aria-label="Alternativen auf dieser Seite"
+        className={`${u.chips} mb-5`}
+      >
+        {DEEP_DIVES.map((d) => (
+          <a key={d.id} href={`#${d.id}`} className={u.chip}>
+            {d.label}
+          </a>
+        ))}
+      </nav>
+      <div className="grid gap-3 sm:gap-5">
+        {DEEP_DIVES.map((d) => (
+          <DeepDiveBlock key={d.id} d={d} />
+        ))}
       </div>
-    </section>
+    </Abschnitt>
   );
 }
 
 function DeepDiveBlock({ d }: { d: DeepDive }) {
   return (
-    <article id={d.id} className="border-foreground grid scroll-mt-24 gap-8 border-t-2 py-10 first:pt-8 lg:grid-cols-12 lg:gap-8 lg:py-12">
+    <article
+      id={d.id}
+      className={`${u.blatt} grid scroll-mt-28 gap-8 lg:grid-cols-12 lg:gap-8`}
+    >
       <div className="lg:col-span-4">
-        <p className="label-mono text-muted-foreground">{d.kategorie}</p>
-        <h3 className="mt-3 text-[1.9rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.3rem]">{d.label}</h3>
-        <p className="text-foreground/75 mt-3 max-w-sm text-[15.5px] leading-relaxed text-pretty">{d.tagline}</p>
+        <p className="notiz-mono">{d.kategorie}</p>
+        <h3 className="mt-2 text-[28px] leading-[1.1] tracking-[-0.02em] sm:text-[32px]">
+          {d.label}
+        </h3>
+        <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-pretty text-[#6e6e73] sm:text-[17px]">
+          {d.tagline}
+        </p>
       </div>
       <div className="grid gap-8 sm:grid-cols-2 lg:col-span-8">
         <div>
-          <h4 className="label-mono text-muted-foreground border-border border-b pb-2">Passt für</h4>
+          <h4 className="border-b border-black/10 pb-2 text-[14px] font-semibold text-[#1d1d1f]">
+            Passt für
+          </h4>
           <ul className="mt-3 space-y-2.5">
             {d.goodFor.map((p) => (
-              <li key={p} className="flex items-start gap-3 text-[15px] leading-snug">
-                <Check className="text-ink-petrol mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <li
+                key={p}
+                className="flex items-start gap-3 text-[15px] leading-snug text-[#1d1d1f]"
+              >
+                <Check
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[#1d1d1f]"
+                  aria-hidden="true"
+                />
                 <span>{p}</span>
               </li>
             ))}
           </ul>
         </div>
         <div>
-          <h4 className="label-mono text-muted-foreground border-border border-b pb-2">Darauf achten</h4>
+          <h4 className="border-b border-black/10 pb-2 text-[14px] font-semibold text-[#1d1d1f]">
+            Darauf achten
+          </h4>
           <ul className="mt-3 space-y-2.5">
             {d.watchOut.map((p) => (
-              <li key={p} className="text-foreground/85 flex items-start gap-3 text-[15px] leading-snug">
-                <Minus className="text-ink-olive mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <li
+                key={p}
+                className="flex items-start gap-3 text-[15px] leading-snug text-[#424245]"
+              >
+                <Minus
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[#6e6e73]"
+                  aria-hidden="true"
+                />
                 <span>{p}</span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="border-foreground grid gap-1.5 border-t pt-4 sm:col-span-2 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
-          <p className="label-mono text-muted-foreground text-[11px] sm:pt-[3px]">Kosten</p>
-          <p className="text-[15px] leading-relaxed">{d.realCost}</p>
+        <div className="grid gap-1.5 rounded-[14px] bg-[#f5f5f7] px-5 py-4 sm:col-span-2 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
+          <p className="notiz-mono sm:pt-[2px]">Kosten</p>
+          <p className="text-[15px] leading-relaxed text-[#1d1d1f]">
+            {d.realCost}
+          </p>
         </div>
       </div>
     </article>
@@ -343,8 +414,22 @@ type TableRow = {
 };
 
 const TABLE: TableRow[] = [
-  { feature: "Fester Ansprechpartner, der Ihre Seite kennt", wix: "no", squarespace: "no", jimdo: "no", ki: "no", sitalo: "yes" },
-  { feature: "Handy-Ansicht ohne Nacharbeit", wix: "partial", squarespace: "partial", jimdo: "partial", ki: "no", sitalo: "yes" },
+  {
+    feature: "Fester Ansprechpartner, der Ihre Seite kennt",
+    wix: "no",
+    squarespace: "no",
+    jimdo: "no",
+    ki: "no",
+    sitalo: "yes",
+  },
+  {
+    feature: "Handy-Ansicht ohne Nacharbeit",
+    wix: "partial",
+    squarespace: "partial",
+    jimdo: "partial",
+    ki: "no",
+    sitalo: "yes",
+  },
   {
     feature: "Grundlagen für die lokale Suche",
     hinweis: "Bei Sitalo ab dem Paket Business",
@@ -363,8 +448,22 @@ const TABLE: TableRow[] = [
     ki: "no",
     sitalo: "no",
   },
-  { feature: "Texte werden für Sie geschrieben", wix: "no", squarespace: "no", jimdo: "no", ki: "no", sitalo: "yes" },
-  { feature: "Updates laufen ohne Ihr Zutun", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "no", sitalo: "yes" },
+  {
+    feature: "Texte werden für Sie geschrieben",
+    wix: "no",
+    squarespace: "no",
+    jimdo: "no",
+    ki: "no",
+    sitalo: "yes",
+  },
+  {
+    feature: "Updates laufen ohne Ihr Zutun",
+    wix: "yes",
+    squarespace: "yes",
+    jimdo: "yes",
+    ki: "no",
+    sitalo: "yes",
+  },
   {
     feature: "Gestaltung lässt sich als Ganzes mitnehmen",
     hinweis: "Bei Sitalo und im Selbstbau über den Quellcode",
@@ -374,10 +473,20 @@ const TABLE: TableRow[] = [
     ki: "yes",
     sitalo: "yes",
   },
-  { feature: "Günstiger Einstiegstarif", wix: "yes", squarespace: "yes", jimdo: "yes", ki: "yes", sitalo: "no" },
+  {
+    feature: "Günstiger Einstiegstarif",
+    wix: "yes",
+    squarespace: "yes",
+    jimdo: "yes",
+    ki: "yes",
+    sitalo: "no",
+  },
 ];
 
-const SPALTEN: { key: Exclude<keyof TableRow, "feature" | "hinweis">; label: string }[] = [
+const SPALTEN: {
+  key: Exclude<keyof TableRow, "feature" | "hinweis">;
+  label: string;
+}[] = [
   { key: "wix", label: "Wix" },
   { key: "squarespace", label: "Squarespace" },
   { key: "jimdo", label: "Jimdo" },
@@ -387,31 +496,38 @@ const SPALTEN: { key: Exclude<keyof TableRow, "feature" | "hinweis">; label: str
 
 function TableSummary() {
   return (
-    <section>
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-          <h2 className="text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem] lg:col-span-7">
-            Die Kurzfassung als Tabelle
-          </h2>
-          <p className="text-muted-foreground max-w-md text-[15.5px] leading-relaxed lg:col-span-5">
-            Beim Preis liegen die Baukästen vorn. Sitalo kostet {STARTER_MONTHLY} im Monat inkl. MwSt., dazu kommt der Aufbau.
-          </p>
-        </div>
-
-        <div className="mt-10 overflow-x-auto lg:mt-12">
-          <table className="w-full border-collapse text-left text-[14px] sm:min-w-[640px] sm:text-[14.5px]">
-            <caption className="sr-only">Vergleich von Wix, Squarespace, Jimdo, Selbstbau und Sitalo</caption>
+    <Abschnitt
+      id="tabelle"
+      fett="Die Kurzfassung als Tabelle."
+      unter={
+        <>
+          Beim Preis liegen die Baukästen vorn. Sitalo kostet {STARTER_MONTHLY}{" "}
+          im Monat inkl. MwSt., dazu kommt der Aufbau.
+        </>
+      }
+    >
+      <div className={u.blatt}>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-[14px] sm:min-w-[640px] sm:text-[15px]">
+            <caption className="sr-only">
+              Vergleich von Wix, Squarespace, Jimdo, Selbstbau und Sitalo
+            </caption>
             <thead>
-              <tr className="border-foreground border-t-[3px]">
-                <th scope="col" className="label-mono text-muted-foreground py-3 pr-3 align-bottom text-[11px] font-medium sm:pr-4">
+              <tr className="border-b border-black/15">
+                <th
+                  scope="col"
+                  className="notiz-mono py-3 pr-3 align-bottom font-normal sm:pr-4"
+                >
                   Kriterium
                 </th>
                 {SPALTEN.map((c) => (
                   <th
                     key={c.key}
                     scope="col"
-                    className={`label-mono w-10 px-1 py-3 text-center align-bottom text-[11px] font-medium sm:w-auto sm:px-2 ${
-                      c.key === "sitalo" ? "bg-card text-foreground border-gold border-t-[3px]" : "text-muted-foreground"
+                    className={`w-10 px-1 py-3 text-center align-bottom text-[12px] font-semibold sm:w-auto sm:px-2 sm:text-[14px] ${
+                      c.key === "sitalo"
+                        ? "text-gold-ink rounded-t-[12px] bg-[#f5f5f7]"
+                        : "text-[#6e6e73]"
                     }`}
                   >
                     {/* Mobil senkrecht gesetzt, damit alle fünf Spalten auf den Schirm passen */}
@@ -424,110 +540,108 @@ function TableSummary() {
             </thead>
             <tbody>
               {TABLE.map((row) => (
-                <tr key={row.feature} className="border-border border-t">
-                  <th scope="row" className="py-3.5 pr-3 leading-snug font-medium sm:pr-4">
+                <tr
+                  key={row.feature}
+                  className="border-t border-black/10 first:border-t-0"
+                >
+                  <th
+                    scope="row"
+                    className="py-3.5 pr-3 leading-snug font-medium text-[#1d1d1f] sm:pr-4"
+                  >
                     {row.feature}
                     {row.hinweis ? (
-                      <span className="text-muted-foreground mt-0.5 block text-[12.5px] leading-snug font-normal">
+                      <span className="mt-0.5 block text-[12.5px] leading-snug font-normal text-[#6e6e73]">
                         {row.hinweis}
                       </span>
                     ) : null}
                   </th>
                   {SPALTEN.map((c) => (
-                    <Cell key={c.key} value={row[c.key]} highlight={c.key === "sitalo"} />
+                    <Cell
+                      key={c.key}
+                      value={row[c.key]}
+                      highlight={c.key === "sitalo"}
+                    />
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-        <p className="text-muted-foreground mt-6 flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 text-[13px] leading-relaxed">
-          <span className="inline-flex items-center gap-1.5">
-            <Check className="text-foreground h-4 w-4" aria-hidden="true" /> erfüllt
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Minus className="h-4 w-4" aria-hidden="true" /> bedingt
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <X className="h-3.5 w-3.5" aria-hidden="true" /> fehlt meistens
-          </span>
-          <span>
-            Unsere Einschätzung, Stand <time dateTime={STAND}>{formatDate(STAND)}</time>. Tarife und Funktionen der
-            Anbieter ändern sich, im Zweifel lohnt ein Blick auf deren Seite.
-          </span>
-        </p>
-        <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-3">
-          <li>
-            <Link href="/rechner" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-              Gesamtkosten über drei Jahre berechnen {ARROW}
-            </Link>
-          </li>
-          <li>
-            <Link href="/pakete" className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline">
-              Unsere Pakete und Preise {ARROW}
-            </Link>
-          </li>
-        </ul>
       </div>
-    </section>
+
+      <p className="mt-6 flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 text-[13px] leading-relaxed text-[#6e6e73]">
+        <span className="inline-flex items-center gap-1.5">
+          <Check className="h-4 w-4 text-[#1d1d1f]" aria-hidden="true" />{" "}
+          erfüllt
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Minus className="h-4 w-4" aria-hidden="true" /> bedingt
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <X className="h-3.5 w-3.5" aria-hidden="true" /> fehlt meistens
+        </span>
+        <span>
+          Unsere Einschätzung, Stand{" "}
+          <time dateTime={STAND}>{formatDate(STAND)}</time>. Tarife und
+          Funktionen der Anbieter ändern sich, im Zweifel lohnt ein Blick auf
+          deren Seite.
+        </span>
+      </p>
+      <ul className="mt-6 flex flex-wrap gap-x-7 gap-y-3">
+        <li>
+          <MehrLink href="/rechner">
+            Gesamtkosten über drei Jahre berechnen
+          </MehrLink>
+        </li>
+        <li>
+          <MehrLink href="/pakete">Unsere Pakete und Preise</MehrLink>
+        </li>
+      </ul>
+    </Abschnitt>
   );
 }
 
 function Cell({ value, highlight }: { value: Wert; highlight?: boolean }) {
-  const cls = `px-1 py-3.5 text-center sm:px-2 ${highlight ? "bg-card" : ""}`;
+  const cls = `px-1 py-3.5 text-center sm:px-2 ${highlight ? "bg-[#f5f5f7]" : ""}`;
   if (value === "yes") {
     return (
-      <td className={`text-foreground ${cls}`}>
+      <td className={`text-[#1d1d1f] ${cls}`}>
         <Check className="mx-auto h-4 w-4" aria-label="erfüllt" />
       </td>
     );
   }
   if (value === "partial") {
     return (
-      <td className={`text-muted-foreground ${cls}`}>
+      <td className={`text-[#6e6e73] ${cls}`}>
         <Minus className="mx-auto h-4 w-4" aria-label="bedingt" />
       </td>
     );
   }
   return (
-    <td className={`text-muted-foreground/70 ${cls}`}>
+    <td className={`text-[#a1a1a6] ${cls}`}>
       <X className="mx-auto h-3.5 w-3.5" aria-label="fehlt meistens" />
     </td>
   );
 }
 
 /* ------------------------------------------------------------------
- * Abschluss: aktuelle Seite prüfen lassen.
+ * Abschluss: aktuelle Seite prüfen lassen, als Briefkarte.
  * ---------------------------------------------------------------- */
 function FinalCta() {
   return (
-    <section className="grain bg-foreground text-background">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="lg:col-span-7">
-          <h2 className="text-balance text-[2rem] leading-[1.05] tracking-[-0.03em] sm:text-[2.9rem]">
-            Schicken Sie uns den Link zu Ihrer jetzigen Seite.
-          </h2>
-          <p className="text-stahl-hell mt-6 max-w-xl text-[16.5px] leading-relaxed">
-            Sie bekommen drei bis fünf konkrete Punkte per Mail, kostenlos. Darin steht auch, ob sich ein Neubau lohnt oder ob
-            Ihr Baukasten reicht.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-4 lg:col-start-9 lg:justify-end">
-          <Link href="/audit" className="btn-signal grow sm:grow-0">
-            Seite prüfen lassen {ARROW}
-          </Link>
-          <a href="tel:+491607621876" className="text-background inline-flex min-h-11 items-center text-[15px] font-semibold whitespace-nowrap underline-offset-4 hover:underline">
-            0160&nbsp;7621876
-          </a>
-          <Link
-            href="/website-erstellen-lassen"
-            className="text-stahl-hell hover:text-background inline-flex basis-full items-center gap-1.5 text-[14.5px] font-semibold underline-offset-4 hover:underline lg:justify-end"
-          >
-            Website erstellen lassen bei Sitalo {ARROW}
-          </Link>
-        </div>
-      </div>
-    </section>
+    <KontaktKarte
+      id="abschluss"
+      titel="Schicken Sie uns den Link zu Ihrer jetzigen Seite."
+      zeile="Sie bekommen drei bis fünf konkrete Punkte per Mail, kostenlos. Darin steht auch, ob sich ein Neubau lohnt oder ob Ihr Baukasten reicht."
+      pille={{ href: "/audit", label: "Seite prüfen lassen" }}
+      link={{
+        href: "/website-erstellen-lassen",
+        label: "Website erstellen lassen bei Sitalo",
+      }}
+      foto={{
+        src: "/images/workspace-typing.webp",
+        alt: "Hände auf der Tastatur eines Laptops in warmem Licht",
+      }}
+    />
   );
 }

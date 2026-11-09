@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
-import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
+import { SitaloSignatur } from "@/components/marketing/hafen/sitalo-signatur";
+import {
+  FotoRahmen,
+  KontaktKarte,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { SitaloStempel } from "@/components/marketing/sitalo-stempel";
 import { SITE_URL } from "@/lib/site";
 
 const ARTICLE_LD = {
@@ -41,9 +44,8 @@ export const metadata: Metadata = {
 };
 
 /**
- * `/manifest` — ein einzelnes Blatt, gesetzt wie ein Aushang im
- * Kontor: Papierfläche mit kräftiger Oberkante, acht Grundsätze, am Fuß
- * der Firmenstempel. Die Grundsätze haben keine Reihenfolge, deshalb
+ * `/manifest` — Seitenkopf, darunter ein einzelnes Blatt als weiße
+ * runde Karte: acht Grundsätze, am Fuß die Signatur. Die Grundsätze haben keine Reihenfolge, deshalb
  * keine Nummern; links steht in Mono, worum es jeweils geht.
  *
  * Jede Aussage muss sich mit dem Rest der Seite decken (Festpreis,
@@ -95,77 +97,68 @@ const SAETZE: { thema: string; lead: string; coda: string }[] = [
 export default function ManifestPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader />
-      <EditorialMasthead section="Manifest" />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <section>
-          <div className="mx-auto w-full max-w-6xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-24">
-            <article className="bg-card border-border mx-auto max-w-4xl border border-t-foreground border-t-[3px] shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)]">
-              <header className="border-border grid gap-6 border-b px-5 pt-8 pb-8 sm:px-10 sm:pt-12 sm:pb-10 md:grid-cols-[1fr_auto] md:items-end">
-                <div>
-                  <p className="label-mono text-muted-foreground">Sitalo Webdesign · Hamburg</p>
-                  <h1 className="mt-5 text-[3.2rem] leading-[0.9] tracking-[-0.045em] sm:text-[5rem] lg:text-[5.75rem]">
-                    Manifest
-                  </h1>
-                </div>
-                <p className="text-muted-foreground max-w-xs text-pretty text-[15.5px] leading-relaxed">
-                  Acht Grundsätze darüber, wie wir arbeiten. Wir haben sie aufgeschrieben, damit Sie uns daran messen
-                  können.
-                </p>
-              </header>
-
-              <ul>
+      <MarketingHeader cta={false} />
+      <UnterseiteMain>
+        <SeitenKopf
+          krumen="Manifest"
+          eyebrow="Sitalo Webdesign · Hamburg"
+          titel="Manifest"
+          unter="Acht Grundsätze darüber, wie wir arbeiten. Wir haben sie aufgeschrieben, damit Sie uns daran messen können."
+          bild={
+            <FotoRahmen
+              vorab
+              src="/images/hamburg-speicherstadt.webp"
+              alt="Speicherstadt in Hamburg mit Backsteinfassaden am Fleet"
+              aspect="21 / 9"
+              aspectMobil="16 / 9"
+              position="50% 50%"
+            />
+          }
+          unterschrift="Speicherstadt, Hamburg"
+        />
+        <section aria-label="Acht Grundsätze" className={u.abschnitt}>
+          <div className="inhalt">
+            <article className="rounded-[18px] bg-white shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px]">
+              <ul className="divide-y divide-black/10">
                 {SAETZE.map((s) => (
                   <li
                     key={s.thema}
-                    className="border-border grid gap-3 border-b px-5 py-7 sm:grid-cols-[9.5rem_1fr] sm:gap-8 sm:px-10 sm:py-9"
+                    className="grid gap-3 px-6 py-7 sm:grid-cols-[9.5rem_1fr] sm:gap-8 sm:px-10 sm:py-9"
                   >
-                    <span className="label-mono text-muted-foreground sm:pt-2.5">{s.thema}</span>
+                    <span className="notiz-mono sm:pt-2">{s.thema}</span>
                     <div>
-                      <p
-                        className="text-balance text-[1.45rem] leading-[1.18] tracking-[-0.022em] sm:text-[1.9rem]"
-                        style={{ fontStretch: "110%", fontWeight: 720 }}
-                      >
+                      <p className="text-[24px] leading-[1.17] font-semibold tracking-[-0.02em] text-balance sm:text-[28px]">
                         {s.lead}
                       </p>
-                      <p className="text-muted-foreground mt-3 max-w-xl text-pretty text-[16.5px] leading-relaxed">
+                      <p className="mt-3 max-w-xl text-[17px] leading-[1.5] tracking-[-0.022em] text-pretty text-[#6e6e73]">
                         {s.coda}
                       </p>
                     </div>
                   </li>
                 ))}
               </ul>
-
-              <footer className="flex flex-wrap items-center justify-between gap-6 px-5 py-8 sm:px-10 sm:py-10">
-                <p className="text-muted-foreground font-mono text-[12px] leading-relaxed">
-                  Sitalo Webdesign, Hamburg
-                  <br />
-                  <a href="tel:+491607621876" className="hover:text-foreground underline-offset-4 hover:underline">
-                    0160&nbsp;7621876
-                  </a>
-                  {" · "}
-                  <Link href="/anfrage" className="hover:text-foreground underline-offset-4 hover:underline">
-                    Anfrage schreiben
-                  </Link>
-                </p>
-                <SitaloStempel size="md" className="text-ink-olive -rotate-6 opacity-90" />
+              <footer className="flex flex-wrap items-end justify-between gap-6 border-t border-black/10 px-6 py-8 sm:px-10">
+                <p className="notiz-mono">Sitalo Webdesign · Hamburg</p>
+                <SitaloSignatur
+                  caption="Aus dem Büro in Hamburg"
+                  className="max-w-[180px]"
+                />
               </footer>
             </article>
-
-            <div className="mx-auto mt-10 flex max-w-4xl flex-wrap items-center gap-x-8 gap-y-4">
-              <Link href="/anfrage" className="btn-signal">
-                Website anfragen <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href="/atelier"
-                className="inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
-              >
-                Wie ein Auftrag bei uns läuft <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
           </div>
         </section>
-      </main>
+        <KontaktKarte
+          id="abschluss"
+          titel="Messen Sie uns daran."
+          zeile="Wenn Sie wissen möchten, wie das bei Ihrem Betrieb aussieht, rufen Sie an oder schreiben Sie uns. Wir antworten meist am selben Werktag."
+          pille={{ href: "/anfrage", label: "Website anfragen" }}
+          link={{ href: "/atelier", label: "Wie ein Auftrag bei uns läuft" }}
+          foto={{
+            src: "/images/workspace-macbook.webp",
+            alt: "Schreibtisch von oben mit Laptop, Notizbuch und einer Tasse Kaffee",
+          }}
+        />
+      </UnterseiteMain>
       <MarketingFooter crumb="Manifest" />
       <script
         type="application/ld+json"
