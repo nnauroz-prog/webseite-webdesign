@@ -21,7 +21,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: "Muss ich mich irgendwo registrieren?",
-        a: "Nein. Sie schicken uns das Formular oder eine Mail; ein Konto brauchen Sie dafür nicht.",
+        a: "Nein. Sie schicken das Formular ab oder rufen an; ein Konto brauchen Sie dafür nicht.",
       },
       {
         q: "Wie schnell ist meine Seite fertig?",
@@ -107,7 +107,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "Was bringt mir Suchmaschinenoptimierung (SEO) konkret?",
-        a: `Für lokale Betriebe vor allem Anfragen von Leuten, die gerade suchen. Wer bei „Friseur“ plus Stadtteil auf der ersten Seite steht, wird angerufen, ohne für Anzeigen zu bezahlen. Dafür sorgen saubere Seitentitel, die richtigen Suchbegriffe und ein gepflegtes Google-Profil.`,
+        a: `Für lokale Betriebe vor allem Anfragen von Leuten, die gerade suchen. Wer bei „Friseur“ plus Stadtteil weit oben steht, braucht dafür keine Anzeigen. Dafür sorgen saubere Seitentitel, die richtigen Suchbegriffe und ein gepflegtes Google-Profil.`,
       },
       {
         q: "Schalten Sie auch Google-Anzeigen für mich?",
@@ -129,7 +129,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "Wird man die Seite bei Google finden?",
-        a: `Die Grundlage legen wir sauber an: Seitentitel, Beschreibungen, eine klare Struktur, kurze Ladezeiten, lokale Suchbegriffe und eine Sitemap. Platz 1 kann Ihnen niemand seriös versprechen. Bei lokalen Suchen wie „Friseur Eimsbüttel“ oder „Pflegedienst Altona“ ist die Konkurrenz aber oft überschaubar.`,
+        a: `Die Grundlage legen wir sauber an: Seitentitel, Beschreibungen, eine klare Struktur, und kurze Ladezeiten; ab Business auch Sitemap und lokale Suchbegriffe. Platz 1 kann Ihnen niemand seriös versprechen. Bei lokalen Suchen wie „Friseur Eimsbüttel“ oder „Pflegedienst Altona“ ist die Konkurrenz aber oft überschaubar.`,
       },
       {
         q: "Sind Impressum und Datenschutz dabei?",

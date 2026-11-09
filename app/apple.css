@@ -1962,18 +1962,18 @@
 
 /* ------------------------------------------------------------------
    Einblenden beim Scrollen (components/marketing/einblenden.tsx).
-   Versteckt wird nur unter html.ein-bereit; ohne Script, bei
+   Versteckt wird nur, was das Script markiert hat; ohne Script, bei
    reduzierter Bewegung und im Druck steht alles sofort da.
    data-ein          Block steigt 18 px und blendet ein
    data-ein="reihe"  direkte Kinder nacheinander (Karten, Kacheln)
    ------------------------------------------------------------------ */
 @media screen and (prefers-reduced-motion: no-preference) {
-  html.ein-bereit [data-ein]:not([data-ein="reihe"], [data-ein-da], :focus-within),
-  html.ein-bereit [data-ein="reihe"]:not([data-ein-da], :focus-within) > * {
+  [data-ein][data-ein-da="w"]:not([data-ein="reihe"], :focus-within),
+  [data-ein="reihe"][data-ein-da="w"]:not(:focus-within) > * {
     opacity: 0;
     transform: translate3d(0, 18px, 0);
   }
-  html.ein-bereit [data-ein="reihe"]:not([data-ein-da], :focus-within) > * {
+  [data-ein="reihe"][data-ein-da="w"]:not(:focus-within) > * {
     transform: translate3d(0, 24px, 0) scale(0.985);
   }
   [data-ein][data-ein-da="1"]:not([data-ein="reihe"]),

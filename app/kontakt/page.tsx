@@ -98,7 +98,7 @@ function Briefkopf() {
         <>
           <a
             href="tel:+491607621876"
-            className="text-foreground hover:text-gold-ink basis-full text-[40px] leading-[48px] font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums sm:text-[56px] sm:leading-[64px]"
+            className="text-foreground hover:text-gold-ink basis-full text-[40px] leading-[48px] font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums sm:text-[48px] sm:leading-[56px]"
           >
             0160&nbsp;7621876
           </a>
@@ -106,7 +106,7 @@ function Briefkopf() {
             Anfrage schreiben
           </Link>
           <MehrLink href="/termin" groesse="unter">
-            Erstgespräch buchen
+            Termin buchen
           </MehrLink>
         </>
       }

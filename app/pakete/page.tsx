@@ -204,7 +204,7 @@ export default function PaketePage() {
       <UnterseiteMain>
         <SeitenKopf
           krumen="Pakete"
-          eyebrow="Liegeplatz 3 · Pakete und Preise"
+          eyebrow="Liegeplatz 1 · Pakete und Preise"
           titel={`Website-Pakete ${STARTER_SETUP}`}
           unter={
             <>
@@ -526,7 +526,7 @@ function BackupKalender() {
 function Weiterlesen() {
   const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
   return (
-    <LadenRegal id="weiterlesen" einfach fett="Noch unsicher?" grau="Hier hilft Ihnen die Entscheidung." className="scroll-mt-24">
+    <LadenRegal id="weiterlesen" einfach fett="Noch unsicher?" grau="Drei Hilfen für die Wahl." className="scroll-mt-24">
       <KarteMittel
         eyebrow="Empfehlung"
         titel="Welches Paket passt?"

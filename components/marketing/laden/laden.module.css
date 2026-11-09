@@ -409,6 +409,13 @@
   letter-spacing: -0.02em;
   color: #1d1d1f;
 }
+@media (min-width: 1068px) {
+  .zweiton {
+    font-size: 36px;
+    line-height: 40px;
+    letter-spacing: -0.02em;
+  }
+}
 .regalUnter {
   margin-top: 4px;
   font-size: 17px;
@@ -700,7 +707,7 @@
 @media (max-width: 359px) {
   .gross_ {
     width: calc(100vw - 56px);
-    height: 420px;
+    height: 452px;
   }
 }
 @media (min-width: 734px) {
@@ -1113,5 +1120,148 @@
 @media (min-width: 734px) {
   .fussRand {
     padding-top: 24px;
+  }
+}
+
+/* ---------- Ladeliste (Startseite, Liegeplatz 3) ----------
+   Frachtpapier statt Kartenregal: nummerierte Positionen in einer
+   weißen Karte, jede Zeile ein Link. Spaltenkopf in Mono ab 734 px. */
+.ladeliste {
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--schatten);
+}
+.ladeliste ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ladeKopf {
+  display: none;
+}
+.ladeZeile {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 16px;
+  column-gap: 12px;
+  row-gap: 2px;
+  align-items: baseline;
+  padding: 18px 20px;
+  color: #1d1d1f;
+  text-decoration: none;
+  transition: background-color 200ms var(--ease-apple);
+}
+.ladeliste li + li .ladeZeile {
+  box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.08);
+}
+.ladePos {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.04em;
+  color: var(--gold-text, #b23c0a);
+  font-variant-numeric: tabular-nums;
+}
+.ladeTitel {
+  font-size: 19px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+.ladeTitel em {
+  margin-left: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6e6e73;
+  white-space: nowrap;
+}
+.ladeVermerk {
+  grid-column: 2;
+  font-size: 15px;
+  line-height: 22px;
+  color: #6e6e73;
+}
+.ladePfeil {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  font-size: 19px;
+  line-height: 24px;
+  color: #86868b;
+  transition:
+    transform 240ms var(--ease-apple),
+    color 240ms var(--ease-apple);
+}
+.ladeFuss {
+  margin: 0;
+  padding: 14px 20px 16px;
+  box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.08);
+  background: #fafafa;
+}
+@media (min-width: 1068px) {
+  .ladeFuss {
+    padding-inline: 32px;
+  }
+}
+.ladeZeile:focus-visible {
+  outline: 2px solid #f45b1e;
+  outline-offset: -2px;
+}
+.ladeZeile:active {
+  background-color: #f5f5f7;
+}
+@media (hover: hover) {
+  .ladeZeile:hover {
+    background-color: #fafafa;
+  }
+  .ladeZeile:hover .ladePfeil {
+    color: var(--gold-text, #b23c0a);
+    transform: translateX(3px);
+  }
+}
+@media (min-width: 1068px) {
+  .ladeKopf,
+  .ladeZeile {
+    grid-template-columns: 64px minmax(0, 0.9fr) minmax(0, 1.1fr) 20px;
+    column-gap: 24px;
+    padding-inline: 32px;
+  }
+  .ladeKopf {
+    display: grid;
+    padding-block: 14px 12px;
+    box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.08);
+    background: #fafafa;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ladeZeile {
+    padding-block: 22px;
+  }
+  .ladeTitel {
+    font-size: 21px;
+    line-height: 28px;
+  }
+  .ladePos {
+    line-height: 28px;
+  }
+  .ladeVermerk {
+    grid-column: 3;
+    font-size: 17px;
+    line-height: 28px;
+  }
+  .ladePfeil {
+    grid-column: 4;
+    line-height: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ladeZeile,
+  .ladePfeil {
+    transition: none;
   }
 }

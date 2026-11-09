@@ -32,12 +32,15 @@ export function MobileCtaBar({ festpreis }: { festpreis: string }) {
 
   useEffect(() => {
     if (!("IntersectionObserver" in window)) return;
-    const kopf = document.querySelector("#main section") ?? document.querySelector("main > *");
+    const kopf =
+      document.querySelector("#main section") ??
+      document.querySelector("main > *");
     // Der Seitenfuß ist der letzte <footer> (Artikel haben eigene).
     const fuesse = document.querySelectorAll("footer");
-    const enden = [document.getElementById("kontakt"), fuesse[fuesse.length - 1]].filter(
-      (e): e is HTMLElement => !!e,
-    );
+    const enden = [
+      document.getElementById("kontakt"),
+      fuesse[fuesse.length - 1],
+    ].filter((e): e is HTMLElement => !!e);
 
     const ioKopf = new IntersectionObserver(([e]) => {
       setKopfWeg(!e.isIntersecting && e.boundingClientRect.top < 0);
@@ -70,9 +73,9 @@ export function MobileCtaBar({ festpreis }: { festpreis: string }) {
     pathname?.startsWith("/datenschutz") ||
     pathname?.startsWith("/admin") ||
     pathname?.startsWith("/angebot/") ||
-    // Startseite und Pakete: Dort trägt die klebende Produktleiste die
-    // Pille; zwei Glasleisten am iPhone wären zu viel.
-    pathname === "/" ||
+    // Pakete: Dort trägt die klebende Produktleiste die Pille; zwei
+    // Glasleisten am iPhone wären zu viel. Auf der Startseite erscheint
+    // die Leiste erst, wenn der Kopf mit seiner Pille aus dem Bild ist.
     pathname === "/pakete"
   ) {
     return null;
@@ -85,7 +88,7 @@ export function MobileCtaBar({ festpreis }: { festpreis: string }) {
       aria-hidden={!visible}
       inert={!visible}
       data-sichtbar={visible}
-      className={`cta-leiste print:hidden fixed inset-x-0 bottom-0 z-40 md:hidden ${
+      className={`cta-leiste fixed inset-x-0 bottom-0 z-40 md:hidden print:hidden ${
         visible ? "pointer-events-auto" : "pointer-events-none"
       }`}
     >
@@ -94,8 +97,12 @@ export function MobileCtaBar({ festpreis }: { festpreis: string }) {
         style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 10px)" }}
       >
         <p className="leading-tight">
-          <span className="text-muted-foreground block text-[12px] leading-[1.33]">Festpreis</span>
-          <span className="block text-[17px] font-semibold tracking-[-0.022em]">{festpreis}</span>
+          <span className="text-muted-foreground block text-[12px] leading-[1.33]">
+            Festpreis
+          </span>
+          <span className="block text-[17px] font-semibold tracking-[-0.022em]">
+            {pathname?.startsWith("/pakete/") ? "schriftlich vorab" : festpreis}
+          </span>
         </p>
         <Link href="/anfrage" className="btn-signal">
           Website anfragen

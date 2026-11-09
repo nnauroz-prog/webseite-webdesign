@@ -149,8 +149,8 @@ function Werkstattbericht() {
             </p>
             <p className={`${u.text} text-[#424245]`}>
               Online geht die Seite erst, wenn Sie sie freigeben. Danach bleiben
-              wir Ihr Ansprechpartner: Kleine Änderungen schicken Sie uns per
-              Mail, sie sind im Monatsbeitrag enthalten.
+              wir Ihr Ansprechpartner: Kleine Änderungen melden Sie über das Formular
+              oder am Telefon, sie sind im Monatsbeitrag enthalten.
             </p>
           </div>
           <div className="flex flex-col justify-end gap-5 lg:col-span-4">

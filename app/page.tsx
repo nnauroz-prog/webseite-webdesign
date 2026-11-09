@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+
 import { ogFor } from "@/lib/seo";
 
 import { MehrLink } from "@/components/marketing/apple";
@@ -287,42 +289,36 @@ const UNTERSCHIED = [
     fett: "Für Ihren Betrieb gestaltet.",
     grau: "Ohne Baukasten, direkt im Code gebaut.",
     href: "/leistungen",
-    foto: { src: "/images/atmosphere/handwerker-werkbank.webp", pos: "50% 55%" },
   },
   {
     eyebrow: "Hosting",
     fett: "Hosting und Pflege.",
     grau: "Server in der EU, Updates und Backups.",
     href: "/wartung",
-    foto: { src: "/images/atmosphere/reinigung-flur.webp", pos: "50% 50%" },
   },
   {
     eyebrow: "Texte",
     fett: "Texte.",
     grau: "Sie schicken Stichpunkte, wir formulieren.",
     href: "/ablauf",
-    foto: { src: "/images/atmosphere/kanzlei-buecher.webp", pos: "40% 50%" },
   },
   {
     eyebrow: "Anfragen",
     fett: "Anfragen.",
     grau: "Formular mit Spamschutz und Anruf-Knopf.",
     href: "/leistungen",
-    foto: { src: "/images/atmosphere/praxis-raum.webp", pos: "60% 60%" },
   },
   {
     eyebrow: "Ab Business",
     fett: "Bei Google.",
     grau: "Titel, Sitemap und Unternehmensprofil.",
     href: "/pakete/business",
-    foto: { src: "/images/atmosphere/pflege-eingang.webp", pos: "50% 60%" },
   },
   {
     eyebrow: "Ab Premium",
     fett: "Selbst pflegen.",
     grau: "Speisekarte oder Termine selbst ändern.",
     href: "/pakete/premium",
-    foto: { src: "/images/atmosphere/gastro-cafe.webp", pos: "50% 50%" },
   },
   {
     eyebrow: "Kontakt",
@@ -341,18 +337,38 @@ function Unterschied() {
       fett="Was zu Ihrer Website gehört."
       grau="Geladen wird nur, was Ihr Betrieb braucht."
       link={{ href: "/leistungen", label: "Alle Leistungen" }}
-      spaet={{ h: 540, hMobil: 500 }}
+      spaet={{ h: 520, hMobil: 640 }}
+      ohneSpur
     >
-      {UNTERSCHIED.map((u) => (
-        <KarteMittel
-          key={u.fett}
-          eyebrow={u.eyebrow}
-          titel={u.fett.replace(/\.$/, "")}
-          zeile={u.grau}
-          href={u.href}
-          bild={<LadenFoto src={u.foto.src} position={u.foto.pos} alt="" sizes="(min-width: 734px) 320px, 280px" />}
-        />
-      ))}
+      <div className={s.ladeliste}>
+        <p className={`notiz-mono ${s.ladeKopf}`} aria-hidden="true">
+          <span>Pos.</span>
+          <span>Ladung</span>
+          <span>Vermerk</span>
+        </p>
+        <ol role="list">
+          {UNTERSCHIED.map((u, i) => (
+            <li key={u.fett}>
+              <Link href={u.href} className={s.ladeZeile}>
+                <span className={s.ladePos} aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className={s.ladeTitel}>
+                  {u.fett.replace(/\.$/, "")}
+                  {u.eyebrow.startsWith("Ab ") ? <em>{u.eyebrow}</em> : null}
+                </span>
+                <span className={s.ladeVermerk}>{u.grau}</span>
+                <span className={s.ladePfeil} aria-hidden="true">
+                  ›
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+        <p className={`notiz-mono ${s.ladeFuss}`}>
+          {UNTERSCHIED.length} Positionen · Festpreis schriftlich vor dem Start
+        </p>
+      </div>
     </LadenRegal>
   );
 }
@@ -399,11 +415,10 @@ function Weg() {
   return (
     <LadenRegal
       id="ablauf"
-      ort="Fährlinie · vier Halte"
+      ort="Fährlinie · in Kürze"
       fett="Der Weg zur fertigen Seite."
       grau="Vom ersten Anruf an sprechen Sie mit uns selbst."
       link={{ href: "/ablauf", label: "Ablauf im Detail" }}
-      notiz="Antwort auf Anrufe und Anfragen meist am selben Werktag."
       spaet={{ h: 350, hMobil: 360 }}
     >
       {HALTE.map((h, i) => (
@@ -419,7 +434,7 @@ function Weg() {
 function Werkzeuge() {
   const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
   return (
-    <LadenRegal id="werkzeuge" einfach fett="Werkzeuge." grau="Kostenlos ausprobieren." spaet={{ h: 540, hMobil: 500 }}>
+    <LadenRegal id="werkzeuge" ort="Werkbank · Werkzeuge" einfach fett="Werkzeuge." grau="Kostenlos ausprobieren." spaet={{ h: 540, hMobil: 500 }}>
       <KarteMittel
         eyebrow="Werkzeug"
         titel="Kostenlose Durchsicht"
@@ -479,6 +494,7 @@ function Journal() {
   return (
     <LadenRegal
       id="journal"
+      ort="Logbuch · Journal"
       einfach
       fett="Journal."
       grau="Ratgeber für Betriebe."

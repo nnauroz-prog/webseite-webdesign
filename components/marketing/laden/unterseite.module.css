@@ -10,8 +10,8 @@
 
 /* ---------- Seitenkopf ---------- */
 .kopf {
-  padding-top: 48px;
-  text-align: center;
+  padding-top: 40px;
+  text-align: left;
 }
 @media (min-width: 734px) {
   .kopf {
@@ -22,8 +22,9 @@
   padding-bottom: 8px;
 }
 .titel {
-  margin-inline: auto;
-  max-width: 16ch;
+  margin-inline: 0;
+  max-width: 18ch;
+  overflow-wrap: break-word;
   font-size: 40px;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -55,7 +56,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 4px 8px;
   font-family: var(--font-mono);
   font-size: 12px;
@@ -88,13 +89,13 @@
 }
 /* Eyebrow: .kennzeile-mono (global), hier nur zentriert */
 .eyebrow {
-  justify-content: center;
+  justify-content: flex-start;
 }
 .eyebrow + .titel {
   margin-top: 12px;
 }
 .unter {
-  margin: 16px auto 0;
+  margin: 16px 0 0;
   max-width: 34em;
   font-size: 19px;
   line-height: 1.32;
@@ -112,7 +113,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px 28px;
   margin-top: 24px;
 }
@@ -137,6 +138,41 @@
 @media (min-width: 734px) {
   .kopfBild {
     margin-top: 56px;
+  }
+}
+
+/* Ab 1068 px: Titel links, Satz und Knöpfe rechts, beide oben bündig.
+   So steht der Kopf wie im Kopf der Startseite linksbündig und füllt die
+   Breite, statt als Mittelachse zu stehen. */
+@media (min-width: 1068px) {
+  .kopf > :global(.inhalt) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 48px;
+    align-items: start;
+  }
+  .kopf > :global(.inhalt) > * {
+    grid-column: 1 / -1;
+  }
+  .kopf > :global(.inhalt) > .titel {
+    grid-column: 1;
+    grid-row: span 3;
+    max-width: none;
+    font-size: 60px;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  .kopf > :global(.inhalt) > :is(.unter, .aktionen, .meta) {
+    grid-column: 2;
+  }
+  .kopf > :global(.inhalt) > .unter {
+    margin-top: 10px;
+    font-size: 19px;
+    line-height: 1.42;
+  }
+  .kopf > :global(.inhalt) > .aktionen {
+    gap: 12px 20px;
+    margin-top: 20px;
   }
 }
 
@@ -194,7 +230,7 @@
   inset: auto 0 0 0;
   z-index: 1;
   padding: 64px 20px 20px;
-  background: linear-gradient(to top, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0));
+  background: linear-gradient(to top, rgb(0 0 0 / 0.78), rgb(0 0 0 / 0.4) 55%, rgb(0 0 0 / 0));
   color: #fff;
   font-size: 21px;
   line-height: 1.2;
@@ -212,8 +248,7 @@
 /* Mono-Bildunterschrift unter dem Kopfbild (.notiz-mono global) */
 .unterschrift {
   margin-top: 12px;
-  text-align: center;
-  text-wrap: balance;
+  text-align: left;
 }
 p.unterschrift {
   margin-top: 28px;
@@ -289,7 +324,7 @@ p.unterschrift {
 .dunkelFlaeche {
   margin-top: 56px;
   padding-block: 56px;
-  background: #000;
+  background: #1d1d1f;
   color: #f5f5f7;
 }
 @media (min-width: 734px) {
@@ -367,7 +402,7 @@ p.unterschrift {
   --akzent: #ff9f5a;
 }
 .kachelNacht {
-  background: #000;
+  background: #1d1d1f;
   color: #f5f5f7;
   box-shadow: none;
   --grau: #a1a1a6;

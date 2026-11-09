@@ -243,7 +243,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Termin vom Handy",
-        body: "Ein kurzes Formular mit Wunschleistung, Wunschtermin und Rückrufnummer. Arbeiten Sie schon mit einem Buchungssystem, binden wir es an.",
+        body: "Ein kurzes Formular mit Wunschleistung, Wunschtermin und Rückrufnummer. Ein vorhandenes Buchungssystem binden wir ab Premium an.",
       },
       {
         title: "Team",

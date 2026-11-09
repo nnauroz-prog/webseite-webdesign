@@ -84,6 +84,8 @@ export function CommandPalette({
   // feinem Zeiger von Anfang an, auf Touch erst nach einer Pfeiltaste.
   const [tastatur, setTastatur] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  /** Was vor dem Öffnen den Fokus hatte: dorthin geht er beim Schließen zurück. */
+  const ausloeserRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
   // Globaler Cmd+K / Ctrl+K Listener — öffnet die Palette von überall
@@ -118,6 +120,7 @@ export function CommandPalette({
   // Effect unten) — sonst kollidiert das mit dem Initial-Query.
   useEffect(() => {
     if (open) {
+      ausloeserRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setActiveIndex(0);
       setTastatur(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
       // Kurze Verzögerung — Modal muss erst im DOM sein
@@ -126,6 +129,9 @@ export function CommandPalette({
     } else {
       setQuery("");
       document.body.style.overflow = "";
+      const ausloeser = ausloeserRef.current;
+      ausloeserRef.current = null;
+      if (ausloeser && ausloeser.isConnected && ausloeser !== document.body) ausloeser.focus();
     }
     return () => {
       document.body.style.overflow = "";

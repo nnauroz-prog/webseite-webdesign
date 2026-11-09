@@ -81,7 +81,7 @@ export default async function AnfragePage({
           <p className="kennzeile-mono">Anfrage · Hamburg</p>
           <h1 className={a.titel}>Erzählen Sie uns, was Sie vorhaben.</h1>
           <p className={a.satz}>
-            Ein paar Zeilen genügen. Wir lesen jede Anfrage selbst und melden uns persönlich, ohne Verkaufsgespräch.
+            Ein paar Zeilen genügen. Wir lesen jede Anfrage selbst und melden uns persönlich.
           </p>
           <p className={a.versprechen}>
             <span aria-hidden="true" className={a.punkt} />

@@ -256,7 +256,7 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
   return (
     <SeitenKopf
       krumen={[{ href: "/branchen", label: "Branchen" }, { label: branche.label }]}
-      eyebrow={landing ? "Ladeliste · Seitenplan und Muster" : "Ladeliste · Website erstellen lassen"}
+      eyebrow={landing ? "Liegeplatz 2 · Seitenplan und Muster" : "Liegeplatz 2 · Website erstellen lassen"}
       titel={<span className="hyphens-auto sm:hyphens-none">Website für {branche.label}</span>}
       unter={branche.shortBody}
       aktionen={
@@ -289,7 +289,7 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
             Erste Skizze mit Ihrem Namen
           </Link>
           {paket ? (
-            <span className="mx-auto mt-3 block max-w-[40em]">
+            <span className="mt-3 block max-w-[40em]">
               Meist empfohlen:{" "}
               <Link href={`/pakete#${paket.slug}`} className={zweitlink}>
                 {paket.name}

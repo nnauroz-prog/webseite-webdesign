@@ -58,7 +58,7 @@ export function Briefkarte({
             <p className={cn("notiz-mono", b.kopf)}>
               <span>Sitalo Webdesign · Hamburg</span>
               <span aria-hidden="true" className="hidden sm:inline">
-                Brief Nr. 1
+                Kontor · Anfrage
               </span>
             </p>
             <div className={b.raster}>
