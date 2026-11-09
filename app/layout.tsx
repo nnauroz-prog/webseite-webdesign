@@ -37,7 +37,9 @@ const brandMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400"],
   display: "swap",
-  preload: false,
+  // Vorladen: Die Kennzeile über der Botschaft steht in Mono. Ohne
+  // Vorladen kommt die Schrift erst spät und verzögert den LCP.
+  preload: true,
   adjustFontFallback: true,
 });
 
