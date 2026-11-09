@@ -208,7 +208,7 @@ export function Abschnitt({
       data-flaeche-dunkel={dunkel ? "" : undefined}
     >
       <div className="inhalt">
-        <div className={cn(u.abschnittKopf, rechts && "flex flex-wrap items-end justify-between gap-x-8 gap-y-2")}>
+        <div data-ein="" className={cn(u.abschnittKopf, rechts && "flex flex-wrap items-end justify-between gap-x-8 gap-y-2")}>
           <div>
             <h2 id={`${id}-titel`} className={u.zweiton}>
               <span>{fett}</span>
@@ -230,7 +230,7 @@ export function Abschnitt({
 }
 
 export function BildRaster({ children, className }: { children: ReactNode; className?: string }) {
-  return <ul role="list" className={cn(u.raster, className)}>{children}</ul>;
+  return <ul role="list" data-ein="reihe" className={cn(u.raster, className)}>{children}</ul>;
 }
 
 /**

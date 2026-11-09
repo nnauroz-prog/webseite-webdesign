@@ -50,6 +50,7 @@ export function Briefkarte({
     <section id={id} aria-labelledby={`${id}-titel`} className={cn(b.abschnitt, "scroll-mt-24", className)}>
       <div className="inhalt">
         <div
+          data-ein=""
           className={cn(b.brief, dunkel && cn("on-dark", b.dunkel), foto && b.mitFoto)}
           data-flaeche-dunkel={dunkel ? "" : undefined}
         >
