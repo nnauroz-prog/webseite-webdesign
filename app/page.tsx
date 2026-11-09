@@ -399,11 +399,10 @@ function Weg() {
   return (
     <LadenRegal
       id="ablauf"
-      ort="Fährlinie · vier Halte"
+      ort="Fährlinie · in Kürze"
       fett="Der Weg zur fertigen Seite."
       grau="Vom ersten Anruf an sprechen Sie mit uns selbst."
       link={{ href: "/ablauf", label: "Ablauf im Detail" }}
-      notiz="Antwort auf Anrufe und Anfragen meist am selben Werktag."
       spaet={{ h: 350, hMobil: 360 }}
     >
       {HALTE.map((h, i) => (

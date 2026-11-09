@@ -169,7 +169,7 @@ function Closer() {
           .
         </>
       }
-      pille={{ href: "/anfrage", label: "Website anfragen" }}
+      pille={{ href: "/anfrage", label: "Anfrage schreiben" }}
       link={{ href: "/kontakt", label: "Alle Kontaktwege" }}
       foto={{
         src: "/images/atmosphere/kanzlei-buecher.webp",

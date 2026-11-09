@@ -248,7 +248,7 @@ export function InquiryForm({
         <h2 id="inq-titel" className={f.titel}>
           Ihre Anfrage
         </h2>
-        <p className="notiz-mono">3 Pflichtfelder · rund 1 Minute</p>
+        <p className="notiz-mono">3 Felder und ein Häkchen · rund 1 Minute</p>
       </div>
 
       {/* Honeypot — visuell versteckt */}

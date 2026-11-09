@@ -106,7 +106,7 @@ function Briefkopf() {
             Anfrage schreiben
           </Link>
           <MehrLink href="/termin" groesse="unter">
-            Erstgespräch buchen
+            Termin buchen
           </MehrLink>
         </>
       }

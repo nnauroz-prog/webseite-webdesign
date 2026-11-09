@@ -484,7 +484,7 @@ function PflegeProtokoll() {
           </li>
         ))}
       </ul>
-      <p className="mt-2 text-[11px] leading-4 text-[#6e6e73]">Beispiel, so sieht der Monatsbericht aus.</p>
+      <p className="mt-2 text-[11px] leading-4 text-[#6e6e73]">Beispiel: was im Monat an Ihrer Seite passiert.</p>
     </div>
   );
 }
