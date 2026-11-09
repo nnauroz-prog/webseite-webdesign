@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const DANACH: { title: string; body: string }[] = [
   {
     title: "Wir melden uns",
-    body: "meist am selben Werktag, per Mail oder am Telefon.",
+    body: "meist am selben Werktag, gern am Telefon.",
   },
   {
     title: "Kurzes Gespräch",
