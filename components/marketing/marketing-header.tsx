@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 
 import { SitaloLogo } from "@/components/sitalo-logo";
@@ -95,14 +95,59 @@ export function MarketingHeader({
     };
   }, [menuOpen]);
 
-  // Escape closes the sheet.
+  const burgerRef = useRef<HTMLButtonElement | null>(null);
+
+  // Offenes Menü: Escape schließt, Tab bleibt im Dialog, der Fokus
+  // startet auf „Menü schließen“ und kehrt danach zum Auslöser zurück.
+  // Wird das Fenster breiter als die Handy-Leiste, schließt das Menü
+  // (sonst bliebe die Scroll-Sperre hängen).
   useEffect(() => {
     if (!menuOpen) return;
+    const dialog = document.getElementById("mobile-menu");
+    const burger = burgerRef.current;
+    const fokussierbar = () =>
+      Array.from(
+        dialog?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter((el) => el.offsetParent !== null);
+    fokussierbar()
+      .find((el) => el.tagName === "BUTTON")
+      ?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const liste = fokussierbar();
+      if (liste.length === 0) return;
+      const erstes = liste[0];
+      const letztes = liste[liste.length - 1];
+      const aktiv = document.activeElement;
+      if (!dialog?.contains(aktiv)) {
+        event.preventDefault();
+        erstes.focus();
+      } else if (event.shiftKey && aktiv === erstes) {
+        event.preventDefault();
+        letztes.focus();
+      } else if (!event.shiftKey && aktiv === letztes) {
+        event.preventDefault();
+        erstes.focus();
+      }
+    };
+    const breit = window.matchMedia("(min-width: 834px)");
+    const onBreit = () => {
+      if (breit.matches) setMenuOpen(false);
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    breit.addEventListener("change", onBreit);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      breit.removeEventListener("change", onBreit);
+      // Nur zurückgeben, wenn der Auslöser noch sichtbar ist (Handy).
+      if (burger && burger.offsetParent !== null) burger.focus();
+    };
   }, [menuOpen]);
 
   return (
@@ -120,14 +165,20 @@ export function MarketingHeader({
                 <Link
                   href={item.href}
                   className="globalnav-link nav-link-underline"
-                  aria-current={istAktiv(pathname, item.href) ? "page" : undefined}
+                  aria-current={
+                    istAktiv(pathname, item.href) ? "page" : undefined
+                  }
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
             <li className="flex items-center">
-              <a href="tel:+491607621876" className="globalnav-tel" aria-label="0160 7621876 anrufen">
+              <a
+                href="tel:+491607621876"
+                className="globalnav-tel"
+                aria-label="0160 7621876 anrufen"
+              >
                 0160&nbsp;7621876
               </a>
               <button
@@ -136,7 +187,11 @@ export function MarketingHeader({
                 aria-label="Seite durchsuchen"
                 className="globalnav-icon"
               >
-                <Search className="h-[15px] w-[15px]" strokeWidth={1.75} aria-hidden="true" />
+                <Search
+                  className="h-[15px] w-[15px]"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
               </button>
               {cta ? (
                 <Link href="/anfrage" className="btn-signal btn-klein ml-2">
@@ -150,7 +205,6 @@ export function MarketingHeader({
           <Link
             href="/"
             className="flex min-h-11 items-center min-[834px]:hidden"
-           
             onClick={() => setMenuOpen(false)}
           >
             <SitaloLogo size="xs" hideTagline />
@@ -171,13 +225,18 @@ export function MarketingHeader({
               aria-label="Seite durchsuchen"
               className="globalnav-icon"
             >
-              <Search className="h-[17px] w-[17px]" strokeWidth={1.75} aria-hidden="true" />
+              <Search
+                className="h-[17px] w-[17px]"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
             </button>
             <button
               type="button"
               aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
+              ref={burgerRef}
               onClick={() => setMenuOpen((v) => !v)}
               className="globalnav-icon"
             >
@@ -189,7 +248,11 @@ export function MarketingHeader({
 
       {/* Vollbild-Menü bewusst AUSSERHALB vom <header>: backdrop-filter
           erzeugt einen Containing Block, der fixed-Kinder clippt. */}
-      <MobileFullscreenMenu open={menuOpen} onClose={() => setMenuOpen(false)} pathname={pathname} />
+      <MobileFullscreenMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        pathname={pathname}
+      />
     </>
   );
 }
@@ -239,7 +302,7 @@ function MobileFullscreenMenu({
       aria-hidden={!open}
       inert={!open}
       className={cn(
-        "menue-glas fixed inset-0 z-[60] flex flex-col transition-[opacity,visibility] min-[834px]:hidden print:hidden motion-reduce:duration-150",
+        "menue-glas fixed inset-0 z-[60] flex flex-col transition-[opacity,visibility] motion-reduce:duration-150 min-[834px]:hidden print:hidden",
         open
           ? "visible opacity-100 duration-[240ms] ease-[var(--ease-apple)]"
           : "pointer-events-none invisible opacity-0 duration-[160ms] ease-[var(--ease-ab)]",
@@ -255,7 +318,12 @@ function MobileFullscreenMenu({
           <SitaloLogo size="xs" hideTagline />
         </Link>
         <div className="globalnav-mobil">
-          <button type="button" onClick={onClose} aria-label="Menü schließen" className="globalnav-icon">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Menü schließen"
+            className="globalnav-icon"
+          >
             <Burger offen={open} />
           </button>
         </div>
@@ -279,7 +347,9 @@ function MobileFullscreenMenu({
                     href={item.href}
                     onClick={onClose}
                     className="menue-eintrag"
-                    aria-current={istAktiv(pathname, item.href) ? "page" : undefined}
+                    aria-current={
+                      istAktiv(pathname, item.href) ? "page" : undefined
+                    }
                   >
                     {item.label}
                   </Link>
@@ -289,14 +359,24 @@ function MobileFullscreenMenu({
           </ul>
         </nav>
 
-        <div className={cn("mt-10", eintrag(MOBILE_NAV.length).className)} style={eintrag(MOBILE_NAV.length).style}>
-          <p className="text-muted-foreground text-[12px] leading-[1.33]" id="menue-schnell">
+        <div
+          className={cn("mt-10", eintrag(MOBILE_NAV.length).className)}
+          style={eintrag(MOBILE_NAV.length).style}
+        >
+          <p
+            className="text-muted-foreground text-[12px] leading-[1.33]"
+            id="menue-schnell"
+          >
             Schnellzugriff
           </p>
           <ul aria-labelledby="menue-schnell" className="mt-2">
             {SCHNELL.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} onClick={onClose} className="menue-eintrag-klein">
+                <Link
+                  href={item.href}
+                  onClick={onClose}
+                  className="menue-eintrag-klein"
+                >
                   {item.label}
                 </Link>
               </li>
@@ -313,21 +393,47 @@ function MobileFullscreenMenu({
           paddingRight: "max(24px, env(safe-area-inset-right))",
         }}
       >
-        <Link href="/anfrage" onClick={onClose} className="btn-signal btn-gross w-full">
+        <Link
+          href="/anfrage"
+          onClick={onClose}
+          className="btn-signal btn-gross w-full"
+        >
           Website anfragen
         </Link>
         <div className="flex flex-wrap items-center justify-center gap-x-6 text-[17px]">
-          <a href="tel:+491607621876" className="link-chevron link-chevron-frei">
-            Anrufen<span aria-hidden="true" className="chev">›</span>
+          <a
+            href="tel:+491607621876"
+            className="link-chevron link-chevron-frei"
+          >
+            Anrufen
+            <span aria-hidden="true" className="chev">
+              ›
+            </span>
           </a>
-          <Link href="/termin" onClick={onClose} className="link-chevron link-chevron-frei">
-            Termin<span aria-hidden="true" className="chev">›</span>
+          <Link
+            href="/termin"
+            onClick={onClose}
+            className="link-chevron link-chevron-frei"
+          >
+            Termin
+            <span aria-hidden="true" className="chev">
+              ›
+            </span>
           </Link>
-          <a href="/sitalo-kontakt.vcf" download="Sitalo-Webdesign.vcf" className="link-chevron link-chevron-frei">
-            Speichern<span aria-hidden="true" className="chev">›</span>
+          <a
+            href="/sitalo-kontakt.vcf"
+            download="Sitalo-Webdesign.vcf"
+            className="link-chevron link-chevron-frei"
+          >
+            Speichern
+            <span aria-hidden="true" className="chev">
+              ›
+            </span>
           </a>
         </div>
-        <p className="text-muted-foreground text-center text-[12px] leading-[1.33]">0160&nbsp;7621876 · Hamburg</p>
+        <p className="text-muted-foreground text-center text-[12px] leading-[1.33]">
+          0160&nbsp;7621876 · Hamburg
+        </p>
       </div>
     </div>
   );

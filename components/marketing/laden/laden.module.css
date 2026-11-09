@@ -707,7 +707,7 @@
 @media (max-width: 359px) {
   .gross_ {
     width: calc(100vw - 56px);
-    height: 420px;
+    height: 452px;
   }
 }
 @media (min-width: 734px) {

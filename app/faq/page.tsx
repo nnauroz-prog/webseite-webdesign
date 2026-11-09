@@ -3,7 +3,13 @@ import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { FotoRahmen, KontaktKarte, SeitenKopf, UnterseiteMain, unterseiteStil as u } from "@/components/marketing/laden/unterseite";
+import {
+  FotoRahmen,
+  KontaktKarte,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Produktleiste } from "@/components/marketing/produktleiste";
@@ -16,7 +22,9 @@ export const metadata: Metadata = {
   description:
     "Antworten zu Preisen, Ablauf, Hosting, Google-Suche und Betreuung Ihrer Website. Ihre Frage fehlt? Schreiben Sie uns über das Anfrageformular.",
   alternates: { canonical: "/faq" },
-  openGraph: ogFor("/faq", undefined, undefined, "website", { defaultImage: true }),
+  openGraph: ogFor("/faq", undefined, undefined, "website", {
+    defaultImage: true,
+  }),
 };
 
 const GROUPS: FaqGroup[] = FAQ_GROUPS;
@@ -61,15 +69,22 @@ export default function FaqPage() {
           }
         />
         <nav aria-label="Themen" className="inhalt pt-8 sm:pt-10">
-          <ul role="list" className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5">
+          <ul
+            role="list"
+            className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
+          >
             {GROUPS.map((g) => (
               <li key={g.id}>
                 <a
                   href={`#${g.id}`}
                   className="flex min-h-[88px] flex-col justify-between rounded-[18px] bg-white p-5 shadow-[0_4px_16px_rgb(0_0_0/0.08)] transition-shadow hover:shadow-[0_18px_40px_-16px_rgb(16_32_48/0.28)]"
                 >
-                  <span className="text-[17px] leading-[22px] font-semibold">{g.label}</span>
-                  <span className="mt-2 text-[14px] text-[#6e6e73]">{g.items.length} Fragen ›</span>
+                  <span className="text-[17px] leading-[22px] font-semibold">
+                    {g.label}
+                  </span>
+                  <span className="mt-2 text-[14px] text-[#6e6e73]">
+                    {g.items.length} Fragen ›
+                  </span>
                 </a>
               </li>
             ))}
@@ -81,11 +96,17 @@ export default function FaqPage() {
             {i === 1 ? (
               <p className="inhalt pt-8 text-[15px] leading-[1.47] text-[#6e6e73] sm:pt-10 sm:text-[17px]">
                 Nicht dabei? Rufen Sie an unter{" "}
-                <a href="tel:+491607621876" className="text-gold-ink font-semibold whitespace-nowrap">
+                <a
+                  href="tel:+491607621876"
+                  className="text-gold-ink font-semibold whitespace-nowrap"
+                >
                   0160&nbsp;7621876
                 </a>{" "}
                 oder schreiben Sie uns über das{" "}
-                <Link href="/anfrage" className="text-gold-ink font-semibold underline-offset-4 hover:underline">
+                <Link
+                  href="/anfrage"
+                  className="text-gold-ink font-semibold underline-offset-4 hover:underline"
+                >
                   Anfrageformular
                 </Link>
                 .
@@ -110,23 +131,32 @@ export default function FaqPage() {
  * ---------------------------------------------------------------- */
 function GroupSection({ group }: { group: FaqGroup }) {
   return (
-    <section id={group.id} aria-labelledby={`${group.id}-titel`} className={`scroll-mt-28 ${u.abschnitt}`}>
+    <section
+      id={group.id}
+      aria-labelledby={`${group.id}-titel`}
+      className={`scroll-mt-28 ${u.abschnitt}`}
+    >
       <div className="inhalt grid gap-5 lg:grid-cols-12 lg:gap-5">
         <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
           <h2 id={`${group.id}-titel`} className={u.zweiton}>
-            <span>{group.label}.</span> <span>{group.items.length} Fragen.</span>
+            <span>{group.label}.</span>{" "}
+            <span>{group.items.length} Fragen.</span>
           </h2>
         </div>
         <div className="min-w-0 divide-y divide-black/10 rounded-[18px] bg-white px-6 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:px-8 lg:col-span-8">
           {group.items.map((item) => (
             <details key={item.q} className="group">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
-                <h3 className="text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">{item.q}</h3>
+                <h3 className="min-w-0 text-[17px] leading-snug font-semibold tracking-[-0.016em] break-words hyphens-auto sm:text-[19px]">
+                  {item.q}
+                </h3>
                 <span
                   aria-hidden="true"
                   className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[22px] leading-none font-light text-[#6e6e73] transition-colors group-open:text-[#1d1d1f] group-hover:text-[#1d1d1f]"
                 >
-                  <span className="transition-transform group-open:rotate-45">+</span>
+                  <span className="transition-transform group-open:rotate-45">
+                    +
+                  </span>
                 </span>
               </summary>
               <p
@@ -161,9 +191,13 @@ function Closer() {
       titel="Ihre Frage war nicht dabei"
       zeile={
         <>
-          Dann fragen Sie uns direkt. Anfragen über das Formular beantworten wir meist am selben Werktag. Am ersten
-          Donnerstag im Monat gibt es außerdem eine{" "}
-          <Link href="/sprechstunde" className="text-[#1d1d1f] underline decoration-[var(--gold)] underline-offset-4">
+          Dann fragen Sie uns direkt. Anfragen über das Formular beantworten wir
+          meist am selben Werktag. Am ersten Donnerstag im Monat gibt es
+          außerdem eine{" "}
+          <Link
+            href="/sprechstunde"
+            className="text-[#1d1d1f] underline decoration-[var(--gold)] underline-offset-4"
+          >
             offene Telefonsprechstunde
           </Link>
           .
