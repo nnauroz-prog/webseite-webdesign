@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google";
 
+import { Einblenden } from "@/components/marketing/einblenden";
 import { GlobalExtras } from "@/components/marketing/global-extras";
 import { buildSearchIndex } from "@/lib/search-index";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
@@ -205,6 +206,7 @@ export default function RootLayout({
           Direkt zum Inhalt
         </a>
         {children}
+        <Einblenden />
         <GlobalExtras searchIndex={buildSearchIndex()} />
         <MobileCtaBar festpreis={PAKETE[0].setup} />
         <PlausibleScript />

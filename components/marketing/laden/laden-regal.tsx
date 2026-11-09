@@ -65,7 +65,7 @@ export function LadenRegal({
       className={cn(s.regal, spaet && s.spaet, className)}
       style={style}
     >
-      <div className={cn("inhalt", s.regalKopf)}>
+      <div className={cn("inhalt", s.regalKopf)} data-ein="">
         <div>
           {ort ? <p className={cn("kennzeile-mono", s.ortsmarke)}>{ort}</p> : null}
           {einfach ? (
@@ -96,7 +96,7 @@ export function LadenRegal({
         </div>
       </div>
       {ohneSpur ? (
-        <div className={cn("inhalt", s.block)}>{children}</div>
+        <div className={cn("inhalt", s.block)} data-ein="">{children}</div>
       ) : (
         <div
           id={spurId}
@@ -105,10 +105,10 @@ export function LadenRegal({
           role="group"
           aria-label={`${label}: Karten`}
         >
-          <ul role="list">{children}</ul>
+          <ul role="list" data-ein="reihe">{children}</ul>
         </div>
       )}
-      {notiz ? <p className={cn("inhalt notiz-mono", s.notiz)}>{notiz}</p> : null}
+      {notiz ? <p className={cn("inhalt notiz-mono", s.notiz)} data-ein="">{notiz}</p> : null}
     </section>
   );
 }

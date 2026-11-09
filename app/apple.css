@@ -1959,3 +1959,39 @@
 .buehne.laden section[id] {
   scroll-margin-top: 0px;
 }
+
+/* ------------------------------------------------------------------
+   Einblenden beim Scrollen (components/marketing/einblenden.tsx).
+   Versteckt wird nur unter html.ein-bereit; ohne Script, bei
+   reduzierter Bewegung und im Druck steht alles sofort da.
+   data-ein          Block steigt 18 px und blendet ein
+   data-ein="reihe"  direkte Kinder nacheinander (Karten, Kacheln)
+   ------------------------------------------------------------------ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.ein-bereit [data-ein]:not([data-ein="reihe"], [data-ein-da], :focus-within),
+  html.ein-bereit [data-ein="reihe"]:not([data-ein-da], :focus-within) > * {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  html.ein-bereit [data-ein="reihe"]:not([data-ein-da], :focus-within) > * {
+    transform: translate3d(0, 24px, 0) scale(0.985);
+  }
+  [data-ein][data-ein-da="1"]:not([data-ein="reihe"]),
+  [data-ein="reihe"][data-ein-da="1"] > * {
+    transition:
+      opacity 620ms var(--ease-aus),
+      transform 900ms var(--ease-aus);
+  }
+  [data-ein="reihe"][data-ein-da="1"] > :nth-child(2) {
+    transition-delay: 80ms;
+  }
+  [data-ein="reihe"][data-ein-da="1"] > :nth-child(3) {
+    transition-delay: 160ms;
+  }
+  [data-ein="reihe"][data-ein-da="1"] > :nth-child(4) {
+    transition-delay: 240ms;
+  }
+  [data-ein="reihe"][data-ein-da="1"] > :nth-child(n + 5) {
+    transition-delay: 300ms;
+  }
+}

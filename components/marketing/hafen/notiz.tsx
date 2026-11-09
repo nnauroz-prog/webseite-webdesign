@@ -16,7 +16,7 @@ export function Notiz({ children, id }: { children: React.ReactNode; id?: string
   return (
     <section id={id} aria-label="Notiz aus dem Büro" className={s.abschnitt}>
       <div className={`inhalt ${s.raster}`}>
-        <div className={s.blatt}>
+        <div className={s.blatt} data-ein="">
           <p className={`notiz-mono ${s.kopf}`}>
             <span>Notiz</span>
             <span aria-hidden="true">·</span>
