@@ -230,7 +230,7 @@ function Vorher() {
           src="/images/atmosphere/handwerker-werkbank.webp"
           alt=""
           fill
-          sizes="960px"
+          sizes="(min-width: 1024px) 960px, 100vw"
           className="object-cover brightness-75 saturate-50"
         />
         <div className="absolute inset-y-0 left-0 flex w-[420px] flex-col justify-center px-10 text-white">
@@ -315,7 +315,7 @@ function Nachher() {
             src="/images/atmosphere/handwerker-werkbank.webp"
             alt=""
             fill
-            sizes="520px"
+            sizes="(min-width: 1024px) 520px, 45vw"
             className="object-cover"
           />
         </div>

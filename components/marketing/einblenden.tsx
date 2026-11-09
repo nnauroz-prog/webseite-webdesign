@@ -10,20 +10,18 @@ import { useLayoutEffect } from "react";
  * data-ein="reihe" staffelt die direkten Kinder (Karten, Kacheln).
  *
  * Regeln:
- * - Ohne JavaScript, bei reduzierter Bewegung und im Druck ist nichts
- *   versteckt: Der Startzustand gilt nur unter html.ein-bereit, und die
- *   Klasse wird erst gesetzt, nachdem feststeht, was schon im Bild ist.
- * - Was beim Laden schon zu sehen ist (oder darüber liegt), bleibt
- *   stehen (data-ein-da="0"). Nur was später kommt, bewegt sich ("1").
+ * - Versteckt wird nur, was dieses Script selbst markiert hat
+ *   (data-ein-da="w", wartet). Ohne JavaScript, bei reduzierter
+ *   Bewegung, im Druck und für später eingefügte Elemente ist darum
+ *   nie etwas unsichtbar.
+ * - Was beim Laden schon zu sehen ist oder darüber liegt, bleibt
+ *   stehen ("0"). Nur was später ins Bild kommt, bewegt sich ("1").
  * - Jedes Element genau einmal.
  */
 export function Einblenden() {
   const pfad = usePathname();
 
   useLayoutEffect(() => {
-    const root = document.documentElement;
-    // Seitenwechsel: erst neu messen, dann wieder verstecken.
-    root.classList.remove("ein-bereit");
     if (
       !("IntersectionObserver" in window) ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -31,7 +29,9 @@ export function Einblenden() {
       return;
     }
     const elemente = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-ein]:not([data-ein-da])"),
+      document.querySelectorAll<HTMLElement>(
+        '[data-ein]:not([data-ein-da="0"], [data-ein-da="1"])',
+      ),
     );
     if (elemente.length === 0) return;
 
@@ -43,19 +43,22 @@ export function Einblenden() {
           if (erste) {
             const r = e.boundingClientRect;
             // Schon sichtbar oder oberhalb: ohne Bewegung stehen lassen.
-            if (e.isIntersecting || (r.height > 0 && r.top < window.innerHeight)) {
+            if (
+              e.isIntersecting ||
+              r.top < 0 ||
+              (r.height > 0 && r.top < window.innerHeight)
+            ) {
               el.dataset.einDa = "0";
               io.unobserve(el);
+            } else {
+              el.dataset.einDa = "w";
             }
           } else if (e.isIntersecting) {
             el.dataset.einDa = "1";
             io.unobserve(el);
           }
         }
-        if (erste) {
-          erste = false;
-          root.classList.add("ein-bereit");
-        }
+        erste = false;
       },
       { rootMargin: "0px 0px -8% 0px" },
     );
