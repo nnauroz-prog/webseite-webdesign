@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import {
   FotoRahmen,
   KontaktKarte,
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
   description:
     "Hosting, SSL, CMS, SEO, DSGVO: die wichtigsten Webbegriffe in Alltagsdeutsch erklärt, jeweils mit dem, worauf es für Ihre Entscheidung ankommt.",
   alternates: { canonical: "/lexikon" },
+  openGraph: ogFor("/lexikon"),
 };
 
 /**

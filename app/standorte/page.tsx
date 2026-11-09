@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { HamburgMap } from "@/components/marketing/hamburg-map";
@@ -28,9 +29,10 @@ const ANZAHL = ZAHLWORT[STANDORTE.length] ?? String(STANDORTE.length);
  * Konkurrenz zu machen.
  */
 export const metadata: Metadata = {
-  title: "Hamburgs Stadtteile: Altona, Eimsbüttel und mehr",
-  description: `${ANZAHL} Hamburger Stadtteile mit eigener Seite, von Altona und Eimsbüttel bis Bergedorf: welche Betriebe es im Viertel gibt und wonach dort gesucht wird.`,
+  title: "Webdesign für Hamburger Stadtteile",
+  description: `Webdesign in Hamburg für Ihren Stadtteil: ${ANZAHL.toLowerCase()} Viertel von Altona bis Bergedorf, mit typischen Suchanfragen und Branchen. Festpreis ab 599 €. Jetzt anfragen.`,
   alternates: { canonical: "/standorte" },
+  openGraph: ogFor("/standorte", undefined, undefined, "website", { defaultImage: true }),
 };
 
 export default function StandortePage() {

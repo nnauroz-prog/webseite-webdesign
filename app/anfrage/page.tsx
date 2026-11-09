@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -17,10 +18,11 @@ import {
 import a from "./anfrage.module.css";
 
 export const metadata: Metadata = {
-  title: "Website anfragen",
+  title: "Website anfragen · Festpreis-Angebot kostenlos",
   description:
-    "Name, E-Mail und eine kurze Beschreibung genügen. Wir antworten aus Hamburg, meist am selben Werktag.",
+    "Name, E-Mail und ein paar Sätze zu Ihrem Betrieb genügen. Wir antworten meist am selben Werktag, den Festpreis gibt es schriftlich. Jetzt anfragen.",
   alternates: { canonical: "/anfrage" },
+  openGraph: ogFor("/anfrage"),
 };
 
 /** Was nach dem Absenden passiert. Echte Reihenfolge, daher nummeriert. */

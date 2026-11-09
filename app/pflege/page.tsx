@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
@@ -16,12 +17,7 @@ export const metadata: Metadata = {
   title: DATA.seoTitle,
   description: DATA.seoDescription,
   alternates: { canonical: "/pflege" },
-  openGraph: {
-    type: "website",
-    title: DATA.seoTitle,
-    description: DATA.seoDescription,
-    url: `${SITE_URL}/pflege`,
-  },
+  openGraph: ogFor("/pflege", DATA.seoTitle, DATA.seoDescription),
 };
 
 export default function PflegeLandingPage() {

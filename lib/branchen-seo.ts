@@ -38,7 +38,7 @@ export const BRANCHEN_SEO: Partial<Record<string, BrancheSeo>> = {
   kosmetik: {
     seoLabel: "Kosmetikstudios",
     description:
-      "Website für Kosmetikstudios: Behandlungen mit Preisen, Terminanfrage und Fotos aus dem Studio, gut lesbar am Handy. Festpreis ab 599 €, gebaut in Hamburg.",
+      "Website für Kosmetikstudios: Behandlungen mit Preisen, Terminanfrage und Fotos aus dem Studio, gut lesbar am Handy. Festpreis ab 599 €. Jetzt anfragen.",
   },
   reinigung: {
     description:
@@ -47,6 +47,26 @@ export const BRANCHEN_SEO: Partial<Record<string, BrancheSeo>> = {
   handwerker: {
     description:
       "Handwerker-Website erstellen lassen: Referenzen, Einsatzgebiet, Rückrufbitte und Notdienstnummer. Festpreis ab 599 €, Test-Link vor dem Start.",
+  },
+  friseur: {
+    description:
+      "Website für Friseure und Barbiere: Galerie, Preisliste und Terminanfrage, am Handy gut lesbar. Festpreis ab 599 €, Test-Link vor dem Start. Jetzt anfragen.",
+  },
+  gastro: {
+    description:
+      "Website für Cafés und Restaurants: Speisekarte, Öffnungszeiten und Anfahrt, schnell änderbar. Festpreis ab 599 €, Test-Link vor dem Start. Jetzt anfragen.",
+  },
+  kanzlei: {
+    description:
+      "Website für Kanzleien: Rechtsgebiete klar benannt, sachlich gestaltet, mit Hinweis zur Erstberatung. Festpreis ab 599 €. Jetzt unverbindlich anfragen.",
+  },
+  fitness: {
+    description:
+      "Website für Fitnessstudios: Kurse, Preise und Probetraining-Anfrage, gebaut fürs Handy. Festpreis ab 599 €, Test-Link vor dem Start. Jetzt anfragen.",
+  },
+  hotel: {
+    description:
+      "Website für Hotels und Pensionen: Zimmer, Lage und Anfrage direkt beim Haus, gut lesbar am Handy. Festpreis ab 599 €. Jetzt anfragen.",
   },
 };
 

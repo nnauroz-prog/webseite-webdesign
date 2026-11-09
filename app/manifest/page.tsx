@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import { SitaloSignatur } from "@/components/marketing/hafen/sitalo-signatur";
 import {
   FotoRahmen,
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
   description:
     "Acht Grundsätze. Was Sitalo macht, was Sitalo nicht macht, woran sich Inhaber wie Kunden verlassen können.",
   alternates: { canonical: "/manifest" },
+  openGraph: ogFor("/manifest"),
 };
 
 /**

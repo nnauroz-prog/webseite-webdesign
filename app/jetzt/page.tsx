@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description:
     "Was bei Sitalo gerade ansteht: der nächste freie Tag für ein Erstgespräch, die nächste Sprechstunde und was wir zuletzt geschrieben haben.",
   alternates: { canonical: "/jetzt" },
+  openGraph: ogFor("/jetzt"),
 };
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;

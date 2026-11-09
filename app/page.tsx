@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 
 import { MehrLink } from "@/components/marketing/apple";
 import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
@@ -37,16 +38,14 @@ export const metadata: Metadata = {
   // sich beide Seiten bei Google keine Konkurrenz machen; die H1 im Hero
   // nennt den Begriff weiterhin, Preise() verlinkt auf die Geldseite.
   title: { absolute: `Webdesign Hamburg · Websites zum Festpreis ${PAKETE[0].setup} | Sitalo` },
-  description: `Webdesign aus Hamburg für Betriebe in ganz Deutschland: Websites zum Festpreis ${PAKETE[0].setup}, Test-Link vor dem Start und kleine Änderungen im Monatsbeitrag.`,
+  description: `Webdesign aus Hamburg für Betriebe in ganz Deutschland: Websites zum Festpreis ${PAKETE[0].setup}, Test-Link vor dem Start. Jetzt unverbindlich anfragen.`,
   alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    title: "Sitalo · Webdesign Hamburg",
-    description: `Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ${PAKETE[0].setup}, Test-Link vor dem Start.`,
-    siteName: "Sitalo Webdesign",
-    locale: "de_DE",
-    // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
-  },
+  // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
+  openGraph: ogFor(
+    "/",
+    "Sitalo · Webdesign Hamburg",
+    `Websites für Betriebe in ganz Deutschland, gestaltet in Hamburg. Festpreis ${PAKETE[0].setup}, Test-Link vor dem Start.`,
+  ),
   twitter: {
     card: "summary_large_image",
     title: "Sitalo · Webdesign Hamburg",

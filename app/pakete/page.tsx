@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
@@ -29,9 +30,10 @@ import { VergleichMobil } from "@/components/marketing/pakete/vergleich-mobil";
 import { PAKETE, PREIS_HINWEIS, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
-  title: `Pakete & Preise — Websites ${PAKETE[0].setup}`,
-  description: `Websites ${PAKETE[0].setup} einmalig, dazu ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")} im Monat für Hosting und kleine Änderungen, inkl. MwSt. Den Festpreis bekommen Sie vor Auftrag schriftlich.`,
+  title: `Website-Pakete und Preise: ${PAKETE[0].setup} zum Festpreis`,
+  description: `Vier Website-Pakete ${PAKETE[0].setup} einmalig, Pflege ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")} im Monat, inkl. MwSt. Festpreis schriftlich vor Auftrag. Paket wählen und anfragen.`,
   alternates: { canonical: "/pakete" },
+  openGraph: ogFor("/pakete", undefined, undefined, "website", { defaultImage: true }),
 };
 
 type Slug = Paket["slug"];

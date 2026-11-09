@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description:
     "Wir sehen uns Ihre Website von Hand an und schicken drei bis fünf konkrete Punkte per Mail, meist innerhalb von zwei Werktagen. Kostenlos, aus Hamburg.",
   alternates: { canonical: "/audit" },
+  openGraph: ogFor("/audit"),
 };
 
 /** Was nach dem Absenden passiert. Echte Reihenfolge, daher nummeriert. */
@@ -67,11 +69,7 @@ export default function AuditPage() {
     alternateName: "Website-Audit",
     description:
       "Durchsicht Ihrer aktuellen Website von Hand: drei bis fünf konkrete Verbesserungspunkte per Mail, meist innerhalb von zwei Werktagen.",
-    provider: {
-      "@type": "LocalBusiness",
-      "@id": `${SITE_URL}/#business`,
-      name: "Sitalo Webdesign",
-    },
+    provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "Country", name: "Deutschland" },
     serviceType: "Website-Audit",
     url: `${SITE_URL}/audit`,

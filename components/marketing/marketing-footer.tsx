@@ -39,6 +39,7 @@ const GRUPPEN: FussGruppe[] = [
       { href: "/branchen", label: "Branchen" },
       { href: "/pflege", label: "Website für Pflegedienste" },
       { href: "/praxen", label: "Praxis-Website" },
+      { href: "/standorte", label: "Webdesign in Hamburger Stadtteilen" },
       { href: "/audit", label: "Kostenlose Durchsicht Ihrer Website" },
     ],
   },

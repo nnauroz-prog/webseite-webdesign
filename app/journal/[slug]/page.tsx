@@ -22,6 +22,7 @@ import {
   type JournalPost,
   type Paragraph,
 } from "@/lib/journal-data";
+import { ogFor } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
 import { kopfBild } from "./kopf-bild";
@@ -44,13 +45,11 @@ export async function generateMetadata({
     title: post.seoTitle ?? `${post.title} — Journal`,
     description: post.seoDescription ?? post.dek,
     alternates: { canonical: `/journal/${post.slug}` },
-    openGraph: {
-      title: post.title,
-      description: post.seoDescription ?? post.dek,
-      type: "article",
+    openGraph: ogFor(`/journal/${post.slug}`, post.title, post.seoDescription ?? post.dek, "article", {
       publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt,
       tags: post.tags,
-    },
+    }),
   };
 }
 
@@ -72,17 +71,14 @@ export default async function JournalPostPage({
     inLanguage: "de-DE",
     description: post.dek,
     datePublished: post.publishedAt,
-    dateModified: post.publishedAt,
+    dateModified: post.updatedAt ?? post.publishedAt,
     author: {
       "@type": "Organization",
       name: "Sitalo Webdesign",
       url: SITE_URL,
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Sitalo Webdesign",
-      url: SITE_URL,
-    },
+    // Das Unternehmen (mit Logo) beschreibt das Root-Layout.
+    publisher: { "@id": `${SITE_URL}/#business` },
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": `${SITE_URL}/journal/${post.slug}`,

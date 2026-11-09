@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -58,20 +59,13 @@ import { SITE_URL } from "@/lib/site";
 
 const TITLE = `Website erstellen lassen ${PAKETE[0].setup} | Festpreis · Sitalo`;
 // Google-Grundlagen gibt es erst ab Business, deshalb hier nicht neben „ab 599 €".
-const DESCRIPTION = `Webseite erstellen lassen zum Festpreis ${PAKETE[0].setup} inkl. MwSt.: für Ihren Betrieb gestaltet, fürs Handy gebaut, Test-Link vor dem Start. Betreut aus Hamburg.`;
+const DESCRIPTION = `Website erstellen lassen zum Festpreis ${PAKETE[0].setup} inkl. MwSt.: Texte, Gestaltung und Hosting aus einer Hand, Test-Link vor dem Start. Jetzt anfragen.`;
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: { canonical: "/website-erstellen-lassen" },
-  openGraph: {
-    type: "website",
-    title: TITLE,
-    description: DESCRIPTION,
-    url: `${SITE_URL}/website-erstellen-lassen`,
-    siteName: "Sitalo Webdesign",
-    locale: "de_DE",
-  },
+  openGraph: ogFor("/website-erstellen-lassen", TITLE, DESCRIPTION),
   twitter: {
     card: "summary_large_image",
     title: TITLE,

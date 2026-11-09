@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
     canonical: "/journal",
     types: { "application/rss+xml": "/journal/feed.xml" },
   },
+  openGraph: ogFor("/journal", undefined, undefined, "website", { defaultImage: true }),
 };
 
 

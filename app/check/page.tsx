@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -40,6 +41,7 @@ export const metadata: Metadata = {
   description:
     "Kostenloser Test mit Google PageSpeed Insights: Ladezeit, Barrierefreiheit, Technik und Google-Grundlagen Ihrer Website in etwa 30 Sekunden.",
   alternates: { canonical: "/check" },
+  openGraph: ogFor("/check"),
 };
 
 /**

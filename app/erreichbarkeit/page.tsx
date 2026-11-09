@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import {
   Abschnitt,
   FotoRahmen,
@@ -14,19 +15,17 @@ import {
   TELEFON_ANZEIGE,
   TELEFON_HREF,
 } from "@/lib/erreichbarkeit";
-import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Erreichbarkeit · wann wir antworten",
   description:
     "Unsere Antwortzeiten: was wir wann zusagen, was bewusst nicht, und was gilt, wenn wir im Urlaub sind.",
   alternates: { canonical: "/erreichbarkeit" },
-  openGraph: {
-    type: "website",
-    title: "Erreichbarkeit · wann wir antworten",
-    description: "Unsere Antwortzeiten, und was im Urlaub gilt.",
-    url: `${SITE_URL}/erreichbarkeit`,
-  },
+  openGraph: ogFor(
+    "/erreichbarkeit",
+    "Erreichbarkeit · wann wir antworten",
+    "Unsere Antwortzeiten, und was im Urlaub gilt.",
+  ),
 };
 
 /** Erster Buchstabe groß, für Tabellenzellen („Meist am selben Werktag“). */

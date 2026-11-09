@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { Check, Minus, X } from "lucide-react";
 
@@ -31,16 +32,10 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   alternates: { canonical: "/vergleich" },
   // Ein eigenes openGraph ersetzt das aus dem Layout, deshalb siteName und locale hier mit.
-  openGraph: {
-    type: "article",
-    title: TITLE,
-    description: DESCRIPTION,
-    url: `${SITE_URL}/vergleich`,
-    siteName: "Sitalo Webdesign",
-    locale: "de_DE",
+  openGraph: ogFor("/vergleich", TITLE, DESCRIPTION, "article", {
     publishedTime: VEROEFFENTLICHT,
     modifiedTime: STAND,
-  },
+  }),
 };
 
 /**

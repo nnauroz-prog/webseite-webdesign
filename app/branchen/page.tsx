@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 
 import Link from "next/link";
 
@@ -24,10 +25,11 @@ import { BRANCHEN_SEO } from "@/lib/branchen-seo";
 import { getPaketBySlug } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
-  title: "Branchen · Websites für Ihren Betrieb",
+  title: "Website für Ihre Branche: Handwerk, Praxis, Café",
   description:
-    "Websites für Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Reinigungen, Kanzleien und Fitnessstudios — jede Seite individuell gebaut.",
+    "Websites für Pflegedienste, Praxen, Friseure, Cafés, Handwerker, Kanzleien, Hotels und mehr: Musterseite je Branche, Festpreis ab 599 €. Jetzt anfragen.",
   alternates: { canonical: "/branchen" },
+  openGraph: ogFor("/branchen", undefined, undefined, "website", { defaultImage: true }),
 };
 
 const ZAHLWORT: Record<number, string> = { 8: "Acht", 9: "Neun", 10: "Zehn", 11: "Elf", 12: "Zwölf" };

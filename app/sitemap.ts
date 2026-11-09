@@ -122,7 +122,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // ehrlicher für Crawler als ein pauschales "now".
   const journalEntries: MetadataRoute.Sitemap = JOURNAL_POSTS.map((post) => ({
     url: `${SITE_URL}/journal/${post.slug}`,
-    lastModified: new Date(post.publishedAt),
+    lastModified: new Date(post.updatedAt ?? post.publishedAt),
     changeFrequency: "yearly",
     priority: 0.6,
   }));
