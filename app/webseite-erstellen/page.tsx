@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
+import { MehrLink } from "@/components/marketing/apple";
+import {
+  FotoRahmen,
+  KontaktKarte,
+  SeitenKopf,
+  UnterseiteMain,
+  unterseiteStil as u,
+} from "@/components/marketing/laden/unterseite";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
-import { PageHero } from "@/components/marketing/page-hero";
 import { WegFinder } from "@/components/marketing/ratgeber/weg-finder";
 import { FAUSTREGEL } from "@/components/marketing/ratgeber/weg-finder-logic";
 import { BAUKASTEN_PREISE } from "@/lib/fremdpreise";
@@ -66,14 +73,17 @@ const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 59 € / Monat").replace(
   "",
 );
 
-const ARROW = <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />;
-const INNER = "mx-auto w-full max-w-6xl px-5 py-16 sm:px-6 sm:py-24";
-const H2 =
-  "text-balance text-[2rem] leading-[1.02] tracking-[-0.032em] sm:text-[2.6rem]";
+const ARROW = <span aria-hidden="true">›</span>;
+const INNER = "inhalt";
+/** Abschnitt im Stil der Unterseiten: #f5f5f7, Inhalte auf weißen Karten. */
+const SECTION = `${u.abschnitt} scroll-mt-24`;
+const H2 = u.zweiton;
+/** Weiße runde Karte (18 / 28 px). */
+const KARTE =
+  "rounded-[18px] bg-white shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px]";
 const TEXTLINK =
-  "inline-flex items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline";
-const INLINE =
-  "text-foreground underline decoration-foreground/35 underline-offset-4 hover:decoration-current";
+  "text-gold-ink inline-flex items-center gap-1 text-[15px] font-semibold underline-offset-4 hover:underline";
+const INLINE = "text-gold-ink underline-offset-4 hover:underline";
 /** Spalten der Wege-Übersicht ab lg und der Kostenposten ab md. */
 const WEGE_SPALTEN =
   "lg:grid-cols-[19fr_24fr_18fr_17fr_22fr] lg:items-start lg:gap-x-5";
@@ -361,35 +371,31 @@ export default function WebseiteErstellenPage() {
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <MarketingHeader tone="dark" />
-      <main id="main" tabIndex={-1} className="flex-1">
-        <PageHero
-          crumb="Webseite erstellen"
-          eyebrow="Ratgeber"
-          title={H1}
+      <MarketingHeader cta={false} />
+      <UnterseiteMain>
+        <SeitenKopf
+          krumen="Webseite erstellen"
+          eyebrow="Ratgeber · Selbst bauen oder bauen lassen"
+          titel={H1}
+          unter="Eine Webseite erstellen Sie in sieben Schritten: Ziel klären, Domain sichern, Texte und Fotos sammeln, Werkzeug wählen, Impressum und Datenschutz einbauen, für Google einrichten, pflegen. Mit einem Baukasten schaffen das viele selbst, wenn sie einige Abende Zeit haben. Hier stehen alle Wege nebeneinander, auch die, bei denen Sie uns nicht brauchen. Ob Webseite, Website oder Homepage: gemeint ist dasselbe."
           meta={
-            <div className="space-y-8">
-              <p className="text-stahl-hell font-mono text-[12.5px] leading-relaxed">
+            <div className="space-y-6">
+              <p>
                 Sitalo Webdesign, Hamburg · zuletzt überarbeitet am{" "}
                 <time dateTime={STAND}>{formatDate(STAND)}</time> ·{" "}
                 <Link
                   href="/atelier"
-                  className="text-background underline underline-offset-4"
+                  className="text-gold-ink underline-offset-4 hover:underline"
                 >
                   Wer wir sind
                 </Link>
               </p>
               <nav aria-label="Auf dieser Seite">
-                <p className="label-mono text-stahl-hell text-[11px]">
-                  Auf dieser Seite
-                </p>
-                <ul className="mt-3 flex flex-wrap justify-center gap-2">
+                <p className="notiz-mono">Auf dieser Seite</p>
+                <ul className={`${u.chips} mt-3 justify-center`}>
                   {INHALT.map((i) => (
                     <li key={i.href}>
-                      <a
-                        href={i.href}
-                        className="text-foreground inline-flex min-h-11 items-center rounded-full bg-[var(--hell)] px-[18px] text-[14px] hover:bg-[var(--hell-2)]"
-                      >
+                      <a href={i.href} className={u.chip}>
                         {i.label}
                       </a>
                     </li>
@@ -398,22 +404,21 @@ export default function WebseiteErstellenPage() {
               </nav>
             </div>
           }
-        >
-          Eine Webseite erstellen Sie in sieben Schritten: Ziel klären, Domain
-          sichern, Texte und Fotos sammeln, Werkzeug wählen, Impressum und
-          Datenschutz einbauen, für Google einrichten, pflegen. Mit einem
-          Baukasten schaffen das viele selbst, wenn sie einige Abende Zeit
-          haben. Hier stehen alle Wege nebeneinander, auch die, bei denen Sie
-          uns nicht brauchen. Ob Webseite, Website oder Homepage: gemeint ist
-          dasselbe.
-        </PageHero>
+          bild={
+            <FotoRahmen
+              vorab
+              src="/images/workspace-typing.webp"
+              alt="Hände auf der Tastatur eines Laptops in warmem Licht"
+              aspect="21 / 9"
+              aspectMobil="16 / 9"
+              position="50% 50%"
+            />
+          }
+          unterschrift="Sieben Schritte, für jeden Weg dieselben"
+        />
 
         {/* Vier Wege: Tabelle ab lg, darunter je Weg ein Block */}
-        <section
-          id="wege"
-          className="scroll-mt-24"
-          aria-labelledby="wege-titel"
-        >
+        <section id="wege" className={SECTION} aria-labelledby="wege-titel">
           <div className={INNER}>
             <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
               <h2 id="wege-titel" className={`${H2} lg:col-span-7`}>
@@ -427,70 +432,69 @@ export default function WebseiteErstellenPage() {
 
             {/* Eine Struktur für alle Breiten (keine Tabelle plus Mobil-Kopie):
                 ab lg fünf Spalten mit Kopfzeile, darunter je Weg ein Block. */}
-            <div
-              aria-hidden="true"
-              className={`border-foreground mt-12 hidden border-t-[3px] py-3 lg:grid ${WEGE_SPALTEN}`}
-            >
-              {[
-                "Weg",
-                "Was Sie selbst machen",
-                "Laufende Kosten",
-                "Ihr Zeitaufwand*",
-                "Passt, wenn …",
-              ].map((h) => (
-                <span
-                  key={h}
-                  className="label-mono text-muted-foreground text-[11px]"
-                >
-                  {h}
-                </span>
-              ))}
-            </div>
-            <div className="border-foreground mt-10 border-t-[3px] lg:mt-0 lg:border-t-0">
-              {WEGE.map((w) => (
-                <div
-                  key={w.name}
-                  className={`border-border border-b py-6 lg:grid lg:border-t lg:border-b-0 lg:py-5 lg:text-[14.5px] ${WEGE_SPALTEN}`}
-                >
-                  <div>
-                    <h3 className="text-[1.25rem] leading-tight tracking-[-0.015em] lg:text-[16.5px] lg:leading-snug lg:font-semibold lg:tracking-[-0.01em]">
-                      {w.name}
-                    </h3>
-                    <p className="text-muted-foreground mt-1 text-[14px] leading-snug lg:text-[13.5px]">
-                      {w.beispiel}
+            <div className={`${KARTE} mt-8 px-6 sm:px-10 lg:mt-10`}>
+              <div
+                aria-hidden="true"
+                className={`hidden border-b border-black/15 pt-6 pb-3 lg:grid ${WEGE_SPALTEN}`}
+              >
+                {[
+                  "Weg",
+                  "Was Sie selbst machen",
+                  "Laufende Kosten",
+                  "Ihr Zeitaufwand*",
+                  "Passt, wenn …",
+                ].map((h) => (
+                  <span key={h} className="notiz-mono">
+                    {h}
+                  </span>
+                ))}
+              </div>
+              <div className="divide-y divide-black/10">
+                {WEGE.map((w) => (
+                  <div
+                    key={w.name}
+                    className={`py-6 lg:grid lg:py-5 lg:text-[14.5px] ${WEGE_SPALTEN}`}
+                  >
+                    <div>
+                      <h3 className="text-[21px] leading-tight tracking-[-0.018em] lg:text-[17px] lg:leading-snug">
+                        {w.name}
+                      </h3>
+                      <p className="text-muted-foreground mt-1 text-[14px] leading-snug lg:text-[13.5px]">
+                        {w.beispiel}
+                      </p>
+                    </div>
+                    <dl className="mt-4 grid gap-x-4 gap-y-2.5 text-[15px] leading-snug sm:grid-cols-[10rem_minmax(0,1fr)] lg:contents">
+                      <dt className="notiz-mono pt-[2px] lg:sr-only">
+                        Selbst machen
+                      </dt>
+                      <dd className="lg:text-[14.5px] lg:leading-relaxed">
+                        {w.selbst}
+                      </dd>
+                      <dt className="notiz-mono pt-[2px] lg:sr-only">
+                        Laufende Kosten
+                      </dt>
+                      <dd className="text-muted-foreground lg:text-[14.5px] lg:leading-relaxed">
+                        {w.kosten}
+                      </dd>
+                      <dt className="notiz-mono pt-[2px] lg:sr-only">
+                        Zeitaufwand*
+                      </dt>
+                      <dd className="text-muted-foreground lg:text-[14.5px] lg:leading-relaxed">
+                        {w.zeit}
+                      </dd>
+                    </dl>
+                    <p className="mt-4 text-[15.5px] leading-relaxed lg:mt-0 lg:text-[14.5px]">
+                      <span className="font-semibold lg:sr-only">
+                        Passt, wenn
+                      </span>
+                      <span aria-hidden="true" className="hidden lg:inline">
+                        …
+                      </span>{" "}
+                      {w.passt}
                     </p>
                   </div>
-                  <dl className="mt-4 grid gap-x-4 gap-y-2.5 text-[15px] leading-snug sm:grid-cols-[10rem_minmax(0,1fr)] lg:contents">
-                    <dt className="label-mono text-muted-foreground pt-[3px] text-[10.5px] lg:sr-only">
-                      Selbst machen
-                    </dt>
-                    <dd className="lg:text-[14.5px] lg:leading-relaxed">
-                      {w.selbst}
-                    </dd>
-                    <dt className="label-mono text-muted-foreground pt-[3px] text-[10.5px] lg:sr-only">
-                      Laufende Kosten
-                    </dt>
-                    <dd className="text-muted-foreground lg:text-[14.5px] lg:leading-relaxed">
-                      {w.kosten}
-                    </dd>
-                    <dt className="label-mono text-muted-foreground pt-[3px] text-[10.5px] lg:sr-only">
-                      Zeitaufwand*
-                    </dt>
-                    <dd className="text-muted-foreground lg:text-[14.5px] lg:leading-relaxed">
-                      {w.zeit}
-                    </dd>
-                  </dl>
-                  <p className="mt-4 text-[15.5px] leading-relaxed lg:mt-0 lg:text-[14.5px]">
-                    <span className="font-semibold lg:sr-only">
-                      Passt, wenn
-                    </span>
-                    <span aria-hidden="true" className="hidden lg:inline">
-                      …
-                    </span>{" "}
-                    {w.passt}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             <div className="mt-6 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3">
@@ -508,46 +512,54 @@ export default function WebseiteErstellenPage() {
         {/* Entscheidungshilfe auf dunkler Fläche */}
         <section
           id="entscheidung"
-          className="grain bg-foreground text-background scroll-mt-24"
+          className={SECTION}
           aria-labelledby="entscheidung-titel"
         >
           <div className={INNER}>
-            <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-              <h2 id="entscheidung-titel" className={`${H2} lg:col-span-7`}>
-                Selbst machen oder machen lassen: vier Fragen
-              </h2>
-              <p className="text-stahl-hell max-w-md text-[15.5px] leading-relaxed lg:col-span-4 lg:col-start-9">
-                Antworten Sie so, wie es bei Ihnen gerade ist, nicht wie es sein
-                sollte. Die Regeln dahinter stehen unter den Fragen; es gilt die
-                erste, die passt.
-              </p>
-            </div>
-            <div className="mt-12 lg:mt-14">
-              <WegFinder />
-            </div>
+            <div
+              data-flaeche-dunkel=""
+              className="on-dark rounded-[18px] bg-black px-5 py-8 text-[#f5f5f7] sm:rounded-[28px] sm:px-10 sm:py-12"
+            >
+              <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
+                <h2
+                  id="entscheidung-titel"
+                  className={`${H2} !text-[#f5f5f7] lg:col-span-7`}
+                >
+                  Selbst machen oder machen lassen: vier Fragen
+                </h2>
+                <p className="max-w-md text-[15px] leading-relaxed text-[#a1a1a6] sm:text-[17px] lg:col-span-4 lg:col-start-9">
+                  Antworten Sie so, wie es bei Ihnen gerade ist, nicht wie es
+                  sein sollte. Die Regeln dahinter stehen unter den Fragen; es
+                  gilt die erste, die passt.
+                </p>
+              </div>
+              <div className="mt-12 lg:mt-14">
+                <WegFinder />
+              </div>
 
-            <div className="border-background/25 mt-16 grid gap-6 border-t pt-10 lg:mt-20 lg:grid-cols-12 lg:gap-8">
-              <h3 className="text-[1.4rem] leading-tight tracking-[-0.015em] lg:col-span-3">
-                Die Regeln dahinter
-              </h3>
-              <dl className="lg:col-span-9">
-                {FAUSTREGEL.map((f, i) => (
-                  <div
-                    key={`${i}-${f.wenn}`}
-                    className="border-background/15 grid gap-1 border-b py-4 first:pt-0 sm:grid-cols-[19rem_minmax(0,1fr)] sm:gap-6"
-                  >
-                    <dt className="text-[15.5px] font-semibold">
-                      <span className="text-gold mr-2 tabular-nums">
-                        {i + 1}.
-                      </span>
-                      {f.wenn}
-                    </dt>
-                    <dd className="text-stahl-hell text-[15.5px] leading-relaxed">
-                      {f.text}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <div className="border-background/25 mt-16 grid gap-6 border-t pt-10 lg:mt-20 lg:grid-cols-12 lg:gap-8">
+                <h3 className="text-[21px] leading-tight tracking-[-0.018em] lg:col-span-3">
+                  Die Regeln dahinter
+                </h3>
+                <dl className="lg:col-span-9">
+                  {FAUSTREGEL.map((f, i) => (
+                    <div
+                      key={`${i}-${f.wenn}`}
+                      className="border-background/15 grid gap-1 border-b py-4 first:pt-0 sm:grid-cols-[19rem_minmax(0,1fr)] sm:gap-6"
+                    >
+                      <dt className="text-[15.5px] font-semibold">
+                        <span className="text-gold notiz-mono mr-2 tabular-nums">
+                          {i + 1}.
+                        </span>
+                        {f.wenn}
+                      </dt>
+                      <dd className="text-[15px] leading-relaxed text-[#a1a1a6]">
+                        {f.text}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
             </div>
           </div>
         </section>
@@ -555,7 +567,7 @@ export default function WebseiteErstellenPage() {
         {/* Sieben Schritte */}
         <section
           id="schritte"
-          className="scroll-mt-24"
+          className={SECTION}
           aria-labelledby="schritte-titel"
         >
           <div className={INNER}>
@@ -571,7 +583,7 @@ export default function WebseiteErstellenPage() {
               </p>
             </div>
 
-            <ol className="mt-12 lg:mt-14">
+            <ol className="mt-8 grid gap-3 sm:gap-5 lg:mt-10">
               <Schritt
                 nr={1}
                 id="ziel"
@@ -651,7 +663,7 @@ export default function WebseiteErstellenPage() {
                 kurz="Meist der größte Zeitposten, egal auf welchem Weg."
               >
                 <p>Legen Sie ein Dokument an und sammeln Sie darin:</p>
-                <ul className="border-border grid border-t sm:grid-cols-2 sm:gap-x-8">
+                <ul className="grid rounded-[14px] bg-[#f5f5f7] px-5 sm:grid-cols-2 sm:gap-x-8">
                   {[
                     "Ihre Leistungen, jede in zwei oder drei Sätzen",
                     "Einsatzgebiet oder Adresse mit Anfahrt",
@@ -663,7 +675,7 @@ export default function WebseiteErstellenPage() {
                   ].map((t) => (
                     <li
                       key={t}
-                      className="border-border text-foreground border-b py-3 text-[15.5px] leading-snug"
+                      className="border-b border-black/10 py-3 text-[15px] leading-snug text-[#1d1d1f] last:border-b-0"
                     >
                       {t}
                     </li>
@@ -696,7 +708,7 @@ export default function WebseiteErstellenPage() {
                   . Bevor Sie ein Abo abschließen oder etwas unterschreiben,
                   lohnen sich diese Fragen:
                 </p>
-                <dl className="border-foreground border-t">
+                <dl className="divide-y divide-black/10 rounded-[14px] bg-[#f5f5f7] px-5">
                   <Pruefpunkt
                     weg="Baukasten"
                     text="Was kostet der Tarif nach dem Aktionszeitraum, und wie lange ist die Mindestlaufzeit? Zeigt der Gratistarif Werbung? Lässt sich die Seite bei einem Wechsel mitnehmen?"
@@ -731,7 +743,7 @@ export default function WebseiteErstellenPage() {
                 kurz="Pflicht für jede geschäftliche Seite, auch für eine kleine."
               >
                 <p>
-                  <strong className="text-foreground font-semibold">
+                  <strong className="font-semibold text-[#1d1d1f]">
                     Impressum.
                   </strong>{" "}
                   Jede geschäftliche Webseite braucht eines (§&nbsp;5 DDG).
@@ -748,7 +760,7 @@ export default function WebseiteErstellenPage() {
                   auf jeder Seite, etwa in der Fußzeile.
                 </p>
                 <p>
-                  <strong className="text-foreground font-semibold">
+                  <strong className="font-semibold text-[#1d1d1f]">
                     Datenschutzerklärung.
                   </strong>{" "}
                   Sie beschreibt nach Art.&nbsp;13 DSGVO, welche Daten die Seite
@@ -759,7 +771,7 @@ export default function WebseiteErstellenPage() {
                   die Erklärung ergänzt.
                 </p>
                 <p>
-                  <strong className="text-foreground font-semibold">
+                  <strong className="font-semibold text-[#1d1d1f]">
                     Cookie-Hinweis.
                   </strong>{" "}
                   Eine Einwilligung (§&nbsp;25 TDDDG) brauchen Sie nur für
@@ -770,7 +782,7 @@ export default function WebseiteErstellenPage() {
                   Cookie-Banner.
                 </p>
                 <p>
-                  <strong className="text-foreground font-semibold">
+                  <strong className="font-semibold text-[#1d1d1f]">
                     Barrierefreiheit und Preise.
                   </strong>{" "}
                   Seit dem 28.&nbsp;Juni 2025 gilt das
@@ -784,11 +796,9 @@ export default function WebseiteErstellenPage() {
                   Privatkunden nennen Sie als Endpreise, so wie sie tatsächlich
                   zu zahlen sind.
                 </p>
-                <div className="border-foreground bg-card border-l-[3px] px-5 py-4">
-                  <p className="label-mono text-muted-foreground text-[11px]">
-                    Kein Rechtsrat
-                  </p>
-                  <p className="text-foreground mt-2 text-[15px] leading-relaxed">
+                <div className="rounded-[14px] bg-[#f5f5f7] px-5 py-4">
+                  <p className="notiz-mono">Kein Rechtsrat</p>
+                  <p className="mt-1.5 text-[15px] leading-relaxed text-[#1d1d1f]">
                     Diese Übersicht ersetzt keine Prüfung im Einzelfall.
                     Rechtstexte bekommen Sie von einer Anwältin, Ihrem Verband
                     oder einem Generator.
@@ -884,11 +894,7 @@ export default function WebseiteErstellenPage() {
         </section>
 
         {/* Kosten und Zeitaufwand */}
-        <section
-          id="kosten"
-          className="bg-card border-foreground scroll-mt-24 border-t"
-          aria-labelledby="kosten-titel"
-        >
+        <section id="kosten" className={SECTION} aria-labelledby="kosten-titel">
           <div className={INNER}>
             <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
               <h2 id="kosten-titel" className={`${H2} lg:col-span-7`}>
@@ -900,40 +906,41 @@ export default function WebseiteErstellenPage() {
               </p>
             </div>
 
-            <h3 className="mt-12 text-[1.4rem] leading-tight tracking-[-0.015em] lg:mt-14">
-              Was der Selbstbau kostet
-            </h3>
-
-            {/* Eine Struktur für alle Breiten: ab md drei Spalten mit Kopfzeile. */}
             <div
-              aria-hidden="true"
-              className={`border-foreground mt-5 hidden border-t-[3px] py-3 md:grid ${POSTEN_SPALTEN}`}
+              className={`${KARTE} mt-8 px-6 pt-6 sm:px-10 sm:pt-10 lg:mt-10`}
             >
-              {["Posten", "Richtwert", "Hinweis"].map((h) => (
-                <span
-                  key={h}
-                  className="label-mono text-muted-foreground text-[11px]"
-                >
-                  {h}
-                </span>
-              ))}
+              <h3 className="text-[24px] leading-tight tracking-[-0.02em] sm:text-[28px]">
+                Was der Selbstbau kostet
+              </h3>
+
+              {/* Eine Struktur für alle Breiten: ab md drei Spalten mit Kopfzeile. */}
+              <div
+                aria-hidden="true"
+                className={`mt-5 hidden border-b border-black/15 pb-3 md:grid ${POSTEN_SPALTEN}`}
+              >
+                {["Posten", "Richtwert", "Hinweis"].map((h) => (
+                  <span key={h} className="notiz-mono">
+                    {h}
+                  </span>
+                ))}
+              </div>
+              <dl className="mt-4 divide-y divide-black/10 md:mt-0">
+                {POSTEN.map((p) => (
+                  <div
+                    key={p.posten}
+                    className={`py-4 md:grid ${POSTEN_SPALTEN}`}
+                  >
+                    <dt className="text-[16px] font-semibold md:text-[15px]">
+                      {p.posten}
+                    </dt>
+                    <dd className="mt-1 text-[15px] md:mt-0">{p.richtwert}</dd>
+                    <dd className="text-muted-foreground mt-1.5 text-[14.5px] leading-relaxed md:mt-0 md:text-[15px]">
+                      {p.hinweis}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
-            <dl className="border-foreground mt-5 border-t-[3px] md:mt-0 md:border-t-0">
-              {POSTEN.map((p) => (
-                <div
-                  key={p.posten}
-                  className={`border-border border-b py-4 md:grid md:border-t md:border-b-0 ${POSTEN_SPALTEN}`}
-                >
-                  <dt className="text-[16px] font-semibold md:text-[15px]">
-                    {p.posten}
-                  </dt>
-                  <dd className="mt-1 text-[15px] md:mt-0">{p.richtwert}</dd>
-                  <dd className="text-muted-foreground mt-1.5 text-[14.5px] leading-relaxed md:mt-0 md:text-[15px]">
-                    {p.hinweis}
-                  </dd>
-                </div>
-              ))}
-            </dl>
 
             {BAUKASTEN_PREISE.some((p) => p.betrag && p.beleg) ? (
               <p className="text-muted-foreground mt-5 max-w-3xl text-[13px] leading-relaxed">
@@ -944,28 +951,24 @@ export default function WebseiteErstellenPage() {
               </p>
             ) : null}
 
-            <div className="mt-14 grid gap-12 lg:mt-16 lg:grid-cols-2 lg:gap-8">
-              <div id="dauer" className="scroll-mt-24">
-                <h3 className="text-[1.4rem] leading-tight tracking-[-0.015em]">
+            <div className="mt-3 grid gap-3 sm:mt-5 sm:gap-5 lg:grid-cols-2">
+              <div id="dauer" className={`${KARTE} scroll-mt-28 p-6 sm:p-10`}>
+                <h3 className="text-[24px] leading-tight tracking-[-0.02em] sm:text-[28px]">
                   Wie lange es dauert
                 </h3>
-                <dl className="border-foreground mt-5 grid grid-cols-2 border-t">
-                  <div className="border-border border-r py-5 pr-4">
-                    <dt className="label-mono text-muted-foreground text-[11px]">
-                      Baukasten
-                    </dt>
-                    <dd className="serif mt-2 text-[1.55rem] leading-none tracking-[-0.02em] whitespace-nowrap sm:text-[1.9rem]">
+                <dl className="mt-5 grid grid-cols-2 gap-3">
+                  <div className="rounded-[14px] bg-[#f5f5f7] p-4">
+                    <dt className="notiz-mono">Baukasten</dt>
+                    <dd className="mt-2 text-[24px] leading-none font-semibold tracking-[-0.02em] whitespace-nowrap sm:text-[32px]">
                       10–40 Std.
                     </dd>
                     <dd className="text-muted-foreground mt-2 text-[13.5px] leading-snug">
                       Aufbau, danach 1–3 Std. im Monat
                     </dd>
                   </div>
-                  <div className="py-5 pl-5">
-                    <dt className="label-mono text-muted-foreground text-[11px]">
-                      Selbst programmiert
-                    </dt>
-                    <dd className="serif mt-2 text-[1.55rem] leading-none tracking-[-0.02em] whitespace-nowrap sm:text-[1.9rem]">
+                  <div className="rounded-[14px] bg-[#f5f5f7] p-4">
+                    <dt className="notiz-mono">Selbst programmiert</dt>
+                    <dd className="mt-2 text-[24px] leading-none font-semibold tracking-[-0.02em] whitespace-nowrap sm:text-[32px]">
                       30–80 Std.
                     </dd>
                     <dd className="text-muted-foreground mt-2 text-[13.5px] leading-snug">
@@ -973,7 +976,7 @@ export default function WebseiteErstellenPage() {
                     </dd>
                   </div>
                 </dl>
-                <div className="text-foreground/85 border-border mt-0 space-y-4 border-t pt-5 text-[15.5px] leading-relaxed">
+                <div className="mt-5 space-y-4 text-[15px] leading-relaxed text-[#424245] sm:text-[17px]">
                   <p>
                     Beides ist unsere Einschätzung für eine einfache Seite. Für
                     WordPress nennen wir keine Zahl, das hängt zu sehr von Theme
@@ -987,11 +990,11 @@ export default function WebseiteErstellenPage() {
                   </p>
                 </div>
               </div>
-              <div>
-                <h3 className="text-[1.4rem] leading-tight tracking-[-0.015em]">
+              <div className={`${KARTE} p-6 sm:p-10`}>
+                <h3 className="text-[24px] leading-tight tracking-[-0.02em] sm:text-[28px]">
                   Wenn Sie die Webseite erstellen lassen
                 </h3>
-                <div className="text-foreground/85 border-foreground mt-5 space-y-4 border-t pt-5 text-[15.5px] leading-relaxed">
+                <div className="mt-5 space-y-4 text-[15px] leading-relaxed text-[#424245] sm:text-[17px]">
                   <p>
                     Dann zahlen Sie statt mit Abenden mit Geld: einmalig für den
                     Bau und meist monatlich für Hosting und Pflege. Was
@@ -1010,7 +1013,7 @@ export default function WebseiteErstellenPage() {
         {/* Checkliste wie ein Zettel */}
         <section
           id="checkliste"
-          className="border-border scroll-mt-24 border-t"
+          className={SECTION}
           aria-labelledby="checkliste-titel"
         >
           <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
@@ -1023,8 +1026,8 @@ export default function WebseiteErstellenPage() {
                 Sie gilt für jeden Weg, auch wenn jemand anderes die Seite baut.
               </p>
             </div>
-            <div className="bg-card border-border border px-5 py-6 shadow-[0_24px_48px_-32px_rgb(27_29_30/0.45)] sm:px-9 sm:py-9 lg:col-span-8">
-              <p className="label-mono text-muted-foreground flex flex-wrap justify-between gap-x-4 gap-y-1">
+            <div className={`${u.blatt} lg:col-span-8`}>
+              <p className="notiz-mono flex flex-wrap justify-between gap-x-4 gap-y-1">
                 <span>Vor dem Start</span>
                 <span>Webseite ________</span>
               </p>
@@ -1032,11 +1035,11 @@ export default function WebseiteErstellenPage() {
                 {CHECKLISTE.map((c) => (
                   <li
                     key={c}
-                    className="border-border flex gap-4 border-b py-3.5 text-[15.5px] leading-snug"
+                    className="flex gap-4 border-b border-black/10 py-3.5 text-[15px] leading-snug text-[#1d1d1f] sm:text-[17px]"
                   >
                     <span
                       aria-hidden="true"
-                      className="border-foreground mt-0.5 inline-block h-[18px] w-[18px] shrink-0 rounded-[5px] border-[1.5px]"
+                      className="mt-0.5 inline-block h-[18px] w-[18px] shrink-0 rounded-[5px] border-[1.5px] border-[#1d1d1f]"
                     />
                     {c}
                   </li>
@@ -1047,24 +1050,20 @@ export default function WebseiteErstellenPage() {
         </section>
 
         {/* Fragen offen gesetzt */}
-        <section
-          id="fragen"
-          className="bg-card border-border scroll-mt-24 border-t"
-          aria-labelledby="fragen-titel"
-        >
+        <section id="fragen" className={SECTION} aria-labelledby="fragen-titel">
           <div className={`${INNER} grid gap-10 lg:grid-cols-12 lg:gap-8`}>
             <div className="lg:col-span-4">
               <h2 id="fragen-titel" className={H2}>
                 Häufige Fragen zum Erstellen einer Webseite
               </h2>
             </div>
-            <dl className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8">
+            <dl className="grid gap-3 sm:grid-cols-2 sm:gap-5 lg:col-span-8">
               {FAQ.map((f) => (
-                <div key={f.q} className="border-foreground border-t pt-5">
-                  <dt className="text-[17.5px] leading-snug font-semibold tracking-[-0.01em]">
+                <div key={f.q} className={`${KARTE} p-6 sm:p-8`}>
+                  <dt className="text-[19px] leading-snug font-semibold tracking-[-0.016em]">
                     {f.q}
                   </dt>
-                  <dd className="text-muted-foreground mt-3 text-[15.5px] leading-relaxed">
+                  <dd className="mt-3 text-[15px] leading-relaxed text-[#6e6e73] sm:text-[17px]">
                     {f.a}
                     {f.link ? (
                       <>
@@ -1082,17 +1081,13 @@ export default function WebseiteErstellenPage() {
         </section>
 
         {/* Sitalo, dezent und erst am Ende */}
-        <section
-          id="sitalo"
-          className="border-foreground scroll-mt-24 border-t"
-          aria-labelledby="sitalo-titel"
-        >
-          <div className={`${INNER} grid gap-12 lg:grid-cols-12 lg:gap-8`}>
-            <div className="min-w-0 lg:col-span-7">
+        <section id="sitalo" className={SECTION} aria-labelledby="sitalo-titel">
+          <div className={`${INNER} grid gap-3 sm:gap-5 lg:grid-cols-12`}>
+            <div className={`${u.blatt} min-w-0 lg:col-span-8`}>
               <h2 id="sitalo-titel" className={H2}>
                 Wann Sie uns brauchen und wann nicht
               </h2>
-              <div className="text-foreground/85 mt-6 max-w-2xl space-y-4 text-[16.5px] leading-[1.7]">
+              <div className="mt-6 max-w-2xl space-y-4 text-[17px] leading-[1.6] tracking-[-0.022em] text-[#424245]">
                 <p>
                   Wenn Sie keine Abende für die eigene Seite frei haben oder die
                   Seite Anfragen bringen soll und Sie Technik und Pflege lieber
@@ -1121,16 +1116,13 @@ export default function WebseiteErstellenPage() {
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
-                <Link
-                  href="/website-erstellen-lassen"
-                  className="btn-line h-auto min-h-12 py-3 text-left text-[15px] whitespace-normal"
-                >
-                  Webseite erstellen lassen: Festpreis und Ablauf {ARROW}
-                </Link>
+                <MehrLink href="/website-erstellen-lassen">
+                  Webseite erstellen lassen: Festpreis und Ablauf
+                </MehrLink>
                 <p className="text-[15px]">
                   <a
                     href="tel:+491607621876"
-                    className="font-semibold whitespace-nowrap underline-offset-4 hover:underline"
+                    className="text-gold-ink font-semibold whitespace-nowrap underline-offset-4 hover:underline"
                   >
                     0160&nbsp;7621876
                   </a>
@@ -1156,17 +1148,14 @@ export default function WebseiteErstellenPage() {
 
             <nav
               aria-labelledby="weiterlesen-titel"
-              className="min-w-0 lg:col-span-4 lg:col-start-9"
+              className={`${u.blatt} min-w-0 lg:col-span-4`}
             >
-              <p
-                id="weiterlesen-titel"
-                className="label-mono text-muted-foreground"
-              >
+              <p id="weiterlesen-titel" className="kennzeile-mono">
                 Weiterlesen
               </p>
-              <ul className="border-foreground mt-4 border-t">
+              <ul className="mt-4 divide-y divide-black/10">
                 {WEITERLESEN.map((w) => (
-                  <li key={w.href} className="border-border border-b">
+                  <li key={w.href}>
                     <Link
                       href={w.href}
                       className="group flex items-start justify-between gap-4 py-3.5 text-[15px] leading-snug"
@@ -1174,10 +1163,9 @@ export default function WebseiteErstellenPage() {
                       <span className="group-hover:underline group-hover:underline-offset-4">
                         {w.label}
                       </span>
-                      <ArrowRight
-                        className="text-muted-foreground mt-[3px] h-4 w-4 shrink-0"
-                        aria-hidden="true"
-                      />
+                      <span aria-hidden="true" className="text-[#6e6e73]">
+                        ›
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -1185,7 +1173,20 @@ export default function WebseiteErstellenPage() {
             </nav>
           </div>
         </section>
-      </main>
+        <KontaktKarte
+          id="abschluss"
+          titel="Lieber bauen lassen? Den Festpreis bekommen Sie schriftlich, bevor wir anfangen."
+          zeile="Eine Viertelstunde am Telefon reicht meistens. Wenn ein Baukasten für Sie reicht, sagen wir Ihnen das auch."
+          link={{
+            href: "/website-erstellen-lassen",
+            label: "Festpreis und Ablauf",
+          }}
+          foto={{
+            src: "/images/cafe-eimsbuettel.webp",
+            alt: "Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel",
+          }}
+        />
+      </UnterseiteMain>
       <MarketingFooter crumb="Webseite erstellen" />
       <script
         type="application/ld+json"
@@ -1216,17 +1217,18 @@ function Schritt({
   return (
     <li
       id={id}
-      className="border-border first:border-foreground grid scroll-mt-24 gap-5 border-t py-9 first:border-t-[3px] lg:grid-cols-12 lg:gap-8 lg:py-12"
+      className={`${KARTE} grid scroll-mt-28 gap-5 p-6 sm:p-10 lg:grid-cols-12 lg:gap-8`}
     >
       <div className="lg:col-span-4">
-        <h3 className="text-[1.45rem] leading-[1.12] tracking-[-0.018em] text-balance sm:text-[1.65rem]">
-          <span className="text-gold">{nr}.</span> {titel}
+        <p className="notiz-mono text-gold-ink">Schritt {nr} von 7</p>
+        <h3 className="mt-2 text-[24px] leading-[1.17] tracking-[-0.02em] text-balance sm:text-[28px]">
+          {titel}
         </h3>
-        <p className="text-muted-foreground mt-2.5 max-w-xs text-[15px] leading-snug">
+        <p className="mt-2.5 max-w-xs text-[15px] leading-snug text-[#6e6e73]">
           {kurz}
         </p>
       </div>
-      <div className="text-foreground/85 max-w-2xl min-w-0 space-y-5 text-[16.5px] leading-[1.7] lg:col-span-8">
+      <div className="max-w-2xl min-w-0 space-y-5 text-[17px] leading-[1.6] tracking-[-0.022em] text-[#424245] lg:col-span-8">
         {children}
       </div>
     </li>
@@ -1240,7 +1242,7 @@ function Weiter({
   links: { href: string; label: string; extern?: boolean }[];
 }) {
   return (
-    <ul className="flex flex-wrap gap-x-6 gap-y-2 pt-1 text-[14.5px]">
+    <ul className="flex flex-wrap gap-x-6 gap-y-2 pt-1 text-[15px]">
       {links.map((l) => (
         <li key={l.href}>
           {l.extern ? (
@@ -1248,14 +1250,14 @@ function Weiter({
               href={l.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${TEXTLINK} text-[14.5px]`}
+              className={TEXTLINK}
             >
               {l.label}
               <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span className="sr-only">(öffnet in neuem Fenster)</span>
             </a>
           ) : (
-            <Link href={l.href} className={`${TEXTLINK} text-[14.5px]`}>
+            <Link href={l.href} className={TEXTLINK}>
               {l.label} {ARROW}
             </Link>
           )}
@@ -1276,11 +1278,9 @@ function Pruefpunkt({
   link?: { href: string; label: string };
 }) {
   return (
-    <div className="border-border grid gap-1.5 border-b py-4 sm:grid-cols-[10.5rem_minmax(0,1fr)] sm:gap-5">
-      <dt className="label-mono text-muted-foreground pt-[4px] text-[11px]">
-        {weg}
-      </dt>
-      <dd className="text-[15.5px] leading-relaxed">
+    <div className="grid gap-1.5 py-4 sm:grid-cols-[10.5rem_minmax(0,1fr)] sm:gap-5">
+      <dt className="notiz-mono pt-[3px]">{weg}</dt>
+      <dd className="text-[15px] leading-relaxed text-[#1d1d1f]">
         {text}
         {link ? (
           <>
@@ -1298,9 +1298,9 @@ function Pruefpunkt({
 /** Starter und Business als kurze Preiszeilen, Werte aus lib/pakete-data.ts. */
 function PaketZeilen({ pakete }: { pakete: Paket[] }) {
   return (
-    <ul className="border-foreground mt-8 max-w-2xl border-t">
+    <ul className="mt-8 max-w-2xl divide-y divide-black/10 rounded-[14px] bg-[#f5f5f7] px-5">
       {pakete.map((p) => (
-        <li key={p.slug} className="border-border border-b">
+        <li key={p.slug}>
           <Link
             href={`/pakete/${p.slug}`}
             className="group grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-1 py-4"
@@ -1311,7 +1311,7 @@ function PaketZeilen({ pakete }: { pakete: Paket[] }) {
                 {p.slug === "starter" ? "eine Seite" : "mehrere Seiten"}
               </span>
             </span>
-            <span className="serif text-[1.35rem] leading-none whitespace-nowrap">
+            <span className="text-[21px] leading-none font-semibold tracking-[-0.02em] whitespace-nowrap">
               {p.setup}
             </span>
             <span className="text-muted-foreground col-span-2 text-[14px]">

@@ -1,13 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { PAKETE } from "@/lib/pakete-data";
 import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
@@ -17,6 +13,8 @@ import {
   type InquiryPackage,
 } from "@/lib/validations/inquiries";
 
+import f from "./inquiry-form.module.css";
+
 /**
  * Anfrage-Formular — Single-Page, minimaler Klick-Pfad.
  *
@@ -25,10 +23,10 @@ import {
  * sind in einer aufklappbaren „Mehr verraten"-Sektion — komplett
  * optional, sonst fragen wir in der Antwort.
  *
- * Vorgängerversion war ein 3-Schritt-Wizard mit 6 Pflicht-Klicks
- * (Branche-Card, Website-Type-Card, Weiter, Weiter, Consent, Senden)
- * + langes Scrollen durch das 12-Branchen-Card-Grid. Das war für
- * einen Erstkontakt deutlich zu viel.
+ * Gestaltung: große runde Felder (17 px, kein Zoom am iPhone), Hinweise
+ * erscheinen freundlich direkt unter dem Feld, sobald jemand das Feld
+ * verlässt oder auf „Anfrage senden“ tippt. Die Prüfregeln selbst sind
+ * dieselben wie zuvor (siehe `fehlt`), der Server prüft ohnehin erneut.
  */
 
 const INDUSTRY_OPTIONS = [
@@ -82,6 +80,8 @@ type Status =
   | { kind: "success" }
   | { kind: "error"; message: string };
 
+type PflichtFeld = "inq-name" | "inq-email" | "inq-message" | "inq-consent";
+
 export function InquiryForm({
   initialPackage,
   initialIndustry,
@@ -115,16 +115,61 @@ export function InquiryForm({
   // schon übernommen wurde.
   const hasPrefill = Boolean(validIndustry || initialPackage);
   const [detailsOpen, setDetailsOpen] = useState(hasPrefill);
+  // Hinweise erst zeigen, wenn ein Feld verlassen wurde oder jemand
+  // absenden wollte, nicht schon beim ersten Tippen.
+  const [beruehrt, setBeruehrt] = useState<Partial<Record<PflichtFeld, boolean>>>({});
+  const [versucht, setVersucht] = useState(false);
 
   // Was noch fehlt, in Formular-Reihenfolge (Hinweis unter dem Knopf,
   // wird beim Ausfüllen kürzer; ein Klick springt ins erste Feld).
-  const fehlt: { feld: string; label: string }[] = [
-    ...(data.name.trim().length >= 2 ? [] : [{ feld: "inq-name", label: "Name" }]),
-    ...(/\S+@\S+\.\S+/.test(data.email) ? [] : [{ feld: "inq-email", label: "E-Mail" }]),
-    ...(data.message.trim().length >= 5 ? [] : [{ feld: "inq-message", label: "Nachricht" }]),
-    ...(data.consent ? [] : [{ feld: "inq-consent", label: "Häkchen" }]),
+  const emailLeer = data.email.trim() === "";
+  const fehlt: { feld: PflichtFeld; label: string; hinweis: string }[] = [
+    ...(data.name.trim().length >= 2
+      ? []
+      : [
+          {
+            feld: "inq-name" as const,
+            label: "Name",
+            hinweis: "Wie dürfen wir Sie ansprechen? Bitte mindestens zwei Buchstaben.",
+          },
+        ]),
+    ...(/\S+@\S+\.\S+/.test(data.email)
+      ? []
+      : [
+          {
+            feld: "inq-email" as const,
+            label: "E-Mail",
+            hinweis: emailLeer
+              ? "Wohin dürfen wir antworten? Bitte Ihre E-Mail-Adresse."
+              : "Die Adresse sieht noch nicht vollständig aus, etwa name@betrieb.de.",
+          },
+        ]),
+    ...(data.message.trim().length >= 5
+      ? []
+      : [
+          {
+            feld: "inq-message" as const,
+            label: "Nachricht",
+            hinweis: "Ein, zwei Sätze genügen. Worum geht es ungefähr?",
+          },
+        ]),
+    ...(data.consent
+      ? []
+      : [
+          {
+            feld: "inq-consent" as const,
+            label: "Häkchen",
+            hinweis: "Bitte noch das Häkchen setzen, damit wir Ihnen antworten dürfen.",
+          },
+        ]),
   ];
   const canSubmit = fehlt.length === 0;
+
+  const hinweis = (feld: PflichtFeld) =>
+    versucht || beruehrt[feld] ? fehlt.find((x) => x.feld === feld)?.hinweis : undefined;
+  const verlassen = (feld: PflichtFeld, wert: string) => {
+    if (wert.trim() !== "") setBeruehrt((b) => ({ ...b, [feld]: true }));
+  };
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -132,6 +177,7 @@ export function InquiryForm({
     // mehrfach gedrückt oder Button gleichzeitig geklickt wird.
     if (status.kind === "submitting" || status.kind === "success") return;
     if (!canSubmit) {
+      setVersucht(true);
       document.getElementById(fehlt[0].feld)?.focus();
       return;
     }
@@ -186,18 +232,24 @@ export function InquiryForm({
   const update = <K extends keyof FormData>(key: K, value: FormData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
 
+  const hName = hinweis("inq-name");
+  const hEmail = hinweis("inq-email");
+  const hMessage = hinweis("inq-message");
+  const hConsent = hinweis("inq-consent");
+
   return (
     <form
       onSubmit={submit}
-      className="relative rounded-[18px] bg-white p-6 shadow-[0_4px_16px_rgb(0_0_0/0.06)] sm:rounded-[28px] sm:p-10"
+      noValidate
+      aria-labelledby="inq-titel"
+      className={f.karte}
     >
-      <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
-        Anfrage senden
-      </h2>
-      <p className="text-muted-foreground mt-2 text-[15px] leading-relaxed">
-        Drei Pflichtfelder. Antwort meist am selben Werktag, persönlich
-        und kostenlos.
-      </p>
+      <div className={f.kopf}>
+        <h2 id="inq-titel" className={f.titel}>
+          Ihre Anfrage
+        </h2>
+        <p className="notiz-mono">3 Pflichtfelder · rund 1 Minute</p>
+      </div>
 
       {/* Honeypot — visuell versteckt */}
       <div
@@ -220,101 +272,108 @@ export function InquiryForm({
       </div>
 
       {status.kind === "error" && (
-        <Alert variant="destructive" className="mt-6">
-          <AlertDescription>
-            {status.message}
-            <span className="mt-3 block">
-              <a
-                href="tel:+491607621876"
-                className="text-gold-ink font-medium underline-offset-4 hover:underline"
-              >
-                Lieber anrufen: 0160&nbsp;7621876 ›
-              </a>
-            </span>
-          </AlertDescription>
-        </Alert>
+        <div role="alert" className={f.meldung}>
+          <p>{status.message}</p>
+          <p>
+            <a href="tel:+491607621876">Lieber anrufen: 0160&nbsp;7621876 ›</a>
+          </p>
+        </div>
       )}
 
-      <div className="mt-7 grid gap-5 sm:grid-cols-2 sm:gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="inq-name">Name</Label>
-          <Input
+      <div className={f.reihe}>
+        <Feld id="inq-name" label="Name" pflicht hinweis={hName}>
+          <input
             id="inq-name"
+            name="name"
             required
             value={data.name}
             onChange={(e) => update("name", e.target.value)}
+            onBlur={(e) => verlassen("inq-name", e.target.value)}
             autoComplete="name"
+            enterKeyHint="next"
             placeholder="Vor- und Nachname"
+            aria-invalid={hName ? true : undefined}
+            aria-describedby={hName ? "inq-name-hinweis" : undefined}
+            className={f.eingabe}
           />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="inq-email">E-Mail</Label>
-          <Input
+        </Feld>
+        <Feld id="inq-email" label="E-Mail" pflicht hinweis={hEmail}>
+          <input
             id="inq-email"
+            name="email"
             type="email"
+            inputMode="email"
             required
             value={data.email}
             onChange={(e) => update("email", e.target.value)}
+            onBlur={(e) => verlassen("inq-email", e.target.value)}
             autoComplete="email"
+            autoCapitalize="off"
+            spellCheck={false}
+            enterKeyHint="next"
             placeholder="ihre@adresse.de"
+            aria-invalid={hEmail ? true : undefined}
+            aria-describedby={hEmail ? "inq-email-hinweis" : undefined}
+            className={f.eingabe}
           />
-        </div>
+        </Feld>
       </div>
 
-      <div className="mt-5 space-y-2 sm:mt-6">
-        <Label htmlFor="inq-message">Was wir wissen sollten</Label>
-        <Textarea
-          id="inq-message"
-          required
-          rows={5}
-          value={data.message}
-          onChange={(e) => update("message", e.target.value)}
-          placeholder="Zwei, drei Sätze reichen: was Ihr Betrieb macht und was die Website können soll. Den Rest fragen wir in der Antwort."
-        />
+      <div className={f.voll}>
+        <Feld id="inq-message" label="Was haben Sie vor?" pflicht hinweis={hMessage}>
+          <textarea
+            id="inq-message"
+            name="message"
+            required
+            rows={4}
+            value={data.message}
+            onChange={(e) => update("message", e.target.value)}
+            onBlur={(e) => verlassen("inq-message", e.target.value)}
+            placeholder="Zwei, drei Sätze reichen: was Ihr Betrieb macht und was die Website können soll."
+            aria-invalid={hMessage ? true : undefined}
+            aria-describedby={hMessage ? "inq-message-hinweis" : undefined}
+            className={f.eingabe}
+          />
+        </Feld>
       </div>
 
       {/* Optionale Details — aufklappbar, kein Pflichtweg */}
       <details
-        className="border-border/60 mt-6 rounded-2xl border bg-secondary/30 transition-colors sm:mt-7"
+        className={f.mehr}
         open={detailsOpen}
         onToggle={(e) => setDetailsOpen((e.target as HTMLDetailsElement).open)}
       >
-        <summary className="text-foreground/85 hover:text-foreground flex cursor-pointer list-none flex-col items-start gap-1 px-5 py-4 text-[14.5px] font-medium tracking-tight sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-          <span className="inline-flex items-center gap-2.5">
-            <ChevronDown
-              aria-hidden="true"
-              className="h-4 w-4 transition-transform [details[open]_&]:rotate-180"
-            />
-            Mehr verraten {hasPrefill ? "(übernommen)" : "(optional)"}
+        <summary className={f.mehrKnopf}>
+          <span>
+            Mehr verraten{" "}
+            <span className="font-normal text-[#6e6e73]">
+              {hasPrefill ? "(übernommen)" : "(freiwillig)"}
+            </span>
           </span>
-          <span className="text-muted-foreground pl-[26px] text-xs sm:pl-0">
-            Branche · Paket · Zeitrahmen · Telefon
-          </span>
+          <ChevronDown aria-hidden="true" />
         </summary>
-        <div className="border-border/60 grid gap-5 border-t px-5 py-5 sm:grid-cols-2 sm:gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="inq-industry">Branche</Label>
+        <div className={f.mehrInhalt}>
+          <Feld id="inq-industry" label="Branche">
             <Select
               id="inq-industry"
               value={data.industry}
               onChange={(v) => update("industry", v)}
               options={[
-                { value: "", label: "— bitte wählen —" },
+                { value: "", label: "Bitte wählen" },
                 ...INDUSTRY_OPTIONS.map((i) => ({
                   value: i.slug,
                   label: i.label,
                 })),
               ]}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="inq-package">Paket-Wunsch</Label>
+          </Feld>
+          <Feld id="inq-package" label="Paket-Wunsch">
             <Select
               id="inq-package"
               value={data.packagePref}
               onChange={(v) => update("packagePref", v as FormData["packagePref"])}
               options={[
-                { value: "", label: "— Empfehlung gewünscht —" },
+                { value: "", label: "Empfehlung gewünscht" },
                 // Pakete-Optionen aus der kanonischen Quelle, damit
                 // Preisänderungen automatisch durchschlagen.
                 ...PAKETE.map((p) => ({
@@ -323,20 +382,20 @@ export function InquiryForm({
                 })),
               ]}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="inq-phone">Telefon</Label>
-            <Input
+          </Feld>
+          <Feld id="inq-phone" label="Telefon">
+            <input
               id="inq-phone"
               type="tel"
+              inputMode="tel"
               value={data.phone}
               onChange={(e) => update("phone", e.target.value)}
               autoComplete="tel"
-              placeholder="für schnellere Rückfragen"
+              placeholder="für schnelle Rückfragen"
+              className={f.eingabe}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="inq-timeframe">Zeitrahmen</Label>
+          </Feld>
+          <Feld id="inq-timeframe" label="Zeitrahmen">
             <Select
               id="inq-timeframe"
               value={data.timeframe}
@@ -344,71 +403,106 @@ export function InquiryForm({
                 update("timeframe", v as FormData["timeframe"])
               }
               options={[
-                { value: "", label: "— wann soll es live sein? —" },
+                { value: "", label: "Wann soll es live sein?" },
                 ...INQUIRY_TIMEFRAMES.map((t) => ({
                   value: t,
                   label: TIMEFRAME_LABELS[t],
                 })),
               ]}
             />
-          </div>
-          <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="inq-company">Firma / Geschäft</Label>
-            <Input
-              id="inq-company"
-              value={data.company}
-              onChange={(e) => update("company", e.target.value)}
-              autoComplete="organization"
-              placeholder="optional"
-            />
+          </Feld>
+          <div className={f.breit}>
+            <Feld id="inq-company" label="Firma / Geschäft">
+              <input
+                id="inq-company"
+                value={data.company}
+                onChange={(e) => update("company", e.target.value)}
+                autoComplete="organization"
+                placeholder="Name Ihres Betriebs"
+                className={f.eingabe}
+              />
+            </Feld>
           </div>
         </div>
       </details>
 
-      <div className="border-border/60 mt-7 flex items-start gap-3 border-t pt-6 sm:mt-8">
+      <div className={f.einwilligung}>
         <input
           id="inq-consent"
           type="checkbox"
           required
           checked={data.consent}
           onChange={(e) => update("consent", e.target.checked)}
-          className="mt-1 h-4 w-4 cursor-pointer"
+          aria-invalid={hConsent ? true : undefined}
+          aria-describedby={hConsent ? "inq-consent-hinweis" : undefined}
+          className={f.haken}
         />
-        <label
-          htmlFor="inq-consent"
-          className="text-foreground/80 text-[13.5px] leading-relaxed cursor-pointer"
-        >
-          Ich willige ein, dass Sitalo meine Angaben zur Beantwortung
-          dieser Anfrage verarbeitet. Mehr in der{" "}
-          <Link
-            href="/datenschutz"
-            className="text-foreground underline underline-offset-4"
-          >
-            Datenschutzerklärung
-          </Link>
-          .
+        <label htmlFor="inq-consent" className={f.einwilligungText}>
+          Ich bin einverstanden, dass Sitalo meine Angaben nur zur
+          Beantwortung dieser Anfrage verarbeitet. Mehr in der{" "}
+          <Link href="/datenschutz">Datenschutzerklärung</Link>.
         </label>
       </div>
+      {hConsent ? (
+        <p id="inq-consent-hinweis" className={f.fehler}>
+          {hConsent}
+        </p>
+      ) : null}
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse sm:items-center sm:justify-between">
+      <div className={f.absenden}>
         <button
           type="submit"
           disabled={status.kind === "submitting"}
           aria-describedby="inq-stand"
-          className="btn-signal btn-gross w-full sm:w-auto"
+          className={`btn-signal btn-gross ${f.knopf}`}
         >
           {status.kind === "submitting" ? "Wird gesendet…" : "Anfrage senden"}
           {status.kind !== "submitting" && (
             <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
           )}
         </button>
-        <p id="inq-stand" className="text-muted-foreground text-[13px]" aria-live="polite">
-          {canSubmit
-            ? "Bereit zum Senden."
-            : `Noch: ${fehlt.map((f) => f.label).join(", ")}`}
+        <p className={f.oder}>
+          Oder kurz anrufen:{" "}
+          <a href="tel:+491607621876">0160&nbsp;7621876</a>
         </p>
       </div>
+      <p id="inq-stand" className={`notiz-mono ${f.stand}`} aria-live="polite">
+        {canSubmit
+          ? "Alles da. Bereit zum Senden."
+          : `Noch offen: ${fehlt.map((x) => x.label).join(", ")}`}
+      </p>
     </form>
+  );
+}
+
+/* ---------- Feld mit Label und Hinweis ---------- */
+
+function Feld({
+  id,
+  label,
+  pflicht = false,
+  hinweis,
+  children,
+}: {
+  id: string;
+  label: string;
+  pflicht?: boolean;
+  hinweis?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={f.feld}>
+      <label htmlFor={id} className={f.label}>
+        <span>{label}</span>
+        {pflicht ? <span className={f.pflicht}>Pflichtfeld</span> : null}
+      </label>
+      {children}
+      {hinweis ? (
+        <p id={`${id}-hinweis`} className={f.fehler}>
+          {hinweis}
+        </p>
+      ) : null}
+    </div>
   );
 }
 
@@ -416,52 +510,31 @@ export function InquiryForm({
 
 function SuccessScreen() {
   return (
-    <div className="bg-card ring-border/50 rounded-3xl border p-8 shadow-xl ring-1 sm:p-10">
-      <div className="flex items-start gap-4">
-        <div className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
-          <Check className="h-7 w-7" />
-        </div>
-        <div>
-          <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
-            Angekommen.
-          </h2>
-          <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[15.5px] leading-relaxed">
-            Wir lesen es jetzt und antworten meist am selben Werktag. Was
-            abends oder am Wochenende kommt, beantworten wir am nächsten
-            Werktag.{" "}
-            <Link
-              href="/erreichbarkeit"
-              className="text-foreground underline-offset-4 hover:underline"
-            >
-              Mehr zu unseren Antwortzeiten
-            </Link>
-            .
-          </p>
-        </div>
-      </div>
-      <div className="border-border/40 mt-8 border-t pt-6">
-        <p className="text-muted-foreground text-[13px] font-medium">
-          Während Sie warten
-        </p>
-        <p className="text-foreground/80 mt-3 max-w-xl text-pretty text-[14.5px] leading-relaxed">
+    <div className={f.karte} role="status">
+      <span className={f.erfolgZeichen}>
+        <Check className="h-7 w-7" aria-hidden="true" />
+      </span>
+      <h2 className={f.erfolgTitel}>Angekommen. Danke!</h2>
+      <p className={f.erfolgSatz}>
+        Wir lesen Ihre Nachricht jetzt und antworten meist am selben
+        Werktag. Was abends oder am Wochenende kommt, beantworten wir am
+        nächsten Werktag.{" "}
+        <Link href="/erreichbarkeit">Mehr zu unseren Antwortzeiten</Link>.
+      </p>
+      <div className={f.erfolgFuss}>
+        <p className="kennzeile-mono">Während Sie warten</p>
+        <p className={f.erfolgSatz}>
           Wenn Sie lieber direkt sprechen, geht das in der offenen
           Sprechstunde ohne Anmeldung. Oder Sie buchen einen
           Gesprächstermin (bis zu 30 Minuten, meist reicht eine
           Viertelstunde).
         </p>
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          <Link
-            href="/termin"
-            className="bg-foreground text-background hover:bg-foreground/90 group inline-flex h-11 items-center rounded-full px-5 text-[14px] font-medium tracking-tight transition-all"
-          >
+        <div className={f.erfolgAktionen}>
+          <Link href="/termin" className="btn-line">
             Termin vereinbaren
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
-          <Link
-            href="/sprechstunde"
-            className="text-foreground inline-flex h-11 items-center text-[14px] font-medium underline-offset-[6px] hover:underline"
-          >
-            Zur Sprechstunde
+          <Link href="/sprechstunde" className={f.textLink}>
+            Zur Sprechstunde ›
           </Link>
         </div>
       </div>
@@ -483,12 +556,12 @@ function Select({
   options: { value: string; label: string }[];
 }) {
   return (
-    <div className="relative">
+    <div className={f.auswahl}>
       <select
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-background border-border/70 text-foreground focus:border-foreground focus:ring-foreground/20 h-10 w-full appearance-none rounded-md border px-3 py-2 pr-9 text-sm transition-colors focus:outline-none focus:ring-2"
+        className={f.eingabe}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -496,10 +569,7 @@ function Select({
           </option>
         ))}
       </select>
-      <ChevronDown
-        aria-hidden="true"
-        className="text-muted-foreground pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2"
-      />
+      <ChevronDown aria-hidden="true" className={f.pfeil} />
     </div>
   );
 }
