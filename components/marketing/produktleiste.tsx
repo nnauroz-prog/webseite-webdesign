@@ -215,11 +215,11 @@ export function Produktleiste({
             ) : null}
             {cta ? (
               cta.href.startsWith("#") ? (
-                <a href={cta.href} className="btn-signal btn-klein ml-1">
+                <a href={cta.href} className="btn-line btn-klein ml-1">
                   {cta.label}
                 </a>
               ) : (
-                <Link href={cta.href} className="btn-signal btn-klein ml-1">
+                <Link href={cta.href} className="btn-line btn-klein ml-1">
                   {cta.label}
                 </Link>
               )

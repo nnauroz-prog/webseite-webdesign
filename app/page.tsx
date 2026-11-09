@@ -365,6 +365,9 @@ function Unterschied() {
             </li>
           ))}
         </ol>
+        <p className={`notiz-mono ${s.ladeFuss}`}>
+          {UNTERSCHIED.length} Positionen · Festpreis schriftlich vor dem Start
+        </p>
       </div>
     </LadenRegal>
   );

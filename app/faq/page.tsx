@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import {
-  FotoRahmen,
   KontaktKarte,
   SeitenKopf,
   UnterseiteMain,
@@ -57,16 +56,6 @@ export default function FaqPage() {
           eyebrow={`Kaimauer · ${QUESTION_COUNT} Antworten`}
           titel="Häufige Fragen"
           unter="Nach Themen sortiert. Steht Ihre Frage nicht dabei, rufen Sie an oder schreiben Sie uns."
-          bild={
-            <FotoRahmen
-              vorab
-              src="/images/cafe-eimsbuettel.webp"
-              alt="Café-Tisch mit zwei Stühlen an einer Kopfsteinpflasterstraße in Eimsbüttel, ein Platz für ein Gespräch"
-              aspect="21 / 9"
-              aspectMobil="16 / 9"
-              position="50% 55%"
-            />
-          }
         />
         <nav aria-label="Themen" className="inhalt pt-8 sm:pt-10">
           <ul

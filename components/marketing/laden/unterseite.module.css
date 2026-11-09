@@ -147,8 +147,8 @@
 @media (min-width: 1068px) {
   .kopf > :global(.inhalt) {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    column-gap: 56px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 48px;
     align-items: start;
   }
   .kopf > :global(.inhalt) > * {
@@ -171,6 +171,7 @@
     line-height: 1.42;
   }
   .kopf > :global(.inhalt) > .aktionen {
+    gap: 12px 20px;
     margin-top: 20px;
   }
 }
