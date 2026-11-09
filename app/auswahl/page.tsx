@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -37,6 +38,7 @@ export const metadata: Metadata = {
   description:
     "Mit wem die Zusammenarbeit gut klappt, wann wir offen sagen, dass wir nicht passen, und wie wir entscheiden. Den Starttermin nennen wir im ersten Gespräch.",
   alternates: { canonical: "/auswahl" },
+  openGraph: ogFor("/auswahl"),
 };
 
 /**

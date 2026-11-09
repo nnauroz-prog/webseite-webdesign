@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
@@ -19,10 +20,11 @@ import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
-  title: "Kontakt · schreiben Sie uns direkt",
+  title: "Kontakt: Webdesign-Anfrage, Telefon, Termin",
   description:
     "Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Anfragen über das Formular beantworten wir meist am selben Werktag.",
   alternates: { canonical: "/kontakt" },
+  openGraph: ogFor("/kontakt", undefined, undefined, "website", { defaultImage: true }),
 };
 
 /**

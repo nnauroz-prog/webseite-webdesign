@@ -20,8 +20,8 @@ const paketZeilen = PAKETE.map(
 
 const ZAHLWORT = ["Null", "Ein", "Zwei", "Drei", "Vier", "Fünf", "Sechs"];
 
-const branchenListe = BRANCHEN.map((b) => b.label).join(", ");
-const standorteListe = STANDORTE.map((s) => s.name).join(", ");
+const branchenListe = BRANCHEN.map((b) => `[${b.label}](https://www.sitalo.de/branchen/${b.slug})`).join(", ");
+const standorteListe = STANDORTE.map((s) => `[${s.name}](https://www.sitalo.de/standorte/${s.slug})`).join(", ");
 
 const CONTENT = `# Sitalo Webdesign
 

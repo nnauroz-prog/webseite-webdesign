@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
   description: "Anbieterkennzeichnung gemäß § 5 DDG.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/impressum" },
+  openGraph: ogFor("/impressum", undefined, undefined, "website", { defaultImage: true }),
 };
 
 /**

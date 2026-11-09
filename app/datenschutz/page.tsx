@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { EditorialMasthead } from "@/components/marketing/editorial-masthead";
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
   description: "Datenschutzerklärung von Sitalo Webdesign.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/datenschutz" },
+  openGraph: ogFor("/datenschutz", undefined, undefined, "website", { defaultImage: true }),
 };
 
 /**

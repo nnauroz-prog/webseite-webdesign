@@ -26,6 +26,7 @@ import { getPost, JOURNAL_BY_BRANCHE } from "@/lib/journal-data";
 import { getPaketBySlug, nachDauer } from "@/lib/pakete-data";
 import { getStandorteForBranche } from "@/lib/standorte-data";
 import { SITE_URL } from "@/lib/site";
+import { ogFor } from "@/lib/seo";
 
 /**
  * Bilder je Branche: das Gerätefoto der Musterseite (Kopf, frei
@@ -131,16 +132,12 @@ export async function generateMetadata({
   const title = seo?.title ?? `Website für ${seo?.seoLabel ?? branche.label} erstellen lassen`;
   const lead =
     branche.shortBody.length > 100 ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "." : branche.shortBody;
-  const description = seo?.description ?? `${lead} Website zum Festpreis ${getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€"}, gebaut in Hamburg.`;
+  const description = seo?.description ?? `${lead} Website zum Festpreis ${getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€"}. Jetzt anfragen.`;
   return {
     title,
     description,
     alternates: { canonical: `/branchen/${branche.slug}` },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-    },
+    openGraph: ogFor(`/branchen/${branche.slug}`, title, description),
     twitter: {
       card: "summary_large_image",
       title,

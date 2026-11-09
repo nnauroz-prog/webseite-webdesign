@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
@@ -20,8 +21,9 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: `Website-Wartung und Pflege ab ${WARTUNG_PREISE.basis} im Monat`,
   description:
-    "Hosting, Updates und kleine Änderungen, auf Wunsch Werkbank-Stunden für Gestaltung und Technik. Auch für Websites, die wir nicht selbst gebaut haben.",
+    `Website-Wartung ab ${WARTUNG_PREISE.basis} im Monat: Hosting, Updates und kleine Änderungen, auch für Seiten, die wir nicht gebaut haben. Jetzt anfragen.`,
   alternates: { canonical: "/wartung" },
+  openGraph: ogFor("/wartung"),
 };
 
 /**
@@ -124,11 +126,7 @@ export default function WartungPage() {
     name: "Website-Wartung & Werkbank",
     description:
       "Hosting, Updates, kleine Änderungen und auf Wunsch Stunden für Gestaltung, Technik und Beratung, auch für Websites, die wir nicht selbst gebaut haben.",
-    provider: {
-      "@type": "LocalBusiness",
-      "@id": `${SITE_URL}/#business`,
-      name: "Sitalo Webdesign",
-    },
+    provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "Country", name: "Deutschland" },
     serviceType: "Website-Wartung",
     url: `${SITE_URL}/wartung`,

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
@@ -41,9 +42,9 @@ import { SITE_URL } from "@/lib/site";
  * verlinkt für das Erstellenlassen hierher.
  */
 
-const TITLE = "Was kostet eine Website? Preise und laufende Kosten";
+const TITLE = "Website-Kosten 2026: Was eine Homepage kostet";
 const DESCRIPTION =
-  "Was es kostet, eine Website erstellen zu lassen: Baukasten, Freelancer und Agentur im Vergleich, laufende Kosten und sechs Fragen an jedes Angebot.";
+  "Was kostet es, eine Homepage erstellen zu lassen? Baukasten, Freelancer und Agentur im Vergleich, laufende Kosten und Checkliste. Festpreis bei uns anfragen.";
 /** Erstveröffentlichung und letzte inhaltliche Überarbeitung (ISO), lib/seiten-stand.ts.
  *  Speist die sichtbare Zeile im Kopf, das Article-Schema und die Sitemap. */
 const { veroeffentlicht: VEROEFFENTLICHT, stand: STAND } =
@@ -54,16 +55,10 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   alternates: { canonical: "/website-kosten" },
   // Ein eigenes openGraph ersetzt das aus dem Layout, deshalb siteName und locale hier mit.
-  openGraph: {
-    type: "article",
-    title: TITLE,
-    description: DESCRIPTION,
-    url: `${SITE_URL}/website-kosten`,
-    siteName: "Sitalo Webdesign",
-    locale: "de_DE",
+  openGraph: ogFor("/website-kosten", TITLE, DESCRIPTION, "article", {
     publishedTime: VEROEFFENTLICHT,
     modifiedTime: STAND,
-  },
+  }),
 };
 
 const STARTER = getPaketBySlug("starter");

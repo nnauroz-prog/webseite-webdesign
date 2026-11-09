@@ -21,6 +21,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Produktleiste } from "@/components/marketing/produktleiste";
 import { PAKETE, getAllPaketSlugs, getPaketBySlug, type Paket } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
+import { ogFor } from "@/lib/seo";
 
 /** Kleine Änderungen im Monatsbeitrag, je Paket (siehe lib/pakete-data.ts). */
 const AENDERUNGEN: Record<Paket["slug"], string> = {
@@ -77,6 +78,14 @@ export function generateStaticParams() {
   return getAllPaketSlugs().map((slug) => ({ slug }));
 }
 
+/** Eigene Beschreibung, wo die gebaute zu lang wird oder die Aufforderung fehlt. */
+const META_DESCRIPTION: Partial<Record<string, string>> = {
+  premium:
+    "Website-Paket Premium ab 2.999 € inkl. MwSt.: eigene Struktur für Ihren Betrieb, Bereiche wie Speisekarte oder Termine pflegen Sie selbst. Jetzt anfragen.",
+  studio:
+    "Sitalo Studio ab 3.990 € inkl. MwSt.: neues Erscheinungsbild und Website, Treffen vor Ort, bis zu drei Korrekturrunden. Jetzt unverbindlich anfragen.",
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -96,12 +105,16 @@ export async function generateMetadata({
     : paket.description;
   // Preis und Dauer anhängen, solange die Beschreibung unter 158 Zeichen bleibt.
   const zusatz = ` Festpreis ${paket.setup} inkl. MwSt., online ${paket.dauer}.`;
-  const description = basis.length + zusatz.length <= 158 ? basis + zusatz : basis;
+  const gebaut = basis.length + zusatz.length <= 158 ? basis + zusatz : basis;
+  // Aufforderung anhängen, solange die Beschreibung unter 160 Zeichen bleibt.
+  const cta = " Jetzt anfragen.";
+  const description =
+    META_DESCRIPTION[paket.slug] ?? (gebaut.length + cta.length <= 160 ? gebaut + cta : gebaut);
   return {
     title,
     description,
     alternates: { canonical: `/pakete/${paket.slug}` },
-    openGraph: { type: "article", title, description },
+    openGraph: ogFor(`/pakete/${paket.slug}`, title, description),
     twitter: { card: "summary_large_image", title, description },
   };
 }
@@ -132,33 +145,43 @@ export default async function PaketDetailPage({
    * als Array. Service beschreibt das Paket-Angebot mit Preis und FAQ,
    * BreadcrumbList gibt Google die Hierarchie für Rich-Results in
    * den SERPs. */
+  const setup = paket.setup.replace(/[^\d]/g, "");
+  const monthly = paket.monthly.replace(/[^\d]/g, "");
   const serviceLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: `${paket.name}-Webdesign-Paket`,
+    name: `Website-Paket ${paket.name}`,
     description: paket.description,
-    provider: {
-      "@type": "LocalBusiness",
-      "@id": `${SITE_URL}/#business`,
-      name: "Sitalo Webdesign",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Hamburg",
-        addressCountry: "DE",
-      },
-    },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "EUR",
-      price: paket.setup.replace(/[^\d]/g, ""),
-      priceSpecification: {
-        "@type": "UnitPriceSpecification",
+    // Das Unternehmen selbst beschreibt das Root-Layout (ProfessionalService).
+    provider: { "@id": `${SITE_URL}/#business` },
+    // Einmalpreis und Monatsbeitrag getrennt, damit der Monatsbeitrag
+    // nicht als Preis des Pakets gelesen wird.
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Einmalpreis",
+        price: setup,
         priceCurrency: "EUR",
-        price: paket.monthly.replace(/[^\d]/g, ""),
-        billingDuration: "P1M",
-        valueAddedTaxIncluded: true,
+        priceSpecification: {
+          "@type": "PriceSpecification",
+          price: setup,
+          priceCurrency: "EUR",
+          valueAddedTaxIncluded: true,
+        },
       },
-    },
+      {
+        "@type": "Offer",
+        name: "Monatsbeitrag",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: monthly,
+          priceCurrency: "EUR",
+          unitCode: "MON",
+          referenceQuantity: { "@type": "QuantitativeValue", value: 1, unitCode: "MON" },
+          valueAddedTaxIncluded: true,
+        },
+      },
+    ],
     url: `https://www.sitalo.de/pakete/${paket.slug}`,
   };
 

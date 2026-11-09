@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
@@ -45,7 +46,7 @@ const { veroeffentlicht: VEROEFFENTLICHT, stand: STAND } =
   SEITEN_STAND["/webseite-erstellen"];
 
 const PATH = "/webseite-erstellen";
-const TITLE = "Webseite erstellen: Anleitung, Kosten und Wege";
+const TITLE = "Webseite erstellen: Anleitung in 7 Schritten";
 const H1 = "Webseite erstellen: Schritte, Wege und Kosten";
 const DESCRIPTION =
   "Webseite erstellen in sieben Schritten: Ziel, Domain, Inhalte, Werkzeug, Impressum, Google, Pflege. Mit Kosten, Dauer und Entscheidungshilfe in vier Fragen.";
@@ -54,16 +55,10 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: PATH },
-  openGraph: {
-    type: "article",
-    title: TITLE,
-    description: DESCRIPTION,
-    url: `${SITE_URL}${PATH}`,
-    siteName: "Sitalo Webdesign",
-    locale: "de_DE",
+  openGraph: ogFor(PATH, TITLE, DESCRIPTION, "article", {
     publishedTime: VEROEFFENTLICHT,
     modifiedTime: STAND,
-  },
+  }),
 };
 
 const STARTER = getPaketBySlug("starter");

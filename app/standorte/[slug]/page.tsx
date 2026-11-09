@@ -15,6 +15,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { formatDate, getPost, JOURNAL_BY_STANDORT } from "@/lib/journal-data";
 import { getPaketBySlug } from "@/lib/pakete-data";
+import { ogFor } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import {
   STANDORTE,
@@ -44,17 +45,13 @@ export async function generateMetadata({
   const standort = getStandortBySlug(slug);
   if (!standort) return {};
 
-  const title = `Website erstellen lassen ${standort.name} · Hamburg`;
-  const description = `Website erstellen lassen in Hamburg-${standort.name}: individuell gestaltet, für Handy und Google optimiert, Festpreis ${getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€"}, Test-Link vor dem Start.`;
+  const title = `Webdesign ${standort.name}: Website erstellen lassen`;
+  const description = `Webdesign in Hamburg-${standort.name}: ${standort.metaHint}, Festpreis ${getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€"}. Jetzt anfragen.`;
   return {
     title,
     description,
     alternates: { canonical: `/standorte/${standort.slug}` },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-    },
+    openGraph: ogFor(`/standorte/${standort.slug}`, title, description),
     twitter: {
       card: "summary_large_image",
       title,

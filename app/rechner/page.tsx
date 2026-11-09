@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -45,6 +46,7 @@ export const metadata: Metadata = {
   description:
     "Was kostet eine Website über drei Jahre? Sitalo neben Wix, Squarespace, Jimdo und dem Selbstbau, Ihre eigene Arbeitszeit eingerechnet.",
   alternates: { canonical: "/rechner" },
+  openGraph: ogFor("/rechner"),
 };
 
 /**

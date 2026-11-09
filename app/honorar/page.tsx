@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -15,10 +16,11 @@ import {
 import { getAllPaketSlugs, type Paket } from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
-  title: "Honorar · offen vorgerechnet",
+  title: "Webdesign-Stundensatz und Aufwand je Paket",
   description:
     `Wie unsere Preise zustande kommen: Stundensatz ${STUNDENSATZ_EUR}\u00A0€ inkl. MwSt., Stunden je Paket und was wir nicht abrechnen.`,
   alternates: { canonical: "/honorar" },
+  openGraph: ogFor("/honorar"),
 };
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;

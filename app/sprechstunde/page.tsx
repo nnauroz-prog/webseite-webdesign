@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight, CalendarPlus, Phone } from "lucide-react";
 
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
   description:
     "Anderthalb Stunden Telefonzeit im Monat, jeden ersten Donnerstag von 17 bis 18:30 Uhr. Auch für Nicht-Kunden, eine Anmeldung brauchen Sie nicht.",
   alternates: { canonical: "/sprechstunde" },
+  openGraph: ogFor("/sprechstunde"),
 };
 
 /**
@@ -48,21 +50,18 @@ export default function SprechstundePage() {
       "@type": "Event",
       name: "Offene Telefon-Sprechstunde bei Sitalo Webdesign",
       description:
-        "Anderthalb Stunden offene Telefon-Sprechstunde, auch für Nicht-Kunden und ohne Anmeldung. Wir beantworten Fragen zu Webdesign, Hosting, lokaler Sichtbarkeit und Ihrem eigenen Website-Projekt.",
+        "Anderthalb Stunden offene Telefon-Sprechstunde, auch für Nicht-Kunden und ohne Anmeldung. Wir beantworten Fragen zu Webdesign, Hosting, lokaler Sichtbarkeit und Ihrem eigenen Website-Projekt. Telefon: 0160 7621876.",
       startDate: `${t.iso}T${SPRECHSTUNDE_BEGINN_HHMM}:00${offset}`,
       endDate: `${t.iso}T${SPRECHSTUNDE_ENDE_HHMM}:00${offset}`,
       eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
       eventStatus: "https://schema.org/EventScheduled",
       location: {
         "@type": "VirtualLocation",
-        url: `tel:+491607621876`,
+        // Google erwartet für Online-Termine eine http(s)-Adresse; die
+        // Telefonnummer steht in der description.
+        url: `${SITE_URL}/sprechstunde`,
       },
-      organizer: {
-        "@type": "LocalBusiness",
-        "@id": `${SITE_URL}/#business`,
-        name: "Sitalo Webdesign",
-        url: SITE_URL,
-      },
+      organizer: { "@id": `${SITE_URL}/#business` },
       isAccessibleForFree: true,
       offers: {
         "@type": "Offer",

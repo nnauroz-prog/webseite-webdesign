@@ -40,6 +40,8 @@ export type JournalPost = {
   seoDescription?: string;
   /** ISO-Datum, yyyy-mm-dd, Veröffentlichung. */
   publishedAt: string;
+  /** Datum der letzten inhaltlichen Überarbeitung (ISO), für dateModified und lastmod. */
+  updatedAt?: string;
   /** Geschätzte Lesezeit in Minuten — manuell gepflegt. */
   readingMinutes: number;
   /** Tag-Slugs für spätere Filter; aktuell rein deskriptiv. */
@@ -244,7 +246,7 @@ const POSTS: JournalPost[] = [
   // - https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz/FAQ/faq_node
   {
     slug: "pflichtangaben-website-impressum-datenschutz",
-    seoTitle: "Pflichtangaben Website 2026: Impressum, Datenschutz, BFSG",
+    seoTitle: "Pflichtangaben Website: Impressum, Datenschutz, BFSG",
     title: "Was auf jede Betriebs-Website gehört",
     dek: "Impressum, Datenschutzerklärung, Cookie-Einwilligung und Barrierefreiheit: was für die Website eines kleinen Betriebs Pflicht ist und was nur unter Bedingungen.",
     seoDescription: "Impressum, Datenschutzerklärung, Cookie-Banner, Barrierefreiheit: welche Pflichtangaben die Website eines Betriebs 2026 braucht und was entfallen ist.",
@@ -463,7 +465,7 @@ const POSTS: JournalPost[] = [
   // - intern: lib/lexikon-data.ts
   {
     slug: "domain-hosting-ssl-email-website-was-braucht-mein-betrieb",
-    seoTitle: "Domain, Hosting, SSL: Was eine Website braucht und kostet",
+    seoTitle: "Domain, Hosting, SSL: Was eine Website braucht",
     title: "Die Adresse sollte Ihnen gehören",
     dek: "Was Ihr Betrieb für eine eigene Website wirklich braucht, wem die Domain gehören sollte und was das ungefähr kostet.",
     seoDescription: "Was ein Betrieb für die eigene Website braucht: Domain, Hosting, SSL und E-Mail. Wem die Domain gehören sollte und was das ungefähr kostet.",

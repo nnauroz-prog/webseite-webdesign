@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { Search } from "lucide-react";
 
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   description:
     "Sitalo ist ein kleines Büro für Webdesign in Hamburg: wie ein Auftrag bei uns abläuft, woran wir uns halten und was wir nicht machen.",
   alternates: { canonical: "/atelier" },
+  openGraph: ogFor("/atelier"),
 };
 
 /* ============================================================
@@ -252,6 +254,11 @@ const SEITEN: { href: string; title: string; line: string }[] = [
     href: "/inventar",
     title: "Inventar",
     line: "Womit wir bauen und wo wir hosten, jeweils mit Begründung.",
+  },
+  {
+    href: "/jetzt",
+    title: "Jetzt",
+    line: "Was gerade ansteht: freie Gesprächstage, Sprechstunde, neue Texte.",
   },
   {
     href: "/erreichbarkeit",

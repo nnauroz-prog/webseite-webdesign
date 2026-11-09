@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
   description:
     "Offene Werkstatt-Liste. Was wir am Schreibtisch benutzen, wo wir hosten, was Sie beisteuern und was wir bewusst auslassen.",
   alternates: { canonical: "/inventar" },
+  openGraph: ogFor("/inventar"),
 };
 
 const ARROW = <ArrowRight className="h-4 w-4" aria-hidden="true" />;

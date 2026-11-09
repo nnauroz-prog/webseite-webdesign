@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
   description:
     "Was wir für Sie machen: Website bauen, Texte, Anfragen, Google-Basis, Hosting und Pflege. Alles von Sitalo Webdesign aus Hamburg.",
   alternates: { canonical: "/leistungen" },
+  openGraph: ogFor("/leistungen", undefined, undefined, "website", { defaultImage: true }),
 };
 
 const MONTHLY_FROM = (getPaketBySlug("starter")?.monthly ?? "ab 59\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
   description:
     "Welches Website-Paket passt zu Ihnen? Fünf Fragen zu Branche, Größe und Zeitplan, danach eine begründete Empfehlung. Kostenlos.",
   alternates: { canonical: "/empfehlung" },
+  openGraph: ogFor("/empfehlung"),
 };
 
 /** Kurzer Umfang je Paket, gleichlautend mit Abfahrtstafel und /pakete.

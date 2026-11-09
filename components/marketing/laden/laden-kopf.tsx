@@ -38,7 +38,11 @@ export function LadenKopf() {
         ))}
       </p>
       <p className={s.absatz}>
-        Ein kleines Büro in Hamburg, das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre Seite sehen
+        Ein kleines Büro in{" "}
+        <Link href="/standorte" className="underline-offset-4 hover:underline">
+          Hamburg
+        </Link>
+        , das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre Seite sehen
         Sie vorher auf einem Test-Link.
       </p>
       <div className={s.aktionen}>

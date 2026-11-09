@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -13,8 +14,9 @@ import { FAQ_GROUPS } from "@/lib/faq-data";
 export const metadata: Metadata = {
   title: "Häufige Fragen rund um Ihre neue Website",
   description:
-    "Antworten auf das, was Kunden uns am häufigsten fragen — Preise, Ablauf, Hosting, Google-Suche, Betreuung.",
+    "Antworten zu Preisen, Ablauf, Hosting, Google-Suche und Betreuung Ihrer Website. Ihre Frage fehlt? Schreiben Sie uns über das Anfrageformular.",
   alternates: { canonical: "/faq" },
+  openGraph: ogFor("/faq", undefined, undefined, "website", { defaultImage: true }),
 };
 
 const GROUPS: FaqGroup[] = FAQ_GROUPS;

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description:
     "Erstgespräch (bis zu 30 Minuten) mit Sitalo aus Hamburg. Tag und Uhrzeit wählen, Bestätigung per E-Mail meist am selben Werktag.",
   alternates: { canonical: "/termin" },
+  openGraph: ogFor("/termin"),
 };
 
 /**
@@ -44,11 +46,7 @@ export default function TerminPage() {
     name: "Erstgespräch (bis zu 30 Minuten)",
     description:
       "Erstgespräch (bis zu 30 Minuten, meist reicht eine Viertelstunde) per Video, Telefon oder vor Ort in Hamburg. Termin direkt auswählen, Bestätigung meist am selben Werktag per Mail.",
-    provider: {
-      "@type": "LocalBusiness",
-      "@id": `${SITE_URL}/#business`,
-      name: "Sitalo Webdesign",
-    },
+    provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "Country", name: "Deutschland" },
     serviceType: "Beratungstermin",
     url: `${SITE_URL}/termin`,

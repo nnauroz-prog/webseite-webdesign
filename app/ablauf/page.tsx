@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogFor } from "@/lib/seo";
 
 import Link from "next/link";
 
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   description:
     "So läuft es bei uns: Sie schreiben uns, wir sprechen kurz, wir bauen, Sie prüfen den Test-Link, die Seite geht online. Mit Festpreis vorab.",
   alternates: { canonical: "/ablauf" },
+  openGraph: ogFor("/ablauf", undefined, undefined, "website", { defaultImage: true }),
 };
 
 const STEPS = ABLAUF_HALTE;

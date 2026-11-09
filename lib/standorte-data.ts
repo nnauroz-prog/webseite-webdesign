@@ -17,6 +17,8 @@
 export type Standort = {
   slug: string;
   name: string;
+  /** Teil der meta description: „Webdesign in Hamburg-{name}: {metaHint}, Festpreis …“. */
+  metaHint: string;
   /** Name mit Präposition für „Website erstellen lassen …“: „in Altona“, „in der HafenCity“, „auf St. Pauli“. */
   inName: string;
   /** Name mit Präposition für „… passen“: „zu Altona“, „zur HafenCity“, „zu St. Pauli“. */
@@ -39,6 +41,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "eimsbuettel",
     name: "Eimsbüttel",
+    metaHint: "Website für Cafés, Salons und Praxen rund um Osterstraße und Eppendorfer Weg",
     inName: "in Eimsbüttel",
     zuName: "zu Eimsbüttel",
     tagline:
@@ -80,6 +83,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "altona",
     name: "Altona",
+    metaHint: "Website für Ihren Betrieb in Ottensen, Altona-Altstadt oder Altona-Nord",
     inName: "in Altona",
     zuName: "zu Altona",
     tagline:
@@ -121,6 +125,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "eppendorf",
     name: "Eppendorf",
+    metaHint: "Website für Praxen, Studios und Läden rund um Eppendorfer Baum und UKE",
     inName: "in Eppendorf",
     zuName: "zu Eppendorf",
     tagline:
@@ -164,6 +169,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "st-pauli",
     name: "St. Pauli",
+    metaHint: "Website für Bars, Restaurants, Studios und Hostels rund um die Reeperbahn",
     inName: "auf St. Pauli",
     zuName: "zu St. Pauli",
     tagline:
@@ -206,6 +212,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "winterhude",
     name: "Winterhude",
+    metaHint: "Website für Läden, Praxen und Cafés am Mühlenkamp und Goldbekkanal",
     inName: "in Winterhude",
     zuName: "zu Winterhude",
     tagline:
@@ -248,6 +255,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "bergedorf",
     name: "Bergedorf",
+    metaHint: "Website für Familienbetriebe rund um Sachsentor und Alte Holstenstraße",
     inName: "in Bergedorf",
     zuName: "zu Bergedorf",
     tagline:
@@ -291,6 +299,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "harburg",
     name: "Harburg",
+    metaHint: "Website für Handwerk und Gewerbe zwischen Binnenhafen und Phoenix-Viertel",
     inName: "in Harburg",
     zuName: "zu Harburg",
     tagline:
@@ -334,6 +343,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "wandsbek",
     name: "Wandsbek",
+    metaHint: "Website für Familienbetriebe von Marienthal bis Rahlstedt",
     inName: "in Wandsbek",
     zuName: "zu Wandsbek",
     tagline:
@@ -376,6 +386,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "barmbek",
     name: "Barmbek",
+    metaHint: "Website für Bäcker, Friseure und Praxen an der Fuhlsbüttler Straße",
     inName: "in Barmbek",
     zuName: "zu Barmbek",
     tagline:
@@ -418,6 +429,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "bramfeld",
     name: "Bramfeld",
+    metaHint: "Website für Handwerksbetriebe und Praxen an der Bramfelder Chaussee",
     inName: "in Bramfeld",
     zuName: "zu Bramfeld",
     tagline:
@@ -461,6 +473,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "niendorf",
     name: "Niendorf",
+    metaHint: "Website für Läden, Praxen und Studios rund um den Tibarg",
     inName: "in Niendorf",
     zuName: "zu Niendorf",
     tagline:
@@ -504,6 +517,7 @@ export const STANDORTE: Standort[] = [
   {
     slug: "hafencity",
     name: "HafenCity",
+    metaHint: "Website für Beratungen, Büros und Restaurants vom Sandtorhafen bis Überseequartier",
     inName: "in der HafenCity",
     zuName: "zur HafenCity",
     tagline:
