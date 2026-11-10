@@ -346,7 +346,7 @@ function Unterschied() {
           <span>Ladung</span>
           <span>Vermerk</span>
         </p>
-        <ol role="list">
+        <ol role="list" data-ein="reihe">
           {UNTERSCHIED.map((u, i) => (
             <li key={u.fett}>
               <Link href={u.href} className={s.ladeZeile}>
@@ -366,7 +366,7 @@ function Unterschied() {
           ))}
         </ol>
         <p className={`notiz-mono ${s.ladeFuss}`}>
-          {UNTERSCHIED.length} Positionen · Festpreis schriftlich vor dem Start
+          <span data-zaehl="">{UNTERSCHIED.length}</span> Positionen · Festpreis schriftlich vor dem Start
         </p>
       </div>
     </LadenRegal>

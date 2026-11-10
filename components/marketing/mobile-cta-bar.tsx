@@ -105,7 +105,7 @@ export function MobileCtaBar({ festpreis }: { festpreis: string }) {
           </span>
         </p>
         <Link href="/anfrage" className="btn-signal">
-          Website anfragen
+          Anfrage schreiben
         </Link>
       </div>
     </div>
