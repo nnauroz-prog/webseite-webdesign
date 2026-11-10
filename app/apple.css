@@ -1664,3 +1664,68 @@
     }
   }
 }
+
+/* ------------------------------------------------------------------
+   Route auf /ablauf (nur Handy, eine Spalte): Linie links, die Fähre
+   fährt beim Scrollen von Halt zu Halt, der Halt in Bildmitte tritt vor.
+   ------------------------------------------------------------------ */
+.fahr-route {
+  position: relative;
+}
+.fahr-route-boot {
+  display: none;
+}
+@media screen and (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+  .fahr-route {
+    padding-left: 30px;
+  }
+  .fahr-route::before,
+  .fahr-route::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 12px;
+    width: 2px;
+    border-radius: 1px;
+    background: rgb(0 0 0 / 0.1);
+  }
+  .fahr-route::after {
+    background: var(--gold);
+    box-shadow: 0 0 10px rgb(244 91 30 / 0.45);
+    transform: scaleY(var(--rp, 0));
+    transform-origin: 50% 0;
+  }
+  .fahr-route-boot {
+    position: absolute;
+    top: -7px;
+    left: 0;
+    z-index: 1;
+    display: block;
+    width: 26px;
+    height: 14px;
+    transform: translate3d(0, var(--ry, 0px), 0);
+    filter: drop-shadow(0 2px 4px rgb(16 32 48 / 0.25));
+  }
+  .fahr-route-boot svg {
+    display: block;
+    animation: faehr-wiegen 3.2s ease-in-out infinite;
+    transform-origin: 50% 100%;
+  }
+  /* Der Halt in Bildmitte steht vorn, die anderen treten leicht zurück. */
+  .fahr-route[data-route-an] ol > li {
+    transform: scale(0.965);
+    opacity: 0.72;
+    transition:
+      transform 600ms var(--ease-aus),
+      opacity 600ms var(--ease-aus),
+      box-shadow 600ms var(--ease-aus);
+  }
+  .fahr-route[data-route-an] ol > li[data-aktiv] {
+    transform: none;
+    opacity: 1;
+    box-shadow:
+      0 1px 2px rgb(16 32 48 / 0.05),
+      0 22px 50px -14px rgb(16 32 48 / 0.28);
+  }
+}

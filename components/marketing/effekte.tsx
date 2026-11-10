@@ -55,9 +55,39 @@ export function Effekte() {
       };
     });
     const kopf = document.getElementById("start");
+    // Route (Ablauf): Fortschritt entlang der Liste und der Halt in Bildmitte.
+    const routen = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-route]"),
+    ).map((el) => ({
+      el,
+      halte: Array.from(el.querySelectorAll<HTMLElement>("ol > li")),
+      aktiv: -2,
+    }));
     const messen = () => {
       raf = 0;
       const vh = window.innerHeight;
+      for (const r of routen) {
+        const b = r.el.getBoundingClientRect();
+        if (b.bottom < -200 || b.top > vh + 200) continue;
+        const rp =
+          b.height > 0
+            ? Math.min(1, Math.max(0, (vh * 0.5 - b.top) / b.height))
+            : 0;
+        r.el.style.setProperty("--rp", rp.toFixed(4));
+        r.el.style.setProperty("--ry", `${(rp * b.height).toFixed(1)}px`);
+        let aktiv = -1;
+        r.halte.forEach((h, i) => {
+          const hb = h.getBoundingClientRect();
+          if (hb.top <= vh * 0.5 && hb.bottom >= vh * 0.5) aktiv = i;
+        });
+        if (aktiv !== r.aktiv) {
+          r.aktiv = aktiv;
+          r.el.toggleAttribute("data-route-an", aktiv >= 0);
+          r.halte.forEach((h, i) =>
+            h.toggleAttribute("data-aktiv", i === aktiv),
+          );
+        }
+      }
       if (kopf) {
         const r = kopf.getBoundingClientRect();
         const weg =
