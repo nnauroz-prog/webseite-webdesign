@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
@@ -20,8 +21,7 @@ import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `Website-Wartung und Pflege ab ${WARTUNG_PREISE.basis} im Monat`,
-  description:
-    `Website-Wartung ab ${WARTUNG_PREISE.basis} im Monat: Hosting, Updates und kleine Änderungen, auch für Seiten, die wir nicht gebaut haben. Jetzt anfragen.`,
+  description: `Website-Wartung ab ${WARTUNG_PREISE.basis} im Monat: Hosting, Updates und kleine Änderungen, auch für Seiten, die wir nicht gebaut haben. Jetzt anfragen.`,
   alternates: { canonical: "/wartung" },
   openGraph: ogFor("/wartung"),
 };
@@ -72,13 +72,18 @@ const PLANS: Plan[] = [
       "Eine kleine Änderung am Inhalt pro Monat",
       "Antwort meist am selben Werktag",
     ],
-    limits: ["Größere Umbauten der Gestaltung", "Mehr als eine kleine Änderung im Monat", "Neue Funktionen"],
+    limits: [
+      "Größere Umbauten der Gestaltung",
+      "Mehr als eine kleine Änderung im Monat",
+      "Neue Funktionen",
+    ],
   },
   {
     slug: "plus",
     name: "Plus",
     price: WARTUNG_PREISE.plus,
-    description: "Für Seiten, auf denen sich öfter etwas ändert, etwa die Speisekarte, eine Aktion oder das Team.",
+    description:
+      "Für Seiten, auf denen sich öfter etwas ändert, etwa die Speisekarte, eine Aktion oder das Team.",
     contents: [
       "Alles aus Basis",
       "Bis zu drei kleine Änderungen pro Monat",
@@ -177,7 +182,12 @@ export default function WartungPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: `${SITE_URL}/`,
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -219,7 +229,10 @@ export default function WartungPage() {
           unter="Wir übernehmen Hosting, Updates und kleine Änderungen, auch wenn wir die Seite nicht selbst gebaut haben. Das geht mit WordPress, Wix oder Squarespace. Bei WordPress fallen jeden Monat Updates an, deshalb sehen wir uns die Seite vorher an und nennen Ihnen den passenden Tarif."
           aktionen={
             <>
-              <Link href="/anfrage?vorhaben=Wartung" className="btn-signal btn-gross">
+              <Link
+                href="/anfrage?vorhaben=Wartung"
+                className="btn-signal btn-gross"
+              >
                 Anfrage schreiben
               </Link>
               <MehrLink href="#tarife" groesse="unter">
@@ -227,7 +240,12 @@ export default function WartungPage() {
               </MehrLink>
             </>
           }
-          meta={<span>Ab {WARTUNG_PREISE.basis} im Monat · nach 6 Monaten monatlich kündbar</span>}
+          meta={
+            <span>
+              Ab {WARTUNG_PREISE.basis} im Monat · nach 6 Monaten monatlich
+              kündbar
+            </span>
+          }
           bild={
             <FotoRahmen
               vorab
@@ -248,7 +266,10 @@ export default function WartungPage() {
           titel="Bevor Sie einen Tarif wählen, sehen wir uns Ihre Seite an."
           zeile="Schicken Sie uns die Adresse Ihrer Seite. Meist innerhalb von zwei Werktagen bekommen Sie drei bis fünf konkrete Punkte, kostenlos."
           pille={{ href: "/audit", label: "Durchsicht anfordern" }}
-          link={{ href: "/anfrage?vorhaben=Wartung", label: "Anfrage schreiben" }}
+          link={{
+            href: "/anfrage?vorhaben=Wartung",
+            label: "Anfrage schreiben",
+          }}
         />
       </UnterseiteMain>
       <MarketingFooter crumb="Wartung" />
@@ -272,23 +293,52 @@ function Plans() {
       grau="Für die laufende Pflege."
       unter={
         <>
-          Preise inkl. 19&nbsp;% MwSt. Die Übernahme Ihrer Seite (Zugänge prüfen, Bestand sichern) kostet einmalig ab{" "}
-          {WARTUNG_PREISE.uebernahme} und entfällt, wenn Sie auf unser Hosting umziehen.
+          Preise inkl. 19&nbsp;% MwSt. Die Übernahme Ihrer Seite (Zugänge
+          prüfen, Bestand sichern) kostet einmalig ab{" "}
+          {WARTUNG_PREISE.uebernahme} und entfällt, wenn Sie auf unser Hosting
+          umziehen.
         </>
       }
     >
-      <ul role="list" className="grid gap-3 md:grid-cols-3 md:grid-rows-[auto_auto_auto_auto_1fr] md:gap-x-5 md:gap-y-0">
-        {PLANS.map((plan) => (
-          <PlanKarte key={plan.slug} plan={plan} />
-        ))}
-      </ul>
+      {/* Am Handy drei Reiter statt drei Tarifkarten untereinander (reines
+          CSS mit :has; ohne Unterstützung stehen alle drei Karten da). */}
+      <div className="umfang umfang-md">
+        <div
+          className="umfang-reiter"
+          role="radiogroup"
+          aria-label="Tarif anzeigen"
+        >
+          {PLANS.map((plan, i) => (
+            <Fragment key={plan.slug}>
+              <input
+                type="radio"
+                name="tarif"
+                id={`wt-${i + 1}`}
+                defaultChecked={i === 0}
+                className="sr-only"
+              />
+              <label htmlFor={`wt-${i + 1}`}>{plan.name}</label>
+            </Fragment>
+          ))}
+        </div>
+        <ul
+          role="list"
+          className="grid gap-3 md:grid-cols-3 md:grid-rows-[auto_auto_auto_auto_1fr] md:gap-x-5 md:gap-y-0"
+        >
+          {PLANS.map((plan) => (
+            <PlanKarte key={plan.slug} plan={plan} />
+          ))}
+        </ul>
+      </div>
     </Abschnitt>
   );
 }
 
 function PlanKarte({ plan }: { plan: Plan }) {
   // „Alles aus Basis" steht als Vorzeile über der Liste, nicht als Punkt darin.
-  const basis = plan.contents[0]?.startsWith("Alles aus") ? plan.contents[0] : null;
+  const basis = plan.contents[0]?.startsWith("Alles aus")
+    ? plan.contents[0]
+    : null;
   const items = basis ? plan.contents.slice(1) : plan.contents;
   const nameId = `tarif-${plan.slug}-name`;
   return (
@@ -296,7 +346,10 @@ function PlanKarte({ plan }: { plan: Plan }) {
       id={plan.slug}
       className="grid scroll-mt-28 rounded-[18px] bg-white px-[22px] pt-7 pb-7 shadow-[0_4px_16px_rgb(0_0_0/0.08)] sm:px-7 md:row-span-5 md:grid-rows-subgrid"
     >
-      <h3 id={nameId} className="text-[21px] leading-[25px] font-bold lg:text-[24px] lg:leading-[28px]">
+      <h3
+        id={nameId}
+        className="text-[21px] leading-[25px] font-bold lg:text-[24px] lg:leading-[28px]"
+      >
         {plan.name}
       </h3>
       <p className="mt-2 text-[15px] leading-[22px] text-pretty text-[#6e6e73] sm:text-[17px] sm:leading-[25px]">
@@ -304,16 +357,29 @@ function PlanKarte({ plan }: { plan: Plan }) {
       </p>
       <p className="mt-5 text-[28px] leading-[32px] font-bold tracking-[-0.01em] tabular-nums">
         ab {plan.price}
-        <span className="ml-1.5 text-[14px] font-normal tracking-normal text-[#6e6e73]">im Monat</span>
+        <span className="ml-1.5 text-[14px] font-normal tracking-normal text-[#6e6e73]">
+          im Monat
+        </span>
       </p>
       <div className="mt-5">
-        <Link href={`/anfrage?vorhaben=Wartung+${plan.name}`} aria-describedby={nameId} className="btn-signal btn-mittel">
+        <Link
+          href={`/anfrage?vorhaben=Wartung+${plan.name}`}
+          aria-describedby={nameId}
+          className="btn-signal btn-mittel"
+        >
           Anfragen
         </Link>
       </div>
       <div className="mt-7 border-t border-black/10 pt-6">
-        {basis ? <p className="text-[14px] leading-5 font-semibold text-[#6e6e73]">{basis}, dazu</p> : null}
-        <ul role="list" className={`${basis ? "mt-3" : ""} space-y-3 text-[15px] leading-[1.4] tracking-[-0.012em]`}>
+        {basis ? (
+          <p className="text-[14px] leading-5 font-semibold text-[#6e6e73]">
+            {basis}, dazu
+          </p>
+        ) : null}
+        <ul
+          role="list"
+          className={`${basis ? "mt-3" : ""} space-y-3 text-[15px] leading-[1.4] tracking-[-0.012em]`}
+        >
           {items.map((item) => (
             <li key={item} className="flex gap-3">
               <Haken />
@@ -321,11 +387,19 @@ function PlanKarte({ plan }: { plan: Plan }) {
             </li>
           ))}
         </ul>
-        <p className="mt-7 text-[14px] leading-5 font-semibold text-[#6e6e73]">Nicht enthalten</p>
-        <ul role="list" className="mt-3 space-y-2 text-[14px] leading-5 text-[#6e6e73]">
+        <p className="mt-7 text-[14px] leading-5 font-semibold text-[#6e6e73]">
+          Nicht enthalten
+        </p>
+        <ul
+          role="list"
+          className="mt-3 space-y-2 text-[14px] leading-5 text-[#6e6e73]"
+        >
           {plan.limits.map((l) => (
             <li key={l} className="flex gap-3">
-              <span aria-hidden="true" className="mt-[0.6em] h-px w-3 shrink-0 bg-current" />
+              <span
+                aria-hidden="true"
+                className="mt-[0.6em] h-px w-3 shrink-0 bg-current"
+              />
               <span>{l}</span>
             </li>
           ))}
@@ -337,8 +411,19 @@ function PlanKarte({ plan }: { plan: Plan }) {
 
 function Haken() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className="text-gold-ink mt-[0.2em] h-4 w-4 shrink-0">
-      <path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 16 16"
+      className="text-gold-ink mt-[0.2em] h-4 w-4 shrink-0"
+    >
+      <path
+        d="M3 8.5l3.2 3L13 4.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -368,7 +453,11 @@ const CASES = [
 function Anlaesse() {
   const [vorgaenger, lange, formular, klein] = CASES;
   return (
-    <Abschnitt id="anlaesse" fett="Typische Anlässe." grau="Wann eine Übergabe sinnvoll ist.">
+    <Abschnitt
+      id="anlaesse"
+      fett="Typische Anlässe."
+      grau="Wann eine Übergabe sinnvoll ist."
+    >
       <BildRaster>
         <BildKachel
           spalten={7}
@@ -382,8 +471,20 @@ function Anlaesse() {
             sizes: "(min-width: 1068px) 560px, calc(100vw - 32px)",
           }}
         />
-        <BildKachel ton="nacht" spalten={5} titel={lange.title} zeile={lange.body} bildInhalt={<UpdateHinweis />} />
-        <BildKachel ton="nacht" spalten={5} titel={formular.title} zeile={formular.body} bildInhalt={<FormularFehler />} />
+        <BildKachel
+          ton="nacht"
+          spalten={5}
+          titel={lange.title}
+          zeile={lange.body}
+          bildInhalt={<UpdateHinweis />}
+        />
+        <BildKachel
+          ton="nacht"
+          spalten={5}
+          titel={formular.title}
+          zeile={formular.body}
+          bildInhalt={<FormularFehler />}
+        />
         <BildKachel
           spalten={7}
           gross
@@ -415,11 +516,16 @@ function UpdateHinweis() {
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ff9f0a] text-[13px] leading-none font-bold text-[#1c1c1e]">
           !
         </span>
-        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">3 Punkte veraltet</p>
+        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">
+          3 Punkte veraltet
+        </p>
       </div>
       <ul role="list" className="mt-3 divide-y divide-white/10">
         {zeilen.map((r) => (
-          <li key={r.t} className="flex items-baseline justify-between gap-3 py-2 text-[13px] leading-[18px]">
+          <li
+            key={r.t}
+            className="flex items-baseline justify-between gap-3 py-2 text-[13px] leading-[18px]"
+          >
             <span className="min-w-0 text-[#e5e5ea]">{r.t}</span>
             <span className="shrink-0 text-[12px] text-[#ff9f5a]">{r.v}</span>
           </li>
@@ -438,16 +544,36 @@ function FormularFehler() {
   return (
     <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
       <p className="text-[13px] font-semibold text-[#f5f5f7]">Kontakt</p>
-      <span className="mt-2 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">Jana Beispiel</span>
+      <span className="mt-2 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">
+        Jana Beispiel
+      </span>
       <span className="mt-1.5 block rounded-md bg-[#2c2c2e] px-2.5 py-1.5 text-[12px] text-[#e5e5ea]">
         Termin für Samstag möglich?
       </span>
       <div className="mt-3 flex items-start gap-2 rounded-md bg-[#3a1d1d] px-2.5 py-2 text-[12px] leading-[17px] text-[#ffb4ab]">
-        <svg viewBox="0 0 16 16" width="14" height="14" className="mt-[1px] shrink-0">
-          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M8 4.5v4M8 11h.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <svg
+          viewBox="0 0 16 16"
+          width="14"
+          height="14"
+          className="mt-[1px] shrink-0"
+        >
+          <circle
+            cx="8"
+            cy="8"
+            r="6.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M8 4.5v4M8 11h.01"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
         </svg>
-        Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.
+        Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es
+        später erneut.
       </div>
       <p className="mt-3 text-[12px] leading-[17px] text-[#a1a1a6]">
         Freitag, 17:48 Uhr. Ein Anruf bei uns, und das Formular läuft wieder.
@@ -499,12 +625,16 @@ function Faq() {
         {FAQ_ITEMS.map((item) => (
           <details key={item.q} className="group">
             <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
-              <h3 className="text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">{item.q}</h3>
+              <h3 className="text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">
+                {item.q}
+              </h3>
               <span
                 aria-hidden="true"
                 className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[22px] leading-none font-light text-[#6e6e73] transition-colors group-open:text-[#1d1d1f] group-hover:text-[#1d1d1f]"
               >
-                <span className="transition-transform group-open:rotate-45">+</span>
+                <span className="transition-transform group-open:rotate-45">
+                  +
+                </span>
               </span>
             </summary>
             <p className="max-w-2xl pb-6 text-[17px] leading-[1.5] tracking-[-0.022em] text-pretty text-[#424245] sm:pr-12">
