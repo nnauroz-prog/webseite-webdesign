@@ -12,6 +12,8 @@ import { useEffect, useRef } from "react";
  * 2. Karten kippen am Rechner leicht zum Mauszeiger ([data-kipp]) und
  *    bekommen einen Lichtfleck. Nur mit feinem Zeiger, nie am Handy.
  *
+ * 4. Sätze mit [data-leucht] werden beim Scrollen Wort für Wort dunkel;
+ *    der Doppelring im Logo dreht sich mit dem Lesefortschritt.
  * 3. Fotos mit [data-para] wandern beim Scrollen etwas langsamer als
  *    ihr Rahmen (Tiefe).
  *
@@ -31,9 +33,50 @@ export function Effekte() {
     const fotos = Array.from(
       document.querySelectorAll<HTMLElement>("[data-para]"),
     );
+    // Sätze mit data-leucht: Wort für Wort wird beim Scrollen dunkel.
+    const saetze = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-leucht]"),
+    ).map((el) => {
+      if (!el.dataset.leuchtBereit && el.children.length === 0) {
+        const woerter = (el.textContent ?? "").trim().split(/\s+/);
+        el.textContent = "";
+        woerter.forEach((w, i) => {
+          const s = document.createElement("span");
+          s.textContent = w;
+          el.append(s);
+          if (i < woerter.length - 1) el.append(" ");
+        });
+        el.dataset.leuchtBereit = "1";
+      }
+      return {
+        el,
+        woerter: Array.from(el.querySelectorAll<HTMLElement>(":scope > span")),
+        an: -1,
+      };
+    });
+    const kopf = document.getElementById("start");
     const messen = () => {
       raf = 0;
       const vh = window.innerHeight;
+      if (kopf) {
+        const r = kopf.getBoundingClientRect();
+        const weg =
+          r.height > 0 ? Math.min(1, Math.max(0, -r.top / r.height)) : 0;
+        kopf.style.setProperty("--weg", weg.toFixed(3));
+      }
+      for (const s of saetze) {
+        if (s.woerter.length === 0) continue;
+        const r = s.el.getBoundingClientRect();
+        if (r.bottom < -40 || r.top > vh + 40) continue;
+        const k = Math.min(
+          1,
+          Math.max(0, (vh * 0.88 - r.top) / (r.height + vh * 0.3)),
+        );
+        const an = Math.round(k * s.woerter.length);
+        if (an === s.an) continue;
+        s.an = an;
+        s.woerter.forEach((w, i) => w.toggleAttribute("data-an", i < an));
+      }
       for (const f of fotos) {
         const r = f.getBoundingClientRect();
         if (r.bottom < -80 || r.top > vh + 80) continue;
@@ -43,6 +86,7 @@ export function Effekte() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 200 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
       spur.style.setProperty("--p", p.toFixed(4));
+      document.documentElement.style.setProperty("--seite-p", p.toFixed(4));
       spur.dataset.an = p > 0.012 ? "1" : "0";
     };
     const onScroll = () => {

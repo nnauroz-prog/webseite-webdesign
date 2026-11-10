@@ -28,7 +28,13 @@ function wave(period: number, amp: number, y: number, invert = false) {
 const LINE_A = wave(360, 9, 45);
 const LINE_B = wave(288, 6, 45, true);
 
-export function ElbeLinie({ className = "", flach = false }: { className?: string; flach?: boolean }) {
+export function ElbeLinie({
+  className = "",
+  flach = false,
+}: {
+  className?: string;
+  flach?: boolean;
+}) {
   const ref = useRef<SVGSVGElement>(null);
   useLaufzeit(ref);
   return (

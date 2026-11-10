@@ -13,14 +13,24 @@ import s from "./signatur.module.css";
  * Nur das Kürzel „Sitalo“, kein Name: Der Name des Inhabers steht nur auf
  * /impressum und /datenschutz.
  */
-export function SitaloSignatur({ caption, className = "" }: { caption?: string; className?: string }) {
+export function SitaloSignatur({
+  caption,
+  className = "",
+}: {
+  caption?: string;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [zustand, setZustand] = useState<"wartet" | "zeichnet" | "steht">("wartet");
+  const [zustand, setZustand] = useState<"wartet" | "zeichnet" | "steht">(
+    "wartet",
+  );
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (reduce || !("IntersectionObserver" in window)) {
       setZustand("steht");
       return;
@@ -39,8 +49,18 @@ export function SitaloSignatur({ caption, className = "" }: { caption?: string; 
   }, []);
 
   return (
-    <div ref={ref} data-zustand={zustand} className={`${s.signatur} ${className}`}>
-      <svg viewBox="0 0 290 120" fill="none" role="img" aria-label="Signatur: Sitalo" className={s.svg}>
+    <div
+      ref={ref}
+      data-zustand={zustand}
+      className={`${s.signatur} ${className}`}
+    >
+      <svg
+        viewBox="0 0 290 120"
+        fill="none"
+        role="img"
+        aria-label="Signatur: Sitalo"
+        className={s.svg}
+      >
         <path
           d="M 30 55 C 28 38, 50 28, 70 32 C 85 36, 88 50, 78 56 C 65 64, 38 60, 38 75 C 38 90, 60 92, 78 86
              M 92 50 C 92 52, 92 88, 92 88 M 92 38 C 92 38, 96 36, 96 36

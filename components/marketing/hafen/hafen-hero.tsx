@@ -14,7 +14,8 @@ import { pegelHub, pegelStand, pegelStPauli, pegelText } from "./pegel";
    Bewegung und nur, wenn es einen IntersectionObserver gibt. */
 export const AUFTAKT_SCRIPT = `(function(){try{var h=document.currentScript.parentNode;document.documentElement.classList.add("js");if(window.matchMedia("(prefers-reduced-motion: no-preference)").matches&&"IntersectionObserver" in window)h.setAttribute("data-auftakt","warten")}catch(e){}})()`;
 
-export const PEGEL_QUELLE = "Messwert von PEGELONLINE, Wasserstraßen- und Schifffahrtsverwaltung des Bundes";
+export const PEGEL_QUELLE =
+  "Messwert von PEGELONLINE, Wasserstraßen- und Schifffahrtsverwaltung des Bundes";
 
 /* ------------------------------------------------------------------
  * Kopf der Startseite, zentriert wie eine Produktseite: kleine Kennzeile
@@ -41,12 +42,16 @@ export async function HafenHero() {
             Screenreader da (hero.module.css, .kennzeile). */}
         <h1 className={s.kennzeile}>
           <span className={s.kennzeileErste}>Website erstellen lassen</span>
-          <span className={s.kennzeileErste}>{" ·"}</span> <span>Webdesign aus Hamburg</span>
+          <span className={s.kennzeileErste}>{" ·"}</span>{" "}
+          <span>Webdesign aus Hamburg</span>
         </h1>
-        <p className={`t-hero ${s.botschaft}`}>Wir bauen Websites für Betriebe.</p>
+        <p className={`t-hero ${s.botschaft}`}>
+          Wir bauen Websites für Betriebe.
+        </p>
         <p className={s.unter}>
-          Ein kleines Büro in Hamburg, das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre Seite
-          sehen Sie vorher auf einem Test-Link.
+          Ein kleines Büro in Hamburg, das bundesweit arbeitet. Den Festpreis
+          kennen Sie vor dem Start, Ihre Seite sehen Sie vorher auf einem
+          Test-Link.
         </p>
         <div className={`aktionen ${s.aktionen}`}>
           <Link href="/anfrage" className="btn-signal btn-gross">
@@ -74,13 +79,16 @@ export async function HafenHero() {
       <div className={`${s.fuss} inhalt`}>
         <p className={s.caption}>
           <span>
-            Blick <span className="hidden sm:inline">von Steinwerder </span>über die Elbe, frei gezeichnet.
+            Blick <span className="hidden sm:inline">von Steinwerder </span>über
+            die Elbe, frei gezeichnet.
           </span>
           {pegel ? (
             <span className={s.pegel} title={PEGEL_QUELLE}>
               <span className={s.pegelPunkt} aria-hidden="true" />
               Pegel St. Pauli: {pegelText(pegel)}
-              <span className="hidden sm:inline">, Stand {pegelStand(pegel)} Uhr</span>
+              <span className="hidden sm:inline">
+                , Stand {pegelStand(pegel)} Uhr
+              </span>
             </span>
           ) : null}
         </p>

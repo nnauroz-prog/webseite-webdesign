@@ -125,7 +125,9 @@ export function RevealRoot() {
       const raf = requestAnimationFrame(() => {
         frames.delete(raf);
         const own = (el.getAnimations?.({ subtree: true }) ?? []).filter(
-          (a) => "animationName" in a && String((a as CSSAnimation).animationName).startsWith("rv-"),
+          (a) =>
+            "animationName" in a &&
+            String((a as CSSAnimation).animationName).startsWith("rv-"),
         );
         if (!own.length) return finish(el);
         Promise.all(own.map((a) => a.finished)).then(
@@ -147,7 +149,11 @@ export function RevealRoot() {
         const hits = entries
           .filter((e) => e.isIntersecting)
           .map((e) => e.target as HTMLElement)
-          .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+          .sort((a, b) =>
+            a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING
+              ? -1
+              : 1,
+          );
         hits.forEach((el, i) => {
           io.unobserve(el);
           const extra = Number(el.dataset.revealDelay) || 0;
@@ -176,7 +182,9 @@ export function RevealRoot() {
       }
       html.classList.add("js-reveal");
     });
-    document.querySelectorAll<HTMLElement>(SELECTOR).forEach((el) => probe.observe(el));
+    document
+      .querySelectorAll<HTMLElement>(SELECTOR)
+      .forEach((el) => probe.observe(el));
 
     const mo = new MutationObserver((records) => {
       for (const rec of records) {
@@ -184,7 +192,8 @@ export function RevealRoot() {
           if (node.nodeType !== 1) return;
           const el = node as HTMLElement;
           if (el.matches(SELECTOR)) arm(el);
-          if (el.firstElementChild) el.querySelectorAll<HTMLElement>(SELECTOR).forEach((c) => arm(c));
+          if (el.firstElementChild)
+            el.querySelectorAll<HTMLElement>(SELECTOR).forEach((c) => arm(c));
         });
       }
     });
@@ -233,7 +242,11 @@ export function RevealRoot() {
   return null;
 }
 
-export function imBildBeimStart(el: Element, anteil: number, cb: (imBild: boolean) => void) {
+export function imBildBeimStart(
+  el: Element,
+  anteil: number,
+  cb: (imBild: boolean) => void,
+) {
   if (!("IntersectionObserver" in window)) {
     cb(true);
     return () => {};

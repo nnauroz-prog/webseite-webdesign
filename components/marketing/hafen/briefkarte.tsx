@@ -47,11 +47,19 @@ export function Briefkarte({
   const zweiter = link && link.href !== inquiryHref ? link : null;
   const dunkel = ton === "dunkel";
   return (
-    <section id={id} aria-labelledby={`${id}-titel`} className={cn(b.abschnitt, "scroll-mt-24", className)}>
+    <section
+      id={id}
+      aria-labelledby={`${id}-titel`}
+      className={cn(b.abschnitt, "scroll-mt-24", className)}
+    >
       <div className="inhalt">
         <div
           data-ein=""
-          className={cn(b.brief, dunkel && cn("on-dark", b.dunkel), foto && b.mitFoto)}
+          className={cn(
+            b.brief,
+            dunkel && cn("on-dark", b.dunkel),
+            foto && b.mitFoto,
+          )}
           data-flaeche-dunkel={dunkel ? "" : undefined}
         >
           <div className={b.inhalt}>
@@ -70,7 +78,12 @@ export function Briefkarte({
               </div>
               <div className={b.wege}>
                 <p className="kennzeile-mono">Telefon</p>
-                <a href="tel:+491607621876" className={b.nummer}>
+                <a
+                  href="tel:+491607621876"
+                  className={b.nummer}
+                  data-wuerfel=""
+                  aria-label="0160 7621876"
+                >
                   0160&nbsp;7621876
                 </a>
                 <dl className={b.liste}>
@@ -109,9 +122,15 @@ export function Briefkarte({
                 loading="lazy"
                 sizes="(min-width: 1024px) 490px, (min-width: 734px) 92vw, 100vw"
                 className={b.fotoBild}
-                style={foto.position ? { objectPosition: foto.position } : undefined}
+                style={
+                  foto.position ? { objectPosition: foto.position } : undefined
+                }
               />
-              {foto.muster ? <p className={cn("notiz-mono", b.fotoNotiz)}>Musterseite, frei erfunden</p> : null}
+              {foto.muster ? (
+                <p className={cn("notiz-mono", b.fotoNotiz)}>
+                  Musterseite, frei erfunden
+                </p>
+              ) : null}
             </div>
           ) : null}
         </div>

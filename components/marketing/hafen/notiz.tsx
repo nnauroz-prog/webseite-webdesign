@@ -9,9 +9,18 @@ import s from "./notiz.module.css";
  * Der Wochentag kommt vom Server (die Seite rendert ohnehin regelmäßig
  * neu); er steht nur im Kopf und ist für niemanden kritisch.
  */
-const WOCHENTAG = new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin", weekday: "long" });
+const WOCHENTAG = new Intl.DateTimeFormat("de-DE", {
+  timeZone: "Europe/Berlin",
+  weekday: "long",
+});
 
-export function Notiz({ children, id }: { children: React.ReactNode; id?: string }) {
+export function Notiz({
+  children,
+  id,
+}: {
+  children: React.ReactNode;
+  id?: string;
+}) {
   const tag = WOCHENTAG.format(new Date());
   return (
     <section id={id} aria-label="Notiz aus dem Büro" className={s.abschnitt}>
@@ -22,7 +31,9 @@ export function Notiz({ children, id }: { children: React.ReactNode; id?: string
             <span aria-hidden="true">·</span>
             <span>Hamburg, {tag}</span>
           </p>
-          <p className={s.satz}>{children}</p>
+          <p className={s.satz} data-leucht="">
+            {children}
+          </p>
           <SitaloSignatur className={s.signatur} />
         </div>
       </div>

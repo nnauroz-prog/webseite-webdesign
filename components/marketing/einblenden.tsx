@@ -53,6 +53,43 @@ function zaehlen(el: HTMLElement) {
   window.requestAnimationFrame(schritt);
 }
 
+/**
+ * Ziffern würfeln kurz und rasten von links nach rechts ein (data-wuerfel),
+ * etwa die Telefonnummer. Am Ende steht wieder exakt der ursprüngliche Text.
+ */
+function wuerfeln(el: HTMLElement) {
+  if (el.dataset.wuerfel === "fertig") return;
+  const text = el.textContent ?? "";
+  const stellen = Array.from(text);
+  const ziffern = stellen
+    .map((z, i) => (/\d/.test(z) ? i : -1))
+    .filter((i) => i >= 0);
+  if (ziffern.length < 3) return;
+  el.dataset.wuerfel = "fertig";
+  const dauer = 1200;
+  let t0 = 0;
+  let letzter = 0;
+  const schritt = (t: number) => {
+    if (!t0) t0 = t;
+    const k = Math.min(1, (t - t0) / dauer);
+    if (k >= 1) {
+      el.textContent = text;
+      return;
+    }
+    if (t - letzter > 45) {
+      letzter = t;
+      const fest = Math.floor(k * ziffern.length);
+      const bild = stellen.slice();
+      ziffern.forEach((pos, n) => {
+        if (n >= fest) bild[pos] = String(Math.floor(Math.random() * 10));
+      });
+      el.textContent = bild.join("");
+    }
+    window.requestAnimationFrame(schritt);
+  };
+  window.requestAnimationFrame(schritt);
+}
+
 export function Einblenden() {
   const pfad = usePathname();
 
@@ -91,7 +128,15 @@ export function Einblenden() {
           } else if (e.isIntersecting) {
             el.dataset.einDa = "1";
             io.unobserve(el);
+            // Nach dem Auftritt zurück in den Ruhezustand, damit spätere
+            // Bewegungen (Antippen) nicht die Auftritts-Verzögerung erben.
+            window.setTimeout(() => {
+              if (el.dataset.einDa === "1") el.dataset.einDa = "0";
+            }, 2800);
             el.querySelectorAll<HTMLElement>("[data-zaehl]").forEach(zaehlen);
+            el.querySelectorAll<HTMLElement>("[data-wuerfel]").forEach(
+              wuerfeln,
+            );
           }
         }
         erste = false;
