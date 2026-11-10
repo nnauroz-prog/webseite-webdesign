@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { ogFor } from "@/lib/seo";
 import Link from "next/link";
 
 import { MehrLink } from "@/components/marketing/apple";
-import { KarteGross, KarteMittel, LadenBild, LadenFoto } from "@/components/marketing/laden/karten";
+import {
+  KarteGross,
+  KarteMittel,
+  LadenBild,
+  LadenFoto,
+} from "@/components/marketing/laden/karten";
 import { LadenRegal } from "@/components/marketing/laden/laden-regal";
 import {
   Abschnitt,
@@ -27,13 +33,21 @@ import {
   type VergleichZeile,
 } from "@/components/marketing/pakete/vergleich-daten";
 import { VergleichMobil } from "@/components/marketing/pakete/vergleich-mobil";
-import { PAKETE, PREIS_HINWEIS, PREIS_HINWEIS_KURZ, getPaketBySlug, type Paket } from "@/lib/pakete-data";
+import {
+  PAKETE,
+  PREIS_HINWEIS,
+  PREIS_HINWEIS_KURZ,
+  getPaketBySlug,
+  type Paket,
+} from "@/lib/pakete-data";
 
 export const metadata: Metadata = {
   title: `Website-Pakete und Preise: ${PAKETE[0].setup} zum Festpreis`,
   description: `Vier Website-Pakete ${PAKETE[0].setup} einmalig, Pflege ${PAKETE[0].monthly.replace(/\s*\/\s*Monat$/, "")} im Monat, inkl. MwSt. Festpreis schriftlich vor Auftrag. Paket wählen und anfragen.`,
   alternates: { canonical: "/pakete" },
-  openGraph: ogFor("/pakete", undefined, undefined, "website", { defaultImage: true }),
+  openGraph: ogFor("/pakete", undefined, undefined, "website", {
+    defaultImage: true,
+  }),
 };
 
 type Slug = Paket["slug"];
@@ -41,7 +55,10 @@ type Slug = Paket["slug"];
 const STARTER = getPaketBySlug("starter");
 const STARTER_SETUP = STARTER?.setup ?? "ab 599\u00A0€";
 /** „ab 59 € / Monat" → „ab 59 €" */
-const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 59\u00A0€ / Monat").replace(/\s*\/\s*Monat$/, "");
+const STARTER_MONTHLY = (STARTER?.monthly ?? "ab 59\u00A0€ / Monat").replace(
+  /\s*\/\s*Monat$/,
+  "",
+);
 
 /** „ab 2.999 €" → „2.999 €", „ab 99 € / Monat" → „99 €" */
 function betrag(label: string) {
@@ -81,9 +98,11 @@ const ZEILEN: VergleichZeile[] = [
     art: "text",
     werte: {
       starter: "Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten",
-      business: "Team mit Fotos, Leistungen, Galerie, Formular für Bewerbung oder Terminanfrage",
+      business:
+        "Team mit Fotos, Leistungen, Galerie, Formular für Bewerbung oder Terminanfrage",
       premium: "Formulare für Kontakt, Bewerbung und Online-Buchung",
-      studio: "Neues Erscheinungsbild: Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden",
+      studio:
+        "Neues Erscheinungsbild: Schrift, Farben und Bildsprache, bis zu drei Korrekturrunden",
     },
   },
   {
@@ -99,12 +118,22 @@ const ZEILEN: VergleichZeile[] = [
   {
     label: "Google-Profil und lokale Suche",
     art: "haken",
-    werte: { starter: STRICH, business: "Richten wir ein", premium: "Richten wir ein", studio: "Richten wir ein" },
+    werte: {
+      starter: STRICH,
+      business: "Richten wir ein",
+      premium: "Richten wir ein",
+      studio: "Richten wir ein",
+    },
   },
   {
     label: "Kleine Änderungen im Monat",
     art: "zahl",
-    werte: { starter: "Bis zu 1", business: "Bis zu 3", premium: "Bis zu 6", studio: "Bis zu 10" },
+    werte: {
+      starter: "Bis zu 1",
+      business: "Bis zu 3",
+      premium: "Bis zu 6",
+      studio: "Bis zu 10",
+    },
   },
   {
     label: "Dauer bis online",
@@ -138,12 +167,16 @@ const GRUPPEN: VergleichGruppe[] = [
       {
         label: "Einmalig",
         art: "preis",
-        werte: Object.fromEntries(PAKETE.map((p) => [p.slug, p.setup])) as Record<Slug, string>,
+        werte: Object.fromEntries(
+          PAKETE.map((p) => [p.slug, p.setup]),
+        ) as Record<Slug, string>,
       },
       {
         label: "Monatlich",
         art: "preis",
-        werte: Object.fromEntries(PAKETE.map((p) => [p.slug, `ab\u00A0${betrag(p.monthly)}`])) as Record<Slug, string>,
+        werte: Object.fromEntries(
+          PAKETE.map((p) => [p.slug, `ab\u00A0${betrag(p.monthly)}`]),
+        ) as Record<Slug, string>,
       },
     ],
   },
@@ -155,7 +188,9 @@ const GRUPPEN: VergleichGruppe[] = [
       {
         label: "Typisches Projekt",
         art: "text",
-        werte: Object.fromEntries(PAKETE.map((p) => [p.slug, p.examples[0]])) as Record<Slug, string>,
+        werte: Object.fromEntries(
+          PAKETE.map((p) => [p.slug, p.examples[0]]),
+        ) as Record<Slug, string>,
       },
     ],
   },
@@ -208,8 +243,9 @@ export default function PaketePage() {
           titel={`Website-Pakete ${STARTER_SETUP}`}
           unter={
             <>
-              Dazu kommt ein Monatsbeitrag {STARTER_MONTHLY} für Hosting, Updates und kleine Änderungen. Den Festpreis
-              bekommen Sie schriftlich, bevor wir anfangen.
+              Dazu kommt ein Monatsbeitrag {STARTER_MONTHLY} für Hosting,
+              Updates und kleine Änderungen. Den Festpreis bekommen Sie
+              schriftlich, bevor wir anfangen.
             </>
           }
           aktionen={
@@ -234,7 +270,11 @@ export default function PaketePage() {
               position="50% 55%"
             />
           }
-          unterschrift={<>Musterseite eines Kosmetikstudios, frei erfunden · Paket Business</>}
+          unterschrift={
+            <>
+              Musterseite eines Kosmetikstudios, frei erfunden · Paket Business
+            </>
+          }
         />
         <Modelle />
         <Vergleich />
@@ -260,7 +300,10 @@ export default function PaketePage() {
  * Modelle: die vier Pakete als große Karten. Die Karten tragen die
  * Anker #starter, #business usw. (Deep-Links aus Branchen-Seiten).
  * ---------------------------------------------------------------- */
-const MODELL_BILD: Record<Slug, { src: string; alt: string; position: string; eyebrow: string; zeile: string }> = {
+const MODELL_BILD: Record<
+  Slug,
+  { src: string; alt: string; position: string; eyebrow: string; zeile: string }
+> = {
   starter: {
     src: "/images/sitalo-friseur-mobile.webp",
     alt: "Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten",
@@ -335,20 +378,28 @@ function Modelle() {
  * ---------------------------------------------------------------- */
 function Vergleich() {
   return (
-    <section id="vergleich" aria-labelledby="vergleich-titel" className={`${u.abschnitt} scroll-mt-24`}>
+    <section
+      id="vergleich"
+      aria-labelledby="vergleich-titel"
+      className={`${u.abschnitt} scroll-mt-24`}
+    >
       <div className="inhalt">
         <div className={u.abschnittKopf}>
           <h2 id="vergleich-titel" className={u.zweiton}>
             <span>Die vier Pakete im Vergleich.</span>{" "}
             <span>Wir empfehlen meistens Business.</span>
           </h2>
-          <p className={u.abschnittUnter}>Wenn Starter reicht, sagen wir Ihnen das auch.</p>
+          <p className={u.abschnittUnter}>
+            Wenn Starter reicht, sagen wir Ihnen das auch.
+          </p>
         </div>
 
         {/* Tabelle ab 834 px */}
         <div className={`${u.blatt} hidden min-[834px]:block`}>
           <table className="vergleich-tabelle">
-            <caption className="sr-only">Pakete im Vergleich: Preise und Leistungen</caption>
+            <caption className="sr-only">
+              Pakete im Vergleich: Preise und Leistungen
+            </caption>
             <colgroup>
               <col className="w-[18%]" />
               <col />
@@ -362,9 +413,16 @@ function Vergleich() {
                   <span className="sr-only">Paket</span>
                 </td>
                 {PAKETE.map((p) => (
-                  <th key={p.slug} id={`vergleich-${p.slug}`} scope="col" className="text-center font-normal">
+                  <th
+                    key={p.slug}
+                    id={`vergleich-${p.slug}`}
+                    scope="col"
+                    className="text-center font-normal"
+                  >
                     {p.highlight ? (
-                      <span className="text-gold-ink mt-2 block h-4 text-[12px] leading-4 font-semibold">Empfehlung</span>
+                      <span className="text-gold-ink mt-2 block h-4 text-[12px] leading-4 font-semibold">
+                        Empfehlung
+                      </span>
                     ) : (
                       <span className="mt-2 block h-4" aria-hidden="true" />
                     )}
@@ -374,7 +432,9 @@ function Vergleich() {
                     >
                       {p.name}
                     </Link>
-                    <span className="text-muted-foreground mt-0.5 block text-[14px]">{p.setup}</span>
+                    <span className="text-muted-foreground mt-0.5 block text-[14px]">
+                      {p.setup}
+                    </span>
                     <Link
                       href={`/anfrage?paket=${p.slug}`}
                       aria-describedby={`vergleich-${p.slug}`}
@@ -408,8 +468,12 @@ function Vergleich() {
             <tfoot>
               <tr>
                 <td className="text-left">
-                  <span className="t-fuss block text-left">Preise inkl. 19&nbsp;% MwSt.</span>
-                  <span className="t-fuss mt-2 block text-left">Dauer jeweils ab vollständigen Unterlagen.</span>
+                  <span className="t-fuss block text-left">
+                    Preise inkl. 19&nbsp;% MwSt.
+                  </span>
+                  <span className="t-fuss mt-2 block text-left">
+                    Dauer jeweils ab vollständigen Unterlagen.
+                  </span>
                 </td>
                 {PAKETE.map((p) => (
                   <td key={p.slug}>
@@ -434,7 +498,10 @@ function Vergleich() {
         {/* Mobil: zwei Auswahlen nebeneinander */}
         <div className="min-[834px]:hidden">
           <VergleichMobil pakete={SPALTEN} gruppen={GRUPPEN} />
-          <p className="t-fuss mt-6">Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen Unterlagen.</p>
+          <p className="t-fuss mt-6">
+            Preise inkl. 19&nbsp;% MwSt. Dauer jeweils ab vollständigen
+            Unterlagen.
+          </p>
         </div>
       </div>
     </section>
@@ -471,9 +538,12 @@ function Monatsbeitrag() {
           titel="Starter, Business, Premium, Studio."
           zeile="Neue Öffnungszeiten, ein anderes Foto, ein neuer Name im Team. Sie schreiben uns kurz über das Formular oder rufen an, wir setzen es um."
           kinder={
-            <p className={`${u.kachelZeile} !mt-5 border-t border-black/10 pt-5`}>
-              Domain und E-Mail-Adressen richten wir auf Wunsch mit ein. Größere Erweiterungen beziffern wir vorher. Der
-              Vertrag läuft mindestens sechs Monate und ist danach monatlich kündbar.
+            <p
+              className={`${u.kachelZeile} !mt-5 border-t border-black/10 pt-5`}
+            >
+              Domain und E-Mail-Adressen richten wir auf Wunsch mit ein. Größere
+              Erweiterungen beziffern wir vorher. Der Vertrag läuft mindestens
+              sechs Monate und ist danach monatlich kündbar.
             </p>
           }
         />
@@ -489,17 +559,25 @@ function Monatsbeitrag() {
 function BackupKalender() {
   const tage = Array.from({ length: 30 }, (_, i) => i + 1);
   return (
-    <div className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] sm:p-5">
+    <div
+      data-ein=""
+      className="rounded-[14px] bg-[#1c1c1e] p-4 text-left shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] sm:p-5"
+    >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">Sicherungen, letzte 30 Tage</p>
+        <p className="text-[14px] leading-5 font-semibold text-[#f5f5f7]">
+          Sicherungen, letzte 30 Tage
+        </p>
         <p className="text-[12px] text-[#a1a1a6]">jede Nacht um 02:00 Uhr</p>
       </div>
       <ul role="list" className="mt-4 grid grid-cols-10 gap-1.5">
         {tage.map((t) => (
           <li
             key={t}
-            className={`flex aspect-square items-center justify-center rounded-[6px] text-[10px] tabular-nums ${
-              t === 30 ? "bg-[#f45b1e] font-bold text-[#1d1d1f]" : "bg-[#2c2c2e] text-[#a1a1a6]"
+            style={{ "--i": t } as CSSProperties}
+            className={`kal-zelle flex aspect-square items-center justify-center rounded-[6px] text-[10px] tabular-nums ${
+              t === 30
+                ? "bg-[#f45b1e] font-bold text-[#1d1d1f]"
+                : "bg-[#2c2c2e] text-[#a1a1a6]"
             }`}
           >
             {t}
@@ -513,7 +591,9 @@ function BackupKalender() {
         </div>
         <div>
           <dt className="text-[#a1a1a6]">SSL-Zertifikat</dt>
-          <dd className="mt-0.5 font-semibold text-[#f5f5f7]">verlängert sich selbst</dd>
+          <dd className="mt-0.5 font-semibold text-[#f5f5f7]">
+            verlängert sich selbst
+          </dd>
         </div>
       </dl>
     </div>
@@ -526,7 +606,13 @@ function BackupKalender() {
 function Weiterlesen() {
   const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
   return (
-    <LadenRegal id="weiterlesen" einfach fett="Noch unsicher?" grau="Drei Hilfen für die Wahl." className="scroll-mt-24">
+    <LadenRegal
+      id="weiterlesen"
+      einfach
+      fett="Noch unsicher?"
+      grau="Drei Hilfen für die Wahl."
+      className="scroll-mt-24"
+    >
       <KarteMittel
         eyebrow="Empfehlung"
         titel="Welches Paket passt?"
