@@ -45,7 +45,7 @@ export function SitaloLogo({
       >
         SITAL
         {/* Doppelring als „O", auf Versalhöhe der Cormorant. */}
-        <svg viewBox="0 0 30 22" className="ml-[0.04em]" style={{ height: "0.68em", width: "0.93em" }}>
+        <svg viewBox="0 0 30 22" className="logo-ring ml-[0.04em]" style={{ height: "0.68em", width: "0.93em" }}>
           <g fill="none" stroke="var(--gold)" strokeWidth="1.6">
             <ellipse cx="12" cy="11" rx="10.2" ry="10" />
             <ellipse cx="18" cy="11" rx="10.2" ry="10" />

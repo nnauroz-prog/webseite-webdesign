@@ -34,7 +34,9 @@ function jetzt() {
 }
 
 export function HamburgZeile({ className = "" }: { className?: string }) {
-  const [stand, setStand] = useState<{ text: string; zeit: string } | null>(null);
+  const [stand, setStand] = useState<{ text: string; zeit: string } | null>(
+    null,
+  );
 
   useEffect(() => {
     let timer = 0;
@@ -59,7 +61,10 @@ export function HamburgZeile({ className = "" }: { className?: string }) {
     <p
       className={`inline-flex min-h-[1.5em] min-w-[28ch] items-center gap-2 font-mono text-[12px] leading-[1.5] tracking-[0.04em] tabular-nums ${className}`}
     >
-      <span aria-hidden="true" className="bg-gold inline-block h-1.5 w-1.5 shrink-0 rounded-full" />
+      <span
+        aria-hidden="true"
+        className="bg-gold inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+      />
       <span>{stand ? stand.text : "Aus Hamburg"}</span>
       <span aria-hidden="true">·</span>
       <time suppressHydrationWarning>{stand ? stand.zeit : "--:--"}</time>

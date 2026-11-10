@@ -48,7 +48,15 @@ import {
   type Zustand,
 } from "./hero-zeitleiste";
 
-export function HeroBuehne({ id, className, children }: { id?: string; className?: string; children: ReactNode }) {
+export function HeroBuehne({
+  id,
+  className,
+  children,
+}: {
+  id?: string;
+  className?: string;
+  children: ReactNode;
+}) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -101,7 +109,9 @@ const TIEFE_MAX = 24;
 
 function tiefeStarten(root: HTMLElement) {
   const bild = root.querySelector<HTMLElement>("[data-tiefe]");
-  const mq = window.matchMedia("(min-width: 1024px) and (prefers-reduced-motion: no-preference)");
+  const mq = window.matchMedia(
+    "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
+  );
   if (!bild || !("IntersectionObserver" in window)) return () => {};
   let frame = 0;
   let sichtbar = false;
@@ -152,7 +162,8 @@ function auftaktVorbereiten(root: HTMLElement) {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   // Ohne Wartezustand vom Inline-Script (z. B. nach einem Seitenwechsel
   // im Browser) gibt es keinen Auftakt: dann steht alles schon da.
-  if (!root.hasAttribute("data-auftakt") || reduce) root.removeAttribute("data-auftakt");
+  if (!root.hasAttribute("data-auftakt") || reduce)
+    root.removeAttribute("data-auftakt");
   else root.setAttribute("data-auftakt", "lauert");
   let gestartet = false;
   const starten = () => {
@@ -162,7 +173,12 @@ function auftaktVorbereiten(root: HTMLElement) {
     timer.push(
       window.setTimeout(() => {
         root.setAttribute("data-auftakt", "an");
-        timer.push(window.setTimeout(() => root.removeAttribute("data-auftakt"), AUFTAKT_DAUER + 60));
+        timer.push(
+          window.setTimeout(
+            () => root.removeAttribute("data-auftakt"),
+            AUFTAKT_DAUER + 60,
+          ),
+        );
       }, verzug),
     );
   };
@@ -191,12 +207,17 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
   const art = root.querySelector<HTMLElement>('[data-kb="art"]');
   if (!art) return () => {};
 
-  const alle = (k: string) => Array.from(root.querySelectorAll<SVGElement>(`[data-kb="${k}"]`));
-  const eins = (k: string) => root.querySelector<SVGElement>(`[data-kb="${k}"]`);
+  const alle = (k: string) =>
+    Array.from(root.querySelectorAll<SVGElement>(`[data-kb="${k}"]`));
+  const eins = (k: string) =>
+    root.querySelector<SVGElement>(`[data-kb="${k}"]`);
 
   const hub = Number(art.dataset.hub) || 0;
   // Am Handy läuft das nächste Schiff früher ein (hero-zeitleiste.ts).
-  const z = zyklus(hub, window.matchMedia("(max-width: 639px)").matches ? 0.4 : 0.6);
+  const z = zyklus(
+    hub,
+    window.matchMedia("(max-width: 639px)").matches ? 0.4 : 0.6,
+  );
 
   // Voll beladene Kopie des Schiffs fürs Auslaufen: erst hier geklont
   // (Rumpf, Spiegelung, Lichter), jeweils direkt hinter dem Original, also
@@ -242,7 +263,9 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     fern: alle("fern"),
     nah: eins("nah"),
     leader: alle("leader"),
-    schilder: Array.from(root.querySelectorAll<HTMLElement>('[data-kb="schild"]')),
+    schilder: Array.from(
+      root.querySelectorAll<HTMLElement>('[data-kb="schild"]'),
+    ),
   };
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -284,7 +307,10 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
   let erstesBild = true;
 
   // Touch-Geräte: endlose CSS-Animationen der Zeichnung im 30-fps-Takt.
-  const imTakt = grob.matches && typeof art.getAnimations === "function" && typeof CSSAnimation !== "undefined";
+  const imTakt =
+    grob.matches &&
+    typeof art.getAnimations === "function" &&
+    typeof CSSAnimation !== "undefined";
   let css: Animation[] = [];
   const cssHolen = () => {
     if (!imTakt) return;
@@ -292,7 +318,11 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
       ? []
       : art
           .getAnimations({ subtree: true })
-          .filter((a) => a instanceof CSSAnimation && a.effect?.getTiming().iterations === Infinity);
+          .filter(
+            (a) =>
+              a instanceof CSSAnimation &&
+              a.effect?.getTiming().iterations === Infinity,
+          );
     for (const a of css) if (a.playState !== "paused") a.pause();
   };
   const cssWeiter = (dt: number) => {
@@ -303,13 +333,21 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     const kx = `translate(${st.katze.toFixed(2)} 0)`;
     for (const k of el.katze) setze(k, "transform", kx);
     const sicht = winkel * frei;
-    setze(el.pendel, "transform", Math.abs(sicht) < 1e-5 ? "" : `rotate(${(-sicht * GRAD).toFixed(3)} 0 ${SEIL_OBEN})`);
+    setze(
+      el.pendel,
+      "transform",
+      Math.abs(sicht) < 1e-5
+        ? ""
+        : `rotate(${(-sicht * GRAD).toFixed(3)} 0 ${SEIL_OBEN})`,
+    );
     const y2 = (st.haken - 8).toFixed(2);
     for (const s of el.seile) setze(s, "y2", y2);
     setze(el.spreader, "transform", `translate(0 ${st.haken.toFixed(2)})`);
     setze(el.last, "visibility", st.last < 0 ? "hidden" : "visible");
     faerben(el.last, st.last);
-    el.plaetze.forEach((p, k) => setze(p, "visibility", k < st.geladen ? "visible" : "hidden"));
+    el.plaetze.forEach((p, k) =>
+      setze(p, "visibility", k < st.geladen ? "visible" : "hidden"),
+    );
     faerben(el.kaiR, st.kai[0]);
     faerben(el.kaiL, st.kai[1]);
 
@@ -333,7 +371,11 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
       setze(g, "transform", ab.transform);
       setze(g, "opacity", ab.deckkraft > 0.999 ? "" : ab.deckkraft.toFixed(3));
     }
-    setze(el.dunstAb, "visibility", abWeg || ab.dunst < 0.004 ? "hidden" : "visible");
+    setze(
+      el.dunstAb,
+      "visibility",
+      abWeg || ab.dunst < 0.004 ? "hidden" : "visible",
+    );
     setze(el.dunstAb, "opacity", ab.dunst.toFixed(3));
     setze(el.leine, "stroke-dashoffset", (1 - st.leine).toFixed(3));
     setze(el.leine, "visibility", st.leine < 0.01 ? "hidden" : "visible");
@@ -341,12 +383,18 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     const sch = st.schlepper;
     setze(el.schlepper, "visibility", sch < 0.01 ? "hidden" : "visible");
     setze(el.schlepper, "opacity", sch.toFixed(3));
-    setze(el.schlepper, "transform", `translate(${(114 + st.schlepperX - (1 - sch) * 70).toFixed(2)} 640)`);
+    setze(
+      el.schlepper,
+      "transform",
+      `translate(${(114 + st.schlepperX - (1 - sch) * 70).toFixed(2)} 640)`,
+    );
 
     // Während des Auftakts steht noch keine Beschriftung; danach setzt
     // sich die, die gerade gilt.
     const schild = root.hasAttribute("data-auftakt") ? -1 : st.schild;
-    el.schilder.forEach((s, k) => setze(s, "data-on", k === schild ? "1" : "0"));
+    el.schilder.forEach((s, k) =>
+      setze(s, "data-on", k === schild ? "1" : "0"),
+    );
     el.leader.forEach((s, k) => setze(s, "data-on", k === schild ? "1" : "0"));
 
     if (ohneBewegung) {
@@ -371,9 +419,13 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
     const v = (x2 - x0) / (2 * h);
     const laenge = Math.max(1.5, (st.haken - 8 - SEIL_OBEN) * METER);
     const w = Math.sqrt(9.81 / laenge);
-    const nah = Math.min(Math.abs(st.haken - platzOben), Math.abs(st.haken - KAI_OBEN));
+    const nah = Math.min(
+      Math.abs(st.haken - platzOben),
+      Math.abs(st.haken - KAI_OBEN),
+    );
     frei = Math.min(1, nah / FUEHRUNG);
-    const d = (Math.abs(v) < 2 ? DAEMPFUNG_STAND : DAEMPFUNG_FAHRT) + (1 - frei) * 4;
+    const d =
+      (Math.abs(v) < 2 ? DAEMPFUNG_STAND : DAEMPFUNG_FAHRT) + (1 - frei) * 4;
     const n = Math.max(1, Math.ceil(dt / (1 / 240)));
     const sdt = dt / n;
     for (let i = 0; i < n; i++) {
@@ -414,7 +466,9 @@ function motorStarten(root: HTMLElement, ersterBlick: () => void) {
   const takt = (ts: number) => {
     raf = 0;
     if (!laeuft()) return;
-    const dt = vorher ? Math.min(0.05, Math.max(0, (ts - vorher) / 1000)) : 1 / 60;
+    const dt = vorher
+      ? Math.min(0.05, Math.max(0, (ts - vorher) / 1000))
+      : 1 / 60;
     vorher = ts;
     if (gestartet) {
       if (verzug > 0) verzug -= dt;

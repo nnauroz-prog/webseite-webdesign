@@ -65,8 +65,10 @@ const ROOFS = (() => {
     const kind = Math.floor(rnd() * 3);
     const t = SKY_LINE - h;
     if (kind === 0) d += `M${x} ${unten}V${t}H${x + w}V${unten}Z`;
-    else if (kind === 1) d += `M${x} ${unten}V${t}L${x + w / 2} ${t - 4}L${x + w} ${t}V${unten}Z`;
-    else d += `M${x} ${unten}V${t + 2}L${x + 2} ${t}H${x + w - 2}L${x + w} ${t + 2}V${unten}Z`;
+    else if (kind === 1)
+      d += `M${x} ${unten}V${t}L${x + w / 2} ${t - 4}L${x + w} ${t}V${unten}Z`;
+    else
+      d += `M${x} ${unten}V${t + 2}L${x + 2} ${t}H${x + w - 2}L${x + w} ${t + 2}V${unten}Z`;
     x += w + Math.round(rnd() * 3);
   }
   return d;
@@ -113,7 +115,8 @@ const LANDMARKS: string[][] = [
    Landungsbrücken, Tanzende Türme, verstreut in der Stadt. */
 const FENSTER = (() => {
   const rnd = seeded(23);
-  const f: { x: number; y: number; w: number; o: number; spaet?: boolean }[] = [];
+  const f: { x: number; y: number; w: number; o: number; spaet?: boolean }[] =
+    [];
   // Elbphilharmonie: Glasbau (unter dem Wellendach), unregelmäßig hell
   for (let row = 0; row < 3; row++) {
     for (let x = -9; x < 93; x += 4.2) {
@@ -131,8 +134,10 @@ const FENSTER = (() => {
   // Landungsbrücken: durchgehende Fensterreihe der Halle
   for (let x = -232; x < -150; x += 4) f.push({ x, y: 631, w: 2.2, o: 0.8 });
   // Tanzende Türme
-  for (let i = 0; i < 9; i++) f.push({ x: -290 + rnd() * 12, y: 596 + rnd() * 34, w: 1.6, o: 0.7 });
-  for (let i = 0; i < 6; i++) f.push({ x: -266 + rnd() * 9, y: 608 + rnd() * 24, w: 1.6, o: 0.7 });
+  for (let i = 0; i < 9; i++)
+    f.push({ x: -290 + rnd() * 12, y: 596 + rnd() * 34, w: 1.6, o: 0.7 });
+  for (let i = 0; i < 6; i++)
+    f.push({ x: -266 + rnd() * 9, y: 608 + rnd() * 24, w: 1.6, o: 0.7 });
   // Dächer
   for (let x = -1480; x < 100; x += 9 + rnd() * 26) {
     if (x > -300 && x < 100 && rnd() < 0.6) continue;
@@ -190,7 +195,12 @@ const STACKS: Farbe[][] = [
   ["t", "g"],
 ];
 const CARGO = STACKS.flatMap((stack, ci) =>
-  stack.map((c, ti) => ({ key: `${ci}-${ti}`, x: stapelX(ci), y: lageY(ti), c })),
+  stack.map((c, ti) => ({
+    key: `${ci}-${ti}`,
+    x: stapelX(ci),
+    y: lageY(ti),
+    c,
+  })),
 );
 
 /* Elbe: Wellenstriche mit unterschiedlicher Länge und Geschwindigkeit. */
@@ -274,7 +284,11 @@ function Schiff({ geladen }: { geladen: number }) {
         fill="#EEEEEB"
         fontSize="12.5"
         letterSpacing="3.5"
-        style={{ fontFamily: "var(--font-sf)", fontStretch: "125%", fontWeight: 760 }}
+        style={{
+          fontFamily: "var(--font-sf)",
+          fontStretch: "125%",
+          fontWeight: 760,
+        }}
       >
         SITALO
       </text>
@@ -305,7 +319,13 @@ function Schiff({ geladen }: { geladen: number }) {
           marke={k === 0}
         />
       ))}
-      <path className={s.wahrzeichen} data-kb="dunst" d={dunstUmriss(false)} opacity="0" visibility="hidden" />
+      <path
+        className={s.wahrzeichen}
+        data-kb="dunst"
+        d={dunstUmriss(false)}
+        opacity="0"
+        visibility="hidden"
+      />
     </g>
   );
 }
@@ -379,18 +399,32 @@ function Box({ x, y, c, kb, hidden, className, marke }: BoxProps) {
       visibility={hidden ? "hidden" : undefined}
     >
       <rect width={BOX_B} height="49" fill={FARBEN[c]} data-kb-farbe="" />
-      <rect x="2" y="2" width="42" height="45" fill="none" stroke="currentColor" strokeOpacity={dark ? 0.15 : 0.2} />
+      <rect
+        x="2"
+        y="2"
+        width="42"
+        height="45"
+        fill="none"
+        stroke="currentColor"
+        strokeOpacity={dark ? 0.15 : 0.2}
+      />
       <path
         d="M23 3V46M9 6V43M16 6V43M30 6V43M37 6V43"
         stroke="currentColor"
         strokeOpacity={dark ? 0.23 : 0.24}
         strokeWidth="1.1"
       />
-      <path d="M0 0h5v4H0zM41 0h5v4h-5zM0 45h5v4H0zM41 45h5v4h-5z" fill="#000" fillOpacity=".35" />
+      <path
+        d="M0 0h5v4H0zM41 0h5v4h-5zM0 45h5v4H0zM41 45h5v4h-5z"
+        fill="#000"
+        fillOpacity=".35"
+      />
       {/* Licht von oben links: helle Oberkante, Schattenseite rechts */}
       <path d="M0 0h46v1H0z" fill="#fff" fillOpacity=".35" />
       <path d="M40 1h6v48h-6z" fill="#000" fillOpacity=".15" />
-      {marke ? <rect x="27" y="7" width="13" height="3" fill="#F45B1E" /> : null}
+      {marke ? (
+        <rect x="27" y="7" width="13" height="3" fill="#F45B1E" />
+      ) : null}
     </g>
   );
 }
@@ -404,7 +438,12 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
   return (
     <div className={s.art} data-kb="art" data-hub={hub} aria-hidden="true">
       {/* ---------------- Szene ---------------- */}
-      <svg className={s.szene} viewBox="-160 0 960 760" preserveAspectRatio="xMaxYMax meet" focusable="false">
+      <svg
+        className={s.szene}
+        viewBox="-160 0 960 760"
+        preserveAspectRatio="xMaxYMax meet"
+        focusable="false"
+      >
         <defs>
           {/* Zweiter Wasserton: nach vorn kräftiger (#c9d3d6) */}
           <linearGradient id="kb-wasser-ton" x1="0" y1="0" x2="0" y2="1">
@@ -420,13 +459,22 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
         <g data-kb="fern">
           <path className={`${s.dach} ${s.stadt}`} d={ROOFS} />
           {LANDMARKS.map((gruppe, a) => (
-            <g key={gruppe[0]} className={`${s.wahrzeichen} ${s.stadt}`} style={{ "--a": a } as CSSProperties}>
+            <g
+              key={gruppe[0]}
+              className={`${s.wahrzeichen} ${s.stadt}`}
+              style={{ "--a": a } as CSSProperties}
+            >
               {gruppe.map((d) => (
                 <path key={d} d={d} />
               ))}
               {/* Glasfuge der Elbphilharmonie über dem Speicher */}
               {a === LANDMARKS.length - 1 ? (
-                <path d="M-12 606H96" stroke="#EEEEEB" strokeOpacity=".7" strokeWidth="1.2" />
+                <path
+                  d="M-12 606H96"
+                  stroke="#EEEEEB"
+                  strokeOpacity=".7"
+                  strokeWidth="1.2"
+                />
               ) : null}
             </g>
           ))}
@@ -435,10 +483,21 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
               hält an den Landungsbrücken, läuft weiter nach Westen. */}
           <g transform={`translate(70 ${SKY_LINE})`}>
             <g className={s.faehre}>
-              <path className={s.kielwasser} d="M23 -0.8H62" stroke="#F7F7F5" strokeWidth="1.1" strokeLinecap="round" />
+              <path
+                className={s.kielwasser}
+                d="M23 -0.8H62"
+                stroke="#F7F7F5"
+                strokeWidth="1.1"
+                strokeLinecap="round"
+              />
               <path d="M-1 -3.6H25L23.4 -0.4H1.4Z" fill="#9EA29F" />
               <rect x="3" y="-7.4" width="17" height="3.9" fill="#E3E4E0" />
-              <path d="M4.2 -6.2H18.8" stroke="#8F9390" strokeWidth="1" strokeDasharray="1.6 1" />
+              <path
+                d="M4.2 -6.2H18.8"
+                stroke="#8F9390"
+                strokeWidth="1"
+                strokeDasharray="1.6 1"
+              />
               <rect x="5" y="-10" width="6" height="2.7" fill="#D6D8D4" />
               <path d="M8 -10V-13.4" stroke="#9EA29F" strokeWidth=".6" />
             </g>
@@ -451,7 +510,13 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
           <Schiff geladen={st.geladen} />
 
           {/* Schlepper, nur beim Ab- und Anlegen längsseits */}
-          <g data-kb="schlepper" className={s.schlepper} transform={`translate(52 ${SKY_LINE})`} opacity="0" visibility="hidden">
+          <g
+            data-kb="schlepper"
+            className={s.schlepper}
+            transform={`translate(52 ${SKY_LINE})`}
+            opacity="0"
+            visibility="hidden"
+          >
             <path d="M-46 -6H-4L1 -13H3V2H-44Z" fill="#26292B" />
             <path d="M-45 -3.4H1.6" stroke="#A8382A" strokeWidth="1.6" />
             <rect x="-1" y="-13.5" width="4.6" height="14" fill="#0F1011" />
@@ -459,16 +524,38 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
             <rect x="-29" y="-22" width="12" height="8" fill="#E4E5E1" />
             <path d="M-28 -18.6H-18" stroke="#26292B" strokeWidth="2" />
             <rect x="-38.5" y="-18" width="3.6" height="12" fill="#3A3E40" />
-            <path d="M-23 -22V-31M-26 -28H-20" stroke="#26292B" strokeWidth=".9" />
+            <path
+              d="M-23 -22V-31M-26 -28H-20"
+              stroke="#26292B"
+              strokeWidth=".9"
+            />
           </g>
 
           {/* Wasser mit Horizontlinie. Die Kante geht beim Scrollen mit der
               fernen Stadt mit (hero-buehne.tsx), damit nichts darunter
               abtaucht. */}
           <g data-kb="ufer">
-            <rect className={s.wasser} x="-1800" y={SKY_LINE} width="2400" height="180" />
-            <rect x="-1800" y={SKY_LINE + 1} width="2400" height="179" fill="url(#kb-wasser-ton)" />
-            <path d="M-120 676h70M30 708h110M180 690h60" stroke="#fff" strokeOpacity=".55" strokeWidth="1.6" strokeLinecap="round" />
+            <rect
+              className={s.wasser}
+              x="-1800"
+              y={SKY_LINE}
+              width="2400"
+              height="180"
+            />
+            <rect
+              x="-1800"
+              y={SKY_LINE + 1}
+              width="2400"
+              height="179"
+              fill="url(#kb-wasser-ton)"
+            />
+            <path
+              d="M-120 676h70M30 708h110M180 690h60"
+              stroke="#fff"
+              strokeOpacity=".55"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
             <line
               className={s.horizont}
               x1="-1800"
@@ -504,8 +591,27 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
               </g>
               {/* Gebrochene Spiegelung des Auslegers, weit vorn im Wasser */}
               <g fill="none" stroke="#F45B1E" strokeWidth="2">
-                <line className={s.welle} x1="100" y1="744" x2="586" y2="744" strokeDasharray="30 9 12 16" strokeOpacity=".2" style={{ animationDuration: "48s" }} />
-                <line className={s.welle} x1="104" y1="751" x2="586" y2="751" strokeDasharray="14 14 6 22" strokeOpacity=".13" strokeDashoffset="11" style={{ animationDuration: "58s" }} />
+                <line
+                  className={s.welle}
+                  x1="100"
+                  y1="744"
+                  x2="586"
+                  y2="744"
+                  strokeDasharray="30 9 12 16"
+                  strokeOpacity=".2"
+                  style={{ animationDuration: "48s" }}
+                />
+                <line
+                  className={s.welle}
+                  x1="104"
+                  y1="751"
+                  x2="586"
+                  y2="751"
+                  strokeDasharray="14 14 6 22"
+                  strokeOpacity=".13"
+                  strokeDashoffset="11"
+                  style={{ animationDuration: "58s" }}
+                />
               </g>
               {/* Lichtreflexe */}
               <g stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round">
@@ -517,7 +623,10 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
                     y1={f.y.toFixed(1)}
                     x2={(f.x + f.w).toFixed(1)}
                     y2={f.y.toFixed(1)}
-                    style={{ animationDuration: `${f.dur}s`, animationDelay: `${f.delay}s` }}
+                    style={{
+                      animationDuration: `${f.dur}s`,
+                      animationDelay: `${f.delay}s`,
+                    }}
                   />
                 ))}
               </g>
@@ -528,9 +637,20 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
         {/* Kai: Spundwand mit Fugen, Fender, Poller */}
         <rect x="588" y="605" width="320" height="175" fill="#2A2E30" />
         <rect x="588" y="605" width="320" height="5" fill="#5A5F61" />
-        <path d="M588 628H908M588 652H908M588 676H908M588 700H908" stroke="#1B1D1E" strokeOpacity=".55" />
-        <path d="M640 610V780M700 610V780M760 610V780M820 610V780" stroke="#1B1D1E" strokeOpacity=".3" />
-        <path d="M582 614h7v24h-7z M582 650h7v24h-7z M582 686h7v24h-7z" fill="#0F1011" />
+        <path
+          d="M588 628H908M588 652H908M588 676H908M588 700H908"
+          stroke="#1B1D1E"
+          strokeOpacity=".55"
+        />
+        <path
+          d="M640 610V780M700 610V780M760 610V780M820 610V780"
+          stroke="#1B1D1E"
+          strokeOpacity=".3"
+        />
+        <path
+          d="M582 614h7v24h-7z M582 650h7v24h-7z M582 686h7v24h-7z"
+          fill="#0F1011"
+        />
         <path d="M596 605v-6q0-3 3-3h3q3 0 3 3v6z" fill="#1B1D1E" />
         {/* Festmacherleine vom Heck zum Poller */}
         <path
@@ -555,13 +675,30 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
         {/* Containerbrücke */}
         <g fill="#F45B1E">
           <rect x="684" y="212" width="112" height="38" fill="#F7F7F5" />
-          <path d={LOUVER} stroke="#1B1D1E" strokeOpacity=".32" strokeWidth="1.2" />
-          <rect x="684" y="212" width="112" height="4" fill="#1B1D1E" fillOpacity=".85" />
+          <path
+            d={LOUVER}
+            stroke="#1B1D1E"
+            strokeOpacity=".32"
+            strokeWidth="1.2"
+          />
+          <rect
+            x="684"
+            y="212"
+            width="112"
+            height="4"
+            fill="#1B1D1E"
+            fillOpacity=".85"
+          />
           <rect x="612" y="280" width="14" height="318" />
           <rect x="752" y="280" width="14" height="318" />
           <rect x="612" y="298" width="154" height="13" />
           <rect x="626" y="466" width="126" height="7" />
-          <path d="M626 311L689 352L752 311" fill="none" stroke="#F45B1E" strokeWidth="5" />
+          <path
+            d="M626 311L689 352L752 311"
+            fill="none"
+            stroke="#F45B1E"
+            strokeWidth="5"
+          />
           <rect x="603" y="596" width="32" height="9" fill="#1B1D1E" />
           <rect x="743" y="596" width="32" height="9" fill="#1B1D1E" />
           <rect x="98" y="250" width="702" height="6" />
@@ -572,7 +709,12 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
           <path d="M612 250H626L671 100H661Z M752 250H766L679 100H669Z" />
           <rect x="638" y="176" width="84" height="6" />
           <rect x="656" y="88" width="28" height="14" rx="1.5" />
-          <path d="M668 96L380 250M668 96L112 250M672 96L797 250" fill="none" stroke="#F45B1E" strokeWidth="2.4" />
+          <path
+            d="M668 96L380 250M668 96L112 250M672 96L797 250"
+            fill="none"
+            stroke="#F45B1E"
+            strokeWidth="2.4"
+          />
         </g>
         <circle className={s.blink} cx="670" cy="82" r="3.4" fill="#E02A1B" />
 
@@ -580,14 +722,44 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
         <g data-kb="katze" transform={`translate(${st.katze.toFixed(2)} 0)`}>
           <rect x="-24" y="280" width="48" height="12" fill="#1B1D1E" />
           <rect x="-50" y="282" width="24" height="22" fill="#26292B" />
-          <rect x="-47" y="286" width="18" height="8" fill="#EEEEEB" fillOpacity=".85" />
+          <rect
+            x="-47"
+            y="286"
+            width="18"
+            height="8"
+            fill="#EEEEEB"
+            fillOpacity=".85"
+          />
           <g data-kb="pendel">
-            <line data-kb="seil" x1="-14" y1={SEIL_OBEN} x2="-14" y2={st.haken - 8} stroke="#1B1D1E" strokeWidth="1.3" />
-            <line data-kb="seil" x1="14" y1={SEIL_OBEN} x2="14" y2={st.haken - 8} stroke="#1B1D1E" strokeWidth="1.3" />
+            <line
+              data-kb="seil"
+              x1="-14"
+              y1={SEIL_OBEN}
+              x2="-14"
+              y2={st.haken - 8}
+              stroke="#1B1D1E"
+              strokeWidth="1.3"
+            />
+            <line
+              data-kb="seil"
+              x1="14"
+              y1={SEIL_OBEN}
+              x2="14"
+              y2={st.haken - 8}
+              stroke="#1B1D1E"
+              strokeWidth="1.3"
+            />
             <g data-kb="spreader" transform={`translate(0 ${st.haken})`}>
               <rect x="-30" y="-8" width="60" height="8" fill="#1B1D1E" />
               <rect x="-30" y="-8" width="60" height="2" fill="#F45B1E" />
-              <Box x={-BOX_B / 2} y={0} c={lastFarbe} kb="last" className={s.last} hidden={st.last < 0} />
+              <Box
+                x={-BOX_B / 2}
+                y={0}
+                c={lastFarbe}
+                kb="last"
+                className={s.last}
+                hidden={st.last < 0}
+              />
             </g>
           </g>
         </g>
@@ -595,7 +767,12 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
         {/* Hinweislinien zu den Beschriftungen */}
         <g transform={lift}>
           {LADEPLAETZE.map((x, k) => (
-            <g key={x} data-kb="leader" data-on={k === st.schild ? "1" : "0"} className={s.leader}>
+            <g
+              key={x}
+              data-kb="leader"
+              data-on={k === st.schild ? "1" : "0"}
+              className={s.leader}
+            >
               <path
                 d={`M${x - SCHILD_ABSTAND} ${SCHILD_UNTEN}L${x + 2} ${PLATZ_OBEN + 3}`}
                 fill="none"
@@ -610,7 +787,12 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
       </svg>
 
       {/* ---------------- Lichter (nachts und abends sichtbar) ---------------- */}
-      <svg className={s.lichter} viewBox="-160 0 960 760" preserveAspectRatio="xMaxYMax meet" focusable="false">
+      <svg
+        className={s.lichter}
+        viewBox="-160 0 960 760"
+        preserveAspectRatio="xMaxYMax meet"
+        focusable="false"
+      >
         <defs>
           <linearGradient id="kb-kegel" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#FFF4DC" stopOpacity=".55" />
@@ -644,14 +826,25 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
         <g className={s.flut}>
           <path d="M248 281H256L302 590H202Z" fill="url(#kb-kegel)" />
           <path d="M478 281H486L534 590H430Z" fill="url(#kb-kegel)" />
-          <path d="M685 312H693L736 556H642Z" fill="url(#kb-kegel)" fillOpacity=".7" />
+          <path
+            d="M685 312H693L736 556H642Z"
+            fill="url(#kb-kegel)"
+            fillOpacity=".7"
+          />
           <rect x="246" y="279" width="12" height="3" fill="#FFF4DC" />
           <rect x="476" y="279" width="12" height="3" fill="#FFF4DC" />
           <rect x="683" y="310" width="12" height="3" fill="#FFF4DC" />
         </g>
         <g data-kb="katze" transform={`translate(${st.katze.toFixed(2)} 0)`}>
           <circle cx="-38" cy="290" r="5" fill="url(#kb-schein)" />
-          <rect x="-47" y="286" width="18" height="8" fill="#FFE2A6" fillOpacity=".9" />
+          <rect
+            x="-47"
+            y="286"
+            width="18"
+            height="8"
+            fill="#FFE2A6"
+            fillOpacity=".9"
+          />
         </g>
       </svg>
 
@@ -674,7 +867,11 @@ export function Containerbruecke({ hub = 0 }: { hub?: number }) {
               SITALO{" "}
               <span className={s.maske} aria-hidden="true">
                 {sch.serie.split("").map((z, i) => (
-                  <span key={i} className={s.ziffer} style={{ "--z": i } as CSSProperties}>
+                  <span
+                    key={i}
+                    className={s.ziffer}
+                    style={{ "--z": i } as CSSProperties}
+                  >
                     {z}
                   </span>
                 ))}

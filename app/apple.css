@@ -1589,3 +1589,25 @@
     }
   }
 }
+
+/* Weitere Besonderheiten, nur Bildschirm und ohne reduzierte Bewegung. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Satz wird beim Scrollen Wort für Wort dunkel (effekte.tsx). */
+  [data-leucht][data-leucht-bereit] > span {
+    color: #b4b4ba;
+    transition: color 420ms var(--ease-apple);
+  }
+  [data-leucht][data-leucht-bereit] > span[data-an] {
+    color: inherit;
+  }
+  /* Doppelring im Logo dreht sich mit dem Lesefortschritt. */
+  .globalnav .logo-ring {
+    transform: rotate(calc(var(--seite-p, 0) * 360deg));
+    transform-origin: 50% 50%;
+    transition: transform 240ms linear;
+  }
+  /* Ziffern, die würfeln, sollen nicht springen. */
+  [data-wuerfel] {
+    font-variant-numeric: tabular-nums;
+  }
+}

@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 
 import { LADELISTEN, type BranchenLadeliste } from "./ladeliste-data";
 import s from "./ladeliste.module.css";
@@ -31,7 +38,11 @@ function anfrageHref(b: BranchenLadeliste, pakete: PaketeKurz) {
   const p = pakete[b.paket];
   const liste = b.positionen.map((pos) => pos.ladung).join("; ");
   const vorhaben = `Website für: ${b.label}. Aus der Ladeliste: ${liste}. Empfohlen war ${p.name}.`;
-  const params = new URLSearchParams({ branche: b.inquiry, paket: p.slug, vorhaben: vorhaben.slice(0, 500) });
+  const params = new URLSearchParams({
+    branche: b.inquiry,
+    paket: p.slug,
+    vorhaben: vorhaben.slice(0, 500),
+  });
   return `/anfrage?${params.toString()}`;
 }
 
@@ -80,7 +91,11 @@ export function Ladeliste({
   };
 
   return (
-    <section id={id} className={`${s.section} abschnitt ${className}`} style={style}>
+    <section
+      id={id}
+      className={`${s.section} abschnitt ${className}`}
+      style={style}
+    >
       {top}
       <div className="inhalt">
         {head}
@@ -169,7 +184,10 @@ function Frachtpapier({
     const zu = alle;
     setAlle(!alle);
     // Beim Zuklappen rückt der Knopf nach oben; im Bild halten.
-    if (zu) requestAnimationFrame(() => knopf.current?.scrollIntoView({ block: "nearest" }));
+    if (zu)
+      requestAnimationFrame(() =>
+        knopf.current?.scrollIntoView({ block: "nearest" }),
+      );
   };
 
   return (
@@ -196,7 +214,11 @@ function Frachtpapier({
           der letzten sichtbaren Kachel. */}
       <ol id={listeId} className={s.kacheln}>
         {b.positionen.slice(0, alle ? undefined : 3).map((pos, i) => (
-          <li key={pos.ladung} className={s.kachel} style={{ "--i": i } as React.CSSProperties}>
+          <li
+            key={pos.ladung}
+            className={s.kachel}
+            style={{ "--i": i } as React.CSSProperties}
+          >
             <span className={s.pos} aria-hidden="true">
               {i + 1}
             </span>
@@ -221,8 +243,15 @@ function Frachtpapier({
           aria-controls={listeId}
           onClick={umschalten}
         >
-          <span className={s.mehrText}>{alle ? "Weniger anzeigen" : `Alle ${b.positionen.length} Positionen`}</span>
-          <span aria-hidden="true" className={`${s.chev} ${alle ? s.chevAuf : ""}`}>
+          <span className={s.mehrText}>
+            {alle
+              ? "Weniger anzeigen"
+              : `Alle ${b.positionen.length} Positionen`}
+          </span>
+          <span
+            aria-hidden="true"
+            className={`${s.chev} ${alle ? s.chevAuf : ""}`}
+          >
             ›
           </span>
         </button>
@@ -239,14 +268,21 @@ function Frachtpapier({
           </p>
           <p className={s.paketGrund}>{b.paketGrund}</p>
           {b.alternative && alt ? (
-            <p className={s.alt}>{b.alternative.text.replace("{paket}", `${alt.name} ${alt.setup}`)}</p>
+            <p className={s.alt}>
+              {b.alternative.text.replace(
+                "{paket}",
+                `${alt.name} ${alt.setup}`,
+              )}
+            </p>
           ) : null}
         </div>
         <div className={s.cta}>
           <Link href={anfrageHref(b, pakete)} className="btn-signal">
             Anfrage mit dieser Ladeliste
           </Link>
-          <p className={s.ctaNote}>Branche, Paket und Liste stehen dann schon im Formular.</p>
+          <p className={s.ctaNote}>
+            Branche, Paket und Liste stehen dann schon im Formular.
+          </p>
         </div>
       </div>
     </div>
