@@ -23,7 +23,9 @@ export const metadata: Metadata = {
   description:
     "So läuft es bei uns: Sie schreiben uns, wir sprechen kurz, wir bauen, Sie prüfen den Test-Link, die Seite geht online. Mit Festpreis vorab.",
   alternates: { canonical: "/ablauf" },
-  openGraph: ogFor("/ablauf", undefined, undefined, "website", { defaultImage: true }),
+  openGraph: ogFor("/ablauf", undefined, undefined, "website", {
+    defaultImage: true,
+  }),
 };
 
 const STEPS = ABLAUF_HALTE;
@@ -52,7 +54,12 @@ export default function AblaufPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: `${SITE_URL}/`,
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -65,7 +72,11 @@ export default function AblaufPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste titel="Ablauf" links={[]} cta={{ href: "/anfrage", label: "Anfragen" }} />
+      <Produktleiste
+        titel="Ablauf"
+        links={[]}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
       <UnterseiteMain>
         <SeitenKopf
           krumen="Ablauf"
@@ -142,7 +153,9 @@ function HaltKarte({ step, i }: { step: (typeof STEPS)[number]; i: number }) {
       <span className="block aspect-[200/88] w-full" aria-hidden="true">
         <WegBand i={i} teile={6} zeichen={ZEICHEN[i]} />
       </span>
-      <p className={`px-[22px] pt-5 text-[12px] leading-4 font-semibold sm:px-7 sm:pt-6 ${last ? "text-[#ff9f5a]" : "text-gold-ink"}`}>
+      <p
+        className={`px-[22px] pt-5 text-[12px] leading-4 font-semibold sm:px-7 sm:pt-6 ${last ? "text-[#ff9f5a]" : "text-gold-ink"}`}
+      >
         {last ? "Endhalt" : `Halt ${i + 1}`}
       </p>
       <h3 className="mt-1.5 px-[22px] text-[21px] leading-[25px] font-bold text-balance sm:px-7 lg:text-[24px] lg:leading-[28px]">
@@ -161,7 +174,9 @@ function HaltKarte({ step, i }: { step: (typeof STEPS)[number]; i: number }) {
         >
           <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>Wer</dt>
           <dd className="font-semibold">{step.wer}</dd>
-          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>Hinweis</dt>
+          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>
+            Hinweis
+          </dt>
           <dd>{step.hinweis}</dd>
         </dl>
       </div>
@@ -177,11 +192,39 @@ function Fahrplan() {
       grau="Vom ersten Satz bis online."
       unter="Was eine Seite kostet, steht vorher fest. Kommt etwas dazu, sprechen wir vorher darüber."
     >
-      <ol role="list" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-        {STEPS.map((step, i) => (
-          <HaltKarte key={step.number} step={step} i={i} />
-        ))}
-      </ol>
+      {/* Am Handy eine Route: links die Linie, die Fähre fährt beim
+          Scrollen von Halt zu Halt (--rp/--ry setzt effekte.tsx). */}
+      <div className="fahr-route" data-route="">
+        <span className="fahr-route-boot" aria-hidden="true">
+          <svg viewBox="0 0 26 14" width="26" height="14" focusable="false">
+            <path
+              d="M1 8h24l-2.6 4.2a2 2 0 0 1-1.7.8H5.3a2 2 0 0 1-1.7-.8z"
+              fill="#1d1d1f"
+            />
+            <path d="M1.6 8h22.8l-.7 1.2H2.3z" fill="#f45b1e" />
+            <rect
+              x="6"
+              y="3.2"
+              width="12"
+              height="4.8"
+              rx="1"
+              fill="#fff"
+              stroke="#1d1d1f"
+              strokeWidth="0.8"
+            />
+            <rect x="15.4" y="0.6" width="1.8" height="2.6" fill="#f45b1e" />
+          </svg>
+        </span>
+        <ol
+          role="list"
+          data-ein="reihe"
+          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5"
+        >
+          {STEPS.map((step, i) => (
+            <HaltKarte key={step.number} step={step} i={i} />
+          ))}
+        </ol>
+      </div>
       <div className="mt-3 lg:mt-5">
         <FotoRahmen
           src="/images/sitalo-praxis-laptop.webp"

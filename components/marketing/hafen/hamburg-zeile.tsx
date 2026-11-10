@@ -65,9 +65,11 @@ export function HamburgZeile({ className = "" }: { className?: string }) {
         aria-hidden="true"
         className="bg-gold inline-block h-1.5 w-1.5 shrink-0 rounded-full"
       />
-      <span>{stand ? stand.text : "Aus Hamburg"}</span>
-      <span aria-hidden="true">·</span>
-      <time suppressHydrationWarning>{stand ? stand.zeit : "--:--"}</time>
+      {/* Ein Textfluss: Gruß und Uhrzeit brechen gemeinsam um. */}
+      <span>
+        {stand ? stand.text : "Aus Hamburg"} <span aria-hidden="true">·</span>{" "}
+        <time suppressHydrationWarning>{stand ? stand.zeit : "--:--"}</time>
+      </span>
     </p>
   );
 }
