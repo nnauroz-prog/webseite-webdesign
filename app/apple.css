@@ -111,11 +111,26 @@
     color: var(--muted-foreground);
   }
   /* Auf Schwarz: Nebentöne heller. */
-  :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz, .bg-foreground, .on-dark)
+  :is(
+      .flaeche-schwarz,
+      .karte-schwarz,
+      .bg-black,
+      .bg-schwarz,
+      .bg-foreground,
+      .on-dark
+    )
     :is(.t-unter, .t-fuss, .zweiton > .grau) {
     color: var(--text-2-dark);
   }
-  :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz, .bg-foreground, .on-dark) .t-eyebrow {
+  :is(
+      .flaeche-schwarz,
+      .karte-schwarz,
+      .bg-black,
+      .bg-schwarz,
+      .bg-foreground,
+      .on-dark
+    )
+    .t-eyebrow {
     color: var(--signal-on-dark);
   }
   :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz) .zweiton {
@@ -130,60 +145,6 @@
   /* ----------------------------------------------------------------
      2. Bühne: die vorhandenen Abschnittsköpfe in Apple-Werten.
      ---------------------------------------------------------------- */
-  .buehne-titel,
-  .buehne-titel-klein {
-    max-width: 20ch;
-    font-size: var(--t-abschnitt);
-    line-height: 1.0625;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    font-stretch: normal;
-  }
-  .buehne-titel-klein {
-    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
-    line-height: 1.08;
-  }
-  .buehne-unter {
-    max-width: 34em;
-    font-size: var(--t-unter);
-    line-height: 1.24;
-    font-weight: 400;
-    letter-spacing: -0.005em;
-  }
-  :is(.on-dark, .bg-foreground, .bg-black, .flaeche-schwarz) .buehne-unter,
-  .buehne-dunkel .buehne-unter {
-    color: var(--text-2-dark);
-  }
-  .buehne-abschnitt {
-    padding-block: 80px;
-  }
-  .buehne-kopf + * {
-    margin-top: 40px;
-  }
-  @media (min-width: 640px) {
-    .buehne-titel {
-      font-size: var(--t-abschnitt);
-    }
-    .buehne-abschnitt {
-      padding-block: 112px;
-    }
-    .buehne-kopf + * {
-      margin-top: 56px;
-    }
-  }
-  @media (min-width: 1024px) {
-    .buehne-abschnitt {
-      padding-block: 140px;
-    }
-    .buehne-kopf + * {
-      margin-top: 64px;
-    }
-  }
-  @media (min-width: 1280px) {
-    .buehne-titel {
-      font-size: var(--t-abschnitt);
-    }
-  }
 
   /* ----------------------------------------------------------------
      3. Flächen und Abschnitte
@@ -205,13 +166,8 @@
     width: 100%;
     max-width: var(--inhalt-max);
     margin-inline: auto;
-    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
-  }
-  .inhalt-breit {
-    width: 100%;
-    max-width: 1440px;
-    margin-inline: auto;
-    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+    padding-inline: max(var(--rinne), env(safe-area-inset-left))
+      max(var(--rinne), env(safe-area-inset-right));
   }
   /* Abschnittsabstand wie bei Apple: mobil 64, Tablet 88, Rechner
      112 px je Seite. --abschnitt-y nutzen auch Regal und Abschluss. */
@@ -224,9 +180,9 @@
   /* Zwei Abschnitte derselben Fläche hintereinander: kein doppelter
      Abstand (sonst ein Loch ohne Farbwechsel). */
   :is(
-      .flaeche-weiss:is(.abschnitt, .regal) + .flaeche-weiss,
-      .flaeche-hell:is(.abschnitt, .regal) + .flaeche-hell
-    ):is(.abschnitt, .regal) {
+    .flaeche-weiss:is(.abschnitt, .regal) + .flaeche-weiss,
+    .flaeche-hell:is(.abschnitt, .regal) + .flaeche-hell
+  ):is(.abschnitt, .regal) {
     padding-top: 0;
   }
   /* Direkt nach dem Kopf der Startseite (#start, weiß): nur ein kleiner
@@ -239,33 +195,14 @@
       padding-top: 56px;
     }
   }
-  .abschnitt-kopf {
-    margin-inline: auto;
-    text-align: center;
-  }
-  .abschnitt-kopf > :is(.t-abschnitt, .t-unter) {
-    margin-inline: auto;
-  }
-  .abschnitt-kopf > .t-unter {
-    margin-top: 12px;
-  }
-  .abschnitt-kopf + * {
-    margin-top: 40px;
-  }
   @media (min-width: 640px) {
     :root {
       --abschnitt-y: 88px;
-    }
-    .abschnitt-kopf + * {
-      margin-top: 56px;
     }
   }
   @media (min-width: 1024px) {
     :root {
       --abschnitt-y: 112px;
-    }
-    .abschnitt-kopf > .t-unter {
-      margin-top: 16px;
     }
   }
 
@@ -290,15 +227,7 @@
   .karte-schwarz :is(.text-muted-foreground) {
     color: var(--text-2-dark);
   }
-  .karte-regal {
-    background-color: #fff;
-    box-shadow: var(--schatten-karte);
-    transition:
-      transform 300ms var(--ease-apple),
-      box-shadow 300ms var(--ease-apple);
-  }
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .karte-regal:hover,
     .karte-hover:hover {
       transform: scale(1.01);
       box-shadow: var(--schatten-karte-hover);
@@ -362,7 +291,15 @@
     line-height: 24px;
     text-wrap: balance;
   }
-  :is(.flaeche-schwarz, .karte-schwarz, .bg-black, .bg-schwarz, .bg-foreground, .on-dark) .link-chevron {
+  :is(
+      .flaeche-schwarz,
+      .karte-schwarz,
+      .bg-black,
+      .bg-schwarz,
+      .bg-foreground,
+      .on-dark
+    )
+    .link-chevron {
     color: var(--signal-on-dark);
   }
   /* Aktionen nebeneinander (Pille + Link), zentriert. */
@@ -399,7 +336,8 @@
     gap: 8px;
     max-width: var(--inhalt-max);
     margin-inline: auto;
-    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+    padding-inline: max(var(--rinne), env(safe-area-inset-left))
+      max(var(--rinne), env(safe-area-inset-right));
   }
   .globalnav-liste {
     display: none;
@@ -545,7 +483,9 @@
   .produktleiste[data-offen="true"] {
     background-color: var(--glas-leiste);
   }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .produktleiste[data-klebt="true"],
     .produktleiste[data-offen="true"] {
       background-color: var(--glas-dicht);
@@ -564,12 +504,15 @@
     box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.12);
     color: #f5f5f7;
   }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .produktleiste[data-dunkel="true"] {
       background-color: rgb(22 22 23 / 0.96);
     }
   }
-  .produktleiste[data-dunkel="true"] :is(.produktleiste-titel, .produktleiste-toggle) {
+  .produktleiste[data-dunkel="true"]
+    :is(.produktleiste-titel, .produktleiste-toggle) {
     color: #f5f5f7;
   }
   .produktleiste[data-dunkel="true"] .produktleiste-link {
@@ -595,7 +538,8 @@
     gap: 12px;
     max-width: var(--inhalt-max);
     margin-inline: auto;
-    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
+    padding-inline: max(var(--rinne), env(safe-area-inset-left))
+      max(var(--rinne), env(safe-area-inset-right));
   }
   .produktleiste-titel {
     display: inline-flex;
@@ -722,7 +666,8 @@
   @media (prefers-reduced-motion: reduce) {
     .produktleiste,
     .produktleiste-toggle svg,
-    .produktleiste :is(.produktleiste-titel, .produktleiste-toggle, .produktleiste-link) {
+    .produktleiste
+      :is(.produktleiste-titel, .produktleiste-toggle, .produktleiste-link) {
       transition: none;
     }
     .produktleiste-schleier {
@@ -733,54 +678,10 @@
   /* ----------------------------------------------------------------
      8. Bento-Raster (bento.tsx)
      ---------------------------------------------------------------- */
-  .bento {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-  }
   /* Gestapelt (mobil) so hoch wie der Inhalt: Text oben, Motiv mit
      festem Luftraum darunter, keine Leerfläche dazwischen. Erst wenn
      Kacheln nebeneinander stehen, gleichen Mindesthöhen sie an; das
      Motiv steht dann mittig im freien Raum (nur große Kacheln unten). */
-  .bento-kachel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 24px 0;
-    text-align: center;
-  }
-  .bento-kachel > .bento-text {
-    max-width: 30em;
-  }
-  .bento-motiv {
-    display: flex;
-    width: 100%;
-    flex: none;
-    align-items: center;
-    justify-content: center;
-    padding-top: 32px;
-    padding-bottom: 40px;
-  }
-  .bento-motiv .container-motiv[data-groesse="l"]:only-child,
-  .bento-motiv .motiv-auf .container-motiv[data-groesse="l"] {
-    --b: 248px;
-    --h: 80px;
-  }
-  @media (min-width: 834px) {
-    .bento {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
-    }
-    .bento-kachel {
-      padding: 56px 40px 0;
-    }
-    .bento-breit {
-      grid-column: span 2;
-    }
-    .bento-motiv {
-      flex: 1;
-    }
-  }
 
   /* ----------------------------------------------------------------
      9. Regal: waagerecht scrollende Karten (regal.tsx)
@@ -793,70 +694,10 @@
   }
   /* Unter der Spur: die Spur bringt 40 px Schattenraum mit, der Fuß
      ergänzt bis zum Abschnittsabstand (mit Pfeilen darunter). */
-  .regal-fuss {
-    padding-bottom: calc(var(--abschnitt-y) - 40px);
-  }
-  .regal-kopf {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .regal-spur {
-    --regal-rand: max(var(--rinne), calc((100% - var(--inhalt-max)) / 2 + var(--rinne)));
-    /* Dasselbe in Container-Einheiten, für Kartenbreiten (dort wäre
-       100 % die Breite des li, nicht die der Spur). */
-    --regal-rand-cq: max(var(--rinne), calc((100cqw - var(--inhalt-max)) / 2 + var(--rinne)));
-    container-type: inline-size;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--regal-rand);
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .regal-spur::-webkit-scrollbar {
-    display: none;
-  }
-  .regal-spur:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: -2px;
-  }
-  .regal-spur > ul {
-    display: flex;
-    width: max-content;
-    gap: 16px;
-    margin: 0;
-    padding: 24px var(--regal-rand) 40px;
-    list-style: none;
-  }
-  .regal-spur > ul > li {
-    display: flex;
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-  }
   /* Die letzte Karte rastet bündig an der rechten Inhaltskante ein
      (dort endet die Spur dank gleichem Innenabstand rechts). */
-  .regal-spur > ul > li:last-child:not(:first-child) {
-    scroll-snap-align: end;
-  }
   /* Alle Karten einer Spur sind so hoch wie die höchste (li ist flex);
      keine feste Mindesthöhe, sonst steht unter kurzen Texten ein Loch. */
-  .regal-karte {
-    display: flex;
-    width: min(78vw, 300px);
-    flex-direction: column;
-    padding: 28px;
-  }
-  .regal-motiv {
-    display: flex;
-    margin-bottom: 24px;
-  }
-  .regal-karte-breit {
-    width: min(84vw, 400px);
-  }
   .regal-pfeile {
     display: none;
   }
@@ -882,28 +723,11 @@
     opacity: 0.42;
     cursor: default;
   }
-  @media (min-width: 834px) {
-    .regal-spur > ul {
-      gap: 20px;
-    }
-    .regal-karte {
-      width: 320px;
-      padding: 32px;
-    }
-    .regal-karte-breit {
-      width: 440px;
-    }
-  }
   /* Ab 980 px fielen bei fester Breite (320 + 20) drei Karten fast genau
      bis an den Fensterrand (bei 1024 px: Ende bei 1022), und von der
      vierten wäre nichts zu sehen. Darum hier relativ zur Spur: vom
      linken Rand bis zum Fensterrand passen 3,4 Karten, die vierte ist
      also immer gut sichtbar angeschnitten. Ab etwa 1400 px wieder 320. */
-  @media (min-width: 980px) {
-    .regal-karte:not(.regal-karte-breit) {
-      width: clamp(260px, calc((100cqw - var(--regal-rand-cq)) / 3.4 - 20px), 320px);
-    }
-  }
   @media (min-width: 768px) {
     .regal-pfeile {
       display: flex;
@@ -917,130 +741,17 @@
   /* Raster statt Spur (Regal raster): vier Karten als 2 × 2 bündig zur
      Inhaltskante, ohne Pfeile. Vier Spalten wären nur 230 px breit, und
      die Titel liefen über vier Zeilen. */
-  @media (min-width: 1068px) {
-    .regal-raster .regal-spur {
-      overflow: visible;
-      scroll-snap-type: none;
-    }
-    .regal-raster .regal-spur > ul {
-      display: grid;
-      width: auto;
-      max-width: var(--inhalt-max);
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      margin-inline: auto;
-      padding-inline: var(--rinne);
-    }
-    .regal-raster .regal-karte {
-      width: auto;
-    }
-    .regal-raster .regal-pfeile {
-      display: none;
-    }
-  }
 
   /* ----------------------------------------------------------------
      10. Container-Motiv (container-motiv.tsx): CSS-Container in der
      Paketfarbe als „Produktbild“. Größen s/m/l, optional gestapelt.
      ---------------------------------------------------------------- */
-  .container-motiv {
-    --ton: var(--zink);
-    --b: 132px;
-    --h: 44px;
-    position: relative;
-    display: block;
-    width: var(--b);
-    height: var(--h);
-    border-radius: 3px;
-    background-color: var(--ton);
-    background-image: repeating-linear-gradient(
-      90deg,
-      rgb(0 0 0 / 0.09) 0 1px,
-      transparent 1px 6px,
-      rgb(255 255 255 / 0.12) 6px 7px,
-      transparent 7px 12px
-    );
-    box-shadow:
-      inset 0 4px 0 rgb(0 0 0 / 0.14),
-      inset 0 -4px 0 rgb(0 0 0 / 0.16),
-      0 18px 24px -14px rgb(0 0 0 / 0.35);
-  }
-  .container-motiv::before,
-  .container-motiv::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-  .container-motiv::before {
-    background:
-      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top left / 9px 6px no-repeat,
-      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top right / 9px 6px no-repeat;
-  }
-  .container-motiv::after {
-    background:
-      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom left / 9px 6px no-repeat,
-      linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom right / 9px 6px no-repeat;
-  }
-  .container-motiv[data-groesse="s"] {
-    --b: 96px;
-    --h: 32px;
-  }
-  .container-motiv[data-groesse="l"] {
-    --b: 220px;
-    --h: 72px;
-  }
-  .container-motiv[data-ton="signal"] {
-    --ton: var(--gold);
-  }
-  .container-motiv[data-ton="teer"] {
-    --ton: #2c2c2e;
-  }
-  .container-motiv[data-ton="gruen"] {
-    --ton: var(--ink-petrol);
-  }
-  .container-motiv[data-ton="rot"] {
-    --ton: var(--ink-olive);
-  }
-  .container-stapel {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
 
   /* ----------------------------------------------------------------
      11. Text-Szene (text-szene.tsx): eine große Aussage auf Schwarz,
      die beim Scrollen hell aufgeht. Die Schrift selbst bleibt voll
      deckend (Kontrast); ein Schleier darüber blendet aus.
      ---------------------------------------------------------------- */
-  .text-szene {
-    position: relative;
-    overflow: clip;
-    background-color: #000;
-    color: #f5f5f7;
-  }
-  .text-szene {
-    padding-block: 88px;
-  }
-  @media (min-width: 1024px) {
-    .text-szene {
-      padding-block: 140px;
-    }
-  }
-  .text-szene-satz {
-    max-width: 18ch;
-    margin-inline: auto;
-    font-size: clamp(2rem, 1.2rem + 3.4vw, 4rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    text-align: center;
-    text-wrap: balance;
-  }
-  .text-szene-satz .leuchtet {
-    color: var(--signal-on-dark);
-  }
-
 }
 
 /* ------------------------------------------------------------------
@@ -1069,84 +780,9 @@
     transform: none;
   }
 }
-@keyframes auftritt-skala {
-  0% {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-  40% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: none;
-  }
-}
 /* Schwarze Karten nie halb transparent (sonst graue Geisterkiste auf
    Weiß), Überschriften nie (Kontrast): nur Bewegung. */
-@keyframes auftritt-weg {
-  from {
-    transform: translateY(32px);
-  }
-}
-@keyframes auftritt-titel {
-  from {
-    transform: translateY(24px);
-  }
-}
 /* Schleier fährt nach unten weg: Zeile für Zeile wird der Satz hell. */
-@keyframes szene-schleier {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(100%);
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    /* view(0px): Die Zeitleiste misst am echten Bildrand. Ohne die 0 px
-       zöge sie scroll-padding ab (unter 768 px unten 88 px für die
-       CTA-Leiste, app/hafen.css) und jede Karte begänne erst 88 px über
-       dem Rand sichtbar zu werden. */
-    [data-auftritt] {
-      animation: auftritt linear both;
-      animation-timeline: view(0px);
-      animation-range: entry 0% entry 160px;
-    }
-    [data-auftritt="skala"] {
-      animation-name: auftritt-skala;
-    }
-    [data-auftritt].karte-schwarz {
-      animation-name: auftritt-weg;
-    }
-    /* Kopf: Titel, Untertitel und Link gleiten gemeinsam. Jedes
-       Geschwister läuft auf seiner eigenen Zeitleiste; das tiefere
-       startet später und hat darum immer den größeren Versatz, so dass
-       nie eine Zeile auf der nächsten liegt. */
-    [data-auftritt="titel"],
-    [data-auftritt="titel"] ~ :not([data-auftritt]) {
-      animation: auftritt-titel linear both;
-      animation-timeline: view(0px);
-      animation-range: entry 0% entry 160px;
-    }
-    /* Text-Szene: Schleier über dem Satz löst sich beim Einscrollen. */
-    .text-szene-schleier {
-      position: absolute;
-      inset-inline: 0;
-      top: -40%;
-      height: 140%;
-      z-index: 1;
-      pointer-events: none;
-      background: linear-gradient(to bottom, rgb(0 0 0 / 0) 0, #000 28%);
-      animation: szene-schleier linear both;
-      animation-timeline: view(0px);
-      /* Fertig, sobald die Szene ganz im Bild steht (nicht erst über der
-         Bildmitte): Niemand hält vor einem halb verschleierten Satz. */
-      animation-range: cover 10% cover 40%;
-    }
-  }
-}
 
 /* ------------------------------------------------------------------
    Seitenkopf (page-hero.tsx) und frühere dunkle Flächen: Seiten
@@ -1157,7 +793,12 @@
 .seitenkopf :is(.text-stahl-hell, [class*="text-background/"]) {
   color: var(--muted-foreground);
 }
-.seitenkopf :is(.text-background, [class*="text-background/8"], [class*="text-background/9"]),
+.seitenkopf
+  :is(
+    .text-background,
+    [class*="text-background/8"],
+    [class*="text-background/9"]
+  ),
 .seitenkopf [class*="hover:text-background"]:hover {
   color: var(--foreground);
 }
@@ -1236,23 +877,6 @@
   /* ----------------------------------------------------------------
      14. Bento im 12er-Raster (bento.tsx mit zwoelf/spalten)
      ---------------------------------------------------------------- */
-  .bento-12 {
-    max-width: var(--inhalt-max);
-    margin-inline: auto;
-    padding-inline: max(var(--rinne), env(safe-area-inset-left)) max(var(--rinne), env(safe-area-inset-right));
-    gap: 12px;
-  }
-  .bento-kopf {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .bento-kopf > .bento-text {
-    max-width: 30ch;
-  }
-  .bento-link {
-    padding-top: 8px;
-  }
   /* Ab 640 px stehen Kacheln nebeneinander. Jede Kachel nimmt zwei
      Zeilen des Rasters (Kopf, Motiv) und übernimmt sie per Subgrid. So
      sind die Köpfe einer Reihe gleich hoch, der Link steht am Fuß des
@@ -1260,110 +884,9 @@
      Nachbarkacheln auf einer Linie. Die Kachelhöhe kommt aus Mindest-
      höhen der Motiv-Zeile (nicht der Kachel, sonst verteilte das Raster
      die Zusatzhöhe auch in die Kopf-Zeile). */
-  @media (min-width: 640px) {
-    .bento-12 > .bento-kachel {
-      grid-row: span 2;
-    }
-    .bento-12 > .bento-kachel:not(.bento-quer) {
-      display: grid;
-      grid-template-rows: subgrid;
-      align-items: stretch;
-      row-gap: 0;
-    }
-    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-kopf {
-      min-width: 0;
-    }
-    .bento-12 > .bento-kachel:not(.bento-quer) .bento-link {
-      margin-top: auto;
-    }
-    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-motiv {
-      align-items: flex-end;
-    }
-  }
-  .bento-eyebrow {
-    font-size: 12px;
-    line-height: 1.33;
-    letter-spacing: -0.01em;
-  }
-  .bento-kachel.karte-schwarz .t-kachel {
-    color: #f5f5f7;
-  }
   /* Zweispaltig von 640 bis 1067 px: Website (breit) und Selbst pflegen über
      die volle Breite, dazwischen zwei Paare. Anfragen und Google tauschen
      die Plätze, damit Schwarz und Hell schachbrettartig wechseln. */
-  @media (min-width: 640px) and (max-width: 1067px) {
-    .bento-12 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .bento-12 > :is(.bento-breit, .bento-s7, .bento-s12) {
-      grid-column: span 2;
-    }
-    .bento-12 > :nth-child(4) {
-      order: 1;
-    }
-    .bento-12 > :nth-child(n + 6) {
-      order: 2;
-    }
-    .bento-12 > :not(.bento-breit, .bento-s7, .bento-s12) > .bento-motiv {
-      min-height: 200px;
-    }
-  }
-  @media (min-width: 834px) {
-    .bento-12 {
-      gap: 12px;
-    }
-    .bento-kachel {
-      padding: 56px 40px 0;
-    }
-  }
-  @media (min-width: 1068px) {
-    .bento-12 {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-    .bento-12 > .bento-kachel:not(.bento-quer) > .bento-motiv {
-      min-height: 210px;
-    }
-    .bento-12 > .bento-gross > .bento-motiv {
-      min-height: 330px;
-    }
-    .bento-gross > .bento-motiv {
-      align-items: flex-end;
-    }
-    .bento-12 > .bento-s4 {
-      grid-column: span 4;
-    }
-    .bento-12 > .bento-s5 {
-      grid-column: span 5;
-    }
-    .bento-12 > .bento-s6 {
-      grid-column: span 6;
-    }
-    .bento-12 > .bento-s7 {
-      grid-column: span 7;
-    }
-    .bento-12 > .bento-s12 {
-      grid-column: span 12;
-    }
-    .bento-kachel.bento-quer {
-      min-height: 380px;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 40px;
-      padding: 56px 72px;
-      text-align: left;
-    }
-    .bento-quer > .bento-kopf {
-      align-items: flex-start;
-      max-width: 34ch;
-    }
-    .bento-quer > .bento-motiv {
-      flex: 0 0 auto;
-      width: auto;
-      padding: 0 24px 0 0;
-      align-items: center;
-    }
-  }
 
   /* ----------------------------------------------------------------
      15. Modelle: die vier Pakete als große Karten (paket-kacheln.tsx).
@@ -1399,75 +922,9 @@
     width: min(82vw, 340px);
     scroll-snap-align: start;
   }
-  .modell-karte {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    padding: 28px 24px 32px;
-    text-align: center;
-  }
   /* Bildzone 136 px: Der höchste Stapel (4 × 25 + 3 × 4 = 112 px) und
      der einzelne Starter-Container (64 px, breiter) füllen sie ähnlich. */
-  .modell-bild {
-    position: relative;
-    display: flex;
-    height: 136px;
-    width: 100%;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 18px;
-  }
-  .modell-bild::after {
-    content: "";
-    position: absolute;
-    bottom: 6px;
-    left: 50%;
-    width: 190px;
-    height: 18px;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background: radial-gradient(closest-side, rgb(0 0 0 / 0.14), rgb(0 0 0 / 0));
-  }
-  .modell-bild .container-motiv {
-    --b: 160px;
-    --h: 25px;
-    box-shadow:
-      inset 0 4px 0 rgb(0 0 0 / 0.14),
-      inset 0 -4px 0 rgb(0 0 0 / 0.16);
-  }
-  .modell-bild[data-anzahl="1"] .container-motiv {
-    --b: 204px;
-    --h: 64px;
-  }
-  .modell-bild[data-anzahl="2"] .container-motiv {
-    --b: 184px;
-    --h: 42px;
-  }
-  .modell-bild[data-anzahl="3"] .container-motiv {
-    --b: 170px;
-    --h: 32px;
-  }
   /* Starter: Zink mit sichtbarer Kante statt fast weiß auf Weiß. */
-  .modell-bild .container-motiv[data-ton="zink"] {
-    --ton: #8e8e93;
-  }
-  .modell-eyebrow {
-    min-height: 16px;
-    margin-top: 20px;
-    font-size: 12px;
-    line-height: 16px;
-    letter-spacing: -0.01em;
-  }
-  .modell-satz {
-    max-width: 24ch;
-    min-height: 4.41em;
-    margin-top: 10px;
-    font-size: 17px;
-    line-height: 1.47;
-    letter-spacing: -0.022em;
-    color: var(--muted-foreground);
-  }
   .modell-preis {
     margin-top: 20px;
     font-size: 21px;
@@ -1481,15 +938,6 @@
     font-size: 14px;
     line-height: 1.43;
     color: var(--muted-foreground);
-  }
-  .modell-aktionen {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 8px 20px;
-    margin-top: auto;
-    padding-top: 24px;
   }
   @media (min-width: 640px) {
     .modelle {
@@ -1521,23 +969,6 @@
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 16px;
     }
-    .modell-karte {
-      padding-inline: 20px;
-    }
-    .modell-satz {
-      min-height: 5.88em;
-    }
-  }
-  @media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .modell-karte {
-      transition:
-        transform 300ms var(--ease-apple),
-        box-shadow 300ms var(--ease-apple);
-    }
-    .modell-karte:hover {
-      transform: scale(1.01);
-      box-shadow: var(--schatten-karte-hover);
-    }
   }
 
   /* ----------------------------------------------------------------
@@ -1560,7 +991,9 @@
     backdrop-filter: var(--glas-filter);
     box-shadow: inset 0 -1px 0 var(--border);
   }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .vergleich-tabelle thead :is(th, td) {
       background-color: var(--glas-dicht);
     }
@@ -1705,30 +1138,6 @@
   .abschluss .t-abschnitt {
     color: #f5f5f7;
   }
-  .abschluss-unter {
-    margin-top: 20px;
-    font-size: clamp(17px, 15px + 0.5vw, 21px);
-    line-height: 1.4;
-  }
-  .abschluss-nummer {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
-    font-size: clamp(2.25rem, 1.2rem + 5vw, 5rem);
-    line-height: 1;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    color: #f5f5f7;
-    text-decoration: none;
-    transition: color 240ms var(--ease-apple);
-  }
-  @media (hover: hover) {
-    .abschluss-nummer:hover {
-      color: var(--signal-on-dark);
-    }
-  }
 }
 
 /* ==================================================================
@@ -1742,14 +1151,32 @@
    - Mini-Labels unter 12 px → 12 px
    - Pfeil-Icons in Textlinks → orange „›“ (wie MehrLink)
    ================================================================== */
-.globalnav ~ main
-  :is(.border-foreground, [class*="border-foreground/"]):not(input, select, textarea, button, [role="radio"], [role="checkbox"], [role="switch"]) {
+.globalnav
+  ~ main
+  :is(.border-foreground, [class*="border-foreground/"]):not(
+    input,
+    select,
+    textarea,
+    button,
+    [role="radio"],
+    [role="checkbox"],
+    [role="switch"]
+  ) {
   border-color: var(--border);
 }
-.globalnav ~ main :is(.border-t-2, [class*="border-t-[3px]"], [class*="border-t-[1.5px]"], [class*="border-t-[2px]"]) {
+.globalnav
+  ~ main
+  :is(
+    .border-t-2,
+    [class*="border-t-[3px]"],
+    [class*="border-t-[1.5px]"],
+    [class*="border-t-[2px]"]
+  ) {
   border-top-width: 1px;
 }
-.globalnav ~ main :is(.border-b-2, [class*="border-b-[1.5px]"], [class*="border-b-[2px]"]) {
+.globalnav
+  ~ main
+  :is(.border-b-2, [class*="border-b-[1.5px]"], [class*="border-b-[2px]"]) {
   border-bottom-width: 1px;
 }
 .globalnav ~ main :is(.border-y-2) {
@@ -1758,41 +1185,93 @@
 .globalnav ~ main :is(.border-l-2, [class*="border-l-[3px]"]) {
   border-left-width: 1px;
 }
-.globalnav ~ main :is(.border-2, [class*="border-[1.5px]"]):not(input, select, textarea, button, label, [role="radio"], [role="checkbox"], .rounded-full) {
+.globalnav
+  ~ main
+  :is(.border-2, [class*="border-[1.5px]"]):not(
+    input,
+    select,
+    textarea,
+    button,
+    label,
+    [role="radio"],
+    [role="checkbox"],
+    .rounded-full
+  ) {
   border-width: 1px;
 }
 .globalnav ~ main :is(.bg-foreground, .bg-teer-2):not(.rounded-full) {
   background-color: #000;
 }
-.globalnav ~ main :is(div, article, aside, figure, details, dl, ol, ul).border:not([class*="rounded"]) {
+.globalnav
+  ~ main
+  :is(div, article, aside, figure, details, dl, ol, ul).border:not(
+    [class*="rounded"]
+  ) {
   border-radius: var(--radius-karte);
 }
-.globalnav ~ main :is(div, article, aside, figure, details).bg-card.border:not([class*="rounded"]) {
+.globalnav
+  ~ main
+  :is(div, article, aside, figure, details).bg-card.border:not(
+    [class*="rounded"]
+  ) {
   border-color: transparent;
 }
 /* Kleine quadratische Marker (5–10 px) werden Punkte. */
-.globalnav ~ main
-  :is(span, i, li > div):is([class*="h-[5px]"], [class*="h-[6px]"], [class*="h-[7px]"], [class*="h-[8px]"], [class*="h-[9px]"], [class*="h-[10px]"], .h-1\.5, .h-2, .h-2\.5):is(.inline-block, .block, .shrink-0) {
+.globalnav
+  ~ main
+  :is(span, i, li > div):is(
+    [class*="h-[5px]"],
+    [class*="h-[6px]"],
+    [class*="h-[7px]"],
+    [class*="h-[8px]"],
+    [class*="h-[9px]"],
+    [class*="h-[10px]"],
+    .h-1\.5,
+    .h-2,
+    .h-2\.5
+  ):is(.inline-block, .block, .shrink-0) {
   border-radius: 999px;
 }
-.globalnav ~ main :is([class*="text-[9"], [class*="text-[10"], [class*="text-[11px]"], [class*="text-[11.5px]"]) {
+.globalnav
+  ~ main
+  :is(
+    [class*="text-[9"],
+    [class*="text-[10"],
+    [class*="text-[11px]"],
+    [class*="text-[11.5px]"]
+  ) {
   font-size: 12px;
 }
 /* Pfeil-Icons in Textlinks: Icon aus, orange Chevron an. */
-.globalnav ~ main a:not(.btn-signal, .btn-line) svg:is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up-right) {
+.globalnav
+  ~ main
+  a:not(.btn-signal, .btn-line)
+  svg:is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up-right) {
   display: none;
 }
-.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-up-right) {
+.globalnav
+  ~ main
+  a:not(.btn-signal, .btn-line):has(
+    svg.lucide-arrow-right,
+    svg.lucide-arrow-up-right
+  ) {
   color: var(--gold-ink);
   font-weight: 400;
 }
-.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-up-right)::after {
+.globalnav
+  ~ main
+  a:not(.btn-signal, .btn-line):has(
+    svg.lucide-arrow-right,
+    svg.lucide-arrow-up-right
+  )::after {
   content: "\203A";
   display: inline-block;
   margin-left: 0.2em;
   transform: translateY(-0.02em);
 }
-.globalnav ~ main a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-left)::before {
+.globalnav
+  ~ main
+  a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-left)::before {
   content: "\2039";
   display: inline-block;
   margin-right: 0.2em;
@@ -1801,16 +1280,35 @@
   color: var(--gold-ink);
 }
 /* Zeilen-Links (ganze Zeile, Chevron rechts): Text dunkel, Chevron grau. */
-.globalnav ~ main a.justify-between:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right) {
+.globalnav
+  ~ main
+  a.justify-between:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right) {
   color: var(--foreground);
 }
-.globalnav ~ main a.justify-between:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right)::after {
+.globalnav
+  ~ main
+  a.justify-between:not(.btn-signal, .btn-line):has(
+    svg.lucide-arrow-right
+  )::after {
   color: var(--muted-foreground);
   font-size: 1.25em;
   line-height: 1;
 }
-.globalnav ~ main :is(.bg-foreground, .bg-teer-2, .bg-black, .flaeche-schwarz, .karte-schwarz, .on-dark)
-  a:not(.btn-signal, .btn-line):has(svg.lucide-arrow-right, svg.lucide-arrow-left, svg.lucide-arrow-up-right) {
+.globalnav
+  ~ main
+  :is(
+    .bg-foreground,
+    .bg-teer-2,
+    .bg-black,
+    .flaeche-schwarz,
+    .karte-schwarz,
+    .on-dark
+  )
+  a:not(.btn-signal, .btn-line):has(
+    svg.lucide-arrow-right,
+    svg.lucide-arrow-left,
+    svg.lucide-arrow-up-right
+  ) {
   color: var(--signal-on-dark);
 }
 /* Grautext und oranger Text auf schwarzen Flächen und Karten:
@@ -1827,86 +1325,10 @@
    Haarlinie, Plus wird zum Minus. Ohne Script (details/summary).
    ================================================================== */
 @layer components {
-  .fragen-liste {
-    padding-inline: 20px;
-  }
   .frage + .frage {
     border-top: 1px solid var(--border);
   }
-  .frage-kopf {
-    display: flex;
-    min-height: 64px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding-block: 18px;
-    list-style: none;
-    cursor: pointer;
-  }
-  .frage-kopf::-webkit-details-marker {
-    display: none;
-  }
-  .frage-kopf:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: 2px;
-    border-radius: 8px;
-  }
-  .frage-titel {
-    font-size: 19px;
-    line-height: 1.26;
-    font-weight: 600;
-    letter-spacing: -0.012em;
-    text-wrap: pretty;
-  }
   /* Plus aus zwei Strichen; offen bleibt nur der waagerechte. */
-  .frage-zeichen {
-    position: relative;
-    width: 14px;
-    height: 14px;
-    flex: none;
-    color: var(--muted-foreground);
-  }
-  .frage-zeichen::before,
-  .frage-zeichen::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 100%;
-    height: 1.5px;
-    margin-top: -0.75px;
-    border-radius: 1px;
-    background-color: currentColor;
-    transition: transform 240ms var(--ease-apple);
-  }
-  .frage-zeichen::after {
-    transform: rotate(90deg);
-  }
-  .frage[open] .frage-zeichen::after {
-    transform: rotate(0deg);
-  }
-  .frage-antwort {
-    max-width: 40em;
-    padding-bottom: 22px;
-    font-size: 17px;
-    line-height: 1.47;
-    letter-spacing: -0.022em;
-    color: var(--muted-foreground);
-  }
-  @media (min-width: 834px) {
-    .fragen-liste {
-      padding-inline: 32px;
-    }
-    .frage-titel {
-      font-size: 21px;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .frage-zeichen::before,
-    .frage-zeichen::after {
-      transition: none;
-    }
-  }
 }
 
 /* ==================================================================
