@@ -4,6 +4,7 @@ import { Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google";
 import { Effekte } from "@/components/marketing/effekte";
 import { Einblenden } from "@/components/marketing/einblenden";
 import { Kurztext } from "@/components/marketing/kurztext";
+import { SeitenWechsel } from "@/components/marketing/seiten-wechsel";
 import { GlobalExtras } from "@/components/marketing/global-extras";
 import { buildSearchIndex } from "@/lib/search-index";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
@@ -206,7 +207,7 @@ export default function RootLayout({
         >
           Direkt zum Inhalt
         </a>
-        {children}
+        <SeitenWechsel>{children}</SeitenWechsel>
         <Kurztext />
         <Einblenden />
         <Effekte />

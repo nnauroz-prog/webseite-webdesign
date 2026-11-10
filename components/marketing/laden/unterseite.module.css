@@ -25,11 +25,25 @@
   margin-inline: 0;
   max-width: 18ch;
   overflow-wrap: break-word;
-  font-size: 40px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-size: clamp(40px, 11.5vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
   font-weight: 700;
   text-wrap: balance;
+  /* Tinte mit einem Lichtzug: Hafenblau und Orange laufen einmal durch. */
+  background: linear-gradient(
+      100deg,
+      #1d1d1f 0 40%,
+      #0f2a3a 46%,
+      #f45b1e 50%,
+      #0f2a3a 54%,
+      #1d1d1f 60% 100%
+    )
+    100% 0 / 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #1d1d1f;
 }
 @media (max-width: 359px) {
   .titel {
@@ -230,7 +244,12 @@
   inset: auto 0 0 0;
   z-index: 1;
   padding: 64px 20px 20px;
-  background: linear-gradient(to top, rgb(0 0 0 / 0.78), rgb(0 0 0 / 0.4) 55%, rgb(0 0 0 / 0));
+  background: linear-gradient(
+    to top,
+    rgb(0 0 0 / 0.78),
+    rgb(0 0 0 / 0.4) 55%,
+    rgb(0 0 0 / 0)
+  );
   color: #fff;
   font-size: 21px;
   line-height: 1.2;
@@ -623,5 +642,13 @@ section.ladeliste {
   .blatt {
     border-radius: 28px;
     padding: 40px;
+  }
+}
+
+/* Im Druck und bei erzwungenen Farben: schlichte Tinte statt Verlauf. */
+@media print, (forced-colors: active) {
+  .titel {
+    background: none;
+    -webkit-text-fill-color: currentColor;
   }
 }

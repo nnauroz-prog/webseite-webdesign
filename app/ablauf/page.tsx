@@ -167,18 +167,28 @@ function HaltKarte({ step, i }: { step: (typeof STEPS)[number]; i: number }) {
         {step.body}
       </p>
       <div className="px-[22px] pb-6 sm:px-7 sm:pb-7">
-        <dl
-          className={`grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 border-t pt-4 text-[14px] leading-5 ${
-            last ? "border-white/15" : "border-black/10"
-          }`}
+        {/* Wer dran ist und worauf es ankommt: zwei Marken statt Tabelle. */}
+        <ul
+          role="list"
+          className={`flex flex-wrap gap-2 border-t pt-4 ${last ? "border-white/15" : "border-black/10"}`}
         >
-          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>Wer</dt>
-          <dd className="font-semibold">{step.wer}</dd>
-          <dt className={last ? "text-[#a1a1a6]" : "text-[#6e6e73]"}>
-            Hinweis
-          </dt>
-          <dd>{step.hinweis}</dd>
-        </dl>
+          <li className={`ablauf-marke ${last ? "ablauf-marke-dunkel" : ""}`}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="8" r="3.6" />
+              <path d="M4.500 20a7.5 7.500 0 0 1 15 0" />
+            </svg>
+            <span className="sr-only">Wer: </span>
+            {step.wer}
+          </li>
+          <li className={`ablauf-marke ${last ? "ablauf-marke-dunkel" : ""}`}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="8.500" />
+              <path d="M12 7.500V12l3 2" />
+            </svg>
+            <span className="sr-only">Hinweis: </span>
+            {step.hinweis}
+          </li>
+        </ul>
       </div>
     </li>
   );
