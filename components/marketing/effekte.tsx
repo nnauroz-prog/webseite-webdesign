@@ -57,10 +57,14 @@ export function Effekte() {
     const kopf = document.getElementById("start");
     // Route (Ablauf): Fortschritt entlang der Liste und der Halt in Bildmitte.
     const routen = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-route]"),
+      document.querySelectorAll<HTMLElement>("[data-route], [data-fokus]"),
     ).map((el) => ({
       el,
-      halte: Array.from(el.querySelectorAll<HTMLElement>("ol > li")),
+      halte: Array.from(
+        el.querySelectorAll<HTMLElement>(
+          el.hasAttribute("data-fokus") ? ":scope > *" : "ol > li",
+        ),
+      ),
       aktiv: -2,
     }));
     const messen = () => {

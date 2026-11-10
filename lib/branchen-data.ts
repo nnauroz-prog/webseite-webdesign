@@ -257,7 +257,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         q: "Welche Online-Buchung passt zu mir?",
-        a: "Für kleine Salons reicht oft eine Terminanfrage per Formular. Arbeiten mehrere Leute im Team mit eigenen Kalendern, lohnt sich ein System wie Treatwell, Booksy oder Shore. Wir binden das ein, das Sie schon nutzen oder nutzen wollen.",
+        a: "Für kleine Salons reicht oft eine Terminanfrage per Formular. Arbeiten mehrere Leute im Team mit eigenen Kalendern, lohnt sich ein System wie Treatwell, Booksy oder Shore. Ab Premium binden wir das ein, das Sie schon nutzen oder nutzen wollen.",
       },
       {
         q: "Wie werden meine Bilder gut genug?",
