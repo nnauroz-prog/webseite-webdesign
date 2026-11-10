@@ -12,7 +12,10 @@ import { useEffect, useRef } from "react";
  * 2. Karten kippen am Rechner leicht zum Mauszeiger ([data-kipp]) und
  *    bekommen einen Lichtfleck. Nur mit feinem Zeiger, nie am Handy.
  *
- * Bei reduzierter Bewegung bleibt beides aus. Nichts davon trägt Inhalt.
+ * 3. Fotos mit [data-para] wandern beim Scrollen etwas langsamer als
+ *    ihr Rahmen (Tiefe).
+ *
+ * Bei reduzierter Bewegung bleibt alles aus. Nichts davon trägt Inhalt.
  */
 export function Effekte() {
   const pfad = usePathname();
@@ -24,8 +27,19 @@ export function Effekte() {
     if (!spur || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
       return;
     let raf = 0;
+    // Fotos mit data-para wandern beim Scrollen ein kleines Stück langsamer.
+    const fotos = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-para]"),
+    );
     const messen = () => {
       raf = 0;
+      const vh = window.innerHeight;
+      for (const f of fotos) {
+        const r = f.getBoundingClientRect();
+        if (r.bottom < -80 || r.top > vh + 80) continue;
+        const mitte = (r.top + r.height / 2 - vh / 2) / vh;
+        f.style.setProperty("--py", `${(-mitte * 34).toFixed(1)}px`);
+      }
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 200 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
       spur.style.setProperty("--p", p.toFixed(4));

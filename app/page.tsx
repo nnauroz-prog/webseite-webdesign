@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 
 import { ogFor } from "@/lib/seo";
@@ -25,7 +26,14 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { STUNDENSATZ_EUR } from "@/lib/honorar-data";
 import { JOURNAL_POSTS } from "@/lib/journal-data";
 import { brancheFuerPreset } from "@/lib/muster-presets";
-import { getPaketBySlug, MONATSBEITRAEGE, PAKETE, PREIS_HINWEIS, WARTUNG_PREISE, type Paket } from "@/lib/pakete-data";
+import {
+  getPaketBySlug,
+  MONATSBEITRAEGE,
+  PAKETE,
+  PREIS_HINWEIS,
+  WARTUNG_PREISE,
+  type Paket,
+} from "@/lib/pakete-data";
 
 // Der Pegel St. Pauli im Kopf (components/marketing/hafen/pegel.ts) wird
 // alle zehn Minuten neu geholt; die Seite folgt im selben Takt. Steht hier
@@ -39,7 +47,9 @@ export const metadata: Metadata = {
   // lassen“ steht im Titel der Geldseite /website-erstellen-lassen, damit
   // sich beide Seiten bei Google keine Konkurrenz machen; die H1 im Hero
   // nennt den Begriff weiterhin, Preise() verlinkt auf die Geldseite.
-  title: { absolute: `Webdesign Hamburg · Websites zum Festpreis ${PAKETE[0].setup} | Sitalo` },
+  title: {
+    absolute: `Webdesign Hamburg · Websites zum Festpreis ${PAKETE[0].setup} | Sitalo`,
+  },
   description: `Webdesign aus Hamburg für Betriebe in ganz Deutschland: Websites zum Festpreis ${PAKETE[0].setup}, Test-Link vor dem Start. Jetzt unverbindlich anfragen.`,
   alternates: { canonical: "/" },
   // Bild wird automatisch aus app/opengraph-image.tsx übernommen.
@@ -96,7 +106,11 @@ const FAQ_LD = {
 /** Einmal- und Monatspreis eines Pakets, „ab 599 €“ und „ab 59 € / Monat“. */
 function paket(slug: Paket["slug"]) {
   const p = getPaketBySlug(slug);
-  return { name: p?.name ?? slug, setup: p?.setup ?? "", monat: p?.monthly ?? "" };
+  return {
+    name: p?.name ?? slug,
+    setup: p?.setup ?? "",
+    monat: p?.monthly ?? "",
+  };
 }
 const STARTER = paket("starter");
 const BUSINESS = paket("business");
@@ -104,7 +118,11 @@ const PREMIUM = paket("premium");
 const STUDIO = paket("studio");
 /** Die vier neuesten Ratgeber fürs Journal-Regal. */
 const JOURNAL_NEU = JOURNAL_POSTS.slice(0, 4);
-const DATUM = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+const DATUM = new Intl.DateTimeFormat("de-DE", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
 
 /** Journal-Motiv nach Slug (Dateien aus scripts/laden-bilder.mjs). */
 function journalBild(slug: string) {
@@ -123,13 +141,62 @@ function journalBild(slug: string) {
  * Bildzone sitzt.
  */
 const MUSTER = [
-  { key: "praxis", titel: "Arztpraxis", zeile: "Sprechzeiten, Leistungen, Terminanfrage.", bild: "sitalo-praxis-laptop", pos: "50% 62%", alt: "Laptop mit der Musterseite einer Zahnarztpraxis auf einem Empfangstresen" },
-  { key: "handwerk", titel: "Handwerk", zeile: "Leistungen, Referenzen, Anfrage.", bild: "sitalo-handwerker-laptop", pos: "50% 58%", alt: "Laptop mit der Musterseite einer Tischlerei in einer Werkstatt" },
-  { key: "pflege", titel: "Pflegedienst", zeile: "Leistungen, Team, Rückruf.", bild: "sitalo-pflege-laptop", pos: "50% 62%", alt: "Laptop mit der Musterseite eines Pflegedienstes in einem hellen Büro" },
-  { key: "kanzlei", titel: "Kanzlei", zeile: "Rechtsgebiete, Team, Termin.", bild: "sitalo-kanzlei-laptop", pos: "50% 60%", alt: "Laptop mit der Musterseite einer Kanzlei auf einem Schreibtisch mit Leselampe" },
-  { key: "reinigung", titel: "Gebäudereinigung", zeile: "Leistungen, Einsatzgebiet, Angebot.", bild: "sitalo-reinigung-laptop", pos: "38% 50%", alt: "Laptop mit der Musterseite einer Gebäudereinigung auf einer Edelstahlfläche" },
-  { key: "fitness", titel: "Fitnessstudio", zeile: "Kurse, Preise, Probetraining.", bild: "sitalo-fitness-laptop", pos: "50% 64%", alt: "Laptop mit der Musterseite eines Fitnessstudios am Empfang" },
-  { key: "kosmetik", titel: "Kosmetik", zeile: "Behandlungen, Preise, Termin.", bild: "sitalo-kosmetik-laptop", pos: "55% 62%", alt: "Laptop mit der Musterseite eines Kosmetikstudios auf einer Marmorablage" },
+  {
+    key: "praxis",
+    titel: "Arztpraxis",
+    zeile: "Sprechzeiten, Leistungen, Terminanfrage.",
+    bild: "sitalo-praxis-laptop",
+    pos: "50% 62%",
+    alt: "Laptop mit der Musterseite einer Zahnarztpraxis auf einem Empfangstresen",
+  },
+  {
+    key: "handwerk",
+    titel: "Handwerk",
+    zeile: "Leistungen, Referenzen, Anfrage.",
+    bild: "sitalo-handwerker-laptop",
+    pos: "50% 58%",
+    alt: "Laptop mit der Musterseite einer Tischlerei in einer Werkstatt",
+  },
+  {
+    key: "pflege",
+    titel: "Pflegedienst",
+    zeile: "Leistungen, Team, Rückruf.",
+    bild: "sitalo-pflege-laptop",
+    pos: "50% 62%",
+    alt: "Laptop mit der Musterseite eines Pflegedienstes in einem hellen Büro",
+  },
+  {
+    key: "kanzlei",
+    titel: "Kanzlei",
+    zeile: "Rechtsgebiete, Team, Termin.",
+    bild: "sitalo-kanzlei-laptop",
+    pos: "50% 60%",
+    alt: "Laptop mit der Musterseite einer Kanzlei auf einem Schreibtisch mit Leselampe",
+  },
+  {
+    key: "reinigung",
+    titel: "Gebäudereinigung",
+    zeile: "Leistungen, Einsatzgebiet, Angebot.",
+    bild: "sitalo-reinigung-laptop",
+    pos: "38% 50%",
+    alt: "Laptop mit der Musterseite einer Gebäudereinigung auf einer Edelstahlfläche",
+  },
+  {
+    key: "fitness",
+    titel: "Fitnessstudio",
+    zeile: "Kurse, Preise, Probetraining.",
+    bild: "sitalo-fitness-laptop",
+    pos: "50% 64%",
+    alt: "Laptop mit der Musterseite eines Fitnessstudios am Empfang",
+  },
+  {
+    key: "kosmetik",
+    titel: "Kosmetik",
+    zeile: "Behandlungen, Preise, Termin.",
+    bild: "sitalo-kosmetik-laptop",
+    pos: "55% 62%",
+    alt: "Laptop mit der Musterseite eines Kosmetikstudios auf einer Marmorablage",
+  },
 ];
 
 /*
@@ -146,17 +213,25 @@ const MUSTER = [
 export default function HomePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
+      />
       <MarketingHeader cta={false} />
-      <main id="main" tabIndex={-1} className={`buehne laden flex-1 ${s.seite}`}>
+      <main
+        id="main"
+        tabIndex={-1}
+        className={`buehne laden flex-1 ${s.seite}`}
+      >
         <LadenDefs />
         <LadenKopf />
         <Pakete />
         <Muster />
         <Unterschied />
         <Notiz id="notiz">
-          Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen Tisch reservieren will. Deshalb fängt
-          jede Seite bei uns mit einem Gespräch an.
+          Wer einen Pflegedienst sucht, hat andere Fragen als jemand, der einen
+          Tisch reservieren will. Deshalb fängt jede Seite bei uns mit einem
+          Gespräch an.
         </Notiz>
         <VorherNachher />
         <Weg />
@@ -193,7 +268,13 @@ function Pakete() {
         monat={STARTER.monat}
         href="/pakete/starter"
         bildBeschrieben
-        bild={<LadenFoto src="/images/sitalo-friseur-mobile.webp" position="58% 50%" alt="Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten" />}
+        bild={
+          <LadenFoto
+            src="/images/sitalo-friseur-mobile.webp"
+            position="58% 50%"
+            alt="Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten"
+          />
+        }
       />
       <KarteGross
         ton="schwarz"
@@ -204,7 +285,13 @@ function Pakete() {
         monat={BUSINESS.monat}
         href="/pakete/business"
         bildBeschrieben
-        bild={<LadenFoto src="/images/sitalo-hotel-laptop.webp" position="42% 64%" alt="Laptop mit der mehrseitigen Musterseite eines Hotels an einer Rezeption" />}
+        bild={
+          <LadenFoto
+            src="/images/sitalo-hotel-laptop.webp"
+            position="42% 64%"
+            alt="Laptop mit der mehrseitigen Musterseite eines Hotels an einer Rezeption"
+          />
+        }
       />
       <KarteGross
         eyebrow="Selbst pflegen"
@@ -214,7 +301,13 @@ function Pakete() {
         monat={PREMIUM.monat}
         href="/pakete/premium"
         bildBeschrieben
-        bild={<LadenFoto src="/images/sitalo-cafe-mobile.webp" position="50% 50%" alt="Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch" />}
+        bild={
+          <LadenFoto
+            src="/images/sitalo-cafe-mobile.webp"
+            position="50% 50%"
+            alt="Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch"
+          />
+        }
       />
       <KarteGross
         eyebrow="Neues Erscheinungsbild"
@@ -224,7 +317,13 @@ function Pakete() {
         monat={STUDIO.monat}
         href="/pakete/studio"
         bildBeschrieben
-        bild={<LadenFoto src="/images/workspace-prints.webp" position="50% 40%" alt="Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand" />}
+        bild={
+          <LadenFoto
+            src="/images/workspace-prints.webp"
+            position="50% 40%"
+            alt="Drei gerahmte Entwürfe mit Logo, Farben und Schrift an einer hellen Wand"
+          />
+        }
       />
       <KarteGross
         eyebrow="Schon eine Website?"
@@ -234,7 +333,13 @@ function Pakete() {
         monat="im Monat"
         href="/wartung"
         bildBeschrieben
-        bild={<LadenFoto src="/images/workspace-macbook.webp" position="40% 40%" alt="Hände an einer Laptop-Tastatur, daneben ein Notizbuch und eine Tasse" />}
+        bild={
+          <LadenFoto
+            src="/images/workspace-macbook.webp"
+            position="40% 40%"
+            alt="Hände an einer Laptop-Tastatur, daneben ein Notizbuch und eine Tasse"
+          />
+        }
       />
     </LadenRegal>
   );
@@ -265,7 +370,13 @@ function Muster() {
             mehr="Was auf Ihre Seite gehört"
             href={slug ? `/branchen/${slug}` : "/branchen"}
             bildBeschrieben
-            bild={<LadenFoto src={`/images/${m.bild}.webp`} position={m.pos} alt={m.alt} />}
+            bild={
+              <LadenFoto
+                src={`/images/${m.bild}.webp`}
+                position={m.pos}
+                alt={m.alt}
+              />
+            }
           />
         );
       })}
@@ -274,7 +385,14 @@ function Muster() {
         titel="Mit Ihrem Namen."
         zeile="Namen eingeben, Branche wählen."
         href="/branchen#vorschau"
-        bild={<LadenFoto src="/images/workspace-typing.webp" position="40% 50%" sizes="(min-width: 734px) 300px, 320px" alt="" />}
+        bild={
+          <LadenFoto
+            src="/images/workspace-typing.webp"
+            position="40% 50%"
+            sizes="(min-width: 734px) 300px, 320px"
+            alt=""
+          />
+        }
       />
     </LadenRegal>
   );
@@ -348,7 +466,7 @@ function Unterschied() {
         </p>
         <ol role="list" data-ein="reihe">
           {UNTERSCHIED.map((u, i) => (
-            <li key={u.fett}>
+            <li key={u.fett} style={{ "--i": i } as CSSProperties}>
               <Link href={u.href} className={s.ladeZeile}>
                 <span className={s.ladePos} aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
@@ -366,7 +484,8 @@ function Unterschied() {
           ))}
         </ol>
         <p className={`notiz-mono ${s.ladeFuss}`}>
-          <span data-zaehl="">{UNTERSCHIED.length}</span> Positionen · Festpreis schriftlich vor dem Start
+          <span data-zaehl="">{UNTERSCHIED.length}</span> Positionen · Festpreis
+          schriftlich vor dem Start
         </p>
       </div>
     </LadenRegal>
@@ -378,7 +497,12 @@ function Unterschied() {
  * ---------------------------------------------------------------- */
 function VorherNachher() {
   return (
-    <section id="vorher-nachher" aria-labelledby="vn-titel" className={`${s.regal} ${s.spaet}`} style={{ "--h": "620px", "--h-mobil": "500px" } as React.CSSProperties}>
+    <section
+      id="vorher-nachher"
+      aria-labelledby="vn-titel"
+      className={`${s.regal} ${s.spaet}`}
+      style={{ "--h": "620px", "--h-mobil": "500px" } as React.CSSProperties}
+    >
       <div className={`inhalt ${s.block}`}>
         <div className={s.breit}>
           <div className={s.vnText}>
@@ -387,10 +511,13 @@ function VorherNachher() {
               Dieselben Inhalte, neu gebaut.
             </h2>
             <p className={s.vnZeile}>
-              Links steht eine Seite, wie sie viele Betriebe seit Jahren haben. Rechts stehen dieselben Angaben, geordnet
-              nach dem, was Kunden zuerst wissen wollen. Die Tischlerei ist frei erfunden.
+              Links steht eine Seite, wie sie viele Betriebe seit Jahren haben.
+              Rechts stehen dieselben Angaben, geordnet nach dem, was Kunden
+              zuerst wissen wollen. Die Tischlerei ist frei erfunden.
             </p>
-            <p className={`notiz-mono ${s.vnHinweis}`}>Ziehen Sie den Regler.</p>
+            <p className={`notiz-mono ${s.vnHinweis}`}>
+              Ziehen Sie den Regler.
+            </p>
           </div>
           <div className={s.vnGeraet}>
             <VorherNachherRegler griffRing />
@@ -405,10 +532,26 @@ function VorherNachher() {
  * 7. Der Weg: vier Halte, ein durchgehendes Elbe-Band.
  * ---------------------------------------------------------------- */
 const HALTE = [
-  { eyebrow: "Halt 1", fett: "Anruf.", grau: "Eine Viertelstunde, danach Festpreis und Termin." },
-  { eyebrow: "Halt 2", fett: "Entwurf.", grau: "Mit Ihren Fotos und Stichpunkten." },
-  { eyebrow: "Halt 3", fett: "Test-Link.", grau: "In Ruhe ansehen, am Handy und am Rechner." },
-  { eyebrow: "Endhalt", fett: "Online.", grau: "Kleine Seiten oft nach ein bis zwei Werktagen." },
+  {
+    eyebrow: "Halt 1",
+    fett: "Anruf.",
+    grau: "Eine Viertelstunde, danach Festpreis und Termin.",
+  },
+  {
+    eyebrow: "Halt 2",
+    fett: "Entwurf.",
+    grau: "Mit Ihren Fotos und Stichpunkten.",
+  },
+  {
+    eyebrow: "Halt 3",
+    fett: "Test-Link.",
+    grau: "In Ruhe ansehen, am Handy und am Rechner.",
+  },
+  {
+    eyebrow: "Endhalt",
+    fett: "Online.",
+    grau: "Kleine Seiten oft nach ein bis zwei Werktagen.",
+  },
 ];
 
 function Weg() {
@@ -422,7 +565,13 @@ function Weg() {
       spaet={{ h: 350, hMobil: 360 }}
     >
       {HALTE.map((h, i) => (
-        <KarteWeg key={h.fett} band={<WegBand i={i} />} eyebrow={h.eyebrow} fett={h.fett} grau={h.grau} />
+        <KarteWeg
+          key={h.fett}
+          band={<WegBand i={i} />}
+          eyebrow={h.eyebrow}
+          fett={h.fett}
+          grau={h.grau}
+        />
       ))}
     </LadenRegal>
   );
@@ -434,7 +583,14 @@ function Weg() {
 function Werkzeuge() {
   const weiss = "linear-gradient(180deg, #fff 0%, #f5f5f7 100%)";
   return (
-    <LadenRegal id="werkzeuge" ort="Werkbank · Werkzeuge" einfach fett="Werkzeuge." grau="Kostenlos ausprobieren." spaet={{ h: 540, hMobil: 500 }}>
+    <LadenRegal
+      id="werkzeuge"
+      ort="Werkbank · Werkzeuge"
+      einfach
+      fett="Werkzeuge."
+      grau="Kostenlos ausprobieren."
+      spaet={{ h: 540, hMobil: 500 }}
+    >
       <KarteMittel
         eyebrow="Werkzeug"
         titel="Kostenlose Durchsicht"
@@ -509,13 +665,22 @@ function Journal() {
           eyebrowUnten
           eyebrow={
             <>
-              <time dateTime={post.publishedAt}>{DATUM.format(new Date(post.publishedAt))}</time> · {post.readingMinutes}{" "}
-              Min. Lesezeit
+              <time dateTime={post.publishedAt}>
+                {DATUM.format(new Date(post.publishedAt))}
+              </time>{" "}
+              · {post.readingMinutes} Min. Lesezeit
             </>
           }
           titel={post.title}
           href={`/journal/${post.slug}`}
-          bild={<LadenBild name={journalBild(post.slug)} w={320} h={200} position="50% 50%" />}
+          bild={
+            <LadenBild
+              name={journalBild(post.slug)}
+              w={320}
+              h={200}
+              position="50% 50%"
+            />
+          }
         />
       ))}
     </LadenRegal>
@@ -540,11 +705,17 @@ function Fragen() {
             <h2 id="faq-titel" className={s.regalTitel}>
               Häufige Fragen
             </h2>
-            <p className={s.regalUnter}>Was vor dem ersten Anruf oft gefragt wird.</p>
+            <p className={s.regalUnter}>
+              Was vor dem ersten Anruf oft gefragt wird.
+            </p>
             <MehrLink href="/faq" frei={false} className={s.fragenLink}>
               Alle Fragen
             </MehrLink>
-            <MehrLink href="/webseite-erstellen" frei={false} className={s.fragenLink}>
+            <MehrLink
+              href="/webseite-erstellen"
+              frei={false}
+              className={s.fragenLink}
+            >
               Selbst bauen: in sieben Schritten
             </MehrLink>
           </div>
@@ -580,8 +751,9 @@ function Kontakt() {
         alt: "Speicherstadt in Hamburg in der Abendsonne, im Hintergrund die Elbphilharmonie",
       }}
     >
-      Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und den Termin. Die Antwort auf Anrufe und
-      Anfragen kommt meist am selben Werktag.
+      Eine Viertelstunde reicht meistens. Danach kennen Sie den Festpreis und
+      den Termin. Die Antwort auf Anrufe und Anfragen kommt meist am selben
+      Werktag.
     </Briefkarte>
   );
 }

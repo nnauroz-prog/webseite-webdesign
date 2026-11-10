@@ -101,7 +101,7 @@ export function Briefkarte({
             </div>
           </div>
           {foto ? (
-            <div className={b.foto}>
+            <div className={b.foto} data-para="">
               <Image
                 src={foto.src}
                 alt={foto.alt}
