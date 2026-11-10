@@ -1890,8 +1890,9 @@
   --himmel-b: rgb(40 86 112 / 0.16);
 }
 :root[data-himmel="nacht"] {
-  --himmel-a: rgb(15 42 58 / 0.32);
-  --himmel-b: rgb(244 91 30 / 0.12);
+  /* Nachtblau über der Elbe, kein Grau: heller und satter als ein Schatten. */
+  --himmel-a: rgb(46 96 150 / 0.2);
+  --himmel-b: rgb(244 91 30 / 0.1);
 }
 @media screen {
   body:has(footer) main#main:not(.max-w-2xl) {

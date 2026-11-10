@@ -56,7 +56,11 @@ export function Kurztext() {
       // Große Sätze (Aussagen, Vorspann) bleiben ganz stehen.
       if (parseFloat(stil.fontSize) >= 19) return false;
       const zeile = parseFloat(stil.lineHeight) || 24;
-      return r.height > zeile * 3.4;
+      // In Karten und Listen ab vier Zeilen. Freie Absätze (Einleitungen
+      // unter einer Überschrift) erst ab sechs: Zwei Zeilen plus Knopf
+      // sparen sonst nichts und verstecken nur die Anleitung.
+      const frei = !el.closest("ul, ol, dl, table");
+      return r.height > zeile * (frei ? 5.4 : 3.4);
     });
     // In Listen und Rastern gilt „alle oder keiner“: Würde nur ein Teil der
     // gleich gebauten Einträge gekürzt, sähe das wie ein Fehler aus.
