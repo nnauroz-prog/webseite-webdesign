@@ -42,9 +42,31 @@ export function LadenKopf() {
         <Link href="/standorte" className="underline-offset-4 hover:underline">
           Hamburg
         </Link>
-        , das bundesweit arbeitet. Den Festpreis kennen Sie vor dem Start, Ihre Seite sehen
-        Sie vorher auf einem Test-Link.
+        , das bundesweit arbeitet.
       </p>
+      {/* Die Zusagen als kleine Marken statt als Fließtext. */}
+      <ul role="list" className={s.fakten}>
+        <li style={{ "--i": 0 } as CSSProperties}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 12.5 12.5 4H20v7.5L11.5 20z" />
+            <circle cx="16" cy="8" r="1.4" />
+          </svg>
+          Festpreis vor dem Start
+        </li>
+        <li style={{ "--i": 1 } as CSSProperties}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          Erst ansehen per Test-Link
+        </li>
+        <li style={{ "--i": 2 } as CSSProperties}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.500 5.500a2 2 0 0 1 2-2z" />
+          </svg>
+          Sie sprechen mit uns selbst
+        </li>
+      </ul>
       <div className={s.aktionen}>
         <Link href="/anfrage" className="btn-signal">
           Anfrage schreiben

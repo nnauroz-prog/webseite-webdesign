@@ -497,18 +497,29 @@ function Fragen({ branche }: { branche: Branche }) {
       fett="Fragen aus der Branche."
       grau="Kurz beantwortet."
     >
-      <dl data-ein="reihe" className="grid gap-3 sm:gap-5 md:grid-cols-2">
+      <div
+        data-ein=""
+        className="divide-y divide-black/10 rounded-[18px] bg-white px-[22px] shadow-[0_14px_40px_-10px_rgb(16_32_48/0.14)] sm:rounded-[28px] sm:px-8"
+      >
         {branche.faq.map((item) => (
-          <div key={item.q} className={u.blatt}>
-            <dt className="text-[19px] leading-[1.21] font-semibold tracking-[-0.015em] sm:text-[21px]">
-              {item.q}
-            </dt>
-            <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#6e6e73]">
+          <details key={item.q} className="group">
+            <summary className="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
+              <h3 className="min-w-0 text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">
+                {item.q}
+              </h3>
+              <span
+                aria-hidden="true"
+                className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center text-[22px] leading-none font-light text-[#6e6e73] transition-transform duration-300 group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
+            <p className="pb-6 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#424245]">
               {item.a}
-            </dd>
-          </div>
+            </p>
+          </details>
         ))}
-      </dl>
+      </div>
     </Abschnitt>
   );
 }
