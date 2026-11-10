@@ -1752,3 +1752,23 @@
     }
   }
 }
+
+/* Fokus-Liste (Branchenseiten, nur Handy): Der Punkt in Bildmitte
+   leuchtet, die anderen treten weich zurück. */
+@media screen and (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+  [data-fokus][data-route-an] > * {
+    opacity: 0.42;
+    transform: scale(0.97);
+    transition:
+      opacity 600ms var(--ease-aus),
+      transform 600ms var(--ease-aus),
+      box-shadow 600ms var(--ease-aus);
+  }
+  [data-fokus][data-route-an] > [data-aktiv] {
+    opacity: 1;
+    transform: none;
+    box-shadow:
+      inset 0 0 0 1px rgb(255 159 90 / 0.35),
+      0 18px 44px -18px rgb(244 91 30 / 0.45);
+  }
+}

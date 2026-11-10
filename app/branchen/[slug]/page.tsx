@@ -35,25 +35,36 @@ import { ogFor } from "@/lib/seo";
  */
 const BILDER: Record<
   string,
-  { geraet: string; geraetAlt: string; geraetPos?: string; foto: string; fotoAlt: string; fotoPos?: string; satz: string }
+  {
+    geraet: string;
+    geraetAlt: string;
+    geraetPos?: string;
+    foto: string;
+    fotoAlt: string;
+    fotoPos?: string;
+    satz: string;
+  }
 > = {
   pflege: {
     geraet: "/images/sitalo-pflege-laptop.webp",
-    geraetAlt: "Laptop mit der Musterseite eines Pflegedienstes auf einem hellen Schreibtisch",
+    geraetAlt:
+      "Laptop mit der Musterseite eines Pflegedienstes auf einem hellen Schreibtisch",
     foto: "/images/atmosphere/pflege-eingang.webp",
     fotoAlt: "Heller Empfang eines Pflegedienstes mit Holztresen und Pflanze",
     satz: "Angehörige suchen zuerst Vertrauen und eine Nummer, die erreichbar ist.",
   },
   praxis: {
     geraet: "/images/sitalo-praxis-laptop.webp",
-    geraetAlt: "Laptop mit der Musterseite einer Zahnarztpraxis auf einem hellen Empfangstresen",
+    geraetAlt:
+      "Laptop mit der Musterseite einer Zahnarztpraxis auf einem hellen Empfangstresen",
     foto: "/images/atmosphere/praxis-raum.webp",
     fotoAlt: "Ruhiges Sprechzimmer mit Schreibtisch, Tablet und Sessel",
     satz: "Patientinnen und Patienten suchen Sprechzeiten und den Weg zum Termin.",
   },
   friseur: {
     geraet: "/images/sitalo-friseur-mobile.webp",
-    geraetAlt: "Handy mit der Musterseite eines Friseurs, daneben Visitenkarten auf einem Holztisch",
+    geraetAlt:
+      "Handy mit der Musterseite eines Friseurs, daneben Visitenkarten auf einem Holztisch",
     geraetPos: "55% 50%",
     foto: "/images/atmosphere/friseur-stuhl.webp",
     fotoAlt: "Lederner Friseurstuhl vor einem runden Spiegel",
@@ -61,28 +72,32 @@ const BILDER: Record<
   },
   gastro: {
     geraet: "/images/sitalo-cafe-mobile.webp",
-    geraetAlt: "Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch",
+    geraetAlt:
+      "Handy mit der Musterseite eines Cafés mit Speisekarte auf einem Holztisch",
     foto: "/images/atmosphere/gastro-cafe.webp",
     fotoAlt: "Café mit kupferner Espressomaschine und Holztischen",
     satz: "Wer ein Café sucht, will zuerst die Karte und die Öffnungszeiten sehen.",
   },
   handwerker: {
     geraet: "/images/sitalo-handwerker-laptop.webp",
-    geraetAlt: "Laptop in einer Tischlerwerkstatt mit der Musterseite einer Tischlerei",
+    geraetAlt:
+      "Laptop in einer Tischlerwerkstatt mit der Musterseite einer Tischlerei",
     foto: "/images/atmosphere/handwerker-werkbank.webp",
     fotoAlt: "Werkbank einer Tischlerei mit Hobel und Spänen",
     satz: "Im Handwerk zählen Referenzen und ein schneller Rückruf.",
   },
   reinigung: {
     geraet: "/images/sitalo-reinigung-laptop.webp",
-    geraetAlt: "Laptop mit der Musterseite einer Gebäudereinigung auf einer Edelstahlfläche",
+    geraetAlt:
+      "Laptop mit der Musterseite einer Gebäudereinigung auf einer Edelstahlfläche",
     foto: "/images/atmosphere/reinigung-flur.webp",
     fotoAlt: "Frisch gereinigter, heller Flur mit Reinigungswagen",
     satz: "Gewerbekunden wollen wissen, wo und zu welchen Zeiten Sie reinigen.",
   },
   kanzlei: {
     geraet: "/images/sitalo-kanzlei-laptop.webp",
-    geraetAlt: "Laptop mit der Musterseite einer Kanzlei neben einer grünen Schreibtischlampe",
+    geraetAlt:
+      "Laptop mit der Musterseite einer Kanzlei neben einer grünen Schreibtischlampe",
     foto: "/images/atmosphere/kanzlei-buecher.webp",
     fotoAlt: "Gesetzbücher in einem dunklen Holzregal neben einer Messinglampe",
     satz: "Mandanten suchen ihr Rechtsgebiet und einen klaren Weg zur Erstberatung.",
@@ -96,7 +111,8 @@ const BILDER: Record<
   },
   kosmetik: {
     geraet: "/images/sitalo-kosmetik-laptop.webp",
-    geraetAlt: "Laptop mit der Musterseite eines Kosmetikstudios auf einer Marmorablage",
+    geraetAlt:
+      "Laptop mit der Musterseite eines Kosmetikstudios auf einer Marmorablage",
     foto: "/images/atmosphere/friseur-stuhl.webp",
     fotoAlt: "Behandlungsstuhl aus Leder vor einem runden Spiegel",
     satz: "Bei Kosmetik entscheiden Bilder und eine klare Preisliste.",
@@ -105,7 +121,8 @@ const BILDER: Record<
     geraet: "/images/sitalo-hotel-laptop.webp",
     geraetAlt: "Laptop mit der Musterseite eines Hotels an einer Rezeption",
     foto: "/images/atmosphere/gastro-espresso.webp",
-    fotoAlt: "Heller Frühstücksraum mit Siebträgermaschine am Tresen und Holztischen am Fenster",
+    fotoAlt:
+      "Heller Frühstücksraum mit Siebträgermaschine am Tresen und Holztischen am Fenster",
     satz: "Gäste buchen gern direkt, wenn Zimmer und Lage klar zu sehen sind.",
   },
 };
@@ -129,10 +146,16 @@ export async function generateMetadata({
 
   // Titel und Beschreibung je Branche: lib/branchen-seo.ts (Landingpage führt „erstellen lassen").
   const seo = BRANCHEN_SEO[branche.slug];
-  const title = seo?.title ?? `Website für ${seo?.seoLabel ?? branche.label} erstellen lassen`;
+  const title =
+    seo?.title ??
+    `Website für ${seo?.seoLabel ?? branche.label} erstellen lassen`;
   const lead =
-    branche.shortBody.length > 100 ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "." : branche.shortBody;
-  const description = seo?.description ?? `${lead} Website zum Festpreis ${getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€"}. Jetzt anfragen.`;
+    branche.shortBody.length > 100
+      ? branche.shortBody.split(". ")[0].replace(/\.$/, "") + "."
+      : branche.shortBody;
+  const description =
+    seo?.description ??
+    `${lead} Website zum Festpreis ${getPaketBySlug("starter")?.setup ?? "ab 599\u00A0€"}. Jetzt anfragen.`;
   return {
     title,
     description,
@@ -218,7 +241,11 @@ export default async function BranchePage({
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste titel={branche.label} links={[]} cta={{ href: inquiryHref, label: "Anfragen" }} />
+      <Produktleiste
+        titel={branche.label}
+        links={[]}
+        cta={{ href: inquiryHref, label: "Anfragen" }}
+      />
 
       <UnterseiteMain>
         <Hero branche={branche} inquiryHref={inquiryHref} />
@@ -248,16 +275,34 @@ export default async function BranchePage({
 /* ------------------------------------------------------------------
  * Kopf: links Überschrift und Einordnung, rechts die Musterseite.
  * ---------------------------------------------------------------- */
-function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string }) {
+function Hero({
+  branche,
+  inquiryHref,
+}: {
+  branche: Branche;
+  inquiryHref: string;
+}) {
   const paket = getPaketBySlug(branche.recommendedPackage);
   const landing = BRANCHEN_SEO[branche.slug]?.landing;
   const bild = BILDER[branche.slug];
-  const zweitlink = "text-gold-ink underline underline-offset-2 hover:decoration-2";
+  const zweitlink =
+    "text-gold-ink underline underline-offset-2 hover:decoration-2";
   return (
     <SeitenKopf
-      krumen={[{ href: "/branchen", label: "Branchen" }, { label: branche.label }]}
-      eyebrow={landing ? "Liegeplatz 2 · Seitenplan und Muster" : "Liegeplatz 2 · Website erstellen lassen"}
-      titel={<span className="hyphens-auto sm:hyphens-none">Website für {branche.label}</span>}
+      krumen={[
+        { href: "/branchen", label: "Branchen" },
+        { label: branche.label },
+      ]}
+      eyebrow={
+        landing
+          ? "Liegeplatz 2 · Seitenplan und Muster"
+          : "Liegeplatz 2 · Website erstellen lassen"
+      }
+      titel={
+        <span className="hyphens-auto sm:hyphens-none">
+          Website für {branche.label}
+        </span>
+      }
       unter={branche.shortBody}
       aktionen={
         <>
@@ -284,7 +329,12 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
       }
       unterschrift={
         <>
-          {bild ? <>Musterseite, frei erfunden. Ihre Seite gestalten wir eigens für Ihren Betrieb. </> : null}
+          {bild ? (
+            <>
+              Musterseite, frei erfunden. Ihre Seite gestalten wir eigens für
+              Ihren Betrieb.{" "}
+            </>
+          ) : null}
           <Link href="/branchen#vorschau" className={zweitlink}>
             Erste Skizze mit Ihrem Namen
           </Link>
@@ -295,8 +345,11 @@ function Hero({ branche, inquiryHref }: { branche: Branche; inquiryHref: string 
                 {paket.name}
               </Link>
               , <span className="tabular-nums">{paket.setup}</span> einmalig und{" "}
-              <span className="tabular-nums">{paket.monthly.replace(/\s*\/\s*Monat$/, "")}</span> im Monat, inkl.
-              MwSt. Online {nachDauer(paket.dauer)} ab vollständigen Unterlagen.{" "}
+              <span className="tabular-nums">
+                {paket.monthly.replace(/\s*\/\s*Monat$/, "")}
+              </span>{" "}
+              im Monat, inkl. MwSt. Online {nachDauer(paket.dauer)} ab
+              vollständigen Unterlagen.{" "}
               {landing ? (
                 <Link href={landing.href} className={zweitlink}>
                   {landing.label}
@@ -329,8 +382,8 @@ function Einordnung({ branche }: { branche: Branche }) {
               key={i}
               className={
                 i === 0
-                  ? "text-pretty text-[21px] leading-[1.45] tracking-[-0.01em] sm:text-[24px]"
-                  : "text-muted-foreground text-pretty text-[16.5px] leading-relaxed sm:text-[17px]"
+                  ? "text-[21px] leading-[1.45] tracking-[-0.01em] text-pretty sm:text-[24px]"
+                  : "text-muted-foreground text-[16.5px] leading-relaxed text-pretty sm:text-[17px]"
               }
             >
               {p}
@@ -338,23 +391,30 @@ function Einordnung({ branche }: { branche: Branche }) {
           ))}
         </div>
         <div className={`${u.blatt} self-start lg:col-span-5`}>
-          <h2 className="text-[21px] leading-[25px] font-bold">Typischer Seitenplan</h2>
+          <h2 className="text-[21px] leading-[25px] font-bold">
+            Typischer Seitenplan
+          </h2>
           <p className="mt-5 flex items-center gap-3 text-[15.5px] font-semibold">
-            <span aria-hidden="true" className="bg-gold inline-block h-[9px] w-[9px] shrink-0 rounded-full" />
+            <span
+              aria-hidden="true"
+              className="bg-gold inline-block h-[9px] w-[9px] shrink-0 rounded-full"
+            />
             {root}
           </p>
           <ul className="border-foreground/35 mt-1 ml-[4px] border-l">
             {pages.map((page) => (
               <li
                 key={page}
-                className="before:bg-foreground/35 relative py-1.5 last:after:bg-white pl-5 text-[15px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px"
+                className="before:bg-foreground/35 relative py-1.5 pl-5 text-[15px] leading-snug before:absolute before:top-[16px] before:left-0 before:h-px before:w-3.5 last:after:absolute last:after:top-[17px] last:after:bottom-0 last:after:-left-px last:after:w-px last:after:bg-white"
               >
                 {page}
               </li>
             ))}
           </ul>
           {branche.typicalPagesHinweis ? (
-            <p className="text-muted-foreground mt-4 text-[13.5px] leading-snug">{branche.typicalPagesHinweis}</p>
+            <p className="text-muted-foreground mt-4 text-[13.5px] leading-snug">
+              {branche.typicalPagesHinweis}
+            </p>
           ) : null}
         </div>
       </div>
@@ -398,14 +458,28 @@ function Schwerpunkte({ branche }: { branche: Branche }) {
       grau="Den Rest lassen wir weg."
       unter="Welche Teile Ihr Betrieb davon braucht, klären wir im ersten Gespräch."
     >
-      <dl className={`grid gap-3 sm:grid-cols-2 lg:gap-5 ${branche.features.length % 3 === 0 ? "lg:grid-cols-3" : ""}`}>
+      <dl
+        data-ein="reihe"
+        data-fokus=""
+        className={`grid gap-3 sm:grid-cols-2 lg:gap-5 ${branche.features.length % 3 === 0 ? "lg:grid-cols-3" : ""}`}
+      >
         {branche.features.map((feat, i) => (
-          <div key={feat.title} className="rounded-[18px] bg-[#1d1d1f] p-6 sm:p-8">
-            <p aria-hidden="true" className="text-[12px] leading-4 font-semibold text-[#ff9f5a] tabular-nums">
+          <div
+            key={feat.title}
+            className="rounded-[18px] bg-[#1d1d1f] p-6 sm:p-8"
+          >
+            <p
+              aria-hidden="true"
+              className="text-[12px] leading-4 font-semibold text-[#ff9f5a] tabular-nums"
+            >
               {String(i + 1).padStart(2, "0")}
             </p>
-            <dt className="mt-2 text-[21px] leading-[25px] font-bold text-[#f5f5f7]">{feat.title}</dt>
-            <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#a1a1a6]">{feat.body}</dd>
+            <dt className="mt-2 text-[21px] leading-[25px] font-bold text-[#f5f5f7]">
+              {feat.title}
+            </dt>
+            <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#a1a1a6]">
+              {feat.body}
+            </dd>
           </div>
         ))}
       </dl>
@@ -418,12 +492,20 @@ function Schwerpunkte({ branche }: { branche: Branche }) {
  * ---------------------------------------------------------------- */
 function Fragen({ branche }: { branche: Branche }) {
   return (
-    <Abschnitt id="fragen" fett="Fragen aus der Branche." grau="Kurz beantwortet.">
-      <dl className="grid gap-3 sm:gap-5 md:grid-cols-2">
+    <Abschnitt
+      id="fragen"
+      fett="Fragen aus der Branche."
+      grau="Kurz beantwortet."
+    >
+      <dl data-ein="reihe" className="grid gap-3 sm:gap-5 md:grid-cols-2">
         {branche.faq.map((item) => (
           <div key={item.q} className={u.blatt}>
-            <dt className="text-[19px] leading-[1.21] font-semibold tracking-[-0.015em] sm:text-[21px]">{item.q}</dt>
-            <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#6e6e73]">{item.a}</dd>
+            <dt className="text-[19px] leading-[1.21] font-semibold tracking-[-0.015em] sm:text-[21px]">
+              {item.q}
+            </dt>
+            <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#6e6e73]">
+              {item.a}
+            </dd>
           </div>
         ))}
       </dl>
@@ -449,35 +531,60 @@ function Weiter({ branche }: { branche: Branche }) {
       <div className="inhalt grid gap-10 md:grid-cols-3 md:gap-8">
         {post ? (
           <div>
-            <h2 className="text-[17px] font-semibold tracking-[-0.022em]">Aus dem Journal</h2>
-            <Link href={`/journal/${post.slug}`} className={`group ${u.blatt} mt-4 block !p-6`}>
+            <h2 className="text-[17px] font-semibold tracking-[-0.022em]">
+              Aus dem Journal
+            </h2>
+            <Link
+              href={`/journal/${post.slug}`}
+              className={`group ${u.blatt} mt-4 block !p-6`}
+            >
               <span className="block text-[21px] leading-[1.19] font-semibold tracking-[-0.015em]">
                 {post.title}
               </span>
-              <span className="text-muted-foreground mt-2 block text-[14.5px] leading-relaxed">{post.dek}</span>
+              <span className="text-muted-foreground mt-2 block text-[14.5px] leading-relaxed">
+                {post.dek}
+              </span>
               <span className="link-chevron mt-3 inline-block text-[14px]">
-                Lesen, {post.readingMinutes} Min <span aria-hidden="true" className="chev">›</span>
+                Lesen, {post.readingMinutes} Min{" "}
+                <span aria-hidden="true" className="chev">
+                  ›
+                </span>
               </span>
             </Link>
           </div>
         ) : null}
         {standorte.length > 0 ? (
           <div>
-            <h2 className="text-[17px] font-semibold tracking-[-0.022em]">Stadtteilseiten Hamburg</h2>
+            <h2 className="text-[17px] font-semibold tracking-[-0.022em]">
+              Stadtteilseiten Hamburg
+            </h2>
             <ul className="border-foreground mt-4 border-t">
               {standorte.map((st) => (
                 <li key={st.slug}>
                   <Link href={`/standorte/${st.slug}`} className={linkRow}>
                     {st.name}
-                    <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <ArrowRight
+                      className="h-4 w-4 shrink-0"
+                      aria-hidden="true"
+                    />
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
         ) : null}
-        <div className={!post && standorte.length === 0 ? "md:col-span-3" : !post || standorte.length === 0 ? "md:col-span-2" : ""}>
-          <h2 className="text-[17px] font-semibold tracking-[-0.022em]">Weitere Branchen</h2>
+        <div
+          className={
+            !post && standorte.length === 0
+              ? "md:col-span-3"
+              : !post || standorte.length === 0
+                ? "md:col-span-2"
+                : ""
+          }
+        >
+          <h2 className="text-[17px] font-semibold tracking-[-0.022em]">
+            Weitere Branchen
+          </h2>
           <ul
             className={`border-foreground mt-4 border-t ${
               !post || standorte.length === 0 ? "sm:columns-2 sm:gap-8" : ""
