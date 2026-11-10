@@ -78,7 +78,7 @@ export function KarteGross({
 }) {
   return (
     <li id={id} className={id ? "scroll-mt-28" : undefined}>
-      <article
+      <article data-kipp=""
         className={cn(s.karte, s.gross_, tonKlasse(ton))}
         style={hintergrund ? { background: hintergrund } : undefined}
         data-flaeche-dunkel={dunkel ? "" : undefined}
@@ -91,7 +91,7 @@ export function KarteGross({
           {zeile ? <p className={s.zeile}>{zeile}</p> : null}
           {preis ? (
             <p className={s.preis}>
-              {preis}
+              <b data-zaehl="">{preis}</b>
               {monat ? <span> · {monat}</span> : null}
             </p>
           ) : null}
@@ -149,7 +149,7 @@ export function KarteMittel({
   );
   return (
     <li>
-      <article className={cn(s.karte, s.mittel, kurz && s.mittelKurz)}>
+      <article data-kipp="" className={cn(s.karte, s.mittel, kurz && s.mittelKurz)}>
         {bildOben ? bildEl : null}
         <div className={cn(s.text, eyebrowUnten && s.textFuss)}>
           {eyebrowUnten ? null : <p className={s.eyebrow}>{eyebrow}</p>}
@@ -182,7 +182,7 @@ export function KarteKlein({
 }) {
   return (
     <li>
-      <article className={cn(s.karte, s.klein)}>
+      <article data-kipp="" className={cn(s.karte, s.klein)}>
         <div className={s.kleinKopf}>
           <span className={s.symbol} aria-hidden="true">
             {symbol}
@@ -211,7 +211,7 @@ export function KarteWeg({
 }) {
   return (
     <li>
-      <article className={cn(s.karte, s.klein, s.weg)}>
+      <article data-kipp="" className={cn(s.karte, s.klein, s.weg)}>
         <span className={s.band} aria-hidden="true">
           {band}
         </span>
@@ -244,7 +244,7 @@ export function KarteEndeBild({
 }) {
   return (
     <li>
-      <article className={cn(s.karte, s.ende, s.endeMitBild)}>
+      <article data-kipp="" className={cn(s.karte, s.ende, s.endeMitBild)}>
         <div className={s.text}>
           <p className={s.eyebrow}>{eyebrow}</p>
           <h3 className={s.titelGross}>

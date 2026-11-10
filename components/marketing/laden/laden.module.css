@@ -652,6 +652,10 @@
   color: var(--grau);
   text-wrap: pretty;
 }
+.preis > b {
+  font-weight: inherit;
+  font-variant-numeric: tabular-nums;
+}
 .preis {
   margin-top: 12px;
   font-size: 14px;
