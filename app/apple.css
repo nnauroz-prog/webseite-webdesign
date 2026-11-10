@@ -1772,3 +1772,58 @@
       0 18px 44px -18px rgb(244 91 30 / 0.45);
   }
 }
+
+/* ------------------------------------------------------------------
+   Kurztext (components/marketing/kurztext.tsx): lange Absätze zeigen
+   zwei Zeilen und klappen auf Antippen weich auf. Ohne Script offen.
+   ------------------------------------------------------------------ */
+.kurz-innen {
+  display: block;
+  overflow: hidden;
+  max-height: var(--kurz-h);
+  transition: max-height 520ms var(--ease-aus);
+}
+[data-kurz="zu"] > .kurz-innen {
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, rgb(0 0 0 / 0.35));
+  mask-image: linear-gradient(to bottom, #000 40%, rgb(0 0 0 / 0.35));
+}
+@media (prefers-reduced-motion: reduce) {
+  .kurz-innen {
+    transition: none;
+  }
+}
+.kurz-mehr {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  margin: 0 0 -10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold-ink);
+  cursor: pointer;
+}
+.kurz-mehr::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 320ms var(--ease-aus);
+}
+.kurz-mehr[aria-expanded="true"]::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+:is(.on-dark, [data-flaeche-dunkel]) .kurz-mehr {
+  color: #ff9f5a;
+}
+.kurz-mehr:focus-visible {
+  outline: 2px solid #f45b1e;
+  outline-offset: 2px;
+  border-radius: 6px;
+}

@@ -3,6 +3,7 @@ import { Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google";
 
 import { Effekte } from "@/components/marketing/effekte";
 import { Einblenden } from "@/components/marketing/einblenden";
+import { Kurztext } from "@/components/marketing/kurztext";
 import { GlobalExtras } from "@/components/marketing/global-extras";
 import { buildSearchIndex } from "@/lib/search-index";
 import { MobileCtaBar } from "@/components/marketing/mobile-cta-bar";
@@ -63,8 +64,7 @@ export const metadata: Metadata = {
     default: "Sitalo — Webdesign aus Hamburg",
     template: "%s · Sitalo",
   },
-  description:
-    `Website erstellen lassen zum Festpreis ${PAKETE[0].setup}: gestaltet und gebaut in Hamburg, für Betriebe in ganz Deutschland. Test-Link vor dem Start.`,
+  description: `Website erstellen lassen zum Festpreis ${PAKETE[0].setup}: gestaltet und gebaut in Hamburg, für Betriebe in ganz Deutschland. Test-Link vor dem Start.`,
   // Grundwerte fürs Teilen; Seiten mit eigenem openGraph ersetzen sie.
   openGraph: {
     type: "website",
@@ -197,16 +197,17 @@ export default function RootLayout({
       // Die Startseite setzt html.js per Inline-Script vor dem Hydrieren
       // (components/marketing/hafen/hafen-hero.tsx).
       suppressHydrationWarning
-      className={`${cormorant.variable} ${brandMono.variable} h-full motion-safe:scroll-smooth antialiased`}
+      className={`${cormorant.variable} ${brandMono.variable} h-full antialiased motion-safe:scroll-smooth`}
     >
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
-          className="bg-foreground text-background sr-only z-[100] rounded-full px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-foreground/40"
+          className="bg-foreground text-background focus:ring-foreground/40 sr-only z-[100] rounded-full px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:ring-2 focus:outline-none"
         >
           Direkt zum Inhalt
         </a>
         {children}
+        <Kurztext />
         <Einblenden />
         <Effekte />
         <GlobalExtras searchIndex={buildSearchIndex()} />
