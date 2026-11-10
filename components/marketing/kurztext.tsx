@@ -58,6 +58,23 @@ export function Kurztext() {
       const zeile = parseFloat(stil.lineHeight) || 24;
       return r.height > zeile * 3.4;
     });
+    // In Listen und Rastern gilt „alle oder keiner“: Würde nur ein Teil der
+    // gleich gebauten Einträge gekürzt, sähe das wie ein Fehler aus.
+    const signatur = (el: HTMLElement) => `${el.tagName}|${el.className}`;
+    const zuerst = new Set(kandidaten);
+    for (let i = kandidaten.length - 1; i >= 0; i--) {
+      const el = kandidaten[i];
+      const liste = el.closest("ul, ol, dl, table");
+      if (!liste || !main.contains(liste)) continue;
+      const gleich = Array.from(
+        liste.querySelectorAll<HTMLElement>(el.tagName),
+      ).filter(
+        (x) =>
+          signatur(x) === signatur(el) &&
+          x.closest("ul, ol, dl, table") === liste,
+      );
+      if (gleich.some((x) => !zuerst.has(x))) kandidaten.splice(i, 1);
+    }
     // Folgen mehrere gekürzte Absätze direkt aufeinander, bekommt nur der
     // erste den Knopf; die übrigen klappen mit ihm auf.
     const menge = new Set(kandidaten);
