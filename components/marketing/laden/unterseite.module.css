@@ -595,7 +595,7 @@ section.ladeliste {
 }
 .chip {
   display: inline-flex;
-  min-height: 36px;
+  min-height: 44px;
   align-items: center;
   border-radius: 999px;
   background: #fff;
