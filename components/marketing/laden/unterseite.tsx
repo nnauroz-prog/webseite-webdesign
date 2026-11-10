@@ -1,6 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { cloneElement, isValidElement, type CSSProperties, type ReactElement, type ReactNode } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type CSSProperties,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
 import { Briefkarte } from "@/components/marketing/hafen/briefkarte";
 import { cn } from "@/lib/utils";
@@ -29,11 +35,18 @@ export const SIZES_KOPF = "(min-width: 1068px) 980px, calc(100vw - 32px)";
  * Kopfbild mit Vorabladen (LCP): am Handy bewusst kleiner angefragt,
  * damit bei 2,6-facher Pixeldichte höchstens die 750er-Variante lädt.
  */
-export const SIZES_KOPF_VORAB = "(min-width: 1068px) 980px, (min-width: 734px) calc(100vw - 32px), 70vw";
-export const SIZES_HALB = "(min-width: 1068px) 480px, (min-width: 640px) 50vw, calc(100vw - 32px)";
-export const SIZES_DRITTEL = "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)";
+export const SIZES_KOPF_VORAB =
+  "(min-width: 1068px) 980px, (min-width: 734px) calc(100vw - 32px), 70vw";
+export const SIZES_HALB =
+  "(min-width: 1068px) 480px, (min-width: 640px) 50vw, calc(100vw - 32px)";
+export const SIZES_DRITTEL =
+  "(min-width: 1068px) 320px, (min-width: 640px) 50vw, calc(100vw - 32px)";
 
-export function MusterPille({ text = "Musterseite, frei erfunden" }: { text?: string }) {
+export function MusterPille({
+  text = "Musterseite, frei erfunden",
+}: {
+  text?: string;
+}) {
   return <span className={u.pille}>{text}</span>;
 }
 
@@ -65,7 +78,10 @@ export function FotoRahmen({
   satz?: ReactNode;
   className?: string;
 }) {
-  const style = { "--a": aspect, ...(aspectMobil ? { "--a-m": aspectMobil } : {}) } as CSSProperties;
+  const style = {
+    "--a": aspect,
+    ...(aspectMobil ? { "--a-m": aspectMobil } : {}),
+  } as CSSProperties;
   return (
     <div className={cn(u.rahmen, className)} style={style} data-para="">
       <Image
@@ -93,8 +109,15 @@ export function FotoRahmen({
 /** Brotkrumen: Start › … › Seite, in Mono. Letzter Eintrag ohne Link. */
 export type Krume = { href?: string; label: string };
 
-export function Brotkrumen({ krumen, className }: { krumen: Krume[] | string; className?: string }) {
-  const liste: Krume[] = typeof krumen === "string" ? [{ label: krumen }] : krumen;
+export function Brotkrumen({
+  krumen,
+  className,
+}: {
+  krumen: Krume[] | string;
+  className?: string;
+}) {
+  const liste: Krume[] =
+    typeof krumen === "string" ? [{ label: krumen }] : krumen;
   return (
     <nav aria-label="Brotkrumen" className={cn(u.krumen, className)}>
       <ol>
@@ -107,7 +130,9 @@ export function Brotkrumen({ krumen, className }: { krumen: Krume[] | string; cl
             {k.href && i < liste.length - 1 ? (
               <Link href={k.href}>{k.label}</Link>
             ) : (
-              <span aria-current={i === liste.length - 1 ? "page" : undefined}>{k.label}</span>
+              <span aria-current={i === liste.length - 1 ? "page" : undefined}>
+                {k.label}
+              </span>
             )}
           </li>
         ))}
@@ -161,7 +186,9 @@ export function SeitenKopf({
     <section className={cn(u.kopf, !bild && u.kopfOhneBild, className)}>
       <div className="inhalt">
         {krumen ? <Brotkrumen krumen={krumen} /> : null}
-        {eyebrow ? <p className={cn("kennzeile-mono", u.eyebrow)}>{eyebrow}</p> : null}
+        {eyebrow ? (
+          <p className={cn("kennzeile-mono", u.eyebrow)}>{eyebrow}</p>
+        ) : null}
         <h1 className={u.titel}>{titel}</h1>
         {unter ? <p className={u.unter}>{unter}</p> : null}
         {aktionen ? <div className={u.aktionen}>{aktionen}</div> : null}
@@ -169,7 +196,11 @@ export function SeitenKopf({
         {foto ? (
           <figure className={u.kopfBild}>
             {foto}
-            {notiz ? <figcaption className={cn("notiz-mono", u.unterschrift)}>{notiz}</figcaption> : null}
+            {notiz ? (
+              <figcaption className={cn("notiz-mono", u.unterschrift)}>
+                {notiz}
+              </figcaption>
+            ) : null}
           </figure>
         ) : notiz ? (
           <p className={cn("notiz-mono", u.unterschrift)}>{notiz}</p>
@@ -204,11 +235,22 @@ export function Abschnitt({
     <section
       id={id}
       aria-labelledby={`${id}-titel`}
-      className={cn(dunkel ? cn(u.dunkelFlaeche, u.dunkel, "on-dark") : u.abschnitt, "scroll-mt-24", className)}
+      className={cn(
+        dunkel ? cn(u.dunkelFlaeche, u.dunkel, "on-dark") : u.abschnitt,
+        "scroll-mt-24",
+        className,
+      )}
       data-flaeche-dunkel={dunkel ? "" : undefined}
     >
       <div className="inhalt">
-        <div data-ein="" className={cn(u.abschnittKopf, rechts && "flex flex-wrap items-end justify-between gap-x-8 gap-y-2")}>
+        <div
+          data-ein=""
+          className={cn(
+            u.abschnittKopf,
+            rechts &&
+              "flex flex-wrap items-end justify-between gap-x-8 gap-y-2",
+          )}
+        >
           <div>
             <h2 id={`${id}-titel`} className={u.zweiton}>
               <span>{fett}</span>
@@ -229,8 +271,18 @@ export function Abschnitt({
   );
 }
 
-export function BildRaster({ children, className }: { children: ReactNode; className?: string }) {
-  return <ul role="list" data-ein="reihe" className={cn(u.raster, className)}>{children}</ul>;
+export function BildRaster({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <ul role="list" data-ein="reihe" className={cn(u.raster, className)}>
+      {children}
+    </ul>
+  );
 }
 
 /**
@@ -271,7 +323,13 @@ export function BildKachel({
   zahl?: string;
   mehr?: string;
   href?: string;
-  foto?: { src: string; alt: string; position?: string; sizes?: string; muster?: boolean };
+  foto?: {
+    src: string;
+    alt: string;
+    position?: string;
+    sizes?: string;
+    muster?: boolean;
+  };
   /** eigener Inhalt unter dem Text (Listen …) */
   kinder?: ReactNode;
   /** Fußzeile am Kartenende (Preis, Knopf) */
@@ -296,11 +354,22 @@ export function BildKachel({
         kompaktMobil && u.kompaktMobil,
         className,
       )}
-      data-flaeche-dunkel={ton === "schwarz" || ton === "nacht" ? "" : undefined}
+      data-flaeche-dunkel={
+        ton === "schwarz" || ton === "nacht" ? "" : undefined
+      }
     >
       <div className={u.kachelText}>
         {eyebrow ? <p className={u.kachelEyebrow}>{eyebrow}</p> : null}
-        {zahl ? <p className={u.kachelZahl}>{zahl}</p> : null}
+        {zahl ? (
+          <p className={u.kachelZahl}>
+            {zahl.split(" · ").map((z, i) => (
+              <span key={i}>
+                {i ? " · " : ""}
+                <span data-zaehl="">{z}</span>
+              </span>
+            ))}
+          </p>
+        ) : null}
         <H className={u.kachelTitel}>
           {href ? (
             href.startsWith("#") || href.startsWith("tel:") ? (
@@ -339,7 +408,9 @@ export function BildKachel({
             fill
             sizes={foto.sizes ?? SIZES_HALB}
             className={u.foto}
-            style={foto.position ? { objectPosition: foto.position } : undefined}
+            style={
+              foto.position ? { objectPosition: foto.position } : undefined
+            }
           />
           {foto.muster ? <MusterPille text="Musterseite" /> : null}
         </div>
@@ -375,7 +446,14 @@ export function KontaktKarte({
   children?: ReactNode;
 }) {
   return (
-    <Briefkarte id={id} title={titel} inquiryHref={pille.href} knopf={pille.label} link={link} foto={foto}>
+    <Briefkarte
+      id={id}
+      title={titel}
+      inquiryHref={pille.href}
+      knopf={pille.label}
+      link={link}
+      foto={foto}
+    >
       {zeile}
       {children ? <> {children}</> : null}
     </Briefkarte>
@@ -383,9 +461,19 @@ export function KontaktKarte({
 }
 
 /** Hauptfläche der Unterseiten: #f5f5f7 wie die Startseite. */
-export function UnterseiteMain({ children, className }: { children: ReactNode; className?: string }) {
+export function UnterseiteMain({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <main id="main" tabIndex={-1} className={cn("flex-1 bg-[#f5f5f7]", s.seite, className)}>
+    <main
+      id="main"
+      tabIndex={-1}
+      className={cn("flex-1 bg-[#f5f5f7]", s.seite, className)}
+    >
       {children}
     </main>
   );
