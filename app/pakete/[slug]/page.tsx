@@ -19,7 +19,12 @@ import {
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Produktleiste } from "@/components/marketing/produktleiste";
-import { PAKETE, getAllPaketSlugs, getPaketBySlug, type Paket } from "@/lib/pakete-data";
+import {
+  PAKETE,
+  getAllPaketSlugs,
+  getPaketBySlug,
+  type Paket,
+} from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 import { ogFor } from "@/lib/seo";
 
@@ -38,7 +43,8 @@ const AENDERUNGEN: Record<Paket["slug"], string> = {
 const LEAD: Record<Paket["slug"], string> = {
   starter:
     "Eine Seite mit Kontaktformular, Anruf-Knopf, Karte und Öffnungszeiten. Wer nur wenige Leistungen anbietet, braucht oft nicht mehr.",
-  business: "Bis zu fünf Unterseiten für Leistungen, Team, Galerie und Kontakt, dazu die Grundlagen für Google.",
+  business:
+    "Bis zu fünf Unterseiten für Leistungen, Team, Galerie und Kontakt, dazu die Grundlagen für Google.",
   premium:
     "Eine Struktur, die wir für Ihren Betrieb anlegen. Speisekarte, Angebote oder Termine pflegen Sie auf Wunsch selbst.",
   studio:
@@ -46,7 +52,10 @@ const LEAD: Record<Paket["slug"], string> = {
 };
 
 /** Produktbild je Paket: Musterseite auf einem Gerät (frei erfunden). */
-const BILD: Record<Paket["slug"], { src: string; alt: string; position: string }> = {
+const BILD: Record<
+  Paket["slug"],
+  { src: string; alt: string; position: string }
+> = {
   starter: {
     src: "/images/sitalo-friseur-mobile.webp",
     alt: "Handy mit einer einseitigen Musterseite für einen Friseur, daneben Visitenkarten",
@@ -109,7 +118,8 @@ export async function generateMetadata({
   // Aufforderung anhängen, solange die Beschreibung unter 160 Zeichen bleibt.
   const cta = " Jetzt anfragen.";
   const description =
-    META_DESCRIPTION[paket.slug] ?? (gebaut.length + cta.length <= 160 ? gebaut + cta : gebaut);
+    META_DESCRIPTION[paket.slug] ??
+    (gebaut.length + cta.length <= 160 ? gebaut + cta : gebaut);
   return {
     title,
     description,
@@ -120,14 +130,23 @@ export async function generateMetadata({
 }
 
 /** Abschlussbild je Paket: Atmosphäre der Branche, deren Muster das Paket zeigt (Studio: Hafenszene). */
-const ABSCHLUSS_FOTO: Record<string, { src: string; alt: string; position?: string } | undefined> = {
-  starter: { src: "/images/atmosphere/friseur-stuhl.webp", alt: "Lederner Friseurstuhl vor einem runden Spiegel" },
+const ABSCHLUSS_FOTO: Record<
+  string,
+  { src: string; alt: string; position?: string } | undefined
+> = {
+  starter: {
+    src: "/images/atmosphere/friseur-stuhl.webp",
+    alt: "Lederner Friseurstuhl vor einem runden Spiegel",
+  },
   business: {
     src: "/images/atmosphere/pflege-eingang.webp",
     alt: "Heller Empfang eines Pflegedienstes mit Holztresen und Pflanze",
     position: "50% 60%",
   },
-  premium: { src: "/images/atmosphere/gastro-cafe.webp", alt: "Café mit kupferner Espressomaschine und Holztischen" },
+  premium: {
+    src: "/images/atmosphere/gastro-cafe.webp",
+    alt: "Café mit kupferner Espressomaschine und Holztischen",
+  },
 };
 
 export default async function PaketDetailPage({
@@ -177,7 +196,11 @@ export default async function PaketDetailPage({
           price: monthly,
           priceCurrency: "EUR",
           unitCode: "MON",
-          referenceQuantity: { "@type": "QuantitativeValue", value: 1, unitCode: "MON" },
+          referenceQuantity: {
+            "@type": "QuantitativeValue",
+            value: 1,
+            unitCode: "MON",
+          },
           valueAddedTaxIncluded: true,
         },
       },
@@ -243,18 +266,27 @@ export default async function PaketDetailPage({
 
       <UnterseiteMain>
         {/* Kopf schwarz: Name und Einleitung links, Produktbild und Preis rechts */}
-        <section className="on-dark bg-black text-[#f5f5f7]" data-flaeche-dunkel="">
+        <section
+          className="on-dark bg-black text-[#f5f5f7]"
+          data-flaeche-dunkel=""
+        >
           <div className="inhalt pt-6 pb-14 sm:pt-8 sm:pb-20">
             <nav aria-label="Brotkrumen">
               <ol className="flex flex-wrap items-center gap-2 text-[12px] text-[#a1a1a6]">
                 <li>
-                  <Link href="/" className="inline-flex min-h-6 items-center hover:text-white">
+                  <Link
+                    href="/"
+                    className="inline-flex min-h-6 items-center hover:text-white"
+                  >
                     Start
                   </Link>
                 </li>
                 <li aria-hidden="true">›</li>
                 <li>
-                  <Link href="/pakete" className="inline-flex min-h-6 items-center hover:text-white">
+                  <Link
+                    href="/pakete"
+                    className="inline-flex min-h-6 items-center hover:text-white"
+                  >
                     Pakete
                   </Link>
                 </li>
@@ -267,19 +299,28 @@ export default async function PaketDetailPage({
             <div className="mt-10 grid items-center gap-10 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-14">
               <div>
                 <p className="text-[14px] leading-5 font-semibold text-[#ff9f5a] sm:text-[17px] sm:leading-6">
-                  Paket {PAKETE.findIndex((p) => p.slug === paket.slug) + 1} von {PAKETE.length}
+                  Paket {PAKETE.findIndex((p) => p.slug === paket.slug) + 1} von{" "}
+                  {PAKETE.length}
                 </p>
                 <h1 className={`${u.titel} !mx-0 mt-2 text-left`}>
-                  <span className="whitespace-nowrap">Website-Paket</span> {paket.name}
+                  <span className="whitespace-nowrap">Website-Paket</span>{" "}
+                  {paket.name}
                 </h1>
                 <p className="mt-5 max-w-xl text-[19px] leading-[1.32] text-pretty text-[#a1a1a6] sm:text-[21px]">
                   {LEAD[paket.slug]}
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
-                  <Link href={`/anfrage?paket=${paket.slug}`} className="btn-signal btn-gross">
+                  <Link
+                    href={`/anfrage?paket=${paket.slug}`}
+                    className="btn-signal btn-gross"
+                  >
                     {paket.name} anfragen
                   </Link>
-                  <MehrLink href="/pakete#vergleich" groesse="unter" className="!text-[#ff9f5a]">
+                  <MehrLink
+                    href="/pakete#vergleich"
+                    groesse="unter"
+                    className="!text-[#ff9f5a]"
+                  >
                     Alle Pakete im Vergleich
                   </MehrLink>
                 </div>
@@ -301,22 +342,31 @@ export default async function PaketDetailPage({
                 </div>
                 <div className="mt-6 grid grid-cols-2 gap-5 border-t border-white/15 pt-5">
                   <div>
-                    <p className="text-[12px] font-semibold text-[#a1a1a6]">Festpreis, einmalig</p>
+                    <p className="text-[12px] font-semibold text-[#a1a1a6]">
+                      Festpreis, einmalig
+                    </p>
                     <p className="mt-1 text-[32px] leading-[36px] font-bold tracking-[-0.02em] tabular-nums sm:text-[40px] sm:leading-[44px]">
-                      <span className="mr-1 text-[15px] font-normal text-[#a1a1a6]">ab</span>
+                      <span className="mr-1 text-[15px] font-normal text-[#a1a1a6]">
+                        ab
+                      </span>
                       {betrag(paket.setup)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[12px] font-semibold text-[#a1a1a6]">Im Monat</p>
+                    <p className="text-[12px] font-semibold text-[#a1a1a6]">
+                      Im Monat
+                    </p>
                     <p className="mt-1 text-[32px] leading-[36px] font-bold tracking-[-0.02em] tabular-nums sm:text-[40px] sm:leading-[44px]">
-                      <span className="mr-1 text-[15px] font-normal text-[#a1a1a6]">ab</span>
+                      <span className="mr-1 text-[15px] font-normal text-[#a1a1a6]">
+                        ab
+                      </span>
                       {betrag(paket.monthly)}
                     </p>
                   </div>
                 </div>
                 <p className="mt-3 text-[14px] leading-5 text-[#a1a1a6]">
-                  Inkl. 19&nbsp;% MwSt. Hosting, Updates und {aenderungen} pro Monat. Mindestlaufzeit sechs Monate.
+                  Inkl. 19&nbsp;% MwSt. Hosting, Updates und {aenderungen} pro
+                  Monat. Mindestlaufzeit sechs Monate.
                 </p>
               </div>
             </div>
@@ -341,7 +391,9 @@ export default async function PaketDetailPage({
               ))}
             </div>
             <aside className={`${u.blatt} self-start lg:col-span-5`}>
-              <h3 className="text-[14px] font-semibold text-[#6e6e73]">Typische Projekte</h3>
+              <h3 className="text-[14px] font-semibold text-[#6e6e73]">
+                Typische Projekte
+              </h3>
               <ul className="mt-2 divide-y divide-black/10">
                 {paket.examples.map((e) => (
                   <li key={e} className="py-3 text-[15px] leading-snug">
@@ -349,7 +401,9 @@ export default async function PaketDetailPage({
                   </li>
                 ))}
               </ul>
-              <h3 className="mt-6 text-[14px] font-semibold text-[#6e6e73]">Musterseiten nach Branche</h3>
+              <h3 className="mt-6 text-[14px] font-semibold text-[#6e6e73]">
+                Musterseiten nach Branche
+              </h3>
               <ul className="mt-2 space-y-1">
                 {paket.recommendedFor.map((r) => (
                   <li key={r.slug}>
@@ -358,7 +412,10 @@ export default async function PaketDetailPage({
                       className="group text-gold-ink inline-flex min-h-8 items-center gap-1.5 text-[15px] font-semibold underline-offset-4 hover:underline"
                     >
                       {r.label}
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                      <ArrowRight
+                        className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
                     </Link>
                   </li>
                 ))}
@@ -368,68 +425,117 @@ export default async function PaketDetailPage({
         </Abschnitt>
 
         {/* Umfang: drei Kacheln */}
-        <Abschnitt id="umfang" fett="Was im Paket steckt." grau="Und was nicht.">
-          <BildRaster>
-            <BildKachel
-              spalten={4}
-              titel="Im Paket"
-              kinder={
-                <ul className="mt-3 divide-y divide-black/10">
-                  {paket.contents.map((c) => (
-                    <li key={c} className="flex gap-3 py-3 text-[15px] leading-snug">
-                      <Check className="text-gold-ink mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-              }
-            />
-            <BildKachel
-              spalten={4}
-              titel="Nicht im Paket"
-              kinder={
-                <>
+        <Abschnitt
+          id="umfang"
+          fett="Was im Paket steckt."
+          grau="Und was nicht."
+        >
+          {/* Am Handy drei Reiter statt drei Listen untereinander (reines CSS
+              mit :has; ohne Unterstützung stehen alle drei Listen da). */}
+          <div className="umfang">
+            <div
+              className="umfang-reiter"
+              role="radiogroup"
+              aria-label="Umfang anzeigen"
+            >
+              <input
+                type="radio"
+                name="umfang"
+                id="um-1"
+                defaultChecked
+                className="sr-only"
+              />
+              <label htmlFor="um-1">Im Paket</label>
+              <input type="radio" name="umfang" id="um-2" className="sr-only" />
+              <label htmlFor="um-2">Nicht dabei</label>
+              <input type="radio" name="umfang" id="um-3" className="sr-only" />
+              <label htmlFor="um-3">Jeden Monat</label>
+            </div>
+            <BildRaster>
+              <BildKachel
+                spalten={4}
+                titel="Im Paket"
+                kinder={
                   <ul className="mt-3 divide-y divide-black/10">
-                    {paket.limits.map((l) => (
-                      <li key={l} className="flex gap-3 py-3 text-[15px] leading-snug text-[#6e6e73]">
-                        <Minus className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-                        {l}
+                    {paket.contents.map((c) => (
+                      <li
+                        key={c}
+                        className="flex gap-3 py-3 text-[15px] leading-snug"
+                      >
+                        <Check
+                          className="haken text-gold-ink mt-0.5 h-4 w-4 shrink-0"
+                          aria-hidden="true"
+                        />
+                        {c}
                       </li>
                     ))}
                   </ul>
-                  {naechstes ? (
-                    <p className="mt-4 text-[14px] leading-relaxed text-[#6e6e73]">
-                      {naechstes.slug === "studio" ? "Ein neues Erscheinungsbild gibt es mit " : "Ein Wechsel zu "}
-                      <Link href={`/pakete/${naechstes.slug}`} className="text-foreground underline underline-offset-4">
-                        {naechstes.name}
-                      </Link>
-                      {naechstes.slug === "studio"
-                        ? ". Dafür gestalten wir die Seite neu, den Preis nennen wir Ihnen vorher."
-                        : " geht jederzeit, die Seite wird erweitert und nicht neu gebaut."}
-                    </p>
-                  ) : null}
-                </>
-              }
-            />
-            <BildKachel
-              ton="nacht"
-              spalten={4}
-              breit
-              className="min-[1068px]:!col-span-4"
-              eyebrow={`Nach dem Start · ${paket.monthly}`}
-              titel="Jeden Monat dabei"
-              kinder={
-                <ul className="mt-3 divide-y divide-white/15">
-                  {paket.afterLaunch.map((item) => (
-                    <li key={item} className="flex gap-3 py-3 text-[15px] leading-snug">
-                      <span aria-hidden="true" className="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[#ff9f5a]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              }
-            />
-          </BildRaster>
+                }
+              />
+              <BildKachel
+                spalten={4}
+                titel="Nicht im Paket"
+                kinder={
+                  <>
+                    <ul className="mt-3 divide-y divide-black/10">
+                      {paket.limits.map((l) => (
+                        <li
+                          key={l}
+                          className="flex gap-3 py-3 text-[15px] leading-snug text-[#6e6e73]"
+                        >
+                          <Minus
+                            className="mt-0.5 h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                          />
+                          {l}
+                        </li>
+                      ))}
+                    </ul>
+                    {naechstes ? (
+                      <p className="mt-4 text-[14px] leading-relaxed text-[#6e6e73]">
+                        {naechstes.slug === "studio"
+                          ? "Ein neues Erscheinungsbild gibt es mit "
+                          : "Ein Wechsel zu "}
+                        <Link
+                          href={`/pakete/${naechstes.slug}`}
+                          className="text-foreground underline underline-offset-4"
+                        >
+                          {naechstes.name}
+                        </Link>
+                        {naechstes.slug === "studio"
+                          ? ". Dafür gestalten wir die Seite neu, den Preis nennen wir Ihnen vorher."
+                          : " geht jederzeit, die Seite wird erweitert und nicht neu gebaut."}
+                      </p>
+                    ) : null}
+                  </>
+                }
+              />
+              <BildKachel
+                ton="nacht"
+                spalten={4}
+                breit
+                className="min-[1068px]:!col-span-4"
+                eyebrow={`Nach dem Start · ${paket.monthly}`}
+                titel="Jeden Monat dabei"
+                kinder={
+                  <ul className="mt-3 divide-y divide-white/15">
+                    {paket.afterLaunch.map((item) => (
+                      <li
+                        key={item}
+                        className="flex gap-3 py-3 text-[15px] leading-snug"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[#ff9f5a]"
+                        />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                }
+              />
+            </BildRaster>
+          </div>
         </Abschnitt>
 
         {/* Fragen */}
@@ -439,14 +545,29 @@ export default async function PaketDetailPage({
           grau="Kurz beantwortet."
           rechts={<MehrLink href="/faq">Alle Fragen</MehrLink>}
         >
-          <dl className="grid gap-3 sm:grid-cols-2 sm:gap-5">
+          <div
+            data-ein=""
+            className="divide-y divide-black/10 rounded-[18px] bg-white px-[22px] shadow-[0_14px_40px_-10px_rgb(16_32_48/0.14)] sm:rounded-[28px] sm:px-8"
+          >
             {paket.faq.map((item) => (
-              <div key={item.q} className={u.blatt}>
-                <dt className="text-[19px] leading-[1.21] font-semibold tracking-[-0.015em]">{item.q}</dt>
-                <dd className="mt-3 text-[17px] leading-[1.47] tracking-[-0.022em] text-[#6e6e73]">{item.a}</dd>
-              </div>
+              <details key={item.q} className="group">
+                <summary className="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
+                  <h3 className="min-w-0 text-[17px] leading-snug font-semibold tracking-[-0.016em] sm:text-[19px]">
+                    {item.q}
+                  </h3>
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center text-[22px] leading-none font-light text-[#6e6e73] transition-transform duration-300 group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="pb-6 text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty text-[#424245]">
+                  {item.a}
+                </p>
+              </details>
             ))}
-          </dl>
+          </div>
         </Abschnitt>
 
         {/* Die anderen Pakete als Regal mit Bildkarten */}
@@ -469,7 +590,11 @@ export default async function PaketDetailPage({
               bildBeschrieben
               bild={
                 <>
-                  <LadenFoto src={BILD[other.slug].src} alt={BILD[other.slug].alt} position={BILD[other.slug].position} />
+                  <LadenFoto
+                    src={BILD[other.slug].src}
+                    alt={BILD[other.slug].alt}
+                    position={BILD[other.slug].position}
+                  />
                   <MusterPille text="Musterseite" />
                 </>
               }
@@ -485,7 +610,10 @@ export default async function PaketDetailPage({
               : `Ob ${paket.name} für Ihren Betrieb reicht, klären wir in einem kurzen Telefonat.`
           }
           zeile="Oder Sie schicken die Anfrage gleich mit dem gewählten Paket. Wir antworten meist am selben Werktag, den Festpreis bekommen Sie schriftlich."
-          pille={{ href: `/anfrage?paket=${paket.slug}`, label: `${paket.name} anfragen` }}
+          pille={{
+            href: `/anfrage?paket=${paket.slug}`,
+            label: `${paket.name} anfragen`,
+          }}
           link={{ href: "/termin", label: "Erstgespräch buchen" }}
           foto={ABSCHLUSS_FOTO[paket.slug]}
         />

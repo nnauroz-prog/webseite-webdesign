@@ -2072,3 +2072,104 @@
   line-height: 22px;
   color: #c7c7cc;
 }
+
+/* ------------------------------------------------------------------
+   Paket-Detail, „Was im Paket steckt“: am Handy drei Reiter statt drei
+   Listen untereinander. Reines CSS (:has); ohne Unterstützung und ab
+   1068 px stehen alle drei Karten nebeneinander bzw. untereinander.
+   ------------------------------------------------------------------ */
+.umfang-reiter {
+  display: none;
+}
+@supports selector(:has(*)) {
+  @media (max-width: 1067px) {
+    .umfang-reiter {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 12px;
+      border-radius: 999px;
+      background: rgb(0 0 0 / 0.06);
+      padding: 4px;
+    }
+    .umfang-reiter label {
+      z-index: 1;
+      display: flex;
+      min-height: 40px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #6e6e73;
+      cursor: pointer;
+      transition: color 320ms var(--ease-apple);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .umfang-reiter input:checked + label {
+      color: #1d1d1f;
+    }
+    .umfang-reiter input:focus-visible + label {
+      outline: 2px solid #f45b1e;
+      outline-offset: 2px;
+    }
+    /* Der weiße Daumen gleitet unter den gewählten Reiter. */
+    .umfang-reiter::before {
+      content: "";
+      position: absolute;
+      inset: 4px auto 4px 4px;
+      width: calc((100% - 8px) / 3);
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgb(16 32 48 / 0.14);
+      transition: transform 460ms cubic-bezier(0.34, 1.36, 0.64, 1);
+    }
+    .umfang-reiter:has(#um-2:checked)::before {
+      transform: translateX(100%);
+    }
+    .umfang-reiter:has(#um-3:checked)::before {
+      transform: translateX(200%);
+    }
+    .umfang:has(#um-1:checked) ul[role="list"] > li:not(:nth-child(1)),
+    .umfang:has(#um-2:checked) ul[role="list"] > li:not(:nth-child(2)),
+    .umfang:has(#um-3:checked) ul[role="list"] > li:not(:nth-child(3)) {
+      display: none;
+    }
+    .umfang ul[role="list"] > li {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 1067px) and (prefers-reduced-motion: no-preference) {
+    .umfang ul[role="list"] > li {
+      animation: reiter-rein 520ms var(--ease-aus) both;
+    }
+    @keyframes reiter-rein {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 12px, 0) scale(0.985);
+        filter: blur(6px);
+      }
+    }
+  }
+}
+
+/* Häkchen zeichnen sich beim Einblenden. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-ein-da="w"] .haken path {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+  }
+  [data-ein-da="1"] .haken path {
+    stroke-dasharray: 30;
+    animation: haken-zeichnen 700ms var(--ease-aus) 500ms both;
+  }
+  @keyframes haken-zeichnen {
+    from {
+      stroke-dashoffset: 30;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
