@@ -1580,7 +1580,17 @@
   }
   /* Seitentitel der Unterseiten steigt aus einer Maske. */
   main section:first-of-type h1:not(.kennzeile-mono) {
-    animation: titel-steigt 900ms var(--ease-aus) both;
+    animation:
+      titel-steigt 900ms var(--ease-aus) both,
+      titel-licht 1900ms var(--ease-wechsel) 500ms both;
+  }
+  @keyframes titel-licht {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0% 0;
+    }
   }
   @keyframes titel-steigt {
     from {
@@ -1826,4 +1836,127 @@
   outline: 2px solid #f45b1e;
   outline-offset: 2px;
   border-radius: 6px;
+}
+
+/* ------------------------------------------------------------------
+   Neueste Browser-Technik, jeweils als Zugabe: Ohne Unterstützung sieht
+   die Seite aus wie zuvor.
+   ------------------------------------------------------------------ */
+
+/* 1. Weicher Seitenwechsel (View Transitions, seiten-wechsel.tsx). */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(.seite) {
+    animation: seite-geht 260ms var(--ease-ab) both;
+  }
+  ::view-transition-new(.seite) {
+    animation: seite-kommt 620ms var(--ease-aus) both;
+  }
+  @keyframes seite-geht {
+    to {
+      opacity: 0;
+      transform: scale(0.985);
+      filter: blur(6px);
+    }
+  }
+  @keyframes seite-kommt {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 28px, 0);
+      filter: blur(8px);
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* 2. Himmel über Hamburg: Der obere Seitenrand trägt auf allen Seiten
+   das Licht der Tageszeit (data-himmel setzt effekte.tsx nach dem
+   Sonnenstand; ohne Script: Tag). */
+:root {
+  --himmel-a: rgb(150 200 235 / 0.3);
+  --himmel-b: rgb(255 222 184 / 0.22);
+}
+:root[data-himmel="morgen"] {
+  --himmel-a: rgb(255 186 160 / 0.42);
+  --himmel-b: rgb(170 205 232 / 0.26);
+}
+:root[data-himmel="abend"] {
+  --himmel-a: rgb(255 150 70 / 0.36);
+  --himmel-b: rgb(40 86 112 / 0.16);
+}
+:root[data-himmel="nacht"] {
+  --himmel-a: rgb(15 42 58 / 0.32);
+  --himmel-b: rgb(244 91 30 / 0.12);
+}
+@media screen {
+  body:has(footer) main#main:not(.max-w-2xl) {
+    position: relative;
+    isolation: isolate;
+  }
+  body:has(footer) main#main:not(.max-w-2xl)::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: -1;
+    height: min(820px, 100%);
+    pointer-events: none;
+    background:
+      radial-gradient(
+        110% 90% at 85% 0%,
+        var(--himmel-a),
+        rgb(255 255 255 / 0) 68%
+      ),
+      radial-gradient(
+        90% 70% at 0% 12%,
+        var(--himmel-b),
+        rgb(255 255 255 / 0) 70%
+      );
+    transition: opacity 1200ms var(--ease-aus);
+  }
+}
+
+/* 3. Weichere Ecken (Superellipse) für Karten, wo der Browser es kann. */
+@supports (corner-shape: squircle) {
+  article[data-kipp],
+  [data-ein="reihe"] > li,
+  .cta-leiste .btn-signal {
+    corner-shape: squircle;
+  }
+}
+
+/* 4. Marken auf /ablauf: wer dran ist und worauf es ankommt. */
+.ablauf-marke {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  border-radius: 999px;
+  background: #f5f5f7;
+  padding: 5px 12px 5px 9px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #1d1d1f;
+}
+.ablauf-marke svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #f45b1e;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ablauf-marke-dunkel {
+  background: rgb(255 255 255 / 0.1);
+  color: #f5f5f7;
+}
+.ablauf-marke-dunkel svg {
+  stroke: #ff9f5a;
 }

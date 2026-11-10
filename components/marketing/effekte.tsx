@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+import { lichtFuer } from "@/components/marketing/hafen/hero-licht";
+
 /**
  * Kleine Besonderheiten, einmal im Layout eingesetzt:
  *
@@ -23,6 +25,17 @@ export function Effekte() {
   const pfad = usePathname();
   const spurRef = useRef<HTMLDivElement | null>(null);
   const aus = pfad?.startsWith("/admin") || pfad?.startsWith("/angebot/");
+
+  // Himmel über Hamburg: Morgen, Tag, Abend oder Nacht nach dem echten
+  // Sonnenstand; färbt den oberen Seitenrand auf allen Seiten.
+  useEffect(() => {
+    const setzen = () => {
+      document.documentElement.dataset.himmel = lichtFuer(new Date());
+    };
+    setzen();
+    const takt = window.setInterval(setzen, 5 * 60_000);
+    return () => window.clearInterval(takt);
+  }, []);
 
   useEffect(() => {
     const spur = spurRef.current;
