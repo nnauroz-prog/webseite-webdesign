@@ -1447,7 +1447,7 @@
     clip-path: inset(0 100% 0 0);
   }
   [data-ein][data-ein-da="1"] .kennzeile-mono {
-    animation: marke-tippen 900ms steps(22, end) 220ms both;
+    animation: marke-tippen 1100ms var(--ease-aus) 220ms both;
   }
   /* Der orange Punkt schlägt einmal an, wenn die Zeile getippt ist. */
   [data-ein][data-ein-da="1"] .kennzeile-mono::before {
@@ -1568,7 +1568,7 @@
   }
   /* Kopfbild der Unterseiten öffnet sich wie Containertüren. */
   figure:has(> [data-para]) {
-    animation: tueren-auf 1100ms var(--ease-aus) 120ms both;
+    animation: tueren-auf 1500ms var(--ease-aus) 120ms both;
   }
   @keyframes tueren-auf {
     from {
@@ -1584,12 +1584,12 @@
   }
   @keyframes titel-steigt {
     from {
-      clip-path: inset(0 0 100% 0);
-      transform: translate3d(0, 0.5em, 0);
+      transform: translate3d(0, 0.35em, 0);
+      filter: blur(12px);
     }
     to {
-      clip-path: inset(-0.2em -0.2em -0.3em -0.2em);
       transform: none;
+      filter: blur(0);
     }
   }
 }
@@ -1643,5 +1643,24 @@
   /* Fähre zieht einen weichen Schein. */
   .faehr-linie {
     box-shadow: 0 0 12px rgb(244 91 30 / 0.55);
+  }
+}
+
+/* Aufklapp-Antworten (FAQ) gleiten weich herein statt zu springen. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  details[open] > :not(summary) {
+    animation: antwort-weich 520ms var(--ease-aus) both;
+  }
+  @keyframes antwort-weich {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -8px, 0);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
   }
 }
