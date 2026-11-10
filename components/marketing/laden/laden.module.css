@@ -1269,3 +1269,75 @@
     transition: none;
   }
 }
+
+/* Ladeliste: Beim Einlaufen zieht unter jeder Zeile ein oranger Strich
+   durch, die Positionsnummer leuchtet kurz auf. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .ladeZeile {
+    position: relative;
+  }
+  .ladeZeile::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: #f45b1e;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    pointer-events: none;
+  }
+  :global([data-ein-da="1"]) > li > .ladeZeile::after {
+    animation: lade-strich 1100ms var(--ease-aus) both;
+    animation-delay: calc(var(--i, 0) * 80ms + 200ms);
+  }
+  :global([data-ein-da="1"]) > li > .ladeZeile .ladePos {
+    animation: lade-pos 900ms var(--ease-aus) both;
+    animation-delay: calc(var(--i, 0) * 80ms + 200ms);
+  }
+}
+@keyframes lade-strich {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  60% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+@keyframes lade-pos {
+  0% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+/* Wisch-Regal am Handy: Karten kommen beim Wischen von rechts leicht
+   gedreht und kleiner herein und richten sich auf. */
+@supports (animation-timeline: view()) {
+  @media screen and (hover: none) and (prefers-reduced-motion: no-preference) {
+    .spur > ul > li > article {
+      animation: karte-rein linear both;
+      animation-timeline: view(inline);
+      animation-range: entry 0% entry 90%;
+      transform-origin: 0 100%;
+    }
+  }
+}
+@keyframes karte-rein {
+  from {
+    transform: scale(0.9) rotate(2.5deg);
+    opacity: 0.5;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}

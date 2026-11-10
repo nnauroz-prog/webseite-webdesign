@@ -67,7 +67,7 @@ export function FotoRahmen({
 }) {
   const style = { "--a": aspect, ...(aspectMobil ? { "--a-m": aspectMobil } : {}) } as CSSProperties;
   return (
-    <div className={cn(u.rahmen, className)} style={style}>
+    <div className={cn(u.rahmen, className)} style={style} data-para="">
       <Image
         src={src}
         alt={alt}

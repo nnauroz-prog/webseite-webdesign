@@ -1445,12 +1445,24 @@
   [data-ein][data-ein-da="1"] .kennzeile-mono {
     animation: marke-tippen 900ms steps(22, end) 220ms both;
   }
+  /* Der orange Punkt schlägt einmal an, wenn die Zeile getippt ist. */
+  [data-ein][data-ein-da="1"] .kennzeile-mono::before {
+    animation: punkt-ping 1000ms var(--ease-aus) 1150ms both;
+  }
+  @keyframes punkt-ping {
+    0% {
+      box-shadow: 0 0 0 0 rgb(244 91 30 / 0.55);
+    }
+    100% {
+      box-shadow: 0 0 0 10px rgb(244 91 30 / 0);
+    }
+  }
   @keyframes marke-tippen {
     from {
       clip-path: inset(0 100% 0 0);
     }
     to {
-      clip-path: inset(0 -4px 0 0);
+      clip-path: inset(-12px);
     }
   }
 }
@@ -1537,5 +1549,43 @@
   }
   article[data-kipp][data-kipp-an]::before {
     opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Kräftigere Bewegung (Stufe 7 von 10), alles nur ohne reduzierte
+   Bewegung und nur Bildschirm.
+   ------------------------------------------------------------------ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Fotos mit Tiefe: etwas größer als ihr Rahmen, --py setzt effekte.tsx. */
+  [data-para] > img {
+    transform: translate3d(0, var(--py, 0px), 0) scale(1.14);
+    will-change: transform;
+  }
+  /* Kopfbild der Unterseiten öffnet sich wie Containertüren. */
+  figure:has(> [data-para]) {
+    animation: tueren-auf 1100ms var(--ease-aus) 120ms both;
+  }
+  @keyframes tueren-auf {
+    from {
+      clip-path: inset(0 46% round 28px);
+    }
+    to {
+      clip-path: inset(0 0 round 28px);
+    }
+  }
+  /* Seitentitel der Unterseiten steigt aus einer Maske. */
+  main section:first-of-type h1:not(.kennzeile-mono) {
+    animation: titel-steigt 900ms var(--ease-aus) both;
+  }
+  @keyframes titel-steigt {
+    from {
+      clip-path: inset(0 0 100% 0);
+      transform: translate3d(0, 0.5em, 0);
+    }
+    to {
+      clip-path: inset(-0.2em -0.2em -0.3em -0.2em);
+      transform: none;
+    }
   }
 }
