@@ -2221,3 +2221,80 @@
     animation: antwort-weich 520ms var(--ease-aus) both;
   }
 }
+
+/* ------------------------------------------------------------------
+   Wisch-Reihe: Kartengruppen, die am Rechner nebeneinander stehen,
+   werden am Handy zu einer waagerechten Reihe zum Wischen statt zu
+   einem langen Stapel. .wisch-reihe bis 639 px, mit .wisch-md bis 767.
+   Punkte unter der Reihe über CSS Scroll Markers, wo der Browser es kann.
+   ------------------------------------------------------------------ */
+@media (max-width: 639px) {
+  .wisch-reihe:not(.wisch-md) {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--rinne);
+    scrollbar-width: none;
+    margin-inline: calc(var(--rinne) * -1);
+    padding: 8px var(--rinne) 20px;
+  }
+  .wisch-reihe:not(.wisch-md)::-webkit-scrollbar {
+    display: none;
+  }
+  .wisch-reihe:not(.wisch-md) > * {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+  }
+  .inhalt.wisch-reihe:not(.wisch-md) {
+    margin-inline: auto;
+  }
+}
+@media (max-width: 767px) {
+  .wisch-reihe.wisch-md {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--rinne);
+    scrollbar-width: none;
+    margin-inline: calc(var(--rinne) * -1);
+    padding: 8px var(--rinne) 20px;
+  }
+  .wisch-reihe.wisch-md::-webkit-scrollbar {
+    display: none;
+  }
+  .wisch-reihe.wisch-md > * {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+  }
+}
+@supports (scroll-marker-group: after) {
+  @media (max-width: 639px) {
+    .wisch-reihe {
+      scroll-marker-group: after;
+    }
+    .wisch-reihe::scroll-marker-group {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      padding-bottom: 6px;
+    }
+    .wisch-reihe > *::scroll-marker {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgb(0 0 0 / 0.18);
+      transition:
+        width 320ms var(--ease-aus),
+        background-color 320ms var(--ease-aus);
+    }
+    .wisch-reihe > *::scroll-marker:target-current {
+      width: 20px;
+      background: var(--gold);
+    }
+  }
+}
