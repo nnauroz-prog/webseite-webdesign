@@ -8,22 +8,22 @@
    ================================================================== */
 
 @layer components {
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    Kopf: Layout, Ladebetrieb, Licht und Bewegung stehen im CSS-Modul
    components/marketing/hafen/hero.module.css. Hier bleibt nur die
    Bildunterschrift, die auch die Hamburg-Karte nutzt.
    ------------------------------------------------------------------ */
-.hafen-caption {
-  display: inline-block;
-  padding: 2px 8px;
-  background: #d3d6d3;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.02em;
-  color: rgb(27 29 30 / 0.78);
-}
+  .hafen-caption {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #d3d6d3;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.02em;
+    color: rgb(27 29 30 / 0.78);
+  }
 
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    Leistungen: Containerstapel. 40 Fuß für das Kerngeschäft, 20 Fuß
    für Zusätze. Wellblech-Rippen, Eckbeschläge, Ober- und Unterholm.
 
@@ -36,911 +36,109 @@
      40 Fuß), kommt herunter, dockt an, die Eckbeschläge leuchten und
      der Container hebt sich ein paar Pixel. Beim Verlassen setzt er ab.
    ------------------------------------------------------------------ */
-.box {
-  --c: var(--gold);
-  --ink: var(--foreground);
-  --lock: var(--gold);
-  --lift: -4px;
-  --ease-hub: cubic-bezier(0.45, 0, 0.25, 1);
-  position: relative;
-  /* Was weiter oben im Stapel steht, liegt vorn: ein Spreader, der von
-     einer unteren Reihe hochfährt, verschwindet hinter dem Container
-     darüber (am Rechner wie mobil). --z setzt die Komponente. */
-  z-index: var(--z, 0);
-  display: flex;
-  min-height: 15rem;
-  flex-direction: column;
-  padding: 2.25rem 1.5rem 1.9rem;
-  background-color: var(--c);
-  color: var(--ink);
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgb(0 0 0 / 0.075) 0 1px,
-    transparent 1px 7px,
-    rgb(255 255 255 / 0.08) 7px 8px,
-    transparent 8px 15px
-  );
-  box-shadow:
-    inset 0 8px 0 rgb(0 0 0 / 0.14),
-    inset 0 -8px 0 rgb(0 0 0 / 0.16),
-    inset 8px 0 0 rgb(0 0 0 / 0.06),
-    inset -8px 0 0 rgb(0 0 0 / 0.06);
-  /* Absetzen: weich abbremsen. */
-  transition: transform 0.42s cubic-bezier(0.3, 0.7, 0.4, 1);
-}
-.box::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.32)) top left / 18px 12px no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.32)) top right / 18px 12px no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.32)) bottom left / 18px 12px no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.32)) bottom right / 18px 12px no-repeat;
-}
-.box-signal {
-  --c: var(--gold);
-  /* Orange auf Orange wäre unsichtbar: hier leuchten die Beschläge hell. */
-  --lock: #ffe1cf;
-}
-.box-teer {
-  --c: var(--teer-2);
-  --ink: var(--background);
-}
-.box-gruen {
-  --c: var(--ink-petrol);
-  --ink: #f2f2ef;
-}
-.box-rost {
-  --c: var(--ink-olive);
-  --ink: #f7f3f0;
-  --lock: #ff8a4d;
-}
-.box-zink {
-  --c: var(--zink);
-}
-.box-weiss {
-  --c: #dcdcd7;
-}
-@media (max-width: 639px) {
-  .box {
-    min-height: 0;
-    padding: 1.9rem 1.25rem 1.6rem;
-  }
-}
-.box-code {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.box-code span:last-child {
-  font-weight: 500;
-  opacity: 0.75;
-}
-.box-teer .box-code span:first-child {
-  color: var(--gold);
-}
 
-/* Ganzer Container ist klickbar, der Linkname bleibt die Überschrift. */
-.box-link {
-  color: inherit;
-}
-.box-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-}
-/* Der Fokusring wandert an den ganzen Container. Nur wo der Browser
+  /* Ganzer Container ist klickbar, der Linkname bleibt die Überschrift. */
+  /* Der Fokusring wandert an den ganzen Container. Nur wo der Browser
    :has() kennt; sonst bleibt der Ring am Link. */
-@supports selector(:has(*)) {
-  .box-link:focus-visible {
-    outline: none;
-  }
-}
-/* Dunkleres Orange: hält auf dem hellen Grund 3:1 (Fokus-Kontrast). */
-.box:has(.box-link:focus-visible) {
-  outline: 2px solid var(--gold-ink);
-  outline-offset: 3px;
-}
-/* Unter 768 px liegt unten die feste Leiste „Website anfragen“
+  /* Dunkleres Orange: hält auf dem hellen Grund 3:1 (Fokus-Kontrast). */
+  /* Unter 768 px liegt unten die feste Leiste „Website anfragen“
    (mobile-cta-bar). Fokus und Ankersprünge halten Abstand zu ihr. */
-@media (max-width: 767px) {
-  html {
-    scroll-padding-bottom: 5.5rem;
+  @media (max-width: 767px) {
+    html {
+      scroll-padding-bottom: 5.5rem;
+    }
   }
-}
 
-/* Eckbeschläge im verriegelten Zustand: leuchten in --lock. */
-.box-locks {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  background:
-    linear-gradient(var(--lock), var(--lock)) top 0 left 0 / 18px 12px no-repeat,
-    linear-gradient(var(--lock), var(--lock)) top 0 right 0 / 18px 12px no-repeat,
-    radial-gradient(closest-side, color-mix(in srgb, var(--lock) 55%, transparent), transparent) top -10px left -12px / 42px 34px no-repeat,
-    radial-gradient(closest-side, color-mix(in srgb, var(--lock) 55%, transparent), transparent) top -10px right -12px / 42px 34px no-repeat;
-  transition: opacity 0.22s ease 0.28s;
-}
+  /* Eckbeschläge im verriegelten Zustand: leuchten in --lock. */
 
-/* Schatten auf dem Deck, sichtbar nur wenn der Container hängt. */
-.box-shade {
-  position: absolute;
-  left: 3%;
-  right: 3%;
-  top: 100%;
-  height: 12px;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(closest-side, rgb(27 29 30 / 0.34), transparent);
-  transition:
-    opacity 0.42s ease,
-    transform 0.42s cubic-bezier(0.3, 0.7, 0.4, 1);
-}
+  /* Schatten auf dem Deck, sichtbar nur wenn der Container hängt. */
 
-/* Spreader mit Kopfstück und zwei Hubseilen. Sitzt über dem Container
+  /* Spreader mit Kopfstück und zwei Hubseilen. Sitzt über dem Container
    und reicht 3 px auf den Oberholm (dort greifen die Twistlocks). */
-.box-gear {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(100% - 3px);
-  height: 8.5rem;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(-2.6rem);
-  /* Abfahrt nach oben: anfahren, dann ausblenden. */
-  transition:
-    transform 0.55s cubic-bezier(0.55, 0, 0.8, 0.35) 0.34s,
-    opacity 0.3s linear 0.6s;
-  -webkit-mask-image: linear-gradient(to top, #000 45%, transparent 98%);
-  mask-image: linear-gradient(to top, #000 45%, transparent 98%);
-}
-/* Unter lg steht über dem ersten Container nur der Einleitungsabsatz.
+  /* Unter lg steht über dem ersten Container nur der Einleitungsabsatz.
    Das Gehänge bleibt deshalb so kurz, dass die Hubseile beim Einlaufen
    nicht durch den Text laufen (Abstand dazu: mt-16 in app/page.tsx).
    Ab lg gilt das für die ganze obere Reihe (beide 40-Fuß-Container);
    die untere Reihe darf lang bleiben, sie verschwindet hinter ihnen. */
-@media (max-width: 1023px) {
-  .box:first-child .box-gear {
-    height: 2.5rem;
-  }
-}
-@media (min-width: 1024px) {
-  .box:nth-child(-n + 2) .box-gear {
-    height: 3.75rem;
-  }
-}
-.box-rope {
-  position: absolute;
-  top: 0;
-  bottom: 13px;
-  width: 1.5px;
-  background: #6c7375;
-}
-.box-rope:first-child {
-  left: calc(50% - 15px);
-}
-.box-rope:nth-child(2) {
-  left: calc(50% + 13.5px);
-}
-.box-head {
-  position: absolute;
-  bottom: 9px;
-  left: 50%;
-  width: 52px;
-  height: 7px;
-  margin-left: -26px;
-  background: #3a3f41;
-  clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%);
-}
-.box-spreader {
-  position: absolute;
-  inset: auto 0 0;
-  height: 11px;
-}
-.box-beam {
-  position: absolute;
-  inset: 2px 10px 2px;
-  border-radius: 1px;
-  background: linear-gradient(#8b9294, #5c6366);
-  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.35);
-  transform: scaleX(0.66);
-  transition: transform 0.38s cubic-bezier(0.3, 0.7, 0.3, 1);
-}
-/* Teleskop: je eine Hälfte trägt einen Endträger. 30 % der halben
+  /* Teleskop: je eine Hälfte trägt einen Endträger. 30 % der halben
    Breite = 15 % des Containers. */
-.box-half {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  transition: transform 0.38s cubic-bezier(0.3, 0.7, 0.3, 1);
-}
-.box-half:first-of-type {
-  left: 0;
-  transform: translateX(30%);
-}
-.box-half:last-of-type {
-  right: 0;
-  transform: translateX(-30%);
-}
-.box-half i {
-  position: absolute;
-  top: 0;
-  width: 18px;
-  height: 11px;
-  background: #26292b;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
-}
-.box-half:first-of-type i {
-  left: 0;
-}
-.box-half:last-of-type i {
-  right: 0;
-}
-/* Kontrollleuchte am Endträger: an, sobald verriegelt. */
-.box-half i::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 6px;
-  width: 6px;
-  height: 3px;
-  border-radius: 1px;
-  background: var(--gold);
-  box-shadow: 0 0 6px 1px rgb(244 91 30 / 0.7);
-  opacity: 0;
-  transition: opacity 0.2s ease 0.3s;
-}
+  /* Kontrollleuchte am Endträger: an, sobald verriegelt. */
 
-/* Aktiv: Zeiger (nur echte Maus) oder Tastaturfokus. */
-@media (hover: hover) and (pointer: fine) {
-  .box:hover {
-    transform: translateY(var(--lift));
-    transition: transform 0.5s var(--ease-hub) 0.4s;
-  }
-  .box:hover .box-gear {
-    opacity: 1;
-    transform: none;
-    transition:
-      transform 0.38s cubic-bezier(0.2, 0.75, 0.3, 1),
-      opacity 0.12s linear;
-  }
-  .box:hover :is(.box-beam, .box-half) {
-    transform: none;
-    transition-delay: 0.04s;
-  }
-  .box:hover .box-locks,
-  .box:hover .box-half i::after {
-    opacity: 1;
-    transition: opacity 0.2s ease 0.36s;
-  }
-  .box:hover .box-shade {
-    opacity: 1;
-    transform: translateY(calc(var(--lift) * -1));
-    transition:
-      opacity 0.5s ease 0.4s,
-      transform 0.5s var(--ease-hub) 0.4s;
-  }
-}
-.box:has(.box-link:focus-visible) {
-  transform: translateY(var(--lift));
-  transition: transform 0.5s var(--ease-hub) 0.4s;
-}
-.box:has(.box-link:focus-visible) .box-gear {
-  opacity: 1;
-  transform: none;
-  transition:
-    transform 0.38s cubic-bezier(0.2, 0.75, 0.3, 1),
-    opacity 0.12s linear;
-}
-.box:has(.box-link:focus-visible) :is(.box-beam, .box-half) {
-  transform: none;
-  transition-delay: 0.04s;
-}
-.box:has(.box-link:focus-visible) .box-locks,
-.box:has(.box-link:focus-visible) .box-half i::after {
-  opacity: 1;
-  transition: opacity 0.2s ease 0.36s;
-}
-.box:has(.box-link:focus-visible) .box-shade {
-  opacity: 1;
-  transform: translateY(calc(var(--lift) * -1));
-  transition:
-    opacity 0.5s ease 0.4s,
-    transform 0.5s var(--ease-hub) 0.4s;
-}
+  /* Aktiv: Zeiger (nur echte Maus) oder Tastaturfokus. */
 
-/* Einlaufen am Spreader (data-phase="in" setzt das Script). */
-@media (prefers-reduced-motion: no-preference) {
-  .stack[data-armed] .box:not([data-phase]):not(:focus-within) {
-    opacity: 0;
-  }
-  /* Physikalische Ausnahme zur Token-Kurve: Der Container sinkt am
-     Seil, setzt 1,5 px tief auf (Federung der Twistlocks) und kommt
-     zurück. Deckend ist er nach 6 % (etwa 60 ms): Stahl wird nicht
-     durchsichtig. */
-  .box[data-phase="in"] {
-    animation: box-lower 950ms cubic-bezier(0.3, 0, 0.15, 1) var(--drop-delay, 0ms) backwards;
-  }
-  /* 950 ms absenken, 150 ms Twistlocks lösen, 450 ms abfahren (--ease-ab). */
-  .box[data-phase="in"] .box-gear {
-    animation: gear-release 1550ms linear var(--drop-delay, 0ms) backwards;
-  }
-  .box[data-phase="in"] :is(.box-beam, .box-half) {
-    animation: gear-extended 1550ms linear var(--drop-delay, 0ms) backwards;
-  }
-  .box[data-phase="in"] .box-locks,
-  .box[data-phase="in"] .box-half i::after {
-    animation: locks-release 1550ms linear var(--drop-delay, 0ms) backwards;
-  }
-}
-@keyframes box-lower {
-  from {
-    translate: 0 -3.4rem;
-    opacity: 0;
-  }
-  6% {
-    opacity: 1;
-  }
-  82% {
-    translate: 0 1.5px;
-  }
-  to {
-    translate: 0 0;
-    opacity: 1;
-  }
-}
-/* 0–71 %: hängt am Container und sinkt mit ihm, 61–71 %: Twistlocks
+  /* Einlaufen am Spreader (data-phase="in" setzt das Script). */
+  /* 0–71 %: hängt am Container und sinkt mit ihm, 61–71 %: Twistlocks
    offen. Danach fährt der Spreader in 450 ms an und blendet ganz aus:
    kein Seilrest ohne Container. */
-@keyframes gear-release {
-  0%,
-  71% {
-    opacity: 1;
-    transform: none;
-    animation-timing-function: var(--ease-ab);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-2.6rem);
-  }
-}
-@keyframes gear-extended {
-  0%,
-  100% {
-    transform: none;
-  }
-}
-@keyframes locks-release {
-  0%,
-  61% {
-    opacity: 1;
-  }
-  68%,
-  100% {
-    opacity: 0;
-  }
-}
 
-/* Reduzierte Bewegung: Rückmeldung nur über Licht, nichts bewegt sich. */
-@media (prefers-reduced-motion: reduce) {
-  .box,
-  .box-gear,
-  .box-shade,
-  .box-beam,
-  .box-half {
-    transition: none !important;
-  }
-  .box:hover,
-  .box:has(.box-link:focus-visible) {
-    transform: none !important;
-  }
-  .box-gear {
-    display: none;
-  }
-}
+  /* Reduzierte Bewegung: Rückmeldung nur über Licht, nichts bewegt sich. */
 
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    Ablauf: Fährlinie. Die Fähre fährt beim Scrollen die Linie entlang
    (--p wird per Script gesetzt, 0 bis 1). Hinter ihr läuft die
    Heckwelle, stärker, solange sie Fahrt macht (--v, 0 bis 1). Erreicht
    die Linie einen Halt, füllt sich der Kreis, ein Ring läuft einmal
    aus und Titel und Text blenden auf (data-reached am <li>).
    ------------------------------------------------------------------ */
-.route {
-  --p: 1;
-  --v: 0;
-  /* Spaltenabstand der Halte (md:gap-(--halt-gap) in faehrlinie.tsx). */
-  --halt-gap: 2rem;
-  /* Die Linie läuft vom Rand bis zur Mitte des Endhalt-Punkts (20 px
+  .route {
+    --p: 1;
+    --v: 0;
+    /* Spaltenabstand der Halte (md:gap-(--halt-gap) in faehrlinie.tsx). */
+    --halt-gap: 2rem;
+    /* Die Linie läuft vom Rand bis zur Mitte des Endhalt-Punkts (20 px
      Kreis am Anfang der vierten Spalte), nicht darüber hinaus. */
-  --route-ende: calc(25% - 0.75 * var(--halt-gap) - 10px);
-  position: relative;
-  padding-top: 4.75rem;
-}
-.route-line {
-  position: absolute;
-  left: 0;
-  right: var(--route-ende);
-  top: 4.75rem;
-  height: 4px;
-  border-radius: 2px;
-  background: #424245;
-}
-.route-line i {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--gold);
-  transform: scaleX(var(--p));
-  transform-origin: left center;
-}
-/* Fahrrinne über die volle Breite (overflow: hidden schneidet die
+    --route-ende: calc(25% - 0.75 * var(--halt-gap) - 10px);
+    position: relative;
+    padding-top: 4.75rem;
+  }
+  /* Fahrrinne über die volle Breite (overflow: hidden schneidet die
    Heckwelle am linken Rand ab). Die Fähre (84 px) steht mit ihrer Mitte
    auf der Spitze der orangen Linie, also bei --p · Linienlänge, und legt
    am Ende mittig am Endhalt an; am Start liegt sie bündig am Rand.
    Gerechnet in Container-Einheiten, damit nur transform läuft und die
    Fähre ohne Script schon am Endhalt liegt. */
-.route-ferry {
-  position: absolute;
-  top: 2.35rem;
-  left: 0;
-  right: 0;
-  height: 52px;
-  overflow: hidden;
-  pointer-events: none;
-  container-type: inline-size;
-}
-.route-slide {
-  position: relative;
-  width: 84px;
-  height: 100%;
-  transform: translateX(max(0px, var(--p) * (75cqw + 0.75 * var(--halt-gap) + 10px) - 42px));
-}
-.route-boat {
-  position: relative;
-  display: block;
-  width: 84px;
-  height: 52px;
-  transform-origin: 50% 80%;
-}
-.route-wake {
-  position: absolute;
-  right: calc(100% - 8px);
-  top: 29px;
-  width: 170px;
-  height: 22px;
-  overflow: visible;
-  transform-origin: right center;
-  transform: scaleX(calc(0.25 + var(--v) * 0.75));
-  opacity: var(--v);
-}
-.route-foam {
-  stroke-dasharray: 5 9;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .route[data-run="true"] .route-boat {
-    animation: ferry-roll 6.5s ease-in-out infinite;
-  }
-  .route[data-run="true"] .route-foam {
-    animation: wake-foam 0.9s linear infinite;
-  }
-}
-@keyframes ferry-roll {
-  0%,
-  100% {
-    transform: none;
-  }
-  30% {
-    transform: translateY(-0.8px) rotate(-0.7deg);
-  }
-  70% {
-    transform: translateY(0.4px) rotate(0.5deg);
-  }
-}
-@keyframes wake-foam {
-  to {
-    stroke-dashoffset: 14;
-  }
-}
 
-.stop {
-  position: relative;
-  padding-top: 2.4rem;
-}
-.stop-dot {
-  position: absolute;
-  left: 0;
-  top: -9px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #000;
-  box-shadow: inset 0 0 0 4px #424245;
-}
-/* Orange Kontur, Füllung und einmal auslaufender Ring. */
-.stop-dot::before,
-.stop-dot::after,
-.stop-dot i {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-}
-.stop-dot::before {
-  box-shadow: inset 0 0 0 4px var(--gold);
-}
-.stop-dot i {
-  inset: 5px;
-  background: var(--gold);
-}
-.stop-dot::after {
-  box-shadow: 0 0 0 2px var(--gold);
-  opacity: 0;
-}
-.stop-body {
-  display: block;
-}
+  .stop {
+    position: relative;
+    padding-top: 2.4rem;
+  }
+  /* Orange Kontur, Füllung und einmal auslaufender Ring. */
 
-/* Mit Script: Halte warten, bis die Linie sie erreicht. Der Text bleibt
+  /* Mit Script: Halte warten, bis die Linie sie erreicht. Der Text bleibt
    dabei voll lesbar (die orange Halt-Zeile hält AA auf Teer nur in
    voller Deckkraft) und steht still auf seiner Linie; Punkt und Ring
    kommen erst mit der Linie. */
-.route[data-armed] .stop-dot::before {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-.route[data-armed] .stop-dot i {
-  transform: scale(0);
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
-}
-.route[data-armed] .stop-body {
-  transition: opacity 0.6s ease;
-}
-.route[data-armed] .stop[data-reached] .stop-dot::before {
-  opacity: 1;
-}
-.route[data-armed] .stop[data-reached] .stop-dot i {
-  transform: none;
-  transition-delay: 0.08s;
-}
-.route[data-armed] .stop[data-reached] .stop-body {
-  opacity: 1;
-  transform: none;
-  transition-delay: 0.12s;
-}
-.route[data-armed] .stop[data-reached] .stop-dot::after {
-  animation: stop-ring 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) 0.1s;
-}
-@keyframes stop-ring {
-  from {
-    opacity: 0.9;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(3);
-  }
-}
 
-@media (max-width: 767px) {
-  .route {
-    padding-top: 0;
-    padding-left: 2.25rem;
+  @media (max-width: 767px) {
+    .route {
+      padding-top: 0;
+      padding-left: 2.25rem;
+    }
+    .stop {
+      padding-top: 0;
+    }
   }
-  .route-line {
-    left: 8px;
-    right: auto;
-    top: 6px;
-    bottom: var(--line-bottom, 6px);
-    width: 4px;
-    height: auto;
-  }
-  .route-line i {
-    transform: scaleY(var(--p));
-    transform-origin: center top;
-  }
-  .route-ferry {
-    display: none;
-  }
-  .stop {
-    padding-top: 0;
-  }
-  .stop-dot {
-    left: -2.25rem;
-    top: 2px;
-  }
-}
 
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    Preise: Abfahrtstafel mit Punktmatrix-Schrift. Paketnamen stehen in
    Fallblatt-Modulen und blättern beim ersten Sichtkontakt einmal durch.
    Der Doppelpunkt der Uhr blinkt im Sekundentakt, eine Zeile unter dem
    Zeiger bekommt einen LED-Pfeil. Dauerbewegung nur unter
    [data-run="true"] (sichtbar und Tab im Vordergrund).
    ------------------------------------------------------------------ */
-.board {
-  border: 1px solid #0b0c0d;
-  border-radius: 4px;
-  background: #151718;
-  padding: 10px;
-  color: var(--background);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.5) inset,
-    0 18px 36px -24px rgb(27 29 30 / 0.6);
-}
-.board-in {
-  border: 1px solid #2a2d2f;
-  border-radius: 2px;
-  background:
-    radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.035) 1px, transparent 1.2px) 0 0 / 4px 4px,
-    #111314;
-}
-.led {
-  font-family: var(--font-dot), var(--font-mono), monospace;
-  font-weight: 800;
-  color: #ff7a2f;
-  text-shadow:
-    0 0 6px rgb(255 110 40 / 0.55),
-    0 0 1px rgb(255 160 90 / 0.9);
-  letter-spacing: 0.02em;
-  font-variant-numeric: tabular-nums;
-}
-.led-gruen {
-  color: #5fe39a;
-  text-shadow:
-    0 0 6px rgb(60 220 130 / 0.5),
-    0 0 1px rgb(150 255 190 / 0.9);
-}
-.board-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-}
-.board-status::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 6px 1px rgb(60 220 130 / 0.6);
-}
-.board-colon {
-  display: inline-block;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .board[data-run="true"] .board-colon {
-    animation: led-colon 1s steps(1, end) infinite;
-    animation-delay: var(--colon-delay, 0ms);
-  }
-}
-@keyframes led-colon {
-  50% {
-    opacity: 0.18;
-  }
-}
-.board-row {
-  position: relative;
-  display: grid;
-  grid-template-columns: 2.6rem 9rem minmax(0, 1fr) 6.5rem;
-  gap: 1.25rem;
-  align-items: center;
-  padding: 1.15rem 1.35rem;
-  border-bottom: 1px solid #24272a;
-}
-/* Zeile minimal heller unter dem Zeiger oder mit Tastaturfokus. */
-a.board-row::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgb(255 255 255 / 0.045);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-a.board-row:focus-visible {
-  outline-offset: -3px;
-}
-/* LED-Pfeil links in der Zeile, die Spalten leuchten nacheinander auf. */
-.board-arrow {
-  position: absolute;
-  left: 5px;
-  top: 50%;
-  width: 7px;
-  height: 11px;
-  margin-top: -5.5px;
-  overflow: visible;
-  pointer-events: none;
-}
-.board-arrow circle {
-  fill: #ff7a2f;
-  opacity: 0;
-  transition: opacity 0.12s linear;
-}
-.board-arrow .c2 {
-  transition-delay: 0.05s;
-}
-.board-arrow .c3 {
-  transition-delay: 0.1s;
-}
-.board-arrow g {
-  filter: drop-shadow(0 0 2px rgb(255 110 40 / 0.8));
-}
-@media (hover: hover) and (pointer: fine) {
-  a.board-row:hover::before {
-    opacity: 1;
-  }
-  a.board-row:hover .board-arrow circle {
-    opacity: 1;
-  }
-}
-a.board-row:focus-visible::before,
-a.board-row:focus-visible .board-arrow circle {
-  opacity: 1;
-}
-.board-linie {
-  display: grid;
-  place-items: center;
-  width: 2.6rem;
-  height: 2.6rem;
-  border-radius: 3px;
-  background: var(--gold);
-  color: var(--foreground);
-  font-stretch: 118%;
-  font-weight: 800;
-  font-size: 1.15rem;
-}
-/* Die Punktmatrix zeichnet den Tausenderpunkt wie ein Komma. Der Punkt
+  /* Zeile minimal heller unter dem Zeiger oder mit Tastaturfokus. */
+  /* LED-Pfeil links in der Zeile, die Spalten leuchten nacheinander auf. */
+  /* Die Punktmatrix zeichnet den Tausenderpunkt wie ein Komma. Der Punkt
    kommt deshalb aus der Mono-Schrift, damit 2.999 nicht wie 2,999 wirkt. */
-.led-dot {
-  font-family: var(--font-mono), monospace;
-  font-weight: 600;
-  margin: 0 -0.08em;
-}
 
-/* Fallblatt-Modul: ein Feld pro Zeichen. Obere und untere Hälfte sind
+  /* Fallblatt-Modul: ein Feld pro Zeichen. Obere und untere Hälfte sind
    getrennte Blätter; beim Blättern klappt die obere Hälfte des alten
    Zeichens nach unten, danach fällt die untere des neuen herab. */
-.flap {
-  display: inline-flex;
-  gap: 2px;
-  vertical-align: middle;
-}
-.flap-cell {
-  position: relative;
-  display: inline-block;
-  width: 0.86em;
-  height: 1.3em;
-  border-radius: 2px;
-  box-shadow: 0 1px 0 rgb(255 255 255 / 0.05), 0 2px 3px rgb(0 0 0 / 0.5);
-  perspective: 7em;
-}
-.flap-cell > span {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  line-height: 1;
-  border-radius: 2px;
-  backface-visibility: hidden;
-}
-.flap-cell .ft,
-.flap-cell .ff {
-  background: linear-gradient(#2a2e31, #23272a);
-  clip-path: inset(0 0 50% 0);
-}
-.flap-cell .fb,
-.flap-cell .fl {
-  background: linear-gradient(#1f2225, #1a1d1f);
-  clip-path: inset(50% 0 0 0);
-}
-.flap-cell .ff {
-  transform: rotateX(-90deg);
-  filter: brightness(0.75);
-}
-/* Scharnier: feine dunkle Fuge in der Mitte. */
-.flap-cell::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(50% - 0.5px);
-  height: 1px;
-  background: rgb(8 9 10 / 0.85);
-  z-index: 2;
-}
-
-.board-ticker {
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 0.9rem 0;
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-.board-ticker > div {
-  display: inline-block;
-  padding-left: 1.35rem;
-  font-size: 1.15rem;
-}
-.board-ticker span {
-  margin-right: 3.5rem;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .board-ticker > div {
-    animation: board-tick 60s linear infinite;
-    animation-play-state: paused;
-  }
-  .board[data-run="true"] .board-ticker > div {
-    animation-play-state: running;
-  }
-}
-@keyframes board-tick {
-  to {
-    transform: translateX(-50%);
-  }
-}
-/* Schmale Tafel (Startseite #preise, unter den Paket-Kacheln): nur
+  /* Scharnier: feine dunkle Fuge in der Mitte. */
+  /* Schmale Tafel (Startseite #preise, unter den Paket-Kacheln): nur
    Linie, Name und Preis. Die Sätze stehen schon auf den Kacheln. */
-.board-schmal .board-desc,
-.board-schmal .board-spalte-desc {
-  display: none;
-}
-.board-schmal .board-row {
-  grid-template-columns: 2.6rem minmax(0, 1fr) 6.5rem;
-  padding-block: 0.8rem;
-}
-@media (max-width: 639px) {
-  .board {
-    padding: 6px;
-  }
-  .board-row {
-    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
-    gap: 0.35rem 0.85rem;
-    padding: 1rem 0.9rem;
-  }
-  .board-linie {
-    width: 2.15rem;
-    height: 2.15rem;
-    font-size: 1rem;
-    grid-row: span 2;
-  }
-  .board-desc {
-    grid-column: 2 / -1;
-    grid-row: 2;
-  }
-  .board-price {
-    grid-column: 3;
-    grid-row: 1;
-  }
-  .board-arrow {
-    left: 3px;
-    width: 5px;
-    height: 9px;
-    margin-top: -4.5px;
-  }
-  .board-schmal .board-row {
-    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
-    padding-block: 0.75rem;
-  }
-  .board-schmal .board-linie {
-    grid-row: auto;
-  }
-}
 
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    Bühne: Abschnittsköpfe in zwei Stufen und ein ruhiger Rhythmus.
    Eine große Aussage (.buehne-titel), darunter ein vorhandener Satz in
    Grau als eigener Absatz (.buehne-unter). Nebenabschnitte nehmen die
@@ -961,144 +159,13 @@ a.board-row:focus-visible .board-arrow circle {
    - Ein Kopf hat zwei Stufen: Titel und grauer Satz, höchstens noch
      ein Link. Weiterer Fließtext steht beim Inhalt.
    ------------------------------------------------------------------ */
-.buehne-titel,
-.buehne-titel-klein {
-  max-width: 18ch;
-  font-size: 2.5rem;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
-  font-weight: 740;
-  font-stretch: 112%;
-  text-wrap: balance;
-}
-.buehne-titel-klein {
-  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
-  line-height: 1.04;
-  letter-spacing: -0.032em;
-}
-.buehne-unter {
-  max-width: 34ch;
-  margin-top: 16px;
-  font-size: clamp(1.1875rem, 1.02rem + 0.62vw, 1.5rem);
-  line-height: 1.33;
-  font-weight: 500;
-  letter-spacing: -0.012em;
-  color: var(--muted-foreground);
-  text-wrap: pretty;
-}
-:is(.on-dark, .bg-foreground) .buehne-unter,
-.buehne-dunkel .buehne-unter {
-  color: var(--stahl-hell);
-}
-.buehne-mitte {
-  margin-inline: auto;
-  text-align: center;
-}
-.buehne-mitte :is(.buehne-titel, .buehne-titel-klein, .buehne-unter) {
-  margin-inline: auto;
-}
-.buehne-abschnitt {
-  padding-block: 96px;
-}
-.buehne-kopf + * {
-  margin-top: 48px;
-}
-@media (min-width: 640px) {
-  .buehne-titel {
-    font-size: clamp(2.75rem, 0.9rem + 4.6vw, 3.25rem);
-  }
-  .buehne-abschnitt {
-    padding-block: 128px;
-  }
-  .buehne-kopf + * {
-    margin-top: 64px;
-  }
-}
-@media (min-width: 1024px) {
-  .buehne-abschnitt {
-    padding-block: 160px;
-  }
-  .buehne-kopf + * {
-    margin-top: 80px;
-  }
-  .buehne-unter {
-    margin-top: 20px;
-  }
-  .buehne-kopf-zweispaltig {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: 48px;
-    align-items: end;
-  }
-  /* Genau zwei Kinder: Titel und eine Spalte mit grauem Satz (und Link). */
-  .buehne-kopf-zweispaltig .buehne-unter {
-    margin-top: 0;
-  }
-}
-@media (min-width: 1280px) {
-  .buehne-titel {
-    font-size: 4rem;
-  }
-}
 
-/* ------------------------------------------------------------------
+  /* ------------------------------------------------------------------
    Paket-Kacheln (components/marketing/hafen/paket-kacheln.tsx): ein
    40-Fuß-Container als Produktbild, in der Farbe des Pakets wie im
    Containerstapel. Gezeichnet mit CSS, kein Bild.
    ------------------------------------------------------------------ */
-.kachel-box {
-  --ton: var(--zink);
-  position: relative;
-  display: block;
-  width: 132px;
-  height: 44px;
-  background-color: var(--ton);
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgb(0 0 0 / 0.09) 0 1px,
-    transparent 1px 6px,
-    rgb(255 255 255 / 0.1) 6px 7px,
-    transparent 7px 12px
-  );
-  box-shadow:
-    inset 0 4px 0 rgb(0 0 0 / 0.14),
-    inset 0 -4px 0 rgb(0 0 0 / 0.16);
-}
-.kachel-box::before,
-.kachel-box::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-/* Eckbeschläge oben und unten. */
-.kachel-box::before {
-  background:
-    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top left / 9px 6px no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) top right / 9px 6px no-repeat;
-}
-.kachel-box::after {
-  background:
-    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom left / 9px 6px no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.34), rgb(0 0 0 / 0.34)) bottom right / 9px 6px no-repeat;
-}
-.kachel-box-signal {
-  --ton: var(--gold);
-}
-.kachel-box-teer {
-  --ton: var(--teer-2);
-}
-.kachel-box-gruen {
-  --ton: var(--ink-petrol);
-}
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .kachel-box {
-    transition: transform var(--t-kurz) var(--ease-aus);
-  }
-  .kachel:hover .kachel-box {
-    transform: translateY(-4px);
-  }
-}
+  /* Eckbeschläge oben und unten. */
 }
 
 /* ==================================================================
@@ -1110,64 +177,14 @@ a.board-row:focus-visible .board-arrow circle {
    Mobil, auf niedrigen Fenstern und bei reduzierter Bewegung ein
    normaler Abschnitt.
    ================================================================== */
-@media (min-width: 1024px) and (min-height: 820px) and (max-height: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  html.js-reveal .ablauf-spur {
-    height: calc(100svh + 900px);
-    contain-intrinsic-block-size: auto calc(100svh + 900px);
-    padding-block: 0;
-  }
-  html.js-reveal .ablauf-buehne {
-    position: sticky;
-    top: var(--sticky-top);
-    display: flex;
-    min-height: calc(100svh - var(--sticky-top));
-    flex-direction: column;
-    justify-content: center;
-    padding-block: 40px;
-  }
-  /* Auf der Bühne ist der Platz knapp: etwas engere Abstände. */
-  html.js-reveal .ablauf-buehne .buehne-kopf + * {
-    margin-top: 56px;
-  }
-  html.js-reveal .ablauf-buehne .ablauf-fuss {
-    margin-top: 48px;
-  }
-  /* Texte bleiben voll lesbar und auf einer Linie (kein Nachrücken,
-     sonst steht die ruhende Szene als Treppe da); den Aufbau tragen
-     Linie, Punkt und Ring. */
-}
 
 /* ==================================================================
    Bühnen-Einzug: Geräte (Live-Vorschau, Vorher/Nachher) fahren beim
    Hinscrollen auf die Bühne, an den Scrollweg gekoppelt. Ohne
    Unterstützung für animation-timeline steht das Gerät einfach da.
    ================================================================== */
-.buehne-einzug {
-  transform-origin: 50% 100%;
-}
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .buehne-einzug {
-      animation: einzug linear both;
-      animation-timing-function: var(--ease-aus);
-      animation-timeline: view(0px);
-      animation-range: entry 0% cover 38%;
-    }
-    .buehne-einzug:focus-within {
-      animation: none;
-    }
-  }
-}
 /* Nur Größe, keine Deckkraft: Ein halb durchsichtiges Gerät hielte
    den Kontrast seiner Knöpfe nicht (axe misst den Startzustand). */
-@keyframes einzug {
-  from {
-    transform: scale(0.92);
-  }
-  to {
-    transform: none;
-  }
-}
 
 /* ==================================================================
    Elbe-Linie im Fuß (components/marketing/hafen/elbe-linie.tsx). Global
@@ -1237,38 +254,14 @@ html.js-reveal [data-reveal]:not([data-reveal-state]):not(:focus-within) {
    components/marketing/hafen/steigend.tsx). Jedes Wort hat seine eigene
    Maske; der Weg ist also immer eine Zeile, gleich, wie viele Zeilen
    die Überschrift hat. Unterlängen bleiben über padding-bottom frei. */
-.rv-w {
-  display: inline-block;
-  overflow: clip;
-  vertical-align: top;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.12em;
-}
-.rv-w > span {
-  display: inline-block;
-}
-html.js-reveal [data-reveal="rise"]:has(.rv-w):not([data-reveal-state]):not(:focus-within) {
+html.js-reveal
+  [data-reveal="rise"]:has(.rv-w):not([data-reveal-state]):not(:focus-within) {
   opacity: 1;
 }
 /* 105 % plus die Polsterung der Maske, damit keine Oberlänge unten
    hervorschaut, solange das Wort wartet. */
-html.js-reveal [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within) .rv-w > span {
-  transform: translateY(calc(105% + 0.12em));
-}
 html.js-reveal [data-reveal="rise"][data-reveal-state="in"]:has(.rv-w) {
   animation: none;
-}
-html.js-reveal [data-reveal="rise"][data-reveal-state="in"] .rv-w > span {
-  animation: rv-wort var(--t-lang) var(--ease-aus) both;
-  animation-delay: calc(var(--reveal-delay, 0ms) + min(var(--w, 0) * 28ms, 280ms));
-}
-@keyframes rv-wort {
-  from {
-    transform: translateY(calc(105% + 0.12em));
-  }
-  to {
-    transform: none;
-  }
 }
 
 /* Überschrift mit verschachtelten Elementen (ohne <Steigend/>): sie
@@ -1290,7 +283,8 @@ html.js-reveal [data-reveal="rise"][data-reveal-state="in"] {
 
 /* Absatz: kurz nach der Überschrift, weich von unten. */
 html.js-reveal [data-reveal="fade"][data-reveal-state="in"] {
-  animation: rv-fade 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0ms) + 80ms) both;
+  animation: rv-fade 0.6s cubic-bezier(0.22, 1, 0.36, 1)
+    calc(var(--reveal-delay, 0ms) + 80ms) both;
 }
 @keyframes rv-fade {
   from {
@@ -1305,14 +299,16 @@ html.js-reveal [data-reveal="fade"][data-reveal-state="in"] {
 
 /* Bild: Containertüren öffnen von der Mitte nach außen. */
 html.js-reveal [data-reveal="doors"][data-reveal-state="in"] {
-  animation: rv-doors 0.9s cubic-bezier(0.77, 0, 0.18, 1) var(--reveal-delay, 0ms) both;
+  animation: rv-doors 0.9s cubic-bezier(0.77, 0, 0.18, 1)
+    var(--reveal-delay, 0ms) both;
 }
 /* img-fade-in (globals.css, Laden von next/image) bleibt in der Liste:
    Fiele es während „in“ weg, startete es beim Wechsel auf „done“ neu,
    und das Bild würde nach dem Öffnen ein zweites Mal blass einblenden. */
 html.js-reveal [data-reveal="doors"][data-reveal-state="in"] > img {
   animation:
-    rv-doors-img 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms) both,
+    rv-doors-img 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms)
+      both,
     img-fade-in 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 @keyframes rv-doors {
@@ -1334,16 +330,33 @@ html.js-reveal [data-reveal="doors"][data-reveal-state="in"] > img {
 
 /* Liste/Raster: Kinder nacheinander. */
 html.js-reveal [data-reveal="stagger"][data-reveal-state="in"] > * {
-  animation: rv-item 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0ms) + var(--rv-i, 0) * 60ms) both;
+  animation: rv-item 0.55s cubic-bezier(0.22, 1, 0.36, 1)
+    calc(var(--reveal-delay, 0ms) + var(--rv-i, 0) * 60ms) both;
 }
-[data-reveal="stagger"] > :nth-child(2) { --rv-i: 1; }
-[data-reveal="stagger"] > :nth-child(3) { --rv-i: 2; }
-[data-reveal="stagger"] > :nth-child(4) { --rv-i: 3; }
-[data-reveal="stagger"] > :nth-child(5) { --rv-i: 4; }
-[data-reveal="stagger"] > :nth-child(6) { --rv-i: 5; }
-[data-reveal="stagger"] > :nth-child(7) { --rv-i: 6; }
-[data-reveal="stagger"] > :nth-child(8) { --rv-i: 7; }
-[data-reveal="stagger"] > :nth-child(n + 9) { --rv-i: 8; }
+[data-reveal="stagger"] > :nth-child(2) {
+  --rv-i: 1;
+}
+[data-reveal="stagger"] > :nth-child(3) {
+  --rv-i: 2;
+}
+[data-reveal="stagger"] > :nth-child(4) {
+  --rv-i: 3;
+}
+[data-reveal="stagger"] > :nth-child(5) {
+  --rv-i: 4;
+}
+[data-reveal="stagger"] > :nth-child(6) {
+  --rv-i: 5;
+}
+[data-reveal="stagger"] > :nth-child(7) {
+  --rv-i: 6;
+}
+[data-reveal="stagger"] > :nth-child(8) {
+  --rv-i: 7;
+}
+[data-reveal="stagger"] > :nth-child(n + 9) {
+  --rv-i: 8;
+}
 @keyframes rv-item {
   from {
     opacity: 0;
@@ -1359,27 +372,33 @@ html.js-reveal [data-reveal="stagger"][data-reveal-state="in"] > * {
    als ganze Zeile statt Wort für Wort aus Masken, Absätze kommen leiser.
    Unterseiten behalten das Wort-Steigen. */
 @media (prefers-reduced-motion: no-preference) {
-  html.js-reveal .buehne [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within) .rv-w > span {
-    transform: none;
-  }
-  html.js-reveal .buehne [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within),
-  html.js-reveal .buehne [data-reveal="rise"]:has(.rv-w):not([data-reveal-state]):not(:focus-within) {
+  html.js-reveal
+    .buehne
+    [data-reveal="rise"]:not([data-reveal-state]):not(:focus-within),
+  html.js-reveal
+    .buehne
+    [data-reveal="rise"]:has(.rv-w):not([data-reveal-state]):not(
+      :focus-within
+    ) {
     opacity: 0;
     transform: translateY(20px);
   }
   html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"],
-  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"]:has(.rv-w) {
-    animation: rv-zeile var(--t-lang) var(--ease-aus) var(--reveal-delay, 0ms) both;
+  html.js-reveal
+    .buehne
+    [data-reveal="rise"][data-reveal-state="in"]:has(.rv-w) {
+    animation: rv-zeile var(--t-lang) var(--ease-aus) var(--reveal-delay, 0ms)
+      both;
   }
-  html.js-reveal .buehne [data-reveal="rise"][data-reveal-state="in"] .rv-w > span {
-    animation: none;
-  }
-  html.js-reveal .buehne [data-reveal="fade"]:not([data-reveal-state]):not(:focus-within) {
+  html.js-reveal
+    .buehne
+    [data-reveal="fade"]:not([data-reveal-state]):not(:focus-within) {
     opacity: 0;
     transform: translateY(12px);
   }
   html.js-reveal .buehne [data-reveal="fade"][data-reveal-state="in"] {
-    animation: rv-fade-ruhig var(--t-mittel) var(--ease-aus) calc(var(--reveal-delay, 0ms) + 90ms) both;
+    animation: rv-fade-ruhig var(--t-mittel) var(--ease-aus)
+      calc(var(--reveal-delay, 0ms) + 90ms) both;
   }
 }
 @keyframes rv-zeile {
@@ -1408,104 +427,17 @@ html.js-reveal [data-reveal="stagger"][data-reveal-state="in"] > * {
    und Rufnummer), danach zeichnet sich darunter eine 2 px orange Linie
    von links. Zeigen und Fokus: Die Zahl bleibt hell, die Linie wird
    4 px stark. Ohne JS und bei reduzierter Bewegung steht alles. */
-.tel-finale {
-  color: inherit;
-}
-.tel-m {
-  display: inline-block;
-  overflow: clip;
-  vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-}
-.tel-m > span {
-  display: inline-block;
-}
-.tel-linie {
-  display: block;
-  height: 2px;
-  margin-top: 0.14em;
-  background: var(--gold);
-  transform-origin: 0 0;
-  transition: transform var(--t-kurz) var(--ease-aus);
-}
-.tel-finale:focus-visible .tel-linie {
-  transform: scaleY(2);
-}
-@media (hover: hover) and (pointer: fine) {
-  .tel-finale:hover .tel-linie {
-    transform: scaleY(2);
-  }
-}
 html.js-reveal [data-reveal="tel"]:not([data-reveal-state]):not(:focus-within) {
   opacity: 1;
 }
-html.js-reveal [data-reveal="tel"]:not([data-reveal-state]):not(:focus-within) .tel-m > span {
-  transform: translateY(calc(105% + 0.12em));
-}
-html.js-reveal [data-reveal="tel"]:not([data-reveal-state]):not(:focus-within) .tel-linie {
-  transform: scaleX(0);
-}
-html.js-reveal [data-reveal="tel"][data-reveal-state="in"] .tel-m > span {
-  animation: rv-wort var(--t-lang) var(--ease-aus) both;
-  animation-delay: calc(var(--reveal-delay, 0ms) + var(--n, 0) * 32ms + var(--p, 0) * 90ms);
-}
 /* Start 280 ms, nachdem die letzte Ziffer (Nr. 10) sich gesetzt hat. */
-html.js-reveal [data-reveal="tel"][data-reveal-state="in"] .tel-linie {
-  animation: rv-linie var(--t-linie) var(--ease-wechsel) both;
-  animation-delay: calc(var(--reveal-delay, 0ms) + 10 * 32ms + 90ms + var(--t-mittel) + 280ms);
-}
-@keyframes rv-linie {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: none;
-  }
-}
 
 /* Mail-Link im Kontakt: orange Grundlinie (1,5 px), beim Zeigen läuft
    eine helle Linie von links darüber. */
-.mail-link {
-  padding-bottom: 3px;
-  background-image:
-    linear-gradient(var(--background), var(--background)),
-    linear-gradient(var(--gold), var(--gold));
-  background-repeat: no-repeat;
-  background-position:
-    0 100%,
-    0 100%;
-  background-size:
-    0 1.5px,
-    100% 1.5px;
-  transition: background-size var(--t-mittel) var(--ease-wechsel);
-}
-.mail-link:focus-visible {
-  background-size:
-    100% 1.5px,
-    100% 1.5px;
-}
-@media (hover: hover) and (pointer: fine) {
-  .mail-link:hover {
-    background-size:
-      100% 1.5px,
-      100% 1.5px;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
-  .tel-linie,
-  .mail-link {
-    transition: none;
-  }
-  html.js-reveal .tel-m > span,
-  html.js-reveal .tel-linie {
-    transform: none !important;
-    animation: none !important;
-  }
   html.js-reveal [data-reveal],
-  html.js-reveal [data-reveal] > *,
-  html.js-reveal .rv-w > span {
+  html.js-reveal [data-reveal] > * {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
@@ -1543,7 +475,8 @@ html.js-reveal [data-reveal="tel"][data-reveal-state="in"] .tel-linie {
 @media (min-width: 1024px) {
   .spaeter,
   .spaeter-geladen {
-    contain-intrinsic-block-size: auto var(--spaeter-h-lg, var(--spaeter-h, 1000px));
+    contain-intrinsic-block-size: auto
+      var(--spaeter-h-lg, var(--spaeter-h, 1000px));
   }
 }
 .spaeter,

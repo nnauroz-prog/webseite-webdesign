@@ -2,7 +2,14 @@
 
 /* Stylistic ligatures off — keep essential ligatures only. */
 html {
-  font-feature-settings: "liga" 1, "dlig" 0, "hlig" 0, "calt" 0;
+  font-feature-settings:
+    "liga" 1,
+    "dlig" 0,
+    "hlig" 0,
+    "calt" 0;
+  /* Plex Mono und Cormorant sind nur in einem Schnitt geladen: keinen
+     künstlich verdickten Fettschnitt erzeugen lassen. */
+  font-synthesis-weight: none;
 }
 
 /* ------------------------------------------------------------------
@@ -93,7 +100,9 @@ html {
   --rinne: 16px;
 
   /* Schrift: San Francisco über die Systemschrift. */
-  --font-sf: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-sf:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
   /* Mono nur für kleine Notizen, Labels und Bildunterschriften:
      IBM Plex Mono 400 (app/layout.tsx), sonst die System-Mono. */
   --font-sf-mono: var(--font-brand-mono), ui-monospace, monospace;
@@ -149,7 +158,14 @@ html {
 /* Ganze Abschnitte als Sprungziel: genau an die Unterkante der Leiste,
    ohne die 12 px Luft (die braucht nur ein Anker im Fließtext). Sonst
    bleibt ein Streifen des vorigen Abschnitts unter der Leiste stehen. */
-main section[id]:is(.abschnitt, .regal, .flaeche-weiss, .flaeche-hell, .flaeche-schwarz) {
+main
+  section[id]:is(
+    .abschnitt,
+    .regal,
+    .flaeche-weiss,
+    .flaeche-hell,
+    .flaeche-schwarz
+  ) {
   scroll-margin-top: -12px;
 }
 /* Admin: Karten heben sich weiß vom grauen Grund ab. */
@@ -169,12 +185,6 @@ body:has([data-admin]) {
    Transparenz deckt das Glas fast ganz (0,96).
    ================================================================== */
 @layer components {
-  .kopf-glas {
-    background-color: var(--glas-leiste);
-    -webkit-backdrop-filter: var(--glas-filter);
-    backdrop-filter: var(--glas-filter);
-    box-shadow: inset 0 -1px 0 var(--haarlinie);
-  }
   /* Mobiles Vollbild-Menü: helles, dichtes Milchglas wie bei Apple. */
   /* Deckend: Durch ein halbdurchlässiges Menü schimmerten die orangen
      Flächen der Seite als Flecken. */
@@ -182,14 +192,14 @@ body:has([data-admin]) {
     background-color: #fafafc;
     color: var(--foreground);
   }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .kopf-glas,
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .menue-glas {
       background-color: var(--glas-dicht);
     }
   }
   @media (prefers-reduced-transparency: reduce) {
-    .kopf-glas,
     .menue-glas {
       background-color: var(--glas-dicht);
     }
@@ -418,25 +428,10 @@ body:has([data-admin]) {
    nach links. Dadurch wirkt der Loop nahtlos.
    prefers-reduced-motion: Animation aus, Laufschrift bleibt stehen. */
 @media (prefers-reduced-motion: no-preference) {
-  .marquee-track {
-    animation: marquee-scroll 38s linear infinite;
-  }
   /* Geist-Spur — gleiche Choreografie, 60 % langsamer. Gemeinsam
      mit der größeren, blasseren Typografie ergibt sich eine
      zweite, weiter „weg" wirkende Tiefen-Ebene hinter der
      Hauptspur. Bleibt bei reduced-motion stehen. */
-  .marquee-track-ghost {
-    animation: marquee-scroll 62s linear infinite;
-    filter: blur(1.5px);
-  }
-  @keyframes marquee-scroll {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(-100%, 0, 0);
-    }
-  }
 }
 
 /* Steps-Timeline: die goldene Verbindungslinie zwischen den drei
@@ -444,17 +439,8 @@ body:has([data-admin]) {
    Steps-Sektion in den Viewport scrollt. Triggered via
    `animation-timeline: view()` auf modernen Browsern; ältere
    Browser zeigen die Linie sofort vollständig (graceful fallback). */
-.steps-progress {
-  transform: scaleX(0);
-  transform-origin: left;
-}
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .steps-timeline .steps-progress {
-      animation: steps-fill linear forwards;
-      animation-timeline: view();
-      animation-range: cover 0% cover 50%;
-    }
     @keyframes steps-fill {
       from {
         transform: scaleX(0);
@@ -467,18 +453,6 @@ body:has([data-admin]) {
   @supports not (animation-timeline: view()) {
     /* Fallback ohne Scroll-Driven-Animation: einfach beim ersten
        Erscheinen 800 ms-Loop füllen. */
-    .steps-timeline .steps-progress {
-      animation: steps-fill-fallback 1.2s 0.2s cubic-bezier(0.22, 1, 0.36, 1)
-        forwards;
-    }
-    @keyframes steps-fill-fallback {
-      from {
-        transform: scaleX(0);
-      }
-      to {
-        transform: scaleX(1);
-      }
-    }
   }
 }
 
@@ -487,19 +461,6 @@ body:has([data-admin]) {
    inneren Content-Container eine Fade+Slide-Animation, sobald
    <details> auf "open" wechselt. */
 @media (prefers-reduced-motion: no-preference) {
-  .faq-item[open] .faq-content {
-    animation: faq-open 320ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  @keyframes faq-open {
-    from {
-      opacity: 0;
-      transform: translateY(-6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
 /* Oranger Strich unter den Hauptlinks der Leiste: wächst beim Hover
@@ -579,27 +540,12 @@ body:has([data-admin]) {
    Jeder Span bekommt --word-delay über inline-style.
    Bei prefers-reduced-motion erscheinen alle Wörter sofort. */
 @media (prefers-reduced-motion: no-preference) {
-  .reveal-word {
-    opacity: 0;
-    transform: translateY(0.4em);
-    animation: word-reveal 720ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    animation-delay: var(--word-delay, 0ms);
-  }
-  @keyframes word-reveal {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
 /* Sanftes Atmen der Gold-Akzent-Striche und -Punkte.
    Klasse `.gold-pulse` an `<span class="bg-gold ...">` anhängen,
    dann pulst die Opazität ganz leicht im Loop. */
 @media (prefers-reduced-motion: no-preference) {
-  .gold-pulse {
-    animation: gold-pulse 4.2s ease-in-out infinite;
-  }
   @keyframes gold-pulse {
     0%,
     100% {
@@ -633,69 +579,21 @@ body:has([data-admin]) {
      gesetzt, fällt drei Zeilen tief, leicht in Gold getönt.
      Geschichteter Text-Shadow ergibt Holzschnitt-Tiefe wie bei
      den anderen Drop-Caps der Seite. */
-  .journal-lead::first-letter {
-    font-family: var(--font-sans), system-ui, sans-serif;
-    font-stretch: 115%;
-    font-style: normal;
-    font-weight: 780;
-    color: var(--gold);
-    font-size: 4.5em;
-    line-height: 0.88;
-    float: left;
-    margin: 0.1em 0.12em 0 -0.04em;
-    padding-top: 0.05em;
-    text-shadow:
-      1px 1px 0 rgb(244 91 30 / 0.18),
-      2px 2px 0 rgb(244 91 30 / 0.14),
-      3px 3px 0 rgb(244 91 30 / 0.11),
-      4px 4px 0 rgb(244 91 30 / 0.08),
-      5px 5px 0 rgb(244 91 30 / 0.06),
-      6px 6px 0 rgb(244 91 30 / 0.04);
-  }
 }
 
 /* Marquee pausiert beim Hover über dem Marquee-Streifen.
    `.marquee-pause-on-hover` auf den Container, dann stoppt der
    Loop in den Kindern (`.marquee-track`), solange die Maus drüber
    schwebt. */
-.marquee-pause-on-hover:hover .marquee-track,
-.marquee-pause-on-hover:hover .marquee-track-ghost {
-  animation-play-state: paused;
-}
 
 /* Parallax-Bewegung für Hero-Bilder via ParallaxImage-Komponente.
    Die Komponente schreibt --parallax-y in px. Das innere div wird
    leicht überskaliert, damit der Versatz keine Kanten zeigt. */
-@media (prefers-reduced-motion: no-preference) {
-  .parallax-inner {
-    transform: scale(1.12) translate3d(0, var(--parallax-y, 0px), 0);
-    transition: transform 80ms linear;
-    will-change: transform;
-  }
-}
 
 /* 3D-Tilt für die ExamplesGallery-Karten.
    Die TiltCard-Komponente schreibt --tilt-x / --tilt-y per pointermove.
    Auf Touch (kein pointermove) und bei reduced-motion bleiben die
    Variablen auf 0deg → keine Transformation. */
-@media (prefers-reduced-motion: no-preference) {
-  .tilt-card {
-    transform-style: preserve-3d;
-    transform: perspective(900px) rotateX(var(--tilt-x, 0deg))
-      rotateY(var(--tilt-y, 0deg)) translateY(0) translateZ(0);
-    transition:
-      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-  }
-  .tilt-card:hover {
-    transform: perspective(900px) rotateX(var(--tilt-x, 0deg))
-      rotateY(var(--tilt-y, 0deg)) translateY(-10px) translateZ(40px);
-    box-shadow:
-      0 30px 60px -25px rgb(35 31 27 / 0.35),
-      0 12px 24px -12px rgb(35 31 27 / 0.2);
-  }
-}
 
 /* ============================================================
    ParallaxHero — Dreilagiger Tiefenrahmen für das Hero-Foto.
@@ -705,129 +603,15 @@ body:has([data-admin]) {
    wandert gegenläufig zur Neigung und verkauft die Höhe.
 
    Nur auf hover-fähigen Geräten — Mobile bleibt statisch. */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .parallax-hero {
-    perspective: 1400px;
-    perspective-origin: 50% 50%;
-  }
-  .parallax-hero-stage {
-    transform-style: preserve-3d;
-    transform: rotateX(var(--ph-rx, 0deg)) rotateY(var(--ph-ry, 0deg));
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-    height: 100%;
-    width: 100%;
-    position: relative;
-  }
-  .parallax-hero-image {
-    transform: translate3d(
-      var(--ph-img-x, 0px),
-      var(--ph-img-y, 0px),
-      0
-    );
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .parallax-hero-seal {
-    transform: translate3d(
-        var(--ph-seal-x, 0px),
-        var(--ph-seal-y, 0px),
-        60px
-      )
-      rotate(-2deg);
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow:
-      0 12px 28px rgb(35 31 27 / 0.18),
-      0 2px 6px rgb(35 31 27 / 0.12);
-  }
-  .parallax-hero-note {
-    transform: translate3d(
-      var(--ph-note-x, 0px),
-      var(--ph-note-y, 0px),
-      90px
-    );
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .parallax-hero-shadow {
-    position: absolute;
-    inset: auto 6% -3% 6%;
-    height: 14%;
-    border-radius: 9999px;
-    background: rgb(35 31 27 / 0.22);
-    filter: blur(28px);
-    transform: translate3d(
-      calc(var(--ph-img-x, 0px) * -1),
-      calc(var(--ph-img-y, 0px) * -1 + 6px),
-      -40px
-    );
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-    z-index: 0;
-  }
-}
 /* Statischer Fallback ohne JS-Effekte */
-.parallax-hero-stage {
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
-.parallax-hero-image {
-  height: 100%;
-  width: 100%;
-}
 
 /* ============================================================
    FlipCard — echte 3D-Rotation um die Y-Achse. Vorderseite
    trägt den Lead, Rückseite das Detail. Klick öffnet den Link.
    Hover-only, sonst Tap navigiert direkt. */
-.flip-card {
-  perspective: 1200px;
-}
-.flip-card-inner {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
-  transform-style: preserve-3d;
-}
-.flip-card-front,
-.flip-card-back {
-  position: absolute;
-  inset: 0;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border-radius: inherit;
-  display: flex;
-  flex-direction: column;
-}
-.flip-card-back {
-  transform: rotateY(180deg);
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .flip-card:hover .flip-card-inner,
-  .flip-card:focus-visible .flip-card-inner {
-    transform: rotateY(180deg);
-  }
-}
 /* Touch-Geräte: kein Flip möglich, daher Vorderseite normal
    fließen lassen statt absolut positioniert. So passt sich die
    Karte an den Inhalt an, statt Text am Rand abzuschneiden. */
-@media not all and (hover: hover) and (pointer: fine) {
-  .flip-card {
-    display: block;
-    width: 100%;
-  }
-  .flip-card-inner {
-    height: auto;
-    width: 100%;
-  }
-  .flip-card-front {
-    position: relative;
-    inset: auto;
-    width: 100%;
-  }
-  .flip-card-back {
-    display: none;
-  }
-}
 
 /* Depth3D — Tisch-Perspektive für Flächen (Hamburg-Karte etc.).
    Die Komponente schreibt --d3-rx/--d3-ry (Neigung) und
@@ -837,173 +621,31 @@ body:has([data-admin]) {
    muss das Inner-Div sie übernehmen — sonst kollabieren Kinder mit
    h-full (Bilder mit next/image fill) auf 0 px. Ohne feste Höhe am
    Wrapper löst sich 100 % zu auto auf und ändert nichts. */
-.depth-3d-inner {
-  height: 100%;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .depth-3d {
-    perspective: 1100px;
-  }
-  .depth-3d-inner {
-    transform-style: preserve-3d;
-    transform: rotateX(var(--d3-rx, 0deg)) rotateY(var(--d3-ry, 0deg));
-    transition:
-      transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
-      filter 380ms cubic-bezier(0.22, 1, 0.36, 1);
-    filter: drop-shadow(
-      var(--d3-sx, 0px) var(--d3-sy, 12px) 24px rgb(35 31 27 / 0.16)
-    );
-    will-change: transform, filter;
-  }
-}
 
 /* LayeredStack — drei Karteikarten-Schichten, die im 3D-Raum
    gestapelt sind und beim Hover nach oben auffächern. Pure CSS,
    kein State. Touch-Geräte ohne Hover sehen den geschlossenen
    Stapel — die Etiketten bleiben jeweils oben sichtbar lesbar. */
-.layered-stack-wrapper {
-  perspective: 1300px;
-}
-.layered-stack {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  transform-style: preserve-3d;
-}
-.layered-stack-card {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
 /* Geschlossener Stapel: jede Karte rückt minimal nach unten und
    liegt einen Hauch tiefer in Z, damit die obere die untere
    überdeckt. Eine Spur Rotation gibt natürliche Unregelmäßigkeit. */
-.layered-stack-card[data-layer="0"] {
-  transform: translateZ(40px) translateY(-6px) rotate(-1.5deg);
-  z-index: 3;
-}
-.layered-stack-card[data-layer="1"] {
-  transform: translateZ(20px) translateY(8px) rotate(0.8deg);
-  z-index: 2;
-}
-.layered-stack-card[data-layer="2"] {
-  transform: translateZ(0px) translateY(22px) rotate(-0.4deg);
-  z-index: 1;
-}
-.layered-stack-card > div {
-  box-shadow:
-    0 2px 6px -2px rgb(35 31 27 / 0.18),
-    0 14px 30px -10px rgb(35 31 27 / 0.22);
-}
 /* Hover (nur echte Hover-Geräte): die drei Karten fächern auf,
    jede mit eigener Vertikalverschiebung, Z-Tiefe und Mikro-Tilt.
    Wirkt wie eine Mappe, die jemand aufgeklappt hat. */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .layered-stack-wrapper:hover .layered-stack-card[data-layer="0"] {
-    transform: translateZ(110px) translateY(-110px) rotate(-3.5deg);
-  }
-  .layered-stack-wrapper:hover .layered-stack-card[data-layer="1"] {
-    transform: translateZ(70px) translateY(-30px) rotate(1.5deg);
-  }
-  .layered-stack-wrapper:hover .layered-stack-card[data-layer="2"] {
-    transform: translateZ(30px) translateY(55px) rotate(-1deg);
-  }
-}
 /* Touch-Geräte: kein Hover möglich, also die drei Karten
    untereinander auflegen, damit alle Schichten lesbar sind.
    Absolute Positionierung raus, Aspect-Ratio raus, statische
    leichte Rotation für den Manufaktur-Look behalten. */
-@media not all and (hover: hover) and (pointer: fine) {
-  .layered-stack-wrapper {
-    aspect-ratio: auto !important;
-    perspective: none;
-  }
-  .layered-stack {
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.875rem;
-  }
-  .layered-stack-card {
-    position: relative;
-    inset: auto;
-    transform: rotate(var(--touch-rot, 0deg));
-  }
-  .layered-stack-card[data-layer="0"] {
-    --touch-rot: -1deg;
-  }
-  .layered-stack-card[data-layer="1"] {
-    --touch-rot: 0.6deg;
-  }
-  .layered-stack-card[data-layer="2"] {
-    --touch-rot: -0.4deg;
-  }
-}
 
 /* SwingTag — Atelier-Etikett pendelt an einer Schnur. Die Idle-
    Animation läuft sehr langsam (~9s), Maus-Pointer übersteuert
    sie und drückt das Schild aus dem Lot. Drehpunkt liegt am
    Schnur-Aufhängepunkt OBEN, nicht in der Mitte. */
-.swing-tag-stage {
-  /* Drehursprung absichtlich an Y=0 (Schnur-Knoten), damit die
-     Etikette pendelt statt sich um die Eigenachse zu drehen. */
-  transform-origin: 50% 0%;
-  transform: rotate(var(--swing-angle, 0deg));
-  transition: transform 600ms cubic-bezier(0.22, 1, 0.5, 1.2);
-  will-change: transform;
-}
-.swing-tag-card {
-  position: relative;
-  width: 11rem;
-  min-height: 13.5rem;
-  /* Atelier-dunkles Papier mit feiner Goldkante */
-  background:
-    linear-gradient(180deg, oklch(0.22 0.015 60) 0%, oklch(0.18 0.015 60) 100%);
-  border: 1px solid rgb(255 215 130 / 0.18);
-  border-radius: 0.5rem;
-  box-shadow:
-    0 14px 30px -10px rgb(0 0 0 / 0.55),
-    0 4px 10px -3px rgb(0 0 0 / 0.4),
-    inset 0 0 0 1px rgb(255 215 130 / 0.05);
-  /* Abgeschnittene Ecke oben links — Manufaktur-Etikett */
-  clip-path: polygon(
-    14px 0,
-    100% 0,
-    100% 100%,
-    0 100%,
-    0 14px
-  );
-}
-@media (prefers-reduced-motion: no-preference) {
-  .swing-tag-stage {
-    animation: swing-idle 9s ease-in-out infinite;
-    animation-play-state: var(--swing-idle, running);
-  }
-}
-@keyframes swing-idle {
-  0%, 100% { transform: rotate(-2.2deg); }
-  50% { transform: rotate(2.2deg); }
-}
 
 /* Stempel-Siegelpresse — beim Hover kippt das Wachssiegel nach
    hinten und drückt sich ins Papier, der Schatten vertieft sich.
    Die langsame Dauerrotation läuft auf .stempel svg und bleibt
    davon unberührt. Nur echte Hover-Geräte. */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .stempel {
-    transition:
-      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
-      filter 260ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-  }
-  .stempel:hover {
-    transform: perspective(520px) rotateX(26deg) scale(0.95)
-      translateY(3px);
-    filter: drop-shadow(0 16px 12px rgb(0 0 0 / 0.3));
-  }
-}
 
 /* Unfold-3D — Sektionen klappen beim Hereinscrollen aus einer
    leichten Rückneigung auf (Scroll als vierte Dimension der
@@ -1011,24 +653,6 @@ body:has([data-admin]) {
    Browser ohne Support zeigen den Inhalt schlicht statisch. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .unfold-3d {
-      transform-origin: center 80%;
-      animation: unfold-3d linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 70%;
-    }
-    @keyframes unfold-3d {
-      from {
-        opacity: 0.35;
-        transform: perspective(1200px) rotateX(9deg) translateY(28px)
-          scale(0.97);
-      }
-      to {
-        opacity: 1;
-        transform: perspective(1200px) rotateX(0deg) translateY(0)
-          scale(1);
-      }
-    }
   }
 }
 
@@ -1039,11 +663,6 @@ body:has([data-admin]) {
    200 ms Delay, damit das Foto NACH den staggered Hero-Texten
    einsetzt — gibt der Reveal eine Lese-Reihenfolge. */
 @media (prefers-reduced-motion: no-preference) {
-  .hero-image-reveal {
-    clip-path: inset(0 100% 0 0);
-    animation: hero-image-reveal 1100ms cubic-bezier(0.65, 0, 0.35, 1)
-      200ms forwards;
-  }
   @keyframes hero-image-reveal {
     to {
       clip-path: inset(0 0 0 0);
@@ -1081,190 +700,17 @@ body:has([data-admin]) {
    oberen Rand, damit die Bewegung wie eine echte Brief-Öffnung
    wirkt. Pure CSS — Touch + reduced-motion zeigen den Brief
    geschlossen, statisch. */
-.brief-siegel-stage {
-  perspective: 1200px;
-  width: 14rem;
-  margin-inline: auto;
-}
-.brief-siegel {
-  position: relative;
-  height: 10rem;
-  width: 100%;
-  transform-style: preserve-3d;
-}
-.brief-siegel-body {
-  position: absolute;
-  inset: 0;
-  border-radius: 0.5rem;
-  background:
-    linear-gradient(
-      180deg,
-      oklch(0.94 0.018 80) 0%,
-      oklch(0.9 0.022 75) 100%
-    );
-  border: 1px solid oklch(0.85 0.02 70 / 0.5);
-  box-shadow:
-    0 10px 24px -10px rgb(35 31 27 / 0.25),
-    inset 0 0 0 1px oklch(0.95 0.015 75 / 0.4);
-  overflow: hidden;
-}
-.brief-siegel-letter {
-  position: absolute;
-  inset: 0;
-  transition: transform 540ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-.brief-siegel-flap {
-  position: absolute;
-  inset: 0;
-  transform-origin: 50% 0%;
-  transform: rotateX(0deg);
-  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-  pointer-events: none;
-}
-.brief-siegel-flap-shape {
-  position: absolute;
-  inset: 0;
-  border-radius: 0.5rem;
-  background:
-    linear-gradient(
-      180deg,
-      oklch(0.92 0.022 80) 0%,
-      oklch(0.86 0.026 75) 100%
-    );
-  border: 1px solid oklch(0.82 0.024 70 / 0.45);
-  /* Klappen-Dreieck: zwei obere Ecken oben, Spitze in der Mitte
-     unten. Lässt die Klappe sichtbar als „Brief-V" erscheinen. */
-  clip-path: polygon(0 0, 100% 0, 50% 75%);
-  box-shadow:
-    inset 0 -8px 12px -8px rgb(35 31 27 / 0.18);
-}
-.brief-siegel-seal {
-  position: absolute;
-  left: 50%;
-  top: 35%;
-  transform: translate(-50%, -50%);
-  display: inline-flex;
-  filter: drop-shadow(0 6px 8px rgb(35 31 27 / 0.35));
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .brief-siegel-stage:hover .brief-siegel-flap {
-    transform: rotateX(-128deg) translateZ(2px);
-  }
-  .brief-siegel-stage:hover .brief-siegel-letter {
-    transform: translateY(-12px);
-  }
-}
 
 /* SiegelIntro — beim ersten Besuch presst sich das Sitalo-Siegel
    zentral aus dem Off ins Papier und löst sich dann auf. Pure
    CSS-Choreografie, getrieben vom Mount-State der Komponente.
    Reduced-Motion / wiederholte Sessions: Komponente rendert nicht,
    diese Styles greifen also gar nicht erst. */
-.siegel-intro {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.75rem;
-  pointer-events: none;
-  /* Die ganze Bühne fadet am Ende sanft aus, gibt die Seite frei. */
-  animation: siegel-intro-curtain 1500ms cubic-bezier(0.4, 0, 0.2, 1)
-    forwards;
-}
-.siegel-intro-paper {
-  position: absolute;
-  inset: 0;
-  background: var(--background);
-  /* Sehr leichte Papier-Textur überlagert, damit der Cream-Ton
-     nicht wie flacher CSS-Background wirkt. */
-  background-image: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    rgb(35 31 27 / 0.04) 100%
-  );
-}
-.siegel-intro-stage {
-  position: relative;
-  /* Wachs-Press-Choreografie: aus -120 % Y nach 0, dabei aus
-     scale(1.35) und rotateX(-22°) auf 1/0 — kommt von oben rein,
-     presst sich ins Bild und zittert kurz im Moment des Aufdrucks. */
-  animation: siegel-intro-stamp 1300ms cubic-bezier(0.18, 0.85, 0.32, 1.18)
-    forwards;
-  transform-origin: 50% 60%;
-  filter: drop-shadow(0 30px 40px rgb(35 31 27 / 0.25));
-}
-.siegel-intro-eyebrow {
-  position: relative;
-  font-family: var(--font-mono), monospace;
-  font-size: 10px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: oklch(0.5 0.04 60 / 0.55);
-  animation: siegel-intro-line 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  opacity: 0;
-}
-@keyframes siegel-intro-stamp {
-  0% {
-    transform: translateY(-120%) scale(1.35) rotateX(-22deg);
-    opacity: 0;
-  }
-  55% {
-    transform: translateY(8px) scale(1.05) rotateX(2deg);
-    opacity: 1;
-  }
-  72% {
-    transform: translateY(0) scale(1) rotateX(0deg);
-  }
-  76% {
-    /* Kurzes Zittern beim Aufdruck — Stempel sitzt im Wachs */
-    transform: translateY(2px) scale(0.99) rotateX(0deg);
-  }
-  100% {
-    transform: translateY(0) scale(1) rotateX(0deg);
-    opacity: 1;
-  }
-}
-@keyframes siegel-intro-line {
-  0%, 60% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  80% {
-    opacity: 0.7;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0.85;
-    transform: translateY(0);
-  }
-}
-@keyframes siegel-intro-curtain {
-  0%, 85% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
 
 /* Letterpress-Effekt für die Hero-H1: doppelter Text-Shadow (heller
    Highlight nach oben, dunkler Schatten nach unten) erzeugt den
    Eindruck, der Buchstabe sei ins Papier gepresst. Nur auf großen
    Screens, weil der Effekt feine Pixel braucht, um zu lesen. */
-@media (min-width: 1024px) {
-  .letterpress {
-    text-shadow:
-      0 1px 0 rgb(255 255 255 / 0.6),
-      0 -1px 0 rgb(35 31 27 / 0.18),
-      0 0 1px rgb(35 31 27 / 0.08);
-  }
-}
 
 /* Hero-Dolly — die Hero-Szene weicht beim Scrollen nach Z zurück,
    wird leicht kleiner und blasser. Wirkt wie eine Kamera, die
@@ -1273,28 +719,6 @@ body:has([data-admin]) {
    ohne Support zeigen die Szene statisch. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .hero-dolly {
-      perspective: 1400px;
-    }
-    .hero-dolly-inner {
-      transform-style: preserve-3d;
-      transform-origin: center top;
-      animation: hero-dolly linear both;
-      animation-timeline: view();
-      /* Effekt setzt erst ab dem zweiten Drittel des Hero-Exits ein,
-         damit beim normalen Lesen nichts wackelt. */
-      animation-range: exit 25% exit 100%;
-    }
-    @keyframes hero-dolly {
-      from {
-        opacity: 1;
-        transform: perspective(1400px) translateZ(0px) scale(1);
-      }
-      to {
-        opacity: 0.72;
-        transform: perspective(1400px) translateZ(-60px) scale(0.965);
-      }
-    }
   }
 }
 
@@ -1302,27 +726,6 @@ body:has([data-admin]) {
    und das Icon-Pill räumlich nach vorn (translateZ), während die
    Tinten-Schatten weicher und tiefer werden. Nur auf echten
    Hover-Geräten — Touch behält den editorialen Lesefluss. */
-.etappen-stage {
-  perspective: 1400px;
-}
-.etappe-numeral,
-.etappe-icon {
-  transition:
-    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 520ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 520ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .etappe-row:hover .etappe-numeral {
-    transform: perspective(1100px) translateZ(40px) rotateY(-3deg);
-    color: oklch(0.38 0.04 220 / 0.62);
-    filter: drop-shadow(0 12px 22px rgb(35 31 27 / 0.18));
-  }
-  .etappe-row:hover .etappe-icon {
-    transform: perspective(1100px) translateZ(20px);
-  }
-}
 
 /* Drop-Cap-3D — editoriale Großbuchstaben kriegen geschichteten
    Tiefen-Schatten wie Holzschnitt-Lettern. Mehrere versetzte
@@ -1330,115 +733,15 @@ body:has([data-admin]) {
    Lage; eine weiche Drop-Shadow setzt sie auf die Seite. Auf
    Hover-Geräten kippen sie minimal mit dem Cursor.
    Für die großen Anführungszeichen, Drop-Caps und Steps-Numerale. */
-.drop-cap-3d {
-  display: inline-block;
-  /* Mobile: nur drei flache Layer für leichte Tiefe, sonst wird
-     der Buchstabe auf engem Viewport optisch erschlagend. */
-  text-shadow:
-    1px 1px 0 rgb(35 31 27 / 0.05),
-    2px 2px 0 rgb(35 31 27 / 0.035),
-    3px 3px 0 rgb(35 31 27 / 0.025);
-  transform-origin: 30% 70%;
-  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
 /* Desktop: volle Holzschnitt-Tiefe mit acht versetzten Layern. */
-@media (min-width: 640px) {
-  .drop-cap-3d {
-    text-shadow:
-      1px 1px 0 rgb(35 31 27 / 0.06),
-      2px 2px 0 rgb(35 31 27 / 0.05),
-      3px 3px 0 rgb(35 31 27 / 0.04),
-      4px 4px 0 rgb(35 31 27 / 0.035),
-      5px 5px 0 rgb(35 31 27 / 0.03),
-      6px 6px 0 rgb(35 31 27 / 0.025),
-      7px 7px 0 rgb(35 31 27 / 0.02),
-      8px 8px 0 rgb(35 31 27 / 0.018);
-  }
-}
 /* Variante für Gold-Akzente (Anführungszeichen im FinalCta und
    PersonalNote): hellerer, wärmerer Tiefenschatten. Mobile
    ebenfalls flacher. */
-.drop-cap-3d-gold {
-  text-shadow:
-    1px 1px 0 rgb(244 91 30 / 0.16),
-    2px 2px 0 rgb(244 91 30 / 0.1),
-    3px 3px 0 rgb(244 91 30 / 0.07);
-}
-@media (min-width: 640px) {
-  .drop-cap-3d-gold {
-    text-shadow:
-      1px 1px 0 rgb(244 91 30 / 0.18),
-      2px 2px 0 rgb(244 91 30 / 0.14),
-      3px 3px 0 rgb(244 91 30 / 0.11),
-      4px 4px 0 rgb(244 91 30 / 0.08),
-      5px 5px 0 rgb(244 91 30 / 0.06),
-      6px 6px 0 rgb(244 91 30 / 0.04);
-  }
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .drop-cap-3d:hover {
-    transform: perspective(820px) rotateX(8deg) rotateY(-5deg)
-      translateZ(6px);
-  }
-}
 
 /* Subtiler Gold-Schimmer auf der Hero-Headline.
    Ein sanfter Lichtreflex wandert in Endlosschleife durch den Text.
    Wirkt nur auf Elementen mit der .hero-shine-Klasse — die nutzen
    wir nur auf dem Italic-Akzent in der Hero-Headline. */
-@media (prefers-reduced-motion: no-preference) {
-  .hero-shine {
-    /* inline-block ist Voraussetzung dafür, dass der Hover-Lift
-       weiter unten wirkt — inline-Spans kippen normalerweise nicht. */
-    display: inline-block;
-    /* Feste Farbe statt currentColor: color ist unten transparent
-       gesetzt, currentColor wäre damit ebenfalls transparent und
-       vom Wort bliebe nur der Gold-Streifen. */
-    background-image: linear-gradient(
-      110deg,
-      var(--muted-foreground) 0%,
-      var(--muted-foreground) 38%,
-      rgba(201, 162, 79, 0.95) 50%,
-      var(--muted-foreground) 62%,
-      var(--muted-foreground) 100%
-    );
-    background-size: 200% 100%;
-    background-position: 200% 0;
-    background-repeat: no-repeat;
-    /* Grundfarbe unter dem Verlauf: Der Verlauf steht außerhalb des
-       Schimmer-Moments neben dem Wort (no-repeat) — ohne Grundfarbe
-       wäre das Wort dann leer. background-clip: text gilt auch hier. */
-    background-color: var(--muted-foreground);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    /* word-reveal mitlaufen lassen: die Hero-Wörter tragen zusätzlich
-       .reveal-word (opacity: 0 bis zur Animation). Eine einzelne
-       animation-Deklaration hier würde word-reveal überschreiben und
-       die Wörter dauerhaft unsichtbar lassen. */
-    animation:
-      word-reveal 720ms cubic-bezier(0.22, 1, 0.36, 1)
-        var(--word-delay, 0ms) both,
-      hero-shine 6s ease-in-out infinite;
-    transition:
-      transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
-      filter 380ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-  }
-  /* Beim Hover heben die Italic-Akzentwörter spürbar ab — kleine
-     Z-Translation plus winzige Schräge, damit sie aus der Zeile
-     herauspoppen. Nur auf echten Hover-Geräten — Touch behält den
-     Lesefluss. */
-}
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .hero-shine:hover {
-    transform: perspective(720px) translateZ(20px) rotateX(4deg)
-      rotateY(-3deg);
-    filter: drop-shadow(0 14px 18px rgb(35 31 27 / 0.18));
-  }
-}
 @media (prefers-reduced-motion: no-preference) {
   @keyframes hero-shine {
     0%,
@@ -1455,56 +758,20 @@ body:has([data-admin]) {
 /* Fade-In für Antworten im Hero-FAQ.
    Wird beim Auswählen einer Frage durch key-Remount ausgelöst. */
 @media (prefers-reduced-motion: no-preference) {
-  .hero-faq-fade {
-    animation: hero-faq-fade-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  @keyframes hero-faq-fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
 /* Crossfade beim Wechseln des aktiven Branchen-Tabs im IndustryPicker.
    Wird durch key-Remount auf der Detail-Karte ausgelöst — die Animation
    spielt also automatisch bei jedem Tab-Klick neu. */
 @media (prefers-reduced-motion: no-preference) {
-  .industry-fade {
-    animation: industry-fade-in 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  @keyframes industry-fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
 /* Gradient-Section-Divider — sanfter als border-t/b */
-.divider-gradient {
-  height: 1px;
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    color-mix(in oklch, var(--border) 100%, transparent),
-    transparent
-  );
-}
 
 /* Früher Cormorant, dann Mona Sans breit, jetzt SF: Preise und
    Kennzahlen in der Systemschrift mit Tabellenziffern. Die
    Klassennamen bleiben, damit bestehendes Markup ohne Änderung mitzieht. */
-.serif,
-.serif-italic {
+.serif {
   font-family: var(--font-sf);
   font-stretch: normal;
   font-style: normal;
@@ -1519,9 +786,6 @@ body:has([data-admin]) {
 }
 
 /* Echte Anzeigen (Containernummer, Pegel, Tafel): Mono. */
-.font-tafel {
-  font-family: var(--font-sf-mono);
-}
 
 /* Überschriften im Apple-Satz: halbfett, eng gesperrt, normale Breite.
    Absichtlich ungeschichtet, damit es die Gewichts-Utilities überstimmt
@@ -1540,9 +804,7 @@ h3:not(.label-mono) {
   letter-spacing: -0.015em;
 }
 :is(h1, h2, h3).serif,
-:is(h1, h2, h3) .serif,
-:is(h1, h2, h3) .serif-italic,
-:is(h1, h2, h3).serif-italic {
+:is(h1, h2, h3) .serif {
   font-family: inherit;
   font-style: normal;
   font-stretch: inherit;
@@ -1554,233 +816,187 @@ h3:not(.label-mono) {
 .text-gold {
   color: var(--gold-ink);
 }
-:is(.bg-foreground, .bg-teer-2, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .text-gold,
-:is(.bg-foreground, .bg-teer-2, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark).text-gold {
+:is(
+    .bg-foreground,
+    .bg-teer-2,
+    .bg-black,
+    .bg-schwarz,
+    .karte-schwarz,
+    .on-dark
+  )
+  .text-gold,
+:is(
+  .bg-foreground,
+  .bg-teer-2,
+  .bg-black,
+  .bg-schwarz,
+  .karte-schwarz,
+  .on-dark
+).text-gold {
   color: var(--signal-on-dark);
 }
 
 @layer components {
-/* Beschriftung in Mono: kleine Versalien mit Sperrung. */
-/* Früher Mono-Versalien; jetzt Apple-Kleintext (12 px, halbfett, SF).
+  /* Beschriftung in Mono: kleine Versalien mit Sperrung. */
+  /* Früher Mono-Versalien; jetzt Apple-Kleintext (12 px, halbfett, SF).
    Die Farbe kommt weiter aus der Utility. */
-.label-mono {
-  font-family: var(--font-sf);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  text-transform: none;
-}
+  .label-mono {
+    font-family: var(--font-sf);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
 
-/* Knöpfe im Apple-Stil: Pillen. .btn-signal gefüllt (dunkleres Orange,
+  /* Knöpfe im Apple-Stil: Pillen. .btn-signal gefüllt (dunkleres Orange,
    weiße Schrift 4,86 : 1), .btn-line als orange Kontur. Pfeil-Icons im
    Markup werden ausgeblendet (Apple-Pillen tragen keinen Pfeil).
    Größen: Standard 44 px (.btn-ruhig ist Alias), .btn-gross 48 px,
    .btn-mittel 36 px und .btn-klein 28 px sichtbar, beide per ::after
    mit 44 px Trefferfläche. */
-.btn-signal,
-.btn-line {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  min-height: 44px;
-  padding: 0 22px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-pille);
-  font-family: var(--font-sf);
-  font-size: 17px;
-  line-height: 1.18;
-  font-weight: 400;
-  letter-spacing: -0.022em;
-  white-space: nowrap;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color 200ms var(--ease-apple),
-    border-color 200ms var(--ease-apple),
-    color 200ms var(--ease-apple),
-    transform var(--t-druck) var(--ease-apple);
-}
-/* Lange Linktexte (z. B. Journal 'Weiter zum Thema') dürfen umbrechen,
-   damit die Pille nie breiter als der Bildschirm wird. */
-.aktionen .btn-signal,
-.aktionen .btn-line {
-  white-space: normal;
-  max-width: 100%;
-  text-align: center;
-  padding-block: 10px;
-}
-.btn-signal::before,
-.btn-line::before {
-  display: none;
-}
-.btn-signal svg,
-.btn-line svg {
-  display: none;
-}
-.btn-signal {
-  background-color: var(--signal-fill);
-  color: #fff;
-}
-.btn-line {
-  background-color: transparent;
-  border-color: var(--gold-ink);
-  color: var(--gold-ink);
-}
-:is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .btn-line {
-  border-color: var(--signal-on-dark);
-  color: var(--signal-on-dark);
-}
-@media (hover: hover) {
-  .btn-signal:not(:disabled, [aria-disabled="true"]):hover {
-    background-color: var(--signal-fill-hover);
-    color: #fff;
-  }
-  .btn-line:not(:disabled, [aria-disabled="true"]):hover {
-    background-color: var(--gold-ink);
-    border-color: var(--gold-ink);
-    color: #fff;
-  }
-  :is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .btn-line:not(:disabled, [aria-disabled="true"]):hover {
-    background-color: var(--signal-on-dark);
-    border-color: var(--signal-on-dark);
-    color: #000;
-  }
-}
-:is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):active {
-  transform: scale(0.98);
-}
-:is(.btn-signal, .btn-line):focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
-}
-:is(.btn-signal, .btn-line):is(:disabled, [aria-disabled="true"]) {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-.btn-gross {
-  min-height: 48px;
-  padding: 0 28px;
-}
-.btn-mittel,
-.btn-klein {
-  isolation: isolate;
-}
-.btn-mittel {
-  min-height: 36px;
-  padding: 0 16px;
-  font-size: 14px;
-  letter-spacing: -0.016em;
-}
-.btn-mittel::after {
-  content: "";
-  position: absolute;
-  inset: -4px 0;
-}
-.btn-klein {
-  min-height: 28px;
-  padding: 0 12px;
-  font-size: 12px;
-  letter-spacing: -0.01em;
-}
-.btn-klein::after {
-  content: "";
-  position: absolute;
-  inset: -8px -4px;
-}
-@media (prefers-reduced-motion: reduce) {
   .btn-signal,
   .btn-line {
-    transition: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0 22px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pille);
+    font-family: var(--font-sf);
+    font-size: 17px;
+    line-height: 1.18;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 200ms var(--ease-apple),
+      border-color 200ms var(--ease-apple),
+      color 200ms var(--ease-apple),
+      transform var(--t-druck) var(--ease-apple);
   }
-  :is(.btn-signal, .btn-line):active {
-    transform: none;
+  /* Lange Linktexte (z. B. Journal 'Weiter zum Thema') dürfen umbrechen,
+   damit die Pille nie breiter als der Bildschirm wird. */
+  .aktionen .btn-signal,
+  .aktionen .btn-line {
+    white-space: normal;
+    max-width: 100%;
+    text-align: center;
+    padding-block: 10px;
   }
-}
+  .btn-signal::before,
+  .btn-line::before {
+    display: none;
+  }
+  .btn-signal svg,
+  .btn-line svg {
+    display: none;
+  }
+  .btn-signal {
+    background-color: var(--signal-fill);
+    color: #fff;
+  }
+  .btn-line {
+    background-color: transparent;
+    border-color: var(--gold-ink);
+    color: var(--gold-ink);
+  }
+  :is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark)
+    .btn-line {
+    border-color: var(--signal-on-dark);
+    color: var(--signal-on-dark);
+  }
+  @media (hover: hover) {
+    .btn-signal:not(:disabled, [aria-disabled="true"]):hover {
+      background-color: var(--signal-fill-hover);
+      color: #fff;
+    }
+    .btn-line:not(:disabled, [aria-disabled="true"]):hover {
+      background-color: var(--gold-ink);
+      border-color: var(--gold-ink);
+      color: #fff;
+    }
+    :is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark)
+      .btn-line:not(:disabled, [aria-disabled="true"]):hover {
+      background-color: var(--signal-on-dark);
+      border-color: var(--signal-on-dark);
+      color: #000;
+    }
+  }
+  :is(.btn-signal, .btn-line):not(:disabled, [aria-disabled="true"]):active {
+    transform: scale(0.98);
+  }
+  :is(.btn-signal, .btn-line):focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  :is(.btn-signal, .btn-line):is(:disabled, [aria-disabled="true"]) {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+  .btn-gross {
+    min-height: 48px;
+    padding: 0 28px;
+  }
+  .btn-mittel,
+  .btn-klein {
+    isolation: isolate;
+  }
+  .btn-mittel {
+    min-height: 36px;
+    padding: 0 16px;
+    font-size: 14px;
+    letter-spacing: -0.016em;
+  }
+  .btn-mittel::after {
+    content: "";
+    position: absolute;
+    inset: -4px 0;
+  }
+  .btn-klein {
+    min-height: 28px;
+    padding: 0 12px;
+    font-size: 12px;
+    letter-spacing: -0.01em;
+  }
+  .btn-klein::after {
+    content: "";
+    position: absolute;
+    inset: -8px -4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-signal,
+    .btn-line {
+      transition: none;
+    }
+    :is(.btn-signal, .btn-line):active {
+      transform: none;
+    }
+  }
 
-/* Textlinks im Apple-Stil: Orange (--gold-ink) mit „›“ dahinter,
+  /* Textlinks im Apple-Stil: Orange (--gold-ink) mit „›“ dahinter,
    unterstrichen nur unter dem Zeiger oder mit Fokus. Vorhandene
    Pfeil-Icons im Markup werden ausgeblendet, der Chevron kommt aus
    ::after (Alt-Text leer). Auf dunklem Grund .link-pfeil-dunkel. */
-.link-pfeil {
-  color: var(--gold-ink);
-  text-decoration: none;
-  text-underline-offset: 0.18em;
-  transition: opacity 60ms linear;
-}
-.link-pfeil-dunkel,
-:is(.bg-foreground, .bg-black, .bg-schwarz, .karte-schwarz, .on-dark) .link-pfeil {
-  color: var(--signal-on-dark);
-}
-.link-pfeil :is(svg, .pfeil) {
-  display: none;
-}
-.link-pfeil::after {
-  content: "\00A0\203A";
-  content: "\00A0\203A" / "";
-}
-.link-pfeil:focus-visible {
-  text-decoration: underline;
-}
-@media (hover: hover) {
-  .link-pfeil:hover {
-    text-decoration: underline;
-  }
-}
-.link-pfeil:active {
-  opacity: 0.7;
-}
-/* Einzeln stehender Link in einer Zeile: 44 px hoch. */
-.link-pfeil.link-pfeil-zeile {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.75rem;
-  margin-block: -0.75rem;
-}
+  /* Einzeln stehender Link in einer Zeile: 44 px hoch. */
 
-/* Fuß: Links mit derselben Hintergrundlinie (1 px), von links. Die
+  /* Fuß: Links mit derselben Hintergrundlinie (1 px), von links. Die
    Linie hängt am Text (.link-fuss-text), nicht an der 44 px hohen
    Tippfläche. */
-.link-fuss-text {
-  background-image: linear-gradient(currentColor, currentColor);
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0 1px;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  transition: background-size var(--t-mittel) var(--ease-wechsel);
-}
-:focus-visible > .link-fuss-text {
-  background-size: 100% 1px;
-}
-@media (hover: hover) and (pointer: fine) {
-  :hover > .link-fuss-text {
-    background-size: 100% 1px;
-  }
-}
-
 }
 
 /* Keine treibenden Farbflächen mehr: ruhige, klare Flächen wirken
    gestalteter als Verläufe. Markup bleibt, falls es zurück soll. */
-.aurora {
-  display: none;
-}
 
 /* Sitalo-Wachssiegel — sehr langsame Rotation für lebendigen Brand-
    Akzent. 40 Sekunden pro Umdrehung — nicht ablenkend, aber gibt
    dem Siegel Atem. */
 @media (prefers-reduced-motion: no-preference) {
-  .stempel svg {
-    animation: stempel-rotate 40s linear infinite;
-  }
-  @keyframes stempel-rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
 }
-
 
 /* Druck-Stil — Essays und Manifest sollen gedruckt wie gesetzt
    aussehen. Das Site-Chrome (Header, Footer, fixierte Helfer)
@@ -1807,58 +1023,8 @@ h3:not(.label-mono) {
 }
 
 /* AtelierBrief — Trigger und Modal-Karte. */
-.atelier-brief-trigger {
-  /* Sanfter Idle-Float, kein Springen. */
-  animation: atelier-brief-float 6s ease-in-out infinite;
-}
-@keyframes atelier-brief-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-.atelier-brief-pulse {
-  animation: atelier-brief-pulse 2.4s ease-out 3;
-  transform-origin: center;
-}
-@keyframes atelier-brief-pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgb(244 91 30 / 0.45); }
-  70% { transform: scale(1); box-shadow: 0 0 0 10px rgb(244 91 30 / 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgb(244 91 30 / 0); }
-}
 /* Nach 14,4 s (3 Pulse à 2,4 s) verstummt der Dot, bleibt aber
    als ruhiger Akzent sichtbar. */
-.atelier-brief-pulse {
-  animation-fill-mode: forwards;
-}
-@media (prefers-reduced-motion: reduce) {
-  .atelier-brief-trigger,
-  .atelier-brief-pulse {
-    animation: none;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .atelier-brief-overlay {
-    animation: atelier-brief-fade-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .atelier-brief-card {
-    animation: atelier-brief-card-in 420ms cubic-bezier(0.18, 0.85, 0.32, 1.12);
-    transform-origin: bottom center;
-  }
-}
-@keyframes atelier-brief-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes atelier-brief-card-in {
-  from {
-    opacity: 0;
-    transform: translateY(40px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
 
 /* SitaloSignatur — handgezeichnete Signatur, die sich beim
    Hereinscrollen Strich für Strich zeichnet. Drei Pfade laufen
@@ -1866,53 +1032,6 @@ h3:not(.label-mono) {
 .sitalo-signatur svg path,
 .sitalo-signatur svg circle {
   transition: none;
-}
-.sitalo-signatur-text {
-  stroke-dasharray: 520;
-  stroke-dashoffset: 520;
-}
-.sitalo-signatur-swoosh {
-  stroke-dasharray: 280;
-  stroke-dashoffset: 280;
-}
-.sitalo-signatur-dot {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-  transform: scale(0);
-}
-.sitalo-signatur[data-drawn="true"] .sitalo-signatur-text {
-  animation: signatur-draw-text 1600ms cubic-bezier(0.5, 0.1, 0.3, 1) forwards;
-}
-.sitalo-signatur[data-drawn="true"] .sitalo-signatur-swoosh {
-  animation: signatur-draw-swoosh 700ms cubic-bezier(0.5, 0.1, 0.3, 1) 1400ms forwards;
-}
-.sitalo-signatur[data-drawn="true"] .sitalo-signatur-dot {
-  animation: signatur-dot 360ms cubic-bezier(0.18, 0.85, 0.32, 1.4) 2050ms forwards;
-}
-.sitalo-signatur[data-reduced="true"] .sitalo-signatur-text,
-.sitalo-signatur[data-reduced="true"] .sitalo-signatur-swoosh {
-  stroke-dashoffset: 0;
-}
-.sitalo-signatur[data-reduced="true"] .sitalo-signatur-dot {
-  opacity: 1;
-  transform: scale(1);
-}
-@keyframes signatur-draw-text {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes signatur-draw-swoosh {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes signatur-dot {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 /* AmbientTint — wird von der AmbientTint-Komponente per
@@ -1926,7 +1045,9 @@ body::before {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background-color: rgb(var(--ambient-rgb, 245 215 175) / var(--ambient-alpha, 0.025));
+  background-color: rgb(
+    var(--ambient-rgb, 245 215 175) / var(--ambient-alpha, 0.025)
+  );
   mix-blend-mode: overlay;
   transition: background-color 1200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -1937,99 +1058,18 @@ body::before {
 }
 
 /* AtelierTagebuch — Trigger, Modal, Papier-Linien-Hintergrund. */
-.atelier-tagebuch-trigger {
-  animation: atelier-tagebuch-float 7s ease-in-out infinite 0.5s;
-}
-@keyframes atelier-tagebuch-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .atelier-tagebuch-trigger {
-    animation: none;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .atelier-tagebuch-overlay {
-    animation: atelier-brief-fade-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .atelier-tagebuch-card {
-    animation: atelier-brief-card-in 420ms cubic-bezier(0.18, 0.85, 0.32, 1.12);
-    transform-origin: bottom center;
-  }
-}
 /* Linierter Papier-Hintergrund — sehr dezent, blaue Lining wie in
    einem deutschen Notizbuch (DIN A5 lined). */
-.atelier-tagebuch-paper {
-  background-image:
-    linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 30px,
-      rgba(50, 70, 110, 0.07) 30px,
-      rgba(50, 70, 110, 0.07) 31px,
-      transparent 31px
-    );
-  background-size: 100% 32px;
-  background-position: 0 60px;
-  opacity: 0.7;
-}
 
 /* ------------------------------------------------------------------
    Spotlight-Karten: Licht folgt dem Mauszeiger (--sx/--sy setzt
    SpotlightLink). Ohne Maus bleibt die Karte ruhig.
    ------------------------------------------------------------------ */
-.spotlight-card {
-  position: relative;
-  isolation: isolate;
-}
-.spotlight-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 300ms ease;
-  background: radial-gradient(
-    360px circle at var(--sx, 50%) var(--sy, 50%),
-    color-mix(in oklab, var(--gold) 16%, transparent),
-    transparent 70%
-  );
-}
-.spotlight-card:hover::before {
-  opacity: 1;
-}
 
 /* ------------------------------------------------------------------
    Ablauf-Linie: zeichnet sich beim Scrollen von links nach rechts.
    Ohne Scroll-Timeline-Support steht sie einfach voll da.
    ------------------------------------------------------------------ */
-.ablauf-line {
-  transform-origin: left center;
-}
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .ablauf-line {
-      animation: ablauf-draw linear both;
-      animation-timeline: view();
-      animation-range: entry 20% cover 45%;
-    }
-    .ablauf-dot {
-      animation: ablauf-dot linear both;
-      animation-timeline: view();
-      animation-range: entry 30% cover 40%;
-    }
-  }
-}
-@keyframes ablauf-draw {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-@keyframes ablauf-dot {
-  from { transform: scale(0.4); opacity: 0.2; }
-  to { transform: scale(1); opacity: 1; }
-}
 
 /* ------------------------------------------------------------------
    Gold-Lichtkante: ein schmaler Lichtstreif wandert langsam um die
@@ -2040,75 +1080,11 @@ body::before {
   inherits: false;
   initial-value: 0deg;
 }
-.gold-sweep {
-  position: relative;
-}
-.gold-sweep::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px;
-  pointer-events: none;
-  background: conic-gradient(
-    from var(--sweep),
-    transparent 0deg,
-    color-mix(in oklab, var(--gold) 35%, transparent) 30deg,
-    color-mix(in oklab, var(--gold) 80%, white) 70deg,
-    color-mix(in oklab, var(--gold) 35%, transparent) 110deg,
-    transparent 140deg,
-    transparent 360deg
-  );
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .gold-sweep::after {
-    animation: gold-sweep 6s linear infinite;
-  }
-}
-@keyframes gold-sweep {
-  to { --sweep: 360deg; }
-}
 
 /* ------------------------------------------------------------------
    Aurora: drei weiche Farbflächen, die langsam treiben. Hinter dem
    Hero und dem Schluss-Aufruf. Bei reduzierter Bewegung stehen sie.
    ------------------------------------------------------------------ */
-.aurora {
-  overflow: hidden;
-}
-.aurora > span {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(70px);
-  opacity: 0.55;
-  will-change: transform;
-}
-.aurora > span:nth-child(1) {
-  width: 46rem; height: 46rem; top: -18rem; left: -12rem;
-  background: color-mix(in oklab, var(--accent) 90%, transparent);
-}
-.aurora > span:nth-child(2) {
-  width: 38rem; height: 38rem; top: 4rem; right: -14rem;
-  background: color-mix(in oklab, var(--accent) 80%, transparent);
-}
-.aurora > span:nth-child(3) {
-  width: 30rem; height: 30rem; bottom: -16rem; left: 30%;
-  background: color-mix(in oklab, var(--gold) 16%, transparent);
-}
-@media (min-width: 640px) {
-  .aurora > span { filter: blur(110px); }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .aurora > span:nth-child(1) { animation: aurora-a 22s ease-in-out infinite alternate; }
-  .aurora > span:nth-child(2) { animation: aurora-b 28s ease-in-out infinite alternate; }
-  .aurora > span:nth-child(3) { animation: aurora-c 25s ease-in-out infinite alternate; }
-}
-@keyframes aurora-a { to { transform: translate(14rem, 6rem) scale(1.15); } }
-@keyframes aurora-b { to { transform: translate(-12rem, 8rem) scale(0.9); } }
-@keyframes aurora-c { to { transform: translate(-10rem, -8rem) scale(1.2); } }
 
 /* ------------------------------------------------------------------
    Rise: Überschriften gleiten beim Scrollen von unten ins Bild,
@@ -2124,15 +1100,20 @@ body::before {
   }
 }
 @keyframes rise {
-  from { opacity: 0; transform: translateY(0.6em); clip-path: inset(0 0 100% 0); }
-  to { opacity: 1; transform: none; clip-path: inset(0 0 -0.3em 0); }
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 -0.3em 0);
+  }
 }
 
 /* Aurora-Variante auf dunklem Marine-Grund: Elbblau statt Gold —
    Gold auf Blau mischt sich sonst zu Braun. */
-.aurora-dark > span:nth-child(1) { background: oklch(0.5 0.13 250 / 0.45); }
-.aurora-dark > span:nth-child(2) { background: oklch(0.6 0.1 220 / 0.25); }
-.aurora-dark > span:nth-child(3) { background: oklch(0.45 0.12 265 / 0.35); }
 
 /* ------------------------------------------------------------------
    Hamburg-Silhouette (components/marketing/hamburg-skyline.tsx).
@@ -2143,83 +1124,9 @@ body::before {
    (data-run). Der Startzustand gilt nur mit .is-armed (setzt das
    Script); ohne Script steht das fertige Bild mit allen Lichtern.
    ------------------------------------------------------------------ */
-.hh-skyline .hh-draw {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
-.hh-skyline .hh-fill { fill: url(#hh-fill); }
-.hh-skyline .hh-fine { opacity: 0.7; }
-.hh-skyline .hh-detail { opacity: 0.55; }
-.hh-skyline .hh-back { opacity: 0.32; fill: currentColor; fill-opacity: 0.05; }
-.hh-skyline .hh-reflection { opacity: 1; }
-.hh-skyline .hh-light { opacity: 1; }
-.hh-skyline .hh-windows { filter: drop-shadow(0 0 1.5px rgb(255 200 140 / 0.9)); }
-
-@media (prefers-reduced-motion: no-preference) {
-  /* Wartezustand: ohne Übergang, damit nichts sichtbar zurückläuft. */
-  .hh-skyline.is-armed:not(.is-drawn) .hh-draw { stroke-dashoffset: 1; }
-  .hh-skyline.is-armed:not(.is-drawn) .hh-fill { fill-opacity: 0; }
-  .hh-skyline.is-armed:not(.is-drawn) :is(.hh-detail, .hh-back, .hh-reflection, .hh-light) {
-    opacity: 0;
-  }
-  /* Zeichnen in rund 1,6 s: jede Linie 1,1 s, sehr eng gestaffelt, damit
-     die rechte Hälfte nicht lange leer bleibt. Flächen, Feinheiten und
-     Lichter folgen im selben, gestrafften Takt (--t × 0,45). */
-  .hh-skyline.is-armed.is-drawn .hh-draw {
-    transition: stroke-dashoffset 1.1s var(--ease-wechsel) min(calc(var(--i) * 14ms), 500ms);
-  }
-  .hh-skyline.is-armed.is-drawn .hh-fill {
-    transition:
-      stroke-dashoffset 1.1s var(--ease-wechsel) min(calc(var(--i) * 14ms), 500ms),
-      fill-opacity var(--t-lang) var(--ease-wechsel) calc(min(calc(var(--i) * 14ms), 500ms) + 0.9s);
-  }
-  .hh-skyline.is-armed.is-drawn :is(.hh-detail, .hh-back, .hh-reflection) {
-    transition: opacity var(--t-lang) var(--ease-wechsel) 1.2s;
-  }
-  /* Lichter nacheinander, jedes zügig an und dann ruhig. */
-  .hh-skyline.is-armed.is-drawn .hh-light {
-    transition: opacity var(--t-mittel) var(--ease-aus) calc(var(--t) * 0.45ms);
-  }
-
-  .hh-skyline .hh-blink {
-    animation: hh-blink 3.2s ease-in-out infinite paused;
-  }
-  .hh-skyline.is-armed .hh-blink {
-    animation-delay: calc(var(--t) * 0.45ms + 900ms);
-  }
-  .hh-skyline[data-run="true"]:not(.is-armed) .hh-blink,
-  .hh-skyline.is-drawn[data-run="true"] .hh-blink {
-    animation-play-state: running;
-  }
-}
 /* Tiefe beim Scrollen: Die Silhouette rückt über die Sichtdauer um 4 %
    nach. Nur wo der Browser scrollgebundene Animationen kennt, nur
    transform, bei reduzierter Bewegung statisch. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .hh-tiefe {
-      animation: hh-tiefe linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 50%;
-    }
-  }
-}
-@keyframes hh-tiefe {
-  from {
-    transform: translateX(-4%);
-  }
-  to {
-    transform: none;
-  }
-}
-@keyframes hh-blink {
-  0%,
-  100% { opacity: 0.22; }
-  10%,
-  28% { opacity: 1; }
-  42% { opacity: 0.22; }
-}
-
 
 /* ------------------------------------------------------------------
    Live-Vorschau (components/marketing/live-preview.tsx): Abschnitte
@@ -2232,8 +1139,14 @@ body::before {
   }
 }
 @keyframes lp-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Branchen-Chips der Live-Vorschau: gewählt wie in der Ladeliste
