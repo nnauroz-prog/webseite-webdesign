@@ -127,7 +127,7 @@ export function MarketingFooter({
           <div className="hidden grid-cols-4 gap-x-8 border-b border-[var(--border)] pt-2 pb-6 sm:grid lg:pt-4 lg:pb-8">
             {GRUPPEN.map((g) => (
               <div key={g.titel}>
-                <h2 className="mb-1 text-[12px] leading-[1.33] font-semibold tracking-[-0.01em] text-[#1d1d1f] lg:mb-2">
+                <h2 className="mb-2 font-mono text-[11px] leading-[1.5] font-normal tracking-[0.12em] text-[#6e6e73] uppercase lg:mb-3">
                   {g.titel}
                 </h2>
                 <ul>
@@ -156,7 +156,9 @@ export function MarketingFooter({
                 </RechtLink>
               </ul>
             </div>
-            <span>Hamburg, Deutschland</span>
+            <span className="font-mono text-[11px] tracking-[0.06em] text-[#6e6e73]">
+              53°33′ N · 9°59′ O · Hamburg
+            </span>
           </div>
         </div>
       </footer>
