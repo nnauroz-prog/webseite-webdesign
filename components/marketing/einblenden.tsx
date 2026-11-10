@@ -128,6 +128,11 @@ export function Einblenden() {
           } else if (e.isIntersecting) {
             el.dataset.einDa = "1";
             io.unobserve(el);
+            // Nach dem Auftritt zurück in den Ruhezustand, damit spätere
+            // Bewegungen (Antippen) nicht die Auftritts-Verzögerung erben.
+            window.setTimeout(() => {
+              if (el.dataset.einDa === "1") el.dataset.einDa = "0";
+            }, 2800);
             el.querySelectorAll<HTMLElement>("[data-zaehl]").forEach(zaehlen);
             el.querySelectorAll<HTMLElement>("[data-wuerfel]").forEach(
               wuerfeln,

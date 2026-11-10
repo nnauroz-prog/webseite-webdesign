@@ -1393,16 +1393,20 @@
   [data-ein][data-ein-da="w"]:not([data-ein="reihe"], :focus-within),
   [data-ein="reihe"][data-ein-da="w"]:not(:focus-within) > * {
     opacity: 0;
-    transform: translate3d(0, 18px, 0);
+    transform: translate3d(0, 28px, 0) scale(0.975);
+    filter: blur(10px);
   }
   [data-ein="reihe"][data-ein-da="w"]:not(:focus-within) > * {
-    transform: translate3d(0, 24px, 0) scale(0.985);
+    transform: translate3d(0, 34px, 0) scale(0.96);
+    filter: blur(6px);
   }
+  /* Weich: kommt unscharf und etwas kleiner, setzt sich langsam. */
   [data-ein][data-ein-da="1"]:not([data-ein="reihe"]),
   [data-ein="reihe"][data-ein-da="1"] > * {
     transition:
-      opacity 620ms var(--ease-aus),
-      transform 900ms var(--ease-aus);
+      opacity 900ms var(--ease-aus),
+      transform 1250ms var(--ease-aus),
+      filter 900ms var(--ease-aus);
   }
   [data-ein="reihe"][data-ein-da="1"] > :nth-child(2) {
     transition-delay: 80ms;
@@ -1609,5 +1613,35 @@
   /* Ziffern, die würfeln, sollen nicht springen. */
   [data-wuerfel] {
     font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Weich statt starr, nur Bildschirm und ohne reduzierte Bewegung.
+   ------------------------------------------------------------------ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Karten geben beim Antippen nach und federn zurück (nach dem Auftritt,
+     Zustand "0"). */
+  [data-ein="reihe"][data-ein-da="0"] > * {
+    transition: transform 520ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  [data-ein="reihe"][data-ein-da="0"] > *:active {
+    transform: scale(0.965);
+    transition: transform 140ms var(--ease-apple);
+  }
+  /* Pillen federn ebenfalls. */
+  :is(.btn-signal, .btn-line) {
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  /* Kopf der Startseite sinkt beim Wegscrollen weich zurück
+     (--weg 0–1 setzt effekte.tsx). */
+  #start {
+    transform: scale(calc(1 - var(--weg, 0) * 0.07));
+    opacity: calc(1 - var(--weg, 0) * 0.55);
+    transform-origin: 50% 100%;
+  }
+  /* Fähre zieht einen weichen Schein. */
+  .faehr-linie {
+    box-shadow: 0 0 12px rgb(244 91 30 / 0.55);
   }
 }

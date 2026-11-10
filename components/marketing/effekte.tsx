@@ -54,9 +54,16 @@ export function Effekte() {
         an: -1,
       };
     });
+    const kopf = document.getElementById("start");
     const messen = () => {
       raf = 0;
       const vh = window.innerHeight;
+      if (kopf) {
+        const r = kopf.getBoundingClientRect();
+        const weg =
+          r.height > 0 ? Math.min(1, Math.max(0, -r.top / r.height)) : 0;
+        kopf.style.setProperty("--weg", weg.toFixed(3));
+      }
       for (const s of saetze) {
         if (s.woerter.length === 0) continue;
         const r = s.el.getBoundingClientRect();
