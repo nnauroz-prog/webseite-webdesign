@@ -851,10 +851,9 @@ function Leistungen() {
           eyebrow="Anfragen"
           titel="Ein Tipp auf die Nummer."
           foto={{
-            src: "/images/sitalo-cafe-mobile.webp",
-            alt: "Handy mit der Musterseite eines Cafés auf einem Holztisch",
+            src: "/images/workspace-typing.webp",
+            alt: "Hände tippen auf einer Laptop-Tastatur",
             position: "50% 45%",
-            muster: true,
             sizes:
               "(min-width: 1068px) 320px, (min-width: 640px) 100vw, calc(100vw - 32px)",
           }}
