@@ -13,6 +13,8 @@ import "./globals.css";
 import "./hafen.css";
 // Apple-Bausteine nach den Hafen-Regeln, damit sie diese überstimmen.
 import "./apple.css";
+import "./effekte-gross.css";
+import "./effekte-band.css";
 import { PAKETE } from "@/lib/pakete-data";
 import { SITE_URL } from "@/lib/site";
 
