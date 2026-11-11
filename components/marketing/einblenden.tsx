@@ -100,12 +100,33 @@ export function Einblenden() {
     ) {
       return;
     }
+    // Zahlen zählen und Ziffern würfeln, sobald sie selbst im Bild sind:
+    // auch im Kopf der Seite, außerhalb von data-ein und in Karten, die
+    // erst beim Wischen erscheinen.
+    const ioZahl = new IntersectionObserver(
+      (eintraege) => {
+        for (const e of eintraege) {
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          ioZahl.unobserve(el);
+          if (el.hasAttribute("data-wuerfel")) wuerfeln(el);
+          else zaehlen(el);
+        }
+      },
+      { threshold: 0.6 },
+    );
+    document
+      .querySelectorAll<HTMLElement>(
+        '[data-zaehl]:not([data-zaehl="fertig"]), [data-wuerfel]:not([data-wuerfel="fertig"])',
+      )
+      .forEach((el) => ioZahl.observe(el));
+
     const elemente = Array.from(
       document.querySelectorAll<HTMLElement>(
         '[data-ein]:not([data-ein-da="0"], [data-ein-da="1"])',
       ),
     );
-    if (elemente.length === 0) return;
+    if (elemente.length === 0) return () => ioZahl.disconnect();
 
     let erste = true;
     const io = new IntersectionObserver(
@@ -133,10 +154,6 @@ export function Einblenden() {
             window.setTimeout(() => {
               if (el.dataset.einDa === "1") el.dataset.einDa = "0";
             }, 2800);
-            el.querySelectorAll<HTMLElement>("[data-zaehl]").forEach(zaehlen);
-            el.querySelectorAll<HTMLElement>("[data-wuerfel]").forEach(
-              wuerfeln,
-            );
           }
         }
         erste = false;
@@ -144,7 +161,10 @@ export function Einblenden() {
       { rootMargin: "0px 0px -8% 0px" },
     );
     for (const el of elemente) io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      ioZahl.disconnect();
+    };
   }, [pfad]);
 
   return null;

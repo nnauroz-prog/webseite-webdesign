@@ -401,7 +401,7 @@ export function BildKachel({
         </div>
       ) : null}
       {foto ? (
-        <div className={u.kachelBild}>
+        <div className={u.kachelBild} data-foto-lebt="">
           <Image
             src={foto.src}
             alt={foto.alt}

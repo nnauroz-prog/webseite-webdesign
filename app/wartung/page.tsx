@@ -356,7 +356,7 @@ function PlanKarte({ plan }: { plan: Plan }) {
         {plan.description}
       </p>
       <p className="mt-5 text-[28px] leading-[32px] font-bold tracking-[-0.01em] tabular-nums">
-        ab {plan.price}
+        <span data-zaehl="">ab {plan.price}</span>
         <span className="ml-1.5 text-[14px] font-normal tracking-normal text-[#6e6e73]">
           im Monat
         </span>

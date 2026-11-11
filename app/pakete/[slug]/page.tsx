@@ -349,7 +349,7 @@ export default async function PaketDetailPage({
                       <span className="mr-1 text-[15px] font-normal text-[#a1a1a6]">
                         ab
                       </span>
-                      {betrag(paket.setup)}
+                      <span data-zaehl="">{betrag(paket.setup)}</span>
                     </p>
                   </div>
                   <div>
@@ -360,7 +360,7 @@ export default async function PaketDetailPage({
                       <span className="mr-1 text-[15px] font-normal text-[#a1a1a6]">
                         ab
                       </span>
-                      {betrag(paket.monthly)}
+                      <span data-zaehl="">{betrag(paket.monthly)}</span>
                     </p>
                   </div>
                 </div>

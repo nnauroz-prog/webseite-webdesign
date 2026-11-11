@@ -12,17 +12,27 @@ const W = 1200;
 function Faehre({ x }: { x: number }) {
   return (
     <g transform={`translate(${x} 0)`}>
-      <ellipse cx="22" cy="66" rx="30" ry="2.2" fill="#fff" fillOpacity=".55" />
-      <path d="M0 58h46l-5 7H5Z" fill="#1d1d1f" />
-      <rect x="0" y="57" width="46" height="2.2" fill="#f45b1e" />
-      <path d="M6 57V50h30l4 7Z" fill="#fff" />
-      <path d="M10 46h20v4H10Z" fill="#fff" />
-      <path
-        d="M9 52.5h3M14 52.5h3M19 52.5h3M24 52.5h3M29 52.5h3"
-        stroke="#6f7b84"
-        strokeWidth="2"
-      />
-      <rect x="22" y="40" width="3" height="6" fill="#f45b1e" />
+      {/* Innere Gruppe wiegt sich (CSS .weg-faehre); die äußere trägt die Position. */}
+      <g className="weg-faehre">
+        <ellipse
+          cx="22"
+          cy="66"
+          rx="30"
+          ry="2.2"
+          fill="#fff"
+          fillOpacity=".55"
+        />
+        <path d="M0 58h46l-5 7H5Z" fill="#1d1d1f" />
+        <rect x="0" y="57" width="46" height="2.2" fill="#f45b1e" />
+        <path d="M6 57V50h30l4 7Z" fill="#fff" />
+        <path d="M10 46h20v4H10Z" fill="#fff" />
+        <path
+          d="M9 52.5h3M14 52.5h3M19 52.5h3M24 52.5h3M29 52.5h3"
+          stroke="#6f7b84"
+          strokeWidth="2"
+        />
+        <rect x="22" y="40" width="3" height="6" fill="#f45b1e" />
+      </g>
     </g>
   );
 }
@@ -136,7 +146,15 @@ const ZEICHEN = [
  * /ablauf 6); zeichen: welches Zeichen (0 Telefon, 1 Stift, 2 Link,
  * 3 Haken) im Kreis steht.
  */
-export function WegBand({ i, teile = 4, zeichen }: { i: number; teile?: number; zeichen?: number }) {
+export function WegBand({
+  i,
+  teile = 4,
+  zeichen,
+}: {
+  i: number;
+  teile?: number;
+  zeichen?: number;
+}) {
   const breite = W / teile;
   const z = zeichen ?? Math.min(i, 3);
   const voll = z === 0 || z === 1;
