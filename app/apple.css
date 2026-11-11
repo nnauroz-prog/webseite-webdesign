@@ -2299,3 +2299,24 @@
     }
   }
 }
+
+/* Lageplan (components/marketing/hamburg-map.tsx): Der gewählte
+   Stadtteil sendet einen ruhigen Ring. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .karte-ruf {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: karte-ruf 2.6s var(--ease-aus) infinite;
+  }
+  @keyframes karte-ruf {
+    0% {
+      transform: scale(0.5);
+      opacity: 0.9;
+    }
+    70%,
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+}
