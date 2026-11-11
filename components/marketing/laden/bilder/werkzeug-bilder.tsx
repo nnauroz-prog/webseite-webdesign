@@ -15,11 +15,38 @@ import { rr } from "./geraete";
  */
 function Svg({ children }: { children: React.ReactNode }) {
   return (
-    <svg viewBox="0 0 320 240" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+    <svg
+      viewBox="0 0 320 240"
+      preserveAspectRatio="xMidYMax slice"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <style dangerouslySetInnerHTML={{ __html: BEWEGUNG }} />
       <g transform="translate(0 20)">{children}</g>
     </svg>
   );
 }
+
+/**
+ * Bewegung in den Zeichnungen. Sie stehen als SVG-Datei in einem <img>;
+ * CSS-Animationen laufen dort mit. Jede Schleife dauert acht Sekunden:
+ * Zeilen erscheinen nacheinander, Häkchen zeichnen sich, Balken wachsen.
+ * --n staffelt die Teile. Bei reduzierter Bewegung steht alles still.
+ */
+const BEWEGUNG = `
+@media (prefers-reduced-motion: no-preference) {
+  .wz-reihe { animation: wz-reihe 8s cubic-bezier(.22,1,.36,1) infinite both; animation-delay: calc(var(--n, 0) * .45s); }
+  .wz-haken { stroke-dasharray: 14; animation: wz-haken 8s ease infinite both; animation-delay: calc(var(--n, 0) * .45s + .3s); }
+  .wz-balken { transform-box: fill-box; transform-origin: 50% 100%; animation: wz-balken 8s cubic-bezier(.22,1,.36,1) infinite both; animation-delay: calc(var(--n, 0) * .35s); }
+  .wz-wert { animation: wz-wert 8s ease infinite both; animation-delay: calc(var(--n, 0) * .35s + .55s); }
+  .wz-puls { transform-box: fill-box; transform-origin: 50% 50%; animation: wz-puls 1.6s ease-in-out infinite alternate; }
+  @keyframes wz-reihe { 0% { opacity: 0; transform: translateY(6px); } 8%, 88% { opacity: 1; transform: none; } 96%, 100% { opacity: 0; transform: none; } }
+  @keyframes wz-haken { 0% { stroke-dashoffset: 14; } 7%, 100% { stroke-dashoffset: 0; } }
+  @keyframes wz-balken { 0% { transform: scaleY(0); } 12%, 90% { transform: scaleY(1); } 98%, 100% { transform: scaleY(0); } }
+  @keyframes wz-wert { 0% { opacity: 0; } 8%, 86% { opacity: 1; } 94%, 100% { opacity: 0; } }
+  @keyframes wz-puls { from { transform: scale(.65); } to { transform: scale(1.2); } }
+}`;
+const stufe = (n: number) => ({ "--n": n }) as React.CSSProperties;
 
 const ORANGE = "#f45b1e";
 const TINTE = "#1d1d1f";
@@ -27,14 +54,43 @@ const GRAU = "#6e6e73";
 const GRUEN = "#248a52";
 
 const eur = (n: number) => `${n.toLocaleString("de-DE")} €`;
-const zahl = (s: string | undefined) => Number((s ?? "").replace(/[^\d]/g, "")) || 0;
+const zahl = (s: string | undefined) =>
+  Number((s ?? "").replace(/[^\d]/g, "")) || 0;
 
 /** Weiße Karte mit weichem Schatten (Papier, Dialog). */
-function Blatt({ x, y, w, h, r = 12, dreh = 0, children }: { x: number; y: number; w: number; h: number; r?: number; dreh?: number; children?: React.ReactNode }) {
+function Blatt({
+  x,
+  y,
+  w,
+  h,
+  r = 12,
+  dreh = 0,
+  children,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  r?: number;
+  dreh?: number;
+  children?: React.ReactNode;
+}) {
   return (
-    <g transform={dreh ? `rotate(${dreh} ${x + w / 2} ${y + h / 2})` : undefined}>
-      <path d={rr(x, y, w, h, r)} fill="#000" fillOpacity=".08" transform="translate(3 7)" />
-      <path d={rr(x, y, w, h, r)} fill="#000" fillOpacity=".05" transform="translate(1 2)" />
+    <g
+      transform={dreh ? `rotate(${dreh} ${x + w / 2} ${y + h / 2})` : undefined}
+    >
+      <path
+        d={rr(x, y, w, h, r)}
+        fill="#000"
+        fillOpacity=".08"
+        transform="translate(3 7)"
+      />
+      <path
+        d={rr(x, y, w, h, r)}
+        fill="#000"
+        fillOpacity=".05"
+        transform="translate(1 2)"
+      />
       <path d={rr(x, y, w, h, r)} fill="#fff" />
       {children}
     </g>
@@ -62,17 +118,28 @@ export function BildDurchsicht() {
         </text>
         {PUNKTE.map(([t, hinweis], i) => (
           <g key={t} transform={`translate(52 ${70 + i * 36})`}>
-            <circle cx="9" cy="8" r="9" fill={i === 0 ? ORANGE : TINTE} />
-            <text x="9" y="11.5" textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
-              {i + 1}
-            </text>
-            <text x="26" y="7" fontSize="10.5" fontWeight="600" fill={TINTE}>
-              {t}
-            </text>
-            <text x="26" y="20" fontSize="9" fill={GRAU}>
-              {hinweis}
-            </text>
-            {i < PUNKTE.length - 1 ? <path d="M26 28h190" stroke="#e5e5ea" /> : null}
+            <g className="wz-reihe" style={stufe(i)}>
+              <circle cx="9" cy="8" r="9" fill={i === 0 ? ORANGE : TINTE} />
+              <text
+                x="9"
+                y="11.5"
+                textAnchor="middle"
+                fontSize="10"
+                fontWeight="700"
+                fill="#fff"
+              >
+                {i + 1}
+              </text>
+              <text x="26" y="7" fontSize="10.5" fontWeight="600" fill={TINTE}>
+                {t}
+              </text>
+              <text x="26" y="20" fontSize="9" fill={GRAU}>
+                {hinweis}
+              </text>
+              {i < PUNKTE.length - 1 ? (
+                <path d="M26 28h190" stroke="#e5e5ea" />
+              ) : null}
+            </g>
           </g>
         ))}
       </Blatt>
@@ -96,20 +163,53 @@ export function BildLadezeit() {
           www.ihr-betrieb.de
         </text>
         <path d={rr(208, 50, 56, 22, 6)} fill={ORANGE} />
-        <text x={236} y={64.5} textAnchor="middle" fontSize="9.5" fontWeight="650" fill="#fff">
+        <text
+          x={236}
+          y={64.5}
+          textAnchor="middle"
+          fontSize="9.5"
+          fontWeight="650"
+          fill="#fff"
+        >
           Testen
         </text>
         {zeilen.map((z, i) => (
           <g key={z} transform={`translate(52 ${94 + i * 34})`}>
-            <circle cx="9" cy="9" r="9" fill="#e9f6ef" />
-            <path d="M5 9.2l2.8 2.8 5.2-5.6" stroke={GRUEN} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            <text x="26" y="12.5" fontSize="10.5" fontWeight="600" fill={TINTE}>
-              {z}
-            </text>
-            <text x="216" y="12.5" textAnchor="end" fontSize="9.5" fill={GRUEN} fontWeight="600">
-              im grünen Bereich
-            </text>
-            {i < zeilen.length - 1 ? <path d="M26 26h190" stroke="#e5e5ea" /> : null}
+            <g className="wz-reihe" style={stufe(i)}>
+              <circle cx="9" cy="9" r="9" fill="#e9f6ef" />
+              <path
+                className="wz-haken"
+                style={stufe(i)}
+                d="M5 9.2l2.8 2.8 5.2-5.6"
+                stroke={GRUEN}
+                strokeWidth="1.8"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <text
+                x="26"
+                y="12.5"
+                fontSize="10.5"
+                fontWeight="600"
+                fill={TINTE}
+              >
+                {z}
+              </text>
+              <text
+                x="216"
+                y="12.5"
+                textAnchor="end"
+                fontSize="9.5"
+                fill={GRUEN}
+                fontWeight="600"
+              >
+                im grünen Bereich
+              </text>
+              {i < zeilen.length - 1 ? (
+                <path d="M26 26h190" stroke="#e5e5ea" />
+              ) : null}
+            </g>
           </g>
         ))}
       </Blatt>
@@ -120,34 +220,72 @@ export function BildLadezeit() {
 /* ---------- Paketwahl: Frage-Dialog, dazu der Kranhaken mit Container ---------- */
 
 export function BildPaketWahl() {
-  const optionen = ["Eine Seite reicht", "Mehrere Seiten", "Inhalte selbst ändern"];
+  const optionen = [
+    "Eine Seite reicht",
+    "Mehrere Seiten",
+    "Inhalte selbst ändern",
+  ];
   return (
     <Svg>
       <Blatt x={47} y={40} w={226} h={150} r={16}>
         <g transform="translate(25 -18)">
-        {/* Fortschritt: Frage 2 von 5 */}
-        {[0, 1, 2, 3, 4].map((i) => (
-          <rect key={i} x={38 + i * 22} y={74} width="18" height="4" rx="2" fill={i < 2 ? ORANGE : "#e5e5ea"} />
-        ))}
-        <text x={150} y={78} fontSize="8.5" fill={GRAU}>
-          Frage 2 von 5
-        </text>
-        <text x={38} y={100} fontSize="12.5" fontWeight="700" fill={TINTE}>
-          Was braucht Ihre Website?
-        </text>
-        {optionen.map((t, i) => {
-          const aktiv = i === 1;
-          return (
-            <g key={t} transform={`translate(38 ${112 + i * 30})`}>
-              <path d={rr(0, 0, 194, 24, 12)} fill={aktiv ? "#fff3ec" : "#f5f5f7"} stroke={aktiv ? ORANGE : "none"} strokeWidth="1.5" />
-              <circle cx="14" cy="12" r="5.5" fill="#fff" stroke={aktiv ? ORANGE : "#c7c7cc"} strokeWidth="1.5" />
-              {aktiv ? <circle cx="14" cy="12" r="2.8" fill={ORANGE} /> : null}
-              <text x="27" y="15.5" fontSize="9.5" fontWeight={aktiv ? 650 : 500} fill={TINTE}>
-                {t}
-              </text>
-            </g>
-          );
-        })}
+          {/* Fortschritt: Frage 2 von 5 */}
+          {[0, 1, 2, 3, 4].map((i) => (
+            <rect
+              key={i}
+              x={38 + i * 22}
+              y={74}
+              width="18"
+              height="4"
+              rx="2"
+              fill={i < 2 ? ORANGE : "#e5e5ea"}
+            />
+          ))}
+          <text x={150} y={78} fontSize="8.5" fill={GRAU}>
+            Frage 2 von 5
+          </text>
+          <text x={38} y={100} fontSize="12.5" fontWeight="700" fill={TINTE}>
+            Was braucht Ihre Website?
+          </text>
+          {optionen.map((t, i) => {
+            const aktiv = i === 1;
+            return (
+              <g key={t} transform={`translate(38 ${112 + i * 30})`}>
+                <path
+                  d={rr(0, 0, 194, 24, 12)}
+                  fill={aktiv ? "#fff3ec" : "#f5f5f7"}
+                  stroke={aktiv ? ORANGE : "none"}
+                  strokeWidth="1.5"
+                />
+                <circle
+                  cx="14"
+                  cy="12"
+                  r="5.5"
+                  fill="#fff"
+                  stroke={aktiv ? ORANGE : "#c7c7cc"}
+                  strokeWidth="1.5"
+                />
+                {aktiv ? (
+                  <circle
+                    className="wz-puls"
+                    cx="14"
+                    cy="12"
+                    r="2.8"
+                    fill={ORANGE}
+                  />
+                ) : null}
+                <text
+                  x="27"
+                  y="15.5"
+                  fontSize="9.5"
+                  fontWeight={aktiv ? 650 : 500}
+                  fill={TINTE}
+                >
+                  {t}
+                </text>
+              </g>
+            );
+          })}
         </g>
       </Blatt>
     </Svg>
@@ -181,7 +319,12 @@ export function BildKosten() {
           </text>
         </g>
         {[0.5, 1].map((f) => (
-          <path key={f} d={`M42 ${basis - hoch * f}H278`} stroke="#e5e5ea" strokeDasharray="2 3" />
+          <path
+            key={f}
+            d={`M42 ${basis - hoch * f}H278`}
+            stroke="#e5e5ea"
+            strokeDasharray="2 3"
+          />
         ))}
         <path d={`M42 ${basis}H278`} stroke="#c7c7cc" />
         {jahre.map((b, i) => {
@@ -190,13 +333,43 @@ export function BildKosten() {
           const hL = (b.laufend / max) * hoch;
           return (
             <g key={b.j}>
-              <rect x={x} y={basis - hE} width="40" height={hE} fill={TINTE} />
-              <path d={rr(x, basis - hE - hL, 40, hL + 6, 6)} fill={ORANGE} />
-              <rect x={x} y={basis - hE} width="40" height="1" fill="#fff" fillOpacity=".5" />
-              <text x={x + 20} y={basis - hE - hL - 6} textAnchor="middle" fontSize="9.5" fontWeight="700" fill={TINTE}>
+              <g className="wz-balken" style={stufe(i)}>
+                <rect
+                  x={x}
+                  y={basis - hE}
+                  width="40"
+                  height={hE}
+                  fill={TINTE}
+                />
+                <path d={rr(x, basis - hE - hL, 40, hL + 6, 6)} fill={ORANGE} />
+                <rect
+                  x={x}
+                  y={basis - hE}
+                  width="40"
+                  height="1"
+                  fill="#fff"
+                  fillOpacity=".5"
+                />
+              </g>
+              <text
+                className="wz-wert"
+                style={stufe(i)}
+                x={x + 20}
+                y={basis - hE - hL - 6}
+                textAnchor="middle"
+                fontSize="9.5"
+                fontWeight="700"
+                fill={TINTE}
+              >
                 {eur(b.einmal + b.laufend)}
               </text>
-              <text x={x + 20} y={basis + 13} textAnchor="middle" fontSize="8.5" fill={GRAU}>
+              <text
+                x={x + 20}
+                y={basis + 13}
+                textAnchor="middle"
+                fontSize="8.5"
+                fill={GRAU}
+              >
                 Jahr {b.j}
               </text>
             </g>
@@ -215,36 +388,61 @@ export function BildTermin() {
   return (
     <Svg>
       <g transform="translate(40 -10)">
-      <Blatt x={22} y={40} w={196} h={168} r={16}>
-        <path d={`M38 40H202A16 16 0 0 1 218 56V70H22V56A16 16 0 0 1 38 40Z`} fill={ORANGE} />
-        <text x={36} y={60} fontSize="11" fontWeight="700" fill="#fff">
-          Erstgespräch · bis 30 Min.
-        </text>
-        {tage.map((t, i) => {
-          const aktiv = i === 2;
-          return (
-            <g key={t} transform={`translate(${34 + i * 36} 80)`}>
-              <path d={rr(0, 0, 30, 30, 9)} fill={aktiv ? TINTE : "#f5f5f7"} />
-              <text x="15" y="19.5" textAnchor="middle" fontSize="10" fontWeight="650" fill={aktiv ? "#fff" : TINTE}>
-                {t}
-              </text>
-            </g>
-          );
-        })}
-        {zeiten.map((z, i) => {
-          const aktiv = i === 1;
-          const x = 34 + (i % 2) * 88;
-          const y = 124 + Math.floor(i / 2) * 36;
-          return (
-            <g key={z} transform={`translate(${x} ${y})`}>
-              <path d={rr(0, 0, 80, 28, 14)} fill={aktiv ? "#fff3ec" : "#fff"} stroke={aktiv ? ORANGE : "#d2d2d7"} strokeWidth="1.4" />
-              <text x="40" y="18.5" textAnchor="middle" fontSize="10.5" fontWeight="650" fill={aktiv ? "#b23c0a" : TINTE}>
-                {z}
-              </text>
-            </g>
-          );
-        })}
-      </Blatt>
+        <Blatt x={22} y={40} w={196} h={168} r={16}>
+          <path
+            d={`M38 40H202A16 16 0 0 1 218 56V70H22V56A16 16 0 0 1 38 40Z`}
+            fill={ORANGE}
+          />
+          <text x={36} y={60} fontSize="11" fontWeight="700" fill="#fff">
+            Erstgespräch · bis 30 Min.
+          </text>
+          {tage.map((t, i) => {
+            const aktiv = i === 2;
+            return (
+              <g key={t} transform={`translate(${34 + i * 36} 80)`}>
+                <path
+                  d={rr(0, 0, 30, 30, 9)}
+                  fill={aktiv ? TINTE : "#f5f5f7"}
+                />
+                <text
+                  x="15"
+                  y="19.5"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fontWeight="650"
+                  fill={aktiv ? "#fff" : TINTE}
+                >
+                  {t}
+                </text>
+              </g>
+            );
+          })}
+          {zeiten.map((z, i) => {
+            const aktiv = i === 1;
+            const x = 34 + (i % 2) * 88;
+            const y = 124 + Math.floor(i / 2) * 36;
+            return (
+              <g key={z} transform={`translate(${x} ${y})`}>
+                <path
+                  d={rr(0, 0, 80, 28, 14)}
+                  fill={aktiv ? "#fff3ec" : "#fff"}
+                  stroke={aktiv ? ORANGE : "#d2d2d7"}
+                  strokeWidth="1.4"
+                />
+                <text
+                  x="40"
+                  y="18.5"
+                  textAnchor="middle"
+                  fontSize="10.5"
+                  fontWeight="650"
+                  fill={aktiv ? "#b23c0a" : TINTE}
+                >
+                  {z}
+                </text>
+              </g>
+            );
+          })}
+        </Blatt>
       </g>
     </Svg>
   );
@@ -252,7 +450,12 @@ export function BildTermin() {
 
 /* ---------- Honorar: Kassenbon des Starter-Pakets ---------- */
 
-const KURZ = ["Seitenplan", "Bau der Seite", "Fotos, Test am Handy", "Hosting, Domain, SSL"];
+const KURZ = [
+  "Seitenplan",
+  "Bau der Seite",
+  "Fotos, Test am Handy",
+  "Hosting, Domain, SSL",
+];
 
 export function BildHonorar() {
   const h = honorarPaket("starter");
@@ -265,33 +468,75 @@ export function BildHonorar() {
   return (
     <Svg>
       <g transform="rotate(3 160 110)">
-        <path d={form} fill="#000" fillOpacity=".08" transform="translate(4 8)" />
+        <path
+          d={form}
+          fill="#000"
+          fillOpacity=".08"
+          transform="translate(4 8)"
+        />
         <path d={form} fill="#fff" />
-        <text x={160} y={32} textAnchor="middle" fontSize="12" fontWeight="750" fill={TINTE} letterSpacing=".4">
+        <text
+          x={160}
+          y={32}
+          textAnchor="middle"
+          fontSize="12"
+          fontWeight="750"
+          fill={TINTE}
+          letterSpacing=".4"
+        >
           SITALO
         </text>
         <text x={160} y={46} textAnchor="middle" fontSize="8.5" fill={GRAU}>
           {h?.name ?? "Starter"}, offen vorgerechnet
         </text>
-        <path d="M86 56H234" stroke={TINTE} strokeDasharray="3 3" strokeOpacity=".5" />
+        <path
+          d="M86 56H234"
+          stroke={TINTE}
+          strokeDasharray="3 3"
+          strokeOpacity=".5"
+        />
         {posten.map((q, i) => (
           <g key={q.label} transform={`translate(0 ${74 + i * 20})`}>
-            <text x={86} y={0} fontSize="9" fill={TINTE}>
-              {KURZ[i] ?? q.label}
-            </text>
-            <text x={234} y={0} textAnchor="end" fontSize="9" fontWeight="600" fill={TINTE} style={{ fontVariantNumeric: "tabular-nums" }}>
-              {std(q.stunden)}
-            </text>
+            <g className="wz-reihe" style={stufe(i)}>
+              <text x={86} y={0} fontSize="9" fill={TINTE}>
+                {KURZ[i] ?? q.label}
+              </text>
+              <text
+                x={234}
+                y={0}
+                textAnchor="end"
+                fontSize="9"
+                fontWeight="600"
+                fill={TINTE}
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {std(q.stunden)}
+              </text>
+            </g>
           </g>
         ))}
-        <path d="M86 156H234" stroke={TINTE} strokeDasharray="3 3" strokeOpacity=".5" />
+        <path
+          d="M86 156H234"
+          stroke={TINTE}
+          strokeDasharray="3 3"
+          strokeOpacity=".5"
+        />
         <text x={86} y={172} fontSize="8.5" fill={GRAU}>
           Richtwert {std(h?.stundenSetup ?? 0)} × {eur(STUNDENSATZ_EUR)}
         </text>
         <text x={86} y={190} fontSize="10" fontWeight="650" fill={TINTE}>
           Paketpreis
         </text>
-        <text x={234} y={190} textAnchor="end" fontSize="13" fontWeight="750" fill="#b23c0a">
+        <text
+          className="wz-wert"
+          style={stufe(5)}
+          x={234}
+          y={190}
+          textAnchor="end"
+          fontSize="13"
+          fontWeight="750"
+          fill="#b23c0a"
+        >
           {h?.setup ?? ""}
         </text>
       </g>
