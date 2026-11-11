@@ -68,6 +68,10 @@ export function Effekte() {
       };
     });
     const kopf = document.getElementById("start");
+    // Himmelslicht: folgt dem Scrollen etwas langsamer, nie über main hinaus.
+    const haupt = document.getElementById("main");
+    let lichtMax = haupt ? Math.max(0, haupt.offsetHeight - 860) : 0;
+    let lichtY = -1;
     // Route (Ablauf): Fortschritt entlang der Liste und der Halt in Bildmitte.
     const routen = Array.from(
       document.querySelectorAll<HTMLElement>("[data-route], [data-fokus]"),
@@ -105,6 +109,15 @@ export function Effekte() {
           );
         }
       }
+      if (haupt) {
+        // Höhe jedes Mal frisch: Abschnitte wachsen beim Scrollen nach.
+        lichtMax = Math.max(0, haupt.offsetHeight - 860);
+        const y = Math.round(Math.min(window.scrollY * 0.9, lichtMax));
+        if (y !== lichtY) {
+          lichtY = y;
+          haupt.style.setProperty("--licht-y", `${y}px`);
+        }
+      }
       if (kopf) {
         const r = kopf.getBoundingClientRect();
         const weg =
@@ -136,15 +149,20 @@ export function Effekte() {
       document.documentElement.style.setProperty("--seite-p", p.toFixed(4));
       spur.dataset.an = p > 0.012 ? "1" : "0";
     };
+    const onGroesse = () => {
+      lichtMax = haupt ? Math.max(0, haupt.offsetHeight - 860) : 0;
+      onScroll();
+    };
     const onScroll = () => {
       if (!raf) raf = window.requestAnimationFrame(messen);
     };
     messen();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onGroesse);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onGroesse);
+      haupt?.style.removeProperty("--licht-y");
       if (raf) window.cancelAnimationFrame(raf);
     };
   }, [pfad]);
