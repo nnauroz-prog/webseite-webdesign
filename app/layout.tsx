@@ -200,6 +200,11 @@ export default function RootLayout({
       // Die Startseite setzt html.js per Inline-Script vor dem Hydrieren
       // (components/marketing/hafen/hafen-hero.tsx).
       suppressHydrationWarning
+      // Beim Seitenwechsel springt Next sofort nach oben, statt weich zu
+      // scrollen (Next 16 braucht dafür dieses Attribut). Sonst rollt die
+      // neue Seite während des Wechsels noch sichtbar von der alten
+      // Scroll-Lage nach oben. Sprungmarken auf der Seite scrollen weiter weich.
+      data-scroll-behavior="smooth"
       className={`${cormorant.variable} ${brandMono.variable} h-full antialiased motion-safe:scroll-smooth`}
     >
       <body className="flex min-h-full flex-col">

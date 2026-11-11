@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Search } from "lucide-react";
 
 import { SitaloLogo } from "@/components/sitalo-logo";
@@ -83,7 +83,28 @@ export function MarketingHeader({
   tone?: "light" | "dark";
 }) {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  // Das Menü merkt sich, auf welcher Seite es geöffnet wurde: Sobald die
+  // Seite wechselt, gilt es ohne weiteres Zutun als geschlossen.
+  const [offenAuf, setOffenAuf] = useState<string | null>(null);
+  const hier = pathname ?? "";
+  const menuOpen = offenAuf !== null && offenAuf === hier;
+  const setMenuOpen = (offen: boolean) => setOffenAuf(offen ? hier : null);
+  // Link im Menü angetippt: Führt er auf eine andere Seite, bleibt das
+  // Menü stehen, bis die neue Seite da ist. Beim Seitenwechsel gleitet
+  // dann das Menü selbst weg, statt halb ausgeblendet über der alten
+  // Seite zu hängen. Kommt die Seite nicht, schließt es nach 1,5 s.
+  const menueLink = (e: MouseEvent<HTMLAnchorElement>) => {
+    const a = e.currentTarget;
+    const andereSeite =
+      a.origin === window.location.origin &&
+      a.pathname !== window.location.pathname &&
+      !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
+    if (!andereSeite) {
+      setOffenAuf(null);
+      return;
+    }
+    window.setTimeout(() => setOffenAuf(null), 1500);
+  };
 
   // Lock body scroll while the mobile sheet is open.
   useEffect(() => {
@@ -111,12 +132,13 @@ export function MarketingHeader({
           'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ) ?? [],
       ).filter((el) => el.offsetParent !== null);
+    // preventScroll: Der Fokus darf die Seite dahinter nicht verschieben.
     fokussierbar()
       .find((el) => el.tagName === "BUTTON")
-      ?.focus();
+      ?.focus({ preventScroll: true });
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setMenuOpen(false);
+        setOffenAuf(null);
         return;
       }
       if (event.key !== "Tab") return;
@@ -138,7 +160,7 @@ export function MarketingHeader({
     };
     const breit = window.matchMedia("(min-width: 834px)");
     const onBreit = () => {
-      if (breit.matches) setMenuOpen(false);
+      if (breit.matches) setOffenAuf(null);
     };
     window.addEventListener("keydown", onKey);
     breit.addEventListener("change", onBreit);
@@ -146,7 +168,10 @@ export function MarketingHeader({
       window.removeEventListener("keydown", onKey);
       breit.removeEventListener("change", onBreit);
       // Nur zurückgeben, wenn der Auslöser noch sichtbar ist (Handy).
-      if (burger && burger.offsetParent !== null) burger.focus();
+      // Ohne preventScroll rollte die weit gescrollte Seite beim Schließen
+      // rund 300 px nach oben (der Auslöser klebt oben in der Leiste).
+      if (burger && burger.offsetParent !== null)
+        burger.focus({ preventScroll: true });
     };
   }, [menuOpen]);
 
@@ -237,7 +262,7 @@ export function MarketingHeader({
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               ref={burgerRef}
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={() => setMenuOpen(!menuOpen)}
               className="globalnav-icon"
             >
               <Burger offen={menuOpen} />
@@ -251,6 +276,7 @@ export function MarketingHeader({
       <MobileFullscreenMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
+        onLink={menueLink}
         pathname={pathname}
       />
     </>
@@ -277,10 +303,12 @@ function Burger({ offen }: { offen: boolean }) {
 function MobileFullscreenMenu({
   open,
   onClose,
+  onLink,
   pathname,
 }: {
   open: boolean;
   onClose: () => void;
+  onLink: (e: MouseEvent<HTMLAnchorElement>) => void;
   pathname: string | null;
 }) {
   const eintrag = (i: number) => ({
@@ -314,7 +342,7 @@ function MobileFullscreenMenu({
     >
       {/* Gleiche Geometrie wie die Leiste: nichts springt beim Öffnen. */}
       <div className="globalnav-innen h-12 w-full shrink-0">
-        <Link href="/" onClick={onClose} className="flex min-h-11 items-center">
+        <Link href="/" onClick={onLink} className="flex min-h-11 items-center">
           <SitaloLogo size="xs" hideTagline />
         </Link>
         <div className="globalnav-mobil">
@@ -345,7 +373,7 @@ function MobileFullscreenMenu({
                 <li key={item.href} className={e.className} style={e.style}>
                   <Link
                     href={item.href}
-                    onClick={onClose}
+                    onClick={onLink}
                     className="menue-eintrag"
                     aria-current={
                       istAktiv(pathname, item.href) ? "page" : undefined
@@ -374,7 +402,7 @@ function MobileFullscreenMenu({
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  onClick={onClose}
+                  onClick={onLink}
                   className="menue-eintrag-klein"
                 >
                   {item.label}
@@ -395,10 +423,10 @@ function MobileFullscreenMenu({
       >
         <Link
           href="/anfrage"
-          onClick={onClose}
+          onClick={onLink}
           className="btn-signal btn-gross w-full"
         >
-          Website anfragen
+          Anfrage schreiben
         </Link>
         <div className="flex flex-wrap items-center justify-center gap-x-6 text-[17px]">
           <a
@@ -412,7 +440,7 @@ function MobileFullscreenMenu({
           </a>
           <Link
             href="/termin"
-            onClick={onClose}
+            onClick={onLink}
             className="link-chevron link-chevron-frei"
           >
             Termin

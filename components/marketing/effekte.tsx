@@ -16,11 +16,20 @@ import { lichtFuer } from "@/components/marketing/hafen/hero-licht";
  *
  * 4. Sätze mit [data-leucht] werden beim Scrollen Wort für Wort dunkel;
  *    der Doppelring im Logo dreht sich mit dem Lesefortschritt.
- * 3. Fotos mit [data-para] wandern beim Scrollen etwas langsamer als
- *    ihr Rahmen (Tiefe).
+ * 3. Fotos mit [data-para] wandern beim Scrollen deutlich langsamer als
+ *    ihr Rahmen (Tiefe, bis 80 px) und zoomen dabei von groß nach kleiner
+ *    (--py und --pz; die Styles stehen in app/effekte-gross.css).
  *
  * Bei reduzierter Bewegung bleibt alles aus. Nichts davon trägt Inhalt.
  */
+/** Größter Weg der Fotos gegen ihren Rahmen (px je Bildschirmhöhe). */
+const PARA_WEG = 80;
+/** Zoom der Fotos: beim Hereinkommen ZOOM_VON, beim Hinausgehen ZOOM_HUB weniger. */
+const ZOOM_VON = 1.32;
+const ZOOM_HUB = 0.22;
+/** Höchstens so viel zusätzlicher Zoom, damit kleine Rahmen gedeckt bleiben. */
+const ZOOM_PLUS_MAX = 0.12;
+
 export function Effekte() {
   const pfad = usePathname();
   const spurRef = useRef<HTMLDivElement | null>(null);
@@ -37,15 +46,81 @@ export function Effekte() {
     return () => window.clearInterval(takt);
   }, []);
 
+  // Seitenwechsel: Der kräftige Wechsel (app/effekte-band.css) läuft nur,
+  // wenn wirklich ein Link zu einer anderen Seite angetippt wurde. Dafür
+  // bekommt <html> beim Antippen data-wechsel und in --wechsel-y die Mitte
+  // des sichtbaren Ausschnitts (Drehpunkt der alten Seite). Ohne die Marke
+  // bleibt jeder andere Wechsel bei der ruhigen Fassung.
+  const wechselAus = useRef(0);
+  useEffect(() => {
+    const wurzel = document.documentElement;
+    const onKlick = (e: MouseEvent) => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+        return;
+      const link =
+        e.target instanceof Element
+          ? e.target.closest<HTMLAnchorElement>("a[href]")
+          : null;
+      if (!link || link.hasAttribute("download")) return;
+      if (link.target && link.target !== "_self") return;
+      if (
+        link.origin !== window.location.origin ||
+        link.pathname === window.location.pathname
+      )
+        return;
+      wurzel.style.setProperty(
+        "--wechsel-y",
+        `${Math.round(window.scrollY + window.innerHeight / 2)}px`,
+      );
+      // Aus dem Handy-Menü heraus: „menue“ (Leiste und Fähre bleiben
+      // bis zum Ende des Wechsels aus, app/effekte-band.css).
+      wurzel.setAttribute(
+        "data-wechsel",
+        link.closest("#mobile-menu") ? "menue" : "",
+      );
+      // Kommt kein Wechsel zustande, verfällt die Marke.
+      window.clearTimeout(wechselAus.current);
+      wechselAus.current = window.setTimeout(
+        () => wurzel.removeAttribute("data-wechsel"),
+        6000,
+      );
+    };
+    document.addEventListener("click", onKlick, true);
+    return () => {
+      document.removeEventListener("click", onKlick, true);
+      window.clearTimeout(wechselAus.current);
+    };
+  }, []);
+  // Die neue Seite steht: Die Marke bleibt, bis der Wechsel abgelaufen ist.
+  useEffect(() => {
+    const wurzel = document.documentElement;
+    if (!wurzel.hasAttribute("data-wechsel")) return;
+    window.clearTimeout(wechselAus.current);
+    wechselAus.current = window.setTimeout(
+      () => wurzel.removeAttribute("data-wechsel"),
+      1400,
+    );
+  }, [pfad]);
+
   useEffect(() => {
     const spur = spurRef.current;
     if (!spur || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
       return;
     let raf = 0;
-    // Fotos mit data-para wandern beim Scrollen ein kleines Stück langsamer.
+    // Fotos mit data-para wandern beim Scrollen langsamer als ihr Rahmen
+    // und zoomen dabei. Die ersten Werte gleiten weich ein (data-para-start),
+    // damit beim Laden nichts springt.
     const fotos = Array.from(
       document.querySelectorAll<HTMLElement>("[data-para]"),
     );
+    // Ältere Browser ohne die Einzel-Eigenschaft „scale“ behalten den
+    // kleinen Weg zum festen Zoom aus apple.css.
+    const grosseTiefe =
+      typeof CSS !== "undefined" && CSS.supports("scale", "1.2");
+    for (const f of fotos) f.setAttribute("data-para-start", "");
+    const startAus = window.setTimeout(() => {
+      for (const f of fotos) f.removeAttribute("data-para-start");
+    }, 1000);
     // Sätze mit data-leucht: Wort für Wort wird beim Scrollen dunkel.
     const saetze = Array.from(
       document.querySelectorAll<HTMLElement>("[data-leucht]"),
@@ -68,9 +143,15 @@ export function Effekte() {
       };
     });
     const kopf = document.getElementById("start");
-    // Himmelslicht: folgt dem Scrollen etwas langsamer, nie über main hinaus.
+    // Gemessen wird die ruhende Hülle um den Kopf (kran-banner.tsx): Der
+    // Kopf selbst verkleinert und kippt sich und würde sich sonst selbst
+    // nachlaufen. --weg vererbt sich von der Hülle an den Kopf.
+    const kopfHuelle =
+      kopf?.closest<HTMLElement>("[data-kopf-huelle]") ?? kopf ?? null;
+    // Himmelslicht: folgt dem Scrollen etwas langsamer, nie über main hinaus
+    // (1000 statt 820 px Höhe: Luft für das langsame Atmen des Lichts).
     const haupt = document.getElementById("main");
-    let lichtMax = haupt ? Math.max(0, haupt.offsetHeight - 860) : 0;
+    let lichtMax = haupt ? Math.max(0, haupt.offsetHeight - 1000) : 0;
     let lichtY = -1;
     // Route (Ablauf): Fortschritt entlang der Liste und der Halt in Bildmitte.
     const routen = Array.from(
@@ -87,6 +168,10 @@ export function Effekte() {
     const messen = () => {
       raf = 0;
       const vh = window.innerHeight;
+      // Erst alles messen, dann alles schreiben: Jedes Schreiben zwischen
+      // zwei Messungen zwänge den Browser, Stil und Layout der Seite
+      // mitten im Bild neu zu rechnen (einmal je Foto und Liste).
+      const schreiben: Array<() => void> = [];
       for (const r of routen) {
         const b = r.el.getBoundingClientRect();
         if (b.bottom < -200 || b.top > vh + 200) continue;
@@ -94,8 +179,11 @@ export function Effekte() {
           b.height > 0
             ? Math.min(1, Math.max(0, (vh * 0.5 - b.top) / b.height))
             : 0;
-        r.el.style.setProperty("--rp", rp.toFixed(4));
-        r.el.style.setProperty("--ry", `${(rp * b.height).toFixed(1)}px`);
+        const ry = `${(rp * b.height).toFixed(1)}px`;
+        schreiben.push(() => {
+          r.el.style.setProperty("--rp", rp.toFixed(4));
+          r.el.style.setProperty("--ry", ry);
+        });
         let aktiv = -1;
         r.halte.forEach((h, i) => {
           const hb = h.getBoundingClientRect();
@@ -103,26 +191,30 @@ export function Effekte() {
         });
         if (aktiv !== r.aktiv) {
           r.aktiv = aktiv;
-          r.el.toggleAttribute("data-route-an", aktiv >= 0);
-          r.halte.forEach((h, i) =>
-            h.toggleAttribute("data-aktiv", i === aktiv),
-          );
+          schreiben.push(() => {
+            r.el.toggleAttribute("data-route-an", aktiv >= 0);
+            r.halte.forEach((h, i) =>
+              h.toggleAttribute("data-aktiv", i === aktiv),
+            );
+          });
         }
       }
       if (haupt) {
         // Höhe jedes Mal frisch: Abschnitte wachsen beim Scrollen nach.
-        lichtMax = Math.max(0, haupt.offsetHeight - 860);
+        lichtMax = Math.max(0, haupt.offsetHeight - 1000);
         const y = Math.round(Math.min(window.scrollY * 0.9, lichtMax));
         if (y !== lichtY) {
           lichtY = y;
-          haupt.style.setProperty("--licht-y", `${y}px`);
+          schreiben.push(() => haupt.style.setProperty("--licht-y", `${y}px`));
         }
       }
-      if (kopf) {
-        const r = kopf.getBoundingClientRect();
+      if (kopfHuelle) {
+        const r = kopfHuelle.getBoundingClientRect();
         const weg =
           r.height > 0 ? Math.min(1, Math.max(0, -r.top / r.height)) : 0;
-        kopf.style.setProperty("--weg", weg.toFixed(3));
+        schreiben.push(() =>
+          kopfHuelle.style.setProperty("--weg", weg.toFixed(3)),
+        );
       }
       for (const s of saetze) {
         if (s.woerter.length === 0) continue;
@@ -135,22 +227,53 @@ export function Effekte() {
         const an = Math.round(k * s.woerter.length);
         if (an === s.an) continue;
         s.an = an;
-        s.woerter.forEach((w, i) => w.toggleAttribute("data-an", i < an));
+        schreiben.push(() =>
+          s.woerter.forEach((w, i) => w.toggleAttribute("data-an", i < an)),
+        );
       }
       for (const f of fotos) {
         const r = f.getBoundingClientRect();
         if (r.bottom < -80 || r.top > vh + 80) continue;
-        const mitte = (r.top + r.height / 2 - vh / 2) / vh;
-        f.style.setProperty("--py", `${(-mitte * 34).toFixed(1)}px`);
+        const h = r.height;
+        if (h <= 0) continue;
+        const mitte = (r.top + h / 2 - vh / 2) / vh;
+        if (!grosseTiefe) {
+          schreiben.push(() =>
+            f.style.setProperty("--py", `${(-mitte * 34).toFixed(1)}px`),
+          );
+          continue;
+        }
+        // 0, wenn der Rahmen unten hereinkommt; 1, wenn er oben hinaus ist.
+        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + h)));
+        // Am knappsten ist es, wenn eine Rahmenkante gerade am Bildrand
+        // steht: Dort muss das vergrößerte Foto den Rahmen noch decken.
+        // Kleine Rahmen bekommen dafür etwas mehr Zoom, zur Not weniger Weg.
+        const rand = 0.5 - h / (2 * vh);
+        let wegPx = PARA_WEG;
+        let plus = 0;
+        if (rand > 0) {
+          const zoomRand = ZOOM_VON - ZOOM_HUB * (vh / (vh + h));
+          const noetig = 1.02 + (2 * PARA_WEG * rand) / h;
+          plus = Math.min(ZOOM_PLUS_MAX, Math.max(0, noetig - zoomRand));
+          const frei = ((zoomRand + plus - 1.02) * h) / 2;
+          wegPx = Math.min(PARA_WEG, Math.max(0, frei / rand));
+        }
+        const py = `${(-mitte * wegPx).toFixed(1)}px`;
+        const pz = (ZOOM_VON + plus - ZOOM_HUB * p).toFixed(4);
+        schreiben.push(() => {
+          f.style.setProperty("--py", py);
+          f.style.setProperty("--pz", pz);
+        });
       }
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 200 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      for (const s of schreiben) s();
       spur.style.setProperty("--p", p.toFixed(4));
       document.documentElement.style.setProperty("--seite-p", p.toFixed(4));
       spur.dataset.an = p > 0.012 ? "1" : "0";
     };
     const onGroesse = () => {
-      lichtMax = haupt ? Math.max(0, haupt.offsetHeight - 860) : 0;
+      lichtMax = haupt ? Math.max(0, haupt.offsetHeight - 1000) : 0;
       onScroll();
     };
     const onScroll = () => {
@@ -163,6 +286,7 @@ export function Effekte() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onGroesse);
       haupt?.style.removeProperty("--licht-y");
+      window.clearTimeout(startAus);
       if (raf) window.cancelAnimationFrame(raf);
     };
   }, [pfad]);
@@ -208,7 +332,7 @@ export function Effekte() {
     };
   }, []);
 
-  // Welle: Ein angetippter Knopf sendet einmal einen Ring nach außen.
+  // Welle: Ein angetippter Knopf sendet einmal zwei Ringe nach außen.
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const onDown = (e: PointerEvent) => {
@@ -220,7 +344,7 @@ export function Effekte() {
       knopf.removeAttribute("data-welle");
       void knopf.offsetWidth;
       knopf.setAttribute("data-welle", "");
-      window.setTimeout(() => knopf.removeAttribute("data-welle"), 700);
+      window.setTimeout(() => knopf.removeAttribute("data-welle"), 1000);
     };
     document.addEventListener("pointerdown", onDown, { passive: true });
     return () => document.removeEventListener("pointerdown", onDown);
