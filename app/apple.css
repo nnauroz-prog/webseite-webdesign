@@ -814,10 +814,10 @@
   color: var(--gold-ink);
 }
 .seitenkopf-meta nav > :is(.flex, ul) {
-  justify-content: center;
+  justify-content: flex-start;
 }
 .seitenkopf-meta nav.flex {
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
 }
 .seitenkopf-meta nav.flex > a {

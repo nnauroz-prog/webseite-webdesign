@@ -5,9 +5,9 @@ import { MehrLink } from "@/components/marketing/apple/mehr-link";
 import { cn } from "@/lib/utils";
 
 /**
- * Einheitlicher Seitenkopf für Unterseiten im Stil einer Apple-
- * Produktseite (wie ProduktKopf auf /pakete): zentriert, kleine orange
- * Zeile, große Überschrift (title dunkel, accent grau), kurzer grauer
+ * Seitenkopf der Werkzeug-Seiten (Durchsicht, Termin, Auswahl …):
+ * linksbündig wie SeitenKopf der übrigen Unterseiten, Mono-Kennzeile,
+ * große Überschrift (title dunkel, accent grau), kurzer grauer
  * Untertitel, darunter Pille + „… ›“-Link. Die Brotkrumen stehen im
  * Fuß (MarketingFooter crumb=…), nicht mehr oben.
  *
@@ -46,21 +46,25 @@ export function PageHero({
 }) {
   const lang = children ? textLaenge(children) > 200 : false;
   const knoepfe =
-    aktionen === false ? null : (aktionen ?? (
-      <>
-        <Link href="/anfrage" className="btn-signal">
-          Anfrage schreiben
-        </Link>
-        <MehrLink href="/pakete" groesse="unter">
-          Preise ansehen
-        </MehrLink>
-      </>
-    ));
+    aktionen === false
+      ? null
+      : (aktionen ?? (
+          <>
+            <Link href="/anfrage" className="btn-signal">
+              Anfrage schreiben
+            </Link>
+            <MehrLink href="/pakete" groesse="unter">
+              Preise ansehen
+            </MehrLink>
+          </>
+        ));
   return (
     <section className="seitenkopf flaeche-weiss relative">
-      <div className="inhalt pt-12 pb-14 text-center sm:pt-16 sm:pb-[72px] lg:pt-20 lg:pb-24">
-        <p className="t-eyebrow">{eyebrow}</p>
-        <h1 className="mx-auto mt-2 max-w-[18ch] text-balance text-[clamp(2.5rem,1.6rem+3.6vw,4.5rem)] leading-[1.05] font-bold tracking-[-0.025em] text-[#1d1d1f] sm:tracking-[-0.03em]">
+      {/* Gleiche Breite und Rinne wie der Inhalt der Werkzeug-Seiten
+          (max-w-6xl, px-5/6), damit Kopf und Inhalt auf einer Kante stehen. */}
+      <div className="mx-auto w-full max-w-6xl px-5 pt-10 pb-12 text-left sm:px-6 sm:pt-14 sm:pb-16 lg:pt-16 lg:pb-20">
+        <p className="kennzeile-mono">{eyebrow}</p>
+        <h1 className="mt-3 max-w-[18ch] text-[clamp(2.5rem,1.6rem+3.6vw,4.5rem)] leading-[1.05] font-bold tracking-[-0.025em] text-balance text-[#1d1d1f] sm:tracking-[-0.03em]">
           {title}
           {accent ? (
             <>
@@ -69,19 +73,27 @@ export function PageHero({
             </>
           ) : null}
         </h1>
-        {children && !lang ? <p className="t-unter mx-auto mt-4 sm:mt-5">{children}</p> : null}
-        {knoepfe ? <div className="aktionen mt-7 sm:mt-8">{knoepfe}</div> : null}
+        {children && !lang ? (
+          <p className="t-unter mt-4 sm:mt-5">{children}</p>
+        ) : null}
+        {knoepfe ? (
+          <div className="aktionen mt-7 justify-start sm:mt-8">{knoepfe}</div>
+        ) : null}
         {children && lang ? (
           <p
             className={cn(
-              "text-muted-foreground mx-auto max-w-[40em] text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty",
+              "text-muted-foreground max-w-[40em] text-[17px] leading-[1.47] tracking-[-0.022em] text-pretty",
               knoepfe ? "mt-10 sm:mt-12" : "mt-5 sm:mt-6",
             )}
           >
             {children}
           </p>
         ) : null}
-        {meta ? <div className="seitenkopf-meta text-muted-foreground mx-auto mt-6 text-[14px] leading-[1.43]">{meta}</div> : null}
+        {meta ? (
+          <div className="seitenkopf-meta text-muted-foreground mt-6 text-[14px] leading-[1.43]">
+            {meta}
+          </div>
+        ) : null}
       </div>
     </section>
   );
@@ -92,7 +104,8 @@ function textLaenge(knoten: React.ReactNode): number {
   let n = 0;
   Children.forEach(knoten, (k) => {
     if (typeof k === "string" || typeof k === "number") n += String(k).length;
-    else if (isValidElement<{ children?: React.ReactNode }>(k)) n += textLaenge(k.props.children);
+    else if (isValidElement<{ children?: React.ReactNode }>(k))
+      n += textLaenge(k.props.children);
   });
   return n;
 }
