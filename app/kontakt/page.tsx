@@ -16,7 +16,11 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { Produktleiste } from "@/components/marketing/produktleiste";
 import { SITE_URL } from "@/lib/site";
-import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
+import {
+  SPRECHSTUNDE_BEGINN_HHMM,
+  SPRECHSTUNDE_ENDE_HHMM,
+  uhrzeitKurz,
+} from "@/lib/sprechstunde-data";
 import { STANDORTE } from "@/lib/standorte-data";
 
 export const metadata: Metadata = {
@@ -24,7 +28,9 @@ export const metadata: Metadata = {
   description:
     "Am Telefon sprechen Sie mit uns selbst, nicht mit einer Zentrale. Anfragen über das Formular beantworten wir meist am selben Werktag.",
   alternates: { canonical: "/kontakt" },
-  openGraph: ogFor("/kontakt", undefined, undefined, "website", { defaultImage: true }),
+  openGraph: ogFor("/kontakt", undefined, undefined, "website", {
+    defaultImage: true,
+  }),
 };
 
 /**
@@ -51,7 +57,12 @@ export default function KontaktPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Sitalo", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Sitalo",
+        item: `${SITE_URL}/`,
+      },
       {
         "@type": "ListItem",
         position: 2,
@@ -64,7 +75,11 @@ export default function KontaktPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <MarketingHeader cta={false} />
-      <Produktleiste titel="Kontakt" links={[]} cta={{ href: "/anfrage", label: "Anfragen" }} />
+      <Produktleiste
+        titel="Kontakt"
+        links={[]}
+        cta={{ href: "/anfrage", label: "Anfragen" }}
+      />
 
       <UnterseiteMain className="pb-16 sm:pb-24">
         <Briefkopf />
@@ -98,6 +113,8 @@ function Briefkopf() {
         <>
           <a
             href="tel:+491607621876"
+            data-wuerfel=""
+            aria-label="0160 7621876"
             className="text-foreground hover:text-gold-ink basis-full text-[40px] leading-[48px] font-semibold tracking-[-0.025em] whitespace-nowrap tabular-nums sm:text-[48px] sm:leading-[56px]"
           >
             0160&nbsp;7621876
@@ -169,7 +186,11 @@ const WEGE: { name: string; text: string; href: string; link: string }[] = [
 
 function Wege() {
   return (
-    <Abschnitt id="wege" fett="Weitere Wege zu uns." grau="Wählen Sie, was Ihnen liegt.">
+    <Abschnitt
+      id="wege"
+      fett="Weitere Wege zu uns."
+      grau="Wählen Sie, was Ihnen liegt."
+    >
       <BildRaster>
         {WEGE.map((w, i) => (
           <BildKachel
@@ -191,7 +212,11 @@ function Wege() {
  * ---------------------------------------------------------------- */
 function Treffen() {
   return (
-    <Abschnitt id="treffen" fett="Treffen in Hamburg." grau="In Ihrem Betrieb oder im Café.">
+    <Abschnitt
+      id="treffen"
+      fett="Treffen in Hamburg."
+      grau="In Ihrem Betrieb oder im Café."
+    >
       <BildRaster>
         <BildKachel
           breit

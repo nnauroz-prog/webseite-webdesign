@@ -190,6 +190,24 @@ export function Effekte() {
     };
   }, []);
 
+  // Welle: Ein angetippter Knopf sendet einmal einen Ring nach außen.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const onDown = (e: PointerEvent) => {
+      const knopf =
+        e.target instanceof Element
+          ? e.target.closest<HTMLElement>(".btn-signal, .btn-line")
+          : null;
+      if (!knopf) return;
+      knopf.removeAttribute("data-welle");
+      void knopf.offsetWidth;
+      knopf.setAttribute("data-welle", "");
+      window.setTimeout(() => knopf.removeAttribute("data-welle"), 700);
+    };
+    document.addEventListener("pointerdown", onDown, { passive: true });
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, []);
+
   if (aus) return null;
   return (
     <div

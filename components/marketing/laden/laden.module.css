@@ -1413,8 +1413,11 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .fakten li {
-    animation: marke-rein 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
-    animation-delay: calc(520ms + var(--i, 0) * 110ms);
+    animation:
+      marke-rein 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both,
+      marke-schwebt 5.2s ease-in-out infinite alternate;
+    animation-delay:
+      calc(520ms + var(--i, 0) * 110ms), calc(1500ms + var(--i, 0) * 900ms);
   }
   .fakten svg :is(path, circle) {
     stroke-dasharray: 80;
@@ -1436,5 +1439,14 @@
 @keyframes symbol-zeichnen {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+@keyframes marke-schwebt {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-4px);
   }
 }

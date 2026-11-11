@@ -2320,3 +2320,72 @@
     }
   }
 }
+
+/* ------------------------------------------------------------------
+   Mehr Bewegung, alles nur ohne reduzierte Bewegung und am Bildschirm.
+   ------------------------------------------------------------------ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Fotos atmen: sehr langsames Hinein- und Herauszoomen. Über die
+     eigene Eigenschaft „scale“, damit Tiefe, Hover und Auftritt
+     (alle über transform) unberührt bleiben. */
+  [data-para] > img,
+  article[data-kipp] img[data-nimg="fill"],
+  [data-foto-lebt] img {
+    animation: foto-atmen 16s ease-in-out infinite alternate;
+  }
+  @keyframes foto-atmen {
+    from {
+      scale: 1;
+    }
+    to {
+      scale: 1.07;
+    }
+  }
+
+  /* Welle: Ein angetippter Knopf sendet einen Ring nach außen
+     (data-welle setzt effekte.tsx). */
+  :is(.btn-signal, .btn-line)[data-welle] {
+    animation: knopf-welle 650ms var(--ease-aus);
+  }
+  @keyframes knopf-welle {
+    from {
+      box-shadow: 0 0 0 0 rgb(244 91 30 / 0.5);
+    }
+    to {
+      box-shadow: 0 0 0 18px rgb(244 91 30 / 0);
+    }
+  }
+
+  /* Fähren in den gezeichneten Elbe-Bändern wiegen sich im Wasser. */
+  .weg-faehre {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: weg-wiegen 3.6s ease-in-out infinite alternate;
+  }
+  @keyframes weg-wiegen {
+    from {
+      transform: translateY(0) rotate(-1.8deg);
+    }
+    to {
+      transform: translateY(1.4px) rotate(1.8deg);
+    }
+  }
+
+  /* Symbole der Marken auf /ablauf zeichnen sich beim Einblenden. */
+  [data-ein-da="w"] .ablauf-marke svg :is(path, circle) {
+    stroke-dasharray: 70;
+    stroke-dashoffset: 70;
+  }
+  [data-ein-da="1"] .ablauf-marke svg :is(path, circle) {
+    stroke-dasharray: 70;
+    animation: marke-zeichnen 900ms var(--ease-aus) 600ms both;
+  }
+  @keyframes marke-zeichnen {
+    from {
+      stroke-dashoffset: 70;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
