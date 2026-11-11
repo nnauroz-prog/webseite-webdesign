@@ -1,10 +1,18 @@
 import type { ReactNode } from "react";
 
 import { Containerbruecke } from "@/components/marketing/hafen/containerbruecke";
-import { AUFTAKT_SCRIPT, PEGEL_QUELLE } from "@/components/marketing/hafen/hafen-hero";
+import {
+  AUFTAKT_SCRIPT,
+  PEGEL_QUELLE,
+} from "@/components/marketing/hafen/hafen-hero";
 import heroStil from "@/components/marketing/hafen/hero.module.css";
 import { HeroBuehne } from "@/components/marketing/hafen/hero-buehne";
-import { pegelHub, pegelStand, pegelStPauli, pegelText } from "@/components/marketing/hafen/pegel";
+import {
+  pegelHub,
+  pegelStand,
+  pegelStPauli,
+  pegelText,
+} from "@/components/marketing/hafen/pegel";
 import { cn } from "@/lib/utils";
 
 import s from "./laden.module.css";
@@ -41,19 +49,35 @@ export async function KranBanner({ children }: { children: ReactNode }) {
         </div>
         <div className={s.kopfText}>{children}</div>
         <div className={s.kranBild} data-tiefe="">
+          {/* Zwei Möwen ziehen in großen Abständen durch den Himmel über dem Kran. */}
+          <span className={s.moewen} aria-hidden="true">
+            <svg viewBox="0 0 24 10" className={s.moewe} focusable="false">
+              <path d="M1 8Q6 0 12 6Q18 0 23 8" />
+            </svg>
+            <svg
+              viewBox="0 0 24 10"
+              className={`${s.moewe} ${s.moewe2}`}
+              focusable="false"
+            >
+              <path d="M1 8Q6 0 12 6Q18 0 23 8" />
+            </svg>
+          </span>
           <Containerbruecke hub={hub} />
         </div>
         <div className={s.kaikante} aria-hidden="true" />
       </HeroBuehne>
       <p className={cn("notiz-mono", s.kranUnterschrift)}>
         <span>
-          Blick <span className="hidden sm:inline">von Steinwerder </span>über die Elbe, frei gezeichnet.
+          Blick <span className="hidden sm:inline">von Steinwerder </span>über
+          die Elbe, frei gezeichnet.
         </span>
         {pegel ? (
           <span title={PEGEL_QUELLE}>
             <span className={s.pegelPunkt} aria-hidden="true" />
             Pegel St.&nbsp;Pauli: {pegelText(pegel)}
-            <span className="hidden sm:inline">, Stand {pegelStand(pegel)}&nbsp;Uhr</span>
+            <span className="hidden sm:inline">
+              , Stand {pegelStand(pegel)}&nbsp;Uhr
+            </span>
           </span>
         ) : null}
       </p>

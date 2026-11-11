@@ -1450,3 +1450,73 @@
     transform: translateY(-4px);
   }
 }
+
+/* Möwen über dem Kran: zwei kleine Striche, die in großen Abständen von
+   links nach rechts ziehen und dabei leicht mit den Flügeln schlagen. */
+.moewen {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+}
+.moewe {
+  position: absolute;
+  top: 14%;
+  left: 0;
+  width: 20px;
+  height: 9px;
+  fill: none;
+  stroke: #46555f;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+.moewe2 {
+  top: 26%;
+  width: 14px;
+  height: 6px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .moewe {
+    animation: moewe-flug 24s linear 3s infinite;
+  }
+  .moewe2 {
+    animation-duration: 31s;
+    animation-delay: 9s;
+  }
+  .moewe path {
+    transform-box: fill-box;
+    transform-origin: 50% 70%;
+    animation: moewe-schlag 0.85s ease-in-out infinite alternate;
+  }
+}
+@keyframes moewe-flug {
+  0% {
+    transform: translate3d(-30px, 14px, 0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.75;
+  }
+  45% {
+    transform: translate3d(48vw, -8px, 0);
+  }
+  88% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(104vw, 10px, 0);
+    opacity: 0;
+  }
+}
+@keyframes moewe-schlag {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.35);
+  }
+}
