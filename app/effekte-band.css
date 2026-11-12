@@ -1,0 +1,528 @@
+/* ==================================================================
+   Laufband, kräftiger Seitenwechsel, Schein am Hauptknopf (Runde
+   „kräftig“). Wird als letzte Datei geladen. Alles nur Bildschirm und
+   ohne reduzierte Bewegung.
+   ================================================================== */
+
+/* ------------------------------------------------------------------
+   1. Laufband der Startseite (components/marketing/laufband.tsx).
+   Grundzustand ist eine normale, umbrechende Linkliste. Das laufende
+   Band gibt es nur am Bildschirm, ohne reduzierte Bewegung und mit
+   eingeschaltetem JavaScript; steht die Tastatur im Band, fällt es auf
+   die Liste zurück, damit der fokussierte Link sicher im Bild ist.
+   ------------------------------------------------------------------ */
+.laufband {
+  padding-top: 28px;
+}
+@media (min-width: 734px) {
+  .laufband {
+    padding-top: 44px;
+  }
+}
+
+/* Wellen-Trenner: drei Linien in Hafenblau und Orange. */
+.laufband-wellen {
+  position: relative;
+  height: 48px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.laufband-wellen i {
+  position: absolute;
+  inset: 0 -720px 0 0;
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+}
+.laufband-wellen i:nth-child(1) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 48'%3E%3Cpath d='M-260 24Q-130 40 0 24T260 24T520 24T780 24' fill='none' stroke='%230f2a3a' stroke-opacity='.34' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-size: 520px 48px;
+}
+.laufband-wellen i:nth-child(2) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 48'%3E%3Cpath d='M-190 26Q-95 14 0 26T190 26T380 26T570 26' fill='none' stroke='%23f45b1e' stroke-opacity='.6' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-size: 380px 48px;
+}
+.laufband-wellen i:nth-child(3) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 48'%3E%3Cpath d='M-350 22Q-175 42 0 22T350 22T700 22T1050 22' fill='none' stroke='%230f2a3a' stroke-opacity='.16' stroke-width='2'/%3E%3C/svg%3E");
+  background-size: 700px 48px;
+}
+
+.laufband-marke {
+  margin-bottom: 10px;
+}
+.laufband-nav {
+  width: 100%;
+  max-width: var(--inhalt-max);
+  margin-inline: auto;
+  padding-inline: max(var(--rinne), env(safe-area-inset-left))
+    max(var(--rinne), env(safe-area-inset-right));
+}
+.laufband-gruppe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Die zweite Kopie braucht nur die Schleife. */
+.laufband-kopie {
+  display: none;
+}
+.laufband-gruppe li {
+  display: flex;
+  align-items: center;
+}
+/* Orange gefüllter Punkt vor jedem Namen: in der Liste als Marke, im
+   Band als Trennpunkt zwischen den Namen. */
+.laufband-gruppe li {
+  margin-right: 20px;
+}
+.laufband-gruppe li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: #f45b1e;
+}
+.laufband-gruppe a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 8px;
+  font-family: var(--font-sf);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-decoration: none;
+  color: #1d1d1f;
+}
+.laufband-gruppe a:focus-visible {
+  outline: 2px solid #f45b1e;
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .laufband-gruppe a:hover {
+    color: var(--gold-ink);
+  }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Die Wellen driften gegeneinander. */
+  .laufband-wellen i:nth-child(1) {
+    animation: laufband-welle-1 18s linear infinite;
+  }
+  .laufband-wellen i:nth-child(2) {
+    animation: laufband-welle-2 13s linear infinite reverse;
+  }
+  .laufband-wellen i:nth-child(3) {
+    animation: laufband-welle-3 27s linear infinite;
+  }
+  @keyframes laufband-welle-1 {
+    to {
+      transform: translate3d(-520px, 0, 0);
+    }
+  }
+  @keyframes laufband-welle-2 {
+    to {
+      transform: translate3d(-380px, 0, 0);
+    }
+  }
+  @keyframes laufband-welle-3 {
+    to {
+      transform: translate3d(-700px, 0, 0);
+    }
+  }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  .laufband {
+    /* Schriftgröße des Bands und Weg, den es beim Scrollen zurücklegt. */
+    --lb-fs: clamp(56px, 16vw, 120px);
+    --lb-schub: clamp(180px, 48vw, 420px);
+    overflow-x: clip;
+  }
+  /* Höhe steht fest, auch wenn das Band für die Tastatur zur Liste wird. */
+  .laufband-nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(var(--lb-fs) * 2.4);
+  }
+  .laufband-nav:not(:has(a:focus-visible)) {
+    max-width: none;
+    padding-inline: 0;
+    padding-block: calc(var(--lb-fs) * 0.08);
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 7%,
+      #000 93%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 7%,
+      #000 93%,
+      transparent
+    );
+  }
+
+  /* Zeile: verschiebt sich mit dem Scrollen (--seite-p setzt
+     effekte.tsx), die zweite Zeile in die Gegenrichtung. */
+  .laufband-nav:not(:has(a:focus-visible)) .laufband-zeile {
+    --lb-richt: 1;
+    translate: clamp(
+        calc(var(--lb-schub) * -1),
+        calc((var(--seite-p, 0) - 0.15) * var(--lb-richt) * -2400px),
+        var(--lb-schub)
+      )
+      0;
+  }
+  .laufband-nav:not(:has(a:focus-visible)) .laufband-zeile:nth-child(2) {
+    --lb-richt: -1;
+  }
+
+  /* Spur: läuft als Schleife durch (Inhalt doppelt, halbe Breite Weg).
+     Der linke Überstand deckt den Scroll-Weg der Zeile ab. */
+  .laufband-nav:not(:has(a:focus-visible)) .laufband-spur {
+    display: flex;
+    width: max-content;
+    margin-left: calc(var(--lb-schub) * -1);
+    animation: laufband-lauf 48s linear infinite;
+  }
+  .laufband-nav:not(:has(a:focus-visible))
+    .laufband-zeile:nth-child(2)
+    .laufband-spur {
+    animation-duration: 58s;
+    animation-direction: reverse;
+  }
+  @keyframes laufband-lauf {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  /* Im Band steht auch die zweite Kopie: Erst mit ihr schließt die
+     Schleife nahtlos (die Spur wandert genau um eine Gruppe). */
+  .laufband-nav:not(:has(a:focus-visible)) .laufband-gruppe {
+    display: flex;
+    flex: none;
+    flex-wrap: nowrap;
+  }
+  .laufband-nav:not(:has(a:focus-visible)) .laufband-gruppe li {
+    margin-right: 0;
+    font-size: var(--lb-fs);
+  }
+  .laufband-nav:not(:has(a:focus-visible)) .laufband-gruppe li::before {
+    width: 0.15em;
+    height: 0.15em;
+    margin-inline: 0.3em;
+    translate: 0 0.04em;
+  }
+  /* Riesige Schrift: die erste Zeile gefüllt in Hafenblau, die zweite
+     als Kontur. Die Kontur wird zuerst gemalt und die Fläche in der
+     Farbe des Grunds darüber (paint-order): So bleibt nur die äußere
+     Hälfte des Strichs stehen und die Systemschrift am iPhone zeigt
+     keine Überlappungslinien in den Buchstaben. */
+  .laufband-nav:not(:has(a:focus-visible)) .laufband-gruppe a {
+    display: block;
+    min-height: 0;
+    border-radius: 0.12em;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+    color: #0f2a3a;
+  }
+  .laufband-nav:not(:has(a:focus-visible))
+    .laufband-zeile:nth-child(2)
+    .laufband-gruppe
+    a {
+    color: var(--lb-grund, #f5f5f7);
+    letter-spacing: -0.025em;
+    -webkit-text-stroke: 3px rgb(15 42 58 / 0.62);
+    paint-order: stroke fill;
+  }
+  /* Unter dem Zeiger oder Finger hält das Band an, der Name füllt sich. */
+  @media (hover: hover) {
+    .laufband-nav:not(:has(a:focus-visible)):hover .laufband-spur {
+      animation-play-state: paused;
+    }
+    .laufband-nav:not(:has(a:focus-visible))
+      .laufband-zeile
+      .laufband-gruppe
+      a:hover {
+      color: #f45b1e;
+      -webkit-text-stroke-color: #f45b1e;
+    }
+  }
+  .laufband-nav:not(:has(a:focus-visible)):active .laufband-spur {
+    animation-play-state: paused;
+  }
+  .laufband-nav:not(:has(a:focus-visible))
+    .laufband-zeile
+    .laufband-gruppe
+    a:active {
+    color: #f45b1e;
+    -webkit-text-stroke-color: #f45b1e;
+  }
+
+  /* Wo der Browser es kann, hängt der Scroll-Weg an der Lage des Bands
+     im Fenster statt am Lesefortschritt der ganzen Seite. */
+  @supports (animation-timeline: view()) {
+    .laufband-nav:not(:has(a:focus-visible)) .laufband-zeile {
+      animation: laufband-schub 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+    @keyframes laufband-schub {
+      from {
+        translate: calc(var(--lb-schub) * var(--lb-richt)) 0;
+      }
+      to {
+        translate: calc(var(--lb-schub) * var(--lb-richt) * -1) 0;
+      }
+    }
+  }
+
+  /* Auftritt (nur wenn einblenden.tsx das Band als wartend markiert
+     hat): Die Zeilen kommen leicht gedreht von beiden Seiten und federn
+     in die Waagerechte. Bis dahin ruhen Schleife und Wellen.
+     Der Block selbst bleibt dabei stehen und scharf: Der allgemeine
+     Auftritt aus effekte-gross.css (von unten, unscharf) würde die
+     Zeilen verdecken und zwei sehr breite Schriftspuren weichzeichnen. */
+  div.laufband[data-ein][data-ein-da="w"] {
+    opacity: 1;
+    scale: none;
+    filter: none;
+  }
+  div.laufband[data-ein][data-ein-da="1"] {
+    animation: none;
+  }
+  .laufband[data-ein-da="w"]
+    .laufband-nav:not(:has(a:focus-visible))
+    .laufband-zeile {
+    opacity: 0;
+    transform: translate3d(calc(var(--lb-richt) * 110px), 0, 0)
+      rotate(calc(var(--lb-richt) * -2.4deg));
+  }
+  .laufband[data-ein-da="1"] .laufband-zeile {
+    transition:
+      transform 1300ms cubic-bezier(0.34, 1.56, 0.64, 1) 160ms,
+      opacity 800ms var(--ease-aus) 160ms;
+  }
+  .laufband[data-ein-da="1"] .laufband-zeile:nth-child(2) {
+    transition-delay: 300ms;
+  }
+  .laufband[data-ein-da="w"]
+    .laufband-nav:not(:has(a:focus-visible))
+    .laufband-spur,
+  .laufband[data-ein-da="w"] .laufband-wellen i {
+    animation-play-state: paused;
+  }
+}
+
+/* ------------------------------------------------------------------
+   2. Kräftiger Seitenwechsel (View Transitions, seiten-wechsel.tsx,
+   Klasse „seite“). Überstimmt die ruhige Fassung aus app/apple.css,
+   aber nur auf Seiten mit der globalen Leiste und nur, wenn gerade ein
+   Link zu einer anderen Seite angetippt wurde: effekte.tsx setzt dafür
+   data-wechsel am <html> und merkt sich in --wechsel-y die Mitte des
+   sichtbaren Ausschnitts (Drehpunkt der alten Seite). Alles andere, was
+   React über denselben Wechsel laufen lässt (Aktualisierungen innerhalb
+   einer Seite, Zurück/Vor, der Verwaltungsbereich), behält die ruhige
+   Fassung: Sonst führe bei jeder kleinen Aktualisierung die ganze Seite
+   zur Seite weg.
+
+   Nacheinander statt übereinander: erst geht die alte Seite, dann kommt
+   die neue. Die gemeinsame Gruppe springt genau dazwischen von der
+   alten auf die neue Lage (step-end), sonst würde eine weit gescrollte
+   Seite während des Wechsels senkrecht durchs Bild rutschen.
+   ------------------------------------------------------------------ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  :root[data-wechsel]:has(.globalnav)::view-transition-group(.seite) {
+    animation-duration: 320ms;
+    animation-timing-function: step-end;
+  }
+  /* Alte Seite: gleitet nach links weg, wird kleiner und dunkler. Der
+     Drehpunkt liegt in der Mitte des sichtbaren Ausschnitts. */
+  :root[data-wechsel]:has(.globalnav)::view-transition-old(.seite) {
+    transform-origin: 50% var(--wechsel-y, 50vh);
+    animation: band-seite-geht 320ms cubic-bezier(0.4, 0, 0.8, 0.6) both;
+  }
+  /* Neue Seite: gleitet von rechts herein und federt aus. */
+  :root[data-wechsel]:has(.globalnav)::view-transition-new(.seite) {
+    transform-origin: 50% 50vh;
+    animation:
+      band-seite-rein 640ms cubic-bezier(0.3, 1.3, 0.5, 1) 320ms both,
+      band-seite-licht 420ms var(--ease-aus) 320ms both;
+  }
+  @keyframes band-seite-geht {
+    to {
+      opacity: 0;
+      transform: translate3d(-72px, 0, 0) scale(0.94);
+      filter: brightness(0.7);
+    }
+  }
+  @keyframes band-seite-rein {
+    from {
+      transform: translate3d(104px, 0, 0);
+    }
+  }
+  @keyframes band-seite-licht {
+    from {
+      opacity: 0;
+    }
+  }
+}
+/* Solange das Handy-Menü offen ist und während des Seitenwechsels aus
+   dem Menü heraus (data-wechsel="menue", effekte.tsx) bleiben
+   Anfrage-Leiste und Fähre aus: Sie liegen ohnehin unter dem Menü,
+   blitzten beim Wechsel aber kurz durch dessen Milchglas. */
+body:has(#mobile-menu[aria-hidden="false"])
+  :is(.cta-leiste, .faehr-fortschritt),
+:root[data-wechsel="menue"] :is(.cta-leiste, .faehr-fortschritt) {
+  visibility: hidden;
+}
+/* Am Rechner ruhiger: kein Seitwärts-Schub, die neue Seite gleitet mit
+   etwas Maßstab von unten herein. */
+@media screen and (min-width: 1068px) and (prefers-reduced-motion: no-preference) {
+  :root[data-wechsel]:has(.globalnav)::view-transition-group(.seite) {
+    animation-duration: 260ms;
+  }
+  :root[data-wechsel]:has(.globalnav)::view-transition-old(.seite) {
+    animation: band-seite-geht-ruhig 260ms var(--ease-ab) both;
+  }
+  :root[data-wechsel]:has(.globalnav)::view-transition-new(.seite) {
+    animation:
+      band-seite-hoch 660ms var(--ease-aus) 260ms both,
+      band-seite-licht 460ms var(--ease-aus) 260ms both;
+  }
+  @keyframes band-seite-geht-ruhig {
+    to {
+      opacity: 0;
+      transform: scale(0.972);
+      filter: brightness(0.88);
+    }
+  }
+  @keyframes band-seite-hoch {
+    from {
+      transform: translate3d(0, 64px, 0) scale(0.985);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   3. Schein am Hauptknopf: nur die große Pille im Kopf (.btn-gross und
+   die Pille im Kopf der Startseite, #start) und die Pille der mobilen
+   Anfrage-Leiste. Kleine Pillen in Leisten bleiben ruhig.
+   ::before trägt den Schein und atmet über die Deckkraft, ::after ist
+   ein Lichtstreif, der einmal über die Fläche zieht. Der Streif bleibt
+   in der Pille (kein Überlauf); sein Ausschnitt läuft gegen, sodass er
+   immer genau die Pillenform hat.
+   ------------------------------------------------------------------ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .btn-signal.btn-gross,
+  #start .btn-signal,
+  .cta-leiste .btn-signal {
+    isolation: isolate;
+  }
+  .btn-signal.btn-gross::before,
+  #start .btn-signal::before,
+  .cta-leiste .btn-signal::before,
+  .btn-signal.btn-gross::after,
+  #start .btn-signal::after,
+  .cta-leiste .btn-signal::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    display: block;
+    pointer-events: none;
+  }
+  .btn-signal.btn-gross::before,
+  #start .btn-signal::before,
+  .cta-leiste .btn-signal::before {
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow:
+      0 0 0 4px rgb(244 91 30 / 0.16),
+      0 10px 30px -4px rgb(244 91 30 / 0.62);
+    opacity: 0.3;
+    /* Drei Atemzüge, dann ruht der Schein: Ein endlos pulsierender Knopf
+       wirkt wie Werbung, und solange der Schein atmet, muss der Browser
+       bei jedem Bild die Ebenen der Seite neu ordnen (gemessen: doppelte
+       Arbeit). Start erst nach 4,5 s: Erst steht die Seite, dann lädt der
+       Knopf leise ein. In der Anfrage-Leiste beginnt es früher. */
+    animation: knopf-atmen 3.2s ease-in-out 4.5s 3;
+  }
+  .cta-leiste[data-sichtbar="true"] .btn-signal::before {
+    animation-delay: 1.5s;
+  }
+  @keyframes knopf-atmen {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .btn-signal.btn-gross::after,
+  #start .btn-signal::after,
+  .cta-leiste .btn-signal::after {
+    inset: 0 auto 0 0;
+    width: 40%;
+    background: linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0) 20%,
+      rgb(255 255 255 / 0.55) 50%,
+      rgb(255 255 255 / 0) 80%
+    );
+    opacity: 0;
+    animation:
+      knopf-lichtzug 1150ms cubic-bezier(0.45, 0, 0.3, 1) 1000ms both,
+      knopf-lichtzug-da 1150ms linear 1000ms both;
+  }
+  /* Streif 40 % breit, Weg 150 % der eigenen Breite: von Rand zu Rand.
+     Der Ausschnitt (negative Einzüge) bleibt dabei auf der Pille. */
+  @keyframes knopf-lichtzug {
+    from {
+      translate: 0 0;
+      clip-path: inset(0 -150% 0 0 round 999px);
+    }
+    to {
+      translate: 150% 0;
+      clip-path: inset(0 0 0 -150% round 999px);
+    }
+  }
+  @keyframes knopf-lichtzug-da {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    18%,
+    82% {
+      opacity: 1;
+    }
+  }
+
+  /* Wartet der Knopf noch auf sein Einblenden, zieht das Licht erst
+     mit dem Auftritt. */
+  [data-ein-da="w"] .btn-signal.btn-gross::after {
+    animation: none;
+  }
+  /* Anfrage-Leiste: Schein und Lichtzug nur, solange sie im Bild ist;
+     der Lichtzug läuft bei jedem Erscheinen einmal. */
+  .cta-leiste:not([data-sichtbar="true"]) .btn-signal::before,
+  .cta-leiste:not([data-sichtbar="true"]) .btn-signal::after {
+    animation: none;
+  }
+  .cta-leiste[data-sichtbar="true"] .btn-signal::after {
+    animation-delay: 420ms;
+  }
+}

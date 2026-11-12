@@ -57,6 +57,49 @@
   z-index: 2;
   padding: 28px var(--pad) 4px;
 }
+
+/* Die Karte steht in einer ruhenden Hülle (kran-banner.tsx). Beim
+   Wegscrollen sinkt die Karte deutlich zurück: kleiner (bis 0,86), Ecken
+   runder, leicht nach hinten gekippt, dazu legt sich eine Dämmerung in
+   Hafenblau darüber. --weg (0–1) setzt effekte.tsx an der Hülle, es
+   vererbt sich an die Karte. Die runderen Ecken kommen per clip-path;
+   das schneidet den eigenen Schatten der Karte ab, darum trägt ihn hier
+   die Hülle. Ohne Script (--weg fehlt) und bei reduzierter Bewegung
+   steht die Karte wie zuvor. */
+.kopfHuelle {
+  position: relative;
+}
+.kopfDaemmer {
+  display: none;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  .kopfHuelle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-karte);
+    box-shadow: var(--schatten);
+    opacity: calc(1 - var(--weg, 0) * 5);
+    pointer-events: none;
+  }
+  .kopfHuelle > :global(#start) {
+    transform: perspective(1400px) rotateX(calc(var(--weg, 0) * 7deg))
+      scale(calc(1 - var(--weg, 0) * 0.14));
+    transform-origin: 50% 100%;
+    opacity: calc(1 - var(--weg, 0) * 0.3);
+    clip-path: inset(0 round calc(var(--radius-karte) + var(--weg, 0) * 30px));
+    will-change: transform;
+  }
+  .kopfDaemmer {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: block;
+    background: #0f2a3a;
+    opacity: calc(var(--weg, 0) * 0.42);
+    pointer-events: none;
+  }
+}
 @media (min-width: 734px) {
   .kopfText {
     padding: 48px 48px 8px;
@@ -487,6 +530,8 @@
 
 .spur {
   overflow-x: auto;
+  /* Karten kommen von weit unten herein: senkrecht nie scrollbar. */
+  overflow-y: hidden;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
   scroll-padding-inline: var(--rand);
@@ -1144,6 +1189,18 @@
   padding: 0;
   list-style: none;
 }
+/* Zeilen einer gemeinsamen Karte: Der große Karten-Auftritt
+   (app/effekte-gross.css) kommt hier gerade von unten, ohne Drehung,
+   und ohne Kippen beim Scrollen. */
+.ladeliste li {
+  --ein-weg: 44px;
+  --ein-dreh: 0deg;
+  --ein-mass: 0.96;
+  --kipp: 0;
+}
+.ladeliste ol[data-ein][data-ein] > li {
+  animation: none;
+}
 .ladeKopf {
   display: none;
 }
@@ -1336,8 +1393,8 @@
 }
 @keyframes karte-rein {
   from {
-    transform: scale(0.9) rotate(2.5deg);
-    opacity: 0.5;
+    transform: scale(0.84) rotate(5deg);
+    opacity: 0.35;
   }
   to {
     transform: none;
@@ -1356,14 +1413,14 @@
     pointer-events: none;
     background: linear-gradient(
       105deg,
-      rgb(255 255 255 / 0) 35%,
-      rgb(255 255 255 / 0.16) 50%,
-      rgb(255 255 255 / 0) 65%
+      rgb(255 255 255 / 0) 26%,
+      rgb(255 255 255 / 0.3) 50%,
+      rgb(255 255 255 / 0) 74%
     );
     transform: translateX(-110%);
   }
   :global([data-ein-da="1"]) > li > .schwarz::after {
-    animation: glanz-zug 1500ms var(--ease-aus) 650ms both;
+    animation: glanz-zug 1800ms var(--ease-aus) 750ms both;
   }
 }
 @keyframes glanz-zug {
@@ -1451,8 +1508,14 @@
   }
 }
 
-/* Möwen über dem Kran: zwei kleine Striche, die in großen Abständen von
-   links nach rechts ziehen und dabei leicht mit den Flügeln schlagen. */
+/* Möwen über dem Kran: drei Striche in drei Größen, die in kurzen
+   Abständen (9 bis 14 s) durch den Himmel ziehen, dabei steigen und
+   sinken und mit den Flügeln schlagen. Jede fliegt in einer Bahn, die so
+   breit ist wie die Zeichnung: Der Weg rechnet in Prozent der Bahn. So
+   bewegt sich nur transform / opacity (kein Layout je Bild; mit
+   Container-Einheiten im Weg rechnete der Browser bei jedem Bild neu).
+   Die Bahn dreht sich um die Möwe an ihrem linken Ende (Neigung im
+   Flug), der Flügelschlag liegt am Pfad. */
 .moewen {
   position: absolute;
   inset: 0;
@@ -1461,54 +1524,92 @@
   overflow: hidden;
   pointer-events: none;
 }
-.moewe {
+.moeweBahn {
   position: absolute;
-  top: 14%;
+  top: 12%;
   left: 0;
-  width: 20px;
-  height: 9px;
-  fill: none;
-  stroke: #46555f;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  display: block;
+  width: 100%;
+  height: 14px;
+  transform-origin: 17px 50%;
   opacity: 0;
 }
+.moeweBahn2 {
+  top: 27%;
+  height: 10px;
+  transform-origin: 12px 50%;
+}
+.moeweBahn3 {
+  top: 5%;
+  height: 8px;
+  transform-origin: 9px 50%;
+}
+.moewe {
+  display: block;
+  width: 34px;
+  height: 14px;
+  fill: none;
+  stroke: #33434e;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .moewe2 {
-  top: 26%;
-  width: 14px;
-  height: 6px;
+  width: 24px;
+  height: 10px;
+  stroke-width: 1.9;
+}
+.moewe3 {
+  width: 18px;
+  height: 8px;
+  stroke-width: 2.1;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .moewe {
-    animation: moewe-flug 24s linear 3s infinite;
+  .moeweBahn {
+    animation: moewe-flug 11s linear 1.4s infinite;
   }
-  .moewe2 {
-    animation-duration: 31s;
-    animation-delay: 9s;
+  .moeweBahn2 {
+    animation-duration: 14s;
+    animation-delay: 5.5s;
+  }
+  /* Die kleinste kommt von rechts. */
+  .moeweBahn3 {
+    animation-duration: 9s;
+    animation-delay: 8s;
+    animation-direction: reverse;
   }
   .moewe path {
     transform-box: fill-box;
     transform-origin: 50% 70%;
-    animation: moewe-schlag 0.85s ease-in-out infinite alternate;
+    animation: moewe-schlag 0.62s ease-in-out infinite alternate;
+  }
+  .moewe2 path {
+    animation-duration: 0.54s;
+  }
+  .moewe3 path {
+    animation-duration: 0.47s;
   }
 }
 @keyframes moewe-flug {
   0% {
-    transform: translate3d(-30px, 14px, 0);
+    transform: translate3d(-44px, 18px, 0) rotate(-9deg);
     opacity: 0;
   }
-  5% {
-    opacity: 0.75;
+  7% {
+    opacity: 0.92;
   }
-  45% {
-    transform: translate3d(48vw, -8px, 0);
+  30% {
+    transform: translate3d(28%, -12px, 0) rotate(-3deg);
   }
-  88% {
-    opacity: 0.75;
+  56% {
+    transform: translate3d(60%, 8px, 0) rotate(6deg);
   }
+  76% {
+    opacity: 0.92;
+  }
+  84%,
   100% {
-    transform: translate3d(104vw, 10px, 0);
+    transform: translate3d(108%, -14px, 0) rotate(-6deg);
     opacity: 0;
   }
 }
@@ -1517,6 +1618,6 @@
     transform: scaleY(1);
   }
   to {
-    transform: scaleY(0.35);
+    transform: scaleY(0.3);
   }
 }

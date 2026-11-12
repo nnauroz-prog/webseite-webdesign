@@ -21,6 +21,7 @@ import {
 } from "@/components/marketing/laden/karten";
 import { LadenKopf } from "@/components/marketing/laden/laden-kopf";
 import { LadenRegal } from "@/components/marketing/laden/laden-regal";
+import { Laufband } from "@/components/marketing/laufband";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { STUNDENSATZ_EUR } from "@/lib/honorar-data";
@@ -226,6 +227,7 @@ export default function HomePage() {
         <LadenDefs />
         <LadenKopf />
         <Pakete />
+        <Laufband />
         <Muster />
         <Unterschied />
         <Notiz id="notiz">

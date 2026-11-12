@@ -30,6 +30,11 @@ import s from "./laden.module.css";
  * reduzierter Bewegung). Das Tageslicht liegt nur hinter der Zeichnung,
  * die Textspalte bleibt hell. Darunter Text oben, Zeichnung darunter.
  *
+ * Beim Wegscrollen sinkt die Karte in ihrer ruhenden Hülle zurück: sie
+ * wird kleiner, runder, kippt leicht nach hinten und dämmert ein (--weg
+ * aus effekte.tsx; Styles in laden.module.css, nie bei reduzierter
+ * Bewegung).
+ *
  * Unter der Karte die Bildunterschrift als Mono-Notiz mit dem Pegel
  * St. Pauli live (alle zehn Minuten). Die Zeichnung ist reines Inline-SVG
  * und nicht das LCP-Element.
@@ -39,33 +44,55 @@ export async function KranBanner({ children }: { children: ReactNode }) {
   const hub = pegelHub(pegel);
   return (
     <div className={cn("inhalt", s.kopfAbschnitt)}>
-      <HeroBuehne id="start" className={cn(heroStil.hero, s.kopfKarte)}>
-        {/* Wartezustand des Auftakts vor dem ersten Bild; braucht die Bühne als Elternteil. */}
-        <script dangerouslySetInnerHTML={{ __html: AUFTAKT_SCRIPT }} />
-        <div className={cn(heroStil.licht, s.kranLicht)} aria-hidden="true">
-          <i className={heroStil.lichtMorgen} />
-          <i className={heroStil.lichtAbend} />
-          <i className={heroStil.lichtNacht} />
-        </div>
-        <div className={s.kopfText}>{children}</div>
-        <div className={s.kranBild} data-tiefe="">
-          {/* Zwei Möwen ziehen in großen Abständen durch den Himmel über dem Kran. */}
-          <span className={s.moewen} aria-hidden="true">
-            <svg viewBox="0 0 24 10" className={s.moewe} focusable="false">
-              <path d="M1 8Q6 0 12 6Q18 0 23 8" />
-            </svg>
-            <svg
-              viewBox="0 0 24 10"
-              className={`${s.moewe} ${s.moewe2}`}
-              focusable="false"
-            >
-              <path d="M1 8Q6 0 12 6Q18 0 23 8" />
-            </svg>
-          </span>
-          <Containerbruecke hub={hub} />
-        </div>
-        <div className={s.kaikante} aria-hidden="true" />
-      </HeroBuehne>
+      {/* Ruhende Hülle: trägt den Schatten und wird beim Scrollen gemessen
+          (--weg, effekte.tsx); die Karte darin sinkt beim Wegscrollen zurück. */}
+      <div className={s.kopfHuelle} data-kopf-huelle="">
+        <HeroBuehne id="start" className={cn(heroStil.hero, s.kopfKarte)}>
+          {/* Wartezustand des Auftakts vor dem ersten Bild; braucht die Bühne als Elternteil. */}
+          <script dangerouslySetInnerHTML={{ __html: AUFTAKT_SCRIPT }} />
+          <div className={cn(heroStil.licht, s.kranLicht)} aria-hidden="true">
+            <i className={heroStil.lichtMorgen} />
+            <i className={heroStil.lichtAbend} />
+            <i className={heroStil.lichtNacht} />
+          </div>
+          <div className={s.kopfText}>{children}</div>
+          <div className={s.kranBild} data-tiefe="">
+            {/* Drei Möwen ziehen in kurzen Abständen durch den Himmel über dem Kran. */}
+            {/* Jede Möwe fliegt in einer Bahn, die so breit ist wie die
+                Zeichnung: Der Weg rechnet in Prozent der Bahn und läuft
+                ohne Layout-Arbeit (laden.module.css). */}
+            <span className={s.moewen} aria-hidden="true">
+              <span className={s.moeweBahn}>
+                <svg viewBox="0 0 24 10" className={s.moewe} focusable="false">
+                  <path d="M1 8Q6 0 12 6Q18 0 23 8" />
+                </svg>
+              </span>
+              <span className={`${s.moeweBahn} ${s.moeweBahn2}`}>
+                <svg
+                  viewBox="0 0 24 10"
+                  className={`${s.moewe} ${s.moewe2}`}
+                  focusable="false"
+                >
+                  <path d="M1 8Q6 0 12 6Q18 0 23 8" />
+                </svg>
+              </span>
+              <span className={`${s.moeweBahn} ${s.moeweBahn3}`}>
+                <svg
+                  viewBox="0 0 24 10"
+                  className={`${s.moewe} ${s.moewe3}`}
+                  focusable="false"
+                >
+                  <path d="M1 8Q6 0 12 6Q18 0 23 8" />
+                </svg>
+              </span>
+            </span>
+            <Containerbruecke hub={hub} />
+          </div>
+          <div className={s.kaikante} aria-hidden="true" />
+          {/* Dämmerung: legt sich beim Wegscrollen über die Karte (nur Deko). */}
+          <div className={s.kopfDaemmer} aria-hidden="true" />
+        </HeroBuehne>
+      </div>
       <p className={cn("notiz-mono", s.kranUnterschrift)}>
         <span>
           Blick <span className="hidden sm:inline">von Steinwerder </span>über

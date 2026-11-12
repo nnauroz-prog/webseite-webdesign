@@ -1,0 +1,429 @@
+/* ==================================================================
+   Große Bewegung (Runde „kräftig“): Überschriften-Choreografie,
+   kräftige Karten-Auftritte, 3D beim Scrollen, starke Bildtiefe.
+   Wird nach app/apple.css geladen und überstimmt dort gleich starke
+   Regeln. Alles nur Bildschirm und ohne reduzierte Bewegung.
+   ================================================================== */
+
+/* ------------------------------------------------------------------
+   1. Überschriften-Choreografie.
+   einblenden.tsx zerlegt die h2 wartender Blöcke in Wörter
+   (<span class="wort" style="--w: n"><span>…</span></span>, h2 trägt
+   data-woerter). Sobald der Block einblendet, steigt Wort für Wort aus
+   seiner Zeile: von unten, leicht gedreht und unscharf, 55 ms Abstand.
+   Die Wörter bleiben immer feste Stücke, damit sich der Umbruch zwischen
+   Warten, Auftritt und Ruhe nicht ändert.
+   ------------------------------------------------------------------ */
+h2[data-woerter] .wort,
+h2[data-woerter] .wort > span {
+  display: inline-block;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Löst die alte Regel ab, die nur den grauen Satz einblendete. */
+  [data-ein][data-ein-da="w"] h2[data-woerter] > span + span {
+    opacity: 1;
+  }
+  [data-ein][data-ein-da="1"] h2[data-woerter] > span + span {
+    transition: none;
+  }
+  /* Maske je Wort, mit Luft für Umlaute, Unterlängen und die Unschärfe.
+     clip-path ändert weder Zeilenhöhe noch Grundlinie. */
+  [data-ein]:is([data-ein-da="w"], [data-ein-da="1"]) h2[data-woerter] .wort {
+    clip-path: inset(-0.14em -0.24em -0.2em);
+  }
+  [data-ein][data-ein-da="w"]:not(:focus-within) h2[data-woerter] .wort > span {
+    opacity: 0;
+    transform: translate3d(0, 118%, 0) rotate(7deg);
+    transform-origin: 0 100%;
+    filter: blur(8px);
+  }
+  [data-ein][data-ein-da="1"] h2[data-woerter] .wort > span {
+    transform-origin: 0 100%;
+    animation: wort-steigt 950ms var(--ease-aus) both;
+    animation-delay: calc(140ms + min(var(--w, 0), 18) * 55ms);
+  }
+  @keyframes wort-steigt {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 118%, 0) rotate(7deg);
+      filter: blur(8px);
+    }
+    45% {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   2. Kräftige Auftritte.
+   Einzelblock: 60 px von unten, kleiner (0,94), unscharf.
+   Karten und Kacheln einer Reihe: 70 px von unten, abwechselnd ±3°
+   gedreht, deutlich kleiner (0,86), unscharf; sie federn ein, 110 ms
+   nacheinander. Der Auftritt läuft über die Einzel-Eigenschaften
+   translate / rotate / scale: transform bleibt frei für das Kippen beim
+   Scrollen (3.) und im Ruhezustand ("0") bleibt nichts zurück.
+   Stellschrauben je Liste: --ein-weg, --ein-dreh, --ein-mass.
+   ------------------------------------------------------------------ */
+@supports (translate: 0 1px) {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    /* Der wartende Einzelblock bleibt an seinem Platz (nur kleiner,
+       unscharf, unsichtbar): Sein Weg von unten läuft erst beim Auftritt
+       als Animation (ein-steigen). Stünde er schon im Wartezustand tiefer,
+       könnte ein kleiner Block ganz aus einem beschneidenden Abschnitt
+       (content-visibility) rutschen; der Beobachter in einblenden.tsx
+       sähe ihn dann nie und er bliebe unsichtbar. */
+    [data-ein][data-ein-da="w"]:not([data-ein="reihe"], :focus-within) {
+      opacity: 0;
+      transform: none;
+      /* Werte bewusst über var(): feste Werte faltet der CSS-Minifier
+         mit „transform: none“ zu einem transform zusammen, dann griffen
+         die Übergänge auf scale nicht mehr. */
+      scale: var(--ein-mass, 0.94);
+      filter: blur(12px);
+    }
+    [data-ein="reihe"][data-ein-da="w"]:not(:focus-within) > * {
+      opacity: 0;
+      transform: none;
+      translate: 0 var(--ein-weg, 70px);
+      rotate: calc(var(--ein-dreh, 3deg) * var(--ein-seite, 1));
+      scale: var(--ein-mass, 0.86);
+      filter: blur(10px);
+    }
+    [data-ein="reihe"][data-ein-da="w"] > :nth-child(even) {
+      --ein-seite: -1;
+    }
+    /* Ankommen: der Weg federn leicht über, Größe und Schärfe gleiten aus
+       (kein Überschwingen in der Breite, damit nichts über den Rand ragt). */
+    [data-ein][data-ein-da="1"]:not([data-ein="reihe"]) {
+      transition:
+        opacity 700ms var(--ease-aus),
+        scale 1100ms var(--ease-aus),
+        filter 800ms var(--ease-aus);
+      animation: ein-steigen 1150ms cubic-bezier(0.3, 1.36, 0.5, 1) both;
+    }
+    @keyframes ein-steigen {
+      from {
+        translate: 0 var(--ein-weg, 60px);
+      }
+    }
+    [data-ein="reihe"][data-ein-da="1"] > * {
+      transition:
+        opacity 650ms var(--ease-aus),
+        translate 1000ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        rotate 1000ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        scale 1000ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 750ms var(--ease-aus);
+    }
+    [data-ein="reihe"][data-ein-da="1"] > :nth-child(2) {
+      transition-delay: 110ms;
+    }
+    [data-ein="reihe"][data-ein-da="1"] > :nth-child(3) {
+      transition-delay: 220ms;
+    }
+    [data-ein="reihe"][data-ein-da="1"] > :nth-child(4) {
+      transition-delay: 330ms;
+    }
+    [data-ein="reihe"][data-ein-da="1"] > :nth-child(5) {
+      transition-delay: 440ms;
+    }
+    [data-ein="reihe"][data-ein-da="1"] > :nth-child(6) {
+      transition-delay: 550ms;
+    }
+    [data-ein="reihe"][data-ein-da="1"] > :nth-child(n + 7) {
+      transition-delay: 660ms;
+    }
+
+    /* Bilder in den Karten setzen sich aus deutlicher Vergrößerung. */
+    [data-ein="reihe"][data-ein-da="w"] > * img {
+      transform: scale(1.3);
+    }
+    [data-ein="reihe"][data-ein-da="1"] > * img {
+      transition: transform 1600ms var(--ease-aus);
+    }
+
+    /* Antippen im Ruhezustand: gibt nach und federt zurück, jetzt über
+       „scale“, damit es auch dort wirkt, wo transform beim Scrollen
+       kippt (3.). Route und Fokus-Liste behalten ihre eigene Regel aus
+       apple.css. */
+    [data-ein="reihe"][data-ein-da="0"]:not([data-fokus], .fahr-route *) > * {
+      transition:
+        scale 520ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 520ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    [data-ein="reihe"][data-ein-da="0"]:not([data-fokus], .fahr-route *)
+      > *:active {
+      transform: none;
+      scale: var(--ein-druck, 0.965);
+      transition:
+        scale 140ms var(--ease-apple),
+        transform 140ms var(--ease-apple);
+    }
+  }
+}
+
+/* Waagerechte Wisch-Reihen: senkrecht nie scrollbar, auch wenn Karten
+   beim Auftritt kurz nach unten ragen. */
+@media (max-width: 639px) {
+  .wisch-reihe:not(.wisch-md) {
+    overflow-y: hidden;
+  }
+}
+@media (max-width: 767px) {
+  .wisch-reihe.wisch-md {
+    overflow-y: hidden;
+  }
+}
+
+/* ------------------------------------------------------------------
+   3. Tiefe beim Scrollen am Handy.
+   Karten und Kacheln in senkrechten Listen kippen beim Durchscrollen
+   leicht in 3D, wie auf einer großen Walze: unten kommen sie nach vorn
+   geneigt herein, in der Bildmitte liegen sie plan, oben neigen sie sich
+   nach hinten weg. Nur Touch-Geräte, nur mit Scroll-Zeitleisten.
+   Nicht für waagerechte Wisch-Spuren (Regale der Startseite,
+   .wisch-reihe am Handy), nicht für Route und Fokus-Liste (eigene
+   Scroll-Effekte). --kipp: 0 schaltet es je Element ab.
+   ------------------------------------------------------------------ */
+@supports (animation-timeline: view()) {
+  @media screen and (hover: none) and (prefers-reduced-motion: no-preference) {
+    [data-ein="reihe"]:not([data-fokus], [id$="-spur"] > *, .fahr-route *) > * {
+      animation: reihe-kippen linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+      transform-origin: 50% 50%;
+    }
+    @keyframes reihe-kippen {
+      0% {
+        transform: perspective(900px) rotateX(calc(var(--kipp, 1) * -8deg));
+      }
+      36%,
+      64% {
+        transform: perspective(900px) rotateX(0deg);
+      }
+      100% {
+        transform: perspective(900px) rotateX(calc(var(--kipp, 1) * 7deg));
+      }
+    }
+  }
+  @media screen and (hover: none) and (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+    .wisch-reihe:not(.wisch-md)[data-ein="reihe"] > * {
+      animation: none;
+    }
+  }
+  @media screen and (hover: none) and (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+    .wisch-reihe.wisch-md[data-ein="reihe"] > * {
+      animation: none;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   3b. Fotos mit Tiefe ([data-para]): wandern bis 80 px gegen ihren Rahmen
+   und zoomen beim Durchscrollen von groß nach kleiner. --py (Weg) und
+   --pz (Zoom) setzt effekte.tsx und sorgt dafür, dass das Foto den
+   Rahmen immer deckt. Das langsame Atmen (foto-atmen, ebenfalls über
+   „scale“) entfällt hier, sonst höben sich beide auf.
+   ------------------------------------------------------------------ */
+@supports (translate: 0 1px) {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    [data-para] > img {
+      transform: none;
+      translate: 0 var(--py, 0px);
+      scale: var(--pz, 1.2);
+      animation: none;
+      will-change: translate, scale;
+    }
+    /* Die ersten Werte nach dem Laden gleiten weich ein. */
+    [data-para][data-para-start] > img {
+      transition:
+        translate 900ms var(--ease-aus),
+        scale 900ms var(--ease-aus);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   4. Kopf der Startseite (sinkt beim Wegscrollen zurück) und Möwen:
+   components/marketing/laden/laden.module.css (.kopfHuelle, .moewe).
+
+   5. Licht und Details, kräftiger.
+   ------------------------------------------------------------------ */
+
+/* Himmelslicht: deutlich kräftiger (rechts oben 1,7-fach, links, wo
+   Text beginnt, 1,5-fach) und langsam atmend. Der Weg beim Scrollen
+   läuft über „translate“, das Atmen über „scale“ und „rotate“ um die
+   rechte obere Ecke: so wächst das Licht nur nach links und unten, nie
+   über den rechten Rand. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  :root {
+    --himmel-a: rgb(150 200 235 / 0.51);
+    --himmel-b: rgb(255 222 184 / 0.33);
+  }
+  :root[data-himmel="morgen"] {
+    --himmel-a: rgb(255 186 160 / 0.7);
+    --himmel-b: rgb(170 205 232 / 0.39);
+  }
+  :root[data-himmel="abend"] {
+    --himmel-a: rgb(255 150 70 / 0.6);
+    --himmel-b: rgb(40 86 112 / 0.24);
+  }
+  :root[data-himmel="nacht"] {
+    --himmel-a: rgb(46 96 150 / 0.34);
+    --himmel-b: rgb(244 91 30 / 0.15);
+  }
+}
+@supports (translate: 0 1px) {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    body:has(footer) main#main:not(.max-w-2xl)::before {
+      transform: none;
+      translate: 0 var(--licht-y, 0px);
+      transform-origin: 100% 0;
+      animation: licht-atmen 13s ease-in-out infinite alternate;
+      will-change: translate, scale;
+    }
+    @keyframes licht-atmen {
+      from {
+        scale: 1;
+        rotate: 0deg;
+        opacity: 0.8;
+      }
+      to {
+        scale: 1.16 1.06;
+        rotate: 2.5deg;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Lichtstreif über hellen Karten: breiter und 1,8 s lang. Nur wenig
+     heller als zuvor: Auf weißen Karten bleicht ein kräftiger weißer
+     Streif sonst kurz die Schrift aus. */
+  [data-ein="reihe"][data-ein-da="1"]
+    > li
+    > article[data-kipp]:not([data-flaeche-dunkel])::after {
+    background: linear-gradient(
+      105deg,
+      rgb(255 255 255 / 0) 24%,
+      rgb(255 255 255 / 0.56) 50%,
+      rgb(255 255 255 / 0) 76%
+    );
+    animation: karten-glanz 1800ms var(--ease-aus) 720ms both;
+  }
+  [data-ein="reihe"][data-ein-da="1"]
+    > li:nth-child(2)
+    > article[data-kipp]::after {
+    animation-delay: 840ms;
+  }
+  [data-ein="reihe"][data-ein-da="1"]
+    > li:nth-child(3)
+    > article[data-kipp]::after {
+    animation-delay: 960ms;
+  }
+  [data-ein="reihe"][data-ein-da="1"]
+    > li:nth-child(n + 4)
+    > article[data-kipp]::after {
+    animation-delay: 1080ms;
+  }
+
+  /* Welle beim Antippen: zwei Ringe laufen nach außen (data-welle setzt
+     effekte.tsx für 1 s). Ein Pseudo-Element trägt beide: innen als
+     Schattenring, außen als Kontur mit Abstand; bewegt werden nur
+     transform und opacity. In der Breite wächst der Ring nur wenig,
+     damit er bei breiten Knöpfen nicht über den Seitenrand ragt. Knöpfe
+     der festen Leiste (.cta-leiste) haben einen eigenen Schein und
+     bleiben außen vor. */
+  :is(.btn-signal, .btn-line)[data-welle]:not(.cta-leiste *) {
+    animation: none;
+  }
+  :is(.btn-signal, .btn-line)[data-welle]:not(.cta-leiste *)::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    display: block;
+    border-radius: inherit;
+    box-shadow: 0 0 0 2.5px rgb(244 91 30 / 0.7);
+    outline: 2px solid rgb(244 91 30 / 0.38);
+    outline-offset: 9px;
+    pointer-events: none;
+    animation: knopf-ringe 900ms var(--ease-aus) both;
+  }
+  @keyframes knopf-ringe {
+    from {
+      opacity: 1;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.045, 1.5);
+    }
+  }
+
+  /* Fähre oben: größer (32 px, nicht mehr: sonst verdeckt sie beim
+     Vorbeifahren Logo, Lupe und Menüknopf), Linie 3 px mit Schein,
+     dahinter eine Kielwelle aus zwei Strichen, die im Wasser atmen. */
+  .faehr-fortschritt {
+    height: 22px;
+  }
+  .faehr-linie {
+    height: 3px;
+    box-shadow: 0 0 16px rgb(244 91 30 / 0.7);
+  }
+  .faehr-boot {
+    top: 0;
+    width: 32px;
+    height: 18px;
+    transform: translateX(calc(var(--p, 0) * (100vw - 32px)));
+  }
+  .faehr-boot svg {
+    width: 32px;
+    height: auto;
+  }
+  .faehr-boot::before,
+  .faehr-boot::after {
+    content: "";
+    position: absolute;
+    right: calc(100% - 5px);
+    height: 2px;
+    border-radius: 2px;
+    transform-origin: 100% 50%;
+  }
+  /* Die Kielwelle atmet nur, solange die Fähre zu sehen ist. */
+  .faehr-fortschritt[data-an="1"] .faehr-boot::before,
+  .faehr-fortschritt[data-an="1"] .faehr-boot::after {
+    animation: faehr-kiel 1.5s ease-in-out infinite alternate;
+  }
+  .faehr-boot::before {
+    top: 15px;
+    width: 40px;
+    background: linear-gradient(90deg, rgb(15 42 58 / 0), rgb(15 42 58 / 0.55));
+  }
+  .faehr-boot::after {
+    top: 11px;
+    width: 24px;
+    background: linear-gradient(
+      90deg,
+      rgb(244 91 30 / 0),
+      rgb(244 91 30 / 0.85)
+    );
+  }
+  .faehr-fortschritt[data-an="1"] .faehr-boot::after {
+    animation-delay: -0.75s;
+  }
+  @keyframes faehr-kiel {
+    from {
+      transform: scaleX(0.5);
+      opacity: 0.35;
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+}

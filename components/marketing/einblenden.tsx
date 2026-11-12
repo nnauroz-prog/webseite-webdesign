@@ -17,6 +17,8 @@ import { useLayoutEffect } from "react";
  * - Was beim Laden schon zu sehen ist oder darüber liegt, bleibt
  *   stehen ("0"). Nur was später ins Bild kommt, bewegt sich ("1").
  * - Jedes Element genau einmal.
+ * - Überschriften (h2) in wartenden Blöcken werden in Wörter zerlegt und
+ *   steigen beim Einblenden Wort für Wort auf (woerterZerlegen).
  */
 /**
  * Zählt die erste Zahl im Text einmal hoch (data-zaehl), etwa „ab 599 €“.
@@ -90,6 +92,84 @@ function wuerfeln(el: HTMLElement) {
   window.requestAnimationFrame(schritt);
 }
 
+/**
+ * Zerlegt die Überschriften (h2) eines wartenden Blocks in Wörter, damit
+ * sie beim Einblenden einzeln aus einer Maske steigen (Styles in
+ * app/effekte-gross.css): jedes Wort wird zu
+ * <span class="wort" style="--w: n"><span>Wort</span></span>.
+ *
+ * - Leerzeichen bleiben als Text stehen, die äußeren Spans (schwarzer und
+ *   grauer Satz) samt Klassen ebenfalls; textContent ändert sich nicht.
+ *   Eine Überschrift aus reinem Text bekommt einen Span als Hülle.
+ * - Geschützte Leerzeichen trennen nicht („St. Pauli“ bleibt ein Stück).
+ * - Vorleseprogramme bekommen den ganzen Satz als ein Stück (aria-label),
+ *   die einzelnen Wörter sind für sie ausgeblendet.
+ * - Überschriften mit Links, Knöpfen oder eigenen Zahlen-Effekten bleiben
+ *   unberührt. Karten-Titel in Reihen ebenfalls: dort bewegt sich die Karte.
+ */
+const NUR_LEER = /^[ \t\n\r\f]+$/;
+
+function woerterZerlegen(block: HTMLElement) {
+  if (block.dataset.ein === "reihe") return;
+  const titel = Array.from(block.querySelectorAll<HTMLElement>("h2"));
+  for (const h of titel) {
+    if (h.dataset.woerter !== undefined) continue;
+    if (
+      h.hasAttribute("aria-label") ||
+      h.closest('[data-ein="reihe"]') ||
+      h.querySelector(
+        "a, button, [tabindex], [aria-hidden], [data-zaehl], [data-wuerfel], [data-leucht]",
+      )
+    ) {
+      continue;
+    }
+    const satz = (h.textContent ?? "").replace(/\s+/g, " ").trim();
+    if (!satz) continue;
+    const freierText = Array.from(h.childNodes).some(
+      (k) => k.nodeType === Node.TEXT_NODE && /\S/.test(k.textContent ?? ""),
+    );
+    if (freierText) {
+      // Text und Elemente gemischt: nicht anfassen.
+      if (h.children.length > 0) continue;
+      // Nur Text: eine Hülle um alle Wörter, damit Regeln wie
+      // „h2 > span + span“ (grauer Satz) nicht auf einzelne Wörter passen.
+      const huelle = document.createElement("span");
+      huelle.append(...Array.from(h.childNodes));
+      h.append(huelle);
+    }
+    const laeufer = document.createTreeWalker(h, NodeFilter.SHOW_TEXT);
+    const texte: Text[] = [];
+    while (laeufer.nextNode()) texte.push(laeufer.currentNode as Text);
+    let n = 0;
+    for (const t of texte) {
+      if (NUR_LEER.test(t.data) || t.data === "") continue;
+      const teile = document.createDocumentFragment();
+      for (const stueck of t.data.split(/([ \t\n\r\f]+)/)) {
+        if (stueck === "") continue;
+        if (NUR_LEER.test(stueck)) {
+          teile.append(stueck);
+          continue;
+        }
+        const aussen = document.createElement("span");
+        aussen.className = "wort";
+        aussen.style.setProperty("--w", String(n));
+        const innen = document.createElement("span");
+        innen.textContent = stueck;
+        aussen.append(innen);
+        teile.append(aussen);
+        n += 1;
+      }
+      t.replaceWith(teile);
+    }
+    if (n === 0) continue;
+    h.dataset.woerter = String(n);
+    h.setAttribute("aria-label", satz);
+    for (const kind of Array.from(h.children)) {
+      kind.setAttribute("aria-hidden", "true");
+    }
+  }
+}
+
 export function Einblenden() {
   const pfad = usePathname();
 
@@ -129,24 +209,40 @@ export function Einblenden() {
     if (elemente.length === 0) return () => ioZahl.disconnect();
 
     let erste = true;
+    // Wartende Blöcke werden in Ruhe in Wörter zerlegt, nicht alle auf
+    // einmal beim Laden (das hielte den ersten Aufbau der Seite auf).
+    const offen: HTMLElement[] = [];
+    let ruhe = 0;
+    const zerlegeWeiter = () => {
+      ruhe = 0;
+      const ende = performance.now() + 6;
+      while (offen.length > 0 && performance.now() < ende) {
+        const el = offen.shift();
+        if (el && el.dataset.einDa === "w") woerterZerlegen(el);
+      }
+      if (offen.length > 0) ruhe = window.setTimeout(zerlegeWeiter, 60);
+    };
     const io = new IntersectionObserver(
       (eintraege) => {
+        // Höhe einmal vorab: Im Durchlauf gelesen, zwänge sie den Browser
+        // nach jedem Markieren, die ganze Seite neu zu rechnen.
+        const vh = erste ? window.innerHeight : 0;
         for (const e of eintraege) {
           const el = e.target as HTMLElement;
           if (erste) {
             const r = e.boundingClientRect;
             // Schon sichtbar oder oberhalb: ohne Bewegung stehen lassen.
-            if (
-              e.isIntersecting ||
-              r.top < 0 ||
-              (r.height > 0 && r.top < window.innerHeight)
-            ) {
+            if (e.isIntersecting || r.top < 0 || (r.height > 0 && r.top < vh)) {
               el.dataset.einDa = "0";
               io.unobserve(el);
             } else {
               el.dataset.einDa = "w";
+              // Nur was noch unter dem Bild wartet, wird in Wörter zerlegt.
+              offen.push(el);
             }
           } else if (e.isIntersecting) {
+            // Noch nicht zerlegt (sehr schnell gescrollt): jetzt nachholen.
+            woerterZerlegen(el);
             el.dataset.einDa = "1";
             io.unobserve(el);
             // Nach dem Auftritt zurück in den Ruhezustand, damit spätere
@@ -156,14 +252,21 @@ export function Einblenden() {
             }, 2800);
           }
         }
+        if (erste && offen.length > 0) {
+          ruhe = window.setTimeout(zerlegeWeiter, 300);
+        }
         erste = false;
       },
-      { rootMargin: "0px 0px -8% 0px" },
+      // Auslöser 15 % über dem unteren Rand: Am Handy liegt unten die
+      // feste Anfrage-Leiste (rund 10 % der Höhe). Mit weniger Abstand
+      // liefe der Anfang jedes Auftritts verdeckt hinter ihr ab.
+      { rootMargin: "0px 0px -15% 0px" },
     );
     for (const el of elemente) io.observe(el);
     return () => {
       io.disconnect();
       ioZahl.disconnect();
+      window.clearTimeout(ruhe);
     };
   }, [pfad]);
 
