@@ -522,3 +522,70 @@ h2[data-woerter] .wort > span {
 footer:has(> .fuss-schiff) {
   overflow-x: clip;
 }
+
+/* ------------------------------------------------------------------
+   Großes Wort am Seitenende (marketing-footer.tsx). Kontur immer da;
+   die gefüllte Fassung liegt darüber und wird beim Erreichen des
+   Seitenendes von links nach rechts aufgedeckt. Ohne Scroll-Zeitleiste
+   oder bei reduzierter Bewegung steht das Wort gefüllt da.
+   ------------------------------------------------------------------ */
+.fuss-marke {
+  overflow: hidden;
+  padding: 20px 0 calc(6px + env(safe-area-inset-bottom));
+  text-align: center;
+  view-timeline: --fuss-marke block;
+  /* Am echten Bildrand messen: Sonst zöge die Zeitleiste scroll-padding ab
+     (unten 88 px für die Anfrage-Leiste) und das Wort füllte sich nie ganz. */
+  view-timeline-inset: 0px;
+}
+.fuss-marke-wort {
+  position: relative;
+  display: inline-block;
+  font-size: min(20.5vw, 200px);
+  line-height: 0.92;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.fuss-marke-kontur,
+.fuss-marke-voll {
+  display: inline-flex;
+  align-items: center;
+}
+.fuss-marke-wort svg {
+  width: 0.93em;
+  height: 0.68em;
+  margin-left: 0.04em;
+}
+.fuss-marke-kontur {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(29 29 31 / 0.3);
+}
+.fuss-marke-kontur svg {
+  color: rgb(29 29 31 / 0.3);
+}
+.fuss-marke-voll {
+  position: absolute;
+  inset: 0;
+  color: #1d1d1f;
+}
+.fuss-marke-voll svg {
+  color: var(--gold);
+}
+@supports (animation-timeline: view()) {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .fuss-marke-voll {
+      animation: marke-fuellen linear both;
+      animation-timeline: --fuss-marke;
+      animation-range: entry 0% entry 88%;
+    }
+    @keyframes marke-fuellen {
+      from {
+        clip-path: inset(0 100% 0 0);
+      }
+      to {
+        clip-path: inset(0 -2% 0 0);
+      }
+    }
+  }
+}

@@ -28,10 +28,30 @@ export function LadenKopf() {
       <p className={s.botschaft}>
         {BOTSCHAFT.map((w, i) => (
           <span key={w}>
-            <span className={s.wort}>
+            <span
+              className={
+                i === BOTSCHAFT.length - 1 ? `${s.wort} ${s.wortMarke}` : s.wort
+              }
+            >
               <span className={s.wortIn} style={{ "--i": i } as CSSProperties}>
                 {w}
               </span>
+              {/* Markerstrich: zieht sich unter das letzte Wort, sobald es steht. */}
+              {i === BOTSCHAFT.length - 1 ? (
+                <svg
+                  className={s.strich}
+                  viewBox="0 0 200 14"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M3 9C38 3 78 3 112 6s58 4 85 -2"
+                    pathLength={1}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              ) : null}
             </span>
             {i < BOTSCHAFT.length - 1 ? " " : null}
           </span>
