@@ -63,6 +63,44 @@ export function Briefkarte({
           data-flaeche-dunkel={dunkel ? "" : undefined}
         >
           <div className={b.inhalt}>
+            {/* Poststempel: schlägt beim Einblenden der Karte einmal auf.
+                Reiner Schmuck der Briefkarte, trägt keinen Inhalt. */}
+            <svg
+              className={b.stempel}
+              viewBox="0 0 150 96"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <defs>
+                <path id={`${id}-st-oben`} d="M14 48a34 34 0 0 1 68 0" />
+                <path id={`${id}-st-unten`} d="M17 50a31 31 0 0 0 62 0" />
+              </defs>
+              <circle cx="48" cy="48" r="43" />
+              <circle cx="48" cy="48" r="26" />
+              <text>
+                <textPath
+                  href={`#${id}-st-oben`}
+                  startOffset="50%"
+                  textAnchor="middle"
+                >
+                  HAMBURG
+                </textPath>
+              </text>
+              <text>
+                <textPath
+                  href={`#${id}-st-unten`}
+                  startOffset="50%"
+                  textAnchor="middle"
+                >
+                  SITALO
+                </textPath>
+              </text>
+              <path d="M34 48h28M48 34v28" className={b.stempelKreuz} />
+              <path
+                d="M95 34q7 -6 14 0t14 0t14 0t13 0M95 48q7 -6 14 0t14 0t14 0t13 0M95 62q7 -6 14 0t14 0t14 0t13 0"
+                className={b.stempelWellen}
+              />
+            </svg>
             <p className={cn("notiz-mono", b.kopf)}>
               <span>Sitalo Webdesign · Hamburg</span>
               <span aria-hidden="true" className="hidden sm:inline">

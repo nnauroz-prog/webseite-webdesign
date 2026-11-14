@@ -75,13 +75,40 @@ export function MarketingFooter({
   crumb,
   ohnePreisHinweis = false,
   ohneNachOben = false,
-}: { crumb?: string; ohnePreisHinweis?: boolean; ohneNachOben?: boolean } = {}) {
+}: {
+  crumb?: string;
+  ohnePreisHinweis?: boolean;
+  ohneNachOben?: boolean;
+} = {}) {
   const year = new Date().getFullYear();
   return (
     <>
       {ohneNachOben ? null : <BackToTop />}
       <footer className="flaeche-hell text-muted-foreground relative text-[12px] leading-[1.33] tracking-[-0.01em] print:hidden">
         <ElbeLinie flach />
+        {/* Ein kleines Containerschiff zieht auf der Elbe-Linie durch den Fuß,
+            solange die Linie im Bild ist (CSS .fuss-schiff, app/effekte-gross.css). */}
+        <span className="fuss-schiff" aria-hidden="true">
+          <svg viewBox="0 0 64 24" width="64" height="24" focusable="false">
+            <rect x="14" y="5" width="9" height="7" fill="#f45b1e" />
+            <rect x="24" y="5" width="9" height="7" fill="#5d7f93" />
+            <rect x="34" y="5" width="9" height="7" fill="#d2d2d7" />
+            <rect x="19" y="-1" width="9" height="6" fill="#0f2a3a" />
+            <rect x="29" y="-1" width="9" height="6" fill="#f45b1e" />
+            <path
+              d="M48 12V3h7v9Z"
+              fill="#fff"
+              stroke="#1d1d1f"
+              strokeWidth="0.8"
+            />
+            <rect x="50" y="5" width="3" height="2" fill="#1d1d1f" />
+            <path
+              d="M3 12h58l-4 8a2 2 0 0 1-1.800 1H9a2 2 0 0 1-1.700-1Z"
+              fill="#1d1d1f"
+            />
+            <path d="M4 12h56l-1 2H5Z" fill="#f45b1e" />
+          </svg>
+        </span>
         <div className="inhalt pt-[8px] pb-[calc(21px+env(safe-area-inset-bottom))]">
           {/* Fußnoten */}
           <div className="space-y-2 border-b border-[var(--border)] pb-4">
@@ -90,8 +117,14 @@ export function MarketingFooter({
           </div>
 
           {/* Brotkrumen: der Name in der Systemschrift wie die übrige Zeile */}
-          <nav aria-label="Fußzeile, Standort" className="flex min-h-11 items-center gap-2">
-            <Link href="/" className="inline-flex min-h-11 items-center font-semibold text-[#1d1d1f]">
+          <nav
+            aria-label="Fußzeile, Standort"
+            className="flex min-h-11 items-center gap-2"
+          >
+            <Link
+              href="/"
+              className="inline-flex min-h-11 items-center font-semibold text-[#1d1d1f]"
+            >
               Sitalo Webdesign
             </Link>
             {crumb ? (
@@ -107,15 +140,23 @@ export function MarketingFooter({
           {/* Mobil: Gruppen zum Aufklappen */}
           <div className="border-t border-[var(--border)] sm:hidden">
             {GRUPPEN.map((g) => (
-              <details key={g.titel} className="fuss-gruppe border-b border-[var(--border)]">
+              <details
+                key={g.titel}
+                className="fuss-gruppe border-b border-[var(--border)]"
+              >
                 <summary className="fuss-gruppe-kopf">
-                  <h2 className="text-[14px] font-semibold tracking-[-0.016em] text-[#1d1d1f]">{g.titel}</h2>
+                  <h2 className="text-[14px] font-semibold tracking-[-0.016em] text-[#1d1d1f]">
+                    {g.titel}
+                  </h2>
                   <span aria-hidden="true" className="fuss-gruppe-chev" />
                 </summary>
                 <ul className="pb-3">
                   {g.links.map((l) => (
                     <li key={l.href}>
-                      <FussA link={l} className="flex min-h-11 items-center text-[14px] tracking-[-0.016em] text-[#424245]" />
+                      <FussA
+                        link={l}
+                        className="flex min-h-11 items-center text-[14px] tracking-[-0.016em] text-[#424245]"
+                      />
                     </li>
                   ))}
                 </ul>
@@ -147,7 +188,9 @@ export function MarketingFooter({
           {/* Rechtszeile */}
           <div className="mt-3 flex flex-col gap-y-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-8 sm:border-t-0 sm:pt-2 lg:pt-3">
             <div className="flex flex-col gap-y-1 sm:flex-row sm:items-center sm:gap-x-8">
-              <span>Copyright © {year} Sitalo Webdesign. Alle Rechte vorbehalten.</span>
+              <span>
+                Copyright © {year} Sitalo Webdesign. Alle Rechte vorbehalten.
+              </span>
               <ul className="flex items-center">
                 <RechtLink href="/impressum">Impressum</RechtLink>
                 <RechtLink href="/datenschutz">Datenschutz</RechtLink>

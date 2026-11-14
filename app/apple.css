@@ -1566,9 +1566,12 @@
     transform: translate3d(0, var(--py, 0px), 0) scale(1.14);
     will-change: transform;
   }
-  /* Kopfbild der Unterseiten öffnet sich wie Containertüren. */
-  figure:has(> [data-para]) {
-    animation: tueren-auf 1500ms var(--ease-aus) 120ms both;
+  /* Kopfbild der Unterseiten öffnet sich wie Containertüren. Nur der
+     Bildrahmen, nicht die ganze figure: Sonst schnitte die runde Ecke
+     dauerhaft den ersten Buchstaben der Bildunterschrift ab. Die
+     Animation füllt nur rückwärts, danach bleibt kein clip-path stehen. */
+  figure > [data-para] {
+    animation: tueren-auf 1500ms var(--ease-aus) 120ms backwards;
   }
   @keyframes tueren-auf {
     from {

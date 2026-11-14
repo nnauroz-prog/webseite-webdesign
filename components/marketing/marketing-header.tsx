@@ -131,7 +131,7 @@ export function MarketingHeader({
         dialog?.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ) ?? [],
-      ).filter((el) => el.offsetParent !== null);
+      ).filter((el) => el.getClientRects().length > 0);
     // preventScroll: Der Fokus darf die Seite dahinter nicht verschieben.
     fokussierbar()
       .find((el) => el.tagName === "BUTTON")
@@ -170,7 +170,7 @@ export function MarketingHeader({
       // Nur zurückgeben, wenn der Auslöser noch sichtbar ist (Handy).
       // Ohne preventScroll rollte die weit gescrollte Seite beim Schließen
       // rund 300 px nach oben (der Auslöser klebt oben in der Leiste).
-      if (burger && burger.offsetParent !== null)
+      if (burger && burger.getClientRects().length > 0)
         burger.focus({ preventScroll: true });
     };
   }, [menuOpen]);

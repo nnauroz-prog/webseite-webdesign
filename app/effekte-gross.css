@@ -427,3 +427,98 @@ h2[data-woerter] .wort > span {
     }
   }
 }
+
+/* ------------------------------------------------------------------
+   Runde „alle Tabs“: Schiff im Fuß, sinkender Seitenkopf, gezeichnete
+   Symbole. Nur Bildschirm und ohne reduzierte Bewegung.
+   ------------------------------------------------------------------ */
+.fuss-schiff {
+  display: none;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Schiff: fährt auf der Elbe-Linie von links nach rechts durch den Fuß.
+     Läuft nur, solange die Linie im Bild ist (data-run am Nachbarn). */
+  .fuss-schiff {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    z-index: 1;
+    display: block;
+    width: 64px;
+    height: 24px;
+    pointer-events: none;
+    overflow: visible;
+    translate: -80px 0;
+    animation: fuss-fahrt 24s linear infinite paused;
+  }
+  .fuss-schiff svg {
+    display: block;
+    overflow: visible;
+    transform-origin: 50% 100%;
+    animation: faehr-wiegen 3.4s ease-in-out infinite paused;
+  }
+  .elbe-linie[data-run="true"] + .fuss-schiff,
+  .elbe-linie[data-run="true"] + .fuss-schiff svg {
+    animation-play-state: running;
+  }
+  @keyframes fuss-fahrt {
+    from {
+      translate: -80px 0;
+    }
+    to {
+      translate: calc(100vw + 20px) 0;
+    }
+  }
+}
+@media screen and (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .fuss-schiff {
+    top: 4px;
+  }
+}
+
+/* Seitenkopf der Unterseiten sinkt beim Wegscrollen zurück (wie der Kopf
+   der Startseite): kleiner und blasser, während er oben aus dem Bild
+   läuft. Reines CSS über die Scroll-Zeitleiste; ohne Unterstützung
+   bleibt der Kopf, wie er ist. */
+@supports (animation-timeline: view()) {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    main#main > section:first-of-type:not([id]) > :first-child {
+      transform-origin: 50% 100%;
+      animation: kopf-sinkt linear both;
+      animation-timeline: view();
+      animation-range: exit 5% exit 95%;
+    }
+    @keyframes kopf-sinkt {
+      to {
+        transform: scale(0.92);
+        opacity: 0.3;
+      }
+    }
+  }
+}
+
+/* Linien-Symbole (lucide) zeichnen sich, wenn ihr Block einblendet. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-ein-da="w"] svg.lucide :is(path, line, polyline, circle, rect) {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+  [data-ein-da="1"] svg.lucide :is(path, line, polyline, circle, rect) {
+    stroke-dasharray: 100;
+    animation: symbol-strich 1100ms var(--ease-aus) 450ms both;
+  }
+  @keyframes symbol-strich {
+    from {
+      stroke-dashoffset: 100;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+/* Das Schiff fährt über den rechten Rand hinaus: Der Fuß schneidet
+   seitlich ab, damit die Seite nicht breiter wird. */
+footer:has(> .fuss-schiff) {
+  overflow-x: clip;
+}
