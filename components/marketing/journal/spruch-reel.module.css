@@ -107,6 +107,28 @@
   overflow: hidden;
   pointer-events: none;
 }
+/* Zartes Muster im Grund: Raster, Streifen oder eine geteilte Fläche. */
+.muster {
+  position: absolute;
+  inset: 0;
+}
+.karte[data-grund="raster"] .muster {
+  background-image:
+    linear-gradient(var(--k-muster) 1px, transparent 1px),
+    linear-gradient(90deg, var(--k-muster) 1px, transparent 1px);
+  background-size: 6.67cqw 6.67cqw;
+}
+.karte[data-grund="streifen"] .muster {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--k-muster) 0 5cqw,
+    transparent 5cqw 15cqw
+  );
+}
+.karte[data-grund="geteilt"] .muster {
+  background: var(--k-muster);
+  clip-path: polygon(0 70%, 100% 44%, 100% 100%, 0 100%);
+}
 /* Ein Licht oben rechts, aus derselben Farbfamilie wie der Grund. */
 .licht {
   position: absolute;
@@ -133,7 +155,28 @@
   color: var(--k-ziffer);
   user-select: none;
 }
-/* Hafen: deckende Fläche mit Wellenkante, darauf rechts die Fähre. */
+/* Statt der Tageszahl: ein großes Anführungszeichen … */
+.zitat {
+  top: 6px;
+  top: 1.6cqw;
+  right: 12px;
+  right: 3.4cqw;
+  font-size: 300px;
+  font-size: 83cqw;
+  line-height: 1;
+  letter-spacing: 0;
+}
+/* … oder eine Form (Sonne, Strahlen, Ringe, Punkte), Ton in Ton. */
+.form {
+  position: absolute;
+  top: 18px;
+  top: 5cqw;
+  left: 0;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+/* Hafen: deckende Fläche mit Wellenkante, darauf rechts das Motiv. */
 .hafen {
   position: absolute;
   right: 0;
@@ -161,19 +204,23 @@
   stroke: var(--k-hafen-linie);
   stroke-width: 2;
 }
+/* Motiv (Fähre, Frachter, Segler, Leuchtturm, Kran, Schlepper): Breite
+   und Eintauchtiefe kommen je Karte als --mb und --mt (cqw). */
 .fahrt {
   position: absolute;
   right: 22px;
   right: 6.2cqw;
-  bottom: calc(100% - 4px);
-  width: 76px;
-  width: 21cqw;
+  bottom: calc(100% - var(--mt, 5) * 3.58px);
+  bottom: calc(100% - var(--mt, 5) * 1cqw);
+  width: calc(var(--mb, 26) * 3.58px);
+  width: calc(var(--mb, 26) * 1cqw);
 }
 .fahrt svg {
   display: block;
   width: 100%;
   height: auto;
-  transform-origin: 50% 100%;
+  overflow: visible;
+  transform-origin: 50% 75%;
 }
 
 /* ---------- Inhalt ---------- */
@@ -214,7 +261,18 @@
   flex-direction: column;
   justify-content: center;
   min-height: 0;
-  padding-block: 14px 4px;
+  /* oben Luft für die Strahlen des Aufklebers, unten zum Absender */
+  padding-block: 22px 10px;
+}
+
+/* Lage im Feld: mittig, oben unter der Kennzeile oder unten über dem Absender. */
+.karte[data-anker="oben"] .mitte {
+  justify-content: flex-start;
+  /* Der gedrehte Aufkleber ragt nach oben: Abstand zur Kennzeile. */
+  padding-top: 34px;
+}
+.karte[data-anker="unten"] .mitte {
+  justify-content: flex-end;
 }
 
 /* Aufkleber mit dem Kicker: Stanzrand, harter Schatten, drei Strahlen. */
@@ -230,7 +288,7 @@
   border-radius: 999px;
   background: var(--k-sticker-bg);
   box-shadow:
-    0 0 0 2.5px #fff8ee,
+    0 0 0 2.5px var(--k-sticker-rand, #fff8ee),
     3px 4px 0 2.5px rgb(0 0 0 / 0.2);
   font-size: 12px;
   font-size: max(11px, 3.4cqw);
@@ -242,6 +300,10 @@
   color: var(--k-sticker-text);
   transform: rotate(var(--dreh, -4deg));
   transform-origin: 0 50%;
+}
+/* Statt der Pille: ein Band mit kleinen Ecken, wie ein Stück Klebeband. */
+.karte[data-aufkleber="band"] .kicker {
+  border-radius: 5px;
 }
 .kicker > svg:first-child {
   flex: none;
@@ -312,6 +374,16 @@
 }
 .betont::before {
   inset: 12% 0 4%;
+}
+/* Balken nur als Rahmen: Die Pointe steht dann in der Farbe des Satzes. */
+.karte[data-balken="rahmen"] :is(.betont, .pointe) {
+  color: var(--k-text);
+}
+.karte[data-balken="rahmen"] :is(.betont, .pzeile)::before {
+  border: max(2px, 0.055em) solid var(--k-marker);
+  border-radius: 0.05em;
+  background: none;
+  clip-path: none;
 }
 /* Pointe am Satzende: eigener Block, so groß, dass sie die Zeile füllt. */
 .pointe {
@@ -501,7 +573,15 @@
      Wort herein, der Balken der Pointe zieht durch, die Fähre fährt ein. */
   .buehne[data-bereit]
     .karte:not([data-aktiv])
-    :is(.kicker, .wort > span, .pzeile > span, .zusatz, .absender, .ziffer) {
+    :is(
+      .kicker,
+      .wort > span,
+      .pzeile > span,
+      .zusatz,
+      .absender,
+      .ziffer,
+      .form
+    ) {
     opacity: 0;
   }
   .buehne[data-bereit] .karte:not([data-aktiv]) :is(.betont, .pzeile)::before {
@@ -539,8 +619,14 @@
   .buehne[data-bereit] .karte[data-aktiv] .absender {
     animation: zeile-rein 700ms cubic-bezier(0.22, 1, 0.36, 1) 900ms both;
   }
-  .buehne[data-bereit] .karte[data-aktiv] .fahrt {
+  .buehne[data-bereit] .karte[data-aktiv] .fahrt[data-faehrt] {
     animation: faehre-ein 2600ms cubic-bezier(0.22, 1, 0.36, 1) 200ms both;
+  }
+  .buehne[data-bereit] .karte[data-aktiv] .fahrt:not([data-faehrt]) {
+    animation: zeile-rein 900ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
+  }
+  .buehne[data-bereit] .karte[data-aktiv] .form {
+    animation: ziffer-rein 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   /* Der Fortschritt läuft nur, solange der Abschnitt im Bild ist. */
   .seg[data-zustand="laeuft"] > i {
@@ -550,7 +636,7 @@
     animation: seg-lauf 9s linear forwards;
   }
   /* Szene: die Fähre wiegt sich, die Wellenlinie zieht. */
-  .buehne[data-sicht] .karte[data-aktiv] .fahrt svg {
+  .buehne[data-sicht] .karte[data-aktiv] .fahrt[data-faehrt] svg {
     animation: faehre-wiegt 3.2s ease-in-out infinite alternate;
   }
   .buehne[data-sicht] .karte[data-aktiv] .linie {

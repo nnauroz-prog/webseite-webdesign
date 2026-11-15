@@ -16,8 +16,17 @@ import {
   type Spruch,
   type SpruchTag,
 } from "@/lib/sprueche-data";
-import { drehungFuer, lookFuer, lookVariablen } from "@/lib/story-look";
+import { lookVariablen } from "@/lib/story-look";
 import { kursivBreite, satzPlan, type SatzPlan } from "@/lib/story-satz";
+import {
+  MOTIV_EINHEIT,
+  MOTIV_HOEHE,
+  MOTIV_WASSER,
+  SCHMUCK_B,
+  SCHMUCK_H,
+  type TeilFarbe,
+} from "@/lib/story-teile";
+import { varianteFuer } from "@/lib/story-variante";
 
 import r from "./spruch-reel.module.css";
 
@@ -31,7 +40,8 @@ import r from "./spruch-reel.module.css";
  *   die Pfeile daneben oder die Pfeiltasten zeigen die Tage davor.
  * - Die aktive Karte „läuft“ neun Sekunden, dann rückt die nächste nach,
  *   bis jemand selbst wischt, tippt oder eine Taste drückt.
- * - Jeden Tag eine andere Farbwelt (lib/story-look.ts). Dieselbe Karte
+ * - Jeden Tag ein anderes Bild: Farbwelt, Hafen-Motiv, Schmuck, Muster
+ *   und Lage des Textes wechseln (lib/story-variante.ts). Dieselbe Karte
  *   gibt es als fertiges Bild und Kurzvideo im Admin (/admin/story);
  *   nur dort sitzen Teilen und Sichern.
  * - Ohne JavaScript und bei reduzierter Bewegung stehen alle Karten
@@ -107,6 +117,15 @@ function masse(plan: SatzPlan, s: Spruch): Masse {
   const klein = STUFEN[STUFEN.length - 1];
   return beste ?? { g: klein, p: klein * 1.25 };
 }
+
+/** Farben der Motiv-Teile als Variablen der Karte. */
+const TEIL_FARBE: Record<TeilFarbe, string> = {
+  faehre: "var(--k-faehre)",
+  streif: "var(--k-streif)",
+  grund: "var(--k-bg)",
+};
+/** So tief taucht ein Motiv in die Hafenfläche ein (cqw). */
+const MOTIV_TIEF = (MOTIV_HOEHE - MOTIV_WASSER) * MOTIV_EINHEIT - 0.5;
 
 function Stern() {
   return (
@@ -273,7 +292,7 @@ export function SpruchReel({
           tabIndex={0}
         >
           {tage.map((s, i) => {
-            const look = lookFuer(s.nummer);
+            const v = varianteFuer(s.nummer);
             const plan = satzPlan(s);
             return (
               <li
@@ -281,11 +300,17 @@ export function SpruchReel({
                 className={r.karte}
                 style={
                   {
-                    ...lookVariablen(look),
-                    "--dreh": `${drehungFuer(s.nummer)}deg`,
+                    ...lookVariablen(v.look),
+                    "--dreh": `${v.dreh}deg`,
+                    "--mb": v.motiv.b * MOTIV_EINHEIT,
+                    "--mt": MOTIV_TIEF,
                   } as CSSProperties
                 }
-                data-look={look.name}
+                data-look={v.look.name}
+                data-grund={v.grund}
+                data-anker={v.anker}
+                data-aufkleber={v.aufkleber}
+                data-balken={v.balken}
                 data-aktiv={i === aktiv ? "" : undefined}
                 aria-label={
                   i === 0
@@ -294,8 +319,39 @@ export function SpruchReel({
                 }
               >
                 <div className={r.szene} aria-hidden="true">
+                  <span className={r.muster} />
                   <span className={r.licht} />
-                  <span className={r.ziffer}>{s.tagImMonat}</span>
+                  {v.schmuck.art === "schrift" ? (
+                    <span
+                      className={
+                        v.schmuck.name === "zitat"
+                          ? `${r.ziffer} ${r.zitat}`
+                          : r.ziffer
+                      }
+                    >
+                      {v.schmuck.name === "zitat" ? "“" : s.tagImMonat}
+                    </span>
+                  ) : (
+                    <svg
+                      className={r.form}
+                      viewBox={`0 0 ${SCHMUCK_B} ${SCHMUCK_H}`}
+                      focusable="false"
+                    >
+                      {v.schmuck.teile.map((teil, n) =>
+                        teil.strich ? (
+                          <path
+                            key={n}
+                            d={teil.d}
+                            fill="none"
+                            stroke="var(--k-ziffer)"
+                            strokeWidth={teil.strich}
+                          />
+                        ) : (
+                          <path key={n} d={teil.d} fill="var(--k-ziffer)" />
+                        ),
+                      )}
+                    </svg>
+                  )}
                   <div className={r.hafen}>
                     <svg
                       className={r.kante}
@@ -316,24 +372,22 @@ export function SpruchReel({
                         vectorEffect="non-scaling-stroke"
                       />
                     </svg>
-                    <span className={r.fahrt}>
-                      <svg viewBox="0 0 46 27" focusable="false">
-                        <g fill="var(--k-faehre)">
-                          <path d="M0 18h46l-5 8H5Z" />
-                          <path d="M5 17.2v-6.7h31l5 6.7Z" />
-                          <path d="M9 6h21v4H9Z" />
-                        </g>
-                        <g fill="var(--k-streif)">
-                          <rect x="0" y="17.2" width="46" height="1.9" />
-                          <rect x="21.5" y=".5" width="3.4" height="5.5" />
-                        </g>
-                        <g fill="var(--k-bg)">
-                          <rect x="9" y="12.2" width="3.4" height="2.6" />
-                          <rect x="14.5" y="12.2" width="3.4" height="2.6" />
-                          <rect x="20" y="12.2" width="3.4" height="2.6" />
-                          <rect x="25.5" y="12.2" width="3.4" height="2.6" />
-                          <rect x="31" y="12.2" width="3.4" height="2.6" />
-                        </g>
+                    <span
+                      className={r.fahrt}
+                      data-faehrt={v.motiv.faehrt ? "" : undefined}
+                    >
+                      <svg
+                        viewBox={`0 0 ${v.motiv.b} ${MOTIV_HOEHE}`}
+                        focusable="false"
+                      >
+                        {v.motiv.teile.map((teil, n) => (
+                          <path
+                            key={n}
+                            d={teil.d}
+                            fill={TEIL_FARBE[teil.farbe]}
+                            fillOpacity={teil.deck}
+                          />
+                        ))}
                       </svg>
                     </span>
                   </div>

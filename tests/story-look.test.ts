@@ -3,11 +3,12 @@ import { describe, it } from "node:test";
 
 import {
   STORY_LOOKS,
-  drehungFuer,
-  lookFuer,
   lookVariablen,
+  stickerRand,
   stickerStern,
 } from "@/lib/story-look";
+import { MOTIVE, SCHMUCK } from "@/lib/story-teile";
+import { VARIANTEN, varianteFuer } from "@/lib/story-variante";
 
 function leuchtkraft(hex: string): number {
   const n = hex.replace("#", "");
@@ -77,10 +78,71 @@ describe("Farbwelten der Spruch-Karten", () => {
     }
   });
 
-  it("wechselt die Farbwelt von Tag zu Tag, auch vor dem Starttag", () => {
-    for (let n = -20; n < 40; n++) {
-      assert.notEqual(lookFuer(n).name, lookFuer(n + 1).name, String(n));
-      assert.ok(lookFuer(n));
+  it("gibt jedem Tag eine eigene Zusammenstellung, über 50 Jahre lang", () => {
+    assert.ok(VARIANTEN > 18_000, String(VARIANTEN));
+    const gesehen = new Set<number>();
+    for (let n = 0; n < VARIANTEN; n++) {
+      const s = varianteFuer(n).schluessel;
+      assert.ok(!gesehen.has(s), `wiederholt sich an Tag ${n}`);
+      gesehen.add(s);
+    }
+    // Der erste Tag online (Tagesnummer 6) trägt die Zusammenstellung 0.
+    assert.equal(varianteFuer(6).schluessel, 0);
+    // Auch vor dem Start (negative Tagesnummer) gibt es eine.
+    assert.ok(varianteFuer(-3).look);
+  });
+
+  it("wechselt von Tag zu Tag Farbwelt, Motiv, Schmuck, Muster und Lage", () => {
+    for (let n = -10; n < 2000; n++) {
+      const a = varianteFuer(n);
+      const b = varianteFuer(n + 1);
+      assert.notEqual(a.look.name, b.look.name, `Farbwelt an Tag ${n}`);
+      assert.notEqual(a.motiv.name, b.motiv.name, `Motiv an Tag ${n}`);
+      assert.notEqual(a.schmuck.name, b.schmuck.name, `Schmuck an Tag ${n}`);
+      assert.notEqual(a.grund, b.grund, `Muster an Tag ${n}`);
+      assert.notEqual(a.anker, b.anker, `Lage an Tag ${n}`);
+      assert.ok(Math.abs(a.dreh) <= 8);
+    }
+  });
+
+  it("bringt dieselbe Farbwelt frühestens nach einer Woche wieder", () => {
+    const zuletzt = new Map<string, number>();
+    for (let n = 0; n < VARIANTEN; n++) {
+      const name = varianteFuer(n).look.name;
+      const davor = zuletzt.get(name);
+      if (davor !== undefined)
+        assert.ok(n - davor >= 7, `${name} an Tag ${davor} und ${n}`);
+      zuletzt.set(name, n);
+    }
+  });
+
+  it("nutzt jede Farbwelt, jedes Motiv und jeden Schmuck regelmäßig", () => {
+    const monat = Array.from({ length: 30 }, (_, i) => varianteFuer(6 + i));
+    assert.equal(
+      new Set(monat.map((v) => v.look.name)).size,
+      STORY_LOOKS.length,
+    );
+    const woche = monat.slice(0, 7);
+    assert.equal(new Set(woche.map((v) => v.motiv.name)).size, MOTIVE.length);
+    assert.equal(
+      new Set(woche.map((v) => v.schmuck.name)).size,
+      SCHMUCK.length,
+    );
+  });
+
+  it("hat für jedes Motiv und jede Schmuckform gültige Pfade", () => {
+    for (const m of MOTIVE) {
+      assert.ok(m.b > 20 && m.b < 80, m.name);
+      assert.ok(m.teile.length >= 4, m.name);
+      for (const teil of m.teile) assert.match(teil.d, /^M[-\d. ]/, m.name);
+    }
+    for (const s of SCHMUCK) {
+      if (s.art !== "form") continue;
+      assert.ok(s.teile.length >= 1, s.name);
+      for (const teil of s.teile) {
+        assert.match(teil.d, /^M[-\d. ]/, s.name);
+        assert.doesNotMatch(teil.d, /NaN|undefined/, s.name);
+      }
     }
   });
 
@@ -91,7 +153,7 @@ describe("Farbwelten der Spruch-Karten", () => {
         assert.ok(name.startsWith("--k-"), name);
         assert.ok(wert && !wert.includes("undefined"), `${l.name} ${name}`);
       }
-      assert.ok(Math.abs(drehungFuer(0)) <= 8);
+      assert.ok(stickerRand(l));
     }
   });
 });
