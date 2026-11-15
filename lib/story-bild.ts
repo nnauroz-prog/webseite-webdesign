@@ -605,6 +605,39 @@ function korn(k: Basis, deck: number) {
 
 // ---------------------------------------------------------------- Text
 
+/** Der Block der Pointe am Satzende steht leicht schräg (zwei Grad). */
+const BLOCK_SCHRAEG = (-2 * Math.PI) / 180;
+/** So weit staucht sich ein Streifen im Aufsetzbild (Anteil seiner Höhe). */
+const STAUCHUNG = 0.06;
+
+/**
+ * Nimmt einen schmalen Streifen um die Strecke von a nach b von allem
+ * aus, was danach gezeichnet wird (bis zum nächsten restore).
+ */
+function aussparen(
+  ctx: Ctx,
+  a: [number, number],
+  b: [number, number],
+  halb: number,
+) {
+  const [dx, dy] = [b[0] - a[0], b[1] - a[1]];
+  const l = Math.hypot(dx, dy);
+  if (l < 0.01) return;
+  const [ex, ey] = [dx / l, dy / l];
+  const [nx, ny] = [-ey * halb, ex * halb];
+  // An den Enden etwas länger, damit zwischen zwei Strecken nichts bleibt.
+  const [a0, a1] = [a[0] - ex * 2, a[1] - ey * 2];
+  const [b0, b1] = [b[0] + ex * 2, b[1] + ey * 2];
+  ctx.beginPath();
+  ctx.rect(-20000, -20000, 40000, 40000);
+  ctx.moveTo(a0 + nx, a1 + ny);
+  ctx.lineTo(b0 + nx, b1 + ny);
+  ctx.lineTo(b0 - nx, b1 - ny);
+  ctx.lineTo(a0 - nx, a1 - ny);
+  ctx.closePath();
+  ctx.clip("evenodd");
+}
+
 /** Ein Farbstreifen der Pointe mit den Wörtern darauf (Lage relativ zur linken oberen Ecke des Satzes). */
 type Streifen = {
   x0: number;
@@ -866,6 +899,105 @@ function setzeSatz(
   const daempfung =
     Math.log(ausschlag / ((0.5 * Math.PI) / 180)) / (tHalt - tSenk);
   const UEBER = 14;
+  /** Im Aufsetzbild und den zwei Bildern danach ist der Streifen gestaucht. */
+  const gestaucht = (t: number) => t >= T_SCHLAG && t - T_SCHLAG < 0.1;
+
+  type Punkt = [number, number];
+  /**
+   * Die Ladung am Seil zur Zeit t: alle Streifen als starres Paket an
+   * zwei Seilen, die sich am Knoten treffen; von dort führt ein Seil
+   * lotrecht nach oben aus dem Bild. Liefert Höhe und Pendel des Pakets
+   * und die Seile als Linienzüge (in den Koordinaten des Satzes).
+   */
+  const ladungBei = (x: number, y: number, t: number) => {
+    const drehe = (px: number, py: number): Punkt => {
+      if (block === null) return [px, py];
+      const [c, s] = [Math.cos(BLOCK_SCHRAEG), Math.sin(BLOCK_SCHRAEG)];
+      const [dx, dy] = [px - x, py - (y + block)];
+      return [x + dx * c - dy * s, y + block + dx * s + dy * c];
+    };
+    const oben = streifen[0];
+    const kante = y + oben.grundlinie - oben.px * 0.74;
+    // Staucht sich der Streifen, folgen die Seile seiner Oberkante.
+    const stauch = gestaucht(t) ? oben.px * 1.05 * STAUCHUNG : 0;
+    const [links, rechts] = [
+      x + oben.x0 - oben.px * 0.13,
+      x + oben.x1 + oben.px * 0.1,
+    ];
+    const seilAn = [0.14, 0.86].map((a) =>
+      drehe(links + (rechts - links) * a, kante + stauch),
+    );
+    const [hx, hy] = drehe((links + rechts) / 2, kante);
+    // Liegt der Satz auf einem schiefen Zettel, hängt das Seil trotzdem
+    // lotrecht: „oben“ wird gegen die Drehung des Zettels gerechnet.
+    const lage = ctx.getTransform();
+    const schief = Math.atan2(lage.b, lage.a);
+    const lot = { x: Math.sin(schief), y: Math.cos(schief) };
+    // Oberkante des Bildes, solange die Kamera am Satz steht.
+    const bildOben = k.regie.satz.y - k.f.h / 2 / k.regie.satz.z;
+    const start = bildOben - 30 - (y + pointe.y + pointe.h);
+    const hoehe =
+      t < tHalt
+        ? start + (-UEBER - start) * SENKEN((t - tSenk) / (tHalt - tSenk))
+        : t < tFall
+          ? -UEBER
+          : t < T_SCHLAG
+            ? -UEBER * (1 - (t - tFall) / (T_SCHLAG - tFall))
+            : 0;
+    // Pendeln um den Aufhängepunkt, bis zum Halt gedämpft.
+    const pendel =
+      t < tHalt
+        ? ausschlag *
+          Math.exp(-daempfung * (t - tSenk)) *
+          Math.cos(((t - tSenk) / 0.9) * Math.PI * 2) *
+          (1 - klemme((t - tHalt + 0.2) / 0.2))
+        : 0;
+    // Nach dem Aufsetzen hängen die Seile schlaff und werden eingeholt.
+    const schlaff = t >= T_SCHLAG ? 8 : 0;
+    const hub =
+      t < T_SCHLAG + 0.12
+        ? 0
+        : EINHOLEN((t - T_SCHLAG - 0.12) / 0.3) * (hy - 150 - bildOben + 260);
+    // Aufhängepunkt: 150 Bildpunkte über der Mitte der Oberkante.
+    const haken = {
+      x: hx + lot.x * (hoehe - 150),
+      y: hy + lot.y * (hoehe - 150),
+    };
+    /** Ein Punkt des Pakets (in seiner Ruhelage) dort, wo er gerade hängt. */
+    const [c, s] = [Math.cos(pendel), Math.sin(pendel)];
+    const haengt = (px: number, py: number): Punkt => {
+      const [dx, dy] = [
+        px + lot.x * hoehe - haken.x,
+        py + lot.y * hoehe - haken.y,
+      ];
+      return [haken.x + dx * c - dy * s, haken.y + dx * s + dy * c];
+    };
+    const heben = (px: number, py: number): Punkt => [
+      px - lot.x * hub,
+      py - lot.y * hub,
+    ];
+    const [ax, ay] = [hx - lot.x * 150, hy - lot.y * 150];
+    const knoten = haengt(...heben(ax, ay));
+    const seile: Punkt[][] = [
+      [knoten, [knoten[0] - lot.x * 6000, knoten[1] - lot.y * 6000]],
+      ...seilAn.map(([sx, sy], i) => {
+        // Straff eine Gerade, schlaff ein flacher Bogen.
+        const n = schlaff ? 8 : 1;
+        const [mx, my] = [
+          (sx + ax) / 2 + (i ? schlaff : -schlaff),
+          (sy + ay) / 2,
+        ];
+        return Array.from({ length: n + 1 }, (_, j) => {
+          const u = j / n;
+          const [p, q, r] = [(1 - u) ** 2, 2 * (1 - u) * u, u * u];
+          return haengt(
+            ...heben(p * sx + q * mx + r * ax, p * sy + q * my + r * ay),
+          );
+        });
+      }),
+    ];
+    return { hoehe, pendel, haken, lot, knoten, seile };
+  };
 
   return {
     hoehe: satz.hoehe,
@@ -874,12 +1006,25 @@ function setzeSatz(
     pointe,
     masse,
     zeichne: (x, y, t, farben) => {
-      // Gedrucktes steht vom ersten Bild an.
+      const last =
+        streifen.length && t > tSenk && t < T_SCHLAG + 0.45
+          ? ladungBei(x, y, t)
+          : null;
+
+      // Gedrucktes steht vom ersten Bild an. Hängt ein Seil davor, bleibt
+      // um das Seil ein schmaler Spalt frei: So liest man es vor der
+      // Schrift, auch wenn beide dieselbe Farbe haben.
+      ctx.save();
+      if (last)
+        for (const seil of last.seile)
+          for (let i = 1; i < seil.length; i++)
+            aussparen(ctx, seil[i - 1], seil[i], 5.5);
       ctx.font = grotesk(g);
       sperren(ctx, -g * 0.032);
       ctx.fillStyle = farben.text;
       for (const z of zeilen)
         for (const w of z.woerter) ctx.fillText(w.t, x + w.x, y + z.grundlinie);
+      ctx.restore();
       sperren(ctx, 0);
       if (!streifen.length) return;
 
@@ -888,7 +1033,7 @@ function setzeSatz(
         if (block === null) return zeichne();
         ctx.save();
         ctx.translate(x, y + block);
-        ctx.rotate((-2 * Math.PI) / 180);
+        ctx.rotate(BLOCK_SCHRAEG);
         ctx.translate(-x, -(y + block));
         zeichne();
         ctx.restore();
@@ -899,14 +1044,13 @@ function setzeSatz(
           streifen.forEach((s, nr) => {
             ctx.save();
             // Im Aufsetzbild staucht sich der Streifen kurz (drei Bilder).
-            const seit = t - T_SCHLAG;
-            if (seit >= 0 && seit < 0.1) {
+            if (gestaucht(t)) {
               const [mx, unten] = [
                 x + (s.x0 + s.x1) / 2,
                 y + s.grundlinie + s.px * 0.31,
               ];
               ctx.translate(mx, unten);
-              ctx.scale(1.03, 0.94);
+              ctx.scale(1.03, 1 - STAUCHUNG);
               ctx.translate(-mx, -unten);
             }
             if (schwebt > 0) {
@@ -957,87 +1101,31 @@ function setzeSatz(
           }
           ctx.restore();
         });
-      if (t <= tSenk) return;
+      if (!last) return;
 
-      // Die Ladung: alle Streifen als starres Paket an zwei Seilen.
-      const drehe = (px: number, py: number): [number, number] => {
-        if (block === null) return [px, py];
-        const [c, s] = [Math.cos(-0.0349), Math.sin(-0.0349)];
-        const [dx, dy] = [px - x, py - (y + block)];
-        return [x + dx * c - dy * s, y + block + dx * s + dy * c];
-      };
-      const oben = streifen[0];
-      const kante = y + oben.grundlinie - oben.px * 0.74;
-      const [links, rechts] = [
-        x + oben.x0 - oben.px * 0.13,
-        x + oben.x1 + oben.px * 0.1,
-      ];
-      const seilAn = [0.14, 0.86].map((a) =>
-        drehe(links + (rechts - links) * a, kante),
-      );
-      const [hx, hy] = drehe((links + rechts) / 2, kante);
-      // Liegt der Satz auf einem schiefen Zettel, hängt das Seil trotzdem
-      // lotrecht: „oben“ wird gegen die Drehung des Zettels gerechnet.
-      const lage = ctx.getTransform();
-      const schief = Math.atan2(lage.b, lage.a);
-      const lot = { x: Math.sin(schief), y: Math.cos(schief) };
-      // Oberkante des Bildes, solange die Kamera am Satz steht.
-      const bildOben = k.regie.satz.y - k.f.h / 2 / k.regie.satz.z;
-      const start = bildOben - 30 - (y + pointe.y + pointe.h);
-      const hoehe =
-        t < tHalt
-          ? start + (-UEBER - start) * SENKEN((t - tSenk) / (tHalt - tSenk))
-          : t < tFall
-            ? -UEBER
-            : t < T_SCHLAG
-              ? -UEBER * (1 - (t - tFall) / (T_SCHLAG - tFall))
-              : 0;
-      // Pendeln um den Aufhängepunkt, bis zum Halt gedämpft.
-      const pendel =
-        t < tHalt
-          ? ausschlag *
-            Math.exp(-daempfung * (t - tSenk)) *
-            Math.cos(((t - tSenk) / 0.9) * Math.PI * 2) *
-            (1 - klemme((t - tHalt + 0.2) / 0.2))
-          : 0;
-      // Nach dem Aufsetzen hängen die Seile schlaff und werden eingeholt.
-      const schlaff = t >= T_SCHLAG ? 8 : 0;
-      const hub =
-        t < T_SCHLAG + 0.12
-          ? 0
-          : EINHOLEN((t - T_SCHLAG - 0.12) / 0.3) * (hy - 150 - bildOben + 260);
-      // Aufhängepunkt: 150 Bildpunkte über der Mitte der Oberkante.
-      const haken = {
-        x: hx + lot.x * (hoehe - 150),
-        y: hy + lot.y * (hoehe - 150),
-      };
+      // Die Seile, am Knoten ein Schäkel, dann das Paket.
       ctx.save();
       ctx.strokeStyle = farben.text;
+      ctx.fillStyle = farben.text;
       ctx.lineWidth = 2.5;
       ctx.lineCap = "round";
-      // Das Seil vom Aufhängepunkt lotrecht nach oben aus dem Bild.
-      ctx.beginPath();
-      ctx.moveTo(haken.x - lot.x * hub, haken.y - lot.y * hub);
-      ctx.lineTo(haken.x - lot.x * 6000, haken.y - lot.y * 6000);
-      ctx.stroke();
-      // Das Paket hängt am Haken und pendelt um ihn.
-      ctx.translate(haken.x, haken.y);
-      ctx.rotate(pendel);
-      ctx.translate(-haken.x, -haken.y);
-      ctx.translate(lot.x * hoehe, lot.y * hoehe);
-      const [ax, ay] = [hx - lot.x * 150, hy - lot.y * 150];
-      seilAn.forEach(([sx, sy], i) => {
+      ctx.lineJoin = "round";
+      for (const seil of last.seile) {
         ctx.beginPath();
-        ctx.moveTo(sx - lot.x * hub, sy - lot.y * hub);
-        ctx.quadraticCurveTo(
-          (sx + ax) / 2 + (i ? schlaff : -schlaff) - lot.x * hub,
-          (sy + ay) / 2 - lot.y * hub,
-          ax - lot.x * hub,
-          ay - lot.y * hub,
+        seil.forEach(([sx, sy], i) =>
+          i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy),
         );
         ctx.stroke();
-      });
-      maleStreifen(-hoehe);
+      }
+      ctx.beginPath();
+      ctx.arc(last.knoten[0], last.knoten[1], 6, 0, Math.PI * 2);
+      ctx.fill();
+      // Das Paket hängt am Haken und pendelt um ihn.
+      ctx.translate(last.haken.x, last.haken.y);
+      ctx.rotate(last.pendel);
+      ctx.translate(-last.haken.x, -last.haken.y);
+      ctx.translate(last.lot.x * last.hoehe, last.lot.y * last.hoehe);
+      maleStreifen(-last.hoehe);
       ctx.restore();
     },
   };
