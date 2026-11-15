@@ -8,6 +8,7 @@ import {
   storyBeschriftung,
   tagInHamburg,
   tagVersetzt,
+  vorratTage,
 } from "@/lib/sprueche-data";
 
 export const metadata: Metadata = { title: "Story des Tages" };
@@ -45,6 +46,10 @@ export default async function StoryPage({
   const naechste = Array.from({ length: 7 }, (_, i) =>
     spruchTag(tagVersetzt(heute, i + 1)),
   );
+  // Vorrat: Jede Karte gehört zu einem Tag. Reicht er nicht mehr weit,
+  // steht hier eine Warnung, bevor sich etwas wiederholt.
+  const vorrat = vorratTage(new Date());
+  const vorratBis = spruchTag(tagVersetzt(heute, Math.max(vorrat, 1) - 1));
   const knopf =
     "border-border hover:border-foreground/40 inline-flex h-11 items-center rounded-[3px] border px-3 text-[15px] font-medium transition-colors";
 
@@ -83,6 +88,21 @@ export default async function StoryPage({
         karte={karte}
         beschriftung={storyBeschriftung(karte)}
       />
+
+      <p
+        className={
+          vorrat < 21
+            ? "border-border mt-6 rounded-[3px] border px-3 py-2 text-[15px] leading-6 font-medium"
+            : "text-muted-foreground mt-6 text-[14px] leading-6"
+        }
+      >
+        {vorrat > 0
+          ? `Vorrat: noch ${vorrat} ${vorrat === 1 ? "Tag" : "Tage"} mit neuen Sprüchen, bis ${vorratBis.datumText}.`
+          : "Der Vorrat ist aufgebraucht: Die Sprüche wiederholen sich gerade."}
+        {vorrat < 21
+          ? " Es wird Zeit für Nachschub, sonst wiederholen sich die Sprüche."
+          : " Kein Spruch erscheint zweimal."}
+      </p>
 
       <section className="mt-8">
         <h2 className="mb-2 text-[17px] font-semibold tracking-tight">

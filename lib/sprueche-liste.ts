@@ -1,16 +1,67 @@
 import type { Spruch } from "@/lib/sprueche-data";
 
 /**
- * Die Karten für den Spruch des Tages, in der Reihenfolge, in der sie
- * erscheinen (danach beginnt die Liste von vorn). Neue Karten unten
- * anhängen. Regeln (prüft tests/sprueche.test.ts):
+ * Die Karten für den Spruch des Tages. Jede Karte gehört zu genau einem
+ * Kalendertag: Karte 0 zum Starttag (lib/sprueche-data.ts), Karte 1 zum
+ * Tag danach und so weiter. Damit sich nichts wiederholt:
+ * - Neue Karten NUR UNTEN ANHÄNGEN. Nie umsortieren, nie eine Karte
+ *   löschen oder dazwischenschieben (sonst verrutschen alle Tage danach).
+ * - Der Vorrat muss immer über das heutige Datum hinausreichen. Ist er
+ *   aufgebraucht, beginnt die Liste notgedrungen von vorn.
+ *
+ * Regeln für jede Karte (prüft tests/sprueche.test.ts):
  * - text höchstens 80 Zeichen, zusatz höchstens 100, beide mit Satzende
  * - betont ist ein wörtlicher Ausschnitt aus text (ganze Wörter, die Pointe)
  * - Sie-Form oder ohne Anrede; keine Ziffern, Preise, Marken, Garantien
  * - keine erfundenen Zahlen, Kunden, Bewertungen oder Auszeichnungen
  * - zwei Karten nacheinander nie mit gleichem Thema und gleichem Kicker
+ * - kein Gedanke doppelt, auch nicht mit anderen Worten
  */
 export const SPRUECHE: Spruch[] = [
+  {
+    kicker: "Green Flag",
+    text: "Unter jeder Bewertung steht eine freundliche Antwort.",
+    betont: "freundliche Antwort",
+    zusatz: "Auch unter der kritischen. Gerade die lesen andere ganz genau.",
+    thema: "vertrauen",
+  },
+  {
+    kicker: "Red Flag",
+    text: "Die Speisekarte gibt es nur als Datei zum Herunterladen.",
+    betont: "nur als Datei",
+    zusatz:
+      "Am Handy wird daraus Geduldsarbeit. Als normale Seite ist sie sofort lesbar.",
+    thema: "handy",
+  },
+  {
+    kicker: "Mythos",
+    text: "Eine schöne Seite darf ruhig etwas länger laden.",
+    betont: "etwas länger",
+    zusatz: "Darf sie nicht. Schön ist, was da ist, bevor man aufgibt.",
+    thema: "tempo",
+  },
+  {
+    kicker: "Website-Wahrheit",
+    text: "Man sieht einer Website ihr Alter an. Wie einer Tapete.",
+    betont: "Wie einer Tapete",
+    zusatz: "Und von der Tapete schließen Besucher auf den ganzen Betrieb.",
+    thema: "eindruck",
+  },
+  {
+    kicker: "Mal ehrlich",
+    text: "Sagt bei Ihnen am Tresen jemand „Wir leben Qualität“?",
+    betont: "Wir leben Qualität",
+    zusatz: "Eben. Dann hat der Satz auch auf der Website nichts verloren.",
+    thema: "texte",
+  },
+  {
+    kicker: "Unpopular Opinion",
+    text: "Niemand sucht nach „Wir machen alles“.",
+    betont: "Wir machen alles",
+    zusatz:
+      "Gesucht wird „Rohrbruch“ oder „Bad sanieren“. Schreiben Sie hin, was Sie konkret tun.",
+    thema: "google",
+  },
   {
     kicker: "Hot Take",
     text: "Ihr Betrieb ist besser als Ihre Website.",
@@ -580,49 +631,5 @@ export const SPRUECHE: Spruch[] = [
     betont: "nie",
     zusatz: "Ein fester Termin im Monat hilft mehr als jeder gute Vorsatz.",
     thema: "pflege",
-  },
-  {
-    kicker: "Green Flag",
-    text: "Unter jeder Bewertung steht eine freundliche Antwort.",
-    betont: "freundliche Antwort",
-    zusatz: "Auch unter der kritischen. Gerade die lesen andere ganz genau.",
-    thema: "vertrauen",
-  },
-  {
-    kicker: "Red Flag",
-    text: "Die Speisekarte gibt es nur als Datei zum Herunterladen.",
-    betont: "nur als Datei",
-    zusatz:
-      "Am Handy wird daraus Geduldsarbeit. Als normale Seite ist sie sofort lesbar.",
-    thema: "handy",
-  },
-  {
-    kicker: "Mythos",
-    text: "Eine schöne Seite darf ruhig etwas länger laden.",
-    betont: "etwas länger",
-    zusatz: "Darf sie nicht. Schön ist, was da ist, bevor man aufgibt.",
-    thema: "tempo",
-  },
-  {
-    kicker: "Website-Wahrheit",
-    text: "Man sieht einer Website ihr Alter an. Wie einer Tapete.",
-    betont: "Wie einer Tapete",
-    zusatz: "Und von der Tapete schließen Besucher auf den ganzen Betrieb.",
-    thema: "eindruck",
-  },
-  {
-    kicker: "Mal ehrlich",
-    text: "Sagt bei Ihnen am Tresen jemand „Wir leben Qualität“?",
-    betont: "Wir leben Qualität",
-    zusatz: "Eben. Dann hat der Satz auch auf der Website nichts verloren.",
-    thema: "texte",
-  },
-  {
-    kicker: "Unpopular Opinion",
-    text: "Niemand sucht nach „Wir machen alles“.",
-    betont: "Wir machen alles",
-    zusatz:
-      "Gesucht wird „Rohrbruch“ oder „Bad sanieren“. Schreiben Sie hin, was Sie konkret tun.",
-    thema: "google",
   },
 ];

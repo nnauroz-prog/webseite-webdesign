@@ -91,8 +91,12 @@ export function storyBeschriftung(s: Spruch): string {
 }
 
 const TAG_MS = 24 * 60 * 60 * 1000;
-/** Tag 0 der Zählung. Davor und danach läuft die Liste im Kreis. */
-const START = Date.UTC(2026, 10, 15);
+/**
+ * Tag 0 der Zählung: Karte 0 der Liste gehört zu diesem Tag, Karte 1 zum
+ * nächsten und so weiter. Der Start liegt sechs Tage vor dem ersten
+ * Erscheinen, damit auch die „letzten sieben Tage“ eigene Karten haben.
+ */
+const START = Date.UTC(2026, 10, 9);
 
 const BERLIN_ISO = new Intl.DateTimeFormat("en-CA", {
   timeZone: "Europe/Berlin",
@@ -124,10 +128,22 @@ function tagNummer(iso: string): number {
   return Math.round((Date.UTC(y, m - 1, d) - START) / TAG_MS);
 }
 
-/** Der Spruch für einen Kalendertag (yyyy-mm-dd). Gleicher Tag, gleicher Spruch. */
+/**
+ * Der Spruch für einen Kalendertag (yyyy-mm-dd). Jeder Tag hat seine
+ * eigene Karte, solange der Vorrat reicht (siehe vorratTage). Erst wenn
+ * die Liste aufgebraucht ist, beginnt sie notgedrungen von vorn.
+ */
 export function spruchFuer(iso: string): Spruch {
   const n = SPRUECHE.length;
   return SPRUECHE[((tagNummer(iso) % n) + n) % n];
+}
+
+/**
+ * Wie viele Tage der Vorrat noch reicht, heute mitgezählt. 0 oder
+ * weniger heißt: Die Liste ist aufgebraucht und wiederholt sich.
+ */
+export function vorratTage(jetzt: Date): number {
+  return SPRUECHE.length - tagNummer(tagInHamburg(jetzt));
 }
 
 export type SpruchTag = Spruch & {
