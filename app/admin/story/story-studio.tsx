@@ -238,14 +238,17 @@ export function StoryStudio({
       new Promise<File | null>((fertig) => {
         const c = flaeche.current;
         if (!c) return fertig(null);
+        // JPEG statt PNG: Das feine Korn macht PNG mehrere Megabyte
+        // groß; Instagram wandelt ohnehin in JPEG um.
         c.toBlob(
           (blob) =>
             fertig(
               blob
-                ? new File([blob], `${name}.png`, { type: "image/png" })
+                ? new File([blob], `${name}.jpg`, { type: "image/jpeg" })
                 : null,
             ),
-          "image/png",
+          "image/jpeg",
+          0.93,
         );
       }),
     [name],
