@@ -1621,3 +1621,153 @@
     transform: scaleY(0.3);
   }
 }
+
+/* ---------- Runde „fünf Effekte“ ---------- */
+
+/* Markerstrich unter dem letzten Wort der Botschaft. Ohne Bewegung steht
+   er einfach da. */
+.wortMarke {
+  position: relative;
+  z-index: 0;
+}
+.strich {
+  position: absolute;
+  inset: auto 0.02em 0.01em 0.02em;
+  z-index: -1;
+  width: calc(100% - 0.04em);
+  height: 0.2em;
+  overflow: visible;
+  fill: none;
+  stroke: #f45b1e;
+  stroke-width: 5;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.strich path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+@media (min-width: 734px) {
+  .strich {
+    stroke-width: 7;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .strich path {
+    animation: strich-zieht 900ms cubic-bezier(0.65, 0, 0.35, 1) 1150ms both;
+  }
+}
+@keyframes strich-zieht {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Liegeplatz-Ziffer: riesig, nur als Kontur, hinter dem Regalkopf. Wandert
+   und dreht sich leicht, während das Regal durchs Bild läuft. */
+.regal:has(> .platzNr) {
+  position: relative;
+  isolation: isolate;
+}
+.platzNr {
+  position: absolute;
+  top: 26px;
+  right: max(calc(var(--rand, 16px) - 4px), 8px);
+  z-index: -1;
+  font-size: 190px;
+  line-height: 0.8;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(29 29 31 / 0.14);
+  pointer-events: none;
+  user-select: none;
+}
+@media (min-width: 734px) {
+  .platzNr {
+    font-size: 300px;
+    -webkit-text-stroke-width: 2px;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .platzNr {
+      animation: platz-drift linear both;
+      animation-timeline: view();
+    }
+  }
+}
+@keyframes platz-drift {
+  from {
+    translate: 0 46px;
+    rotate: 6deg;
+  }
+  to {
+    translate: 0 -30px;
+    rotate: -6deg;
+  }
+}
+
+/* Lauflicht: Ein oranger Lichtbogen läuft um den Rand der hervorgehobenen
+   Karte. Der Winkel ist als eigene Eigenschaft registriert, damit er sich
+   animieren lässt; nur der 2 px breite Rand wird gezeichnet (Maske). */
+@property --rand-winkel {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.randLicht {
+  display: none;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  .randLicht {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: block;
+    border-radius: inherit;
+    padding: 3px;
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--rand-winkel),
+      rgb(244 91 30 / 0) 0deg 215deg,
+      #f45b1e 290deg,
+      #ffe0c8 330deg,
+      rgb(244 91 30 / 0) 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    animation: rand-lauf 5.5s linear infinite;
+  }
+}
+@keyframes rand-lauf {
+  to {
+    --rand-winkel: 360deg;
+  }
+}
+
+/* Wisch-Hinweis: Nach dem Einlaufen ruckt die Kartenreihe am Handy einmal
+   kurz nach links und federt zurück. So sieht man, dass sie sich wischen lässt. */
+@media screen and (hover: none) and (prefers-reduced-motion: no-preference) {
+  .spur > ul:global([data-ein-da="1"]) {
+    animation: wisch-wink 1100ms cubic-bezier(0.34, 1.4, 0.64, 1) 1500ms both;
+  }
+}
+@keyframes wisch-wink {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  45% {
+    translate: -72px 0;
+  }
+}

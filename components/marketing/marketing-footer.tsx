@@ -204,6 +204,20 @@ export function MarketingFooter({
             </span>
           </div>
         </div>
+        {/* Großes Wort am Seitenende: steht als Kontur da und füllt sich,
+            während man die letzten Pixel bis ganz unten scrollt. Schmuck. */}
+        <div className="fuss-marke" aria-hidden="true">
+          <span className="fuss-marke-wort font-logo">
+            <span className="fuss-marke-kontur">
+              SITAL
+              <FussRing />
+            </span>
+            <span className="fuss-marke-voll">
+              SITAL
+              <FussRing />
+            </span>
+          </span>
+        </div>
       </footer>
     </>
   );
@@ -240,5 +254,17 @@ function RechtLink({
         {children}
       </Link>
     </li>
+  );
+}
+
+/** Der Doppelring als „O“ der Wortmarke (wie in components/sitalo-logo.tsx). */
+function FussRing() {
+  return (
+    <svg viewBox="0 0 30 22" focusable="false">
+      <g fill="none" stroke="currentColor" strokeWidth="1.3">
+        <ellipse cx="12" cy="11" rx="10.2" ry="10" />
+        <ellipse cx="18" cy="11" rx="10.2" ry="10" />
+      </g>
+    </svg>
   );
 }

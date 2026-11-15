@@ -78,11 +78,16 @@ export function KarteGross({
 }) {
   return (
     <li id={id} className={id ? "scroll-mt-28" : undefined}>
-      <article data-kipp=""
+      <article
+        data-kipp=""
         className={cn(s.karte, s.gross_, tonKlasse(ton))}
         style={hintergrund ? { background: hintergrund } : undefined}
         data-flaeche-dunkel={dunkel ? "" : undefined}
       >
+        {/* Hervorgehobene Karte: ein Licht läuft langsam um den Rand. */}
+        {ton === "schwarz" ? (
+          <span className={s.randLicht} aria-hidden="true" />
+        ) : null}
         <div className={s.text}>
           <p className={s.eyebrow}>{eyebrow}</p>
           <h3 className={s.titelGross}>
@@ -149,7 +154,10 @@ export function KarteMittel({
   );
   return (
     <li>
-      <article data-kipp="" className={cn(s.karte, s.mittel, kurz && s.mittelKurz)}>
+      <article
+        data-kipp=""
+        className={cn(s.karte, s.mittel, kurz && s.mittelKurz)}
+      >
         {bildOben ? bildEl : null}
         <div className={cn(s.text, eyebrowUnten && s.textFuss)}>
           {eyebrowUnten ? null : <p className={s.eyebrow}>{eyebrow}</p>}
@@ -157,7 +165,9 @@ export function KarteMittel({
             <KartenLink href={href}>{titel}</KartenLink>
           </h3>
           {zeile ? <p className={s.zeile}>{zeile}</p> : null}
-          {eyebrowUnten ? <p className={cn("notiz-mono", s.fusszeile)}>{eyebrow}</p> : null}
+          {eyebrowUnten ? (
+            <p className={cn("notiz-mono", s.fusszeile)}>{eyebrow}</p>
+          ) : null}
         </div>
         {bildOben ? null : bildEl}
       </article>

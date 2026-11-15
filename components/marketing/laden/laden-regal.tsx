@@ -51,6 +51,9 @@ export function LadenRegal({
   className?: string;
 }) {
   const spurId = `${id}-spur`;
+  // „Liegeplatz 2 · Branchen“ → große gemalte Ziffer hinter dem Kopf,
+  // wie die Nummern an der Kaimauer. Reiner Schmuck.
+  const platz = ort ? /^Liegeplatz (\d+)/.exec(ort)?.[1] : undefined;
   const label = fett.replace(/\.$/, "");
   const style = spaet
     ? ({
@@ -65,9 +68,16 @@ export function LadenRegal({
       className={cn(s.regal, spaet && s.spaet, className)}
       style={style}
     >
+      {platz ? (
+        <span className={s.platzNr} aria-hidden="true">
+          {platz}
+        </span>
+      ) : null}
       <div className={cn("inhalt", s.regalKopf)} data-ein="">
         <div>
-          {ort ? <p className={cn("kennzeile-mono", s.ortsmarke)}>{ort}</p> : null}
+          {ort ? (
+            <p className={cn("kennzeile-mono", s.ortsmarke)}>{ort}</p>
+          ) : null}
           {einfach ? (
             <>
               <h2 id={`${id}-titel`} className={s.regalTitel}>
@@ -96,7 +106,9 @@ export function LadenRegal({
         </div>
       </div>
       {ohneSpur ? (
-        <div className={cn("inhalt", s.block)} data-ein="">{children}</div>
+        <div className={cn("inhalt", s.block)} data-ein="">
+          {children}
+        </div>
       ) : (
         <div
           id={spurId}
@@ -105,10 +117,16 @@ export function LadenRegal({
           role="group"
           aria-label={`${label}: Karten`}
         >
-          <ul role="list" data-ein="reihe">{children}</ul>
+          <ul role="list" data-ein="reihe">
+            {children}
+          </ul>
         </div>
       )}
-      {notiz ? <p className={cn("inhalt notiz-mono", s.notiz)} data-ein="">{notiz}</p> : null}
+      {notiz ? (
+        <p className={cn("inhalt notiz-mono", s.notiz)} data-ein="">
+          {notiz}
+        </p>
+      ) : null}
     </section>
   );
 }
