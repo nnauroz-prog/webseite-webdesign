@@ -1,12 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import {
-  STORY_LOOKS,
-  lookVariablen,
-  stickerRand,
-  stickerStern,
-} from "@/lib/story-look";
+import { STORY_LOOKS } from "@/lib/story-look";
 import { MOTIVE, SCHMUCK } from "@/lib/story-teile";
 import { VARIANTEN, varianteFuer } from "@/lib/story-variante";
 
@@ -66,10 +61,6 @@ describe("Farbwelten der Spruch-Karten", () => {
       assert.ok(
         kontrast(l.stickerText, l.stickerBg) >= 4.5,
         `${l.name}: Aufkleber`,
-      );
-      assert.ok(
-        kontrast(stickerStern(l), l.stickerBg) >= 3,
-        `${l.name}: Stern im Aufkleber`,
       );
       assert.ok(
         kontrast(l.streif, l.faehre) >= 2.5,
@@ -175,17 +166,6 @@ describe("Farbwelten der Spruch-Karten", () => {
         assert.match(teil.d, /^M[-\d. ]/, s.name);
         assert.doesNotMatch(teil.d, /NaN|undefined/, s.name);
       }
-    }
-  });
-
-  it("liefert alle Variablen für die Karte", () => {
-    for (const l of STORY_LOOKS) {
-      const v = lookVariablen(l);
-      for (const [name, wert] of Object.entries(v)) {
-        assert.ok(name.startsWith("--k-"), name);
-        assert.ok(wert && !wert.includes("undefined"), `${l.name} ${name}`);
-      }
-      assert.ok(stickerRand(l));
     }
   });
 });

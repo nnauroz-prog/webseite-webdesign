@@ -17,6 +17,13 @@
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { MOTIVE, SCHMUCK, type Motiv, type Schmuck } from "@/lib/story-teile";
 
+/**
+ * Fläche im Grund. Das gemalte Bild (lib/story-bild.ts) zeichnet bei
+ * „raster“ einen großen Kreis, bei „geteilt“ eine schräge Teilung, sonst
+ * nur das Licht. Schmuck, Aufkleber und Balken zählen dort nur noch als
+ * Stellen im täglichen Wechsel: Sie halten die Reihenfolge der Tage
+ * stabil, auch wenn das Bild sie nicht mehr eigens zeichnet.
+ */
 export const GRUENDE = ["glatt", "raster", "streifen", "geteilt"] as const;
 export type Grund = (typeof GRUENDE)[number];
 /** Lage von Aufkleber, Satz und Zusatz im freien Feld. */

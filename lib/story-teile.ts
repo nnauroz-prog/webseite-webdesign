@@ -1,8 +1,8 @@
 /**
  * Bausteine der Spruch-Karten: Hafen-Motive und Schmuckformen als
- * Pfaddaten. Eine Quelle für beide Fassungen: Die Karte auf /journal
- * setzt die Pfade als SVG, das Story-Bild im Admin zeichnet dieselben
- * Pfade auf die Zeichenfläche (Path2D).
+ * Pfaddaten. Das gemalte Bild (lib/story-bild.ts) zeichnet die Motive
+ * auf die Zeichenfläche (Path2D); die Schmuckformen zählen nur noch als
+ * Stelle im täglichen Wechsel (lib/story-variante.ts).
  */
 
 /** Welche Farbe der Farbwelt ein Teil bekommt. */
@@ -12,8 +12,7 @@ export type MotivTeil = { d: string; farbe: TeilFarbe; deck?: number };
 /**
  * Ein Hafen-Motiv am unteren Rand. Alle Motive stehen im selben Raster:
  * 40 Einheiten hoch, die Wasserlinie liegt bei y = 30 (darunter taucht
- * der Rumpf in die Hafenfläche ein). Eine Einheit ist 0,56 % der
- * Kartenbreite.
+ * der Rumpf ins Wasser ein).
  */
 export type Motiv = {
   name: string;
@@ -23,10 +22,7 @@ export type Motiv = {
   faehrt: boolean;
   teile: MotivTeil[];
 };
-export const MOTIV_HOEHE = 40;
 export const MOTIV_WASSER = 30;
-/** Größe einer Motiv-Einheit in Hundertstel der Kartenbreite. */
-export const MOTIV_EINHEIT = 0.56;
 
 const fenster = (xs: number[], y: number, b = 3.4, h = 2.6): MotivTeil[] =>
   xs.map((x) => ({ d: `M${x} ${y}h${b}v${h}h${-b}Z`, farbe: "grund" }));
@@ -151,8 +147,6 @@ export type SchmuckTeil = { d: string; strich?: number };
 export type Schmuck =
   | { name: "ziffer" | "zitat"; art: "schrift" }
   | { name: string; art: "form"; teile: SchmuckTeil[] };
-export const SCHMUCK_B = 100;
-export const SCHMUCK_H = 64;
 
 const kreis = (x: number, y: number, r: number) =>
   `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;

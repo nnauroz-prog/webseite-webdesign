@@ -1,7 +1,6 @@
 /**
- * Farbwelten der Spruch-Karten. Eine Quelle für beide Fassungen: die
- * Karte auf /journal (CSS, spruch-reel.tsx) und das Story-Bild im Admin
- * (Zeichenfläche, lib/story-bild.ts).
+ * Farbwelten der Spruch-Karten: für das gemalte Bild (lib/story-bild.ts),
+ * das auf /journal und im Story-Studio (/admin/story) erscheint.
  *
  * Kräftige Flächen statt blasser Verläufe: Jede Welt hat einen Grund
  * (mit einem Licht aus derselben Farbfamilie), eine Markerfarbe für die
@@ -138,11 +137,12 @@ export const STORY_LOOKS: StoryLook[] = [
     akzent: "#0f2a3a",
   },
   {
-    name: "minze",
+    // Entsättigtes Seegrün statt Mint: hanseatisch, nicht bonbonfarben.
+    name: "seegruen",
     dunkel: false,
-    bg: "#c9f0de",
-    bg2: "#b2e7cf",
-    licht: "236 255 246",
+    bg: "#d5e4e0",
+    bg2: "#c2d7d2",
+    licht: "240 248 246",
     lichtKraft: 0.75,
     text: "#0f2a3a",
     weich: "#2f4b58",
@@ -176,23 +176,24 @@ export const STORY_LOOKS: StoryLook[] = [
     akzent: "#ffd54a",
   },
   {
-    name: "rosa",
-    dunkel: false,
-    bg: "#ffd9cf",
-    bg2: "#ffc7ba",
-    licht: "255 242 238",
-    lichtKraft: 0.75,
-    text: "#1d1d1f",
-    weich: "#4a3530",
-    betont: "#fff8ee",
-    marker: "#0f2a3a",
-    stickerBg: "#f45b1e",
+    // Backstein wie die Speicherstadt.
+    name: "backstein",
+    dunkel: true,
+    bg: "#8a3a28",
+    bg2: "#74301f",
+    licht: "190 96 70",
+    lichtKraft: 0.45,
+    text: "#ffffff",
+    weich: "#f7e3da",
+    betont: "#6a2a1b",
+    marker: "#fff8ee",
+    stickerBg: "#fff8ee",
     stickerText: "#1d1d1f",
-    ziffer: "255 255 255 / 0.45",
-    hafen: "#0f2a3a",
-    faehre: "#0f2a3a",
+    ziffer: "255 255 255 / 0.08",
+    hafen: "#fff8ee",
+    faehre: "#fff8ee",
     streif: "#f45b1e",
-    akzent: "#0f2a3a",
+    akzent: "#ffd9a8",
   },
   {
     name: "petrol",
@@ -233,22 +234,23 @@ export const STORY_LOOKS: StoryLook[] = [
     akzent: "#f45b1e",
   },
   {
-    name: "flieder",
+    // Stahlblau wie der Himmel über dem Hafen.
+    name: "stahl",
     dunkel: false,
-    bg: "#ddd2ff",
-    bg2: "#cdbfff",
-    licht: "246 242 255",
+    bg: "#cdd9e4",
+    bg2: "#bccbd9",
+    licht: "242 247 251",
     lichtKraft: 0.75,
-    text: "#1d1d1f",
-    weich: "#3a3357",
-    betont: "#ffd84d",
+    text: "#0f2a3a",
+    weich: "#2c4656",
+    betont: "#ffffff",
     marker: "#0f2a3a",
-    stickerBg: "#1d1d1f",
-    stickerText: "#ffffff",
-    ziffer: "255 255 255 / 0.42",
+    stickerBg: "#f45b1e",
+    stickerText: "#1d1d1f",
+    ziffer: "255 255 255 / 0.4",
     hafen: "#0f2a3a",
     faehre: "#0f2a3a",
-    streif: "#ffd84d",
+    streif: "#f45b1e",
     akzent: "#f45b1e",
   },
   {
@@ -271,54 +273,3 @@ export const STORY_LOOKS: StoryLook[] = [
     akzent: "#f45b1e",
   },
 ];
-
-const HELL = ["#fff8ee", "#ffd54a"];
-
-/** Stern im Aufkleber: Orange; auf orangem oder gelbem Aufkleber die Schriftfarbe. */
-export function stickerStern(l: StoryLook): string {
-  return l.stickerBg === "#f45b1e" || l.stickerBg === "#ffd54a"
-    ? l.stickerText
-    : "#f45b1e";
-}
-
-/** Stanzrand um den Aufkleber: cremeweiß; ein heller Aufkleber braucht keinen. */
-export function stickerRand(l: StoryLook): string {
-  return HELL.includes(l.stickerBg) ? l.stickerBg : "#fff8ee";
-}
-
-/** Wellenlinie in der Hafenfläche: dunkel auf heller Fläche, sonst hell. */
-export function hafenLinie(l: StoryLook): string {
-  return HELL.includes(l.hafen)
-    ? "rgb(15 42 58 / 0.24)"
-    : "rgb(255 255 255 / 0.26)";
-}
-
-/** Zarte Muster im Grund (Raster, Streifen): „r g b“ in der Schriftrichtung. */
-export function musterFarbe(l: StoryLook): string {
-  return l.dunkel ? "255 255 255" : "15 42 58";
-}
-
-/** Die Farbwelt als CSS-Variablen für die Karte auf der Website. */
-export function lookVariablen(l: StoryLook): Record<string, string> {
-  return {
-    "--k-bg": l.bg,
-    "--k-bg2": l.bg2,
-    "--k-licht": `rgb(${l.licht} / ${l.lichtKraft})`,
-    "--k-licht-aus": `rgb(${l.licht} / 0)`,
-    "--k-text": l.text,
-    "--k-weich": l.weich,
-    "--k-betont": l.betont,
-    "--k-marker": l.marker,
-    "--k-sticker-bg": l.stickerBg,
-    "--k-sticker-text": l.stickerText,
-    "--k-sticker-stern": stickerStern(l),
-    "--k-ziffer": `rgb(${l.ziffer})`,
-    "--k-hafen": l.hafen,
-    "--k-hafen-linie": hafenLinie(l),
-    "--k-sticker-rand": stickerRand(l),
-    "--k-muster": `rgb(${musterFarbe(l)} / 0.07)`,
-    "--k-faehre": l.faehre,
-    "--k-streif": l.streif,
-    "--k-akzent": l.akzent,
-  };
-}
