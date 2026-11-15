@@ -3,8 +3,12 @@ import { describe, it } from "node:test";
 
 import {
   KICKER,
+  POSTS_PRO_TAG,
   SPRUECHE,
+  SPRUECHE_EXTRA,
   THEMA_LABEL,
+  extraFuer,
+  postsFuer,
   spruchFuer,
   spruchTag,
   spruecheBis,
@@ -13,7 +17,11 @@ import {
   tagVersetzt,
   teileSatz,
   vorratTage,
+  vorratTageExtra,
 } from "@/lib/sprueche-data";
+
+/** Alle Karten: Sprüche des Tages und Zusatz-Posts. Für beide gelten dieselben Regeln. */
+const ALLE = [...SPRUECHE, ...SPRUECHE_EXTRA];
 
 const ganz = (s: { kicker: string; text: string; zusatz: string }) =>
   `${s.kicker} ${s.text} ${s.zusatz}`;
@@ -24,7 +32,7 @@ describe("Sprüche des Tages", () => {
   });
 
   it("jeder Satz steht nur einmal in der Liste", () => {
-    const texte = SPRUECHE.map((s) => s.text.toLowerCase());
+    const texte = ALLE.map((s) => s.text.toLowerCase());
     assert.equal(new Set(texte).size, texte.length);
   });
 
@@ -38,7 +46,7 @@ describe("Sprüche des Tages", () => {
           .split(/\s+/)
           .filter((w) => w.length >= 5),
       );
-    const saetze = SPRUECHE.map((s) => woerter(s.text));
+    const saetze = ALLE.map((s) => woerter(s.text));
     for (let i = 0; i < saetze.length; i++) {
       for (let j = i + 1; j < saetze.length; j++) {
         const gemeinsam = [...saetze[i]].filter((w) => saetze[j].has(w)).length;
@@ -46,14 +54,14 @@ describe("Sprüche des Tages", () => {
           gemeinsam / (saetze[i].size + saetze[j].size - gemeinsam || 1);
         assert.ok(
           gemeinsam < 3 || anteil < 0.5,
-          `zu ähnlich: „${SPRUECHE[i].text}“ / „${SPRUECHE[j].text}“`,
+          `zu ähnlich: „${ALLE[i].text}“ / „${ALLE[j].text}“`,
         );
       }
     }
   });
 
   it("hält Längen, Satzende, Kicker und Thema ein", () => {
-    for (const s of SPRUECHE) {
+    for (const s of ALLE) {
       assert.ok(
         s.text.length >= 15 && s.text.length <= 80,
         `${s.text.length}: ${s.text}`,
@@ -77,7 +85,7 @@ describe("Sprüche des Tages", () => {
   });
 
   it("hebt einen wörtlichen Ausschnitt aus ganzen Wörtern hervor", () => {
-    for (const s of SPRUECHE) {
+    for (const s of ALLE) {
       const [vor, mitte, nach] = teileSatz(s.text, s.betont);
       assert.equal(
         mitte,
@@ -102,19 +110,19 @@ describe("Sprüche des Tages", () => {
   it("nennt keine Zahlen, Preise, Marken, Garantien oder Technik-Schlagworte", () => {
     const verboten =
       /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbot|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantiert|Garantie|Platz eins|Nummer eins|Testsieger|ausgezeichnet|SEO|Conversion|Landingpage|Performance|UX|CTA)\b|künstliche Intelligenz/;
-    for (const s of SPRUECHE)
+    for (const s of ALLE)
       assert.doesNotMatch(`${s.text} ${s.zusatz}`, verboten, s.text);
   });
 
   it("enthält keine Emojis", () => {
-    for (const s of SPRUECHE)
+    for (const s of ALLE)
       assert.doesNotMatch(ganz(s), /\p{Extended_Pictographic}/u, s.text);
   });
 
   it("bleibt in der Sie-Form", () => {
     const du =
       /\b(du|dich|dir|dein|deine|deiner|deinem|deinen|deins|euch|euer|eure)\b/i;
-    for (const s of SPRUECHE)
+    for (const s of ALLE)
       assert.doesNotMatch(`${s.text} ${s.zusatz}`, du, s.text);
   });
 
@@ -167,6 +175,61 @@ describe("Sprüche des Tages", () => {
       vorratTage(new Date(`${tagVersetzt(letzter, 1)}T10:00:00Z`)),
       0,
     );
+  });
+
+  it("gibt jedem Tag drei verschiedene Posts: Spruch des Tages und zwei Zusatz-Posts", () => {
+    assert.equal(POSTS_PRO_TAG, 3);
+    assert.equal(SPRUECHE_EXTRA.length % 2, 0, "Zusatz-Posts immer paarweise");
+    assert.ok(SPRUECHE_EXTRA.length >= 28, String(SPRUECHE_EXTRA.length));
+    // Erster Tag mit Zusatz-Posts ist der 15.11.2026.
+    assert.equal(extraFuer("2026-11-14", 1), null);
+    assert.equal(extraFuer("2026-11-15", 1), SPRUECHE_EXTRA[0]);
+    assert.equal(extraFuer("2026-11-15", 2), SPRUECHE_EXTRA[1]);
+    assert.equal(extraFuer("2026-11-16", 1), SPRUECHE_EXTRA[2]);
+    assert.equal(extraFuer("2026-11-15", 0), null);
+    assert.equal(extraFuer("2026-11-15", 3), null);
+    const posts = postsFuer("2026-11-17");
+    assert.deepEqual(
+      posts.map((p) => p.platz),
+      [0, 1, 2],
+    );
+    assert.equal(posts[0].text, spruchFuer("2026-11-17").text);
+    assert.equal(new Set(posts.map((p) => p.text)).size, 3);
+    assert.ok(
+      posts.every(
+        (p) => p.datum === "2026-11-17" && p.nummer === posts[0].nummer,
+      ),
+    );
+    // Vor dem Start der Zusatz-Posts gibt es nur den Spruch des Tages.
+    assert.equal(postsFuer("2026-11-10").length, 1);
+  });
+
+  it("wiederholt keinen Zusatz-Post, solange der Vorrat reicht, und zählt ihn", () => {
+    const gesehen = new Set<string>();
+    const tage = SPRUECHE_EXTRA.length / 2;
+    let tag = "2026-11-15";
+    for (let i = 0; i < tage; i++) {
+      for (const platz of [1, 2]) {
+        const text = extraFuer(tag, platz)?.text ?? "";
+        assert.ok(text && !gesehen.has(text), `wiederholt sich am ${tag}`);
+        gesehen.add(text);
+      }
+      tag = tagVersetzt(tag, 1);
+    }
+    assert.equal(vorratTageExtra(new Date("2026-11-15T10:00:00Z")), tage);
+    assert.equal(vorratTageExtra(new Date("2026-11-20T10:00:00Z")), tage - 5);
+    assert.equal(vorratTageExtra(new Date("2026-11-01T10:00:00Z")), tage);
+  });
+
+  it("wechselt auch bei den Zusatz-Posts nacheinander Thema oder Kicker", () => {
+    for (let i = 0; i + 1 < SPRUECHE_EXTRA.length; i++) {
+      const a = SPRUECHE_EXTRA[i];
+      const b = SPRUECHE_EXTRA[i + 1];
+      assert.ok(
+        a.thema !== b.thema || a.kicker !== b.kicker,
+        `${a.text} / ${b.text}`,
+      );
+    }
   });
 
   it("rechnet den Tag nach Hamburger Zeit", () => {

@@ -7,11 +7,12 @@
  * Die Zusammenstellung folgt aus der fortlaufenden Tagesnummer: Sie wird
  * mit einer zur Anzahl teilerfremden Zahl vervielfacht und dann in ihre
  * Stellen zerlegt. So kommt jede Zusammenstellung genau einmal vor,
- * bevor sich die erste wiederholt (bei über 20 000 Möglichkeiten nach
- * mehr als 50 Jahren), und zwei Tage nacheinander unterscheiden sich
- * deutlich: Farbwelt, Motiv, Schmuck, Grundmuster und Lage wechseln
- * jeden Tag, und dieselbe Farbwelt kommt frühestens nach einer Woche
- * wieder. Geprüft in tests/story-look.test.ts.
+ * bevor sich die erste wiederholt (bei über 20 000 Möglichkeiten und
+ * drei Posts am Tag nach rund 19 Jahren). Beim Spruch des Tages wechseln
+ * Farbwelt, Motiv, Schmuck, Grundmuster und Lage jeden Tag, dieselbe
+ * Farbwelt kommt frühestens nach einer Woche wieder, und die drei Posts
+ * eines Tages haben verschiedene Farbwelten, Motive und Schmuckformen.
+ * Geprüft in tests/story-look.test.ts.
  */
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { MOTIVE, SCHMUCK, type Motiv, type Schmuck } from "@/lib/story-teile";
@@ -57,19 +58,31 @@ const STELLEN = [
 export const VARIANTEN = STELLEN.reduce((a, b) => a * b, 1);
 /**
  * Teilerfremd zu VARIANTEN (weder durch 2 noch durch 3 teilbar) und so
- * gewählt, dass sich von Tag zu Tag möglichst viele Stellen ändern.
+ * gewählt, dass sich von Tag zu Tag möglichst viele Stellen ändern und
+ * die drei Posts eines Tages deutlich verschieden aussehen.
  */
-const SCHRITT = 7429;
+const SCHRITT = 749;
+/** Posts je Tag (wie POSTS_PRO_TAG in lib/sprueche-data.ts). */
+const PLAETZE = 3;
 /** Tag, an dem die Karten online gingen: Er bekommt die Zusammenstellung 0. */
 const ERSTER_TAG = 6;
+/** Sprung für „Anderes Design“ im Story-Studio. */
+const VERSATZ = 4099;
 
 function mod(n: number, m: number): number {
   return ((n % m) + m) % m;
 }
 
-/** Zusammenstellung für die fortlaufende Tagesnummer (auch negativ). */
-export function varianteFuer(nummer: number): Variante {
-  const schluessel = mod((nummer - ERSTER_TAG) * SCHRITT, VARIANTEN);
+/**
+ * Zusammenstellung für die fortlaufende Tagesnummer (auch negativ) und
+ * den Platz am Tag (0 = Spruch des Tages, 1 und 2 = Zusatz-Posts).
+ * versatz wählt von Hand ein anderes Design (Story-Studio).
+ */
+export function varianteFuer(nummer: number, platz = 0, versatz = 0): Variante {
+  const schluessel = mod(
+    ((nummer - ERSTER_TAG) * PLAETZE + platz) * SCHRITT + versatz * VERSATZ,
+    VARIANTEN,
+  );
   let rest = schluessel;
   const stelle = (anzahl: number) => {
     const z = rest % anzahl;
@@ -88,7 +101,10 @@ export function varianteFuer(nummer: number): Variante {
   // Zusammenstellung einmalig (für feste übrige Stellen ist die
   // Verschiebung nur eine Drehung der Farben). Dieselbe Farbwelt kommt
   // frühestens nach einer Woche wieder.
-  const look = mod(farbe + schmuck + 7 * grund + 4 * anker, STORY_LOOKS.length);
+  const look = mod(
+    farbe + 11 * schmuck + 4 * grund + 4 * anker,
+    STORY_LOOKS.length,
+  );
   return {
     look: STORY_LOOKS[look],
     motiv: MOTIVE[motiv],

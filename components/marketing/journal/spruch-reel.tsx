@@ -292,7 +292,7 @@ export function SpruchReel({
           tabIndex={0}
         >
           {tage.map((s, i) => {
-            const v = varianteFuer(s.nummer);
+            const v = varianteFuer(s.nummer, s.platz);
             const plan = satzPlan(s);
             return (
               <li

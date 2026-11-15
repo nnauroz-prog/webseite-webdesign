@@ -78,22 +78,34 @@ describe("Farbwelten der Spruch-Karten", () => {
     }
   });
 
-  it("gibt jedem Tag eine eigene Zusammenstellung, über 50 Jahre lang", () => {
+  it("gibt jedem Post eine eigene Zusammenstellung, bei drei Posts am Tag", () => {
     assert.ok(VARIANTEN > 18_000, String(VARIANTEN));
     const gesehen = new Set<number>();
-    for (let n = 0; n < VARIANTEN; n++) {
-      const s = varianteFuer(n).schluessel;
-      assert.ok(!gesehen.has(s), `wiederholt sich an Tag ${n}`);
-      gesehen.add(s);
+    // Drei Posts am Tag: Die Zusammenstellungen reichen für ein Drittel so viele Tage.
+    for (let n = 6; n < 6 + VARIANTEN / 3; n++) {
+      for (let platz = 0; platz < 3; platz++) {
+        const s = varianteFuer(n, platz).schluessel;
+        assert.ok(
+          !gesehen.has(s),
+          `wiederholt sich an Tag ${n}, Platz ${platz}`,
+        );
+        gesehen.add(s);
+      }
     }
+    assert.equal(gesehen.size, VARIANTEN);
     // Der erste Tag online (Tagesnummer 6) trägt die Zusammenstellung 0.
     assert.equal(varianteFuer(6).schluessel, 0);
     // Auch vor dem Start (negative Tagesnummer) gibt es eine.
     assert.ok(varianteFuer(-3).look);
+    // „Anderes Design“ im Story-Studio ergibt eine andere Zusammenstellung.
+    assert.notEqual(
+      varianteFuer(6, 0, 1).schluessel,
+      varianteFuer(6).schluessel,
+    );
   });
 
-  it("wechselt von Tag zu Tag Farbwelt, Motiv, Schmuck, Muster und Lage", () => {
-    for (let n = -10; n < 2000; n++) {
+  it("wechselt beim Spruch des Tages täglich Farbwelt, Motiv, Schmuck, Muster und Lage", () => {
+    for (let n = -10; n < 3000; n++) {
       const a = varianteFuer(n);
       const b = varianteFuer(n + 1);
       assert.notEqual(a.look.name, b.look.name, `Farbwelt an Tag ${n}`);
@@ -105,9 +117,30 @@ describe("Farbwelten der Spruch-Karten", () => {
     }
   });
 
-  it("bringt dieselbe Farbwelt frühestens nach einer Woche wieder", () => {
+  it("gibt den drei Posts eines Tages verschiedene Farbwelten, Motive und Schmuckformen", () => {
+    for (let n = 0; n < VARIANTEN / 3; n++) {
+      const posts = [0, 1, 2].map((platz) => varianteFuer(n, platz));
+      assert.equal(
+        new Set(posts.map((v) => v.look.name)).size,
+        3,
+        `Farbwelt an Tag ${n}`,
+      );
+      assert.equal(
+        new Set(posts.map((v) => v.motiv.name)).size,
+        3,
+        `Motiv an Tag ${n}`,
+      );
+      assert.equal(
+        new Set(posts.map((v) => v.schmuck.name)).size,
+        3,
+        `Schmuck an Tag ${n}`,
+      );
+    }
+  });
+
+  it("bringt dieselbe Farbwelt beim Spruch des Tages frühestens nach einer Woche wieder", () => {
     const zuletzt = new Map<string, number>();
-    for (let n = 0; n < VARIANTEN; n++) {
+    for (let n = 0; n < VARIANTEN / 3; n++) {
       const name = varianteFuer(n).look.name;
       const davor = zuletzt.get(name);
       if (davor !== undefined)
@@ -122,10 +155,9 @@ describe("Farbwelten der Spruch-Karten", () => {
       new Set(monat.map((v) => v.look.name)).size,
       STORY_LOOKS.length,
     );
-    const woche = monat.slice(0, 7);
-    assert.equal(new Set(woche.map((v) => v.motiv.name)).size, MOTIVE.length);
+    assert.equal(new Set(monat.map((v) => v.motiv.name)).size, MOTIVE.length);
     assert.equal(
-      new Set(woche.map((v) => v.schmuck.name)).size,
+      new Set(monat.map((v) => v.schmuck.name)).size,
       SCHMUCK.length,
     );
   });
