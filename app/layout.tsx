@@ -25,12 +25,16 @@ import { SITE_URL } from "@/lib/site";
 // Vorladen (preload: false). Doto (Punktmatrix der Abfahrtstafel) ist
 // entfallen; die Tafel nutzt bei Bedarf die Mono-Systemschrift.
 
-// Cormorant nur noch für die Wortmarke (SITAL + Doppelring), so wie
-// im ursprünglichen Logo.
+// Cormorant für die Wortmarke (SITAL + Doppelring), so wie im
+// ursprünglichen Logo, und kursiv für die Pointe auf den Spruch-Karten.
 const cormorant = Cormorant_Garamond({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["500"],
+  // 500 gerade: die Wortmarke. 600 kursiv: die Pointe auf den
+  // Spruch-Karten (/journal, /admin/story). Geladen wird ein Schnitt
+  // erst, wenn eine Seite ihn wirklich setzt.
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
   preload: false,
 });
