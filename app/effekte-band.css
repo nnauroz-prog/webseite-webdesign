@@ -452,12 +452,12 @@ body:has(#mobile-menu[aria-hidden="false"])
       0 0 0 4px rgb(244 91 30 / 0.16),
       0 10px 30px -4px rgb(244 91 30 / 0.62);
     opacity: 0.3;
-    /* Drei Atemzüge, dann ruht der Schein: Ein endlos pulsierender Knopf
+    /* Zwei Atemzüge, dann ruht der Schein: Ein endlos pulsierender Knopf
        wirkt wie Werbung, und solange der Schein atmet, muss der Browser
        bei jedem Bild die Ebenen der Seite neu ordnen (gemessen: doppelte
-       Arbeit). Start erst nach 4,5 s: Erst steht die Seite, dann lädt der
+       Arbeit). Start erst nach 7 s: Erst steht die Seite, dann lädt der
        Knopf leise ein. In der Anfrage-Leiste beginnt es früher. */
-    animation: knopf-atmen 3.2s ease-in-out 4.5s 3;
+    animation: knopf-atmen 3.2s ease-in-out 7s 2;
   }
   .cta-leiste[data-sichtbar="true"] .btn-signal::before {
     animation-delay: 1.5s;

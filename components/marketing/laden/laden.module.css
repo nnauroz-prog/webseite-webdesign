@@ -1499,12 +1499,15 @@
   }
 }
 
+/* Über die Einzel-Eigenschaft translate: Zwei Animationen auf transform
+   am selben Element (Auftritt und Schweben) kann der Browser nicht
+   nebenher rechnen; so bleibt das Schweben vom Hauptthread weg. */
 @keyframes marke-schwebt {
   from {
-    transform: translateY(0);
+    translate: 0 0;
   }
   to {
-    transform: translateY(-4px);
+    translate: 0 -4px;
   }
 }
 
@@ -1578,17 +1581,9 @@
     animation-delay: 8s;
     animation-direction: reverse;
   }
-  .moewe path {
-    transform-box: fill-box;
-    transform-origin: 50% 70%;
-    animation: moewe-schlag 0.62s ease-in-out infinite alternate;
-  }
-  .moewe2 path {
-    animation-duration: 0.54s;
-  }
-  .moewe3 path {
-    animation-duration: 0.47s;
-  }
+  /* Die Möwen gleiten, ohne Flügelschlag: Der Schlag ließ den Browser
+     rund 25-mal pro Sekunde auf dem Hauptthread neu rechnen (gemessen),
+     egal ob am Pfad, am SVG oder an einer Hülle. */
 }
 @keyframes moewe-flug {
   0% {
@@ -1611,14 +1606,6 @@
   100% {
     transform: translate3d(108%, -14px, 0) rotate(-6deg);
     opacity: 0;
-  }
-}
-@keyframes moewe-schlag {
-  from {
-    transform: scaleY(1);
-  }
-  to {
-    transform: scaleY(0.3);
   }
 }
 
@@ -1712,13 +1699,10 @@
 }
 
 /* Lauflicht: Ein oranger Lichtbogen läuft um den Rand der hervorgehobenen
-   Karte. Der Winkel ist als eigene Eigenschaft registriert, damit er sich
-   animieren lässt; nur der 2 px breite Rand wird gezeichnet (Maske). */
-@property --rand-winkel {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
+   Karte. Eine große Fläche mit Kegelverlauf dreht sich hinter einer Maske,
+   die nur den 3 px breiten Rand freigibt. Gedreht wird über „rotate“: Das
+   läuft nebenher. (Ein animierter Winkel im Verlauf selbst ließ den
+   Browser bei jedem Bild neu malen: gemessen 60 Stil-Läufe pro Sekunde.) */
 .randLicht {
   display: none;
 }
@@ -1728,16 +1712,10 @@
     inset: 0;
     z-index: 3;
     display: block;
+    overflow: hidden;
     border-radius: inherit;
     padding: 3px;
     pointer-events: none;
-    background: conic-gradient(
-      from var(--rand-winkel),
-      rgb(244 91 30 / 0) 0deg 215deg,
-      #f45b1e 290deg,
-      #ffe0c8 330deg,
-      rgb(244 91 30 / 0) 360deg
-    );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -1746,12 +1724,23 @@
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     mask-composite: exclude;
+  }
+  .randLicht::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+      rgb(244 91 30 / 0) 0deg 215deg,
+      #f45b1e 290deg,
+      #ffe0c8 330deg,
+      rgb(244 91 30 / 0) 360deg
+    );
     animation: rand-lauf 5.5s linear infinite;
   }
 }
 @keyframes rand-lauf {
   to {
-    --rand-winkel: 360deg;
+    rotate: 1turn;
   }
 }
 
@@ -1769,5 +1758,65 @@
   }
   45% {
     translate: -72px 0;
+  }
+}
+
+/* ---------- Kino-Fahrt (laden-regal.tsx, Eigenschaft kino) ----------
+   Am Handy bleibt das Regal im Bild stehen, während man weiterscrollt;
+   die Kartenreihe fährt dabei waagerecht durch (auf der Startseite die
+   Elbe mit der Fähre von Halt zu Halt). Der Abschnitt ist um den Fahrweg
+   höher als das Fenster; der Inhalt klebt unter der Kopfleiste. Nur mit
+   Scroll-Zeitleiste und ohne reduzierte Bewegung, sonst normale Reihe. */
+.huelleAus {
+  display: contents;
+}
+@supports (animation-timeline: view()) {
+  @media screen and (max-width: 733px) and (prefers-reduced-motion: no-preference) {
+    .kino {
+      --kino-oben: calc(var(--kopf-h, 48px) + 8px);
+      /* Breite der Reihe minus Fensterbreite: so weit fährt sie. */
+      --kino-weg: max(
+        0px,
+        calc(
+          var(--kino-n, 4) * 264px + (var(--kino-n, 4) - 1) * var(--luecke) +
+            2 * var(--rand) - 100vw
+        )
+      );
+      min-height: calc(100svh + var(--kino-weg) + 32px);
+      view-timeline: --kino block;
+      /* am echten Bildrand messen, nicht abzüglich scroll-padding */
+      view-timeline-inset: 0px;
+      /* Kleben braucht den echten Kasten: hier kein spätes Rendern. */
+      content-visibility: visible;
+      contain-intrinsic-size: none;
+    }
+    .kinoInnen {
+      position: sticky;
+      top: var(--kino-oben);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: calc(100svh - var(--kino-oben));
+      /* unten Platz für die Anfrage-Leiste */
+      padding-bottom: 76px;
+    }
+    .kino .spur {
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+    .kino .spur > ul:global([data-ein]) {
+      animation: kino-fahrt linear both;
+      animation-timeline: --kino;
+      animation-range: contain 0% contain 100%;
+    }
+    /* Im Kino fahren die Karten als Ganzes: kein eigenes Hereindrehen. */
+    .kino .spur > ul > li > article {
+      animation: none;
+    }
+  }
+}
+@keyframes kino-fahrt {
+  to {
+    translate: calc(100vw - 100%) 0;
   }
 }

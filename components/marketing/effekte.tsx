@@ -350,6 +350,28 @@ export function Effekte() {
     return () => document.removeEventListener("pointerdown", onDown);
   }, []);
 
+  // Dauer-Animationen laufen nur in Abschnitten, die (fast) im Bild sind:
+  // data-sicht am Abschnitt, die Regel dazu steht in app/effekte-gross.css.
+  // Sonst rechnet der Browser auch für Unsichtbares bei jedem Bild neu.
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return;
+    const ziele = Array.from(
+      document.querySelectorAll<HTMLElement>("main section"),
+    );
+    const io = new IntersectionObserver(
+      (eintraege) => {
+        for (const e of eintraege)
+          e.target.toggleAttribute("data-sicht", e.isIntersecting);
+      },
+      { rootMargin: "120px 0px" },
+    );
+    ziele.forEach((z) => io.observe(z));
+    return () => {
+      io.disconnect();
+      ziele.forEach((z) => z.removeAttribute("data-sicht"));
+    };
+  }, [pfad]);
+
   if (aus) return null;
   return (
     <div

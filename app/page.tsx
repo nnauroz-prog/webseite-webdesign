@@ -560,6 +560,7 @@ function Weg() {
   return (
     <LadenRegal
       id="ablauf"
+      kino
       ort="Fährlinie · in Kürze"
       fett="Der Weg zur fertigen Seite."
       grau="Vom ersten Anruf an sprechen Sie mit uns selbst."
