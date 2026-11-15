@@ -12,6 +12,7 @@ import {
   tagInHamburg,
   tagVersetzt,
   teileSatz,
+  vorratTage,
 } from "@/lib/sprueche-data";
 
 const ganz = (s: { kicker: string; text: string; zusatz: string }) =>
@@ -25,6 +26,30 @@ describe("Sprüche des Tages", () => {
   it("jeder Satz steht nur einmal in der Liste", () => {
     const texte = SPRUECHE.map((s) => s.text.toLowerCase());
     assert.equal(new Set(texte).size, texte.length);
+  });
+
+  it("hat keine zwei Sätze mit fast denselben Wörtern", () => {
+    // Fängt Beinahe-Doppelungen ab, wenn neue Karten angehängt werden.
+    const woerter = (text: string) =>
+      new Set(
+        text
+          .toLowerCase()
+          .replace(/[^a-zäöüß ]/g, " ")
+          .split(/\s+/)
+          .filter((w) => w.length >= 5),
+      );
+    const saetze = SPRUECHE.map((s) => woerter(s.text));
+    for (let i = 0; i < saetze.length; i++) {
+      for (let j = i + 1; j < saetze.length; j++) {
+        const gemeinsam = [...saetze[i]].filter((w) => saetze[j].has(w)).length;
+        const anteil =
+          gemeinsam / (saetze[i].size + saetze[j].size - gemeinsam || 1);
+        assert.ok(
+          gemeinsam < 3 || anteil < 0.5,
+          `zu ähnlich: „${SPRUECHE[i].text}“ / „${SPRUECHE[j].text}“`,
+        );
+      }
+    }
   });
 
   it("hält Längen, Satzende, Kicker und Thema ein", () => {
@@ -112,6 +137,36 @@ describe("Sprüche des Tages", () => {
         `${a.text} / ${b.text}`,
       );
     }
+  });
+
+  it("gibt jedem Tag seit dem Start eine eigene Karte, bis der Vorrat endet", () => {
+    // Starttag 9.11.2026 ist Karte 0; am 15.11. (erster Tag online) Karte 6.
+    assert.equal(spruchFuer("2026-11-09"), SPRUECHE[0]);
+    assert.equal(spruchFuer("2026-11-15"), SPRUECHE[6]);
+    const gesehen = new Set<string>();
+    let tag = "2026-11-09";
+    for (let i = 0; i < SPRUECHE.length; i++) {
+      const text = spruchFuer(tag).text;
+      assert.ok(!gesehen.has(text), `wiederholt sich am ${tag}: ${text}`);
+      gesehen.add(text);
+      tag = tagVersetzt(tag, 1);
+    }
+    // Erst danach beginnt die Liste von vorn.
+    assert.equal(spruchFuer(tag), SPRUECHE[0]);
+  });
+
+  it("zählt den Vorrat in Tagen, heute mitgezählt", () => {
+    assert.equal(vorratTage(new Date("2026-11-09T10:00:00Z")), SPRUECHE.length);
+    assert.equal(
+      vorratTage(new Date("2026-11-15T10:00:00Z")),
+      SPRUECHE.length - 6,
+    );
+    const letzter = tagVersetzt("2026-11-09", SPRUECHE.length - 1);
+    assert.equal(vorratTage(new Date(`${letzter}T10:00:00Z`)), 1);
+    assert.equal(
+      vorratTage(new Date(`${tagVersetzt(letzter, 1)}T10:00:00Z`)),
+      0,
+    );
   });
 
   it("rechnet den Tag nach Hamburger Zeit", () => {
