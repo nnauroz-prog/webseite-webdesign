@@ -2,7 +2,8 @@
  * Prüft die Spruch-Karten so, wie sie wirklich erscheinen: Jede Karte
  * beider Listen wird in einem echten Browser in allen drei Formaten
  * (Story, Beitrag, Karte auf /journal) gesetzt und gezeichnet, als
- * Standbild und zu mehreren Zeiten des Films.
+ * Standbild und zu mehreren Zeiten des Films, mit dem Ablauf des Tages
+ * und reihum mit jedem anderen (Auftritt der Pointe, Weg der Kamera).
  *
  * Meldet einen Fehler, wenn ein Text auch in der kleinsten Schrift nicht
  * in sein Feld passt oder sich ein Bild nicht zeichnen lässt. So bleibt
@@ -41,7 +42,8 @@ try {
     einstieg,
     `import { SPRUECHE, SPRUECHE_EXTRA, spruchTag } from "@/lib/sprueche-data";
 import { FORMATE, storyVorbereiten } from "@/lib/story-bild";
-Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE, storyVorbereiten } });
+import { AUFTRITTE, KAMERAS } from "@/lib/story-variante";
+Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE, storyVorbereiten, AUFTRITTE, KAMERAS } });
 `,
   );
   execFileSync(
@@ -116,6 +118,19 @@ Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE
               g,
             );
           for (const t of zeiten) zeichne(t);
+          // Dazu ein weiterer Ablauf des Films, reihum: So läuft jeder
+          // Auftritt der Pointe mit jedem Kameraweg durch alle Formate.
+          const film = {
+            auftritt: p.AUFTRITTE[i % p.AUFTRITTE.length],
+            kamera: p.KAMERAS[i % p.KAMERAS.length],
+          };
+          const anders = await p.storyVorbereiten(
+            flaeche,
+            { ...basis, ...karte, platz, nummer: basis.nummer + i },
+            format,
+            { skala: 0.12, film },
+          );
+          for (const t of zeiten) anders(t);
           out.geprueft++;
         } catch (e) {
           out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);

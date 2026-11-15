@@ -3,7 +3,12 @@ import { describe, it } from "node:test";
 
 import { STORY_LOOKS } from "@/lib/story-look";
 import { MOTIVE, SCHMUCK } from "@/lib/story-teile";
-import { VARIANTEN, varianteFuer } from "@/lib/story-variante";
+import {
+  AUFTRITTE,
+  KAMERAS,
+  VARIANTEN,
+  varianteFuer,
+} from "@/lib/story-variante";
 
 function leuchtkraft(hex: string): number {
   const n = hex.replace("#", "");
@@ -93,6 +98,30 @@ describe("Farbwelten der Spruch-Karten", () => {
       varianteFuer(6, 0, 1).schluessel,
       varianteFuer(6).schluessel,
     );
+  });
+
+  it("lässt die drei Filme eines Tages verschieden ablaufen und wechselt täglich", () => {
+    const auftritte = new Set<string>();
+    const paare = new Set<string>();
+    for (let n = -10; n < 400; n++) {
+      const tag = [0, 1, 2].map((platz) => varianteFuer(n, platz));
+      // Drei Posts, drei Auftritte der Pointe, drei Kamerawege.
+      assert.equal(new Set(tag.map((v) => v.auftritt)).size, 3, `Tag ${n}`);
+      assert.equal(new Set(tag.map((v) => v.kamera)).size, 3, `Tag ${n}`);
+      // Der Spruch des Tages läuft anders ab als am Vortag.
+      const gestern = varianteFuer(n - 1);
+      assert.notEqual(tag[0].auftritt, gestern.auftritt, `Tag ${n}`);
+      assert.notEqual(tag[0].kamera, gestern.kamera, `Tag ${n}`);
+      for (const v of tag) {
+        auftritte.add(v.auftritt);
+        paare.add(`${v.auftritt}/${v.kamera}`);
+      }
+    }
+    // Alle Auftritte kommen vor, und jeder mit jedem Kameraweg.
+    assert.equal(auftritte.size, AUFTRITTE.length);
+    assert.equal(paare.size, AUFTRITTE.length * KAMERAS.length);
+    // „Anderes Design“ im Story-Studio ändert auch den Ablauf des Films.
+    assert.notEqual(varianteFuer(6, 0, 1).auftritt, varianteFuer(6).auftritt);
   });
 
   it("wechselt beim Spruch des Tages täglich Farbwelt, Motiv, Schmuck, Muster und Lage", () => {

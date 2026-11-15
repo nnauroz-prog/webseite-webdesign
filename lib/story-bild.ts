@@ -30,19 +30,30 @@
  *
  * Der Film (acht Sekunden) folgt einem Satz: Jedes Ding bewegt sich so,
  * wie es wiegt, und Gedrucktes bewegt sich gar nicht. Das Plakat steht
- * vom ersten Bild an fertig gedruckt da, nur die Pointe fehlt; ihr Platz
- * ist gestrichelt markiert wie ein Stellplatz am Kai. Die Kamera steht
- * nah am Requisit der Reihe, fährt einmal zum Satz und steht still. Die
- * Pointe wird wie Ladung im Hafen an zwei Seilen abgesetzt, das Plakat
- * federt nach, die Kamera fährt in die Totale, und das Schiff legt an.
- * Das letzte Bild ist das Standbild. Keine Lichteffekte, keine
- * Unschärfe: Was sich bewegt, hat ein Gewicht.
+ * vom ersten Bild an fertig gedruckt da, nur die Pointe fehlt noch. Wie
+ * sie kommt und welchen Weg die Kamera nimmt, wechselt von Post zu Post
+ * (lib/story-variante.ts), damit kein Film abläuft wie der davor:
+ *
+ * - Auftritt der Pointe: am Kran an zwei Seilen abgesetzt, als
+ *   Klapptafel umgeschlagen, unter einem Klebeband freigelegt, wie ein
+ *   Stempel aufgedrückt oder mit dem Marker angestrichen.
+ * - Kamera: vom Requisit der Reihe zurück in die Totale, von der Lücke
+ *   der Pointe zurück in die Totale, oder aus der Totale langsam heran.
+ *
+ * Dazu hat jede Reihe ihre Geste (Stempel, Umriss, Zettel, Flagge), und
+ * auf der Wasserlinie fährt ein Schiff ein, das am Ende anlegt. Das
+ * letzte Bild ist das Standbild. Keine Lichteffekte, keine Unschärfe.
  */
 import type { SpruchTag } from "@/lib/sprueche-data";
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { KURSIV_SPERRUNG, satzPlan, type SatzPlan } from "@/lib/story-satz";
 import { MOTIV_WASSER } from "@/lib/story-teile";
-import { varianteFuer, type Variante } from "@/lib/story-variante";
+import {
+  varianteFuer,
+  type Auftritt,
+  type Kamera,
+  type Variante,
+} from "@/lib/story-variante";
 
 /** Ausgabeformate: Story (9:16), Beitrag (4:5) und die Karte der Website (3:4). */
 export type StoryFormat = {
@@ -97,23 +108,25 @@ type Basis = {
   /** Kamera des Bildes, das gerade gezeichnet wird (im Standbild neutral);
    *  dy ist das Federn des ganzen Plakats in Bildpunkten. */
   kam: { x: number; y: number; z: number; dy: number };
+  /** Ablauf des Films: wie die Pointe ins Bild kommt, welchen Weg die Kamera nimmt. */
+  film: { auftritt: Auftritt; kamera: Kamera };
   /** Regie des Films; jedes Format legt sie beim Vorbereiten fest. */
   regie: Regie;
 };
 
 /** Kamera: Blickpunkt (Bildkoordinaten) und Zoom (1 = Standbild). */
 type Pose = { x: number; y: number; z: number };
+/** Station der Kamera: Zur Zeit t steht sie in dieser Lage; kurve formt den Weg dorthin. */
+type Station = { t: number; pose: Pose; kurve?: (u: number) => number };
 /**
- * Regie eines Films. Die Kamera macht nur einen schweren Rückzug: Sie
- * steht nah am Requisit der Reihe (nah), fährt zum Satz samt Lücke
- * (satz), steht dort still, bis die Pointe abgesetzt ist, und fährt dann
- * in die Totale, das Standbild. Dazu das Federn des ganzen Plakats, wenn
- * etwas Schweres aufsetzt (Weg in Bildpunkten, nach unten positiv).
+ * Regie eines Films: die Stationen der Kamera in zeitlicher Folge (vor
+ * der ersten steht sie schon dort, die letzte ist die Totale), dazu das
+ * Federn des ganzen Plakats, wenn etwas Schweres aufsetzt (Weg in
+ * Bildpunkten, nach unten positiv).
  */
 type Regie = {
-  nah: Pose;
-  satz: Pose;
-  feder: { t: number; px: number }[];
+  fahrt: Station[];
+  feder: { t: number; px: number; weich?: boolean }[];
   /** Wo die Pointe aufsetzt (x im Bild) und wie schwer sie ist (0,35 bis 1) */
   ladung: { x: number; masse: number } | null;
 };
@@ -146,7 +159,9 @@ function bezier(x1: number, y1: number, x2: number, y2: number) {
   };
 }
 /** Schwere Fahrt zum Satz: zögert, zieht an, läuft lang aus. */
-const FAHRT_HIN = bezier(0.65, 0, 0.12, 1);
+const FAHRT_HIN = bezier(0.5, 0, 0.2, 1);
+/** Langsame Anfahrt aus der Totale auf den Satz. */
+const ANFAHRT = bezier(0.3, 0, 0.35, 1);
 /** Rückfahrt in die Totale. */
 const FAHRT_ZURUECK = bezier(0.4, 0, 0.1, 1);
 /** Senken der Ladung: volle Fahrt, bremst am Ende. */
@@ -163,21 +178,18 @@ function mitDeck(hex: string, deck: number): string {
 // ---------------------------------------------------------------- Uhr
 
 /**
- * Die Uhr des Films, für alle Reihen gleich. Ein Satz ist das Gesetz:
- * Jedes Ding bewegt sich so, wie es wiegt, und Gedrucktes bewegt sich gar
- * nicht. Das Plakat ist vom ersten Bild an fertig gedruckt, nur die
- * Pointe fehlt; ihr Platz ist markiert wie ein Stellplatz am Kai.
+ * Die Uhr des Films, für alle Reihen und Abläufe gleich:
  *
- * - bis T_NAH steht die Kamera nah am Requisit der Reihe,
- * - bis T_SATZ fährt sie zum Satz samt Lücke und steht dann still,
- * - die Pointe wird wie Ladung an zwei Seilen abgesetzt und setzt bei
- *   T_SCHLAG auf (das ganze Plakat federt nach),
- * - von T_RUECK bis T_STAND fährt die Kamera in die Totale,
- * - das Schiff fährt ein und legt bei T_RUHE an. Danach steht das
- *   Standbild.
+ * - bis T_NAH steht die Kamera nah (am Requisit oder an der Lücke),
+ * - bis T_SATZ fährt sie in die Totale; bei der Anfahrt rückt sie
+ *   stattdessen langsam heran und fährt von T_RUECK bis T_STAND zurück,
+ * - bei T_SCHLAG ist die Pointe da (abgesetzt, umgeschlagen, freigelegt,
+ *   aufgedrückt oder angestrichen),
+ * - das Schiff fährt ab T_SCHIFF ein und legt bei T_RUHE an. Danach
+ *   steht das Standbild.
  */
 const T_NAH = 0.4;
-const T_SATZ = 1.5;
+const T_SATZ = 1.7;
 const T_SCHLAG = 3.63;
 const T_RUECK = 4.3;
 const T_STAND = 5.6;
@@ -186,7 +198,7 @@ const T_RUHE = 7.4;
 const T_PFEIL = 4.5;
 const T_ZUSATZ = 4.87;
 /** Das Schiff fährt ein. */
-const T_SCHIFF = 4.6;
+const T_SCHIFF = 1.6;
 
 /**
  * Zeit der Wasserlinie: Sie zieht ruhig und kommt mit dem Anlegen des
@@ -251,39 +263,57 @@ function federWeg(dt: number): number {
   const u = dt / (4 / 30) - i;
   return weg[i] + (weg[i + 1] - weg[i]) * (0.5 - Math.cos(Math.PI * u) / 2);
 }
+/**
+ * Weiches Nachgeben, wenn etwas sacht abgesetzt wird: Das Plakat sinkt
+ * in zwei Bildern ein und kommt ruhig zurück.
+ */
+function federWeich(dt: number): number {
+  if (dt < 0 || dt >= 0.3) return 0;
+  return dt < 2 / 30 ? dt / (2 / 30) : (1 - (dt - 2 / 30) / (7 / 30)) ** 2;
+}
 
-/** Wo steht die Kamera zur Zeit t? Ab T_STAND und im Standbild neutral. */
-function kameraBei(k: Basis, t: number): Basis["kam"] {
+/** Lage der Kamera zur Zeit t, ohne das Federn. Im Standbild neutral. */
+function kameraPose(k: Basis, t: number): Pose {
   const { f, regie } = k;
-  const totale = { x: f.b / 2, y: f.h / 2, z: 1 };
-  if (!(t < T_RUHE)) return { ...totale, dy: 0 };
-  const mische = (a: Pose, b: Pose, e: number): Pose => ({
-    x: a.x + (b.x - a.x) * e,
-    y: a.y + (b.y - a.y) * e,
-    // Zoom im Verhältnis mischen: So wirkt die Fahrt gleichmäßig.
-    z: a.z * (b.z / a.z) ** e,
-  });
-  const pose =
-    t < T_NAH
-      ? regie.nah
-      : t < T_SATZ
-        ? mische(
-            regie.nah,
-            regie.satz,
-            FAHRT_HIN((t - T_NAH) / (T_SATZ - T_NAH)),
-          )
-        : t < T_RUECK
-          ? regie.satz
-          : t < T_STAND
-            ? mische(
-                regie.satz,
-                totale,
-                FAHRT_ZURUECK((t - T_RUECK) / (T_STAND - T_RUECK)),
-              )
-            : totale;
+  const s = regie.fahrt;
+  if (!(t < T_RUHE) || !s.length) return { x: f.b / 2, y: f.h / 2, z: 1 };
+  if (t <= s[0].t) return s[0].pose;
+  for (let i = 1; i < s.length; i++) {
+    if (t >= s[i].t) continue;
+    const [a, b] = [s[i - 1].pose, s[i].pose];
+    const u = (t - s[i - 1].t) / (s[i].t - s[i - 1].t);
+    const kurve = s[i].kurve;
+    const e = kurve ? kurve(u) : u;
+    return {
+      x: a.x + (b.x - a.x) * e,
+      y: a.y + (b.y - a.y) * e,
+      // Zoom im Verhältnis mischen: So wirkt die Fahrt gleichmäßig.
+      z: a.z * (b.z / a.z) ** e,
+    };
+  }
+  return s[s.length - 1].pose;
+}
+
+/** Wo steht die Kamera zur Zeit t, samt Federn des Plakats? */
+function kameraBei(k: Basis, t: number): Basis["kam"] {
   let dy = 0;
-  for (const s of regie.feder) dy += federWeg(t - s.t) * s.px;
-  return { ...imBild(k, pose), dy };
+  if (t < T_RUHE)
+    for (const s of k.regie.feder)
+      dy += (s.weich ? federWeich : federWeg)(t - s.t) * s.px;
+  return { ...imBild(k, kameraPose(k, t)), dy };
+}
+
+/**
+ * Höchste Oberkante des Bildes zwischen zwei Zeiten: Was darüber
+ * beginnt, ist sicher nicht zu sehen.
+ */
+function bildObenZwischen(k: Basis, von: number, bis: number): number {
+  let oben = Infinity;
+  for (let i = 0; i <= 10; i++) {
+    const p = imBild(k, kameraPose(k, von + ((bis - von) * i) / 10));
+    oben = Math.min(oben, p.y - k.f.h / 2 / p.z);
+  }
+  return oben - 16;
 }
 
 /** Größter Zoom für die Nahaufnahme am Requisit. */
@@ -291,61 +321,46 @@ const ZOOM_NAH = 3;
 
 /**
  * Nahaufnahme: Das Requisit steht mittig und füllt mit seiner längeren
- * Seite 85 Prozent der entsprechenden Bildseite.
+ * Seite 85 Prozent der entsprechenden Bildseite. Ist satzOben gegeben
+ * (Oberkante des Satzes darunter), rückt der Ausschnitt so weit hinauf
+ * und so nah heran, dass kein Wort des Satzes angeschnitten ins Bild
+ * ragt; geht das nicht, bleibt das Requisit mittig.
  */
 function nahAuf(
   k: Basis,
   kasten: { x: number; y: number; b: number; h: number },
   hoechstens = ZOOM_NAH,
+  satzOben?: number,
 ): Pose {
   const { f } = k;
-  const z =
-    kasten.b / f.b > kasten.h / f.h
-      ? (0.85 * f.b) / kasten.b
-      : (0.85 * f.h) / kasten.h;
-  return imBild(k, {
-    x: kasten.x + kasten.b / 2,
-    y: kasten.y + kasten.h / 2,
-    z: Math.max(1.2, Math.min(hoechstens, z)),
-  });
-}
-
-/**
- * Halt am Satz: Der Satzblock samt Lücke füllt 88 Prozent der Bildbreite
- * (Zoom 1,08 bis 1,35), die Lücke liegt etwas über der Bildmitte. Etikett
- * und Wortmarke stehen entweder ganz im Bild oder ganz draußen, nie
- * angeschnitten: Dafür rückt der Ausschnitt ein Stück nach oben oder
- * unten.
- */
-function haltAmSatz(
-  k: Basis,
-  a: {
-    /** linke obere Ecke des Satzes */
-    x: number;
-    y: number;
-    satz: Gesetzt;
-    /** Zettel oder Blase um den Satz: linke Kante und Breite */
-    rahmen?: { x: number; b: number };
-    /** Was nie angeschnitten sein darf (Standard: Etikett und Wortmarke) */
-    baender?: number[][];
-  },
-): Pose {
-  const { f } = k;
-  const p = a.satz.pointe;
   const z = Math.max(
-    1.08,
+    1.2,
     Math.min(
-      1.35,
-      (0.88 * f.b) / a.satz.b,
-      a.rahmen ? (0.94 * f.b) / a.rahmen.b : 9,
+      hoechstens,
+      kasten.b / f.b > kasten.h / f.h
+        ? (0.85 * f.b) / kasten.b
+        : (0.85 * f.h) / kasten.h,
     ),
   );
-  const pose = imBild(k, {
-    x: a.rahmen ? a.rahmen.x + a.rahmen.b / 2 : a.x + a.satz.b / 2,
-    y: a.y + p.y + p.h / 2 + (0.04 * f.h) / z,
-    z,
-  });
-  return sauberStellen(k, pose, a.baender);
+  const [x, y] = [kasten.x + kasten.b / 2, kasten.y + kasten.h / 2];
+  if (satzOben !== undefined) {
+    const grenze = satzOben - 24;
+    const nah = Math.min(Math.max(z, f.h / grenze), 4.2);
+    const pose = imBild(k, {
+      x,
+      y: Math.min(y, grenze - f.h / 2 / nah),
+      z: nah,
+    });
+    const halb = f.h / 2 / nah;
+    // Der Satz bleibt draußen, das Requisit ganz im Bild?
+    if (
+      pose.y + halb <= grenze + 1 &&
+      kasten.y >= pose.y - halb + 16 &&
+      kasten.y + kasten.h <= pose.y + halb - 16
+    )
+      return pose;
+  }
+  return imBild(k, { x, y, z });
 }
 
 /**
@@ -604,6 +619,39 @@ function korn(k: Basis, deck: number) {
 }
 
 // ---------------------------------------------------------------- Text
+
+/** Der Block der Pointe am Satzende steht leicht schräg (zwei Grad). */
+const BLOCK_SCHRAEG = (-2 * Math.PI) / 180;
+/** So weit staucht sich ein Streifen im Aufsetzbild (Anteil seiner Höhe). */
+const STAUCHUNG = 0.06;
+
+/**
+ * Nimmt einen schmalen Streifen um die Strecke von a nach b von allem
+ * aus, was danach gezeichnet wird (bis zum nächsten restore).
+ */
+function aussparen(
+  ctx: Ctx,
+  a: [number, number],
+  b: [number, number],
+  halb: number,
+) {
+  const [dx, dy] = [b[0] - a[0], b[1] - a[1]];
+  const l = Math.hypot(dx, dy);
+  if (l < 0.01) return;
+  const [ex, ey] = [dx / l, dy / l];
+  const [nx, ny] = [-ey * halb, ex * halb];
+  // An den Enden etwas länger, damit zwischen zwei Strecken nichts bleibt.
+  const [a0, a1] = [a[0] - ex * 2, a[1] - ey * 2];
+  const [b0, b1] = [b[0] + ex * 2, b[1] + ey * 2];
+  ctx.beginPath();
+  ctx.rect(-20000, -20000, 40000, 40000);
+  ctx.moveTo(a0 + nx, a1 + ny);
+  ctx.lineTo(b0 + nx, b1 + ny);
+  ctx.lineTo(b0 - nx, b1 - ny);
+  ctx.lineTo(a0 - nx, a1 - ny);
+  ctx.closePath();
+  ctx.clip("evenodd");
+}
 
 /** Ein Farbstreifen der Pointe mit den Wörtern darauf (Lage relativ zur linken oberen Ecke des Satzes). */
 type Streifen = {
@@ -865,7 +913,103 @@ function setzeSatz(
   const ausschlag = ((4.75 - 2.5 * masse) * Math.PI) / 180;
   const daempfung =
     Math.log(ausschlag / ((0.5 * Math.PI) / 180)) / (tHalt - tSenk);
-  const UEBER = 14;
+  /** Im Aufsetzbild und den zwei Bildern danach ist der Streifen gestaucht. */
+  const gestaucht = (t: number) => t >= T_SCHLAG && t - T_SCHLAG < 0.1;
+
+  // Oberkante des Bildes, während die Pointe kommt (die Regie steht erst
+  // nach dem Setzen fest, deshalb beim ersten Bild gerechnet).
+  let obenRand: number | null = null;
+  const bildOben = () =>
+    (obenRand ??= bildObenZwischen(k, tHalt - 1.2, T_SCHLAG + 0.45));
+
+  type Punkt = [number, number];
+  /**
+   * Die Ladung am Seil zur Zeit t: alle Streifen als starres Paket an
+   * zwei Seilen, die sich am Knoten treffen; von dort führt ein Seil
+   * nach oben aus dem Bild. Liefert Höhe und Pendel des Pakets
+   * und die Seile als Linienzüge (in den Koordinaten des Satzes).
+   */
+  const ladungBei = (x: number, y: number, t: number) => {
+    const drehe = (px: number, py: number): Punkt => {
+      if (block === null) return [px, py];
+      const [c, s] = [Math.cos(BLOCK_SCHRAEG), Math.sin(BLOCK_SCHRAEG)];
+      const [dx, dy] = [px - x, py - (y + block)];
+      return [x + dx * c - dy * s, y + block + dx * s + dy * c];
+    };
+    const oben = streifen[0];
+    const kante = y + oben.grundlinie - oben.px * 0.74;
+    const [links, rechts] = [
+      x + oben.x0 - oben.px * 0.13,
+      x + oben.x1 + oben.px * 0.1,
+    ];
+    const seilAn = [0.14, 0.86].map((a) =>
+      drehe(links + (rechts - links) * a, kante),
+    );
+    const [hx, hy] = drehe((links + rechts) / 2, kante);
+    // Liegt der Satz auf einem schiefen Zettel, hängt das Seil trotzdem
+    // lotrecht: „oben“ wird gegen die Drehung des Zettels gerechnet.
+    const lage = ctx.getTransform();
+    const schief = Math.atan2(lage.b, lage.a);
+    const lot = { x: Math.sin(schief), y: Math.cos(schief) };
+    const start = bildOben() - 30 - (y + pointe.y + pointe.h);
+    // Die Ladung senkt sich in einem Zug, wird dabei immer langsamer und
+    // setzt sacht auf.
+    const hoehe =
+      t < T_SCHLAG ? start * (1 - SENKEN((t - tSenk) / (T_SCHLAG - tSenk))) : 0;
+    // Sie pendelt an ihrem langen Seil (der Drehpunkt liegt weit über
+    // dem Bild): erst deutlich, dann gedämpft, vor dem Aufsetzen ruhig.
+    const pendel =
+      t < T_SCHLAG - 0.3
+        ? ausschlag *
+          Math.exp(-daempfung * (t - tSenk)) *
+          Math.cos(((t - tSenk) / 0.9) * Math.PI * 2) *
+          (1 - klemme((t - (T_SCHLAG - 0.55)) / 0.25))
+        : 0;
+    // Nach dem Aufsetzen hängen die Seile schlaff und werden eingeholt.
+    const schlaff = t >= T_SCHLAG ? 8 : 0;
+    const hub =
+      t < T_SCHLAG + 0.12
+        ? 0
+        : EINHOLEN((t - T_SCHLAG - 0.12) / 0.3) * (hy - 150 - bildOben() + 260);
+    // Knoten der beiden Seile: 150 Bildpunkte über der Mitte der Oberkante.
+    const [ax, ay] = [hx - lot.x * 150, hy - lot.y * 150];
+    // Drehpunkt des Pendels: 500 Bildpunkte über dem Bildrand.
+    const weit = ay - (bildOben() - 500);
+    const drehpunkt: Punkt = [ax - lot.x * weit, ay - lot.y * weit];
+    /** Ein Punkt des Pakets (in seiner Ruhelage) dort, wo er gerade hängt. */
+    const [c, s] = [Math.cos(pendel), Math.sin(pendel)];
+    const haengt = (px: number, py: number): Punkt => {
+      const [dx, dy] = [
+        px + lot.x * hoehe - drehpunkt[0],
+        py + lot.y * hoehe - drehpunkt[1],
+      ];
+      return [drehpunkt[0] + dx * c - dy * s, drehpunkt[1] + dx * s + dy * c];
+    };
+    const heben = (px: number, py: number): Punkt => [
+      px - lot.x * hub,
+      py - lot.y * hub,
+    ];
+    const knoten = haengt(...heben(ax, ay));
+    const seile: Punkt[][] = [
+      [knoten, drehpunkt],
+      ...seilAn.map(([sx, sy], i) => {
+        // Straff eine Gerade, schlaff ein flacher Bogen.
+        const n = schlaff ? 8 : 1;
+        const [mx, my] = [
+          (sx + ax) / 2 + (i ? schlaff : -schlaff),
+          (sy + ay) / 2,
+        ];
+        return Array.from({ length: n + 1 }, (_, j) => {
+          const u = j / n;
+          const [p, q, r] = [(1 - u) ** 2, 2 * (1 - u) * u, u * u];
+          return haengt(
+            ...heben(p * sx + q * mx + r * ax, p * sy + q * my + r * ay),
+          );
+        });
+      }),
+    ];
+    return { hoehe, pendel, drehpunkt, lot, knoten, seile };
+  };
 
   return {
     hoehe: satz.hoehe,
@@ -874,12 +1018,26 @@ function setzeSatz(
     pointe,
     masse,
     zeichne: (x, y, t, farben) => {
-      // Gedrucktes steht vom ersten Bild an.
+      const art = k.film.auftritt;
+      const last =
+        art === "kran" && streifen.length && t > tSenk && t < T_SCHLAG + 0.45
+          ? ladungBei(x, y, t)
+          : null;
+
+      // Gedrucktes steht vom ersten Bild an. Hängt ein Seil davor, bleibt
+      // um das Seil ein schmaler Spalt frei: So liest man es vor der
+      // Schrift, auch wenn beide dieselbe Farbe haben.
+      ctx.save();
+      if (last)
+        for (const seil of last.seile)
+          for (let i = 1; i < seil.length; i++)
+            aussparen(ctx, seil[i - 1], seil[i], 6.5);
       ctx.font = grotesk(g);
       sperren(ctx, -g * 0.032);
       ctx.fillStyle = farben.text;
       for (const z of zeilen)
         for (const w of z.woerter) ctx.fillText(w.t, x + w.x, y + z.grundlinie);
+      ctx.restore();
       sperren(ctx, 0);
       if (!streifen.length) return;
 
@@ -888,58 +1046,243 @@ function setzeSatz(
         if (block === null) return zeichne();
         ctx.save();
         ctx.translate(x, y + block);
-        ctx.rotate((-2 * Math.PI) / 180);
+        ctx.rotate(BLOCK_SCHRAEG);
         ctx.translate(-x, -(y + block));
         zeichne();
         ctx.restore();
       };
-      /** Die Streifen; schwebt = Höhe über dem Blatt (für den Schatten). */
-      const maleStreifen = (schwebt: number) =>
+      /** Das Wort eines Streifens. */
+      const wortMalen = (s: Streifen, farbe: string) => {
+        ctx.font = kursiv(s.px);
+        sperren(ctx, s.px * KURSIV_SPERRUNG);
+        ctx.fillStyle = farbe;
+        for (const w of s.woerter) ctx.fillText(w.t, x + w.x, y + s.grundlinie);
+        sperren(ctx, 0);
+      };
+      /** Ein Streifen, mit oder ohne sein Wort. */
+      const streifenMalen = (s: Streifen, wort: boolean) => {
+        streifenPfad(ctx, x + s.x0, x + s.x1, y + s.grundlinie, s.px);
+        ctx.fillStyle = farben.balken;
+        ctx.fill();
+        ohneSchatten(ctx);
+        if (wort) wortMalen(s, farben.pointe);
+      };
+      /** Kanten eines Streifens: links, rechts, oben, unten. */
+      const kasten = (s: Streifen) => [
+        x + s.x0 - s.px * 0.13,
+        x + s.x1 + s.px * 0.1,
+        y + s.grundlinie - s.px * 0.74,
+        y + s.grundlinie + s.px * 0.31,
+      ];
+      /**
+       * Alle Streifen als ein Paket (Kran, Presse). versatz und weite
+       * beschreiben den Schatten, solange das Paket über dem Blatt
+       * schwebt.
+       */
+      const malePaket = (versatz: number, weite = 18) =>
         imBlock(() =>
-          streifen.forEach((s, nr) => {
+          streifen.forEach((s) => {
             ctx.save();
-            // Im Aufsetzbild staucht sich der Streifen kurz (drei Bilder).
-            const seit = t - T_SCHLAG;
-            if (seit >= 0 && seit < 0.1) {
+            // Unter der Presse staucht sich der Streifen im Aufsetzbild
+            // kurz (drei Bilder).
+            if (art === "presse" && gestaucht(t)) {
               const [mx, unten] = [
                 x + (s.x0 + s.x1) / 2,
                 y + s.grundlinie + s.px * 0.31,
               ];
               ctx.translate(mx, unten);
-              ctx.scale(1.03, 0.94);
+              ctx.scale(1.03, 1 - STAUCHUNG);
               ctx.translate(-mx, -unten);
             }
-            if (schwebt > 0) {
+            if (versatz > 0) {
               ctx.shadowColor = mitDeck(
                 helligkeit(farben.text) > 0.7 ? "#000000" : farben.text,
                 0.22,
               );
-              ctx.shadowBlur = 18 * k.skala * k.kam.z;
-              ctx.shadowOffsetY =
-                Math.min(26, 0.12 * schwebt) * k.skala * k.kam.z;
+              ctx.shadowBlur = weite * k.skala * k.kam.z;
+              ctx.shadowOffsetY = versatz * k.skala * k.kam.z;
             }
-            streifenPfad(ctx, x + s.x0, x + s.x1, y + s.grundlinie, s.px);
-            ctx.fillStyle = farben.balken;
-            ctx.fill();
-            ohneSchatten(ctx);
-            // Das Wort steht im Aufsetzbild da, die zweite Zeile fünf
-            // Bilder später.
-            if (t >= T_SCHLAG + (nr * 5) / 30) {
-              ctx.font = kursiv(s.px);
-              sperren(ctx, s.px * KURSIV_SPERRUNG);
-              ctx.fillStyle = farben.pointe;
-              for (const w of s.woerter)
-                ctx.fillText(w.t, x + w.x, y + s.grundlinie);
-              sperren(ctx, 0);
-            }
+            // Das Wort steht im Aufsetzbild da.
+            streifenMalen(s, t >= T_SCHLAG);
             ctx.restore();
           }),
         );
 
-      // Standbild und Film nach dem Absetzen: Die Pointe liegt.
-      if (!(t < T_SCHLAG + 0.45)) return maleStreifen(0);
+      // Standbild und Film nach dem Auftritt: Die Pointe liegt.
+      if (!(t < T_SCHLAG + 0.6)) return malePaket(0);
 
-      // Stellplatz: gestrichelter Umriss, bis die Ladung aufsetzt.
+      /**
+       * Klapptafel wie am Bahnhof: Der Streifen steht leer da, schlägt
+       * einmal leer um und dann auf das Wort. Jeder Schlag dauert sechs
+       * Bilder; die obere Hälfte fällt nach vorn und wird zur unteren.
+       */
+      const klappe = (s: Streifen, nr: number) => {
+        const ende = T_SCHLAG + (nr * 5) / 30;
+        if (!(t < ende)) return streifenMalen(s, true);
+        const [links, rechts, oben, unten] = kasten(s);
+        const mitte = (oben + unten) / 2;
+        const haelfte = (
+          obere: boolean,
+          wort: boolean,
+          stauch = 1,
+          dunkel = 0,
+        ) => {
+          ctx.save();
+          ctx.translate(0, mitte);
+          ctx.scale(1, stauch);
+          ctx.translate(0, -mitte);
+          ctx.beginPath();
+          ctx.rect(
+            links - s.px * 0.2,
+            obere ? oben - 2 : mitte,
+            rechts - links + s.px * 0.4,
+            (unten - oben) / 2 + 2,
+          );
+          ctx.clip();
+          streifenMalen(s, wort);
+          if (dunkel > 0) {
+            streifenPfad(ctx, x + s.x0, x + s.x1, y + s.grundlinie, s.px);
+            ctx.fillStyle = `rgb(0 0 0 / ${dunkel})`;
+            ctx.fill();
+          }
+          ctx.restore();
+        };
+        const schlaege = [ende - 13 / 30, ende - 6 / 30];
+        const i = t >= schlaege[1] ? 1 : t >= schlaege[0] ? 0 : -1;
+        const u = i < 0 ? 1 : (t - schlaege[i]) / (6 / 30);
+        if (u >= 1) streifenMalen(s, false);
+        else {
+          // Dahinter: oben schon das neue Blatt, unten noch das alte.
+          haelfte(true, i === 1);
+          haelfte(false, false);
+          // Davor die fallende Hälfte; je steiler, desto dunkler.
+          if (u < 0.5) haelfte(true, false, 1 - 2 * u, 0.3 * (2 * u));
+          else haelfte(false, i === 1, 2 * u - 1, 0.3 * (2 - 2 * u));
+        }
+        // Die Fuge zwischen den beiden Hälften.
+        ctx.save();
+        ctx.strokeStyle = "rgb(0 0 0 / 0.26)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(links, mitte);
+        ctx.lineTo(rechts, mitte);
+        ctx.stroke();
+        ctx.restore();
+      };
+
+      /**
+       * Klebeband: Die Pointe liegt fertig da, ist aber überklebt. Das
+       * Band wird von links abgezogen, erst zögernd, dann mit einem Ruck;
+       * die gelöste Lasche schlägt um und wirft einen Schatten.
+       */
+      const abziehen = (s: Streifen, nr: number) => {
+        streifenMalen(s, true);
+        const ende = T_SCHLAG + (nr * 5) / 30;
+        if (!(t < ende + 0.2)) return;
+        // Das Band ist rundum größer als der Streifen, an den gezackten
+        // Enden deutlich: Nichts von der Pointe schaut vorher heraus.
+        const rand = Math.max(10, s.px * 0.07);
+        const [l0, r0, o0, u0] = kasten(s);
+        const [links, rechts, oben, unten] = [
+          l0 - rand - 14,
+          r0 + rand + 14,
+          o0 - rand / 2,
+          u0 + rand / 2,
+        ];
+        const dauer = 0.45 + 0.3 * klemme((rechts - links) / 900);
+        const p = klemme((t - (ende - dauer)) / dauer) ** 1.7;
+        const kante = links + (rechts - links) * p;
+        const hell = helligkeit(farben.text) > 0.7;
+        const zacken = (xx: number, yy: number, richtung: number) => {
+          for (let i = 0; i <= 6; i++)
+            ctx.lineTo(
+              xx - (i % 2 ? 9 : 0),
+              yy + (richtung * i * (unten - oben)) / 6,
+            );
+        };
+        ctx.save();
+        if (t < ende) {
+          // Was noch klebt: von der Abzugskante bis zum gezackten Ende.
+          ctx.shadowColor = "rgb(0 0 0 / 0.2)";
+          ctx.shadowBlur = 6 * k.skala * k.kam.z;
+          ctx.shadowOffsetY = 2 * k.skala * k.kam.z;
+          ctx.fillStyle = hell ? "#eadfc6" : "#d9c69c";
+          ctx.beginPath();
+          ctx.moveTo(kante, oben);
+          zacken(rechts, oben, 1);
+          ctx.lineTo(kante, unten);
+          if (p <= 0)
+            for (let i = 6; i >= 0; i--)
+              ctx.lineTo(
+                links + (i % 2 ? 9 : 0),
+                oben + (i * (unten - oben)) / 6,
+              );
+          ctx.closePath();
+          ctx.fill();
+          ohneSchatten(ctx);
+        }
+        if (p > 0) {
+          // Die Lasche: Rückseite des Bands, am freien Ende angehoben.
+          // Ist das Band ab, fliegt sie nach rechts oben aus dem Bild.
+          const weg = Math.max(0, t - ende);
+          const lang = Math.min(kante - links, 70 + 0.3 * (kante - links));
+          ctx.translate(kante + weg * 5200, (oben + unten) / 2 - weg * 1500);
+          ctx.rotate(-weg * 2.5);
+          ctx.translate(-kante, -(oben + unten) / 2);
+          ctx.shadowColor = "rgb(0 0 0 / 0.3)";
+          ctx.shadowBlur = 14 * k.skala * k.kam.z;
+          ctx.shadowOffsetY = 8 * k.skala * k.kam.z;
+          ctx.fillStyle = hell ? "#cfc2a4" : "#bfa977";
+          ctx.beginPath();
+          ctx.moveTo(kante, oben);
+          zacken(kante + lang, oben - 16, 1);
+          ctx.lineTo(kante, unten);
+          ctx.closePath();
+          ctx.fill();
+          ohneSchatten(ctx);
+        }
+        ctx.restore();
+      };
+
+      /**
+       * Marker: Das Wort steht schon gedruckt da; dann zieht der Strich
+       * von links nach rechts darüber (in Stufen, 24 je Sekunde), und das
+       * Wort wechselt unter ihm die Farbe.
+       */
+      const marker = (s: Streifen, nr: number) => {
+        const ende = T_SCHLAG + (nr * 5) / 30;
+        if (!(t < ende)) return streifenMalen(s, true);
+        wortMalen(s, farben.text);
+        const [l0, r0] = kasten(s);
+        const [links, rechts] = [l0 - s.px * 0.1, r0 + s.px * 0.1];
+        const dauer = 0.3 + 0.3 * klemme((rechts - links) / 900);
+        const stufen = Math.ceil(dauer * 24);
+        const stand = Math.floor((t - (ende - dauer)) * 24) + 1;
+        if (stand <= 0) return;
+        const q = FAHRT_ZURUECK(stand / stufen);
+        const spitze = links + (rechts - links) * q;
+        const schub = s.px * 0.07;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(links - 30, y + s.grundlinie - s.px);
+        ctx.lineTo(spitze + schub, y + s.grundlinie - s.px);
+        ctx.lineTo(spitze - schub, y + s.grundlinie + s.px * 0.5);
+        ctx.lineTo(links - 30, y + s.grundlinie + s.px * 0.5);
+        ctx.closePath();
+        ctx.clip();
+        streifenMalen(s, true);
+        ctx.restore();
+      };
+
+      if (art === "klappe")
+        return imBlock(() => streifen.forEach((s, nr) => klappe(s, nr)));
+      if (art === "abziehen")
+        return imBlock(() => streifen.forEach((s, nr) => abziehen(s, nr)));
+      if (art === "marker")
+        return imBlock(() => streifen.forEach((s, nr) => marker(s, nr)));
+
+      // Kran und Presse: Der Platz der Pointe ist gestrichelt markiert,
+      // bis sie aufsetzt.
       if (t < T_SCHLAG)
         imBlock(() => {
           ctx.save();
@@ -957,87 +1300,67 @@ function setzeSatz(
           }
           ctx.restore();
         });
-      if (t <= tSenk) return;
+      else if (!last) return malePaket(0);
 
-      // Die Ladung: alle Streifen als starres Paket an zwei Seilen.
-      const drehe = (px: number, py: number): [number, number] => {
-        if (block === null) return [px, py];
-        const [c, s] = [Math.cos(-0.0349), Math.sin(-0.0349)];
-        const [dx, dy] = [px - x, py - (y + block)];
-        return [x + dx * c - dy * s, y + block + dx * s + dy * c];
-      };
-      const oben = streifen[0];
-      const kante = y + oben.grundlinie - oben.px * 0.74;
-      const [links, rechts] = [
-        x + oben.x0 - oben.px * 0.13,
-        x + oben.x1 + oben.px * 0.1,
-      ];
-      const seilAn = [0.14, 0.86].map((a) =>
-        drehe(links + (rechts - links) * a, kante),
-      );
-      const [hx, hy] = drehe((links + rechts) / 2, kante);
-      // Liegt der Satz auf einem schiefen Zettel, hängt das Seil trotzdem
-      // lotrecht: „oben“ wird gegen die Drehung des Zettels gerechnet.
-      const lage = ctx.getTransform();
-      const schief = Math.atan2(lage.b, lage.a);
-      const lot = { x: Math.sin(schief), y: Math.cos(schief) };
-      // Oberkante des Bildes, solange die Kamera am Satz steht.
-      const bildOben = k.regie.satz.y - k.f.h / 2 / k.regie.satz.z;
-      const start = bildOben - 30 - (y + pointe.y + pointe.h);
-      const hoehe =
-        t < tHalt
-          ? start + (-UEBER - start) * SENKEN((t - tSenk) / (tHalt - tSenk))
-          : t < tFall
-            ? -UEBER
-            : t < T_SCHLAG
-              ? -UEBER * (1 - (t - tFall) / (T_SCHLAG - tFall))
-              : 0;
-      // Pendeln um den Aufhängepunkt, bis zum Halt gedämpft.
-      const pendel =
-        t < tHalt
-          ? ausschlag *
-            Math.exp(-daempfung * (t - tSenk)) *
-            Math.cos(((t - tSenk) / 0.9) * Math.PI * 2) *
-            (1 - klemme((t - tHalt + 0.2) / 0.2))
-          : 0;
-      // Nach dem Aufsetzen hängen die Seile schlaff und werden eingeholt.
-      const schlaff = t >= T_SCHLAG ? 8 : 0;
-      const hub =
-        t < T_SCHLAG + 0.12
-          ? 0
-          : EINHOLEN((t - T_SCHLAG - 0.12) / 0.3) * (hy - 150 - bildOben + 260);
-      // Aufhängepunkt: 150 Bildpunkte über der Mitte der Oberkante.
-      const haken = {
-        x: hx + lot.x * (hoehe - 150),
-        y: hy + lot.y * (hoehe - 150),
-      };
+      if (art === "presse") {
+        // Presse: Die Pointe schwenkt groß und schräg von oben rechts
+        // herein, schwebt über ihrem Platz und wird in zwei Bildern
+        // aufgedrückt wie ein Stempel.
+        const an = tHalt - (0.5 + 0.3 * masse);
+        if (t <= an || t >= T_SCHLAG) return;
+        const [mx, my] = [
+          x + pointe.x + pointe.b / 2,
+          y + pointe.y + pointe.h / 2,
+        ];
+        const e = t < tHalt ? SENKEN((t - an) / (tHalt - an)) : 1;
+        const fall = t < tFall ? 0 : (t - tFall) / (T_SCHLAG - tFall);
+        const gross = t < tHalt ? 1.9 - 0.68 * e : 1.22 - 0.22 * fall;
+        const grad = t < tHalt ? -9 + 5 * e : -4 * (1 - fall);
+        ctx.save();
+        ctx.translate(
+          mx + (1 - e) * 0.24 * k.f.b,
+          my + (1 - e) * (bildOben() - 40 - pointe.h * 0.95 - my),
+        );
+        ctx.rotate((grad * Math.PI) / 180);
+        ctx.scale(gross, gross);
+        ctx.translate(-mx, -my);
+        malePaket((gross - 1) * 120, 18 + (gross - 1) * 60);
+        ctx.restore();
+        return;
+      }
+      if (!last) return;
+
+      // Kran: die Seile, am Knoten ein Schäkel, dann das Paket mit zwei
+      // Ösen, an denen die Seile greifen.
       ctx.save();
       ctx.strokeStyle = farben.text;
-      ctx.lineWidth = 2.5;
+      ctx.fillStyle = farben.text;
+      ctx.lineWidth = 3.5;
       ctx.lineCap = "round";
-      // Das Seil vom Aufhängepunkt lotrecht nach oben aus dem Bild.
-      ctx.beginPath();
-      ctx.moveTo(haken.x - lot.x * hub, haken.y - lot.y * hub);
-      ctx.lineTo(haken.x - lot.x * 6000, haken.y - lot.y * 6000);
-      ctx.stroke();
-      // Das Paket hängt am Haken und pendelt um ihn.
-      ctx.translate(haken.x, haken.y);
-      ctx.rotate(pendel);
-      ctx.translate(-haken.x, -haken.y);
-      ctx.translate(lot.x * hoehe, lot.y * hoehe);
-      const [ax, ay] = [hx - lot.x * 150, hy - lot.y * 150];
-      seilAn.forEach(([sx, sy], i) => {
+      ctx.lineJoin = "round";
+      for (const seil of last.seile) {
         ctx.beginPath();
-        ctx.moveTo(sx - lot.x * hub, sy - lot.y * hub);
-        ctx.quadraticCurveTo(
-          (sx + ax) / 2 + (i ? schlaff : -schlaff) - lot.x * hub,
-          (sy + ay) / 2 - lot.y * hub,
-          ax - lot.x * hub,
-          ay - lot.y * hub,
+        seil.forEach(([sx, sy], i) =>
+          i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy),
         );
         ctx.stroke();
-      });
-      maleStreifen(-hoehe);
+      }
+      ctx.beginPath();
+      ctx.arc(last.knoten[0], last.knoten[1], 7, 0, Math.PI * 2);
+      ctx.fill();
+      // Das Paket hängt am Seil und pendelt mit ihm.
+      ctx.save();
+      ctx.translate(last.drehpunkt[0], last.drehpunkt[1]);
+      ctx.rotate(last.pendel);
+      ctx.translate(-last.drehpunkt[0], -last.drehpunkt[1]);
+      ctx.translate(last.lot.x * last.hoehe, last.lot.y * last.hoehe);
+      malePaket(Math.min(26, 0.12 * -last.hoehe));
+      ctx.restore();
+      for (const seil of last.seile.slice(1)) {
+        ctx.beginPath();
+        ctx.arc(seil[0][0], seil[0][1], 5.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     },
   };
@@ -1321,6 +1644,7 @@ function fuss(
     return (
       (3 + 4 * schlag.masse) *
       (1 - seit / 1.2) ** 2 *
+      Math.min(1, -d / 40) *
       Math.sin(d / 18) *
       Math.exp(d / 120)
     );
@@ -1613,9 +1937,32 @@ const kasten = (m: ZeichenMass) => ({ x: m.l, y: m.o, b: m.b, h: m.h });
 const nahEtikett = (k: Basis): Pose =>
   nahAuf(k, { x: RAND, y: k.f.oben + 6, b: 330, h: 62 }, 2.4);
 
+/** Der Rückzug: nah an einer Stelle, dann eine einzige Fahrt in die Totale. */
+function rueckzug(k: Basis, nah: Pose, bis = T_NAH): Station[] {
+  return [
+    { t: bis, pose: nah },
+    {
+      t: T_SATZ,
+      pose: { x: k.f.b / 2, y: k.f.h / 2, z: 1 },
+      kurve: FAHRT_HIN,
+    },
+  ];
+}
+
 /**
- * Regie der Reihen mit abgesetzter Pointe: nah am Requisit, Halt am Satz,
- * und das Plakat federt, wenn die Pointe aufsetzt (schwere weiter).
+ * Regie der Reihen mit Pointe auf dem Farbstreifen. Die Kamera nimmt
+ * einen von drei Wegen; bei allen steht das ganze Plakat im Bild, wenn
+ * die Pointe kommt, nichts ist angeschnitten:
+ *
+ * - Rückzug: nah am Requisit der Reihe, dann eine Fahrt in die Totale.
+ * - Lücke: nah an der Stelle, an der die Pointe fehlt, dann die Fahrt
+ *   in die Totale.
+ * - Anfahrt: Das ganze Plakat steht im Bild, die Kamera rückt langsam
+ *   ein Stück heran, bis die Pointe da ist, und wieder zurück.
+ *
+ * Das Plakat gibt nach, wenn die Pointe mit Gewicht aufsetzt: weich
+ * unter der Ladung am Kran, hart unter der Presse, leicht bei der
+ * Klapptafel.
  */
 function regieFuer(
   k: Basis,
@@ -1624,20 +1971,67 @@ function regieFuer(
     x: number;
     y: number;
     satz: Gesetzt;
-    rahmen?: { x: number; b: number };
     baender?: number[][];
     feder?: Regie["feder"];
   },
 ): Regie {
+  const { f } = k;
   const { masse, pointe } = a.satz;
+  const { auftritt, kamera } = k.film;
+  const totale = { x: f.b / 2, y: f.h / 2, z: 1 };
+  let fahrt = rueckzug(k, a.nah);
+  if (kamera === "anfahrt") {
+    // Mittig, damit an den Seiten nichts angeschnitten wird; passt der
+    // engere Ausschnitt oben und unten nicht sauber, nur ein kleines Stück.
+    const eng = sauberStellen(k, { ...totale, z: 1.1 }, a.baender);
+    if (eng.z === 1) eng.z = 1.04;
+    fahrt = [
+      { t: 0.5, pose: totale },
+      { t: T_SCHLAG - 0.3, pose: eng, kurve: ANFAHRT },
+      { t: T_RUECK + 0.2, pose: eng },
+      { t: T_STAND + 0.2, pose: totale, kurve: FAHRT_ZURUECK },
+    ];
+  } else if (kamera === "luecke" && masse) {
+    // Nah am Anfang der Lücke: Eine breite Pointe läuft rechts aus dem Bild.
+    const z = Math.max(1.7, Math.min(2.2, (0.85 * f.b) / pointe.b));
+    const sicht = f.b / z;
+    fahrt = rueckzug(
+      k,
+      imBild(k, {
+        x:
+          pointe.b <= 0.84 * sicht
+            ? a.x + pointe.x + pointe.b / 2
+            : a.x + pointe.x + 0.42 * sicht,
+        y: a.y + pointe.y + pointe.h / 2,
+        z,
+      }),
+      0.5,
+    );
+  }
+  const wucht = !masse
+    ? 0
+    : auftritt === "kran"
+      ? 6 + 6 * masse
+      : auftritt === "presse"
+        ? 10 + 8 * masse
+        : auftritt === "klappe"
+          ? 4
+          : 0;
   return {
-    nah: a.nah,
-    satz: haltAmSatz(k, a),
+    fahrt,
     feder: [
-      ...(a.feder ?? []),
-      ...(masse ? [{ t: T_SCHLAG, px: 6 + 8 * masse }] : []),
+      // Steht die Kamera an der Lücke, sieht man das Requisit nicht: Dann
+      // federt das Plakat auch nicht unter seinem Aufdruck.
+      ...(kamera === "luecke" ? [] : (a.feder ?? [])),
+      ...(wucht
+        ? [{ t: T_SCHLAG, px: wucht, weich: auftritt === "kran" }]
+        : []),
     ],
-    ladung: masse ? { x: a.x + pointe.x + pointe.b / 2, masse } : null,
+    // Nur was mit Gewicht aufsetzt, schlägt Wellen.
+    ladung:
+      masse && (auftritt === "kran" || auftritt === "presse")
+        ? { x: a.x + pointe.x + pointe.b / 2, masse }
+        : null,
   };
 }
 
@@ -1704,9 +2098,9 @@ function plakat(k: Basis): Maler {
         };
   k.regie = regieFuer(k, {
     nah: ausrufe
-      ? nahAuf(k, kasten(ausrufe))
+      ? nahAuf(k, kasten(ausrufe), ZOOM_NAH, y)
       : zitat
-        ? nahAuf(k, kasten(zitat))
+        ? nahAuf(k, kasten(zitat), ZOOM_NAH, y)
         : www
           ? nahAuf(k, {
               x: RAND,
@@ -1715,12 +2109,17 @@ function plakat(k: Basis): Maler {
               h: www.px * 0.56,
             })
           : stempel
-            ? nahAuf(k, {
-                x: stempel.x - stempel.r,
-                y: stempel.y - stempel.r,
-                b: stempel.r * 2,
-                h: stempel.r * 2,
-              })
+            ? nahAuf(
+                k,
+                {
+                  x: stempel.x - stempel.r,
+                  y: stempel.y - stempel.r,
+                  b: stempel.r * 2,
+                  h: stempel.r * 2,
+                },
+                ZOOM_NAH,
+                y,
+              )
             : nahEtikett(k),
     x: RAND,
     y,
@@ -1851,7 +2250,6 @@ function sprechblase(k: Basis): Maler {
     x: x + 62,
     y: y + 66,
     satz,
-    rahmen: { x, b: aussen },
   });
   return (t) => {
     grund(k, l);
@@ -1916,12 +2314,12 @@ function flagge(k: Basis): Maler {
   const lang = f.b - mastX + 40;
   const laenge = lang + 90;
   k.regie = regieFuer(k, {
-    nah: nahAuf(k, {
-      x: mastX - 30,
-      y: oben - 21,
-      b: f.b - mastX + 30,
-      h: mast * 0.8,
-    }),
+    nah: nahAuf(
+      k,
+      { x: mastX - 30, y: oben - 21, b: f.b - mastX + 30, h: mast },
+      ZOOM_NAH,
+      y,
+    ),
     x: RAND,
     y,
     satz,
@@ -1929,11 +2327,9 @@ function flagge(k: Basis): Maler {
   return (t) => {
     grund(k, l);
     ctx.save();
-    // Das Tuch weht in vier Stellungen, acht je Sekunde, wie von Hand
-    // gezeichnet; mit dem Anlegen des Schiffs steht es in der Stellung
-    // des Standbilds.
-    const phase =
-      t < T_RUHE ? -(Math.ceil((T_RUHE - t) * 8) % 4) * (Math.PI / 2) : 0;
+    // Das Tuch weht ruhig und kommt mit dem Anlegen des Schiffs in der
+    // Stellung des Standbilds zur Ruhe.
+    const phase = lauf(t) * 2.6;
     // Es besteht aus schmalen senkrechten Streifen, die einer Welle
     // folgen: So wirft es Falten.
     const welle = (x: number) =>
@@ -2045,25 +2441,14 @@ function mythos(k: Basis): Maler {
   const stufen = Math.max(1, Math.ceil((takt * 2 * 12) / (3 * 30)));
   const weit = f.h - teilung + 160;
   const neigung = (300 * 68) / f.b;
-  const weite = Math.max(
-    marke0,
-    ...irrtum.zeilen.map((z) => z.breite),
-    ...wahr.zeilen.map((z) => z.breite),
-  );
   k.regie = {
-    // Nah am öffnenden Anführungszeichen des Irrtums.
-    nah: imBild(k, {
-      x: RAND + irrtum.px * 0.9,
-      y: yIrrtum + irrtum.px * 0.6,
-      z: 2.2,
-    }),
-    // Halt: der Irrtum und darunter der Platz für das Blatt.
-    satz: sauberStellen(
+    // Nah am öffnenden Anführungszeichen des Irrtums, dann die Totale.
+    fahrt: rueckzug(
       k,
       imBild(k, {
-        x: RAND + weite / 2,
-        y: (yIrrtum + yMarke + 96 + wahr.px * 1.3) / 2,
-        z: Math.max(1.06, Math.min(1.3, (0.9 * f.b) / weite)),
+        x: RAND + irrtum.px * 0.9,
+        y: yIrrtum + irrtum.px * 0.6,
+        z: 2.2,
       }),
     ),
     feder: [{ t: T_SCHLAG, px: -8 }],
@@ -2310,7 +2695,7 @@ function frage(k: Basis): Maler {
   const y = k.unten - gesamt;
   const zeichen = zeichenMass(k, "?", f.oben + 96, y - 56, {});
   k.regie = regieFuer(k, {
-    nah: zeichen ? nahAuf(k, kasten(zeichen)) : nahEtikett(k),
+    nah: zeichen ? nahAuf(k, kasten(zeichen), ZOOM_NAH, y) : nahEtikett(k),
     x: RAND,
     y,
     satz,
@@ -2371,7 +2756,6 @@ function notiz(k: Basis): Maler {
     x: x + rand,
     y: y + kopfLuft,
     satz,
-    rahmen: { x, b: aussen },
     feder: merken ? [DRUCK_FEDER] : [],
   });
   return (t) => {
@@ -2525,10 +2909,15 @@ export async function storyVorbereiten(
   canvas: HTMLCanvasElement,
   karte: SpruchTag,
   format: StoryFormat = FORMATE.story,
-  optionen: { skala?: number; versatz?: number } = {},
+  optionen: {
+    skala?: number;
+    versatz?: number;
+    film?: { auftritt?: Auftritt; kamera?: Kamera };
+  } = {},
 ): Promise<StoryZeichner> {
   // skala < 1 zeichnet ein kleines Vorschaubild, versatz wählt ein
-  // anderes Design als das des Tages.
+  // anderes Design als das des Tages, film legt den Ablauf des Films
+  // von Hand fest (für die Prüfung aller Abläufe).
   const skala = optionen.skala ?? 1;
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => undefined;
@@ -2558,7 +2947,6 @@ export async function storyVorbereiten(
   canvas.height = Math.round(format.h * skala);
   ctx.setTransform(skala, 0, 0, skala, 0, 0);
   const v = varianteFuer(karte.nummer, karte.platz, optionen.versatz ?? 0);
-  const totale = { x: format.b / 2, y: format.h / 2, z: 1 };
   const basis: Basis = {
     ctx,
     f: format,
@@ -2573,8 +2961,12 @@ export async function storyVorbereiten(
     // (in der hohen Story mit mehr Luft als in den gedrungenen Formaten).
     unten: format.unten - (format.name === "story" ? 226 : 204),
     eng: { wert: false, klein: 999 },
-    kam: { ...totale, dy: 0 },
-    regie: { nah: totale, satz: totale, feder: [], ladung: null },
+    kam: { x: format.b / 2, y: format.h / 2, z: 1, dy: 0 },
+    film: {
+      auftritt: optionen.film?.auftritt ?? v.auftritt,
+      kamera: optionen.film?.kamera ?? v.kamera,
+    },
+    regie: { fahrt: [], feder: [], ladung: null },
   };
   const male = formatFuer(karte.kicker)(basis);
   // Für die Prüfung aller Karten: Hat ein Text nicht in sein Feld gepasst?
