@@ -12,7 +12,9 @@
  * Farbwelt, Motiv, Schmuck, Grundmuster und Lage jeden Tag, dieselbe
  * Farbwelt kommt frühestens nach einer Woche wieder, und die drei Posts
  * eines Tages haben verschiedene Farbwelten, Motive und Schmuckformen.
- * Geprüft in tests/story-look.test.ts.
+ * Dazu kommt der Ablauf des Films (Auftritt der Pointe, Weg der Kamera):
+ * Er wechselt ebenfalls täglich und ist bei den drei Posts eines Tages
+ * verschieden. Geprüft in tests/story-look.test.ts.
  */
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { MOTIVE, SCHMUCK, type Motiv, type Schmuck } from "@/lib/story-teile";
@@ -35,6 +37,26 @@ export type Aufkleber = (typeof AUFKLEBER)[number];
 export const BALKEN = ["gefuellt", "rahmen"] as const;
 export type Balken = (typeof BALKEN)[number];
 
+/**
+ * Wie die Pointe im Film ins Bild kommt: am Kran abgesetzt, als Klapptafel
+ * umgeschlagen, unter einem Klebeband freigelegt, wie ein Stempel
+ * aufgedrückt oder mit dem Marker angestrichen.
+ */
+export const AUFTRITTE = [
+  "kran",
+  "klappe",
+  "abziehen",
+  "presse",
+  "marker",
+] as const;
+export type Auftritt = (typeof AUFTRITTE)[number];
+/**
+ * Weg der Kamera im Film: vom Requisit zurück zum Satz, aus der Totale
+ * langsam heran, oder von der Lücke der Pointe zurück.
+ */
+export const KAMERAS = ["rueckzug", "anfahrt", "luecke"] as const;
+export type Kamera = (typeof KAMERAS)[number];
+
 /** Der Aufkleber sitzt jeden Tag etwas anders gedreht (Grad). */
 const DREHUNG = [-6, 4, -4, 5, -7, 3];
 
@@ -48,6 +70,9 @@ export type Variante = {
   balken: Balken;
   /** Drehung des Aufklebers in Grad */
   dreh: number;
+  /** Ablauf des Films: Auftritt der Pointe und Weg der Kamera */
+  auftritt: Auftritt;
+  kamera: Kamera;
   /** Nummer der Zusammenstellung (0 bis VARIANTEN - 1) */
   schluessel: number;
 };
@@ -121,6 +146,17 @@ export function varianteFuer(nummer: number, platz = 0, versatz = 0): Variante {
     aufkleber: AUFKLEBER[aufkleber],
     balken: BALKEN[balken],
     dreh: DREHUNG[mod(nummer, DREHUNG.length)],
+    // Der Film wechselt unabhängig vom Bild: Die drei Posts eines Tages
+    // laufen verschieden ab, und der Spruch des Tages hat jeden Tag einen
+    // anderen Auftritt und einen anderen Kameraweg als am Vortag.
+    auftritt:
+      AUFTRITTE[
+        mod(
+          (nummer - ERSTER_TAG) * PLAETZE + platz + versatz * 2,
+          AUFTRITTE.length,
+        )
+      ],
+    kamera: KAMERAS[mod(nummer - ERSTER_TAG + platz + versatz, KAMERAS.length)],
     schluessel,
   };
 }
