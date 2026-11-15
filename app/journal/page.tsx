@@ -16,7 +16,7 @@ import { Produktleiste } from "@/components/marketing/produktleiste";
 import { JOURNAL_POSTS } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
-import { THEMA_LABEL, spruecheBis } from "@/lib/sprueche-data";
+import { spruecheBis } from "@/lib/sprueche-data";
 
 /** Der Spruch wechselt jeden Tag: Die Seite wird halbstündlich neu erzeugt. */
 export const revalidate = 1800;
@@ -142,14 +142,22 @@ export default function JournalPage() {
       <UnterseiteMain>
         <SpruchReel
           tage={tage}
-          themen={THEMA_LABEL}
           kopf={
             <>
               <p className="kennzeile-mono">Journal · Logbuch</p>
               <h1>Jeden Tag ein Gedanke zur Website.</h1>
             </>
           }
-          fuss="Jeden Tag ein neuer Spruch. Die letzten sieben Tage zum Blättern."
+          fuss={
+            <>
+              <MehrLink href="/anfrage" groesse="unter">
+                Anfrage schreiben
+              </MehrLink>
+              <MehrLink href="#ratgeber" groesse="unter">
+                Ratgeber lesen
+              </MehrLink>
+            </>
+          }
         />
 
         <Abschnitt

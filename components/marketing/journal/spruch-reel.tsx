@@ -1,7 +1,5 @@
 "use client";
 
-import { PenLine, Phone, Share2 } from "lucide-react";
-import Link from "next/link";
 import {
   Fragment,
   useCallback,
@@ -12,41 +10,183 @@ import {
   type ReactNode,
 } from "react";
 
-import { spruecheBis, tagInHamburg, type SpruchTag } from "@/lib/sprueche-data";
+import {
+  spruecheBis,
+  tagInHamburg,
+  type Spruch,
+  type SpruchTag,
+} from "@/lib/sprueche-data";
+import { drehungFuer, lookFuer, lookVariablen } from "@/lib/story-look";
+import { kursivBreite, satzPlan, type SatzPlan } from "@/lib/story-satz";
 
 import r from "./spruch-reel.module.css";
 
 /**
- * Spruch des Tages als hochkant laufende Karte: oben der Fortschritt der
- * letzten sieben Tage, in der Mitte der Satz (Wort für Wort), unten der
- * Absender, rechts drei Knöpfe (Teilen, Anfrage, Anruf).
+ * Spruch des Tages als Story-Karte: oben der Fortschritt der letzten
+ * sieben Tage, große Tageszahl, ein Aufkleber mit dem Kicker, der Satz
+ * mit der Pointe groß und kursiv auf einem Farbbalken, der Zusatz mit
+ * Pfeil, der Absender und unten der Hafen mit der Fähre.
  *
- * - Heute steht vorn. Nach rechts wischen (oder Pfeile, Pfeiltasten)
- *   zeigt die Tage davor.
+ * - Heute steht vorn. Wischen, Tippen (rechts weiter, links zurück),
+ *   die Pfeile daneben oder die Pfeiltasten zeigen die Tage davor.
  * - Die aktive Karte „läuft“ neun Sekunden, dann rückt die nächste nach,
  *   bis jemand selbst wischt, tippt oder eine Taste drückt.
+ * - Jeden Tag eine andere Farbwelt (lib/story-look.ts). Dieselbe Karte
+ *   gibt es als fertiges Bild und Kurzvideo im Admin (/admin/story);
+ *   nur dort sitzen Teilen und Sichern.
  * - Ohne JavaScript und bei reduzierter Bewegung stehen alle Karten
  *   einfach da und lassen sich wischen.
  */
+
+/** Schriftgrößen des Satzes, in Hundertstel der Kartenbreite (cqw). */
+const STUFEN = [13.2, 12, 11, 10.2, 9.4, 8.6, 7.8, 7, 6.4];
+/** Breite des Textfelds in cqw. */
+const FELD = 87.6;
+/** Platz für Satz und Zusatz bei der gedrungensten Karte (kleines Handy). */
+const TEXT_HOEHE = 65;
+/** mittlere Zeichenbreite der fetten Grotesk, in em (mit Sperrung). */
+const GROTESK_EM = 0.56;
+
+type Masse = { g: number; p: number };
+
+/**
+ * Größen für Satz (g) und Pointe (p), sodass jedes Wort in die Zeile
+ * passt und Satz samt Zusatz in die Karte. Die Pointe soll das größte
+ * Element sein, darf aber schrumpfen, bevor der Satz davor winzig wird.
+ * Geschätzt über Zeichenbreiten, damit Server und Browser dasselbe
+ * rechnen; geprüft für alle Karten in vier Breiten.
+ */
+function masse(plan: SatzPlan, s: Spruch): Masse {
+  const zusatzZeilen = Math.ceil(s.zusatz.length / 31);
+  const platz = TEXT_HOEHE - zusatzZeilen * 6.1;
+  const zeilen = (breite: number) => Math.max(1, Math.ceil(breite / FELD));
+  let beste: Masse | null = null;
+  let guete = -1;
+  for (const g of STUFEN) {
+    if (plan.art === "fluss") {
+      const p = g * 1.25;
+      let hoehe = 0;
+      let passt = true;
+      for (const gruppe of plan.gruppen) {
+        let breite = 0;
+        for (const w of gruppe) {
+          const b = w.betont
+            ? (kursivBreite(w.t) + 0.3) * p
+            : w.t.length * GROTESK_EM * g;
+          if (b > FELD - 2) passt = false;
+          breite += b + 0.24 * g;
+        }
+        hoehe += zeilen(breite * 1.1) * g * 1.12;
+      }
+      // Die erste Stufe, die passt, ist die größte.
+      if (passt && hoehe <= platz) return { g, p: Math.round(p * 10) / 10 };
+      continue;
+    }
+    let hoehe = 0;
+    let passt = true;
+    for (const gruppe of plan.vor) {
+      if (gruppe.some((w) => w.length * 0.6 * g > FELD)) passt = false;
+      hoehe +=
+        zeilen(gruppe.join(" ").length * GROTESK_EM * g * 1.08) * g * 1.06;
+    }
+    const weiteste = Math.max(...plan.pointe.map(kursivBreite));
+    const p = Math.min(
+      g * 2.1,
+      27,
+      (FELD - 3) / (weiteste + 0.3),
+      (platz - hoehe) / (plan.pointe.length * 1.1 + 0.3),
+    );
+    if (!passt || p < g * 1.2) continue;
+    // Groß ist gut, eine deutlich größere Pointe ist besser.
+    const wert = g + Math.min(p, g * 2);
+    if (wert > guete) {
+      guete = wert;
+      beste = { g, p: Math.round(p * 10) / 10 };
+    }
+  }
+  const klein = STUFEN[STUFEN.length - 1];
+  return beste ?? { g: klein, p: klein * 1.25 };
+}
+
+function Stern() {
+  return (
+    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+      <path d="M12 0q2.4 9.6 12 12-9.6 2.4-12 12Q9.6 14.4 0 12 9.6 9.6 12 0Z" />
+    </svg>
+  );
+}
+
+/** Ein Wort in seiner Maske; n zählt für die Staffelung des Auftritts. */
+function Wort({ t, n, betont }: { t: string; n: number; betont?: boolean }) {
+  return (
+    <>
+      <span
+        className={betont ? `${r.wort} ${r.betont}` : r.wort}
+        style={{ "--w": n } as CSSProperties}
+      >
+        <span>{t}</span>
+      </span>{" "}
+    </>
+  );
+}
+
+function Satz({ plan, m }: { plan: SatzPlan; m: Masse }) {
+  let n = 0;
+  const stil = { "--g": m.g, "--p": m.p } as CSSProperties;
+  if (plan.art === "fluss") {
+    return (
+      <p className={r.spruch} style={stil}>
+        {plan.gruppen.map((gruppe, i) => (
+          <Fragment key={i}>
+            {i > 0 ? <br /> : null}
+            {gruppe.map((w) => (
+              <Wort key={n} t={w.t} n={n++} betont={w.betont} />
+            ))}
+          </Fragment>
+        ))}
+      </p>
+    );
+  }
+  return (
+    <p className={r.spruch} style={stil}>
+      {plan.vor.map((gruppe, i) => (
+        <Fragment key={i}>
+          {i > 0 ? <br /> : null}
+          {gruppe.map((w) => (
+            <Wort key={n} t={w} n={n++} />
+          ))}
+        </Fragment>
+      ))}
+      <span className={r.pointe} style={{ "--w": n } as CSSProperties}>
+        {plan.pointe.map((z, i) => (
+          <span
+            key={i}
+            className={r.pzeile}
+            style={{ "--z": i } as CSSProperties}
+          >
+            <span>{z}</span>
+          </span>
+        ))}
+      </span>
+    </p>
+  );
+}
+
 export function SpruchReel({
   tage: vomServer,
-  themen,
   kopf,
   fuss,
 }: {
   tage: SpruchTag[];
-  /** Beschriftung je Thema, vom Server (lib/sprueche-data.ts). */
-  themen: Record<string, string>;
   /** Kennzeile und Seitentitel über der Karte */
   kopf?: ReactNode;
-  /** kurzer Hinweis unter der Karte */
+  /** Zeile unter der Karte */
   fuss?: ReactNode;
 }) {
   const spurRef = useRef<HTMLOListElement | null>(null);
   const selbstRef = useRef(false);
   const [aktiv, setAktiv] = useState(0);
   const [bereit, setBereit] = useState(false);
-  const [hinweis, setHinweis] = useState<string | null>(null);
   const [tage, setTage] = useState(vomServer);
 
   // Die Seite kommt aus dem Zwischenspeicher und kann vom Vortag sein.
@@ -99,29 +239,6 @@ export function SpruchReel({
     if (aktiv < tage.length - 1) gehe(aktiv + 1);
   }, [aktiv, gehe, tage.length]);
 
-  const teilen = useCallback(async () => {
-    uebernimmt();
-    const s = tage[aktiv];
-    const text = [s.text, s.zusatz].filter(Boolean).join(" ");
-    const url = `${window.location.origin}/journal`;
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Spruch des Tages · Sitalo Webdesign",
-          text,
-          url,
-        });
-        return;
-      }
-      await navigator.clipboard.writeText(`${text}\n${url}`);
-      setHinweis("Kopiert");
-    } catch {
-      // Abgebrochen oder nicht erlaubt: nichts tun.
-      return;
-    }
-    window.setTimeout(() => setHinweis(null), 1800);
-  }, [aktiv, tage, uebernimmt]);
-
   return (
     <section
       id="spruch"
@@ -155,96 +272,124 @@ export function SpruchReel({
           aria-label="Sprüche der letzten sieben Tage, heute zuerst"
           tabIndex={0}
         >
-          {tage.map((s, i) => (
-            <li
-              key={s.datum}
-              className={r.karte}
-              data-thema={s.thema}
-              data-aktiv={i === aktiv ? "" : undefined}
-              aria-label={
-                i === 0
-                  ? `Spruch des Tages, ${s.datumText}`
-                  : `Spruch vom ${s.datumText}`
-              }
-            >
-              <div className={r.szene} aria-hidden="true">
-                <span className={r.licht} />
-                <span className={`${r.licht} ${r.licht2}`} />
-                <span className={r.ziffer}>{s.tagImMonat}</span>
-                <svg
-                  className={r.welle}
-                  viewBox="0 0 800 60"
-                  preserveAspectRatio="none"
-                  focusable="false"
-                >
-                  <path d="M0 30C50 12 100 12 150 30S250 48 300 30 400 12 450 30 550 48 600 30 700 12 750 30 800 40 800 40V60H0Z" />
-                </svg>
-                <svg
-                  className={`${r.welle} ${r.welle2}`}
-                  viewBox="0 0 800 60"
-                  preserveAspectRatio="none"
-                  focusable="false"
-                >
-                  <path d="M0 34C40 20 80 20 120 34S200 48 240 34 320 20 360 34 440 48 480 34 560 20 600 34 680 48 720 34 800 26 800 26V60H0Z" />
-                </svg>
-                <span className={r.fahrt}>
-                  <svg
-                    viewBox="0 0 46 28"
-                    width="46"
-                    height="28"
-                    focusable="false"
-                  >
-                    <path d="M0 18h46l-5 7H5Z" fill="#fff" />
-                    <rect x="0" y="17" width="46" height="2.2" fill="#f45b1e" />
-                    <path d="M6 17v-7h30l4 7Z" fill="#fff" fillOpacity=".86" />
-                    <path d="M10 6h20v4H10Z" fill="#fff" fillOpacity=".86" />
-                    <rect x="22" y="0" width="3" height="6" fill="#f45b1e" />
-                  </svg>
-                </span>
-              </div>
-              <div className={r.inhalt}>
-                <p className={r.kopf} data-heute={i === 0 ? "" : undefined}>
-                  <span className={r.punkt} aria-hidden="true" />
-                  {i === 0 ? "Spruch des Tages" : "Spruch vom"}{" "}
-                  <time dateTime={s.datum}>{s.datumText}</time>
-                </p>
-                <p
-                  className={r.spruch}
-                  data-eng={
-                    s.text.split(" ").some((w) => w.length > 12)
-                      ? ""
-                      : undefined
-                  }
-                >
-                  {/* Leerzeichen außerhalb der Wort-Maske, sonst kleben die Wörter. */}
-                  {s.text.split(" ").map((w, n) => (
-                    <Fragment key={n}>
-                      <span className={r.wort}>
-                        <span style={{ "--w": n } as CSSProperties}>{w}</span>
-                      </span>{" "}
-                    </Fragment>
-                  ))}
-                </p>
-                {s.zusatz ? <p className={r.zusatz}>{s.zusatz}</p> : null}
-                <p className={r.absender}>
-                  <span className={r.siegel} aria-hidden="true">
-                    <svg viewBox="0 0 30 22" focusable="false">
-                      <g fill="none" stroke="currentColor" strokeWidth="2">
-                        <ellipse cx="12" cy="11" rx="10" ry="10" />
-                        <ellipse cx="18" cy="11" rx="10" ry="10" />
-                      </g>
+          {tage.map((s, i) => {
+            const look = lookFuer(s.nummer);
+            const plan = satzPlan(s);
+            return (
+              <li
+                key={s.datum}
+                className={r.karte}
+                style={
+                  {
+                    ...lookVariablen(look),
+                    "--dreh": `${drehungFuer(s.nummer)}deg`,
+                  } as CSSProperties
+                }
+                data-look={look.name}
+                data-aktiv={i === aktiv ? "" : undefined}
+                aria-label={
+                  i === 0
+                    ? `Spruch des Tages, ${s.datumText}`
+                    : `Spruch vom ${s.datumText}`
+                }
+              >
+                <div className={r.szene} aria-hidden="true">
+                  <span className={r.licht} />
+                  <span className={r.ziffer}>{s.tagImMonat}</span>
+                  <div className={r.hafen}>
+                    <svg
+                      className={r.kante}
+                      viewBox="0 0 720 24"
+                      preserveAspectRatio="none"
+                      focusable="false"
+                    >
+                      <path d="M0 12Q45 2 90 12T180 12 270 12 360 12 450 12 540 12 630 12 720 12V24H0Z" />
                     </svg>
-                  </span>
-                  <span>
-                    <span className={r.name}>Sitalo Webdesign</span>
-                    <span className={r.thema}>
-                      Hamburg · {themen[s.thema] ?? s.thema}
+                    <svg
+                      className={r.linie}
+                      viewBox="0 0 720 12"
+                      preserveAspectRatio="none"
+                      focusable="false"
+                    >
+                      <path
+                        d="M0 6Q45 0 90 6T180 6 270 6 360 6 450 6 540 6 630 6 720 6"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </svg>
+                    <span className={r.fahrt}>
+                      <svg viewBox="0 0 46 27" focusable="false">
+                        <g fill="var(--k-faehre)">
+                          <path d="M0 18h46l-5 8H5Z" />
+                          <path d="M5 17.2v-6.7h31l5 6.7Z" />
+                          <path d="M9 6h21v4H9Z" />
+                        </g>
+                        <g fill="var(--k-streif)">
+                          <rect x="0" y="17.2" width="46" height="1.9" />
+                          <rect x="21.5" y=".5" width="3.4" height="5.5" />
+                        </g>
+                        <g fill="var(--k-bg)">
+                          <rect x="9" y="12.2" width="3.4" height="2.6" />
+                          <rect x="14.5" y="12.2" width="3.4" height="2.6" />
+                          <rect x="20" y="12.2" width="3.4" height="2.6" />
+                          <rect x="25.5" y="12.2" width="3.4" height="2.6" />
+                          <rect x="31" y="12.2" width="3.4" height="2.6" />
+                        </g>
+                      </svg>
                     </span>
-                  </span>
-                </p>
-              </div>
-            </li>
-          ))}
+                  </div>
+                </div>
+                <div className={r.inhalt}>
+                  <p className={r.kennzeile}>
+                    Spruch des Tages ·{" "}
+                    <time dateTime={s.datum}>{s.datumKurz}</time>
+                  </p>
+                  <div className={r.mitte}>
+                    <p className={r.kicker}>
+                      <Stern />
+                      {s.kicker}
+                      <svg
+                        className={r.strahlen}
+                        viewBox="0 0 30 30"
+                        focusable="false"
+                        aria-hidden="true"
+                      >
+                        <path d="M6 20 3 9M13 16 18 4M19 21 29 16" />
+                      </svg>
+                    </p>
+                    <Satz plan={plan} m={masse(plan, s)} />
+                    <p className={r.zusatz}>
+                      <svg
+                        className={r.pfeil}
+                        viewBox="0 0 60 56"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path
+                          pathLength="1"
+                          d="M6 4C2 34 14 44 52 40M36 24l18 16-20 14"
+                        />
+                      </svg>
+                      <span>{s.zusatz}</span>
+                    </p>
+                  </div>
+                  <p className={r.absender}>
+                    <span className={r.siegel} aria-hidden="true">
+                      <svg viewBox="0 0 30 22" focusable="false">
+                        <g fill="none" stroke="currentColor" strokeWidth="2">
+                          <ellipse cx="12" cy="11" rx="10" ry="10" />
+                          <ellipse cx="18" cy="11" rx="10" ry="10" />
+                        </g>
+                      </svg>
+                    </span>
+                    <span className={r.wer}>
+                      <span className={r.name}>Sitalo Webdesign</span>
+                      <span className={r.ort}>Hamburg · sitalo.de</span>
+                    </span>
+                  </p>
+                </div>
+              </li>
+            );
+          })}
         </ol>
 
         {/* Fortschritt: ein Strich je Tag, der aktive füllt sich. */}
@@ -261,40 +406,13 @@ export function SpruchReel({
             </span>
           ))}
         </div>
-        <p className={r.zaehler} aria-live="polite">
-          <span className="sr-only">Karte </span>
-          {aktiv + 1}/{tage.length}
+        <p className="sr-only" aria-live="polite">
+          Karte {aktiv + 1} von {tage.length}
         </p>
-
-        {/* Knöpfe am rechten Rand, gelten für die Karte im Bild. */}
-        <ul className={r.leiste} role="list">
-          <li>
-            <button type="button" onClick={teilen} className={r.knopf}>
-              <Share2 aria-hidden="true" />
-              <span>{hinweis ?? "Teilen"}</span>
-            </button>
-          </li>
-          <li>
-            <Link href="/anfrage" className={r.knopf}>
-              <PenLine aria-hidden="true" />
-              <span>Anfrage</span>
-            </Link>
-          </li>
-          <li>
-            <a
-              href="tel:+491607621876"
-              className={r.knopf}
-              aria-label="Anrufen: 0160 7621876"
-            >
-              <Phone aria-hidden="true" />
-              <span>Anrufen</span>
-            </a>
-          </li>
-        </ul>
 
         <button
           type="button"
-          className={`${r.pfeil} ${r.pfeilZurueck}`}
+          className={`${r.blaettern} ${r.zurueck}`}
           onClick={() => gehe(aktiv - 1)}
           disabled={aktiv === 0}
           aria-label="Neuerer Spruch"
@@ -303,7 +421,7 @@ export function SpruchReel({
         </button>
         <button
           type="button"
-          className={`${r.pfeil} ${r.pfeilWeiter}`}
+          className={`${r.blaettern} ${r.weiter}`}
           onClick={() => gehe(aktiv + 1)}
           disabled={aktiv === tage.length - 1}
           aria-label="Älterer Spruch"
@@ -311,7 +429,7 @@ export function SpruchReel({
           ›
         </button>
       </div>
-      {fuss ? <p className={`notiz-mono ${r.fuss}`}>{fuss}</p> : null}
+      {fuss ? <div className={r.fuss}>{fuss}</div> : null}
     </section>
   );
 }

@@ -70,7 +70,18 @@ export default async function AdminLayout({
             <SitaloLogo size="sm" tone="light" hideTaglineOnMobile />
             <span className="label-mono text-stahl-hell text-[11px]">Admin</span>
           </Link>
-          {email ? <RefreshButton /> : null}
+          {email ? (
+            <div className="flex items-center">
+              {/* Spruch des Tages als fertiges Bild für die Instagram-Story. */}
+              <Link
+                href="/admin/story"
+                className="label-mono hover:bg-background/10 inline-flex h-11 items-center rounded-[3px] px-3 text-[11px] transition-colors"
+              >
+                Story
+              </Link>
+              <RefreshButton />
+            </div>
+          ) : null}
         </div>
       </header>
       <main
