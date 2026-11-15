@@ -1,8 +1,8 @@
 /**
  * Rechnet den Film eines Posts Bild für Bild und schreibt ihn als MP4
  * (H.264), statt ihn in Echtzeit vom Bildschirm aufzunehmen. So ruckelt
- * nichts, auch wenn ein Bild länger rechnet (Bewegungsunschärfe), und
- * jedes Bild sitzt genau auf seiner Zeit. Läuft nur im Browser, genutzt
+ * nichts, auch wenn ein Bild länger rechnet, und jedes Bild sitzt genau
+ * auf seiner Zeit. Läuft nur im Browser, genutzt
  * vom Story-Studio (/admin/story).
  *
  * Braucht WebCodecs (Safari ab 16.4, Chrome, Edge). Wo das fehlt, gibt

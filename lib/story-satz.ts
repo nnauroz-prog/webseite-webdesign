@@ -176,7 +176,9 @@ export function satzPlan(s: Spruch): SatzPlan {
   const woerter = s.text.split(" ").map((t) => {
     const a = pos;
     pos += t.length + 1;
-    return { t, betont: von >= 0 && a >= von && a < bis };
+    // Betont ist jedes Wort, das in die Pointe hineinreicht: auch eines,
+    // das mit einem Anführungszeichen vor der Pointe beginnt.
+    return { t, betont: von >= 0 && a < bis && a + t.length > von };
   });
   return { art: "fluss", gruppen: gruppen(woerter, (w) => w.t) };
 }

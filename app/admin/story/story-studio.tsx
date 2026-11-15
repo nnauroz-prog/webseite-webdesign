@@ -35,8 +35,8 @@ import { cn } from "@/lib/utils";
  *   stellt das Design des Tages wieder her.
  * - Bild teilen reicht die Bilddatei an das Teilen-Blatt des Handys
  *   (dort Instagram wählen), Bild sichern lädt sie herunter.
- * - Video erstellen rechnet den Film der Karte Bild für Bild (mit
- *   Kamerafahrt und Bewegungsunschärfe) und schreibt ihn als MP4. Das
+ * - Video erstellen rechnet den Film der Karte Bild für Bild und
+ *   schreibt ihn als MP4. Das
  *   dauert etwas länger als der Film selbst, ruckelt dafür nicht. Kann
  *   der Browser das nicht, wird der Film wie früher in Echtzeit
  *   aufgenommen. Danach lässt er sich teilen oder sichern.
@@ -274,7 +274,7 @@ export function StoryStudio({
     );
   }, [abspielen, name, sagen]);
 
-  /** Rechnet den Film Bild für Bild als MP4 (ruckelfrei, mit Unschärfe). */
+  /** Rechnet den Film Bild für Bild als MP4 (ruckelfrei). */
   const aufnehmen = useCallback(async () => {
     const c = flaeche.current;
     const z = zeichne.current;
@@ -286,7 +286,7 @@ export function StoryStudio({
     abbruch.current = stopp;
     let datei: Blob | null = null;
     try {
-      datei = await filmAlsMp4(c, (t) => z(t, true), {
+      datei = await filmAlsMp4(c, z, {
         dauer: STORY_DAUER,
         fortschritt: setAnteil,
         abbruch: stopp.signal,
