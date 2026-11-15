@@ -80,9 +80,22 @@ Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE
     const flaeche = document.createElement("canvas");
     document.body.appendChild(flaeche);
     const out = { geprueft: 0, fehler: [], kleinste: {} };
-    // Standbild und Zeiten quer durch den Film (Aufmacher, Satz,
-    // Höhepunkt, Rückfahrt, Schluss); zwei davon mit Bewegungsunschärfe.
-    const zeiten = [Infinity, 0, 0.3, 0.8, 1.5, 2.6, 3.4, 3.55, 4.6, 6, 8];
+    // Standbild und Zeiten quer durch den Film (Nahaufnahme, Fahrt zum
+    // Satz, Absenken und Aufsetzen der Pointe, Rückfahrt, Schluss).
+    const zeiten = [
+      Infinity,
+      0,
+      0.13,
+      0.8,
+      1.5,
+      2.6,
+      3.4,
+      3.64,
+      3.9,
+      4.6,
+      6,
+      8,
+    ];
     for (const format of Object.values(p.FORMATE)) {
       for (let i = 0; i < alle.length; i++) {
         const { karte, platz } = alle[i];
@@ -102,7 +115,7 @@ Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE
               out.kleinste[format.name] ?? 999,
               g,
             );
-          for (const t of zeiten) zeichne(t, t === 0.3 || t === 3.4);
+          for (const t of zeiten) zeichne(t);
           out.geprueft++;
         } catch (e) {
           out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);
