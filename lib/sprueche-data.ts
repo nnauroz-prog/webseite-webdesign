@@ -7,9 +7,16 @@
  *
  * Regeln für die Karten prüft tests/sprueche.test.ts.
  */
+import { SPRUECHE_EXTRA } from "@/lib/sprueche-extra";
 import { SPRUECHE } from "@/lib/sprueche-liste";
 
-export { SPRUECHE };
+export { SPRUECHE, SPRUECHE_EXTRA };
+
+/**
+ * Posts je Tag: der Spruch des Tages (Platz 0, auch auf /journal) und
+ * zwei Zusatz-Posts (Platz 1 und 2, nur im Story-Studio).
+ */
+export const POSTS_PRO_TAG = 3;
 
 export type SpruchThema =
   | "eindruck"
@@ -98,6 +105,9 @@ const TAG_MS = 24 * 60 * 60 * 1000;
  */
 const START = Date.UTC(2026, 10, 9);
 
+/** Erster Tag mit Zusatz-Posts: Karte 0 und 1 von SPRUECHE_EXTRA. */
+const EXTRA_START = Date.UTC(2026, 10, 15);
+
 const BERLIN_ISO = new Intl.DateTimeFormat("en-CA", {
   timeZone: "Europe/Berlin",
   year: "numeric",
@@ -146,6 +156,32 @@ export function vorratTage(jetzt: Date): number {
   return SPRUECHE.length - tagNummer(tagInHamburg(jetzt));
 }
 
+/** Tage seit dem ersten Tag mit Zusatz-Posts (negativ: davor). */
+function extraNummer(iso: string): number {
+  const [y, m, d] = iso.split("-").map(Number);
+  return Math.round((Date.UTC(y, m - 1, d) - EXTRA_START) / TAG_MS);
+}
+
+/**
+ * Zusatz-Post für einen Kalendertag (platz 1 oder 2). Vor dem ersten
+ * Tag gibt es keine. Ist der Vorrat aufgebraucht, beginnt die Liste
+ * notgedrungen von vorn (siehe vorratTageExtra).
+ */
+export function extraFuer(iso: string, platz: number): Spruch | null {
+  const tag = extraNummer(iso);
+  const n = SPRUECHE_EXTRA.length;
+  if (tag < 0 || n === 0 || platz < 1 || platz >= POSTS_PRO_TAG) return null;
+  return SPRUECHE_EXTRA[(tag * (POSTS_PRO_TAG - 1) + platz - 1) % n];
+}
+
+/** Wie viele Tage die Zusatz-Posts noch reichen, heute mitgezählt. */
+export function vorratTageExtra(jetzt: Date): number {
+  return (
+    Math.floor(SPRUECHE_EXTRA.length / (POSTS_PRO_TAG - 1)) -
+    Math.max(0, extraNummer(tagInHamburg(jetzt)))
+  );
+}
+
 export type SpruchTag = Spruch & {
   /** yyyy-mm-dd */
   datum: string;
@@ -155,8 +191,10 @@ export type SpruchTag = Spruch & {
   datumKurz: string;
   /** Tag im Monat */
   tagImMonat: string;
-  /** fortlaufende Tagesnummer: bestimmt die Farbwelt (lib/story-look.ts) */
+  /** fortlaufende Tagesnummer: bestimmt mit dem Platz das Bild (lib/story-variante.ts) */
   nummer: number;
+  /** 0 = Spruch des Tages, 1 und 2 = Zusatz-Posts */
+  platz: number;
 };
 
 /** Ein Kalendertag (yyyy-mm-dd) um n Tage versetzt. */
@@ -178,7 +216,19 @@ export function spruchTag(datum: string): SpruchTag {
     datumKurz: BERLIN_KURZ.format(tag),
     tagImMonat: String(tag.getUTCDate()),
     nummer: tagNummer(datum),
+    platz: 0,
   };
+}
+
+/** Alle Posts eines Kalendertags: der Spruch des Tages, dann die Zusatz-Posts. */
+export function postsFuer(datum: string): SpruchTag[] {
+  const erster = spruchTag(datum);
+  const posts = [erster];
+  for (let platz = 1; platz < POSTS_PRO_TAG; platz++) {
+    const extra = extraFuer(datum, platz);
+    if (extra) posts.push({ ...erster, ...extra, platz });
+  }
+  return posts;
 }
 
 /** Heute und die Tage davor, heute zuerst. */

@@ -1,6 +1,7 @@
 /**
  * Story-Bild für Instagram: zeichnet eine Spruch-Karte als 1080 × 1920
- * auf eine Zeichenfläche (nur im Browser, genutzt von /admin/story).
+ * (Story) oder 1080 × 1350 (Beitrag) auf eine Zeichenfläche (nur im
+ * Browser, genutzt vom Story-Studio unter /admin/story).
  *
  * Gleiche Farbwelten und gleicher Aufbau wie die Karte auf /journal
  * (components/marketing/journal/spruch-reel.tsx): große Tageszahl oben
@@ -373,7 +374,7 @@ function kennzeile(
   ctx: Ctx,
   l: StoryLook,
   f: StoryFormat,
-  datum: string,
+  zeile: string,
   mono: string,
   t: number,
 ) {
@@ -386,7 +387,7 @@ function kennzeile(
   sperren(ctx, 3.2);
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = l.weich;
-  ctx.fillText(`SPRUCH DES TAGES · ${datum.toUpperCase()}`, RAND, y);
+  ctx.fillText(zeile.toUpperCase(), RAND, y);
   sperren(ctx, 0);
   ctx.restore();
 }
@@ -535,7 +536,11 @@ export async function storyVorbereiten(
   canvas: HTMLCanvasElement,
   karte: SpruchTag,
   format: StoryFormat = FORMATE.story,
+  optionen: { skala?: number; versatz?: number } = {},
 ): Promise<(t: number) => void> {
+  // skala < 1 zeichnet ein kleines Vorschaubild, versatz wählt ein
+  // anderes Design als das des Tages.
+  const skala = optionen.skala ?? 1;
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => undefined;
   const f = format;
@@ -554,14 +559,14 @@ export async function storyVorbereiten(
     // Ersatzschrift reicht.
   }
 
-  const v = varianteFuer(karte.nummer);
+  const v = varianteFuer(karte.nummer, karte.platz, optionen.versatz ?? 0);
   const l = v.look;
   const rahmen = v.balken === "rahmen";
   // Auf dem gefüllten Balken steht die Pointe in dessen Schriftfarbe,
   // im Rahmen in der Farbe des Satzes.
   const pointeFarbe = rahmen ? l.text : l.betont;
-  canvas.width = f.b;
-  canvas.height = f.h;
+  canvas.width = Math.round(f.b * skala);
+  canvas.height = Math.round(f.h * skala);
   // Luft unter der Kennzeile: Die Strahlen des Aufklebers ragen nach oben.
   const feldOben = f.oben + 132;
   const feldUnten = f.unten - 150;
@@ -806,11 +811,19 @@ export async function storyVorbereiten(
   const zusatzAb = gesetzt.ende + 0.25;
 
   return (t: number) => {
+    ctx.setTransform(skala, 0, 0, skala, 0, 0);
     ctx.globalAlpha = 1;
     ctx.textBaseline = "alphabetic";
     ctx.textAlign = "left";
     grund(ctx, v, f, karte, serif, t);
-    kennzeile(ctx, l, f, karte.datumKurz, mono, t);
+    kennzeile(
+      ctx,
+      l,
+      f,
+      `${karte.platz === 0 ? "Spruch des Tages" : "Sitalo Journal"} · ${karte.datumKurz}`,
+      mono,
+      t,
+    );
     absender(ctx, l, f, t);
 
     let y = oben;
@@ -847,6 +860,7 @@ export async function zeichneStory(
   canvas: HTMLCanvasElement,
   karte: SpruchTag,
   format: StoryFormat = FORMATE.story,
+  optionen: { skala?: number; versatz?: number } = {},
 ): Promise<void> {
-  (await storyVorbereiten(canvas, karte, format))(Infinity);
+  (await storyVorbereiten(canvas, karte, format, optionen))(Infinity);
 }
