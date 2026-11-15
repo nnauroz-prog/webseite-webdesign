@@ -19,7 +19,9 @@ import {
   storyVorbereiten,
   zeichneStory,
   type StoryFormat,
+  type StoryZeichner,
 } from "@/lib/story-bild";
+import { filmAlsMp4 } from "@/lib/story-video";
 import { cn } from "@/lib/utils";
 
 /**
@@ -33,8 +35,12 @@ import { cn } from "@/lib/utils";
  *   stellt das Design des Tages wieder her.
  * - Bild teilen reicht die Bilddatei an das Teilen-Blatt des Handys
  *   (dort Instagram wählen), Bild sichern lädt sie herunter.
- * - Video erstellen spielt den Film der Karte ab (sieben Sekunden) und
- *   nimmt ihn dabei auf. Danach lässt er sich teilen oder sichern.
+ * - Video erstellen rechnet den Film der Karte Bild für Bild (mit
+ *   Kamerafahrt und Bewegungsunschärfe) und schreibt ihn als MP4. Das
+ *   dauert etwas länger als der Film selbst, ruckelt dafür nicht. Kann
+ *   der Browser das nicht, wird der Film wie früher in Echtzeit
+ *   aufgenommen. Danach lässt er sich teilen oder sichern.
+ * - Abspielen zeigt den Film sofort, in einer leichteren Fassung.
  * - Text kopieren legt den Beitragstext in die Zwischenablage.
  * - Abhaken merkt sich auf diesem Gerät, was schon gepostet ist.
  */
@@ -84,7 +90,7 @@ export function StoryStudio({
   beschriftungen: string[];
 }) {
   const flaeche = useRef<HTMLCanvasElement | null>(null);
-  const zeichne = useRef<((t: number) => void) | null>(null);
+  const zeichne = useRef<StoryZeichner | null>(null);
   const lauf = useRef(0);
   const [gewaehlt, setGewaehlt] = useState(0);
   const [format, setFormat] = useState<StoryFormat["name"]>("story");
@@ -94,6 +100,11 @@ export function StoryStudio({
   );
   const [zustand, setZustand] = useState<Zustand>("laedt");
   const [rest, setRest] = useState(0);
+  /** Fortschritt beim Rechnen des Videos (0 bis 1); null, wenn nicht gerechnet wird */
+  const [anteil, setAnteil] = useState<number | null>(null);
+  const abbruch = useRef<AbortController | null>(null);
+  /** Beendet eine laufende Aufnahme in Echtzeit, ohne ein Video zu behalten */
+  const echtzeitStopp = useRef<(() => void) | null>(null);
   const [video, setVideo] = useState<File | null>(null);
   const [meldung, setMeldung] = useState<string | null>(null);
   const [gepostet, setGepostet] = useState<string[]>([]);
@@ -117,12 +128,22 @@ export function StoryStudio({
     }
   }, []);
 
-  // Gewählten Post vorbereiten und als Standbild zeigen.
+  // Gewählten Post vorbereiten und als Standbild zeigen. Der Effekt hängt
+  // am Inhalt des Posts, nicht am Objekt: Lädt die Seite ihre Daten neu
+  // (etwa nach der Rückkehr aus dem Hintergrund), bleibt ein laufendes
+  // Rechnen ungestört.
+  const inhalt = `${karte.datum}|${karte.platz}|${karte.kicker}|${karte.text}|${karte.zusatz}`;
+  const karteJetzt = useRef(karte);
+  useEffect(() => {
+    karteJetzt.current = karte;
+  });
   useEffect(() => {
     let abgebrochen = false;
     const c = flaeche.current;
     if (!c) return;
-    void storyVorbereiten(c, karte, FORMATE[format], { versatz }).then((z) => {
+    void storyVorbereiten(c, karteJetzt.current, FORMATE[format], {
+      versatz,
+    }).then((z) => {
       if (abgebrochen) return;
       zeichne.current = z;
       z(Infinity);
@@ -131,9 +152,11 @@ export function StoryStudio({
     return () => {
       abgebrochen = true;
       cancelAnimationFrame(lauf.current);
+      abbruch.current?.abort();
+      echtzeitStopp.current?.();
       zeichne.current = null;
     };
-  }, [karte, format, versatz]);
+  }, [inhalt, format, versatz]);
 
   const sagen = useCallback((text: string) => {
     setMeldung(text);
@@ -143,6 +166,8 @@ export function StoryStudio({
   /** Vor jedem Wechsel (Post, Format, Design): Film anhalten, Video verwerfen. */
   const wechseln = (aendern: () => void) => {
     cancelAnimationFrame(lauf.current);
+    abbruch.current?.abort();
+    echtzeitStopp.current?.();
     setZustand("laedt");
     setVideo(null);
     aendern();
@@ -193,17 +218,17 @@ export function StoryStudio({
     abspielen(() => setZustand("bereit"));
   }, [abspielen]);
 
-  const aufnehmen = useCallback(() => {
+  /** Ersatz für ältere Browser: den Film abspielen und dabei aufnehmen. */
+  const inEchtzeit = useCallback(() => {
     const c = flaeche.current;
     const typ = videoTyp();
     if (!c || !typ || typeof c.captureStream !== "function") {
+      setZustand("bereit");
       sagen(
-        "Dieser Browser kann kein Video aufnehmen. Am iPhone in Safari klappt es.",
+        "Dieser Browser kann kein Video erstellen. Am iPhone in Safari klappt es.",
       );
       return;
     }
-    setVideo(null);
-    setZustand("nimmtAuf");
     const stueck: BlobPart[] = [];
     const strom = c.captureStream(30);
     const rekorder = new MediaRecorder(strom, {
@@ -213,7 +238,16 @@ export function StoryStudio({
     rekorder.ondataavailable = (e) => {
       if (e.data.size > 0) stueck.push(e.data);
     };
+    echtzeitStopp.current = () => {
+      echtzeitStopp.current = null;
+      rekorder.ondataavailable = null;
+      rekorder.onstop = null;
+      rekorder.onerror = null;
+      if (rekorder.state !== "inactive") rekorder.stop();
+      strom.getTracks().forEach((s) => s.stop());
+    };
     rekorder.onstop = () => {
+      echtzeitStopp.current = null;
       strom.getTracks().forEach((s) => s.stop());
       const blob = new Blob(stueck, { type: typ.mime.split(";")[0] });
       setVideo(new File([blob], `${name}.${typ.endung}`, { type: blob.type }));
@@ -225,13 +259,64 @@ export function StoryStudio({
       );
     };
     rekorder.onerror = () => {
+      echtzeitStopp.current?.();
+      cancelAnimationFrame(lauf.current);
+      zeichne.current?.(Infinity);
       setZustand("bereit");
       sagen("Die Aufnahme hat nicht geklappt. Versuch es noch einmal.");
     };
     rekorder.start();
     // Kurz nach dem letzten Bild stoppen, damit es sicher im Film ist.
-    abspielen(() => window.setTimeout(() => rekorder.stop(), 250));
+    abspielen(() =>
+      window.setTimeout(() => {
+        if (rekorder.state !== "inactive") rekorder.stop();
+      }, 250),
+    );
   }, [abspielen, name, sagen]);
+
+  /** Rechnet den Film Bild für Bild als MP4 (ruckelfrei, mit Unschärfe). */
+  const aufnehmen = useCallback(async () => {
+    const c = flaeche.current;
+    const z = zeichne.current;
+    if (!c || !z) return;
+    setVideo(null);
+    setZustand("nimmtAuf");
+    setAnteil(0);
+    const stopp = new AbortController();
+    abbruch.current = stopp;
+    let datei: Blob | null = null;
+    try {
+      datei = await filmAlsMp4(c, (t) => z(t, true), {
+        dauer: STORY_DAUER,
+        fortschritt: setAnteil,
+        abbruch: stopp.signal,
+      });
+    } catch {
+      // Abgebrochen oder gescheitert: wird unten behandelt.
+    }
+    if (abbruch.current === stopp) abbruch.current = null;
+    setAnteil(null);
+    // Derselbe Post steht noch da (kein Wechsel): Standbild zurück.
+    const nochDa = zeichne.current === z;
+    if (stopp.signal.aborted) {
+      // Über den Knopf abgebrochen. Bei einem Wechsel räumt der neue
+      // Post selbst auf.
+      if (nochDa) {
+        z(Infinity);
+        setZustand("bereit");
+        sagen("Abgebrochen.");
+      }
+      return;
+    }
+    if (!nochDa) return;
+    // Der Browser kann nicht rechnen (oder es ist gescheitert): wie
+    // früher in Echtzeit aufnehmen.
+    if (!datei) return inEchtzeit();
+    z(Infinity);
+    setVideo(new File([datei], `${name}.mp4`, { type: "video/mp4" }));
+    setZustand("bereit");
+    sagen("Video fertig. Jetzt teilen oder sichern.");
+  }, [inEchtzeit, name, sagen]);
 
   const alsBild = useCallback(
     () =>
@@ -453,13 +538,18 @@ export function StoryStudio({
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             <button
               type="button"
-              onClick={aufnehmen}
-              disabled={!frei}
+              // Während des Rechnens bricht derselbe Knopf ab.
+              onClick={
+                anteil === null ? aufnehmen : () => abbruch.current?.abort()
+              }
+              disabled={!frei && anteil === null}
               className={video ? hell : dunkel}
             >
               <Film className="h-4 w-4" aria-hidden="true" />
               {zustand === "nimmtAuf"
-                ? `Nimmt auf … ${rest} s`
+                ? anteil === null
+                  ? `Nimmt auf … ${rest} s`
+                  : `Abbrechen · ${Math.round(anteil * 100)} %`
                 : video
                   ? "Neu erstellen"
                   : "Video erstellen"}

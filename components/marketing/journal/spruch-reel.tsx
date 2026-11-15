@@ -38,6 +38,11 @@ type Zeichner = (t: number) => void;
 
 /** So scharf wie der Bildschirm, höchstens dreifache Auflösung. */
 const SCHAERFE = 3;
+/**
+ * Auf der Website läuft der Film schneller als im Video für Instagram:
+ * Wer die Seite öffnet, will den Spruch lesen und nicht darauf warten.
+ */
+const TEMPO = 1.7;
 
 export function SpruchReel({
   tage: vomServer,
@@ -138,9 +143,9 @@ export function SpruchReel({
       gespielt.current.add(datum);
       const beginn = performance.now();
       const bild = (jetzt: number) => {
-        const t = (jetzt - beginn) / 1000;
+        const t = ((jetzt - beginn) / 1000) * TEMPO;
         male(Math.min(t, STORY_DAUER));
-        // Am Ende bleibt das letzte Bild stehen (kein Sprung).
+        // Am Ende bleibt das letzte Bild stehen: das Standbild.
         if (t < STORY_DAUER)
           filme.current.set(datum, requestAnimationFrame(bild));
         else filme.current.delete(datum);
