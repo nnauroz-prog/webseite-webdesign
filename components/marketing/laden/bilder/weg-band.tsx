@@ -12,7 +12,7 @@ const W = 1200;
 function Faehre({ x }: { x: number }) {
   return (
     <g transform={`translate(${x} 0)`}>
-      {/* Innere Gruppe wiegt sich (CSS .weg-faehre); die äußere trägt die Position. */}
+      {/* Innere Gruppe ohne eigene Bewegung; die äußere trägt die Position. */}
       <g className="weg-faehre">
         <ellipse
           cx="22"

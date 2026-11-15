@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import { Children, type CSSProperties, type ReactNode } from "react";
 
 import { MehrLink } from "@/components/marketing/apple/mehr-link";
 import { RegalPfeile } from "@/components/marketing/apple/regal-pfeile";
@@ -31,6 +31,7 @@ export function LadenRegal({
   ohneSpur = false,
   ohneMobilLink = false,
   einfach = false,
+  kino = false,
   className,
 }: {
   id: string;
@@ -48,6 +49,12 @@ export function LadenRegal({
   ohneSpur?: boolean;
   /** Kopf-Link am Handy weglassen (steht in der Spur schon als Karte) */
   ohneMobilLink?: boolean;
+  /**
+   * Am Handy bleibt das Regal stehen, während man weiterscrollt, und die
+   * Kartenreihe fährt dabei waagerecht durchs Bild (nur mit Scroll-
+   * Zeitleiste und ohne reduzierte Bewegung; sonst normale Wisch-Reihe).
+   */
+  kino?: boolean;
   className?: string;
 }) {
   const spurId = `${id}-spur`;
@@ -55,17 +62,17 @@ export function LadenRegal({
   // wie die Nummern an der Kaimauer. Reiner Schmuck.
   const platz = ort ? /^Liegeplatz (\d+)/.exec(ort)?.[1] : undefined;
   const label = fett.replace(/\.$/, "");
-  const style = spaet
-    ? ({
-        "--h": `${spaet.h}px`,
-        "--h-mobil": `${spaet.hMobil}px`,
-      } as CSSProperties)
-    : undefined;
+  const style = {
+    ...(spaet
+      ? { "--h": `${spaet.h}px`, "--h-mobil": `${spaet.hMobil}px` }
+      : {}),
+    ...(kino ? { "--kino-n": Children.count(children) } : {}),
+  } as CSSProperties;
   return (
     <section
       id={id}
       aria-labelledby={`${id}-titel`}
-      className={cn(s.regal, spaet && s.spaet, className)}
+      className={cn(s.regal, spaet && s.spaet, kino && s.kino, className)}
       style={style}
     >
       {platz ? (
@@ -73,55 +80,63 @@ export function LadenRegal({
           {platz}
         </span>
       ) : null}
-      <div className={cn("inhalt", s.regalKopf)} data-ein="">
-        <div>
-          {ort ? (
-            <p className={cn("kennzeile-mono", s.ortsmarke)}>{ort}</p>
-          ) : null}
-          {einfach ? (
-            <>
-              <h2 id={`${id}-titel`} className={s.regalTitel}>
-                {label}
+      {/* Hülle um Kopf und Reihe: im Kino-Modus klebt sie, sonst ist sie
+          für das Layout unsichtbar (display: contents). */}
+      <div className={kino ? s.kinoInnen : s.huelleAus}>
+        <div className={cn("inhalt", s.regalKopf)} data-ein="">
+          <div>
+            {ort ? (
+              <p className={cn("kennzeile-mono", s.ortsmarke)}>{ort}</p>
+            ) : null}
+            {einfach ? (
+              <>
+                <h2 id={`${id}-titel`} className={s.regalTitel}>
+                  {label}
+                </h2>
+                <p className={s.regalUnter}>{grau}</p>
+              </>
+            ) : (
+              <h2 id={`${id}-titel`} className={s.zweiton}>
+                <span>{fett}</span> <span>{grau}</span>
               </h2>
-              <p className={s.regalUnter}>{grau}</p>
-            </>
-          ) : (
-            <h2 id={`${id}-titel`} className={s.zweiton}>
-              <span>{fett}</span> <span>{grau}</span>
-            </h2>
-          )}
-          {link && !ohneMobilLink ? (
-            <MehrLink href={link.href} frei={false} className={s.kopfLinkMobil}>
-              {link.label}
-            </MehrLink>
-          ) : null}
+            )}
+            {link && !ohneMobilLink ? (
+              <MehrLink
+                href={link.href}
+                frei={false}
+                className={s.kopfLinkMobil}
+              >
+                {link.label}
+              </MehrLink>
+            ) : null}
+          </div>
+          <div className={s.kopfRechts}>
+            {link ? (
+              <MehrLink href={link.href} frei={false} className={s.kopfLink}>
+                {link.label}
+              </MehrLink>
+            ) : null}
+            {ohneSpur ? null : <RegalPfeile spurId={spurId} label={label} />}
+          </div>
         </div>
-        <div className={s.kopfRechts}>
-          {link ? (
-            <MehrLink href={link.href} frei={false} className={s.kopfLink}>
-              {link.label}
-            </MehrLink>
-          ) : null}
-          {ohneSpur ? null : <RegalPfeile spurId={spurId} label={label} />}
-        </div>
-      </div>
-      {ohneSpur ? (
-        <div className={cn("inhalt", s.block)} data-ein="">
-          {children}
-        </div>
-      ) : (
-        <div
-          id={spurId}
-          className={s.spur}
-          tabIndex={0}
-          role="group"
-          aria-label={`${label}: Karten`}
-        >
-          <ul role="list" data-ein="reihe">
+        {ohneSpur ? (
+          <div className={cn("inhalt", s.block)} data-ein="">
             {children}
-          </ul>
-        </div>
-      )}
+          </div>
+        ) : (
+          <div
+            id={spurId}
+            className={s.spur}
+            tabIndex={0}
+            role="group"
+            aria-label={`${label}: Karten`}
+          >
+            <ul role="list" data-ein="reihe">
+              {children}
+            </ul>
+          </div>
+        )}
+      </div>
       {notiz ? (
         <p className={cn("inhalt notiz-mono", s.notiz)} data-ein="">
           {notiz}

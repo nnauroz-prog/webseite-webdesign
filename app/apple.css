@@ -1985,21 +1985,26 @@
   border-radius: 50%;
 }
 @media (prefers-reduced-motion: no-preference) {
+  /* Ring über Maßstab und Deckkraft (läuft nebenher), nicht über einen
+     wachsenden Schatten (müsste bei jedem Bild neu gemalt werden). */
   .stelle-knopf::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    box-shadow: 0 0 0 0 rgb(244 91 30 / 0.55);
+    box-shadow: 0 0 0 2px rgb(244 91 30 / 0.7);
+    opacity: 0;
     animation: stelle-ruf 2.6s var(--ease-aus) infinite;
   }
   @keyframes stelle-ruf {
     0% {
-      box-shadow: 0 0 0 0 rgb(244 91 30 / 0.55);
+      transform: scale(1);
+      opacity: 0.8;
     }
     70%,
     100% {
-      box-shadow: 0 0 0 12px rgb(244 91 30 / 0);
+      transform: scale(2);
+      opacity: 0;
     }
   }
 }
@@ -2328,22 +2333,10 @@
    Mehr Bewegung, alles nur ohne reduzierte Bewegung und am Bildschirm.
    ------------------------------------------------------------------ */
 @media screen and (prefers-reduced-motion: no-preference) {
-  /* Fotos atmen: sehr langsames Hinein- und Herauszoomen. Über die
-     eigene Eigenschaft „scale“, damit Tiefe, Hover und Auftritt
-     (alle über transform) unberührt bleiben. */
-  [data-para] > img,
-  article[data-kipp] img[data-nimg="fill"],
-  [data-foto-lebt] img {
-    animation: foto-atmen 16s ease-in-out infinite alternate;
-  }
-  @keyframes foto-atmen {
-    from {
-      scale: 1;
-    }
-    to {
-      scale: 1.07;
-    }
-  }
+  /* Die Fotos atmen nicht mehr: Das langsame Zoomen über „scale“ lief bei
+     jedem Bild auf dem Hauptthread (gemessen: 60 Stil-Läufe pro Sekunde,
+     solange Fotos im Bild waren), weil die Fotos zugleich „transform“
+     tragen. Die Tiefe beim Scrollen bleibt. */
 
   /* Welle: Ein angetippter Knopf sendet einen Ring nach außen
      (data-welle setzt effekte.tsx). */
@@ -2359,20 +2352,10 @@
     }
   }
 
-  /* Fähren in den gezeichneten Elbe-Bändern wiegen sich im Wasser. */
-  .weg-faehre {
-    transform-box: fill-box;
-    transform-origin: 50% 100%;
-    animation: weg-wiegen 3.6s ease-in-out infinite alternate;
-  }
-  @keyframes weg-wiegen {
-    from {
-      transform: translateY(0) rotate(-1.8deg);
-    }
-    to {
-      transform: translateY(1.4px) rotate(1.8deg);
-    }
-  }
+  /* Die Fähren in den gezeichneten Elbe-Bändern wiegen sich nicht mehr:
+     Bewegung innerhalb eines SVG rechnet der Browser bei jedem Bild auf
+     dem Hauptthread. Auf der Startseite fährt die Reihe stattdessen als
+     Ganzes durchs Bild (Kino-Fahrt). */
 
   /* Symbole der Marken auf /ablauf zeichnen sich beim Einblenden. */
   [data-ein-da="w"] .ablauf-marke svg :is(path, circle) {

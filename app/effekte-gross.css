@@ -589,3 +589,18 @@ footer:has(> .fuss-schiff) {
     }
   }
 }
+
+/* ------------------------------------------------------------------
+   Dauer-Animationen ruhen außerhalb des Bildes. effekte.tsx setzt
+   data-sicht an jedem Abschnitt, der (fast) im Bild ist. Betroffen sind
+   nur Schleifen ohne Inhalt (Möwen, Lauflicht); Auftritte bleiben
+   unberührt. Ohne Script ruhen sie immer.
+   ------------------------------------------------------------------ */
+main section:not([data-sicht]) [class*="moewe"],
+main section:not([data-sicht]) [class*="randLicht"]::before {
+  animation-play-state: paused !important;
+}
+/* Marken im Kopf: Auftritt läuft immer, das Schweben ruht außerhalb des Bildes. */
+main section:not([data-sicht]) [class*="fakten"] li {
+  animation-play-state: running, paused;
+}
