@@ -12,13 +12,20 @@
  */
 import type { SpruchTag } from "@/lib/sprueche-data";
 import {
-  drehungFuer,
   hafenLinie,
-  lookFuer,
+  musterFarbe,
+  stickerRand,
   stickerStern,
   type StoryLook,
 } from "@/lib/story-look";
 import { KURSIV_SPERRUNG, satzPlan } from "@/lib/story-satz";
+import {
+  MOTIV_EINHEIT,
+  MOTIV_WASSER,
+  SCHMUCK_B,
+  type Motiv,
+} from "@/lib/story-teile";
+import { varianteFuer, type Variante } from "@/lib/story-variante";
 
 /** Ausgabeformate: Story (9:16) und Beitrag (4:5). */
 export type StoryFormat = {
@@ -160,18 +167,32 @@ function stern(ctx: Ctx, x: number, y: number, r: number) {
   ctx.fill();
 }
 
-function pille(ctx: Ctx, x: number, y: number, b: number, h: number) {
-  const r = h / 2;
+/** Abgerundetes Rechteck; r = halbe Höhe ergibt eine Pille. */
+function pille(
+  ctx: Ctx,
+  x: number,
+  y: number,
+  b: number,
+  h: number,
+  r = h / 2,
+) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.lineTo(x + b - r, y);
-  ctx.arc(x + b - r, y + r, r, -Math.PI / 2, Math.PI / 2);
+  ctx.arcTo(x + b, y, x + b, y + r, r);
+  ctx.lineTo(x + b, y + h - r);
+  ctx.arcTo(x + b, y + h, x + b - r, y + h, r);
   ctx.lineTo(x + r, y + h);
-  ctx.arc(x + r, y + r, r, Math.PI / 2, (Math.PI * 3) / 2);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
   ctx.closePath();
 }
 
-/** Leicht schiefer Balken hinter der Pointe, wie mit dem Marker gezogen. */
+/**
+ * Leicht schiefer Balken hinter der Pointe, wie mit dem Marker gezogen:
+ * gefüllt oder nur als Rahmen.
+ */
 function balken(
   ctx: Ctx,
   x0: number,
@@ -179,6 +200,7 @@ function balken(
   grundlinie: number,
   px: number,
   farbe: string,
+  rahmen: boolean,
 ) {
   const oben = grundlinie - px * 0.76;
   const unten = grundlinie + px * 0.29;
@@ -188,45 +210,141 @@ function balken(
   ctx.lineTo(x1 + px * 0.09, unten + px * 0.02);
   ctx.lineTo(x0 - px * 0.14, unten - px * 0.015);
   ctx.closePath();
-  ctx.fillStyle = farbe;
-  ctx.fill();
+  if (rahmen) {
+    ctx.strokeStyle = farbe;
+    ctx.lineWidth = Math.max(4, px * 0.055);
+    ctx.lineJoin = "round";
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = farbe;
+    ctx.fill();
+  }
 }
 
-/** Grund: Farbfläche, ein Licht, große Tageszahl, unten Hafen und Fähre. */
+/** Hafen-Motiv: dieselben Pfade wie auf der Website, als Path2D. */
+function motiv(ctx: Ctx, l: StoryLook, f: StoryFormat, m: Motiv, t: number) {
+  const s = (MOTIV_EINHEIT * f.b) / 100;
+  const ziel = f.b - RAND + 8 - m.b * s;
+  const y = f.kante + 6 - MOTIV_WASSER * s;
+  ctx.save();
+  if (m.faehrt) {
+    // Schiffe fahren von links ein und wiegen sich.
+    const fahrt = ein(t, 0.1, 2.8);
+    const wiegen = Number.isFinite(t) ? Math.sin(t * 2.4) : 0;
+    const start = -m.b * s - 40;
+    ctx.translate(start + (ziel - start) * fahrt, y + wiegen * 4);
+    ctx.translate((m.b * s) / 2, MOTIV_WASSER * s);
+    ctx.rotate((wiegen * 1.3 * Math.PI) / 180);
+    ctx.translate((-m.b * s) / 2, -MOTIV_WASSER * s);
+  } else {
+    // Bauten stehen fest und blenden ein.
+    const da = ein(t, 0.2, 0.9);
+    ctx.globalAlpha = da;
+    ctx.translate(ziel, y + (1 - da) * 30);
+  }
+  ctx.scale(s, s);
+  const farben = { faehre: l.faehre, streif: l.streif, grund: l.bg };
+  const deckung = ctx.globalAlpha;
+  for (const teil of m.teile) {
+    ctx.globalAlpha = deckung * (teil.deck ?? 1);
+    ctx.fillStyle = farben[teil.farbe];
+    ctx.fill(new Path2D(teil.d));
+  }
+  ctx.restore();
+}
+
+/**
+ * Grund: Farbfläche mit Muster, ein Licht, Schmuck oben rechts, unten
+ * die Hafenfläche mit dem Motiv.
+ */
 function grund(
   ctx: Ctx,
-  l: StoryLook,
+  v: Variante,
   f: StoryFormat,
   karte: SpruchTag,
   serif: string,
   t: number,
 ) {
+  const l = v.look;
   const g = ctx.createLinearGradient(0, 0, f.b, f.h);
   g.addColorStop(0, l.bg);
   g.addColorStop(1, l.bg2);
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, f.b, f.h);
+
+  // Muster im Grund: zart, in Schriftrichtung getönt.
+  const muster = musterFarbe(l);
+  const e = f.b / 100;
+  if (v.grund === "raster") {
+    ctx.strokeStyle = `rgb(${muster} / 0.07)`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let x = e * 6.67; x < f.b; x += e * 6.67) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, f.h);
+    }
+    for (let y = e * 6.67; y < f.h; y += e * 6.67) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(f.b, y);
+    }
+    ctx.stroke();
+  } else if (v.grund === "streifen") {
+    ctx.save();
+    ctx.fillStyle = `rgb(${muster} / 0.06)`;
+    ctx.rotate(Math.PI / 4);
+    for (let x = 0; x < f.b + f.h; x += e * 15)
+      ctx.fillRect(x, -f.b, e * 5, f.b + f.h);
+    ctx.restore();
+  } else if (v.grund === "geteilt") {
+    ctx.fillStyle = `rgb(${muster} / 0.08)`;
+    ctx.beginPath();
+    ctx.moveTo(0, f.h * 0.7);
+    ctx.lineTo(f.b, f.h * 0.44);
+    ctx.lineTo(f.b, f.h);
+    ctx.lineTo(0, f.h);
+    ctx.closePath();
+    ctx.fill();
+  }
+
   const licht = ctx.createRadialGradient(940, f.oben, 0, 940, f.oben, 820);
   licht.addColorStop(0, `rgb(${l.licht} / ${l.lichtKraft})`);
   licht.addColorStop(1, `rgb(${l.licht} / 0)`);
   ctx.fillStyle = licht;
   ctx.fillRect(0, 0, f.b, f.oben + 840);
 
-  // Tageszahl: groß, kursiv, rechts angeschnitten, Ton in Ton.
-  const zahl = ein(t, 0, 0.8);
+  // Schmuck oben rechts, Ton in Ton: Tageszahl, Anführungszeichen oder Form.
+  const da = ein(t, 0, 0.8);
   ctx.save();
-  ctx.globalAlpha = zahl;
-  ctx.font = `italic 600 460px ${serif}`;
-  sperren(ctx, -12);
-  ctx.textAlign = "right";
-  ctx.textBaseline = "alphabetic";
+  ctx.globalAlpha = da;
   ctx.fillStyle = `rgb(${l.ziffer})`;
-  ctx.fillText(karte.tagImMonat, f.b + 34 + (1 - zahl) * 120, f.oben + 300);
-  sperren(ctx, 0);
+  ctx.strokeStyle = `rgb(${l.ziffer})`;
+  if (v.schmuck.art === "schrift") {
+    const zitat = v.schmuck.name === "zitat";
+    ctx.font = `italic 600 ${zitat ? 900 : 460}px ${serif}`;
+    sperren(ctx, zitat ? 0 : -12);
+    ctx.textAlign = "right";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(
+      zitat ? "“" : karte.tagImMonat,
+      f.b + (zitat ? -40 : 34) + (1 - da) * 120,
+      f.oben + (zitat ? 650 : 300),
+    );
+    sperren(ctx, 0);
+  } else {
+    ctx.translate((1 - da) * 80, f.oben - 50);
+    ctx.scale(f.b / SCHMUCK_B, f.b / SCHMUCK_B);
+    for (const teil of v.schmuck.teile) {
+      const pfad = new Path2D(teil.d);
+      if (teil.strich) {
+        ctx.lineWidth = teil.strich;
+        ctx.stroke(pfad);
+      } else ctx.fill(pfad);
+    }
+  }
   ctx.restore();
 
-  // Hafen: deckende Fläche mit Wellenkante, darin eine helle Wellenlinie,
-  // die im Video langsam zieht.
+  // Hafen: deckende Fläche mit Wellenkante, darin eine Wellenlinie, die
+  // im Video langsam zieht.
   const lauf = Number.isFinite(t) ? (t * 26) % 360 : 0;
   const kante = (y: number, hub: number, versatz: number) => {
     ctx.moveTo(-360 - versatz, y);
@@ -248,39 +366,7 @@ function grund(
   ctx.lineWidth = 4;
   ctx.stroke();
 
-  // Fähre rechts auf der Kante (Rumpf taucht in die Fläche ein). Im
-  // Video fährt sie von links ein und wiegt sich.
-  const fahrt = ein(t, 0.1, 2.8);
-  const wiegen = Number.isFinite(t) ? Math.sin(t * 2.4) : 0;
-  ctx.save();
-  ctx.translate(-260 + (752 + 260) * fahrt, f.kante - 128 + wiegen * 4);
-  ctx.translate(120, 135);
-  ctx.rotate((wiegen * 1.3 * Math.PI) / 180);
-  ctx.translate(-120, -135);
-  ctx.scale(5.2, 5.2);
-  ctx.fillStyle = l.faehre;
-  ctx.beginPath();
-  ctx.moveTo(0, 18);
-  ctx.lineTo(46, 18);
-  ctx.lineTo(41, 26);
-  ctx.lineTo(5, 26);
-  ctx.closePath();
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(5, 17.2);
-  ctx.lineTo(5, 10.5);
-  ctx.lineTo(36, 10.5);
-  ctx.lineTo(41, 17.2);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillRect(9, 6, 21, 4);
-  ctx.fillStyle = l.streif;
-  ctx.fillRect(0, 17.2, 46, 1.9);
-  ctx.fillRect(21.5, 0.5, 3.4, 5.5);
-  // Fenster in der Farbe des Grundes.
-  ctx.fillStyle = l.bg;
-  for (const fx of [9, 14.5, 20, 25.5, 31]) ctx.fillRect(fx, 12.2, 3.4, 2.6);
-  ctx.restore();
+  motiv(ctx, l, f, v.motiv, t);
 }
 
 function kennzeile(
@@ -345,12 +431,16 @@ const AUFKLEBER_H = 100;
 /** Aufkleber mit dem Kicker: Stanzrand, harter Schatten, drei Strahlen. */
 function aufkleber(
   ctx: Ctx,
-  l: StoryLook,
+  v: Variante,
   kicker: string,
   y: number,
-  grad: number,
   t: number,
 ) {
+  const l = v.look;
+  const grad = v.dreh;
+  // Pille oder Band (kleine Ecken, wie ein Stück Klebeband).
+  const ecke = (hoehe: number, plus: number) =>
+    v.aufkleber === "band" ? 12 + plus : hoehe / 2;
   const text = kicker.toUpperCase();
   // Auftritt: klebt mit Schwung auf (Maßstab und Drehung).
   const k = schwung(t, 0.35, 0.55);
@@ -365,18 +455,23 @@ function aufkleber(
   const tb = ctx.measureText(text).width;
   const h = AUFKLEBER_H;
   const b = 40 + 38 + 16 + tb + 46;
-  const hellerAufkleber = l.stickerBg === "#fff8ee";
   const rand = 8;
-  // Schatten, dann Stanzrand, dann die Pille.
-  pille(ctx, -rand + 8, -h / 2 - rand + 10, b + rand * 2, h + rand * 2);
+  const aussen = h + rand * 2;
+  // Schatten, dann Stanzrand, dann die Fläche.
+  pille(
+    ctx,
+    -rand + 8,
+    -h / 2 - rand + 10,
+    b + rand * 2,
+    aussen,
+    ecke(aussen, rand),
+  );
   ctx.fillStyle = "rgb(0 0 0 / 0.2)";
   ctx.fill();
-  if (!hellerAufkleber) {
-    pille(ctx, -rand, -h / 2 - rand, b + rand * 2, h + rand * 2);
-    ctx.fillStyle = "#fff8ee";
-    ctx.fill();
-  }
-  pille(ctx, 0, -h / 2, b, h);
+  pille(ctx, -rand, -h / 2 - rand, b + rand * 2, aussen, ecke(aussen, rand));
+  ctx.fillStyle = stickerRand(l);
+  ctx.fill();
+  pille(ctx, 0, -h / 2, b, h, ecke(h, 0));
   ctx.fillStyle = l.stickerBg;
   ctx.fill();
   ctx.fillStyle = stickerStern(l);
@@ -459,7 +554,12 @@ export async function storyVorbereiten(
     // Ersatzschrift reicht.
   }
 
-  const l = lookFuer(karte.nummer);
+  const v = varianteFuer(karte.nummer);
+  const l = v.look;
+  const rahmen = v.balken === "rahmen";
+  // Auf dem gefüllten Balken steht die Pointe in dessen Schriftfarbe,
+  // im Rahmen in der Farbe des Satzes.
+  const pointeFarbe = rahmen ? l.text : l.betont;
   canvas.width = f.b;
   canvas.height = f.h;
   // Luft unter der Kennzeile: Die Strahlen des Aufklebers ragen nach oben.
@@ -542,13 +642,22 @@ export async function storyVorbereiten(
                 grundlinie,
                 p,
                 l.marker,
+                rahmen,
               );
               von = null;
             }
             x += w.breite + abstand;
           }
           if (von !== null)
-            balken(ctx, von, von + (bis - von) * zug, grundlinie, p, l.marker);
+            balken(
+              ctx,
+              von,
+              von + (bis - von) * zug,
+              grundlinie,
+              p,
+              l.marker,
+              rahmen,
+            );
           // … dann die Schrift.
           x = RAND;
           for (const w of z.woerter) {
@@ -556,7 +665,7 @@ export async function storyVorbereiten(
             sperren(ctx, w.betont ? p * KURSIV_SPERRUNG : -g * 0.032);
             // Auf dem Balken steht die Schrift in der Balken-Schriftfarbe;
             // solange er noch zieht, in der Satzfarbe.
-            ctx.fillStyle = w.betont && zug > 0.6 ? l.betont : l.text;
+            ctx.fillStyle = w.betont && zug > 0.6 ? pointeFarbe : l.text;
             ctx.fillText(w.t, x, grundlinie);
             x += w.breite + abstand;
           }
@@ -641,9 +750,9 @@ export async function storyVorbereiten(
           const grundlinie = oben + i * pZeile + p * 0.8;
           const x = RAND + p * 0.12;
           const b = ctx.measureText(z).width;
-          balken(ctx, x, x + b * zug, grundlinie, p, l.marker);
+          balken(ctx, x, x + b * zug, grundlinie, p, l.marker, rahmen);
           ctx.globalAlpha = schrift;
-          ctx.fillStyle = l.betont;
+          ctx.fillStyle = pointeFarbe;
           ctx.fillText(z, x, grundlinie + (1 - schrift) * p * 0.18);
           ctx.globalAlpha = 1;
         });
@@ -685,21 +794,27 @@ export async function storyVorbereiten(
     setzen(g, 4000) ?? { hoehe: 0, schritte: [], ende: 1 };
   const luecke = g * 0.42;
   const gesamt = aufkleberBlock + gesetzt.hoehe + luecke + zusatzHoehe;
-  // Etwas über der Mitte: wirkt ruhiger als genau mittig.
-  const oben = feldOben + (feldUnten - feldOben - gesamt) * 0.45;
-  const grad = drehungFuer(karte.nummer);
+  // Lage im Feld: mittig (etwas über der Mitte wirkt ruhiger), oben
+  // unter der Kennzeile oder unten über dem Absender.
+  const lage = { mitte: 0.45, oben: 0.05, unten: 0.95 }[v.anker];
+  // Oben zusätzlich Abstand zur Kennzeile: Der gedrehte Aufkleber und
+  // seine Strahlen ragen nach oben.
+  const oben =
+    feldOben +
+    (v.anker === "oben" ? 44 : 0) +
+    (feldUnten - feldOben - gesamt) * lage;
   const zusatzAb = gesetzt.ende + 0.25;
 
   return (t: number) => {
     ctx.globalAlpha = 1;
     ctx.textBaseline = "alphabetic";
     ctx.textAlign = "left";
-    grund(ctx, l, f, karte, serif, t);
+    grund(ctx, v, f, karte, serif, t);
     kennzeile(ctx, l, f, karte.datumKurz, mono, t);
     absender(ctx, l, f, t);
 
     let y = oben;
-    aufkleber(ctx, l, karte.kicker, y, grad, t);
+    aufkleber(ctx, v, karte.kicker, y, t);
     y += aufkleberBlock;
     ctx.textBaseline = "alphabetic";
     for (const s of gesetzt.schritte) y = s(y, t);

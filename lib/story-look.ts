@@ -5,11 +5,11 @@
  *
  * Kräftige Flächen statt blasser Verläufe: Jede Welt hat einen Grund
  * (mit einem Licht aus derselben Farbfamilie), eine Markerfarbe für die
- * Pointe und unten eine deckende Hafenfläche mit der Fähre.
+ * Pointe und unten eine deckende Hafenfläche mit einem Hafen-Motiv.
  *
- * Jeden Tag ist die nächste Farbwelt dran (lookFuer), damit beim
- * Blättern keine zwei Karten nacheinander gleich aussehen. Kontraste
- * prüft tests/story-look.test.ts.
+ * Welche Farbwelt an welchem Tag dran ist, bestimmt zusammen mit Motiv,
+ * Schmuck und Anordnung lib/story-variante.ts. Kontraste prüft
+ * tests/story-look.test.ts.
  */
 export type StoryLook = {
   name: string;
@@ -156,35 +156,146 @@ export const STORY_LOOKS: StoryLook[] = [
     streif: "#f45b1e",
     akzent: "#f45b1e",
   },
+  {
+    name: "tinte",
+    dunkel: true,
+    bg: "#1b2a4a",
+    bg2: "#24386a",
+    licht: "70 100 180",
+    lichtKraft: 0.5,
+    text: "#ffffff",
+    weich: "#dbe4f5",
+    betont: "#1d1d1f",
+    marker: "#ffd54a",
+    stickerBg: "#ffd54a",
+    stickerText: "#1d1d1f",
+    ziffer: "255 255 255 / 0.08",
+    hafen: "#ffd54a",
+    faehre: "#ffffff",
+    streif: "#f45b1e",
+    akzent: "#ffd54a",
+  },
+  {
+    name: "rosa",
+    dunkel: false,
+    bg: "#ffd9cf",
+    bg2: "#ffc7ba",
+    licht: "255 242 238",
+    lichtKraft: 0.75,
+    text: "#1d1d1f",
+    weich: "#4a3530",
+    betont: "#fff8ee",
+    marker: "#0f2a3a",
+    stickerBg: "#f45b1e",
+    stickerText: "#1d1d1f",
+    ziffer: "255 255 255 / 0.45",
+    hafen: "#0f2a3a",
+    faehre: "#0f2a3a",
+    streif: "#f45b1e",
+    akzent: "#0f2a3a",
+  },
+  {
+    name: "petrol",
+    dunkel: true,
+    bg: "#1f7a78",
+    bg2: "#176a6c",
+    licht: "80 180 170",
+    lichtKraft: 0.5,
+    text: "#ffffff",
+    weich: "#eaf6f4",
+    betont: "#0f2a3a",
+    marker: "#fff8ee",
+    stickerBg: "#0f2a3a",
+    stickerText: "#ffffff",
+    ziffer: "255 255 255 / 0.1",
+    hafen: "#0f2a3a",
+    faehre: "#fff8ee",
+    streif: "#f45b1e",
+    akzent: "#ffd9a8",
+  },
+  {
+    name: "nebel",
+    dunkel: false,
+    bg: "#e3eaf0",
+    bg2: "#d3dee8",
+    licht: "255 255 255",
+    lichtKraft: 0.75,
+    text: "#0f2a3a",
+    weich: "#33505f",
+    betont: "#ffffff",
+    marker: "#f45b1e",
+    stickerBg: "#0f2a3a",
+    stickerText: "#ffffff",
+    ziffer: "15 42 58 / 0.08",
+    hafen: "#0f2a3a",
+    faehre: "#0f2a3a",
+    streif: "#f45b1e",
+    akzent: "#f45b1e",
+  },
+  {
+    name: "flieder",
+    dunkel: false,
+    bg: "#ddd2ff",
+    bg2: "#cdbfff",
+    licht: "246 242 255",
+    lichtKraft: 0.75,
+    text: "#1d1d1f",
+    weich: "#3a3357",
+    betont: "#ffd84d",
+    marker: "#0f2a3a",
+    stickerBg: "#1d1d1f",
+    stickerText: "#ffffff",
+    ziffer: "255 255 255 / 0.42",
+    hafen: "#0f2a3a",
+    faehre: "#0f2a3a",
+    streif: "#ffd84d",
+    akzent: "#f45b1e",
+  },
+  {
+    name: "sand",
+    dunkel: false,
+    bg: "#ead9c2",
+    bg2: "#dfc9ab",
+    licht: "252 244 230",
+    lichtKraft: 0.75,
+    text: "#1d1d1f",
+    weich: "#4b3f31",
+    betont: "#fff8ee",
+    marker: "#0f2a3a",
+    stickerBg: "#f45b1e",
+    stickerText: "#1d1d1f",
+    ziffer: "255 255 255 / 0.38",
+    hafen: "#0f2a3a",
+    faehre: "#0f2a3a",
+    streif: "#f45b1e",
+    akzent: "#f45b1e",
+  },
 ];
 
-/** Der Aufkleber sitzt jeden Tag etwas anders gedreht (Grad). */
-const DREHUNG = [-6, 4, -4, 5, -7, 3];
+const HELL = ["#fff8ee", "#ffd54a"];
 
-function mod(n: number, m: number): number {
-  return ((n % m) + m) % m;
-}
-
-/** Farbwelt für die fortlaufende Tagesnummer (auch negativ). */
-export function lookFuer(nummer: number): StoryLook {
-  return STORY_LOOKS[mod(nummer, STORY_LOOKS.length)];
-}
-
-/** Drehung des Aufklebers für die Tagesnummer. */
-export function drehungFuer(nummer: number): number {
-  return DREHUNG[mod(nummer, DREHUNG.length)];
-}
-
-/** Stern im Aufkleber: Orange, auf orangem Aufkleber die Schriftfarbe. */
+/** Stern im Aufkleber: Orange; auf orangem oder gelbem Aufkleber die Schriftfarbe. */
 export function stickerStern(l: StoryLook): string {
-  return l.stickerBg === "#f45b1e" ? l.stickerText : "#f45b1e";
+  return l.stickerBg === "#f45b1e" || l.stickerBg === "#ffd54a"
+    ? l.stickerText
+    : "#f45b1e";
+}
+
+/** Stanzrand um den Aufkleber: cremeweiß; ein heller Aufkleber braucht keinen. */
+export function stickerRand(l: StoryLook): string {
+  return HELL.includes(l.stickerBg) ? l.stickerBg : "#fff8ee";
 }
 
 /** Wellenlinie in der Hafenfläche: dunkel auf heller Fläche, sonst hell. */
 export function hafenLinie(l: StoryLook): string {
-  return l.hafen === "#fff8ee"
-    ? "rgb(15 42 58 / 0.22)"
+  return HELL.includes(l.hafen)
+    ? "rgb(15 42 58 / 0.24)"
     : "rgb(255 255 255 / 0.26)";
+}
+
+/** Zarte Muster im Grund (Raster, Streifen): „r g b“ in der Schriftrichtung. */
+export function musterFarbe(l: StoryLook): string {
+  return l.dunkel ? "255 255 255" : "15 42 58";
 }
 
 /** Die Farbwelt als CSS-Variablen für die Karte auf der Website. */
@@ -204,6 +315,8 @@ export function lookVariablen(l: StoryLook): Record<string, string> {
     "--k-ziffer": `rgb(${l.ziffer})`,
     "--k-hafen": l.hafen,
     "--k-hafen-linie": hafenLinie(l),
+    "--k-sticker-rand": stickerRand(l),
+    "--k-muster": `rgb(${musterFarbe(l)} / 0.07)`,
     "--k-faehre": l.faehre,
     "--k-streif": l.streif,
     "--k-akzent": l.akzent,
