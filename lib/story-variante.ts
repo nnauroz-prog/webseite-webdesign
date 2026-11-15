@@ -51,10 +51,11 @@ export const AUFTRITTE = [
 ] as const;
 export type Auftritt = (typeof AUFTRITTE)[number];
 /**
- * Weg der Kamera im Film: vom Requisit zurück zum Satz, aus der Totale
- * langsam heran, oder von der Lücke der Pointe zurück.
+ * Weg der Kamera im Film: vom Requisit zurück in die Totale, aus der
+ * Totale langsam heran, von der Lücke der Pointe zurück oder am Hafen
+ * entlang.
  */
-export const KAMERAS = ["rueckzug", "anfahrt", "luecke"] as const;
+export const KAMERAS = ["rueckzug", "anfahrt", "luecke", "hafen"] as const;
 export type Kamera = (typeof KAMERAS)[number];
 
 /** Der Aufkleber sitzt jeden Tag etwas anders gedreht (Grad). */
