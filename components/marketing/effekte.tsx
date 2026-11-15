@@ -110,9 +110,15 @@ export function Effekte() {
     // Fotos mit data-para wandern beim Scrollen langsamer als ihr Rahmen
     // und zoomen dabei. Die ersten Werte gleiten weich ein (data-para-start),
     // damit beim Laden nichts springt.
-    const fotos = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-para]"),
-    );
+    // Touch-Geräte (iPhone): Dort scrollt die Seite auf einem eigenen
+    // Thread; alles, was dieses Script pro Bild nachführt, kommt ein, zwei
+    // Bilder zu spät an. Bei Fotos, die sich gegen ihren Rahmen bewegen,
+    // sieht man das als Zittern. Darum dort keine Foto-Tiefe und kein
+    // nachgeführter Kopf (der sinkt per CSS-Scroll-Zeitleiste).
+    const touch = window.matchMedia("(hover: none)").matches;
+    const fotos = touch
+      ? []
+      : Array.from(document.querySelectorAll<HTMLElement>("[data-para]"));
     // Ältere Browser ohne die Einzel-Eigenschaft „scale“ behalten den
     // kleinen Weg zum festen Zoom aus apple.css.
     const grosseTiefe =
@@ -146,8 +152,18 @@ export function Effekte() {
     // Gemessen wird die ruhende Hülle um den Kopf (kran-banner.tsx): Der
     // Kopf selbst verkleinert und kippt sich und würde sich sonst selbst
     // nachlaufen. --weg vererbt sich von der Hülle an den Kopf.
-    const kopfHuelle =
-      kopf?.closest<HTMLElement>("[data-kopf-huelle]") ?? kopf ?? null;
+    const kopfHuelle = touch
+      ? null
+      : (kopf?.closest<HTMLElement>("[data-kopf-huelle]") ?? kopf ?? null);
+    // Lesefortschritt nur an den Elementen, die ihn brauchen (Ring im Logo,
+    // Zeilen des Laufbands). Am <html> gesetzt, müsste der Browser bei
+    // jedem Bild die Stile der ganzen Seite neu berechnen.
+    const pZiele = Array.from(
+      document.querySelectorAll<HTMLElement | SVGElement>(
+        ".logo-ring, .laufband-zeile",
+      ),
+    );
+    let pText = "";
     // Himmelslicht: folgt dem Scrollen etwas langsamer, nie über main hinaus
     // (1000 statt 820 px Höhe: Luft für das langsame Atmen des Lichts).
     const haupt = document.getElementById("main");
@@ -269,7 +285,11 @@ export function Effekte() {
       const p = max > 200 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
       for (const s of schreiben) s();
       spur.style.setProperty("--p", p.toFixed(4));
-      document.documentElement.style.setProperty("--seite-p", p.toFixed(4));
+      const pNeu = p.toFixed(3);
+      if (pNeu !== pText) {
+        pText = pNeu;
+        for (const z of pZiele) z.style.setProperty("--seite-p", pNeu);
+      }
       spur.dataset.an = p > 0.012 ? "1" : "0";
     };
     const onGroesse = () => {
@@ -356,7 +376,7 @@ export function Effekte() {
   useEffect(() => {
     if (!("IntersectionObserver" in window)) return;
     const ziele = Array.from(
-      document.querySelectorAll<HTMLElement>("main section"),
+      document.querySelectorAll<HTMLElement>("main section, main .laufband"),
     );
     const io = new IntersectionObserver(
       (eintraege) => {

@@ -526,3 +526,45 @@ body:has(#mobile-menu[aria-hidden="false"])
     animation-delay: 420ms;
   }
 }
+
+/* ==================================================================
+   Ruhiger auf Touch-Geräten (iPhone). Rückmeldung des Inhabers: Auf dem
+   iPhone lief die Seite nicht ganz flüssig. Dort entfällt, was bei jedem
+   Bild teuer ist:
+   - Unschärfe bei Auftritten (der Weichzeichner muss für jedes Bild neu
+     gerechnet werden); Weg, Drehung, Maßstab und Deckkraft bleiben.
+   - Foto-Tiefe (Fotos stehen fest in ihrem Rahmen; das Script führt sie
+     dort nicht mehr nach).
+   - Das Atmen des Himmelslichts hinter der Seite: eine bildschirmgroße
+     Fläche, die dauernd Maßstab, Drehung und Deckkraft ändert. Das Licht
+     selbst bleibt und folgt weiter dem Scrollen.
+   Diese Regeln stehen in der zuletzt geladenen Datei und überstimmen
+   mit !important auch laufende Animationen.
+   ================================================================== */
+@media (hover: none) {
+  [data-ein],
+  [data-ein="reihe"] > *,
+  [data-ein] .wort > span,
+  [class*="wortIn"],
+  main h1,
+  details[open] > :not(summary),
+  [data-kurz-folge],
+  .umfang > ul > li {
+    filter: none !important;
+  }
+  [data-para] > img {
+    translate: none;
+    scale: none;
+    will-change: auto;
+  }
+  body:has(footer) main#main:not(.max-w-2xl)::before {
+    animation: none;
+    will-change: translate;
+  }
+}
+
+/* Das Laufband ruht, solange es nicht im Bild ist (data-sicht setzt
+   effekte.tsx wie an den Abschnitten). */
+.laufband:not([data-sicht]) :is(.laufband-wellen i, .laufband-spur) {
+  animation-play-state: paused !important;
+}
