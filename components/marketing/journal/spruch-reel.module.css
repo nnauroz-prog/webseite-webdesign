@@ -1,10 +1,8 @@
-/* Spruch des Tages als Story-Karte (spruch-reel.tsx).
-   Farben kommen je Karte als Variablen (--k-*, lib/story-look.ts); der
-   Aufbau entspricht dem Story-Bild im Admin (lib/story-bild.ts).
-   Maße der Karte in cqw (Hundertstel der Kartenbreite), damit Schrift
-   und Abstände mit der Karte wachsen. Bewegung nur über transform und
-   opacity, nur an der Karte im Bild und nur, solange der Abschnitt im
-   Bild ist (data-sicht setzt components/marketing/effekte.tsx). */
+/* Spruch des Tages als Karte (spruch-reel.tsx).
+   Das Bild jeder Karte malt lib/story-bild.ts auf eine Zeichenfläche, im
+   selben Aussehen wie die Posts im Story-Studio. Hier stehen nur Rahmen,
+   Fortschritt, Pfeile und die schlichte Textkarte für den Fall, dass kein
+   JavaScript läuft. */
 
 .buehne {
   padding: 14px 0 8px;
@@ -33,6 +31,14 @@
   width: min(100% - 32px, 420px);
   margin: 14px auto 0;
 }
+/* Hochformat 3:4 wie das gemalte Bild; auf niedrigen Bildschirmen so
+   schmal, dass die ganze Karte samt Titel ins Bild passt. */
+.rahmen {
+  position: relative;
+  width: min(100% - 32px, 420px, max(264px, (100svh - 176px) * 0.75));
+  aspect-ratio: 3 / 4;
+  margin-inline: auto;
+}
 @media (min-width: 734px) {
   .buehne {
     padding-top: 36px;
@@ -49,16 +55,8 @@
     display: flex;
     justify-content: center;
   }
-}
-.rahmen {
-  position: relative;
-  width: min(100% - 32px, 420px);
-  height: clamp(440px, calc(100svh - 174px), 720px);
-  margin-inline: auto;
-}
-@media (min-width: 734px) {
   .rahmen {
-    height: clamp(440px, calc(100svh - 276px), 720px);
+    width: min(100% - 32px, 420px, max(264px, (100svh - 276px) * 0.75));
   }
 }
 
@@ -95,398 +93,68 @@
   overflow: hidden;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  container-type: size;
   color: var(--k-text);
   background: linear-gradient(160deg, var(--k-bg) 0%, var(--k-bg2) 100%);
 }
-
-/* ---------- Szene hinter dem Text ---------- */
-.szene {
+/* Das gemalte Bild füllt die Karte; es blendet ein, sobald es fertig ist. */
+.bild {
   position: absolute;
   inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-/* Zartes Muster im Grund: Raster, Streifen oder eine geteilte Fläche. */
-.muster {
-  position: absolute;
-  inset: 0;
-}
-.karte[data-grund="raster"] .muster {
-  background-image:
-    linear-gradient(var(--k-muster) 1px, transparent 1px),
-    linear-gradient(90deg, var(--k-muster) 1px, transparent 1px);
-  background-size: 6.67cqw 6.67cqw;
-}
-.karte[data-grund="streifen"] .muster {
-  background-image: repeating-linear-gradient(
-    135deg,
-    var(--k-muster) 0 5cqw,
-    transparent 5cqw 15cqw
-  );
-}
-.karte[data-grund="geteilt"] .muster {
-  background: var(--k-muster);
-  clip-path: polygon(0 70%, 100% 44%, 100% 100%, 0 100%);
-}
-/* Ein Licht oben rechts, aus derselben Farbfamilie wie der Grund. */
-.licht {
-  position: absolute;
-  top: -40%;
-  right: -45%;
-  width: 150%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, var(--k-licht), var(--k-licht-aus));
-}
-/* Tageszahl: groß, kursiv, rechts angeschnitten, Ton in Ton. */
-.ziffer {
-  position: absolute;
-  top: 26px;
-  right: -8px;
-  right: -2.4cqw;
-  font-family: var(--font-serif), Cormorant, Georgia, serif;
-  font-size: 150px;
-  font-size: 42cqw;
-  line-height: 0.82;
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--k-ziffer);
-  user-select: none;
-}
-/* Statt der Tageszahl: ein großes Anführungszeichen … */
-.zitat {
-  top: 6px;
-  top: 1.6cqw;
-  right: 12px;
-  right: 3.4cqw;
-  font-size: 300px;
-  font-size: 83cqw;
-  line-height: 1;
-  letter-spacing: 0;
-}
-/* … oder eine Form (Sonne, Strahlen, Ringe, Punkte), Ton in Ton. */
-.form {
-  position: absolute;
-  top: 18px;
-  top: 5cqw;
-  left: 0;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-/* Hafen: deckende Fläche mit Wellenkante, darauf rechts das Motiv. */
-.hafen {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 44px;
-  height: max(40px, 11.5cqw);
-  background: var(--k-hafen);
-}
-.kante {
-  position: absolute;
-  bottom: calc(100% - 1px);
-  left: 0;
-  width: 200%;
-  height: 10px;
-  fill: var(--k-hafen);
-}
-.linie {
-  position: absolute;
-  top: 34%;
-  left: 0;
-  width: 200%;
-  height: 8px;
-  fill: none;
-  stroke: var(--k-hafen-linie);
-  stroke-width: 2;
-}
-/* Motiv (Fähre, Frachter, Segler, Leuchtturm, Kran, Schlepper): Breite
-   und Eintauchtiefe kommen je Karte als --mb und --mt (cqw). */
-.fahrt {
-  position: absolute;
-  right: 22px;
-  right: 6.2cqw;
-  bottom: calc(100% - var(--mt, 5) * 3.58px);
-  bottom: calc(100% - var(--mt, 5) * 1cqw);
-  width: calc(var(--mb, 26) * 3.58px);
-  width: calc(var(--mb, 26) * 1cqw);
-}
-.fahrt svg {
   display: block;
   width: 100%;
-  height: auto;
-  overflow: visible;
-  transform-origin: 50% 75%;
+  height: 100%;
+  opacity: 0;
+}
+.karte[data-gemalt] .bild {
+  opacity: 1;
 }
 
-/* ---------- Inhalt ---------- */
-.inhalt {
+/* ---------- Text der Karte ----------
+   Mit JavaScript nur für Vorleseprogramme und Suchmaschinen (das Bild
+   zeigt denselben Text). Ohne JavaScript macht spruch-reel.tsx ihn
+   sichtbar: eine schlichte Karte in der Farbwelt des Tages. */
+.text {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 34px 22px 0;
-  padding: 34px 6.2cqw 0;
-  padding-bottom: 54px;
-  padding-bottom: max(50px, 14.5cqw);
-}
-.kennzeile {
-  position: relative;
-  padding-top: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 14px;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
   white-space: nowrap;
-  color: var(--k-weich);
 }
-.kennzeile::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 2px;
-  background: currentColor;
-}
-
-.mitte {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 0;
-  /* oben Luft für die Strahlen des Aufklebers, unten zum Absender */
-  padding-block: 22px 10px;
-}
-
-/* Lage im Feld: mittig, oben unter der Kennzeile oder unten über dem Absender. */
-.karte[data-anker="oben"] .mitte {
-  justify-content: flex-start;
-  /* Der gedrehte Aufkleber ragt nach oben: Abstand zur Kennzeile. */
-  padding-top: 34px;
-}
-.karte[data-anker="unten"] .mitte {
-  justify-content: flex-end;
-}
-
-/* Aufkleber mit dem Kicker: Stanzrand, harter Schatten, drei Strahlen. */
-.kicker {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+.etikett {
   align-self: flex-start;
-  gap: 6px;
-  margin: 0 0 11px 2px;
-  margin-bottom: 3.4cqw;
-  padding: 7px 14px 7px 10px;
+  margin-bottom: 14px;
+  padding: 6px 13px;
   border-radius: 999px;
-  background: var(--k-sticker-bg);
-  box-shadow:
-    0 0 0 2.5px var(--k-sticker-rand, #fff8ee),
-    3px 4px 0 2.5px rgb(0 0 0 / 0.2);
+  background: var(--k-etikett);
   font-size: 12px;
-  font-size: max(11px, 3.4cqw);
   line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--k-sticker-text);
-  transform: rotate(var(--dreh, -4deg));
-  transform-origin: 0 50%;
+  color: var(--k-etikett-text);
 }
-/* Statt der Pille: ein Band mit kleinen Ecken, wie ein Stück Klebeband. */
-.karte[data-aufkleber="band"] .kicker {
-  border-radius: 5px;
-}
-.kicker > svg:first-child {
-  flex: none;
-  width: 1.05em;
-  height: 1.05em;
-  fill: var(--k-sticker-stern);
-}
-.strahlen {
-  position: absolute;
-  top: -1.25em;
-  right: -1.7em;
-  width: 2em;
-  height: 2em;
-  fill: none;
-  stroke: var(--k-akzent);
-  stroke-width: 3.4;
-  stroke-linecap: round;
-}
-
-/* Schrift wächst mit der Kartenbreite; ist die Karte sehr gedrungen
-   (kleines Handy), bremst die Höhe (0,78 cqh entspricht 1 cqw bei 1 : 1,28). */
 .spruch {
-  font-size: calc(var(--g, 9.6) * 3.58px);
-  font-size: calc(var(--g, 9.6) * min(1cqw, 0.78cqh));
-  line-height: 1.06;
+  font-size: clamp(1.6rem, 8vw, 2.25rem);
+  line-height: 1.08;
   font-weight: 800;
-  letter-spacing: -0.032em;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
-/* Jedes Wort in einer Maske, aus der es beim Auftritt aufsteigt. */
-.wort {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  overflow: clip;
-  vertical-align: baseline;
-  padding: 0.08em 0.03em 0.16em;
-  margin: -0.08em -0.03em -0.16em;
-  isolation: isolate;
-}
-.wort > span {
-  display: inline-block;
-}
-/* Pointe mitten im Satz: größer, kursiv, auf einem Balken. */
-.betont {
-  padding: 0 0.16em 0.1em;
-  margin: 0 -0.12em -0.1em;
-  color: var(--k-betont);
-}
-.betont > span {
-  font-family: var(--font-serif), Cormorant, Georgia, serif;
-  font-size: 1.25em;
-  line-height: 0.84;
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: -0.012em;
-}
-.betont::before,
-.pzeile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--k-marker);
-  /* leicht schief, wie mit dem Marker gezogen */
-  clip-path: polygon(1.2% 5%, 100% 0, 98.6% 100%, 0 96%);
-  transform-origin: 0 50%;
-}
-.betont::before {
-  inset: 12% 0 4%;
-}
-/* Balken nur als Rahmen: Die Pointe steht dann in der Farbe des Satzes. */
-.karte[data-balken="rahmen"] :is(.betont, .pointe) {
-  color: var(--k-text);
-}
-.karte[data-balken="rahmen"] :is(.betont, .pzeile)::before {
-  border: max(2px, 0.055em) solid var(--k-marker);
-  border-radius: 0.05em;
-  background: none;
-  clip-path: none;
-}
-/* Pointe am Satzende: eigener Block, so groß, dass sie die Zeile füllt. */
-.pointe {
-  display: block;
-  margin-top: 0.1em;
-  padding-bottom: 0.06em;
-  font-family: var(--font-serif), Cormorant, Georgia, serif;
-  font-size: calc(var(--p, 14) * 3.58px);
-  font-size: calc(var(--p, 14) * min(1cqw, 0.78cqh));
-  line-height: 1.1;
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: -0.012em;
-  color: var(--k-betont);
-  transform: rotate(-2deg);
-  transform-origin: 0 50%;
-}
-.pzeile {
-  position: relative;
-  display: block;
-  width: fit-content;
-  padding: 0 0.14em 0 0.12em;
-  white-space: nowrap;
-  isolation: isolate;
-}
-.pzeile > span {
-  display: inline-block;
-}
-
 .zusatz {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  margin-top: 3.4cqw;
-  font-size: 16px;
-  font-size: max(15px, 4.5cqw);
-  line-height: 1.34;
+  margin-top: 14px;
+  font-size: 1rem;
+  line-height: 1.4;
   font-weight: 500;
   color: var(--k-weich);
   text-wrap: pretty;
 }
-.pfeil {
-  flex: none;
-  width: 22px;
-  width: max(20px, 6cqw);
-  height: auto;
-  aspect-ratio: 60 / 56;
-  margin-top: -0.1em;
-  overflow: visible;
-  fill: none;
-  stroke: var(--k-akzent);
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .absender {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  max-width: 66%;
-}
-.siegel {
-  display: inline-flex;
-  flex: none;
-  width: 36px;
-  height: 36px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #fff;
-  color: #f45b1e;
-}
-.siegel svg {
-  width: 22px;
-  height: 16px;
-}
-.wer {
-  min-width: 0;
-}
-.name {
-  display: block;
-  font-size: 14px;
-  line-height: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.ort {
-  display: block;
-  font-size: 12px;
-  line-height: 16px;
-  white-space: nowrap;
+  margin-top: 22px;
+  font-size: 13px;
+  line-height: 1.4;
   color: var(--k-weich);
-}
-@media (max-width: 359px) {
-  .siegel {
-    width: 32px;
-    height: 32px;
-  }
-  .name {
-    font-size: 13px;
-  }
 }
 
 /* ---------- Fortschritt ---------- */
@@ -566,163 +234,19 @@
   }
 }
 
-/* ---------- Bewegung ---------- */
+/* ---------- Bewegung ----------
+   Den Film der Karte spielt die Zeichnung selbst. Hier nur das Einblenden
+   des Bildes und der Fortschritt, der läuft, solange der Abschnitt im Bild
+   ist (data-sicht setzt components/marketing/effekte.tsx). */
 @media screen and (prefers-reduced-motion: no-preference) {
-  /* Sobald das Script bereit ist, wartet der Inhalt jeder Karte, bis sie
-     im Bild steht. Dann: Aufkleber klebt auf, der Satz steigt Wort für
-     Wort herein, der Balken der Pointe zieht durch, die Fähre fährt ein. */
-  .buehne[data-bereit]
-    .karte:not([data-aktiv])
-    :is(
-      .kicker,
-      .wort > span,
-      .pzeile > span,
-      .zusatz,
-      .absender,
-      .ziffer,
-      .form
-    ) {
-    opacity: 0;
+  .bild {
+    transition: opacity 260ms ease;
   }
-  .buehne[data-bereit] .karte:not([data-aktiv]) :is(.betont, .pzeile)::before {
-    transform: scaleX(0);
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .ziffer {
-    animation: ziffer-rein 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .kicker {
-    animation: aufkleber 620ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms both;
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .wort > span {
-    animation: wort-rein 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(420ms + var(--w, 0) * 70ms);
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .betont::before {
-    animation: balken 520ms cubic-bezier(0.65, 0, 0.35, 1) both;
-    animation-delay: calc(700ms + var(--w, 0) * 70ms);
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .pzeile::before {
-    animation: balken 560ms cubic-bezier(0.65, 0, 0.35, 1) both;
-    animation-delay: calc(560ms + var(--w, 0) * 70ms + var(--z, 0) * 180ms);
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .pzeile > span {
-    animation: pointe-rein 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(820ms + var(--w, 0) * 70ms + var(--z, 0) * 180ms);
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .zusatz {
-    animation: zeile-rein 700ms cubic-bezier(0.22, 1, 0.36, 1) 1700ms both;
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .pfeil path {
-    stroke-dasharray: 1;
-    animation: pfeil-zieht 600ms cubic-bezier(0.65, 0, 0.35, 1) 1850ms both;
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .absender {
-    animation: zeile-rein 700ms cubic-bezier(0.22, 1, 0.36, 1) 900ms both;
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .fahrt[data-faehrt] {
-    animation: faehre-ein 2600ms cubic-bezier(0.22, 1, 0.36, 1) 200ms both;
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .fahrt:not([data-faehrt]) {
-    animation: zeile-rein 900ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
-  }
-  .buehne[data-bereit] .karte[data-aktiv] .form {
-    animation: ziffer-rein 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  /* Der Fortschritt läuft nur, solange der Abschnitt im Bild ist. */
   .seg[data-zustand="laeuft"] > i {
     transform: scaleX(0);
   }
   .buehne[data-bereit][data-sicht] .seg[data-zustand="laeuft"] > i {
     animation: seg-lauf 9s linear forwards;
-  }
-  /* Szene: die Fähre wiegt sich, die Wellenlinie zieht. */
-  .buehne[data-sicht] .karte[data-aktiv] .fahrt[data-faehrt] svg {
-    animation: faehre-wiegt 3.2s ease-in-out infinite alternate;
-  }
-  .buehne[data-sicht] .karte[data-aktiv] .linie {
-    animation: welle-zieht 14s linear infinite;
-  }
-}
-@keyframes ziffer-rein {
-  from {
-    opacity: 0;
-    transform: translateX(18%);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes aufkleber {
-  from {
-    opacity: 0;
-    transform: rotate(calc(var(--dreh, -4deg) - 14deg)) scale(0.4);
-  }
-  to {
-    opacity: 1;
-    transform: rotate(var(--dreh, -4deg)) scale(1);
-  }
-}
-@keyframes wort-rein {
-  from {
-    opacity: 0;
-    transform: translateY(105%) rotate(5deg);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes balken {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-@keyframes pointe-rein {
-  from {
-    opacity: 0;
-    transform: translateY(22%);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes zeile-rein {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes pfeil-zieht {
-  from {
-    stroke-dashoffset: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes faehre-ein {
-  from {
-    transform: translateX(-92cqw);
-  }
-  to {
-    transform: none;
-  }
-}
-@keyframes faehre-wiegt {
-  from {
-    transform: rotate(-1.4deg) translateY(0);
-  }
-  to {
-    transform: rotate(1.4deg) translateY(1.5px);
   }
 }
 @keyframes seg-lauf {
@@ -731,10 +255,5 @@
   }
   to {
     transform: scaleX(1);
-  }
-}
-@keyframes welle-zieht {
-  to {
-    transform: translateX(-50%);
   }
 }

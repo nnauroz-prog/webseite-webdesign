@@ -1,7 +1,8 @@
 /**
- * Posts für Instagram: zeichnet eine Spruch-Karte als Story (1080 × 1920)
- * oder Beitrag (1080 × 1350) auf eine Zeichenfläche (nur im Browser,
- * genutzt vom Story-Studio unter /admin/story).
+ * Zeichnet eine Spruch-Karte auf eine Zeichenfläche (nur im Browser):
+ * als Story (1080 × 1920) oder Beitrag (1080 × 1350) für Instagram im
+ * Story-Studio (/admin/story) und als Karte (3:4) auf /journal. So sieht
+ * die Website genauso aus wie die Posts.
  *
  * Jede Reihe hat ihr eigenes Format, so wie ein Grafiker Serien anlegt:
  *
@@ -9,9 +10,11 @@
  * - Mythos: oben der Irrtum kursiv und durchgestrichen, unten auf Papier
  *   die Richtigstellung in großer Schrift.
  * - POV: dunkles Bild wie durch einen Sucher, mit Eckmarken und rotem Punkt.
- * - Frage (Hand aufs Herz, Mal ehrlich): ein riesiges Fragezeichen.
- * - Notiz (Reminder, Kleiner Reminder, Merken): ein Zettel mit Klebestreifen
- *   oder Lesezeichen auf farbigem Grund.
+ * - Frage (Hand aufs Herz, Mal ehrlich): ein großes Fragezeichen als
+ *   Umriss über dem Satz.
+ * - Notiz: Merken ist eine Karteikarte mit Lesezeichen, Reminder eine
+ *   schief aufgeklebte Karte, Kleiner Reminder ein gelber Zettel mit
+ *   Eselsohr.
  * - Sprechblase (Real Talk): der Satz in einer großen Sprechblase.
  * - Plakat (Hot Take, Unpopular Opinion, Kurz gesagt, Website-Wahrheit):
  *   reine Schrift mit einem großen Zeichen oder einem runden Stempel.
@@ -19,7 +22,9 @@
  * Allen gemeinsam: derselbe Rahmen (Etikett oben links, Datum oben
  * rechts, unten die Elbe-Linie mit kleinem Schiff, Wortmarke und
  * Adresse), dieselben Schriften, die Pointe groß und kursiv auf einem
- * Balken. Farbwelt und Einzelheiten wählt lib/story-variante.ts für
+ * Farbstreifen. Regeln, die für alle gelten: Kein Streifen, Zeichen oder
+ * Hafen-Motiv berührt Text; Zeilen brechen nach Sinn um; ein Akzent
+ * (Orange). Farbwelt und Einzelheiten wählt lib/story-variante.ts für
  * jeden Tag neu. Bei der Story bleibt oben und unten ein Streifen frei
  * von Text: Dort liegt die Bedienung von Instagram.
  */
@@ -29,9 +34,9 @@ import { KURSIV_SPERRUNG, satzPlan, type SatzPlan } from "@/lib/story-satz";
 import { MOTIV_WASSER } from "@/lib/story-teile";
 import { varianteFuer, type Variante } from "@/lib/story-variante";
 
-/** Ausgabeformate: Story (9:16) und Beitrag (4:5). */
+/** Ausgabeformate: Story (9:16), Beitrag (4:5) und die Karte der Website (3:4). */
 export type StoryFormat = {
-  name: "story" | "beitrag";
+  name: "story" | "beitrag" | "karte";
   b: number;
   h: number;
   /** Text nur zwischen diesen Linien. In der Story liegt oben und unten
@@ -41,7 +46,9 @@ export type StoryFormat = {
 };
 export const FORMATE: Record<StoryFormat["name"], StoryFormat> = {
   story: { name: "story", b: 1080, h: 1920, oben: 270, unten: 1640 },
-  beitrag: { name: "beitrag", b: 1080, h: 1350, oben: 84, unten: 1270 },
+  beitrag: { name: "beitrag", b: 1080, h: 1350, oben: 62, unten: 1298 },
+  // Karte auf /journal (3:4): oben Platz für die Fortschrittsstriche.
+  karte: { name: "karte", b: 1080, h: 1440, oben: 112, unten: 1372 },
 };
 /** Länge des Kurzvideos in Sekunden. */
 export const STORY_DAUER = 7;
@@ -72,6 +79,9 @@ type Basis = {
   /** Oberkante und Unterkante des Textfelds */
   oben: number;
   unten: number;
+  /** Wird gesetzt, wenn ein Text auch in der kleinsten Schrift nicht in
+   *  sein Feld gepasst hat (für die Prüfung aller Karten). */
+  eng: { wert: boolean; klein: number };
 };
 
 /** Farben eines Satzes. */
@@ -80,8 +90,6 @@ type SatzFarben = {
   /** Balken hinter der Pointe und die Schrift darauf */
   balken: string;
   pointe: string;
-  /** Balken nur als Rahmen (die Pointe steht dann in der Satzfarbe) */
-  rahmen: boolean;
 };
 
 // ---------------------------------------------------------------- Hilfen
@@ -106,9 +114,9 @@ function sperren(ctx: Ctx, px: number) {
 }
 
 /** „r g b / a“ mit vervielfachter Deckkraft, für Zeichen Ton in Ton. */
-function ton(l: StoryLook, faktor: number): string {
+function ton(l: StoryLook, faktor: number, hoechstens = 0.9): string {
   const [farbe, deck] = l.ziffer.split("/").map((s) => s.trim());
-  return `rgb(${farbe} / ${Math.min(0.9, Number(deck) * faktor)})`;
+  return `rgb(${farbe} / ${Math.min(hoechstens, Number(deck) * faktor)})`;
 }
 
 /** Helligkeit einer Hex-Farbe (0 dunkel, 1 hell). */
@@ -123,6 +131,20 @@ function helligkeit(hex: string): number {
 /** Schriftfarbe, die auf einer Fläche gut lesbar ist. */
 const schriftAuf = (flaeche: string) =>
   helligkeit(flaeche) > 0.36 ? TINTE : "#ffffff";
+
+/** Schrift auf einer Pille: dunkel auf Orange und Gelb, sonst weiß. */
+const pillenSchrift = (flaeche: string) =>
+  helligkeit(flaeche) > 0.2 ? TINTE : "#ffffff";
+
+/**
+ * Der eine Akzent der Marke auf dem Grund der Farbwelt: Orange. Nur wo
+ * Orange nicht trägt, weicht er aus (Weiß auf Koralle, hell auf Petrol
+ * und Backstein).
+ */
+function marke(l: StoryLook): string {
+  if (l.name === "koralle") return "#ffffff";
+  return l.name === "petrol" || l.name === "backstein" ? l.akzent : ORANGE;
+}
 
 /** Kräftige Farbe der Farbwelt für Balken auf Papier und im Dunkeln. */
 function kraeftig(l: StoryLook): string {
@@ -162,10 +184,19 @@ function umbrechen(woerter: Wort[], max: number, abstand: number): Zeile[] {
   return zeilen;
 }
 
+/** Wörter, mit denen eine Zeile nicht enden soll. */
+const HAENGT = new Set(
+  "der die das den dem des ein eine einen einem einer und oder in im an am auf für mit von zu zum zur bei aus nach vor über unter ihr ihre ihrer ihrem ihren".split(
+    " ",
+  ),
+);
+
 /**
  * Gleich viele Zeilen wie beim einfachen Umbruch, aber möglichst gleich
- * lang (wie text-wrap: balance). Ein einzelnes kurzes Wort allein in
- * einer Zeile kostet extra, außer es ist die Pointe.
+ * lang (wie text-wrap: balance) und nach Sinn getrennt, wie von Hand
+ * gesetzt: kein kurzes Wort allein in einer Zeile (außer der Pointe),
+ * kein Satzanfang und kein Artikel am Zeilenende, lieber nach einem
+ * Satzzeichen umbrechen.
  */
 function ausgewogen(woerter: Wort[], max: number, abstand: number): Zeile[] {
   const n = woerter.length;
@@ -191,9 +222,23 @@ function ausgewogen(woerter: Wort[], max: number, abstand: number): Zeile[] {
         const b = breite(i, j);
         if (b > max) continue;
         const luft = (max - b) / max;
-        const einsam =
-          j - i === 1 && b < max * 0.5 && !woerter[i].betont ? 0.15 : 0;
-        const c = kosten[z - 1][i] + luft * luft + einsam;
+        let strafe = 0;
+        if (j - i === 1 && !woerter[i].betont) {
+          if (woerter[i].t.replace(/[^\p{L}]/gu, "").length <= 4) strafe += 0.5;
+          else if (b < max * 0.5) strafe += 0.15;
+        }
+        if (j < n) {
+          const ende = woerter[j - 1].t;
+          if (/[,.:;!?–]$/.test(ende)) strafe -= 0.08;
+          else if (HAENGT.has(ende.toLowerCase())) strafe += 0.14;
+          // Das erste Wort eines neuen Satzes hängt am Zeilenende.
+          if (j - i > 1 && /[.!?:]$/.test(woerter[j - 2].t)) strafe += 0.3;
+          // Ein Wort mit Komma gehört zu dem, was davor steht („Sie mal,“).
+          if (/,$/.test(woerter[j].t) && !/[,.:;!?]$/.test(ende)) strafe += 0.2;
+          // Die Pointe bleibt möglichst in einer Zeile.
+          if (woerter[j - 1].betont && woerter[j].betont) strafe += 0.45;
+        }
+        const c = kosten[z - 1][i] + luft * luft + strafe;
         if (c < kosten[z][j]) {
           kosten[z][j] = c;
           schnitt[z][j] = i;
@@ -226,20 +271,11 @@ function rund(ctx: Ctx, x: number, y: number, b: number, h: number, r: number) {
   ctx.closePath();
 }
 
-/** Vierzackiger Stern (im Stempel). */
-function stern(ctx: Ctx, x: number, y: number, r: number) {
-  const k = r * 0.2;
-  ctx.beginPath();
-  ctx.moveTo(x, y - r);
-  ctx.quadraticCurveTo(x + k, y - k, x + r, y);
-  ctx.quadraticCurveTo(x + k, y + k, x, y + r);
-  ctx.quadraticCurveTo(x - k, y + k, x - r, y);
-  ctx.quadraticCurveTo(x - k, y - k, x, y - r);
-  ctx.closePath();
-  ctx.fill();
-}
-
-/** Leicht schiefer Balken hinter der Pointe: gefüllt oder als Rahmen. */
+/**
+ * Farbstreifen hinter der Pointe: Ober- und Unterkante laufen parallel,
+ * die Enden neigen sich wie die Kursive. Die Höhe folgt der Schrift
+ * (Oberlänge bis Unterlänge), damit kein Buchstabe an die Kante stößt.
+ */
 function balken(
   ctx: Ctx,
   x0: number,
@@ -247,25 +283,18 @@ function balken(
   grundlinie: number,
   px: number,
   farbe: string,
-  rahmen: boolean,
 ) {
-  const oben = grundlinie - px * 0.76;
-  const unten = grundlinie + px * 0.29;
+  const oben = grundlinie - px * 0.74;
+  const unten = grundlinie + px * 0.31;
+  const schub = px * 0.045;
   ctx.beginPath();
-  ctx.moveTo(x0 - px * 0.1, oben + px * 0.035);
-  ctx.lineTo(x1 + px * 0.13, oben - px * 0.02);
-  ctx.lineTo(x1 + px * 0.09, unten + px * 0.02);
-  ctx.lineTo(x0 - px * 0.14, unten - px * 0.015);
+  ctx.moveTo(x0 - px * 0.13 + schub, oben);
+  ctx.lineTo(x1 + px * 0.1 + schub, oben);
+  ctx.lineTo(x1 + px * 0.1 - schub, unten);
+  ctx.lineTo(x0 - px * 0.13 - schub, unten);
   ctx.closePath();
-  if (rahmen) {
-    ctx.strokeStyle = farbe;
-    ctx.lineWidth = Math.max(4, px * 0.055);
-    ctx.lineJoin = "round";
-    ctx.stroke();
-  } else {
-    ctx.fillStyle = farbe;
-    ctx.fill();
-  }
+  ctx.fillStyle = farbe;
+  ctx.fill();
 }
 
 // Feines Korn über dem ganzen Bild: nimmt den Flächen das Glatte.
@@ -351,9 +380,12 @@ function setzeSatz(
     let pGross = g * 1.25;
     let einsam = false;
     let ab = start;
+    // Eine Zeile mit Farbstreifen bekommt Luft nach oben und unten, damit
+    // der Streifen keine Nachbarzeile berührt.
     const zeile =
-      (z: Zeile, p: number, beginn: number): Schritt =>
-      (x0, y, t, farben) => {
+      (z: Zeile, p: number, beginn: number, davor = 0, danach = 0): Schritt =>
+      (x0, yOben, t, farben) => {
+        const y = yOben + davor;
         const a = ein(t, beginn, 0.55);
         if (a > 0) {
           const grundlinie = y + g * 0.86;
@@ -376,7 +408,6 @@ function setzeSatz(
                 grundlinie,
                 p,
                 farben.balken,
-                farben.rahmen,
               );
               von = null;
             }
@@ -390,44 +421,52 @@ function setzeSatz(
               grundlinie,
               p,
               farben.balken,
-              farben.rahmen,
             );
           x = x0;
           for (const w of z.woerter) {
             ctx.font = w.betont ? kursiv(p) : grotesk(g);
             sperren(ctx, w.betont ? p * KURSIV_SPERRUNG : -g * 0.032);
-            ctx.fillStyle =
-              w.betont && zug > 0.6 && !farben.rahmen
-                ? farben.pointe
-                : farben.text;
+            ctx.fillStyle = w.betont && zug > 0.6 ? farben.pointe : farben.text;
             ctx.fillText(w.t, x, grundlinie);
             x += w.breite + abstand;
           }
           ctx.restore();
         }
-        return y + zeilenHoehe;
+        return y + zeilenHoehe + danach;
       };
 
     if (plan.art === "fluss") {
       const p = Math.round(g * 1.25);
       let letzte: Zeile[] = [];
+      let geteilt = false;
       for (const gruppe of plan.gruppen) {
         const woerter = messen(gruppe, g, p);
         if (Math.max(...woerter.map((w) => w.breite)) > breite - p * 0.2)
           return null;
         letzte = ausgewogen(woerter, breite - p * 0.15, abstand);
+        // Läuft die Pointe über zwei Zeilen, ist eine kleinere Schrift,
+        // in der sie zusammenbleibt, die bessere Wahl.
+        letzte.forEach((z, i) => {
+          const naechste = letzte[i + 1];
+          if (z.woerter.at(-1)?.betont && naechste?.woerter[0].betont)
+            geteilt = true;
+        });
         for (const z of letzte) {
-          schritte.push(zeile(z, p, ab));
+          const streifen = z.woerter.some((w) => w.betont);
+          const davor = streifen && schritte.length ? g * 0.16 : 0;
+          const danach = streifen ? g * 0.14 : 0;
+          schritte.push(zeile(z, p, ab, davor, danach));
           ab += 0.13;
-          hoehe += zeilenHoehe;
+          hoehe += zeilenHoehe + davor + danach;
         }
       }
       const ende = letzte[letzte.length - 1];
       einsam =
-        letzte.length > 1 &&
-        ende.woerter.length === 1 &&
-        !ende.woerter[0].betont &&
-        ende.breite < breite * 0.4;
+        geteilt ||
+        (letzte.length > 1 &&
+          ende.woerter.length === 1 &&
+          !ende.woerter[0].betont &&
+          ende.breite < breite * 0.4);
     } else {
       for (const gruppe of plan.vor) {
         const woerter = messen(
@@ -454,14 +493,16 @@ function setzeSatz(
           g * 2.1,
           290,
           (breite - 10) / (weiteste + 0.24),
-          (platz - hoehe) / (plan.pointe.length * 1.1 + 0.2),
+          (platz - hoehe) / (plan.pointe.length * 1.14 + 0.26),
         ),
       );
       if (p < g * 1.2) return null;
       pGross = p;
-      const pZeile = p * 1.1;
-      const luft = plan.vor.length ? p * 0.1 : 0;
-      const blockHoehe = luft + plan.pointe.length * pZeile + p * 0.1;
+      // Zeilenabstand der Pointe: Zwischen zwei Streifen bleibt ein
+      // gleichmäßiger Spalt; zum Satz darüber etwas Luft.
+      const pZeile = p * 1.14;
+      const luft = plan.vor.length ? p * 0.16 : 0;
+      const blockHoehe = luft + plan.pointe.length * pZeile + p * 0.06;
       hoehe += blockHoehe;
       const beginn = ab + 0.15;
       ab = beginn + 0.35 + plan.pointe.length * 0.18;
@@ -483,17 +524,9 @@ function setzeSatz(
           const grundlinie = oben + i * pZeile + p * 0.8;
           const x = x0 + p * 0.12;
           const b = ctx.measureText(z).width;
-          balken(
-            ctx,
-            x,
-            x + b * zug,
-            grundlinie,
-            p,
-            farben.balken,
-            farben.rahmen,
-          );
+          balken(ctx, x, x + b * zug, grundlinie, p, farben.balken);
           ctx.globalAlpha = deck * schrift;
-          ctx.fillStyle = farben.rahmen ? farben.text : farben.pointe;
+          ctx.fillStyle = farben.pointe;
           ctx.fillText(z, x, grundlinie + (1 - schrift) * p * 0.18);
           ctx.globalAlpha = deck;
         });
@@ -505,7 +538,8 @@ function setzeSatz(
   };
 
   // Größe wählen: groß ist gut, eine deutlich größere Pointe ist besser,
-  // ein kurzes Wort allein in der letzten Zeile ist schlecht.
+  // ein kurzes Wort allein in der letzten Zeile oder eine über zwei
+  // Zeilen geteilte Pointe ist schlecht.
   let g = 56;
   let beste: Versuch | null = null;
   let guete = -1;
@@ -520,6 +554,8 @@ function setzeSatz(
     }
     if (plan.art === "fluss" && (!s.einsam || versuch < g * 0.86)) break;
   }
+  if (!beste) k.eng.wert = true;
+  k.eng.klein = Math.min(k.eng.klein, g);
   const satz = beste ??
     versuche(52) ?? {
       hoehe: 0,
@@ -539,6 +575,24 @@ function setzeSatz(
       sperren(ctx, 0);
     },
   };
+}
+
+/** Unschöner Umbruch: Satzanfang am Zeilenende oder ein kurzes Wort allein. */
+function makel(zeilen: Zeile[]): boolean {
+  return zeilen.some((z, i) => {
+    const w = z.woerter;
+    if (
+      i < zeilen.length - 1 &&
+      w.length > 1 &&
+      /[.!?:]$/.test(w[w.length - 2].t)
+    )
+      return true;
+    return (
+      w.length === 1 &&
+      !w[0].betont &&
+      w[0].t.replace(/[^\p{L}]/gu, "").length <= 4
+    );
+  });
 }
 
 /** Freier Text in einer Schrift, so groß wie möglich (Mythos, Zusatz). */
@@ -563,6 +617,11 @@ function setzeFrei(
   let px = maxPx;
   let zeilen: Zeile[] = [];
   let abstand = 0;
+  // Die größte Schrift, die passt. Hängt dort ein Satzanfang am Zeilenende
+  // oder steht ein kurzes Wort allein, darf sie bis zu zehn Prozent
+  // kleiner werden, wenn der Umbruch dadurch sauber wird.
+  let erste: { px: number; zeilen: Zeile[]; abstand: number } | null = null;
+  let sauber = false;
   for (; px >= minPx; px -= 2) {
     ctx.font = schrift(px);
     sperren(ctx, px * sperrung);
@@ -574,8 +633,17 @@ function setzeFrei(
     }));
     if (Math.max(...woerter.map((w) => w.breite)) > breite) continue;
     zeilen = ausgewogen(woerter, breite, abstand);
-    if (zeilen.length * px * zeilenFaktor <= platz) break;
+    if (zeilen.length * px * zeilenFaktor > platz) continue;
+    if (!makel(zeilen)) {
+      sauber = true;
+      break;
+    }
+    erste ??= { px, zeilen, abstand };
+    if (px - 2 < erste.px * 0.9) break;
   }
+  if (!sauber && erste) ({ px, zeilen, abstand } = erste);
+  if (px < minPx || zeilen.length * minPx * zeilenFaktor > platz + 1)
+    k.eng.wert = k.eng.wert || px < minPx;
   px = Math.max(px, minPx);
   sperren(ctx, 0);
   const fest = { px, abstand };
@@ -675,19 +743,15 @@ function grund(k: Basis, l: StoryLook) {
   licht.addColorStop(1, `rgb(${l.licht} / 0)`);
   ctx.fillStyle = licht;
   ctx.fillRect(0, 0, f.b, f.oben + 880);
-  // Eine große Fläche Ton in Ton gibt dem Grund Tiefe (je Tag eine andere).
-  ctx.fillStyle = ton(l, 0.55);
+  // Eine große, ruhige Fläche Ton in Ton gibt dem Grund Tiefe: an manchen
+  // Tagen eine schräge Teilung, an anderen ein Kreis, sonst nur das Licht.
+  ctx.fillStyle = ton(l, 0.55, 0.1);
   ctx.beginPath();
   if (v.grund === "geteilt") {
     ctx.moveTo(0, f.h * 0.74);
     ctx.lineTo(f.b, f.h * 0.5);
     ctx.lineTo(f.b, f.h);
     ctx.lineTo(0, f.h);
-  } else if (v.grund === "streifen") {
-    ctx.moveTo(f.b * 0.52, 0);
-    ctx.lineTo(f.b * 0.86, 0);
-    ctx.lineTo(f.b * 0.3, f.h);
-    ctx.lineTo(-f.b * 0.04, f.h);
   } else if (v.grund === "raster") {
     ctx.arc(f.b * 0.08, f.h * 0.9, f.b * 0.62, 0, Math.PI * 2);
   }
@@ -720,7 +784,7 @@ function kopf(
     sperren(ctx, 0);
   }
   ctx.font = `400 26px ${mono}`;
-  sperren(ctx, 3);
+  sperren(ctx, 1.2);
   ctx.textAlign = "right";
   ctx.textBaseline = "middle";
   ctx.fillStyle = farben.datum;
@@ -745,6 +809,8 @@ function fuss(
     ring: string;
     schiff: string;
     flaeche: string;
+    /** helle Fläche (Papier, helle Farbwelt): Das Wasser wird dunkler getönt */
+    hell: boolean;
   },
 ) {
   const { ctx, f, v, serif, mono } = k;
@@ -752,18 +818,30 @@ function fuss(
   const a = ein(t, 0.4, 0.7);
   ctx.save();
   ctx.globalAlpha = a;
-  // Elbe-Linie: feine Welle von Rand zu Rand.
-  ctx.beginPath();
-  ctx.moveTo(RAND, y0);
-  for (let x = RAND; x < f.b - RAND; x += 152)
-    ctx.bezierCurveTo(x + 38, y0 - 7, x + 114, y0 + 7, x + 152, y0);
+  // Die Elbe: eine feine Welle über die ganze Breite, darunter Wasser bis
+  // zum unteren Rand. So schwimmt das Schiff auf etwas.
+  const welle = () => {
+    ctx.beginPath();
+    ctx.moveTo(RAND - 152, y0);
+    for (let x = RAND - 152; x < f.b; x += 152)
+      ctx.bezierCurveTo(x + 38, y0 - 7, x + 114, y0 + 7, x + 152, y0);
+  };
+  welle();
+  ctx.lineTo(f.b + 160, f.h);
+  ctx.lineTo(RAND - 152, f.h);
+  ctx.closePath();
+  ctx.fillStyle = farben.hell
+    ? "rgb(15 42 58 / 0.055)"
+    : "rgb(255 255 255 / 0.05)";
+  ctx.fill();
+  welle();
   ctx.strokeStyle = farben.linie;
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.restore();
 
   // Kleines Schiff auf der Linie (jeden Tag ein anderes); im Film fährt es ein.
-  const s = 2.7;
+  const s = 2.4;
   const m = v.motiv;
   const ziel = f.b - RAND - 46 - m.b * s;
   const fahrt = m.faehrt ? ein(t, 0.3, 2.6) : 1;
@@ -831,25 +909,16 @@ function rahmenFarben(l: StoryLook) {
       schrift: l.text,
       weich: l.weich,
       linie: l.dunkel ? "rgb(255 255 255 / 0.3)" : "rgb(15 42 58 / 0.28)",
-      ring:
-        l.name === "koralle"
-          ? "#ffffff"
-          : l.dunkel && l.name !== "nacht"
-            ? l.akzent
-            : ORANGE,
+      ring: marke(l),
       schiff: l.text,
       flaeche: l.bg,
+      hell: !l.dunkel,
     },
   };
 }
 function satzFarben(k: Basis): SatzFarben {
-  const { l, v } = k;
-  return {
-    text: l.text,
-    balken: l.marker,
-    pointe: l.betont,
-    rahmen: v.balken === "rahmen",
-  };
+  const { l } = k;
+  return { text: l.text, balken: l.marker, pointe: l.betont };
 }
 
 /** Lage eines Blocks im Feld: oben, mittig (etwas über der Mitte) oder unten. */
@@ -870,19 +939,68 @@ function lookOhne(v: Variante, verboten: string[]): StoryLook {
   return STORY_LOOKS[i];
 }
 
+/**
+ * Ein riesiges Satzzeichen in der freien Fläche über dem Satz: ganz
+ * sichtbar, an den Rand des Satzspiegels gerückt und nie hinter Text.
+ * Bei zu wenig Platz entfällt es.
+ */
+function grossZeichen(
+  k: Basis,
+  zeichen: string,
+  oben: number,
+  unten: number,
+  da: number,
+  stil: {
+    farbe: string;
+    /** fette Grotesk statt der kursiven Serife */
+    fett?: boolean;
+    umriss?: boolean;
+    links?: boolean;
+    hoechstens?: number;
+    /** kleiner als so (Standard 150) entfällt das Zeichen */
+    mindestens?: number;
+  },
+) {
+  const { ctx, f, serif } = k;
+  const hoehe = Math.min(unten - oben, stil.hoechstens ?? 720);
+  if (hoehe < (stil.mindestens ?? 150) || da <= 0) return;
+  const schrift = (px: number) =>
+    stil.fett ? `800 ${px}px ${GROTESK}` : `italic 600 ${px}px ${serif}`;
+  ctx.save();
+  ctx.font = schrift(1000);
+  const m = ctx.measureText(zeichen);
+  const s = hoehe / (m.actualBoundingBoxAscent + m.actualBoundingBoxDescent);
+  ctx.font = schrift(1000 * s);
+  ctx.globalAlpha = da;
+  const x = stil.links
+    ? RAND + m.actualBoundingBoxLeft * s - (1 - da) * 60
+    : f.b - RAND - m.actualBoundingBoxRight * s + (1 - da) * 90;
+  const y = unten - m.actualBoundingBoxDescent * s;
+  if (stil.umriss) {
+    ctx.strokeStyle = stil.farbe;
+    ctx.lineWidth = 9;
+    ctx.lineJoin = "round";
+    ctx.strokeText(zeichen, x, y);
+  } else {
+    ctx.fillStyle = stil.farbe;
+    ctx.fillText(zeichen, x, y);
+  }
+  ctx.restore();
+}
+
 type Maler = (t: number) => void;
 
 // ---------------------------------------------------------------- Formate
 
 /** Plakat: reine Schrift, dazu ein großes Zeichen oder ein runder Stempel. */
 function plakat(k: Basis): Maler {
-  const { ctx, f, l, karte, serif } = k;
+  const { ctx, f, l, karte } = k;
   const farben = rahmenFarben(l);
   const breite = f.b - RAND * 2;
   const art = karte.kicker;
   const hoch = k.unten - k.oben;
   // Platz für das Zeichen über dem Satz.
-  const zeichenHoehe = art === "Hot Take" ? 0 : Math.round(hoch * 0.26);
+  const zeichenHoehe = Math.round(hoch * (f.name === "story" ? 0.26 : 0.21));
   const zusatz = setzeZusatz(k, breite);
   const satz = setzeSatz(
     k,
@@ -893,75 +1011,102 @@ function plakat(k: Basis): Maler {
   );
   const luecke = satz.g * 0.42;
   const gesamt = satz.hoehe + luecke + zusatz.hoehe;
-  const y = lage(k, k.oben + zeichenHoehe, k.unten, gesamt);
+  // Hot Take: Der Satz steht unten, darüber das Ausrufezeichen.
+  const y =
+    art === "Hot Take"
+      ? k.unten - gesamt
+      : lage(k, k.oben + zeichenHoehe, k.unten, gesamt);
   return (t) => {
     grund(k, l);
     const da = ein(t, 0, 0.9);
-    ctx.save();
-    ctx.globalAlpha = da;
     if (art === "Hot Take") {
-      // Riesiges Ausrufezeichen, rechts angeschnitten, Ton in Ton.
-      ctx.translate(f.b - 190 + (1 - da) * 120, k.oben + hoch * 0.5);
-      ctx.rotate((9 * Math.PI) / 180);
-      ctx.font = `italic 600 ${Math.round(hoch * 1.3)}px ${serif}`;
-      ctx.textAlign = "center";
-      ctx.fillStyle = ton(l, 2.6);
-      ctx.fillText("!", 0, hoch * 0.42);
+      // Großes Ausrufezeichen in der Akzentfarbe: das lauteste Bild der Reihe.
+      grossZeichen(k, "!", f.oben + 96, y - 56, da, {
+        farbe: marke(l),
+        fett: true,
+      });
     } else if (art === "Kurz gesagt") {
-      // Großes Anführungszeichen in der Akzentfarbe, über dem Satz.
-      ctx.font = `italic 600 ${Math.round(zeichenHoehe * 3.1)}px ${serif}`;
-      ctx.fillStyle = l.akzent;
-      ctx.fillText(
-        "“",
-        RAND - 14,
-        k.oben + zeichenHoehe * 2.08 - (1 - da) * 40,
-      );
+      // Großes Anführungszeichen direkt über dem Satz.
+      grossZeichen(k, "“", k.oben + 4, y - 44, da, {
+        farbe: marke(l),
+        links: true,
+        hoechstens: zeichenHoehe * 0.66,
+        mindestens: 84,
+      });
     } else if (art === "Website-Wahrheit") {
-      // „www.“ groß als Umriss.
-      ctx.font = `800 ${Math.round(zeichenHoehe * 1.18)}px ${GROTESK}`;
-      sperren(ctx, -8);
-      ctx.lineWidth = 6;
+      // „www.“ groß als Umriss, so breit wie der Satzspiegel, über dem Satz.
+      ctx.save();
+      ctx.globalAlpha = da * 0.92;
+      ctx.font = `800 100px ${GROTESK}`;
+      sperren(ctx, -2);
+      const m = ctx.measureText("www.");
+      const px = Math.min(
+        (breite / (m.actualBoundingBoxLeft + m.actualBoundingBoxRight)) * 100,
+        zeichenHoehe * 1.3,
+      );
+      ctx.font = `800 ${px}px ${GROTESK}`;
+      sperren(ctx, -px * 0.02);
+      ctx.lineWidth = 5;
       ctx.lineJoin = "round";
-      ctx.strokeStyle = ton(l, 3.4);
+      ctx.strokeStyle = l.text;
       ctx.strokeText(
         "www.",
-        RAND - 8 + (1 - da) * 80,
-        k.oben + zeichenHoehe * 0.86,
+        RAND + (m.actualBoundingBoxLeft * px) / 100 + (1 - da) * 80,
+        y - 46,
       );
       sperren(ctx, 0);
+      ctx.restore();
     } else {
-      // Runder Stempel mit umlaufender Schrift; im Film dreht er sich langsam.
-      const r = zeichenHoehe * 0.46;
-      const cx = f.b - RAND - r - 6;
-      const cy = k.oben + zeichenHoehe * 0.5 - 6;
-      ctx.translate(cx, cy);
+      // Runder Stempel mit umlaufender Schrift und dem Doppelring der
+      // Marke; im Film dreht er sich langsam.
+      const r = zeichenHoehe * 0.5;
+      ctx.save();
+      ctx.globalAlpha = da;
+      ctx.translate(f.b - RAND - r - 4, k.oben + zeichenHoehe * 0.5 - 4);
       ctx.rotate(((-14 + lauf(t) * 9) * Math.PI) / 180);
       ctx.strokeStyle = l.text;
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 5;
       for (const radius of [r, r * 0.62]) {
         ctx.beginPath();
         ctx.arc(0, 0, radius, 0, Math.PI * 2);
         ctx.stroke();
       }
-      const text = `${art.toUpperCase()} · ${art.toUpperCase()} · `;
-      ctx.font = `700 ${Math.round(r * 0.19)}px ${GROTESK}`;
+      // Umschrift: gleichmäßig über den ganzen Kreis verteilt.
+      const text = [...`${art.toUpperCase()} · ${art.toUpperCase()} · `];
+      ctx.font = `700 100px ${GROTESK}`;
+      const roh = text.map((z) => ctx.measureText(z).width);
+      const umfang = Math.PI * 2 * r * 0.81;
+      const px = Math.min(
+        r * 0.24,
+        (umfang / (roh.reduce((a, b) => a + b, 0) * 1.08)) * 100,
+      );
+      const weiten = roh.map((w) => (w * px) / 100);
+      const summe = weiten.reduce((a, b) => a + b, 0);
+      ctx.font = `700 ${px}px ${GROTESK}`;
       ctx.fillStyle = l.text;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      [...text].forEach((z, i) => {
+      let bogen = 0;
+      text.forEach((z, i) => {
         ctx.save();
-        ctx.rotate((i / text.length) * Math.PI * 2);
+        ctx.rotate(((bogen + weiten[i] / 2) / summe) * Math.PI * 2);
         ctx.fillText(z, 0, -r * 0.81);
         ctx.restore();
+        bogen += weiten[i];
       });
-      ctx.fillStyle = l.akzent === l.text ? ORANGE : l.akzent;
-      stern(ctx, 0, 0, r * 0.4);
+      ctx.strokeStyle = marke(l);
+      ctx.lineWidth = Math.max(4, r * 0.055);
+      for (const dx of [-0.1, 0.1]) {
+        ctx.beginPath();
+        ctx.arc(dx * r, 0, r * 0.24, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
     }
-    ctx.restore();
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
 
-    kopf(k, t, farben.kopf, art === "Unpopular Opinion" ? null : art);
+    kopf(k, t, farben.kopf, art);
     satz.zeichne(RAND, y, t, satzFarben(k));
     zusatz.zeichne(
       RAND,
@@ -980,8 +1125,8 @@ function plakat(k: Basis): Maler {
 function sprechblase(k: Basis): Maler {
   const { ctx, f, l, karte } = k;
   const farben = rahmenFarben(l);
-  const aussen = f.b - RAND * 2 + 24;
-  const innen = aussen - 132;
+  const aussen = f.b - RAND * 2;
+  const innen = aussen - 124;
   const zusatz = setzeZusatz(k, f.b - RAND * 2);
   const hoch = k.unten - k.oben;
   const satz = setzeSatz(
@@ -995,7 +1140,7 @@ function sprechblase(k: Basis): Maler {
   const blase = satz.hoehe + 132;
   const gesamt = blase + 124 + zusatz.hoehe;
   const y = k.oben + 20 + Math.max(0, hoch - 20 - gesamt) * 0.42;
-  const x = RAND - 12;
+  const x = RAND;
   const stark = kraeftig(l);
   return (t) => {
     grund(k, l);
@@ -1010,21 +1155,18 @@ function sprechblase(k: Basis): Maler {
       ctx.translate(-(x + 150), -(y + blase));
       schatten(k, 70, 30, 0.26);
       ctx.fillStyle = PAPIER;
+      // Blase und Spitze (unten links) aus einem Stück: ein Schatten.
       rund(ctx, x, y, aussen, blase, 64);
-      ctx.fill();
-      // Spitze unten links.
-      ctx.beginPath();
       ctx.moveTo(x + 96, y + blase - 6);
       ctx.lineTo(x + 70, y + blase + 82);
       ctx.lineTo(x + 208, y + blase - 6);
       ctx.closePath();
       ctx.fill();
       ohneSchatten(ctx);
-      satz.zeichne(x + 66, y + 66, t, {
+      satz.zeichne(x + 62, y + 66, t, {
         text: TINTE,
         balken: stark,
         pointe: schriftAuf(stark),
-        rahmen: false,
       });
       ctx.restore();
     }
@@ -1046,12 +1188,15 @@ function flagge(k: Basis): Maler {
   const { ctx, f, karte } = k;
   const rot = karte.kicker === "Red Flag";
   const farbe = rot ? "#e63b2e" : "#16865a";
-  const l = lookOhne(k.v, rot ? ["koralle", "rosa"] : ["minze", "petrol"]);
+  const l = lookOhne(
+    k.v,
+    rot ? ["koralle", "backstein"] : ["seegruen", "petrol"],
+  );
   const kk = { ...k, l };
   const farben = rahmenFarben(l);
   const breite = f.b - RAND * 2;
   const hoch = k.unten - k.oben;
-  const fahne = Math.round(hoch * 0.27);
+  const fahne = Math.round(hoch * (f.name === "story" ? 0.27 : 0.22));
   // Der Mast endet über dem Satz: Das Textfeld beginnt erst darunter.
   const mast = Math.round(fahne * 1.2);
   const feldOben = k.oben + mast + 36;
@@ -1086,7 +1231,7 @@ function flagge(k: Basis): Maler {
       fahne *
       0.085 *
       (0.25 + (x / lang) * 0.9);
-    schatten(k, 46, 24, 0.24);
+    schatten(k, 30, 14, 0.14);
     ctx.fillStyle = farbe;
     ctx.beginPath();
     ctx.moveTo(mastX + 6, y0);
@@ -1104,14 +1249,16 @@ function flagge(k: Basis): Maler {
       const steigung = welle(x + 8) - welle(x);
       ctx.fillStyle =
         steigung > 0
-          ? `rgb(0 0 0 / ${Math.min(0.2, steigung * 0.045)})`
-          : `rgb(255 255 255 / ${Math.min(0.22, -steigung * 0.05)})`;
+          ? `rgb(0 0 0 / ${Math.min(0.11, steigung * 0.026)})`
+          : `rgb(255 255 255 / ${Math.min(0.1, -steigung * 0.024)})`;
       ctx.fillRect(mastX + 6 + x, y0 - 60, 8.5, hoehe + 120);
     }
     ctx.restore();
-    // Mast mit Kugel.
+    // Mast mit Kugel; unten ein Fuß, damit er steht und nicht schwebt.
     ctx.fillStyle = l.text;
     rund(ctx, mastX - 7, oben, 14, mast, 7);
+    ctx.fill();
+    rund(ctx, mastX - 58, oben + mast - 12, 116, 14, 7);
     ctx.fill();
     ctx.beginPath();
     ctx.arc(mastX, oben - 4, 17, 0, Math.PI * 2);
@@ -1128,7 +1275,6 @@ function flagge(k: Basis): Maler {
       text: l.text,
       balken: farbe,
       pointe: "#ffffff",
-      rahmen: false,
     });
     zusatz.zeichne(
       RAND,
@@ -1199,8 +1345,8 @@ function mythos(k: Basis): Maler {
     ctx.globalAlpha = da;
     irrtum.zeichne(RAND, yIrrtum, l.text);
     ctx.restore();
-    ctx.strokeStyle = l.akzent === l.text ? ORANGE : l.akzent;
-    ctx.lineWidth = Math.max(8, irrtum.px * 0.1);
+    ctx.strokeStyle = marke(l);
+    ctx.lineWidth = Math.max(7, irrtum.px * 0.075);
     ctx.lineCap = "round";
     irrtum.zeilen.forEach((z, i) => {
       const zug = ein(t, 1.5 + i * 0.22, 0.5);
@@ -1225,7 +1371,7 @@ function mythos(k: Basis): Maler {
     rund(ctx, RAND, yMarke, mb, 62, 31);
     ctx.fillStyle = stark;
     ctx.fill();
-    ctx.fillStyle = schriftAuf(stark);
+    ctx.fillStyle = pillenSchrift(stark);
     ctx.textBaseline = "middle";
     ctx.fillText("STIMMT NICHT", RAND + 31, yMarke + 33);
     sperren(ctx, 0);
@@ -1240,6 +1386,7 @@ function mythos(k: Basis): Maler {
       ring: ORANGE,
       schiff: TINTE,
       flaeche: PAPIER,
+      hell: true,
     });
     korn(k, 0.1);
   };
@@ -1275,8 +1422,8 @@ function pov(k: Basis): Maler {
       f.oben - 60,
       f.h * 0.72,
     );
-    kegel.addColorStop(0, `${balkenFarbe}8c`);
-    kegel.addColorStop(0.55, `${balkenFarbe}22`);
+    kegel.addColorStop(0, `${balkenFarbe}3d`);
+    kegel.addColorStop(0.55, `${balkenFarbe}10`);
     kegel.addColorStop(1, `${balkenFarbe}00`);
     ctx.fillStyle = kegel;
     ctx.fillRect(0, 0, f.b, f.h);
@@ -1293,13 +1440,13 @@ function pov(k: Basis): Maler {
     ctx.fillStyle = rand;
     ctx.fillRect(0, 0, f.b, f.h);
 
-    // Eckmarken des Suchers.
+    // Eckmarken des Suchers, um Kopf, Satz und Fuß herum.
     const a = ein(t, 0.1, 0.7);
     const [x0, y0, x1, y1] = [
-      RAND - 34,
-      k.oben - 26,
-      f.b - RAND + 34,
-      k.unten - 14,
+      RAND - 36,
+      f.oben - 30,
+      f.b - RAND + 36,
+      f.unten + 30,
     ];
     const arm = 70;
     const weit = (1 - a) * 40;
@@ -1332,7 +1479,7 @@ function pov(k: Basis): Maler {
     ctx.textBaseline = "middle";
     ctx.fillText("POV", RAND + 40, f.oben + 39);
     ctx.font = `400 26px ${mono}`;
-    sperren(ctx, 3);
+    sperren(ctx, 1.2);
     ctx.textAlign = "right";
     ctx.fillStyle = "rgb(255 255 255 / 0.72)";
     ctx.fillText(karte.datumKurz.toUpperCase(), f.b - RAND + 3, f.oben + 39);
@@ -1345,7 +1492,6 @@ function pov(k: Basis): Maler {
       text: "#ffffff",
       balken: balkenFarbe,
       pointe: schriftAuf(balkenFarbe),
-      rahmen: false,
     });
     zusatz.zeichne(
       RAND,
@@ -1362,42 +1508,39 @@ function pov(k: Basis): Maler {
       ring: ORANGE,
       schiff: "#ffffff",
       flaeche: "#0c0c0f",
+      hell: false,
     });
     korn(k, 0.16);
   };
 }
 
-/** Frage (Hand aufs Herz, Mal ehrlich): ein riesiges Fragezeichen hinter dem Satz. */
+/** Frage (Hand aufs Herz, Mal ehrlich): ein großes Fragezeichen als Umriss über dem Satz. */
 function frage(k: Basis): Maler {
-  const { ctx, f, l, karte, serif } = k;
+  const { l, karte } = k;
   const farben = rahmenFarben(l);
-  const breite = f.b - RAND * 2;
+  const breite = k.f.b - RAND * 2;
   const hoch = k.unten - k.oben;
   const zusatz = setzeZusatz(k, breite);
   const satz = setzeSatz(
     k,
     satzPlan(karte),
     breite,
-    hoch - zusatz.hoehe - 90,
+    hoch -
+      Math.round(hoch * (k.f.name === "story" ? 0.26 : 0.21)) -
+      zusatz.hoehe -
+      60,
     0.85,
   );
   const luecke = satz.g * 0.42;
   const gesamt = satz.hoehe + luecke + zusatz.hoehe;
-  const y = lage(k, k.oben + 30, k.unten, gesamt);
+  // Der Satz steht unten, das Fragezeichen füllt die Fläche darüber.
+  const y = k.unten - gesamt;
   return (t) => {
     grund(k, l);
-    const da = ein(t, 0, 1);
-    ctx.save();
-    ctx.globalAlpha = da;
-    ctx.translate(f.b - 250, k.oben + hoch * 0.48);
-    ctx.rotate(((9 + (1 - da) * 14) * Math.PI) / 180);
-    ctx.font = `italic 600 ${Math.round(hoch * 1.34)}px ${serif}`;
-    ctx.textAlign = "center";
-    ctx.fillStyle = ton(l, 2.6);
-    ctx.fillText("?", 0, hoch * 0.44);
-    ctx.restore();
-    ctx.textAlign = "left";
-
+    grossZeichen(k, "?", k.f.oben + 96, y - 56, ein(t, 0, 1), {
+      farbe: l.text,
+      umriss: true,
+    });
     kopf(k, t, farben.kopf, karte.kicker);
     satz.zeichne(RAND, y, t, satzFarben(k));
     zusatz.zeichne(
@@ -1413,34 +1556,44 @@ function frage(k: Basis): Maler {
   };
 }
 
-/** Notiz (Reminder, Kleiner Reminder, Merken): ein Zettel auf farbigem Grund. */
+/**
+ * Notiz: ein Zettel auf farbigem Grund, je Reihe ein anderer. Merken ist
+ * eine gerade Karteikarte mit Lesezeichen, Reminder eine schief
+ * aufgeklebte Karte, Kleiner Reminder ein gelber Zettel mit Eselsohr.
+ */
 function notiz(k: Basis): Maler {
-  const { ctx, f, l, karte, mono } = k;
+  const { ctx, f, l, karte } = k;
   const farben = rahmenFarben(l);
   const merken = karte.kicker === "Merken";
   const klein = karte.kicker === "Kleiner Reminder";
-  const papier = klein && l.name !== "gelb" ? "#ffe98a" : "#fffdf7";
+  const gelb = klein && l.name !== "gelb";
+  const papier = gelb ? "#ffe98a" : "#fffdf7";
   const stark = kraeftig(l);
-  const aussen = f.b - 132;
-  const innen = aussen - 136;
+  // Der Zettel steht im Satzspiegel wie Kopf und Fuß.
+  const aussen = f.b - RAND * 2;
+  const rand = 64;
+  const innen = aussen - rand * 2;
   const hoch = k.unten - k.oben;
+  const kopfLuft = merken ? 96 : 84;
   const zusatz = setzeZusatz(k, innen, 44);
   const satz = setzeSatz(
     k,
     satzPlan(karte),
     innen,
-    hoch - zusatz.hoehe - 380,
+    hoch - zusatz.hoehe - 310,
     1.0,
     116,
   );
-  const zettel = 136 + satz.hoehe + 50 + zusatz.hoehe + 76;
-  const x = 66;
-  const y = k.oben + 40 + Math.max(0, hoch - 90 - zettel) * 0.45;
-  const schraeg = (k.v.dreh > 0 ? 1.6 : -2) * (Math.PI / 180);
+  const zettel = kopfLuft + satz.hoehe + 50 + zusatz.hoehe + 72;
+  const x = RAND;
+  const y = k.oben + 44 + Math.max(0, hoch - 70 - zettel) * 0.45;
+  const schraeg = ((merken ? 0 : klein ? 1.5 : -1.8) * Math.PI) / 180;
+  const ecke = klein ? 84 : 0;
+  const band = l.name === "koralle" ? "#0f2a3a" : ORANGE;
   return (t) => {
     grund(k, l);
-    kopf(k, t, farben.kopf, null);
-    // Der Zettel fällt von oben ins Bild und bleibt leicht schief liegen.
+    kopf(k, t, farben.kopf, karte.kicker);
+    // Der Zettel fällt von oben ins Bild und bleibt liegen.
     const s = schwung(t, 0.25, 0.7);
     const da = Math.min(1, ein(t, 0.25, 0.3));
     if (da > 0) {
@@ -1451,46 +1604,76 @@ function notiz(k: Basis): Maler {
       ctx.translate(-f.b / 2, -(y + zettel / 2));
       schatten(k, 70, 34, 0.3);
       ctx.fillStyle = papier;
-      rund(ctx, x, y, aussen, zettel, 10);
+      const r = 10;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + aussen - r, y);
+      ctx.arcTo(x + aussen, y, x + aussen, y + r, r);
+      if (ecke) {
+        ctx.lineTo(x + aussen, y + zettel - ecke);
+        ctx.lineTo(x + aussen - ecke, y + zettel);
+      } else {
+        ctx.lineTo(x + aussen, y + zettel - r);
+        ctx.arcTo(x + aussen, y + zettel, x + aussen - r, y + zettel, r);
+      }
+      ctx.lineTo(x + r, y + zettel);
+      ctx.arcTo(x, y + zettel, x, y + zettel - r, r);
+      ctx.lineTo(x, y + r);
+      ctx.arcTo(x, y, x + r, y, r);
+      ctx.closePath();
       ctx.fill();
       ohneSchatten(ctx);
+      if (ecke) {
+        // Eselsohr unten rechts: die umgeschlagene Ecke.
+        schatten(k, 16, 5, 0.2);
+        ctx.fillStyle = gelb ? "#eccf5a" : "#e9e3d6";
+        ctx.beginPath();
+        ctx.moveTo(x + aussen, y + zettel - ecke);
+        ctx.lineTo(x + aussen - ecke, y + zettel - ecke);
+        ctx.lineTo(x + aussen - ecke, y + zettel);
+        ctx.closePath();
+        ctx.fill();
+        ohneSchatten(ctx);
+      }
       if (merken) {
-        // Lesezeichen oben rechts.
+        // Lesezeichen oben rechts, kurz genug, dass es über dem Satz endet.
         ctx.fillStyle = stark;
         ctx.beginPath();
-        ctx.moveTo(x + aussen - 150, y - 22);
-        ctx.lineTo(x + aussen - 70, y - 22);
-        ctx.lineTo(x + aussen - 70, y + 150);
-        ctx.lineTo(x + aussen - 110, y + 114);
-        ctx.lineTo(x + aussen - 150, y + 150);
+        ctx.moveTo(x + aussen - 124, y - 20);
+        ctx.lineTo(x + aussen - 60, y - 20);
+        ctx.lineTo(x + aussen - 60, y + 80);
+        ctx.lineTo(x + aussen - 92, y + 54);
+        ctx.lineTo(x + aussen - 124, y + 80);
         ctx.closePath();
         ctx.fill();
       } else {
-        // Klebestreifen oben in der Mitte.
+        // Klebestreifen: liegt auf der Oberkante, mit gezackten Enden.
         ctx.save();
-        ctx.translate(f.b / 2, y + 4);
-        ctx.rotate((-3 * Math.PI) / 180);
-        ctx.fillStyle = l.dunkel
-          ? "rgb(255 255 255 / 0.5)"
-          : "rgb(15 42 58 / 0.16)";
-        ctx.fillRect(-130, -34, 260, 68);
+        ctx.translate(f.b / 2, y + 2);
+        ctx.rotate((-4 * Math.PI) / 180);
+        ctx.globalAlpha = da * 0.9;
+        schatten(k, 10, 3, 0.16);
+        ctx.fillStyle = band;
+        const [b2, h2, zahn] = [118, 31, 9];
+        ctx.beginPath();
+        ctx.moveTo(-b2, -h2);
+        for (let i = 0; i <= 6; i++)
+          ctx.lineTo(b2 - (i % 2 ? zahn : 0), -h2 + (i * h2 * 2) / 6);
+        for (let i = 6; i >= 0; i--)
+          ctx.lineTo(-b2 + (i % 2 ? zahn : 0), -h2 + (i * h2 * 2) / 6);
+        ctx.closePath();
+        ctx.fill();
+        ohneSchatten(ctx);
         ctx.restore();
       }
-      // Kennzeile auf dem Zettel.
-      ctx.font = `500 26px ${mono}`;
-      sperren(ctx, 4);
-      ctx.fillStyle = "#6b6258";
-      ctx.fillText(karte.kicker.toUpperCase(), x + 68, y + 96);
-      sperren(ctx, 0);
-      satz.zeichne(x + 68, y + 136, t, {
+      satz.zeichne(x + rand, y + kopfLuft, t, {
         text: TINTE,
         balken: stark,
         pointe: schriftAuf(stark),
-        rahmen: false,
       });
       zusatz.zeichne(
-        x + 68,
-        y + 136 + satz.hoehe + 50,
+        x + rand,
+        y + kopfLuft + satz.hoehe + 50,
         t,
         satz.ende + 0.25,
         "#4a433d",
@@ -1546,17 +1729,27 @@ export async function storyVorbereiten(
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => undefined;
   const stil = getComputedStyle(document.documentElement);
-  const serif = `${stil.getPropertyValue("--font-serif").trim() || "Georgia"}, Georgia, "Times New Roman", serif`;
-  const mono = `${stil.getPropertyValue("--font-brand-mono").trim() || "ui-monospace"}, ui-monospace, Menlo, monospace`;
-  try {
-    await Promise.all([
-      document.fonts.load(`italic 600 100px ${serif}`, `${karte.text}?!“`),
-      document.fonts.load(`500 54px ${serif}`, "SITAL"),
-      document.fonts.load(`400 26px ${mono}`, "sitalo.de POV"),
-    ]);
-  } catch {
-    // Ersatzschrift reicht.
-  }
+  const serifRoh = stil.getPropertyValue("--font-serif").trim() || "Georgia";
+  const monoRoh =
+    stil.getPropertyValue("--font-brand-mono").trim() || "ui-monospace";
+  const serif = `${serifRoh}, Georgia, "Times New Roman", serif`;
+  const mono = `${monoRoh}, ui-monospace, Menlo, monospace`;
+  // Jede Schriftfamilie einzeln laden und auf alle warten: Fehlt auf dem
+  // Gerät die Ersatzschrift der Liste, bricht ein gemeinsames Laden sofort
+  // ab, und der Satz würde mit der falschen Schrift vermessen.
+  const lade = (schnitt: string, familien: string, text: string) =>
+    familien
+      .split(",")
+      .map((f) => document.fonts.load(`${schnitt} ${f.trim()}`, text));
+  await Promise.race([
+    Promise.allSettled([
+      ...lade("italic 600 100px", serifRoh, `${karte.text}?!“`),
+      ...lade("500 54px", serifRoh, "SITAL"),
+      ...lade("400 26px", monoRoh, "sitalo.de POV"),
+    ]),
+    // Hängt das Netz, wird nach drei Sekunden mit Ersatzschrift gemalt.
+    new Promise((fertig) => setTimeout(fertig, 3000)),
+  ]);
   canvas.width = Math.round(format.b * skala);
   canvas.height = Math.round(format.h * skala);
   ctx.setTransform(skala, 0, 0, skala, 0, 0);
@@ -1571,9 +1764,15 @@ export async function storyVorbereiten(
     mono,
     skala,
     oben: format.oben + 104,
-    unten: format.unten - 156,
+    // Das Textfeld endet mit Abstand über dem Hafen-Motiv auf der Linie
+    // (in der hohen Story mit mehr Luft als in den gedrungenen Formaten).
+    unten: format.unten - (format.name === "story" ? 226 : 204),
+    eng: { wert: false, klein: 999 },
   };
   const male = formatFuer(karte.kicker)(basis);
+  // Für die Prüfung aller Karten: Hat ein Text nicht in sein Feld gepasst?
+  canvas.dataset.eng = basis.eng.wert ? "1" : "";
+  canvas.dataset.schrift = String(basis.eng.klein);
   return (t: number) => {
     ctx.setTransform(skala, 0, 0, skala, 0, 0);
     ctx.globalAlpha = 1;
