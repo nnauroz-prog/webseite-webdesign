@@ -44,6 +44,12 @@
  * auf der Wasserlinie fährt ein Schiff ein, das am Ende anlegt. Das
  * letzte Bild ist das Standbild. Keine Lichteffekte, keine Unschärfe.
  */
+import {
+  HAMBURG_HORIZONT,
+  HAMBURG_OST,
+  HAMBURG_WAHRZEICHEN,
+  HAMBURG_WEST,
+} from "@/lib/hamburg-skyline";
 import type { SpruchTag } from "@/lib/sprueche-data";
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { KURSIV_SPERRUNG, satzPlan, type SatzPlan } from "@/lib/story-satz";
@@ -160,6 +166,8 @@ function bezier(x1: number, y1: number, x2: number, y2: number) {
 }
 /** Schwere Fahrt zum Satz: zögert, zieht an, läuft lang aus. */
 const FAHRT_HIN = bezier(0.5, 0, 0.2, 1);
+/** Gleiten am Hafen entlang: schon in Fahrt, läuft ruhig aus. */
+const GLEITEN = bezier(0.15, 0.5, 0.35, 1);
 /** Langsame Anfahrt aus der Totale auf den Satz. */
 const ANFAHRT = bezier(0.3, 0, 0.35, 1);
 /** Rückfahrt in die Totale. */
@@ -1601,6 +1609,92 @@ function kopf(
   ctx.textBaseline = "alphabetic";
 }
 
+/** Maßstab der Hafen-Motive auf der Wasserlinie. */
+const MOTIV_MASS = 2.4;
+
+/**
+ * Wo am Fuß was steht: die Wasserlinie, der Liegeplatz des Schiffs und
+ * links davon Hamburg am anderen Ufer (Maßstab und Enden der Silhouette).
+ */
+function hafenLage(k: Basis) {
+  const { f, v } = k;
+  const y0 = f.unten - 112;
+  const ziel = f.b - RAND - 46 - v.motiv.b * MOTIV_MASS;
+  // In der hohen Story ist über der Linie mehr Platz als in den
+  // gedrungenen Formaten.
+  const mass = f.name === "story" ? 0.7 : 0.6;
+  const ost = ziel - 34;
+  return {
+    y0,
+    ziel,
+    mass,
+    ost,
+    west: ost - (HAMBURG_OST - HAMBURG_WEST) * mass,
+  };
+}
+
+/** Feste Zufallsfolge (gleicher Startwert, gleiche Folge). */
+function folge(start: number) {
+  let v = start;
+  return () => {
+    v = (v * 16807) % 2147483647;
+    return v / 2147483647;
+  };
+}
+
+/**
+ * Hamburg als ein Umriss: die Wahrzeichen der Startseite, davor und
+ * dazwischen niedrige Dächer. Koordinaten wie in lib/hamburg-skyline.ts.
+ */
+let stadtUmriss: Path2D | null = null;
+function stadtPfad(): Path2D {
+  if (stadtUmriss) return stadtUmriss;
+  const zufall = folge(7);
+  const unten = HAMBURG_HORIZONT + 30;
+  let d = "";
+  for (let x = -1900; x < HAMBURG_OST + 14; ) {
+    const b = 8 + Math.round(zufall() * 16);
+    const h = 3 + Math.round(zufall() * 9);
+    const art = Math.floor(zufall() * 3);
+    const o = HAMBURG_HORIZONT - h;
+    if (art === 0) d += `M${x} ${unten}V${o}H${x + b}V${unten}Z`;
+    else if (art === 1)
+      d += `M${x} ${unten}V${o}L${x + b / 2} ${o - 4}L${x + b} ${o}V${unten}Z`;
+    else
+      d += `M${x} ${unten}V${o + 2}L${x + 2} ${o}H${x + b - 2}L${x + b} ${o + 2}V${unten}Z`;
+    x += b + Math.round(zufall() * 3);
+  }
+  // Jedes Teil einzeln zur Fläche: So bleibt die Füllung überall gleich
+  // dicht, auch wo sich Teile überlagern.
+  const pfad = new Path2D(d);
+  for (const gruppe of HAMBURG_WAHRZEICHEN)
+    for (const teil of gruppe) pfad.addPath(new Path2D(teil));
+  stadtUmriss = pfad;
+  return pfad;
+}
+
+/** Fenster, die in dunklen Farbwelten leuchten: x, y, Breite. */
+const STADT_FENSTER = (() => {
+  const zufall = folge(23);
+  const f: [number, number, number][] = [];
+  // Glasbau der Elbphilharmonie
+  for (let reihe = 0; reihe < 3; reihe++)
+    for (let x = -9; x < 93; x += 4.2)
+      if (zufall() >= 0.42) f.push([x, 592 + reihe * 4.6, 2.4]);
+  // Speicher darunter: nur wenige Fenster hell
+  for (let reihe = 0; reihe < 4; reihe++)
+    for (let x = -8; x < 92; x += 6)
+      if (zufall() >= 0.78) f.push([x, 612 + reihe * 6, 1.6]);
+  // Halle der Landungsbrücken
+  for (let x = -232; x < -150; x += 4) f.push([x, 631, 2.2]);
+  // Tanzende Türme
+  for (let i = 0; i < 9; i++)
+    f.push([-290 + zufall() * 12, 596 + zufall() * 34, 1.6]);
+  for (let i = 0; i < 6; i++)
+    f.push([-266 + zufall() * 9, 608 + zufall() * 24, 1.6]);
+  return f;
+})();
+
 /**
  * Unten: die Elbe-Linie mit einem kleinen Schiff, darunter die Wortmarke
  * (SITAL und der Doppelring) und die Adresse. Im Film ist das Schiff die
@@ -1623,7 +1717,8 @@ function fuss(
   },
 ) {
   const { ctx, f, v, serif, mono } = k;
-  const y0 = f.unten - 112;
+  const hafen = hafenLage(k);
+  const { y0 } = hafen;
   const zeit = lauf(t);
   ctx.save();
   // Die Elbe: eine feine Welle über die ganze Breite, darunter Wasser bis
@@ -1667,6 +1762,32 @@ function fuss(
       }
     }
   };
+  // Hamburg am anderen Ufer, Ton in Ton im Dunst: dieselbe Silhouette
+  // wie im Kopfbild der Startseite. Sie steht hinter der Wasserlinie; in
+  // dunklen Farbwelten leuchten Fenster.
+  ctx.save();
+  welle();
+  ctx.lineTo(f.b + 400, -3000);
+  ctx.lineTo(links, -3000);
+  ctx.closePath();
+  ctx.clip();
+  ctx.translate(
+    hafen.ost - HAMBURG_OST * hafen.mass,
+    y0 + 4 - HAMBURG_HORIZONT * hafen.mass,
+  );
+  ctx.scale(hafen.mass, hafen.mass);
+  ctx.fillStyle = farben.hell
+    ? "rgb(15 42 58 / 0.16)"
+    : "rgb(255 255 255 / 0.15)";
+  ctx.fill(stadtPfad());
+  if (!farben.hell) {
+    ctx.fillStyle = farben.ring;
+    ctx.globalAlpha *= 0.9;
+    for (const [fx, fy, fb] of STADT_FENSTER)
+      ctx.fillRect(fx, fy, fb, fb * 1.1);
+  }
+  ctx.restore();
+
   welle();
   ctx.lineTo(f.b + 400, f.h + 300);
   ctx.lineTo(links, f.h + 300);
@@ -1680,13 +1801,57 @@ function fuss(
   ctx.lineWidth = 3;
   ctx.lineJoin = "round";
   ctx.stroke();
+  // Im Film flimmert das Wasser (sechs Stellungen je Sekunde), im
+  // Standbild liegt es still.
+  const stand = t < T_RUHE ? Math.floor(Math.max(0, t) * 6) : 0;
+  // Die Stadt spiegelt sich: gestaucht und in schmale Streifen zerlegt,
+  // die im Film leicht wandern. Leuchtende Fenster spiegeln sich mit.
+  ctx.save();
+  ctx.beginPath();
+  for (let yy = y0 + 9 + (stand % 3); yy < y0 + 44; yy += 7)
+    ctx.rect(-400, yy, f.b + 800, 3.5);
+  ctx.clip();
+  ctx.translate(
+    hafen.ost - HAMBURG_OST * hafen.mass,
+    y0 + 6 + HAMBURG_HORIZONT * hafen.mass * 0.45,
+  );
+  ctx.scale(hafen.mass, -hafen.mass * 0.45);
+  ctx.fillStyle = farben.hell
+    ? "rgb(15 42 58 / 0.09)"
+    : "rgb(255 255 255 / 0.08)";
+  ctx.fill(stadtPfad());
+  if (!farben.hell) {
+    ctx.fillStyle = farben.ring;
+    ctx.globalAlpha *= 0.55;
+    for (const [fx, fy, fb] of STADT_FENSTER)
+      ctx.fillRect(fx, fy, fb, fb * 1.1);
+  }
+  ctx.restore();
+  // Lichter auf dem Wasser: kurze Striche unter Stadt und Liegeplatz.
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.globalAlpha *= 0.8;
+  const glanz = folge(31 + stand * 7);
+  for (let i = 0; i < 6; i++) {
+    const [gx, lang, da] = [
+      hafen.west - 30 + ((i * 0.618) % 1) * (f.b - RAND - hafen.west + 10),
+      12 + ((i * 0.37) % 1) * 22,
+      stand === 0 || glanz() > 0.3,
+    ];
+    if (!da) continue;
+    const ruck = stand === 0 ? 0 : (glanz() - 0.5) * 12;
+    ctx.beginPath();
+    ctx.moveTo(gx + ruck, y0 + (i % 2 ? 26 : 14));
+    ctx.lineTo(gx + ruck + lang, y0 + (i % 2 ? 26 : 14));
+    ctx.stroke();
+  }
   ctx.restore();
 
   // Kleines Schiff auf der Linie (jeden Tag ein anderes). Leuchtturm und
   // Kran stehen von Anfang an.
-  const s = 2.4;
+  const s = MOTIV_MASS;
   const m = v.motiv;
-  const ziel = f.b - RAND - 46 - m.b * s;
+  const { ziel } = hafen;
   const faehrt = m.faehrt && t < T_RUHE;
   const strecke = f.b + 40 - ziel;
   const gleich = T_RUHE - 0.8 - T_SCHIFF;
@@ -1766,7 +1931,10 @@ function fuss(
   const nach = RAND - 2 + ctx.measureText("SITAL").width + 2;
   sperren(ctx, 0);
   ctx.strokeStyle = farben.ring;
-  ctx.lineWidth = 3.4;
+  // Legt das Schiff an, antwortet der Doppelring einmal: Sein Strich wird
+  // kurz kräftiger.
+  const gruss = t >= T_RUHE && t < T_RUHE + 0.3 ? t - T_RUHE : 0;
+  ctx.lineWidth = 3.4 + 2.2 * Math.sin((gruss / 0.3) * Math.PI);
   for (const cx of [17, 26.5]) {
     ctx.beginPath();
     ctx.ellipse(nach + cx, grundlinie - 17, 16.4, 16.2, 0, 0, Math.PI * 2);
@@ -1959,6 +2127,8 @@ function rueckzug(k: Basis, nah: Pose, bis = T_NAH): Station[] {
  *   in die Totale.
  * - Anfahrt: Das ganze Plakat steht im Bild, die Kamera rückt langsam
  *   ein Stück heran, bis die Pointe da ist, und wieder zurück.
+ * - Hafen: nah an Hamburg am anderen Ufer, die Kamera gleitet an der
+ *   Stadt entlang und fährt dann in die Totale.
  *
  * Das Plakat gibt nach, wenn die Pointe mit Gewicht aufsetzt: weich
  * unter der Ladung am Kran, hart unter der Presse, leicht bei der
@@ -1991,6 +2161,25 @@ function regieFuer(
       { t: T_RUECK + 0.2, pose: eng },
       { t: T_STAND + 0.2, pose: totale, kurve: FAHRT_ZURUECK },
     ];
+  } else if (kamera === "hafen") {
+    // Eröffnung am Hafen: nah an Hamburg am anderen Ufer, die Kamera
+    // gleitet nach Osten an der Stadt entlang und fährt dann zurück.
+    const h = hafenLage(k);
+    // So nah, dass die Stadt das Bild füllt: Horizont im oberen Drittel,
+    // darunter das Wasser. Die Oberkante liegt knapp unter dem Textfeld,
+    // damit kein Wort ins Bild ragt.
+    const z = f.name === "story" ? 5 : 5.6;
+    const sicht = f.b / z;
+    const y = k.unten + 2 + f.h / 2 / z;
+    fahrt = [
+      { t: 0, pose: imBild(k, { x: h.west + sicht / 2 - 50, y, z }) },
+      {
+        t: 1.1,
+        pose: imBild(k, { x: h.ost - sicht / 2 + 24, y, z }),
+        kurve: GLEITEN,
+      },
+      { t: T_SATZ + 0.6, pose: totale, kurve: FAHRT_HIN },
+    ];
   } else if (kamera === "luecke" && masse) {
     // Nah am Anfang der Lücke: Eine breite Pointe läuft rechts aus dem Bild.
     const z = Math.max(1.7, Math.min(2.2, (0.85 * f.b) / pointe.b));
@@ -2020,9 +2209,10 @@ function regieFuer(
   return {
     fahrt,
     feder: [
-      // Steht die Kamera an der Lücke, sieht man das Requisit nicht: Dann
-      // federt das Plakat auch nicht unter seinem Aufdruck.
-      ...(kamera === "luecke" ? [] : (a.feder ?? [])),
+      // Steht die Kamera an der Lücke oder am Hafen, sieht man das
+      // Requisit nicht: Dann federt das Plakat auch nicht unter seinem
+      // Aufdruck.
+      ...(kamera === "luecke" || kamera === "hafen" ? [] : (a.feder ?? [])),
       ...(wucht
         ? [{ t: T_SCHLAG, px: wucht, weich: auftritt === "kran" }]
         : []),
