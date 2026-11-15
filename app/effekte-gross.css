@@ -189,38 +189,9 @@ h2[data-woerter] .wort > span {
    .wisch-reihe am Handy), nicht für Route und Fokus-Liste (eigene
    Scroll-Effekte). --kipp: 0 schaltet es je Element ab.
    ------------------------------------------------------------------ */
-@supports (animation-timeline: view()) {
-  @media screen and (hover: none) and (prefers-reduced-motion: no-preference) {
-    [data-ein="reihe"]:not([data-fokus], [id$="-spur"] > *, .fahr-route *) > * {
-      animation: reihe-kippen linear both;
-      animation-timeline: view();
-      animation-range: cover 0% cover 100%;
-      transform-origin: 50% 50%;
-    }
-    @keyframes reihe-kippen {
-      0% {
-        transform: perspective(900px) rotateX(calc(var(--kipp, 1) * -8deg));
-      }
-      36%,
-      64% {
-        transform: perspective(900px) rotateX(0deg);
-      }
-      100% {
-        transform: perspective(900px) rotateX(calc(var(--kipp, 1) * 7deg));
-      }
-    }
-  }
-  @media screen and (hover: none) and (max-width: 639px) and (prefers-reduced-motion: no-preference) {
-    .wisch-reihe:not(.wisch-md)[data-ein="reihe"] > * {
-      animation: none;
-    }
-  }
-  @media screen and (hover: none) and (max-width: 767px) and (prefers-reduced-motion: no-preference) {
-    .wisch-reihe.wisch-md[data-ein="reihe"] > * {
-      animation: none;
-    }
-  }
-}
+/* Entfallen: Das Kippen lief nur auf Touch-Geräten und dort bei jedem
+   Scroll-Bild für jede Karte; auf dem iPhone war die Seite damit nicht
+   flüssig. */
 
 /* ------------------------------------------------------------------
    3b. Fotos mit Tiefe ([data-para]): wandern bis 80 px gegen ihren Rahmen

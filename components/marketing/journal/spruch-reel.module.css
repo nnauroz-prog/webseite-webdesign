@@ -1,0 +1,549 @@
+/* Spruch des Tages als hochkant laufende Karte (spruch-reel.tsx).
+   Am Handy füllt die Karte fast das Fenster, am Rechner steht sie im
+   Verhältnis 9:16 in der Mitte. Bewegung nur über transform und opacity,
+   nur an der Karte im Bild und nur, solange der Abschnitt im Bild ist
+   (data-sicht setzt components/marketing/effekte.tsx). */
+
+.buehne {
+  padding: 18px 0 8px;
+  scroll-margin-top: 96px;
+}
+.titel {
+  width: min(100% - 32px, 420px);
+  margin: 0 auto 14px;
+}
+.titel h1 {
+  margin-top: 6px;
+  font-size: clamp(1.5rem, 1.1rem + 1.9vw, 2rem);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+.fuss {
+  width: min(100% - 32px, 420px);
+  margin: 14px auto 0;
+  text-align: center;
+  text-wrap: balance;
+}
+@media (min-width: 734px) {
+  .buehne {
+    padding-top: 36px;
+  }
+  .titel {
+    text-align: center;
+  }
+  .titel :global(.kennzeile-mono) {
+    justify-content: center;
+  }
+}
+.rahmen {
+  position: relative;
+  width: min(100% - 32px, 420px);
+  height: clamp(440px, calc(100svh - 236px), 720px);
+  margin-inline: auto;
+}
+@media (min-width: 734px) {
+  .rahmen {
+    height: clamp(440px, calc(100svh - 276px), 720px);
+  }
+}
+
+/* ---------- Spur: eine Karte je Tag, waagerecht zum Wischen ---------- */
+.spur {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  list-style: none;
+  border-radius: 28px;
+  background: #0f2a3a;
+  box-shadow: 0 34px 70px -34px rgb(16 32 48 / 0.6);
+  isolation: isolate;
+}
+.spur::-webkit-scrollbar {
+  display: none;
+}
+.spur:focus-visible {
+  outline: 3px solid #f45b1e;
+  outline-offset: 3px;
+}
+.karte {
+  position: relative;
+  flex: 0 0 100%;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  color: #fff;
+  background: linear-gradient(165deg, #0f2a3a 0%, #1f5f6b 100%);
+}
+.karte[data-thema="google"] {
+  background: linear-gradient(165deg, #10283f 0%, #2b6a8c 100%);
+}
+.karte[data-thema="texte"] {
+  background: linear-gradient(165deg, #1d1d1f 0%, #3e444d 100%);
+}
+.karte[data-thema="handy"] {
+  background: linear-gradient(165deg, #12303f 0%, #256a6e 100%);
+}
+.karte[data-thema="vertrauen"] {
+  background: linear-gradient(165deg, #2c1a12 0%, #a8431a 100%);
+}
+.karte[data-thema="tempo"] {
+  background: linear-gradient(165deg, #3d1a0c 0%, #c2410c 100%);
+}
+.karte[data-thema="pflege"] {
+  background: linear-gradient(165deg, #12302a 0%, #2f6b52 100%);
+}
+.karte[data-thema="anfrage"] {
+  background: linear-gradient(165deg, #1d1d1f 0%, #0f2a3a 100%);
+}
+
+/* ---------- Szene hinter dem Text ---------- */
+.szene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.licht {
+  position: absolute;
+  top: -20%;
+  left: -34%;
+  width: 96%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 255 255 / 0.2),
+    rgb(255 255 255 / 0)
+  );
+}
+.licht2 {
+  top: auto;
+  right: -46%;
+  bottom: 4%;
+  left: auto;
+  width: 116%;
+  background: radial-gradient(
+    closest-side,
+    rgb(244 91 30 / 0.4),
+    rgb(244 91 30 / 0)
+  );
+}
+.ziffer {
+  position: absolute;
+  top: 46px;
+  right: -8px;
+  font-size: 230px;
+  line-height: 0.8;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(255 255 255 / 0.16);
+  user-select: none;
+}
+.welle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 58px;
+  fill: rgb(255 255 255 / 0.1);
+}
+.welle2 {
+  height: 40px;
+  fill: rgb(255 255 255 / 0.14);
+}
+.fahrt {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  display: block;
+  width: 100%;
+  transform: translateX(8%);
+}
+.fahrt svg {
+  display: block;
+  margin-left: -46px;
+}
+
+/* ---------- Text ---------- */
+.inhalt {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 22px 74px;
+}
+.kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.5em;
+  max-width: calc(100% - 44px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.86);
+}
+/* Heute: Datum in eigener Zeile, bündig unter dem Text. */
+.kopf[data-heute] time {
+  flex-basis: 100%;
+  padding-left: calc(9px + 0.5em);
+}
+.punkt {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-right: 2px;
+  border-radius: 50%;
+  background: #f45b1e;
+  transform: translateY(-1px);
+}
+.spruch {
+  max-width: calc(100% - 58px);
+  margin-top: auto;
+  font-size: clamp(1.875rem, 1.1rem + 3.6vw, 2.5rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+/* Sprüche mit einem sehr langen Wort eine Stufe kleiner, damit es passt. */
+.spruch[data-eng] {
+  font-size: clamp(1.5rem, 0.95rem + 2.9vw, 2.125rem);
+}
+/* Sehr schmale Handys: eine Stufe kleiner, damit auch lange Sprüche Luft haben. */
+@media (max-width: 359px) {
+  .spruch {
+    font-size: 1.5rem;
+  }
+  .spruch[data-eng] {
+    font-size: 1.375rem;
+  }
+  .zusatz {
+    margin-top: 10px;
+    font-size: 15px;
+  }
+}
+.wort {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.06em 0.02em 0.16em;
+  margin: -0.06em -0.02em -0.16em;
+}
+.wort > span {
+  display: inline-block;
+}
+.zusatz {
+  max-width: calc(100% - 58px);
+  margin-top: 14px;
+  font-size: 17px;
+  line-height: 1.38;
+  color: rgb(255 255 255 / 0.92);
+  text-wrap: pretty;
+}
+.absender {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 58px);
+  margin-top: auto;
+  padding-top: 18px;
+}
+.siegel {
+  display: inline-flex;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #f45b1e;
+}
+.siegel svg {
+  width: 22px;
+  height: 16px;
+}
+.name {
+  display: block;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.thema {
+  display: block;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgb(255 255 255 / 0.84);
+}
+
+/* ---------- Fortschritt, Zähler ---------- */
+.fortschritt {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  left: 16px;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+  pointer-events: none;
+}
+.seg {
+  flex: 1;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.28);
+}
+.seg > i {
+  display: block;
+  height: 100%;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.seg[data-zustand="voll"] > i,
+.seg[data-zustand="laeuft"] > i {
+  transform: scaleX(1);
+}
+.zaehler {
+  position: absolute;
+  top: 36px;
+  right: 20px;
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  color: rgb(255 255 255 / 0.86);
+  pointer-events: none;
+}
+
+/* ---------- Knöpfe am rechten Rand ---------- */
+.leiste {
+  position: absolute;
+  right: 10px;
+  bottom: 70px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.knopf {
+  display: flex;
+  min-width: 52px;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  font-size: 10.5px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.knopf svg {
+  box-sizing: border-box;
+  width: 46px;
+  height: 46px;
+  padding: 12px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.17);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22);
+  transition:
+    transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 200ms ease;
+}
+.knopf:active svg {
+  transform: scale(0.88);
+  transition-duration: 120ms;
+}
+.knopf:focus-visible {
+  outline: none;
+}
+.knopf:focus-visible svg {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .knopf:hover svg {
+    background: rgb(255 255 255 / 0.28);
+  }
+}
+
+/* ---------- Pfeile neben der Karte (nur mit Maus und Platz) ---------- */
+.pfeil {
+  display: none;
+}
+@media (hover: hover) and (min-width: 640px) {
+  .pfeil {
+    position: absolute;
+    top: 50%;
+    display: inline-flex;
+    width: 48px;
+    height: 48px;
+    margin-top: -24px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    font-size: 26px;
+    line-height: 1;
+    color: #1d1d1f;
+    box-shadow: 0 8px 24px -8px rgb(16 32 48 / 0.35);
+    cursor: pointer;
+    transition:
+      transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 200ms ease;
+  }
+  .pfeilZurueck {
+    left: -68px;
+  }
+  .pfeilWeiter {
+    right: -68px;
+  }
+  .pfeil:hover:not(:disabled) {
+    transform: scale(1.08);
+  }
+  .pfeil:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .pfeil:focus-visible {
+    outline: 3px solid #f45b1e;
+    outline-offset: 3px;
+  }
+}
+
+/* ---------- Bewegung ---------- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Sobald das Script bereit ist, wartet der Text jeder Karte, bis sie
+     im Bild steht; dann steigt er Wort für Wort herein. */
+  .buehne[data-bereit]
+    .karte:not([data-aktiv])
+    :is(.wort > span, .zusatz, .absender) {
+    opacity: 0;
+  }
+  .buehne[data-bereit] .karte[data-aktiv] .wort > span {
+    animation: wort-rein 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(260ms + var(--w, 0) * 75ms);
+  }
+  .buehne[data-bereit] .karte[data-aktiv] .zusatz {
+    animation: zeile-rein 700ms cubic-bezier(0.22, 1, 0.36, 1) 1250ms both;
+  }
+  .buehne[data-bereit] .karte[data-aktiv] .absender {
+    animation: zeile-rein 700ms cubic-bezier(0.22, 1, 0.36, 1) 1500ms both;
+  }
+  .buehne[data-bereit] .karte[data-aktiv] .ziffer {
+    animation: ziffer-rein 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  /* Der Fortschritt läuft nur, solange der Abschnitt im Bild ist. */
+  .seg[data-zustand="laeuft"] > i {
+    transform: scaleX(0);
+  }
+  .buehne[data-bereit][data-sicht] .seg[data-zustand="laeuft"] > i {
+    animation: seg-lauf 9s linear forwards;
+  }
+  /* Szene: Licht wandert, Wellen ziehen, die Fähre fährt. */
+  .buehne[data-sicht] .karte[data-aktiv] .licht {
+    animation: licht-zieht 13s ease-in-out infinite alternate;
+  }
+  .buehne[data-sicht] .karte[data-aktiv] .licht2 {
+    animation-duration: 17s;
+    animation-direction: alternate-reverse;
+  }
+  .buehne[data-sicht] .karte[data-aktiv] .welle {
+    animation: welle-zieht 15s linear infinite;
+  }
+  .buehne[data-sicht] .karte[data-aktiv] .welle2 {
+    animation-duration: 10s;
+    animation-direction: reverse;
+  }
+  .buehne[data-sicht] .karte[data-aktiv] .fahrt {
+    animation: faehre-quer 24s linear infinite;
+  }
+}
+@keyframes wort-rein {
+  from {
+    opacity: 0;
+    transform: translateY(105%) rotate(5deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes zeile-rein {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ziffer-rein {
+  from {
+    opacity: 0;
+    transform: translateX(40px) rotate(8deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes seg-lauf {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes licht-zieht {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(22%, 16%) scale(1.18);
+  }
+}
+@keyframes welle-zieht {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes faehre-quer {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(118%);
+  }
+}
