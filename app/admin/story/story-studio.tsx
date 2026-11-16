@@ -10,9 +10,25 @@ import {
   Share2,
   Shuffle,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 
+import type { PostFormat } from "@/lib/admin/post-planer";
 import type { SpruchTag } from "@/lib/sprueche-data";
+
+import { setPostGepostetAction } from "@/app/admin/post-actions";
+import { runAction } from "@/app/admin/run-action";
+import {
+  FORMAT_LABELS,
+  NACHTRAGEN_TAGE,
+  platzName,
+} from "@/lib/admin/post-planer";
 import {
   FORMATE,
   STORY_DAUER,
@@ -43,11 +59,19 @@ import { cn } from "@/lib/utils";
  *   aufgenommen. Danach lässt er sich teilen oder sichern.
  * - Abspielen zeigt den Film sofort, in einer leichteren Fassung.
  * - Text kopieren legt den Beitragstext in die Zwischenablage.
- * - Abhaken merkt sich auf diesem Gerät, was schon gepostet ist.
+ * - Abhaken hält fest, was schon gepostet ist, je Format (Story oder
+ *   Beitrag) in der Datenbank (post_status, wie im Post-Planer). Ohne
+ *   Datenbank-Update merkt es sich das wie früher nur dieses Gerät.
  */
 
 const SPEICHER = "sitalo-story-gepostet";
-const PLATZ_NAME = ["Spruch des Tages", "Zusatz-Post 1", "Zusatz-Post 2"];
+
+/** Gepostet laut Datenbank (post_status) an diesem Tag. */
+export type GepostetEintrag = {
+  platz: number;
+  format: PostFormat;
+  text: string;
+};
 
 /** Videoformat, das dieser Browser aufnehmen kann; MP4 zuerst (Instagram). */
 function videoTyp(): { mime: string; endung: string } | null {
@@ -84,16 +108,30 @@ type Zustand = "laedt" | "bereit" | "spielt" | "nimmtAuf";
 export function StoryStudio({
   posts,
   beschriftungen,
+  start = 0,
+  gepostetDb = null,
+  abhakenMoeglich = true,
 }: {
   /** Posts des Tages: Spruch des Tages zuerst */
   posts: SpruchTag[];
   /** Beitragstext je Post, gleiche Reihenfolge */
   beschriftungen: string[];
+  /** Index des zuerst gewählten Posts (etwa aus dem Post-Planer). */
+  start?: number;
+  /**
+   * Was laut Datenbank schon gepostet ist; null ohne Datenbank-Update
+   * (dann merkt sich dieses Gerät das Abhaken).
+   */
+  gepostetDb?: GepostetEintrag[] | null;
+  /** false für Tage, die sich (noch) nicht abhaken lassen (Zukunft, lange her). */
+  abhakenMoeglich?: boolean;
 }) {
   const flaeche = useRef<HTMLCanvasElement | null>(null);
   const zeichne = useRef<StoryZeichner | null>(null);
   const lauf = useRef(0);
-  const [gewaehlt, setGewaehlt] = useState(0);
+  const [gewaehlt, setGewaehlt] = useState(() =>
+    Math.min(Math.max(start, 0), Math.max(posts.length - 1, 0)),
+  );
   const [format, setFormat] = useState<StoryFormat["name"]>("story");
   /** „Anderes Design“ je Post: 0 ist das Design des Tages. */
   const [versaetze, setVersaetze] = useState<number[]>(() =>
@@ -109,10 +147,19 @@ export function StoryStudio({
   const [video, setVideo] = useState<File | null>(null);
   const [meldung, setMeldung] = useState<string | null>(null);
   const [gepostet, setGepostet] = useState<string[]>([]);
+  const [hakt, startHaken] = useTransition();
+  const dbModus = gepostetDb !== null;
+  /** „platz|format“ der laut Datenbank geposteten Posts. */
+  const dbGepostet = useMemo(
+    () => new Set((gepostetDb ?? []).map((e) => `${e.platz}|${e.format}`)),
+    [gepostetDb],
+  );
 
-  const karte = posts[gewaehlt];
+  const karte = posts[gewaehlt] ?? posts[0];
   const versatz = versaetze[gewaehlt] ?? 0;
   const f = FORMATE[format];
+  /** Format fürs Abhaken (das Studio bietet nur Story und Beitrag). */
+  const postFormat: PostFormat = format === "beitrag" ? "beitrag" : "story";
   const kennung = `${karte.datum}-${karte.platz}`;
   const name = `sitalo-${karte.datum}-post${karte.platz + 1}-${format}`;
   const beschriftung = beschriftungen[gewaehlt] ?? "";
@@ -186,6 +233,28 @@ export function StoryStudio({
     );
 
   const markieren = () => {
+    if (dbModus) {
+      const jetztGepostet = dbGepostet.has(`${karte.platz}|${postFormat}`);
+      const label = FORMAT_LABELS[postFormat];
+      startHaken(async () => {
+        const res = await runAction(() =>
+          setPostGepostetAction(
+            karte.datum,
+            karte.platz,
+            postFormat,
+            !jetztGepostet,
+          ),
+        );
+        sagen(
+          res.ok
+            ? jetztGepostet
+              ? `${label} wieder offen.`
+              : `${label} abgehakt.`
+            : res.error,
+        );
+      });
+      return;
+    }
     const neu = gepostet.includes(kennung)
       ? gepostet.filter((k) => k !== kennung)
       : [...gepostet, kennung].slice(-400);
@@ -427,7 +496,18 @@ export function StoryStudio({
     knopf,
   );
   const dunkel = cn("bg-foreground text-background", knopf);
-  const istGepostet = gepostet.includes(kennung);
+  const istGepostet = dbModus
+    ? dbGepostet.has(`${karte.platz}|${postFormat}`)
+    : gepostet.includes(kennung);
+  const formatLabel = FORMAT_LABELS[postFormat];
+  /** An diesem Platz wurde vorher eine andere Karte gepostet (etwa die Reserve). */
+  const frueher =
+    gepostetDb?.find(
+      (e) =>
+        e.platz === karte.platz &&
+        e.format === postFormat &&
+        e.text !== karte.text,
+    )?.text ?? null;
 
   return (
     <div className="mt-5">
@@ -444,7 +524,11 @@ export function StoryStudio({
       >
         {posts.map((p, i) => {
           const aktiv = i === gewaehlt;
-          const raus = gepostet.includes(`${p.datum}-${p.platz}`);
+          const raus = dbModus
+            ? dbGepostet.has(`${p.platz}|story`) ||
+              dbGepostet.has(`${p.platz}|beitrag`)
+            : gepostet.includes(`${p.datum}-${p.platz}`);
+          const zumTag = p.herkunft === "aktuell" && p.anlass;
           return (
             <button
               key={p.platz}
@@ -469,10 +553,18 @@ export function StoryStudio({
                 </span>
               ) : null}
               <span className="mt-1.5 block text-[12px] leading-4 font-semibold">
-                {PLATZ_NAME[p.platz] ?? `Post ${p.platz + 1}`}
+                {platzName(p.platz)}
               </span>
-              <span className="text-muted-foreground block truncate text-[12px] leading-4">
-                {p.kicker}
+              {/* Tagesaktuell: der Anlass, sonst der Kicker der Reserve-Karte. */}
+              <span
+                className={cn(
+                  "block truncate text-[12px] leading-4",
+                  zumTag
+                    ? "text-gold-ink font-medium"
+                    : "text-muted-foreground",
+                )}
+              >
+                {zumTag ? p.anlass : p.kicker}
               </span>
             </button>
           );
@@ -648,12 +740,30 @@ export function StoryStudio({
               type="button"
               onClick={markieren}
               aria-pressed={istGepostet}
+              disabled={dbModus && (hakt || !abhakenMoeglich)}
               className={istGepostet ? dunkel : hell}
             >
               <Check className="h-4 w-4" aria-hidden="true" />
-              {istGepostet ? "Gepostet" : "Abhaken"}
+              {dbModus
+                ? istGepostet
+                  ? `${formatLabel} gepostet`
+                  : `${formatLabel} abhaken`
+                : istGepostet
+                  ? "Gepostet"
+                  : "Abhaken"}
             </button>
           </div>
+          {frueher ? (
+            <p className="text-muted-foreground mt-2 text-[14px] leading-5">
+              Als {formatLabel} gepostet wurde vorher eine andere Karte:{" "}
+              {`„${frueher}“`}
+            </p>
+          ) : null}
+          {dbModus && !abhakenMoeglich ? (
+            <p className="text-muted-foreground mt-2 text-[14px] leading-5">
+              Abhaken geht vom Tag selbst bis {NACHTRAGEN_TAGE} Tage danach.
+            </p>
+          ) : null}
 
           <ol className="text-muted-foreground mt-5 list-decimal space-y-1 pl-5 text-[14px] leading-5">
             <li>Post und Format wählen (Story oder Beitrag).</li>
