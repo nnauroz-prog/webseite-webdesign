@@ -573,10 +573,23 @@ function rund(ctx: Ctx, x: number, y: number, b: number, h: number, r: number) {
 }
 
 /**
+ * So weit reicht der Farbstreifen über und unter die Grundlinie (Anteil
+ * der Schriftgröße). Gemessen an der Kursiven: Oberlängen (b, k, l)
+ * reichen bis 0,73, große Umlaute (Ä, Ö, Ü) bis 0,81, Unterlängen (g, p,
+ * f) bis 0,28. Rundum bleibt Luft, damit kein Buchstabe an die Kante
+ * stößt oder mit seinen Punkten über den Streifen hinausragt.
+ */
+const STREIFEN_OBEN = 0.8;
+const STREIFEN_OBEN_UMLAUT = 0.86;
+const STREIFEN_UNTEN = 0.33;
+/** Spalt zwischen zwei Streifen untereinander. */
+const STREIFEN_SPALT = 0.08;
+
+/**
  * Farbstreifen hinter der Pointe: Ober- und Unterkante laufen parallel,
- * die Enden neigen sich wie die Kursive. Die Höhe folgt der Schrift
- * (Oberlänge bis Unterlänge), damit kein Buchstabe an die Kante stößt.
- * innen rückt den Umriss nach innen (für den Stellplatz).
+ * die Enden neigen sich wie die Kursive. oben ist seine Höhe über der
+ * Grundlinie (Anteil der Schriftgröße); innen rückt den Umriss nach
+ * innen (für den Stellplatz).
  */
 function streifenPfad(
   ctx: Ctx,
@@ -584,10 +597,11 @@ function streifenPfad(
   x1: number,
   grundlinie: number,
   px: number,
+  hoch: number,
   innen = 0,
 ) {
-  const oben = grundlinie - px * 0.74 + innen;
-  const unten = grundlinie + px * 0.31 - innen;
+  const oben = grundlinie - px * hoch + innen;
+  const unten = grundlinie + px * STREIFEN_UNTEN - innen;
   const schub = px * 0.045;
   ctx.beginPath();
   ctx.moveTo(x0 - px * 0.13 + schub + innen, oben);
@@ -666,6 +680,8 @@ type Streifen = {
   x0: number;
   x1: number;
   grundlinie: number;
+  /** Höhe über der Grundlinie (Anteil der Schriftgröße) */
+  oben: number;
   px: number;
   woerter: { t: string; x: number }[];
 };
@@ -734,6 +750,19 @@ function setzeSatz(
   const versuche = (g: number): Versuch | null => {
     const zeilenHoehe = g * 1.06;
     const abstand = g * 0.23;
+    // Steht in der Pointe ein großer Umlaut, sind alle ihre Streifen
+    // etwas höher: Seine Punkte bleiben auf der Farbe.
+    const pointeText =
+      plan.art === "fluss"
+        ? plan.gruppen
+            .flat()
+            .filter((w) => w.betont)
+            .map((w) => w.t)
+            .join(" ")
+        : plan.pointe.join(" ");
+    const oben = /[ÄÖÜ]/.test(pointeText)
+      ? STREIFEN_OBEN_UMLAUT
+      : STREIFEN_OBEN;
     const zeilen: Versuch["zeilen"] = [];
     const streifen: Streifen[] = [];
     let hoehe = 0;
@@ -762,7 +791,9 @@ function setzeSatz(
           // Eine Zeile mit Farbstreifen bekommt Luft nach oben und unten,
           // damit der Streifen keine Nachbarzeile berührt.
           const mitStreifen = z.woerter.some((w) => w.betont);
-          const davor = mitStreifen && zeilen.length ? g * 0.16 : 0;
+          // Der Streifen ragt über die Zeile hinaus (die Pointe ist
+          // größer gesetzt): entsprechend mehr Luft zur Zeile darüber.
+          const davor = mitStreifen && zeilen.length ? p * oben - g * 0.76 : 0;
           const grundlinie = hoehe + davor + g * 0.86;
           const gedruckt: { t: string; x: number }[] = [];
           let x = 0;
@@ -774,7 +805,11 @@ function setzeSatz(
               gedruckt.push({ t: w.t, x });
             } else {
               if (!offen) {
-                offen = { x0: x, x1: x, grundlinie, px: p, woerter: [] };
+                // Vor dem Streifen etwas mehr Abstand: Sein linker Rand
+                // steht über, und die Kursive neigt sich nach rechts.
+                // So sitzt er gleich weit von beiden Nachbarn.
+                if (x > 0) x += g * 0.06;
+                offen = { x0: x, x1: x, grundlinie, oben, px: p, woerter: [] };
                 streifen.push(offen);
               }
               offen.x1 = x + w.breite;
@@ -783,8 +818,8 @@ function setzeSatz(
             x += w.breite + abstand;
           }
           zeilen.push({ grundlinie, woerter: gedruckt });
-          weite = Math.max(weite, z.breite);
-          hoehe += zeilenHoehe + davor + (mitStreifen ? g * 0.14 : 0);
+          weite = Math.max(weite, x - abstand);
+          hoehe += zeilenHoehe + davor + (mitStreifen ? g * 0.17 : 0);
         }
       }
       const ende = letzte[letzte.length - 1];
@@ -828,7 +863,9 @@ function setzeSatz(
           g * 2.1,
           290,
           (breite - 10) / (weiteste + 0.24),
-          (platz - hoehe) / (plan.pointe.length * 1.14 + 0.26),
+          (platz - hoehe) /
+            (plan.pointe.length * (oben + STREIFEN_UNTEN + STREIFEN_SPALT) +
+              0.26),
         ),
       );
       if (p < g * 1.2) return null;
@@ -837,14 +874,15 @@ function setzeSatz(
       sperren(ctx, p * KURSIV_SPERRUNG);
       // Zeilenabstand der Pointe: Zwischen zwei Streifen bleibt ein
       // gleichmäßiger Spalt; zum Satz darüber etwas Luft.
-      const pZeile = p * 1.14;
+      const pZeile = p * (oben + STREIFEN_UNTEN + STREIFEN_SPALT);
       const luft = plan.vor.length ? p * 0.16 : 0;
       plan.pointe.forEach((z, i) => {
         const b = ctx.measureText(z).width;
         streifen.push({
           x0: p * 0.12,
           x1: p * 0.12 + b,
-          grundlinie: hoehe + luft + i * pZeile + p * 0.8,
+          grundlinie: hoehe + luft + i * pZeile + p * (oben + 0.06),
+          oben,
           px: p,
           woerter: [{ t: z, x: p * 0.12 }],
         });
@@ -893,8 +931,8 @@ function setzeSatz(
   const kanten = streifen.map((s) => ({
     l: s.x0 - s.px * 0.13,
     r: s.x1 + s.px * 0.1,
-    o: s.grundlinie - s.px * 0.74,
-    u: s.grundlinie + s.px * 0.31,
+    o: s.grundlinie - s.px * s.oben,
+    u: s.grundlinie + s.px * STREIFEN_UNTEN,
   }));
   const pointe = kanten.length
     ? {
@@ -945,7 +983,7 @@ function setzeSatz(
       return [x + dx * c - dy * s, y + block + dx * s + dy * c];
     };
     const oben = streifen[0];
-    const kante = y + oben.grundlinie - oben.px * 0.74;
+    const kante = y + oben.grundlinie - oben.px * oben.oben;
     const [links, rechts] = [
       x + oben.x0 - oben.px * 0.13,
       x + oben.x1 + oben.px * 0.1,
@@ -1069,7 +1107,7 @@ function setzeSatz(
       };
       /** Ein Streifen, mit oder ohne sein Wort. */
       const streifenMalen = (s: Streifen, wort: boolean) => {
-        streifenPfad(ctx, x + s.x0, x + s.x1, y + s.grundlinie, s.px);
+        streifenPfad(ctx, x + s.x0, x + s.x1, y + s.grundlinie, s.px, s.oben);
         ctx.fillStyle = farben.balken;
         ctx.fill();
         ohneSchatten(ctx);
@@ -1079,8 +1117,8 @@ function setzeSatz(
       const kasten = (s: Streifen) => [
         x + s.x0 - s.px * 0.13,
         x + s.x1 + s.px * 0.1,
-        y + s.grundlinie - s.px * 0.74,
-        y + s.grundlinie + s.px * 0.31,
+        y + s.grundlinie - s.px * s.oben,
+        y + s.grundlinie + s.px * STREIFEN_UNTEN,
       ];
       /**
        * Alle Streifen als ein Paket (Kran, Presse). versatz und weite
@@ -1096,7 +1134,7 @@ function setzeSatz(
             if (art === "presse" && gestaucht(t)) {
               const [mx, unten] = [
                 x + (s.x0 + s.x1) / 2,
-                y + s.grundlinie + s.px * 0.31,
+                y + s.grundlinie + s.px * STREIFEN_UNTEN,
               ];
               ctx.translate(mx, unten);
               ctx.scale(1.03, 1 - STAUCHUNG);
@@ -1149,7 +1187,14 @@ function setzeSatz(
           ctx.clip();
           streifenMalen(s, wort);
           if (dunkel > 0) {
-            streifenPfad(ctx, x + s.x0, x + s.x1, y + s.grundlinie, s.px);
+            streifenPfad(
+              ctx,
+              x + s.x0,
+              x + s.x1,
+              y + s.grundlinie,
+              s.px,
+              s.oben,
+            );
             ctx.fillStyle = `rgb(0 0 0 / ${dunkel})`;
             ctx.fill();
           }
@@ -1187,13 +1232,18 @@ function setzeSatz(
         streifenMalen(s, true);
         const ende = T_SCHLAG + (nr * 5) / 30;
         if (!(t < ende + 0.2)) return;
-        // Das Band ist rundum größer als der Streifen, an den gezackten
-        // Enden deutlich: Nichts von der Pointe schaut vorher heraus.
+        // Das Band ist rundum größer als der Streifen: Nichts von der
+        // Pointe schaut vorher heraus. Steht die Pointe frei, sind seine
+        // Enden gezackt und stehen deutlich über; mitten in der Zeile
+        // endet es gerade und knapp, damit es kein Nachbarwort verdeckt.
+        const frei = block !== null;
         const rand = Math.max(10, s.px * 0.07);
+        const ueber = frei ? rand + 14 : s.px * 0.045 + 3;
+        const zahn = frei ? 9 : 0;
         const [l0, r0, o0, u0] = kasten(s);
         const [links, rechts, oben, unten] = [
-          l0 - rand - 14,
-          r0 + rand + 14,
+          l0 - ueber,
+          r0 + ueber,
           o0 - rand / 2,
           u0 + rand / 2,
         ];
@@ -1204,7 +1254,7 @@ function setzeSatz(
         const zacken = (xx: number, yy: number, richtung: number) => {
           for (let i = 0; i <= 6; i++)
             ctx.lineTo(
-              xx - (i % 2 ? 9 : 0),
+              xx - (i % 2 ? zahn : 0),
               yy + (richtung * i * (unten - oben)) / 6,
             );
         };
@@ -1222,7 +1272,7 @@ function setzeSatz(
           if (p <= 0)
             for (let i = 6; i >= 0; i--)
               ctx.lineTo(
-                links + (i % 2 ? 9 : 0),
+                links + (i % 2 ? zahn : 0),
                 oben + (i * (unten - oben)) / 6,
               );
           ctx.closePath();
@@ -1303,7 +1353,15 @@ function setzeSatz(
           ctx.lineJoin = "miter";
           ctx.setLineDash([14, 9]);
           for (const s of streifen) {
-            streifenPfad(ctx, x + s.x0, x + s.x1, y + s.grundlinie, s.px, 3);
+            streifenPfad(
+              ctx,
+              x + s.x0,
+              x + s.x1,
+              y + s.grundlinie,
+              s.px,
+              s.oben,
+              3,
+            );
             ctx.stroke();
           }
           ctx.restore();
