@@ -13,9 +13,11 @@
  *
  * Meldet einen Fehler, wenn ein Text auch in der kleinsten Schrift nicht
  * in sein Feld passt, die Kopfzeile (Etikett, Anlass, Datum) nicht in
- * ihre Zeile passt, mehr als eine orange Pille auf einem Bild steht oder
- * sich ein Bild nicht zeichnen lässt. So bleibt jeder neue Spruch
- * automatisch ein sauberer Post, ohne dass ihn jemand ansehen muss.
+ * ihre Zeile passt, mehr als eine orange Pille auf einem Bild steht, beim
+ * Auftritt „abziehen“ vor dem Abziehen etwas von der Pointe unter dem
+ * Klebeband herausschaut oder sich ein Bild nicht zeichnen lässt. So
+ * bleibt jeder neue Spruch automatisch ein sauberer Post, ohne dass ihn
+ * jemand ansehen muss.
  * Aufruf: npm run posts:pruefen
  *
  * Braucht Playwright mit Chromium (nicht Teil des Projekts; in der
@@ -116,6 +118,74 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
       const g = Number(flaeche.dataset.schrift);
       if (g < 900) out.kleinsteJe[l] = Math.min(out.kleinsteJe[l] ?? 999, g);
     };
+    // Auftritt „abziehen“: Bis das Band abgezogen wird, deckt es die ganze
+    // Pointe ab. Das erste Bild (die Kamera steht nah an der Pointe) wird
+    // einmal so und einmal ohne die Wörter der Pointe gezeichnet; jeder
+    // Unterschied ist etwas von ihr, das herausschaut.
+    const fillText = CanvasRenderingContext2D.prototype.fillText;
+    let ohne = null;
+    CanvasRenderingContext2D.prototype.fillText = function (t, ...rest) {
+      if (ohne?.(String(t))) return;
+      return fillText.call(this, t, ...rest);
+    };
+    const woerter = (t) =>
+      ` ${t
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, " ")
+        .trim()} `;
+    /**
+     * Die Wörter der Pointe, oder null, wenn die Karte keine hat (Mythos)
+     * oder eines ihrer Wörter auch sonst auf dem Bild steht (dann ließe
+     * es sich nicht von ihr unterscheiden; das Kalenderblatt schreibt
+     * „Heute“ über den Tag).
+     */
+    const pointeVon = (karte) => {
+      const w = woerter(karte.betont);
+      if (karte.kicker === "Mythos" || !w.trim()) return null;
+      const sonst = woerter(
+        `${karte.text.replace(karte.betont, " ")} ${karte.zusatz} ${karte.kicker} ${karte.anlass ?? ""} heute`,
+      );
+      if (
+        w
+          .trim()
+          .split(" ")
+          .some((x) => sonst.includes(` ${x} `))
+      )
+        return null;
+      return w;
+    };
+    /** Ein Text der Pointe: ein Teil von ihr oder eine Zeile, die sie trägt. */
+    const inPointe = (pointe, t) => {
+      const w = woerter(t);
+      return w.trim() !== "" && (pointe.includes(w) || w.includes(pointe));
+    };
+    const abziehen = async (karte, format, name) => {
+      const pointe = pointeVon(karte);
+      if (!pointe) return;
+      const c = flaeche.getContext("2d");
+      const bild = () => c.getImageData(0, 0, flaeche.width, flaeche.height);
+      for (const layout of p.LAYOUTS) {
+        const z = await p.storyVorbereiten(flaeche, karte, format, {
+          skala: 0.12,
+          film: { auftritt: "abziehen", kamera: "luecke" },
+          kino: false,
+          layout,
+        });
+        z(0);
+        const mit = bild().data;
+        ohne = (t) => inPointe(pointe, t);
+        try {
+          z(0);
+        } finally {
+          ohne = null;
+        }
+        const leer = bild().data;
+        if (mit.some((v, i) => Math.abs(v - leer[i]) > 6))
+          out.fehler.push(
+            `Pointe schaut vor dem Abziehen heraus: ${name} (${layout})`,
+          );
+      }
+    };
     // Grundlage aus der Reserve (ohne tagesaktuelle Karten), damit jede
     // geprüfte Karte genau ihre eigenen Felder trägt.
     const basis = p.spruchTag("2026-11-20", {});
@@ -191,7 +261,38 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
             if (kino && p.kinoBereit() && anders.kino === false)
               out.fehler.push(`Kino-Kamera ausgefallen: ${name} (${layout})`);
           }
+          await abziehen(karte, format, name);
           out.geprueft++;
+        } catch (e) {
+          out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);
+        }
+      }
+      // Dazu zwei Pointen mit großem Umlaut, deren Punkte hoch über die
+      // Schrift reichen: einmal frei am Satzende, einmal mitten im Satz.
+      for (const [text, betont] of [
+        [
+          "Eine gute Website wirkt am Handy, am Laptop und am Tablet. Überall.",
+          "Überall",
+        ],
+        [
+          "Öffnungszeiten gehören ganz nach oben auf die Startseite.",
+          "Öffnungszeiten",
+        ],
+      ]) {
+        const name = `${format.name} | Umlaut in der Pointe | ${text}`;
+        const karte = {
+          ...basis,
+          kicker: "Merken",
+          text,
+          betont,
+          zusatz: "Gilt für jede Seite.",
+          thema: "google",
+          platz: 0,
+          anlass: null,
+          herkunft: "vorrat",
+        };
+        try {
+          await abziehen(karte, format, name);
         } catch (e) {
           out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);
         }

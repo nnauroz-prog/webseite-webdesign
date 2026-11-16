@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { STORY_LOOKS } from "@/lib/story-look";
+import { klebeband } from "@/lib/story-satz";
 import { MOTIVE, SCHMUCK } from "@/lib/story-teile";
 import {
   AUFTRITTE,
@@ -297,5 +298,53 @@ describe("Farbwelten der Spruch-Karten", () => {
         assert.doesNotMatch(teil.d, /NaN|undefined/, s.name);
       }
     }
+  });
+});
+
+describe("Klebeband beim Auftritt „abziehen“", () => {
+  // Kanten des Streifens, wie die Zeichnung sie rechnet: Ohne Farbstreifen
+  // reicht er 0,78 der Schriftgröße über die Grundlinie, 0,3 darunter.
+  const px = 200;
+  const [x0, x1, grundlinie] = [100, 870, 600];
+  const streifen = [
+    x0 - px * 0.13,
+    x1 + px * 0.1,
+    grundlinie - px * 0.78,
+    grundlinie + px * 0.3,
+  ] as const;
+  /** Tinte der Wörter aus gemessenen Werten (Anteile der Schriftgröße). */
+  const tinte = (oben: number, unten: number, links = 0, rechts = 0) =>
+    [
+      x0 - px * links,
+      x1 + px * rechts,
+      grundlinie - px * oben,
+      grundlinie + px * unten,
+    ] as const;
+
+  it("deckt die Punkte großer Umlaute ab, auch ohne Farbstreifen", () => {
+    // Gemessen in Chromium: Die fette Grotesk reicht bei „Öffnungszeiten“
+    // 0,96 über die Grundlinie, Cormorant kursiv 0,29 darunter; die
+    // Kursive hängt am Ende etwas über.
+    for (const frei of [true, false])
+      for (const t of [tinte(0.96, 0.22), tinte(0.81, 0.29, 0.02, 0.12)]) {
+        const band = klebeband(streifen, t, px, frei);
+        assert.ok(band.oben < t[2], `oben (frei: ${frei})`);
+        assert.ok(band.unten > t[3], `unten (frei: ${frei})`);
+        assert.ok(band.links + band.zahn < t[0], `links (frei: ${frei})`);
+        assert.ok(band.rechts - band.zahn > t[1], `rechts (frei: ${frei})`);
+      }
+  });
+
+  it("bleibt so groß wie bisher, wenn die Schrift im Streifen bleibt", () => {
+    const band = klebeband(streifen, tinte(0.73, 0.2), px, true);
+    assert.deepEqual(
+      [band.links, band.rechts, band.oben, band.unten, band.zahn],
+      [streifen[0] - 28, streifen[1] + 28, streifen[2] - 7, streifen[3] + 7, 9],
+    );
+    const knapp = klebeband(streifen, tinte(0.73, 0.2), px, false);
+    assert.deepEqual(
+      [knapp.links, knapp.rechts, knapp.zahn],
+      [streifen[0] - 12, streifen[1] + 12, 0],
+    );
   });
 });

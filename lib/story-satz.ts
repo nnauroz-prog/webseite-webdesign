@@ -105,6 +105,46 @@ export function kursivBreite(text: string): number {
   return b;
 }
 
+/** Kanten eines Kastens: links, rechts, oben, unten (Bildpunkte). */
+export type Kanten = readonly [number, number, number, number];
+
+/**
+ * Klebeband über einem Streifen der Pointe (Auftritt „abziehen“): Es ist
+ * rundum größer als der Streifen und als das, was die Schrift wirklich
+ * zeichnet (tinte, an der Schrift gemessen). So schaut nichts von der
+ * Pointe vorher heraus, auch nicht die Punkte eines großen Umlauts, die
+ * ohne Farbstreifen über dessen Kante reichen. Steht die Pointe frei,
+ * sind seine Enden gezackt (zahn) und stehen deutlich über; mitten in der
+ * Zeile endet es gerade und knapp, damit es kein Nachbarwort verdeckt.
+ * Um die Tinte bleibt nur knapp Luft (luft, die Zacken zählen nicht mit):
+ * Die Punkte reichen oft bis an die Zeile darüber, die frei bleiben soll.
+ */
+export function klebeband(
+  streifen: Kanten,
+  tinte: Kanten,
+  px: number,
+  frei: boolean,
+  luft = 4,
+): {
+  links: number;
+  rechts: number;
+  oben: number;
+  unten: number;
+  zahn: number;
+} {
+  const rand = Math.max(10, px * 0.07);
+  const ueber = frei ? rand + 14 : px * 0.045 + 3;
+  const zahn = frei ? 9 : 0;
+  const [l, r, o, u] = streifen;
+  return {
+    links: Math.min(l - ueber, tinte[0] - luft - zahn),
+    rechts: Math.max(r + ueber, tinte[1] + luft + zahn),
+    oben: Math.min(o - rand / 2, tinte[2] - luft),
+    unten: Math.max(u + rand / 2, tinte[3] + luft),
+    zahn,
+  };
+}
+
 export type SatzPlan =
   | {
       art: "block";

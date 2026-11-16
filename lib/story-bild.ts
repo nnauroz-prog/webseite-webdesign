@@ -79,7 +79,13 @@ import {
   type SpruchTag,
 } from "@/lib/sprueche-data";
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
-import { KURSIV_SPERRUNG, satzPlan, type SatzPlan } from "@/lib/story-satz";
+import {
+  KURSIV_SPERRUNG,
+  klebeband,
+  satzPlan,
+  type Kanten,
+  type SatzPlan,
+} from "@/lib/story-satz";
 import {
   abbildungFuer,
   bildWeg,
@@ -1538,12 +1544,41 @@ function setzeSatz(
         ohneSchatten(ctx);
       };
       /** Kanten eines Streifens: links, rechts, oben, unten. */
-      const kasten = (s: Streifen) => [
+      const kasten = (s: Streifen): Kanten => [
         x + s.x0 - s.px * 0.13,
         x + s.x1 + s.px * 0.1,
         y + s.grundlinie - s.px * s.oben,
         y + s.grundlinie + s.px * s.unten,
       ];
+      /**
+       * Was die Wörter eines Streifens wirklich zeichnen, an der Schrift
+       * gemessen (Kanten wie bei kasten): Punkte großer Umlaute, Ober-
+       * und Unterlängen, überhängende Kursive.
+       */
+      const tinte = (s: Streifen) => {
+        ctx.save();
+        ctx.font = kursiv(s.px);
+        sperren(ctx, s.px * pSperrung);
+        const kanten = s.woerter.map((w) => {
+          const m = ctx.measureText(w.t);
+          return [
+            x + w.x - m.actualBoundingBoxLeft,
+            x + w.x + m.actualBoundingBoxRight,
+            y + s.grundlinie - m.actualBoundingBoxAscent,
+            y + s.grundlinie + m.actualBoundingBoxDescent,
+          ];
+        });
+        sperren(ctx, 0);
+        ctx.restore();
+        const kante = (i: number, f: (...z: number[]) => number) =>
+          f(...kanten.map((e) => e[i]));
+        return [
+          kante(0, Math.min),
+          kante(1, Math.max),
+          kante(2, Math.min),
+          kante(3, Math.max),
+        ] as const;
+      };
       /**
        * Alle Streifen als ein Paket (Kran, Presse). versatz und weite
        * beschreiben den Schatten, solange das Paket über dem Blatt
@@ -1690,21 +1725,17 @@ function setzeSatz(
         streifenMalen(s, true);
         const ende = T_SCHLAG + (nr * 5) / 30;
         if (!(t < ende + 0.2)) return;
-        // Das Band ist rundum größer als der Streifen: Nichts von der
-        // Pointe schaut vorher heraus. Steht die Pointe frei, sind seine
-        // Enden gezackt und stehen deutlich über; mitten in der Zeile
-        // endet es gerade und knapp, damit es kein Nachbarwort verdeckt.
-        const frei = block !== null;
-        const rand = Math.max(10, s.px * 0.07);
-        const ueber = frei ? rand + 14 : s.px * 0.045 + 3;
-        const zahn = frei ? 9 : 0;
-        const [l0, r0, o0, u0] = kasten(s);
-        const [links, rechts, oben, unten] = [
-          l0 - ueber,
-          r0 + ueber,
-          o0 - rand / 2,
-          u0 + rand / 2,
-        ];
+        // Luft um die Tinte: mindestens anderthalb Pixel des fertigen
+        // Bildes, sonst scheint in kleinen Bildern die Kantenglättung der
+        // Umlautpunkte durch.
+        const lage = ctx.getTransform();
+        const { links, rechts, oben, unten, zahn } = klebeband(
+          kasten(s),
+          tinte(s),
+          s.px,
+          block !== null,
+          Math.max(4, 1.5 / Math.hypot(lage.a, lage.b)),
+        );
         const dauer = 0.45 + 0.3 * klemme((rechts - links) / 900);
         const p = klemme((t - (ende - dauer)) / dauer) ** 1.7;
         const kante = links + (rechts - links) * p;
