@@ -215,8 +215,7 @@ export default async function PostsPage() {
         </ul>
       </section>
 
-      {/* Slot „Was ansteht“: Anlässe der nächsten Tage (lib/anlaesse.ts). */}
-      <WasAnsteht />
+      <WasAnsteht heute={heute} />
 
       <section aria-labelledby="woche-title" className="mt-8 lg:max-w-3xl">
         <h2
