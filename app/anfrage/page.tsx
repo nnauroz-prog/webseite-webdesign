@@ -20,7 +20,7 @@ import a from "./anfrage.module.css";
 export const metadata: Metadata = {
   title: "Website anfragen · Festpreis-Angebot kostenlos",
   description:
-    "Name, Kontakt und ein paar Sätze zu Ihrem Betrieb genügen. Wir melden uns meist am selben Werktag, den Festpreis gibt es schriftlich. Jetzt anfragen.",
+    "Name, E-Mail, Telefon und ein paar Sätze genügen. Wir melden uns meist am selben Werktag, den Festpreis gibt es schriftlich. Jetzt anfragen.",
   alternates: { canonical: "/anfrage" },
   openGraph: ogFor("/anfrage"),
 };
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const DANACH: { title: string; body: string }[] = [
   {
     title: "Wir melden uns",
-    body: "meist am selben Werktag, gern am Telefon.",
+    body: "meist am selben Werktag.",
   },
   {
     title: "Kurzes Gespräch",

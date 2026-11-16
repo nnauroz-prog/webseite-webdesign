@@ -16,7 +16,11 @@ import {
   SLOT_DURATION_MIN,
   SLOT_TIMES,
 } from "@/lib/calendar-availability";
-import { telefonGueltig } from "@/lib/kontakt-pflicht";
+import {
+  TELEFON_HINWEIS,
+  TELEFON_PLATZHALTER,
+  telefonGueltig,
+} from "@/lib/kontakt-pflicht";
 import { submitLead } from "@/lib/submit-lead";
 import { cn } from "@/lib/utils";
 
@@ -66,6 +70,9 @@ export function TerminBooking() {
   const nameOk = name.trim().length >= 2;
   const emailOk = /\S+@\S+\.\S+/.test(email);
   const telefonOk = telefonGueltig(phone);
+  // Hinweis erst, wenn das Feld verlassen wurde, nicht schon beim Tippen.
+  const [telefonVerlassen, setTelefonVerlassen] = useState(false);
+  const telefonHinweis = telefonVerlassen && phone.trim() !== "" && !telefonOk;
   const canSubmit =
     selectedDate != null &&
     selectedSlot != null &&
@@ -120,8 +127,8 @@ export function TerminBooking() {
           Notiert.
         </p>
         <p className="text-muted-foreground mx-auto mt-3 max-w-md text-pretty text-[14.5px] leading-relaxed">
-          {formatDateLong(status.iso)} um {status.slot} Uhr. Wir bestätigen
-          den Termin meist am selben Werktag. Falls er schon vergeben sein
+          {formatDateLong(status.iso)} um {status.slot} Uhr. Sie hören meist
+          am selben Werktag von uns. Falls der Termin schon vergeben sein
           sollte, schlagen wir Ihnen zwei andere vor.
         </p>
         <p className="text-muted-foreground mt-6 text-[13px]">
@@ -242,12 +249,23 @@ export function TerminBooking() {
             type="tel"
             inputMode="tel"
             autoComplete="tel"
-            placeholder="Unter dieser Nummer erreichen wir Sie"
+            placeholder={TELEFON_PLATZHALTER}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            onBlur={() => setTelefonVerlassen(true)}
+            aria-invalid={telefonHinweis ? true : undefined}
+            aria-describedby={telefonHinweis ? "termin-phone-hinweis" : undefined}
             className="mt-2"
             required
           />
+          {telefonHinweis ? (
+            <p
+              id="termin-phone-hinweis"
+              className="text-destructive mt-2 text-[13px]"
+            >
+              {TELEFON_HINWEIS}
+            </p>
+          ) : null}
         </div>
         <div className="mt-4">
           <Label htmlFor="termin-note" className="text-foreground text-sm">

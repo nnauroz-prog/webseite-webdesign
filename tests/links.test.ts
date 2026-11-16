@@ -92,6 +92,13 @@ describe("telHref / normalizePhoneDigits", () => {
     assert.equal(telHref("0049 176 1234567"), "tel:+491761234567");
     assert.equal(telHref("0176 1234567"), "tel:01761234567");
     assert.equal(telHref("040 / 12 34 56"), "tel:040123456");
+    // Zusätze im Telefonfeld zählen nicht zur Nummer.
+    assert.equal(telHref("040 123456 (ab 9 Uhr)"), "tel:040123456");
+    assert.equal(telHref("Mo–Fr 8–16 Uhr: 040 1234567"), "tel:0401234567");
+    assert.equal(telHref("Tel. +49 40 123456"), "tel:+4940123456");
+    // Zwei Nummern: die erste gilt.
+    assert.equal(telHref("040 1234567 / 0171 2345678"), "tel:0401234567");
+    assert.equal(telHref("(040) 12 34 56-7"), "tel:0401234567");
     assert.equal(telHref("abc"), null);
     assert.equal(telHref("12345"), null);
     assert.equal(telHref(undefined), null);

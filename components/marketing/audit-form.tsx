@@ -8,15 +8,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { telefonGueltig } from "@/lib/kontakt-pflicht";
+import {
+  TELEFON_HINWEIS,
+  TELEFON_PLATZHALTER,
+  telefonGueltig,
+} from "@/lib/kontakt-pflicht";
 import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 
 /**
  * AuditForm — eigene, schlanke Form für die kostenlose Durchsicht (/audit).
  *
- * Vier Felder: URL (Pflicht), Name (Pflicht), E-Mail (Pflicht),
- * Hinweis (optional) + Consent. Bewusst kürzer als das Haupt-
+ * Fünf Felder: URL, Name, E-Mail, Telefon (Pflicht), Hinweis
+ * (optional) + Consent. Bewusst kürzer als das Haupt-
  * Anfrageformular, weil hier nur ein einzelner Mehrwert versprochen
  * wird (Durchsicht, meist in zwei Werktagen), nicht ein ganzes Projekt.
  *
@@ -71,6 +75,10 @@ export function AuditForm() {
   const emailOk = /\S+@\S+\.\S+/.test(data.email);
   const nameOk = data.name.trim().length >= 2;
   const telefonOk = telefonGueltig(data.phone);
+  // Hinweis erst, wenn das Feld verlassen wurde, nicht schon beim Tippen.
+  const [telefonVerlassen, setTelefonVerlassen] = useState(false);
+  const telefonHinweis =
+    telefonVerlassen && data.phone.trim() !== "" && !telefonOk;
   const canSubmit =
     urlOk &&
     emailOk &&
@@ -131,8 +139,8 @@ export function AuditForm() {
               Die Adresse ist bei uns angekommen.
             </p>
             <p className="text-muted-foreground mt-4 max-w-xl text-pretty text-[15px] leading-relaxed">
-              Meist innerhalb von zwei Werktagen melden wir uns mit drei bis
-              fünf Punkten: was an Ihrer Seite funktioniert und was wir zuerst
+              Meist innerhalb von zwei Werktagen bekommen Sie von uns drei bis
+              fünf Punkte: was an Ihrer Seite funktioniert und was wir zuerst
               ändern würden. Wann wir erreichbar sind, steht unter{" "}
               <Link
                 href="/erreichbarkeit"
@@ -235,12 +243,23 @@ export function AuditForm() {
             type="tel"
             inputMode="tel"
             autoComplete="tel"
-            placeholder="Unter dieser Nummer erreichen wir Sie"
+            placeholder={TELEFON_PLATZHALTER}
             value={data.phone}
             onChange={(e) => setData({ ...data, phone: e.target.value })}
+            onBlur={() => setTelefonVerlassen(true)}
+            aria-invalid={telefonHinweis ? true : undefined}
+            aria-describedby={telefonHinweis ? "audit-phone-hinweis" : undefined}
             className={FIELD}
             required
           />
+          {telefonHinweis ? (
+            <p
+              id="audit-phone-hinweis"
+              className="text-destructive mt-2 text-[13px]"
+            >
+              {TELEFON_HINWEIS}
+            </p>
+          ) : null}
         </div>
 
         <div>
@@ -317,7 +336,7 @@ export function AuditForm() {
 
       <div className="border-border flex flex-col items-stretch gap-3 border-t px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8">
         <p className="text-muted-foreground text-[13.5px]">
-          Kostenlos. Wir melden uns bei Ihnen.
+          Kostenlos. Wir sehen uns Ihre Seite selbst an.
         </p>
         <button
           type="submit"

@@ -20,7 +20,7 @@ export const ABLAUF_HALTE: AblaufHalt[] = [
   {
     number: "01",
     title: "Sie schreiben uns",
-    body: "Über das Anfrageformular mit vier Pflichtfeldern oder am Telefon unter 0160 7621876. Ein paar Sätze dazu, was Sie brauchen, reichen.",
+    body: "Über das Anfrageformular mit vier Pflichtfeldern oder am Telefon unter 0160 7621876. Ein paar Sätze dazu, was Sie brauchen, reichen.",
     wer: "Sie",
     hinweis: "Antwort meist am selben Werktag",
   },

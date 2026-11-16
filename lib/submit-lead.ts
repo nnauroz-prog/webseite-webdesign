@@ -9,8 +9,10 @@ export type SubmitLeadInput = {
   hp: string;
 };
 
+// Die Telefonnummer zeigt jedes Formular selbst als Link unter der
+// Meldung, deshalb steht sie hier nicht noch einmal.
 const NETWORK_ERROR =
-  "Die Verbindung ist gerade abgebrochen. Bitte erneut versuchen — oder rufen Sie uns an: 0160 7621876.";
+  "Die Verbindung ist gerade abgebrochen. Bitte versuchen Sie es noch einmal.";
 
 /** Schickt ein Formular an /api/anfrage. Leere Felder werden weggelassen. */
 export async function submitLead(

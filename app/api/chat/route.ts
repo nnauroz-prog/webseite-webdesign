@@ -38,7 +38,7 @@ function badRequest(message: string): Response {
 export async function POST(request: Request): Promise<Response> {
   if (!process.env.ANTHROPIC_API_KEY) {
     return new Response(
-      "Der Assistent ist gerade nicht erreichbar. Bitte nutzen Sie das Anfrageformular oder rufen Sie an: 0160 7621876.",
+      "Der Assistent ist gerade nicht erreichbar. Bitte nutzen Sie das Anfrageformular oder rufen Sie an: 0160 7621876.",
       {
         status: 503,
         headers: { "content-type": "text/plain; charset=utf-8" },
@@ -119,7 +119,7 @@ export async function POST(request: Request): Promise<Response> {
         try {
           controller.enqueue(
             encoder.encode(
-              "\n\nLeider ist gerade etwas schiefgelaufen. Bitte nutzen Sie das Anfrageformular oder rufen Sie an: 0160 7621876.",
+              "\n\nLeider ist gerade etwas schiefgelaufen. Bitte nutzen Sie das Anfrageformular oder rufen Sie an: 0160 7621876.",
             ),
           );
         } catch {

@@ -37,7 +37,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "Kann ich erst einmal eine Einschätzung meiner aktuellen Seite bekommen?",
-        a: "Ja, kostenlos. Über die Seite „Kostenlose Durchsicht“ schicken Sie uns die Adresse Ihrer Seite. Wir sehen sie uns selbst an und melden uns meist innerhalb von zwei Werktagen mit drei bis fünf konkreten Punkten. Ein Verkaufsgespräch ist das nicht, und wir haken danach nicht nach. Die technischen Messwerte liefert der Ladezeit-Test automatisch in etwa 30 Sekunden.",
+        a: "Ja, kostenlos. Über die Seite „Kostenlose Durchsicht“ schicken Sie uns die Adresse Ihrer Seite. Wir sehen sie uns selbst an und nennen Ihnen meist innerhalb von zwei Werktagen drei bis fünf konkrete Punkte. Ob daraus ein Auftrag wird, entscheiden Sie. Die technischen Messwerte liefert der Ladezeit-Test automatisch in etwa 30 Sekunden.",
       },
       {
         q: "Was passiert nach meiner Anfrage?",

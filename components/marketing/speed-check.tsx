@@ -365,7 +365,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
             ein.
           </p>
           <p className="text-stahl-hell mt-4 max-w-2xl text-[15px] leading-relaxed">
-            Woran es liegt, nennen wir Ihnen in der Durchsicht. Beheben lässt es
+            Woran es liegt, sagen wir Ihnen in der Durchsicht. Beheben lässt es
             sich mit einer neuen Seite oder an Ihrer bestehenden über unsere
             Wartung, auch wenn wir die Seite nicht gebaut haben.
           </p>
@@ -389,7 +389,7 @@ function ResultPanel({ data }: { data: ScoreData }) {
           </p>
           <p className="text-muted-foreground mt-4 max-w-2xl text-[15px] leading-relaxed">
             Die Seite funktioniert, lässt aber etwas liegen. Welche Stelle sich
-            zuerst lohnt, nennen wir Ihnen in der Durchsicht.
+            zuerst lohnt, sagen wir Ihnen in der Durchsicht.
           </p>
           <Link href="/audit" className="btn-signal mt-6 h-12 text-[15px]">
             Durchsicht anfordern

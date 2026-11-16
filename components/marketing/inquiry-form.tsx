@@ -5,7 +5,11 @@ import { useState, type ReactNode } from "react";
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
 
 import { PAKETE } from "@/lib/pakete-data";
-import { telefonGueltig } from "@/lib/kontakt-pflicht";
+import {
+  TELEFON_HINWEIS,
+  TELEFON_PLATZHALTER,
+  telefonGueltig,
+} from "@/lib/kontakt-pflicht";
 import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 import {
@@ -19,10 +23,10 @@ import f from "./inquiry-form.module.css";
 /**
  * Anfrage-Formular — Single-Page, minimaler Klick-Pfad.
  *
- * Pflichtfelder reduziert auf das absolute Minimum: Name, E-Mail,
- * Nachricht, DSGVO-Consent. Branche, Paket, Telefon und Zeitrahmen
- * sind in einer aufklappbaren „Mehr verraten"-Sektion — komplett
- * optional, sonst fragen wir in der Antwort.
+ * Pflichtfelder: Name, E-Mail, Telefon, Nachricht und das Häkchen.
+ * Telefon ist Pflicht, damit wir uns in jedem Fall melden können
+ * (lib/kontakt-pflicht.ts). Branche, Paket, Zeitrahmen und Firma stehen
+ * freiwillig in der aufklappbaren „Mehr verraten"-Sektion.
  *
  * Gestaltung: große runde Felder (17 px, kein Zoom am iPhone), Hinweise
  * erscheinen freundlich direkt unter dem Feld, sobald jemand das Feld
@@ -146,7 +150,7 @@ export function InquiryForm({
             feld: "inq-email" as const,
             label: "E-Mail",
             hinweis: emailLeer
-              ? "Bitte Ihre E-Mail-Adresse."
+              ? "Bitte tragen Sie Ihre E-Mail-Adresse ein."
               : "Die Adresse sieht noch nicht vollständig aus, etwa name@betrieb.de.",
           },
         ]),
@@ -159,7 +163,7 @@ export function InquiryForm({
             hinweis:
               data.phone.trim() === ""
                 ? "Unter welcher Nummer erreichen wir Sie?"
-                : "Die Nummer sieht noch nicht vollständig aus, etwa 040 1234567.",
+                : TELEFON_HINWEIS,
           },
         ]),
     ...(data.message.trim().length >= 5
@@ -351,7 +355,7 @@ export function InquiryForm({
             onBlur={(e) => verlassen("inq-phone", e.target.value)}
             autoComplete="tel"
             enterKeyHint="next"
-            placeholder="Unter dieser Nummer erreichen wir Sie"
+            placeholder={TELEFON_PLATZHALTER}
             aria-invalid={hPhone ? true : undefined}
             aria-describedby={hPhone ? "inq-phone-hinweis" : undefined}
             className={f.eingabe}
@@ -439,18 +443,16 @@ export function InquiryForm({
               ]}
             />
           </Feld>
-          <div className={f.breit}>
-            <Feld id="inq-company" label="Firma / Geschäft">
-              <input
-                id="inq-company"
-                value={data.company}
-                onChange={(e) => update("company", e.target.value)}
-                autoComplete="organization"
-                placeholder="Name Ihres Betriebs"
-                className={f.eingabe}
-              />
-            </Feld>
-          </div>
+          <Feld id="inq-company" label="Firma / Geschäft">
+            <input
+              id="inq-company"
+              value={data.company}
+              onChange={(e) => update("company", e.target.value)}
+              autoComplete="organization"
+              placeholder="Name Ihres Betriebs"
+              className={f.eingabe}
+            />
+          </Feld>
         </div>
       </details>
 
@@ -544,7 +546,7 @@ function SuccessScreen() {
       </span>
       <h2 className={f.erfolgTitel}>Angekommen. Danke!</h2>
       <p className={f.erfolgSatz}>
-        Wir lesen Ihre Nachricht jetzt und melden uns meist am selben
+        Wir lesen Ihre Nachricht jetzt und antworten meist am selben
         Werktag. Was abends oder am Wochenende kommt, beantworten wir am
         nächsten Werktag.{" "}
         <Link href="/erreichbarkeit">Mehr zu unseren Antwortzeiten</Link>.

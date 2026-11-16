@@ -293,7 +293,7 @@ const ZUSAGEN: { titel: string; text: string }[] = [
   },
   {
     titel: "Eine Nummer, ein Ansprechpartner",
-    text: "Sie erreichen uns direkt unter 0160 7621876, vor dem Auftrag und nach dem Start. Auf Anfragen melden wir uns meist am selben Werktag.",
+    text: "Sie erreichen uns direkt unter 0160 7621876, vor dem Auftrag und nach dem Start. Auf Anfragen antworten wir meist am selben Werktag.",
   },
 ];
 

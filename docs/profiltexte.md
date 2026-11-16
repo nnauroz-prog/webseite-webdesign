@@ -94,7 +94,7 @@ verbietet das und kann das Profil sperren.
 | Website erstellen lassen | ab 599 € | Fertige Website zum Festpreis, Texte inklusive, Test-Link vor dem Start |
 | Website-Pflege und Hosting | ab 59 € im Monat | Hosting in der EU, Updates, Backups, kleine Änderungen |
 | Website-Wartung für bestehende Seiten | ab 59 € im Monat | Auch für Seiten, die wir nicht gebaut haben |
-| Kostenlose Durchsicht Ihrer Website | kostenlos | Drei bis fünf konkrete Verbesserungen per Mail |
+| Kostenlose Durchsicht Ihrer Website | kostenlos | Drei bis fünf konkrete Verbesserungen, meist innerhalb von zwei Werktagen |
 | Erstgespräch | kostenlos | Telefon, Video oder in Hamburg |
 
 ## Erster Beitrag fürs Google-Profil oder LinkedIn

@@ -13,6 +13,12 @@ import { telHref } from "@/lib/admin/links";
 /** Unter diesem Namen steht die Nummer in den Feldern einer Anfrage; der Admin liest sie genau so. */
 export const TELEFON_LABEL = "Telefon";
 
+/** Hinweis, wenn die eingegebene Nummer nicht passt (Formulare und Server). */
+export const TELEFON_HINWEIS =
+  "Bitte tragen Sie eine Nummer mit Vorwahl ein, etwa 040 1234567.";
+/** Platzhalter im leeren Telefonfeld. */
+export const TELEFON_PLATZHALTER = "Mobil oder Festnetz";
+
 /** Ist das eine Nummer, die sich anrufen lässt (6 bis 17 Ziffern)? */
 export function telefonGueltig(wert: string | undefined): boolean {
   return telHref(wert?.trim()) !== null;

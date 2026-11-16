@@ -5,7 +5,11 @@ import {
   LeadDeliveryError,
   type LeadKind,
 } from "@/lib/lead-mail";
-import { telefonAus } from "@/lib/kontakt-pflicht";
+import {
+  TELEFON_HINWEIS,
+  TELEFON_LABEL,
+  telefonAus,
+} from "@/lib/kontakt-pflicht";
 import { recordDelivery, saveLead } from "@/lib/leads-store";
 import { SITE_URL } from "@/lib/site";
 
@@ -73,8 +77,7 @@ function originAllowed(req: NextRequest): boolean {
 
 // Die Telefonnummer zeigt jedes Formular selbst als Link unter der
 // Meldung, deshalb steht sie hier nicht noch einmal.
-const FALLBACK_HINT =
-  "Bitte versuchen Sie es später noch einmal oder rufen Sie uns an.";
+const FALLBACK_HINT = "Bitte versuchen Sie es später noch einmal.";
 
 function fail(status: number, error: string) {
   return NextResponse.json({ ok: false, error }, { status });
@@ -132,7 +135,12 @@ export async function POST(req: NextRequest) {
   // fest: Jede Anfrage braucht deshalb eine Nummer, unter der wir
   // jemanden erreichen (dieselbe Regel wie im Formular und im Admin).
   if (!telefonAus(fields)) {
-    return fail(400, "Bitte prüfen Sie Ihre Telefonnummer.");
+    return fail(
+      400,
+      fields.some(([label]) => label === TELEFON_LABEL)
+        ? `Die Telefonnummer passt noch nicht. ${TELEFON_HINWEIS}`
+        : "Bitte geben Sie eine Telefonnummer an, unter der wir Sie erreichen.",
+    );
   }
 
   const hp = typeof b.hp === "string" ? b.hp.trim() : "";

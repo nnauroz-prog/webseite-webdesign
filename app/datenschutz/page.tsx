@@ -151,9 +151,10 @@ export default function DatenschutzPage() {
               <Abschnitt id="anfragen">
                 <p>
                   Wenn Sie das Anfrageformular, das Formular für die kostenlose Durchsicht oder die Terminbuchung nutzen, verarbeiten wir Ihre
-                  Angaben (Name, E-Mail, Telefon und je nach Formular Firma, Branche, Paket- und Zeitwunsch,
-                  Website-Adresse, Nachricht, gewählter Termin), um Ihre Anfrage zu beantworten oder den Termin zu
-                  bestätigen.
+                  Angaben, um Ihre Anfrage zu beantworten oder den Termin zu bestätigen. Pflicht sind Name,
+                  E-Mail-Adresse und Telefonnummer, dazu je nach Formular Ihre Nachricht, die Adresse Ihrer Website
+                  oder der gewählte Termin. Freiwillig sind Firma, Branche, Paket- und Zeitwunsch sowie Hinweise und
+                  Notizen.
                   Rechtsgrundlage ist {zitat("Art. 6 Abs. 1 lit. b DSGVO")}. Das gilt genauso, wenn Sie uns eine E-Mail schreiben
                   oder anrufen.
                 </p>
@@ -244,7 +245,8 @@ export default function DatenschutzPage() {
                 <p>
                   Erfasst werden die aufgerufene Seite, die Herkunftsseite, Land, Gerätetyp, Browser und
                   Betriebssystem, Klicks auf Links zu anderen Websites und, dass ein Formular abgeschickt wurde. Bei
-                  Anfragen kommen Branche, Paket- und Zeitwunsch hinzu, nie Name, E-Mail-Adresse oder Nachricht.
+                  Anfragen kommen Branche, Paket- und Zeitwunsch hinzu, nie Name, E-Mail-Adresse, Telefonnummer oder
+                  Nachricht.
                 </p>
                 <p>
                   Um Besuche zu zählen, bildet Plausible aus IP-Adresse und Browserkennung einen nicht umkehrbaren

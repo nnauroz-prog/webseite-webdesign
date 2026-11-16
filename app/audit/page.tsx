@@ -34,7 +34,7 @@ const SCHRITTE: { title: string; body: string }[] = [
 ];
 
 /**
- * Muster einer Durchsicht-Mail. Der Betrieb ist die erfundene Tischlerei
+ * Muster einer Durchsicht (drei Punkte). Der Betrieb ist die erfundene Tischlerei
  * Nordholz aus dem Vorher-Nachher der Startseite; die Punkte passen
  * zu deren „Vorher“-Seite (Willkommen-Titel, Öffnungszeiten als PDF,
  * Cookie-Banner über dem Inhalt).
@@ -110,8 +110,8 @@ export default function AuditPage() {
           eyebrow="Kostenlose Durchsicht Ihrer Website"
           title="Wir sehen uns Ihre Website an."
         >
-          Meist innerhalb von zwei Werktagen melden wir uns mit drei bis fünf
-          Punkten: was an Ihrer Seite funktioniert und was wir zuerst ändern
+          Meist innerhalb von zwei Werktagen bekommen Sie von uns drei bis fünf
+          Punkte: was an Ihrer Seite funktioniert und was wir zuerst ändern
           würden. Ob daraus ein Auftrag wird, entscheiden Sie.
         </PageHero>
 
@@ -154,7 +154,7 @@ export default function AuditPage() {
               <div className="lg:col-span-5">
                 <p className="label-mono text-muted-foreground">Was Sie bekommen</p>
                 <h2 className="mt-5 text-balance text-[2rem] leading-[1.04] tracking-[-0.032em] sm:text-[2.6rem]">
-                  Drei bis fünf Punkte, von uns selbst notiert.
+                  Drei bis fünf Punkte, von Hand zusammengestellt.
                 </h2>
                 <div className="text-muted-foreground mt-6 max-w-md space-y-4 text-[15.5px] leading-relaxed text-pretty">
                   <p>
@@ -171,23 +171,16 @@ export default function AuditPage() {
                     >
                       Ladezeit-Test
                     </Link>
-                    . Wenn Sie nachfragen, antworten wir Ihnen selbst.
+                    . Rückfragen dazu beantworten wir selbst.
                   </p>
                 </div>
               </div>
 
               <figure className="min-w-0 lg:col-span-7">
                 <div className="bg-background rounded-[18px] lg:rounded-[28px] shadow-karte">
-                  <dl className="border-border space-y-1.5 border-b px-5 py-4 font-mono text-[12.5px] sm:px-7">
-                    <div className="flex gap-3">
-                      <dt className="text-muted-foreground w-16 shrink-0">Für</dt>
-                      <dd className="text-foreground min-w-0">Tischlerei Nordholz</dd>
-                    </div>
-                    <div className="flex gap-3">
-                      <dt className="text-muted-foreground w-16 shrink-0">Thema</dt>
-                      <dd className="text-foreground min-w-0">Ihre Website, drei Punkte</dd>
-                    </div>
-                  </dl>
+                  <p className="border-border text-muted-foreground border-b px-5 py-4 font-mono text-[12.5px] sm:px-7">
+                    Muster · Tischlerei Nordholz
+                  </p>
                   <div className="text-foreground/90 space-y-4 px-5 py-6 text-[15px] leading-relaxed sm:px-7 sm:py-7">
                     <p>
                       Wir haben uns Ihre Seite am Handy und am Rechner
@@ -210,7 +203,7 @@ export default function AuditPage() {
                   </div>
                 </div>
                 <figcaption className="text-muted-foreground mt-3 font-mono text-[12px]">
-                  Muster. Die Tischlerei Nordholz haben wir erfunden.
+                  Muster für drei Punkte. Die Tischlerei Nordholz haben wir erfunden.
                 </figcaption>
               </figure>
             </div>

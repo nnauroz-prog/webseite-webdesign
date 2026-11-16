@@ -73,7 +73,7 @@ const VERGLEICH: { frage: string; check: string; audit: string }[] = [
   {
     frage: "Ergebnis",
     check: "Vier Werte hier auf der Seite",
-    audit: "Drei bis fünf Punkte von uns",
+    audit: "Drei bis fünf Punkte, jeweils mit Stelle und Vorschlag",
   },
   {
     frage: "Kosten",

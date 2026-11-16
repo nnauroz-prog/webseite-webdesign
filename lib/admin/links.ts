@@ -74,15 +74,38 @@ export function mailtoHref(
 }
 
 /**
- * Zerlegt eine Telefonnummer: „(0)“ fällt weg, ein führendes + oder
- * 00 markiert eine internationale Nummer, danach zählen nur Ziffern.
- * Gemeinsame Grundlage für telHref und die Telefonsuche.
+ * Die Nummer in einem Text, wie ihn Besucher ins Telefonfeld schreiben:
+ * die erste zusammenhängende Ziffernfolge mit 6 bis 17 Ziffern
+ * (Leerzeichen, Schrägstriche, Punkte, Klammern und Bindestriche gehören
+ * dazu). So zählen Zusätze wie „(ab 9 Uhr)“ oder „Mo–Fr 8–16 Uhr:“ nicht
+ * mit, und bei zwei Nummern („040 123456 / 0171 2345678“) gilt die
+ * erste. Findet sich keine, bleibt der ganze Text.
+ */
+function ersteNummer(text: string): string {
+  const folgen = text.match(/\+?\d[\d\s/.()-]*\d|\+?\d/g) ?? [];
+  const passt = (s: string) => {
+    const n = s.replace(/\D/g, "").length;
+    return n >= 6 && n <= 17;
+  };
+  for (const folge of folgen) {
+    if (passt(folge)) return folge;
+    const teil = folge.split(/\s*[/,;]\s*/).find(passt);
+    if (teil) return teil;
+  }
+  return text;
+}
+
+/**
+ * Zerlegt eine Telefonnummer: „(0)“ fällt weg, Zusätze vor und nach der
+ * Nummer auch (ersteNummer), ein führendes + oder 00 markiert eine
+ * internationale Nummer, danach zählen nur Ziffern. Gemeinsame
+ * Grundlage für telHref und die Telefonsuche.
  */
 export function splitPhone(raw: string): {
   international: boolean;
   digits: string;
 } {
-  const cleaned = raw.replace(/\(\s*0\s*\)/g, "").trim();
+  const cleaned = ersteNummer(raw.replace(/\(\s*0\s*\)/g, "").trim()).trim();
   if (cleaned.startsWith("+")) {
     return { international: true, digits: cleaned.replace(/\D/g, "") };
   }

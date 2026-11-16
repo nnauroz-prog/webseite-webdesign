@@ -10,7 +10,7 @@ export default async function Image() {
     variant: "hell",
     eyebrow: "Sitalo · Website-Durchsicht · kostenlos",
     headline: "Wir sehen uns Ihre Website an.",
-    subline: "Wir melden uns mit drei bis fünf konkreten Punkten, kostenlos und meist innerhalb von zwei Werktagen.",
+    subline: "Sie bekommen drei bis fünf konkrete Punkte, kostenlos und meist innerhalb von zwei Werktagen.",
     url: "sitalo.de/audit",
   });
 }

@@ -154,8 +154,8 @@ function Text() {
               nicht, rufen wir meist am selben Tag zurück.
             </p>
             <p>
-              Nach 18 Uhr lesen wir keine Anfragen mehr. Einzige Ausnahme ist die
-              Sprechstunde am ersten Donnerstag im Monat bis 18:30 Uhr. Was
+              Nach 18 Uhr lesen wir keine Anfragen mehr. Am ersten Donnerstag im
+              Monat sind wir zur Sprechstunde bis 18:30 Uhr am Telefon. Was
               abends ankommt, beantworten wir {f[1].zeit}. Nachts geht das
               Telefon auf die Mailbox.
             </p>
@@ -175,8 +175,8 @@ function Text() {
 
           <Absatz titel="Urlaub">
             <p>
-              Urlaub kündigen wir rechtzeitig vorher an und sagen dazu, wann
-              wir zurück sind. So können Sie planen.
+              Urlaub kündigen wir unseren Kunden rechtzeitig vorher an und
+              sagen dazu, wann wir zurück sind. So können Sie planen.
             </p>
             <p>
               Ihre Seite läuft in dieser Zeit weiter, denn Hosting und Backups
@@ -233,8 +233,8 @@ function Absatz({
  * ---------------------------------------------------------------- */
 const SCHRITTE: { titel: string; text: string }[] = [
   {
-    titel: "Noch einmal über das Formular schreiben, mit „dringend“ am Anfang",
-    text: "Solche Nachrichten lesen wir zuerst.",
+    titel: "Das Anfrageformular noch einmal schicken",
+    text: "Beginnen Sie die Nachricht mit „dringend“. Dann sehen wir schon in der Übersicht, dass es eilt.",
   },
   {
     titel: `Nach einem Werktag: unter ${TELEFON_ANZEIGE} anrufen`,
