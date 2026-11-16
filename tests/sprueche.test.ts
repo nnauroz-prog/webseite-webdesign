@@ -3,10 +3,12 @@ import { describe, it } from "node:test";
 
 import {
   KICKER,
+  POSTS_AKTUELL,
   POSTS_PRO_TAG,
   SPRUECHE,
   SPRUECHE_EXTRA,
   THEMA_LABEL,
+  anlassTag,
   extraFuer,
   postsFuer,
   spruchFuer,
@@ -20,11 +22,39 @@ import {
   vorratTageExtra,
 } from "@/lib/sprueche-data";
 
-/** Alle Karten: Sprüche des Tages und Zusatz-Posts. Für beide gelten dieselben Regeln. */
+/** Alle Karten der Reserve: Sprüche des Tages und Zusatz-Posts. */
 const ALLE = [...SPRUECHE, ...SPRUECHE_EXTRA];
+
+/** Tagesaktuelle Karten mit ihrem Tag (lib/posts-aktuell.ts). */
+const AKTUELL = Object.entries(POSTS_AKTUELL).flatMap(([datum, karten]) =>
+  karten.map((k) => ({ ...k, datum })),
+);
+
+/** Reserve und tagesaktuelle Karten: Für alle gelten dieselben Inhaltsregeln. */
+const ALLE_PLUS = [...ALLE, ...AKTUELL];
 
 const ganz = (s: { kicker: string; text: string; zusatz: string }) =>
   `${s.kicker} ${s.text} ${s.zusatz}`;
+
+/** Wörter ab fünf Buchstaben, klein, ohne Satzzeichen und Ziffern. */
+const woerter = (text: string, ohne: ReadonlySet<string> = new Set()) =>
+  new Set(
+    text
+      .toLowerCase()
+      .replace(/[^a-zäöüß ]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length >= 5 && !ohne.has(w)),
+  );
+
+/** Fängt Beinahe-Doppelungen ab: drei gemeinsame Wörter und halbe Überschneidung. */
+function zuAehnlich(a: Set<string>, b: Set<string>): boolean {
+  const gemeinsam = [...a].filter((w) => b.has(w)).length;
+  const anteil = gemeinsam / (a.size + b.size - gemeinsam || 1);
+  return gemeinsam >= 3 && anteil >= 0.5;
+}
+
+const VERBOTEN =
+  /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbot|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantiert|Garantie|Platz eins|Nummer eins|Testsieger|ausgezeichnet|SEO|Conversion|Landingpage|Performance|UX|CTA)\b|künstliche Intelligenz/;
 
 describe("Sprüche des Tages", () => {
   it("hat genug Karten für mehr als zwei Monate ohne Wiederholung", () => {
@@ -32,28 +62,17 @@ describe("Sprüche des Tages", () => {
   });
 
   it("jeder Satz steht nur einmal in der Liste", () => {
-    const texte = ALLE.map((s) => s.text.toLowerCase());
+    const texte = ALLE_PLUS.map((s) => s.text.toLowerCase());
     assert.equal(new Set(texte).size, texte.length);
   });
 
   it("hat keine zwei Sätze mit fast denselben Wörtern", () => {
     // Fängt Beinahe-Doppelungen ab, wenn neue Karten angehängt werden.
-    const woerter = (text: string) =>
-      new Set(
-        text
-          .toLowerCase()
-          .replace(/[^a-zäöüß ]/g, " ")
-          .split(/\s+/)
-          .filter((w) => w.length >= 5),
-      );
     const saetze = ALLE.map((s) => woerter(s.text));
     for (let i = 0; i < saetze.length; i++) {
       for (let j = i + 1; j < saetze.length; j++) {
-        const gemeinsam = [...saetze[i]].filter((w) => saetze[j].has(w)).length;
-        const anteil =
-          gemeinsam / (saetze[i].size + saetze[j].size - gemeinsam || 1);
         assert.ok(
-          gemeinsam < 3 || anteil < 0.5,
+          !zuAehnlich(saetze[i], saetze[j]),
           `zu ähnlich: „${ALLE[i].text}“ / „${ALLE[j].text}“`,
         );
       }
@@ -61,7 +80,7 @@ describe("Sprüche des Tages", () => {
   });
 
   it("hält Längen, Satzende, Kicker und Thema ein", () => {
-    for (const s of ALLE) {
+    for (const s of ALLE_PLUS) {
       assert.ok(
         s.text.length >= 15 && s.text.length <= 80,
         `${s.text.length}: ${s.text}`,
@@ -85,7 +104,7 @@ describe("Sprüche des Tages", () => {
   });
 
   it("hebt einen wörtlichen Ausschnitt aus ganzen Wörtern hervor", () => {
-    for (const s of ALLE) {
+    for (const s of ALLE_PLUS) {
       const [vor, mitte, nach] = teileSatz(s.text, s.betont);
       assert.equal(
         mitte,
@@ -108,21 +127,19 @@ describe("Sprüche des Tages", () => {
   });
 
   it("nennt keine Zahlen, Preise, Marken, Garantien oder Technik-Schlagworte", () => {
-    const verboten =
-      /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbot|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantiert|Garantie|Platz eins|Nummer eins|Testsieger|ausgezeichnet|SEO|Conversion|Landingpage|Performance|UX|CTA)\b|künstliche Intelligenz/;
-    for (const s of ALLE)
-      assert.doesNotMatch(`${s.text} ${s.zusatz}`, verboten, s.text);
+    for (const s of ALLE_PLUS)
+      assert.doesNotMatch(`${s.text} ${s.zusatz}`, VERBOTEN, s.text);
   });
 
   it("enthält keine Emojis", () => {
-    for (const s of ALLE)
+    for (const s of ALLE_PLUS)
       assert.doesNotMatch(ganz(s), /\p{Extended_Pictographic}/u, s.text);
   });
 
   it("bleibt in der Sie-Form", () => {
     const du =
       /\b(du|dich|dir|dein|deine|deiner|deinem|deinen|deins|euch|euer|eure)\b/i;
-    for (const s of ALLE)
+    for (const s of ALLE_PLUS)
       assert.doesNotMatch(`${s.text} ${s.zusatz}`, du, s.text);
   });
 
@@ -273,8 +290,37 @@ describe("Sprüche des Tages", () => {
     assert.ok(
       b.startsWith(`${k.text}\n${k.zusatz}\n\n#webdesign #hamburg #sitalo `),
     );
-    assert.doesNotMatch(b, /undefined/);
+    assert.doesNotMatch(b, /undefined|null/);
+    // Reserve-Karten: genau fünf Schlagworte, wie bisher.
+    assert.equal(b.split("\n\n")[1].split(" ").length, 5);
   });
+
+  it("gibt tagesaktuellen Posts ein Schlagwort zum Anlass", () => {
+    const k = spruchTag("2027-02-28", {});
+    const mit = (anlass: string) => storyBeschriftung({ ...k, anlass });
+    const vorrat = storyBeschriftung(k);
+    assert.equal(mit("Black Friday"), `${vorrat} #blackfriday`);
+    assert.ok(mit("Erster Advent").endsWith(" #ersteradvent"));
+    assert.ok(mit("Winterdom läuft").endsWith(" #winterdom"));
+    assert.ok(mit("Letzter Tag Winterdom").endsWith(" #winterdom"));
+    assert.ok(mit("Black Friday in Sicht").endsWith(" #blackfriday"));
+    assert.ok(mit("Weihnachtsmarkt ab Montag").endsWith(" #weihnachtsmarkt"));
+    assert.ok(mit("Sturm über Hamburg").endsWith(" #sturm"));
+    assert.ok(
+      mit("Tag der Deutschen Einheit").endsWith(" #tagderdeutscheneinheit"),
+    );
+    assert.ok(mit("Früh dunkel in Hamburg").endsWith(" #frühdunkel"));
+    // Nichts doppelt, nichts Leeres.
+    assert.equal(anlassTag("Hamburg"), null);
+    assert.equal(anlassTag(""), null);
+    assert.equal(anlassTag(null), null);
+    assert.equal(storyBeschriftung({ ...k, anlass: null }), vorrat);
+    for (const k of AKTUELL) {
+      const tag = anlassTag(k.anlass);
+      if (tag) assert.match(tag, /^#[a-zäöüß]{3,}$/, k.anlass);
+    }
+  });
+
   it("bevorzugt tagesaktuelle Karten und füllt mit der Reserve auf", () => {
     const aktuell = {
       "2026-11-27": [
@@ -309,5 +355,128 @@ describe("Sprüche des Tages", () => {
       spruecheBis(new Date("2026-11-28T10:00:00Z"), 2, aktuell)[1].anlass,
       "Black Friday",
     );
+  });
+});
+
+describe("Tagesaktuelle Posts", () => {
+  /** Wörter, die an einem Anlass hängen und deshalb nicht als Doppelung zählen. */
+  const GENERISCH = [
+    "heute",
+    "morgen",
+    "jetzt",
+    "gerade",
+    "hamburg",
+    "hamburger",
+    "woche",
+    "wochenende",
+  ];
+  const ohne = (...anlaesse: string[]) =>
+    new Set([...GENERISCH, ...anlaesse.flatMap((a) => [...woerter(a)])]);
+
+  it("ordnet die Tage als echte Kalendertage, aufsteigend", () => {
+    const tage = Object.keys(POSTS_AKTUELL);
+    for (const tag of tage) {
+      assert.match(tag, /^\d{4}-\d{2}-\d{2}$/, tag);
+      assert.equal(tagVersetzt(tag, 0), tag, `kein Kalendertag: ${tag}`);
+    }
+    for (let i = 1; i < tage.length; i++)
+      assert.ok(
+        tage[i - 1] < tage[i],
+        `Reihenfolge: ${tage[i - 1]} / ${tage[i]}`,
+      );
+  });
+
+  it("hat ein bis drei Karten je Tag mit verschiedenen Kickern", () => {
+    for (const [tag, karten] of Object.entries(POSTS_AKTUELL)) {
+      assert.ok(
+        karten.length >= 1 && karten.length <= POSTS_PRO_TAG,
+        `${tag}: ${karten.length} Karten`,
+      );
+      const kicker = karten.map((k) => k.kicker);
+      assert.equal(new Set(kicker).size, kicker.length, `${tag}: ${kicker}`);
+    }
+  });
+
+  it("nennt einen kurzen, sauberen Anlass und eine echte Quelle", () => {
+    for (const k of AKTUELL) {
+      assert.ok(
+        k.anlass.length >= 3 && k.anlass.length <= 28,
+        `${k.anlass.length}: ${k.anlass}`,
+      );
+      assert.equal(k.anlass.trim(), k.anlass);
+      assert.doesNotMatch(k.anlass, VERBOTEN, k.anlass);
+      assert.doesNotMatch(k.anlass, /\p{Extended_Pictographic}/u, k.anlass);
+      assert.doesNotMatch(k.anlass, /[.!?:;]$/, k.anlass);
+      if (k.quelle !== undefined)
+        assert.match(k.quelle, /^https:\/\/\S+$/, `${k.datum}: ${k.quelle}`);
+    }
+  });
+
+  it("hebt höchstens drei Wörter hervor", () => {
+    for (const k of AKTUELL)
+      assert.ok(k.betont.split(" ").length <= 3, `zu lang: ${k.betont}`);
+  });
+
+  it("wiederholt keinen Satz aus der Reserve oder von einem anderen Tag", () => {
+    const reserve = new Set(ALLE.map((s) => s.text.toLowerCase()));
+    const gesehen = new Map<string, string>();
+    for (const k of AKTUELL) {
+      const text = k.text.toLowerCase();
+      assert.ok(!reserve.has(text), `steht schon in der Reserve: ${k.text}`);
+      assert.ok(
+        !gesehen.has(text),
+        `steht schon am ${gesehen.get(text)}: ${k.text}`,
+      );
+      gesehen.set(text, k.datum);
+    }
+  });
+
+  it("sagt nichts fast wörtlich, was schon in der Reserve oder an einem anderen Tag steht", () => {
+    for (const k of AKTUELL) {
+      const eigen = ohne(k.anlass);
+      const satz = woerter(k.text, eigen);
+      for (const s of ALLE) {
+        assert.ok(
+          !zuAehnlich(satz, woerter(s.text, eigen)),
+          `zu ähnlich: „${k.text}“ (${k.datum}) / „${s.text}“`,
+        );
+      }
+      for (const anderer of AKTUELL) {
+        if (anderer.datum === k.datum) continue;
+        const beide = ohne(k.anlass, anderer.anlass);
+        assert.ok(
+          !zuAehnlich(woerter(k.text, beide), woerter(anderer.text, beide)),
+          `zu ähnlich: „${k.text}“ (${k.datum}) / „${anderer.text}“ (${anderer.datum})`,
+        );
+      }
+    }
+  });
+
+  it("zeigt die Karten des Tages vor der Reserve", () => {
+    for (const [tag, karten] of Object.entries(POSTS_AKTUELL)) {
+      const posts = postsFuer(tag);
+      karten.forEach((k, platz) => {
+        assert.equal(posts[platz].text, k.text);
+        assert.equal(posts[platz].herkunft, "aktuell");
+        assert.equal(posts[platz].anlass, k.anlass);
+      });
+    }
+  });
+
+  it("erkennt Beinahe-Doppelungen trotz gleichem Anlass nicht falsch", () => {
+    // Gleicher Anlass, sonst verschiedene Wörter: keine Doppelung.
+    const a = woerter(
+      "Black Friday kommt, Ihre Preise bleiben ehrlich.",
+      ohne("Black Friday"),
+    );
+    const b = woerter(
+      "Black Friday? Ehrliche Preise reichen.",
+      ohne("Black Friday"),
+    );
+    assert.ok(!zuAehnlich(a, b));
+    // Dieselben Wörter in anderer Reihenfolge: Doppelung.
+    const c = woerter("Öffnungszeiten stehen online, Feiertage auch.");
+    const d = woerter("Feiertage auch? Online stehen die Öffnungszeiten.");
+    assert.ok(zuAehnlich(c, d));
   });
 });

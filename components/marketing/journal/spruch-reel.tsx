@@ -294,12 +294,15 @@ export function SpruchReel({
                 data-gemalt={gemalt.includes(s.datum) ? "" : undefined}
                 aria-label={
                   i === 0
-                    ? `Spruch des Tages, ${s.datumText}`
-                    : `Spruch vom ${s.datumText}`
+                    ? `Spruch des Tages, ${s.anlass ? `${s.anlass}, ` : ""}${s.datumText}`
+                    : `Spruch vom ${s.datumText}${s.anlass ? `, ${s.anlass}` : ""}`
                 }
               >
                 <div className={r.text} data-spruch-text="">
-                  <p className={r.etikett}>{s.kicker}</p>
+                  {/* Tagesaktuelle Karten nennen ihren Anlass mit. */}
+                  <p className={r.etikett}>
+                    {s.anlass ? `${s.kicker} · ${s.anlass}` : s.kicker}
+                  </p>
                   <p className={r.spruch}>{s.text}</p>
                   <p className={r.zusatz}>{s.zusatz}</p>
                   <p className={r.absender}>

@@ -51,6 +51,24 @@ Lieber knapp als erfunden. Drei Optionen, von ehrlich zu leiser:
 
 ---
 
+## Posts: Spruch des Tages und Story
+
+**Files:** `lib/posts-aktuell.ts` (die Karten des Tages), `lib/anlaesse.ts` (Kalender mit Feiertagen, Handelstagen und Hamburger Terminen), Reserve in `lib/sprueche-liste.ts` und `lib/sprueche-extra.ts`.
+
+**Wie es läuft:** Jeden Morgen gegen 5 Uhr schaut ein automatischer Lauf nach, was heute ansteht: Anlässe aus `lib/anlaesse.ts`, dazu Hamburger Termine, Wetter und Neues rund um Google und Recht für kleine Betriebe. Daraus schreibt er ein bis drei Karten für heute, hängt sie unten an `lib/posts-aktuell.ts` an, lässt Tests und Bildprüfung laufen und veröffentlicht. Die erste Karte ist der Spruch des Tages auf /journal, alle drei findest du zum Teilen im Story-Studio (/admin/story). Im Beitragstext steht automatisch ein Schlagwort zum Anlass, etwa #blackfriday.
+
+**Reserve:** Fällt der Lauf aus oder schreibt er weniger als drei Karten, springen die Reserve-Karten ein. Sie sind nur noch das Sicherheitsnetz; werden sie knapp, ein paar neue unten anhängen.
+
+**Selbst eingreifen:**
+
+- Eine Karte von heute passt dir nicht: in `lib/posts-aktuell.ts` ändern oder den Tag löschen, dann springt die Reserve ein. Vergangene Tage stehen lassen, das Journal zeigt sieben Tage zurück.
+- Neuer Hamburger Termin (Dom, Hafengeburtstag, Weihnachtsmarkt): in `lib/anlaesse.ts` unten bei `TERMINE_HAMBURG` anhängen, mit Start, Ende und der Adresse, auf der das Datum steht. Ohne Quelle kein Eintrag.
+- Danach `npm test`, committen, pushen.
+
+**Was die Tests prüfen:** keine Ziffern, Preise, Marken oder Garantien; Sie-Form oder ohne Anrede; Anlass kurz (höchstens 28 Zeichen), ohne Ziffern; kein Satz doppelt, auch nicht fast wörtlich. Unglücke, Kriminalität und Politik lässt der Lauf bewusst weg.
+
+---
+
 ## Sonstige Pflege-Stellen
 
 Reine Referenz — diese Sachen ändern sich selten, aber wenn doch, ist hier zu schauen.
@@ -88,6 +106,7 @@ Damit du nicht denkst, was Pflege braucht:
 
 - **Aktueller Monat** in `Pakete & Preise`-Sektion (Pricing-Kapazitäts-Hinweis) — server-rendered aus `new Date()`.
 - **Aktueller Monat + Jahr** in `Aus dem Atelier`-Eyebrow — gleiche Logik.
+- **Spruch des Tages** — kommt jeden Morgen frisch aus dem Lauf, sonst aus der Reserve.
 - **Sitemap** — automatisch generiert aus den Daten-Files.
 - **OG-Bilder** — alle 23 statisch zur Build-Zeit gerendert.
 - **JSON-LD** — pro Detail-Seite automatisch generiert (Service, BreadcrumbList, FAQPage, LocalBusiness).

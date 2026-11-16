@@ -1,9 +1,12 @@
 /**
  * Spruch des Tages für /journal und für die Story im Admin (/admin/story).
  *
- * Die Karten stehen in lib/sprueche-liste.ts. Jeden Tag ist automatisch
- * eine andere dran (spruchFuer): Die Reihenfolge ergibt sich aus dem
- * Datum in Hamburg. Neue Karten einfach unten an die Liste anhängen.
+ * Zuerst gelten die tagesaktuellen Karten aus lib/posts-aktuell.ts: Ein
+ * Lauf schreibt sie jeden Morgen zu dem, was an diesem Tag ansteht
+ * (Anlässe in lib/anlaesse.ts). Fehlt ein Tag oder ein Platz, springt die
+ * Reserve ein: lib/sprueche-liste.ts (Spruch des Tages) und
+ * lib/sprueche-extra.ts (Zusatz-Posts), Reihenfolge nach dem Datum in
+ * Hamburg (spruchFuer, extraFuer).
  *
  * Regeln für die Karten prüft tests/sprueche.test.ts.
  */
@@ -97,9 +100,51 @@ export function teileSatz(
   return [text.slice(0, i), betont, text.slice(i + betont.length)];
 }
 
-/** Beitragstext für Instagram: Satz, Zusatz, Schlagworte. */
-export function storyBeschriftung(s: Spruch): string {
-  return `${s.text}\n${s.zusatz}\n\n${[...FESTE_TAGS, ...THEMA_TAGS[s.thema]].join(" ")}`;
+/**
+ * Was am Anlass nur Zustand ist, nicht Name: „Winterdom läuft“ wird zu
+ * #winterdom, „Black Friday in Sicht“ zu #blackfriday, „Letzter Tag
+ * Winterdom“ ebenfalls zu #winterdom.
+ */
+const ANLASS_RAND = [
+  /^(bald|noch|wieder|endlich)\s+/i,
+  /^letzter tag\s+/i,
+  /\s+(ab|am|bis|seit)\s+(montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag|morgen|heute)$/i,
+  /\s+(in|über|für)\s+hamburg$/i,
+  /\s+(läuft|naht|beginnt|startet|endet|eröffnet|kommt|offen|in sicht)$/i,
+];
+
+/**
+ * Schlagwort zum Anlass eines tagesaktuellen Posts: klein, ohne
+ * Leerzeichen, Umlaute bleiben („Erster Advent“ → #ersteradvent). Null,
+ * wenn nichts Sinnvolles übrig bleibt oder das Schlagwort ohnehin dabei ist.
+ */
+export function anlassTag(anlass: string | null | undefined): string | null {
+  if (!anlass) return null;
+  let kern = anlass.trim();
+  for (const rand of ANLASS_RAND) kern = kern.replace(rand, "");
+  const wort = kern.toLowerCase().replace(/[^a-zäöüß]/g, "");
+  if (wort.length < 3) return null;
+  const tag = `#${wort}`;
+  const vorhanden = [...FESTE_TAGS, ...Object.values(THEMA_TAGS).flat()];
+  return vorhanden.includes(tag) ? null : tag;
+}
+
+/**
+ * Beitragstext für Instagram: Satz, Zusatz, Schlagworte. Tagesaktuelle
+ * Posts bekommen am Ende ein Schlagwort zu ihrem Anlass (#blackfriday).
+ */
+export function storyBeschriftung(
+  s: Pick<Spruch, "text" | "zusatz" | "thema"> & {
+    anlass?: string | null;
+  },
+): string {
+  const zumAnlass = anlassTag(s.anlass);
+  const tags = [
+    ...FESTE_TAGS,
+    ...THEMA_TAGS[s.thema],
+    ...(zumAnlass ? [zumAnlass] : []),
+  ];
+  return `${s.text}\n${s.zusatz}\n\n${tags.join(" ")}`;
 }
 
 const TAG_MS = 24 * 60 * 60 * 1000;
