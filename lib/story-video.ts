@@ -7,10 +7,6 @@
  *
  * Braucht WebCodecs (Safari ab 16.4, Chrome, Edge). Wo das fehlt, gibt
  * filmAlsMp4 null zurück, und das Studio nimmt wie früher in Echtzeit auf.
- *
- * Auf Wunsch kommt eine Tonspur dazu (lib/story-ton.ts), als AAC: Das
- * ist die Form, die iPhone und Instagram erwarten. Kann der Browser
- * keinen AAC-Ton schreiben, entsteht das Video ohne Ton.
  */
 
 /** H.264-Stufen, die 1080 × 1920 bei 30 Bildern tragen; die erste, die der Browser kann, gilt. */
@@ -62,35 +58,6 @@ export async function kannFilmRechnen(
   return (await einstellung(breite, hoehe, 30, 12_000_000)) !== null;
 }
 
-/** Ton im Video: AAC für iPhone und Instagram; Opus nur für Prüfungen. */
-type TonArt = "aac" | "opus";
-
-async function tonEinstellung(
-  rate: number,
-  art: TonArt,
-): Promise<AudioEncoderConfig | null> {
-  if (typeof AudioEncoder === "undefined" || typeof AudioData === "undefined")
-    return null;
-  const versuch: AudioEncoderConfig = {
-    codec: art === "aac" ? "mp4a.40.2" : "opus",
-    sampleRate: rate,
-    numberOfChannels: 2,
-    bitrate: 128_000,
-  };
-  try {
-    return (await AudioEncoder.isConfigSupported(versuch)).supported
-      ? versuch
-      : null;
-  } catch {
-    return null;
-  }
-}
-
-/** Kann dieser Browser eine Tonspur ins Video schreiben? */
-export async function kannTonSchreiben(rate = 48000): Promise<boolean> {
-  return (await tonEinstellung(rate, "aac")) !== null;
-}
-
 const luft = () => new Promise<void>((weiter) => setTimeout(weiter, 0));
 
 /**
@@ -112,13 +79,6 @@ export async function filmAlsMp4(
     /** Fortschritt 0 bis 1 */
     fortschritt?: (anteil: number) => void;
     abbruch?: AbortSignal;
-    /**
-     * Tonspur (eine Spur, Werte von -1 bis 1). Sie kommt nur ins Video,
-     * wenn der Browser sie schreiben kann (kannTonSchreiben).
-     */
-    ton?: { daten: Float32Array; rate: number };
-    /** Nur für Prüfungen: andere Kodierung des Tons erzwingen. */
-    tonArt?: TonArt;
   },
 ): Promise<Blob | null> {
   const fps = optionen.fps ?? 30;
@@ -129,13 +89,8 @@ export async function filmAlsMp4(
     optionen.bitrate ?? 12_000_000,
   );
   if (!config) return null;
-  const tonArt = optionen.tonArt ?? "aac";
-  const tonConfig = optionen.ton
-    ? await tonEinstellung(optionen.ton.rate, tonArt)
-    : null;
   let fehler: unknown = null;
   let encoder: VideoEncoder | null = null;
-  let tonEncoder: AudioEncoder | null = null;
   const abgebrochen = () => {
     if (optionen.abbruch?.aborted)
       throw new DOMException("Abgebrochen", "AbortError");
@@ -152,15 +107,6 @@ export async function filmAlsMp4(
         height: canvas.height,
         frameRate: fps,
       },
-      ...(tonConfig
-        ? {
-            audio: {
-              codec: tonArt,
-              numberOfChannels: tonConfig.numberOfChannels,
-              sampleRate: tonConfig.sampleRate,
-            },
-          }
-        : {}),
       fastStart: "in-memory",
     });
     encoder = new VideoEncoder({
@@ -172,38 +118,6 @@ export async function filmAlsMp4(
     encoder.configure(config);
     const bilder = Math.round(optionen.dauer * fps);
     const gesamt = bilder + Math.round((optionen.halten ?? 0.4) * fps);
-    if (tonConfig && optionen.ton) {
-      // Der Ton ist schnell kodiert: gleich ganz, in Stücken von einer
-      // Zehntelsekunde, genau so lang wie das Bild. Beide Kanäle tragen
-      // dieselbe Spur.
-      tonEncoder = new AudioEncoder({
-        output: (stueck, meta) => muxer.addAudioChunk(stueck, meta),
-        error: (e) => {
-          fehler = e;
-        },
-      });
-      tonEncoder.configure(tonConfig);
-      const { daten, rate } = optionen.ton;
-      const laenge = Math.round((gesamt / fps) * rate);
-      const schritt = Math.round(rate / 10);
-      for (let i = 0; i < laenge; i += schritt) {
-        const n = Math.min(schritt, laenge - i);
-        const beide = new Float32Array(n * 2);
-        const teil = daten.subarray(i, Math.min(i + n, daten.length));
-        beide.set(teil, 0);
-        beide.set(teil, n);
-        const block = new AudioData({
-          format: "f32-planar",
-          sampleRate: rate,
-          numberOfFrames: n,
-          numberOfChannels: 2,
-          timestamp: Math.round((i * 1e6) / rate),
-          data: beide,
-        });
-        tonEncoder.encode(block);
-        block.close();
-      }
-    }
     for (let i = 0; i < gesamt; i++) {
       abgebrochen();
       if (fehler) throw fehler;
@@ -227,7 +141,6 @@ export async function filmAlsMp4(
       if (i % 3 === 2) await luft();
     }
     await encoder.flush();
-    if (tonEncoder) await tonEncoder.flush();
     if (fehler) throw fehler;
     muxer.finalize();
     return new Blob([muxer.target.buffer], { type: "video/mp4" });
@@ -236,6 +149,5 @@ export async function filmAlsMp4(
     return null;
   } finally {
     if (encoder && encoder.state !== "closed") encoder.close();
-    if (tonEncoder && tonEncoder.state !== "closed") tonEncoder.close();
   }
 }
