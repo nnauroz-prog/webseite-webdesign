@@ -2,7 +2,8 @@
  * Bausteine der Spruch-Karten: Hafen-Motive und Schmuckformen als
  * Pfaddaten. Das gemalte Bild (lib/story-bild.ts) zeichnet die Motive
  * auf die Zeichenfläche (Path2D); die Schmuckformen zählen nur noch als
- * Stelle im täglichen Wechsel (lib/story-variante.ts).
+ * Stelle im täglichen Wechsel und wählen dort die Gestaltung des Plakats
+ * (lib/story-variante.ts, LAYOUT_FOLGE).
  */
 
 /** Welche Farbe der Farbwelt ein Teil bekommt. */

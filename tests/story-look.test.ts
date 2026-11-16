@@ -6,6 +6,8 @@ import { MOTIVE, SCHMUCK } from "@/lib/story-teile";
 import {
   AUFTRITTE,
   KAMERAS,
+  LAYOUT_FOLGE,
+  LAYOUTS,
   VARIANTEN,
   varianteFuer,
 } from "@/lib/story-variante";
@@ -71,6 +73,24 @@ describe("Farbwelten der Spruch-Karten", () => {
         kontrast(l.streif, l.faehre) >= 2.5,
         `${l.name}: Streifen der Fähre`,
       );
+      // Gestaltung „farbfeld“: großer Satz auf der kräftigen Fläche
+      // (große Schrift, mindestens 4 : 1), Pointe auf ihrem Balken, Zusatz
+      // und Wortmarke auf dem Papier darunter.
+      assert.ok(kontrast(l.feldText, l.feld) >= 4, `${l.name}: Satz im Feld`);
+      assert.ok(
+        kontrast(l.feldMarker, l.feld) >= 1.5,
+        `${l.name}: Balken im Feld`,
+      );
+      assert.ok(
+        kontrast(l.feldBetont, l.feldMarker) >= 3,
+        `${l.name}: Pointe im Feld`,
+      );
+      assert.ok(
+        kontrast(l.papierText, l.papier) >= 4.5,
+        `${l.name}: Zusatz auf Papier`,
+      );
+      // Feld und Papier sind zwei deutlich verschiedene Flächen.
+      assert.ok(kontrast(l.feld, l.papier) >= 1.3, `${l.name}: Feld/Papier`);
     }
   });
 
@@ -180,6 +200,39 @@ describe("Farbwelten der Spruch-Karten", () => {
       new Set(monat.map((v) => v.schmuck.name)).size,
       SCHMUCK.length,
     );
+  });
+
+  it("gestaltet die drei Posts eines Tages verschieden und wechselt täglich", () => {
+    // Die Folge hat so viele Plätze wie die Schmuck-Stelle und enthält
+    // jede Gestaltung.
+    assert.equal(LAYOUT_FOLGE.length, SCHMUCK.length);
+    assert.deepEqual(new Set(LAYOUT_FOLGE), new Set(LAYOUTS));
+    for (let n = -10; n < VARIANTEN / 3; n++) {
+      const tag = [0, 1, 2].map((platz) => varianteFuer(n, platz).layout);
+      assert.equal(new Set(tag).size, 3, `Tag ${n}: ${tag.join(", ")}`);
+      assert.notEqual(tag[0], varianteFuer(n - 1).layout, `Tag ${n}`);
+    }
+    // „Anderes Design“ im Story-Studio kommt auch mit anderer Gestaltung.
+    const anders = [1, 2, 3].map((v) => varianteFuer(6, 0, v).layout);
+    assert.ok(anders.some((l) => l !== varianteFuer(6).layout));
+  });
+
+  it("bringt in 30 Tagen jede Gestaltung, die klassische eingeschlossen", () => {
+    for (const start of [6, 133, 401, 2020]) {
+      const monat = Array.from({ length: 30 }, (_, i) =>
+        varianteFuer(start + i),
+      );
+      const gesehen = new Set(monat.map((v) => v.layout));
+      assert.equal(gesehen.size, LAYOUTS.length, `ab Tag ${start}`);
+      assert.ok(gesehen.has("klassik"), `ab Tag ${start}`);
+      // Auch über alle drei Posts: Die klassische Gestaltung bleibt im
+      // Wechsel, aber nicht als einzige.
+      const alle = monat.flatMap((_, i) =>
+        [0, 1, 2].map((platz) => varianteFuer(start + i, platz).layout),
+      );
+      const klassik = alle.filter((l) => l === "klassik").length;
+      assert.ok(klassik >= 20 && klassik <= 40, `${klassik} ab Tag ${start}`);
+    }
   });
 
   it("hat für jedes Motiv und jede Schmuckform gültige Pfade", () => {
