@@ -93,7 +93,7 @@ Next.js, React und Tailwind CSS. Hosting bei Vercel mit Servern in der EU. Die B
 
 ## Kontakt
 
-E-Mail: info@sitalo.de
+Anfrage: https://www.sitalo.de/anfrage
 Telefon: 0160 7621876 (international: +49 160 7621876)
 Standort: Hamburg, Deutschland
 Antwort: meist am selben Werktag.

@@ -38,7 +38,7 @@ function badRequest(message: string): Response {
 export async function POST(request: Request): Promise<Response> {
   if (!process.env.ANTHROPIC_API_KEY) {
     return new Response(
-      "Der Assistent ist gerade nicht erreichbar. Schreiben Sie uns gerne direkt an info@sitalo.de.",
+      "Der Assistent ist gerade nicht erreichbar. Bitte nutzen Sie das Anfrageformular oder rufen Sie an: 0160 7621876.",
       {
         status: 503,
         headers: { "content-type": "text/plain; charset=utf-8" },
@@ -119,7 +119,7 @@ export async function POST(request: Request): Promise<Response> {
         try {
           controller.enqueue(
             encoder.encode(
-              "\n\nLeider ist gerade etwas schiefgelaufen. Schreiben Sie uns gerne an info@sitalo.de — wir melden uns innerhalb von 24 Stunden.",
+              "\n\nLeider ist gerade etwas schiefgelaufen. Bitte nutzen Sie das Anfrageformular oder rufen Sie an: 0160 7621876.",
             ),
           );
         } catch {

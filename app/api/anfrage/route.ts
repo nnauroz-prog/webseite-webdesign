@@ -71,7 +71,7 @@ function originAllowed(req: NextRequest): boolean {
 }
 
 const FALLBACK_HINT =
-  "Bitte schreiben Sie uns direkt an info@sitalo.de oder rufen Sie an — wir melden uns.";
+  "Bitte versuchen Sie es später noch einmal oder rufen Sie an: 0160 7621876.";
 
 function fail(status: number, error: string) {
   return NextResponse.json({ ok: false, error }, { status });

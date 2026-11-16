@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "Sie haben in der letzten Stunde viele Anfragen gesendet. Bitte später erneut versuchen — oder mailen Sie uns die URL an info@sitalo.de.",
+          "Sie haben in der letzten Stunde viele Tests gestartet. Bitte versuchen Sie es später noch einmal.",
       },
       { status: 429 },
     );

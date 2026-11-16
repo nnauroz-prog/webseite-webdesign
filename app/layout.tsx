@@ -117,7 +117,6 @@ const LOCAL_BUSINESS_LD = {
       }
     : {}),
   telephone: "+491607621876",
-  email: "info@sitalo.de",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Hamburg",
@@ -132,7 +131,7 @@ const LOCAL_BUSINESS_LD = {
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+491607621876",
-    email: "info@sitalo.de",
+    url: `${SITE_URL}/anfrage`,
     contactType: "customer service",
     availableLanguage: "German",
   },

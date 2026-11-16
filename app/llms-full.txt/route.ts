@@ -134,7 +134,7 @@ Stand: ${stand()}. Kurzfassung: ${SITE_URL}/llms.txt
 - Sitz: Hamburg, Deutschland. Kunden in ganz Deutschland; Gespräche am Telefon, per Video oder in Hamburg vor Ort
 - Website: ${SITE_URL}
 - Telefon: 0160 7621876 (international +49 160 7621876)
-- E-Mail: info@sitalo.de
+- Anfrage: ${SITE_URL}/anfrage
 - Für wen: Betriebe und Selbstständige (Unternehmer im Sinne von § 14 BGB), z. B. ${BRANCHEN.map((b) => b.label).join(", ")}
 - Preise: ${PAKETE.map((p) => `${p.name} ${p.setup}`).join(", ")} einmalig; dazu ${MONATSBEITRAEGE} im Monat (Hosting, Updates, kleine Änderungen). Mindestlaufzeit 6 Monate, danach monatlich kündbar. Alle Preise inklusive 19 % MwSt.
 - Festpreis: schriftlich vor Beginn der Arbeit
@@ -212,7 +212,6 @@ ${lexikon}
 
 Sitalo Webdesign, Hamburg
 Telefon: 0160 7621876
-E-Mail: info@sitalo.de
 Anfrage: ${SITE_URL}/anfrage (drei Pflichtfelder, Antwort meist am selben Werktag)
 `;
 }

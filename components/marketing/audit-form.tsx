@@ -231,18 +231,22 @@ export function AuditForm() {
           />
         </div>
 
-        {/* Honeypot — visuell unsichtbar für Menschen, fängt Bots ab. */}
+        {/* Honeypot — visuell unsichtbar für Menschen, fängt Bots ab.
+            Bewusst kein Name/Label mit „Website“, „URL“ o. Ä. — darauf
+            springen Browser-Autofill und Passwortmanager an (gleich
+            daneben steht das echte Feld „Ihre Website“), und ein echter
+            Besucher würde unbemerkt als Bot aussortiert. */}
         <div className="hidden" aria-hidden="true">
-          <label>
-            Website
-            <input
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              value={data.honeypot}
-              onChange={(e) => setData({ ...data, honeypot: e.target.value })}
-            />
-          </label>
+          <label htmlFor="audit-hp">Bitte leer lassen</label>
+          <input
+            id="audit-hp"
+            name="sitalo_hp_field"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={data.honeypot}
+            onChange={(e) => setData({ ...data, honeypot: e.target.value })}
+          />
         </div>
 
         <label className="flex items-start gap-3 text-[13.5px] leading-relaxed">
