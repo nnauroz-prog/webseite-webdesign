@@ -122,7 +122,9 @@ export async function filmAlsMp4(
       abgebrochen();
       if (fehler) throw fehler;
       // Nach dem letzten Bild des Films bleibt das Schlussbild stehen.
+      const anfang = performance.now();
       if (i <= bilder) zeichne(i < bilder ? i / fps : optionen.dauer);
+      const dauerBild = performance.now() - anfang;
       const bild = new VideoFrame(canvas, {
         timestamp: Math.round((i * 1e6) / fps),
         duration: Math.round(1e6 / fps),
@@ -138,7 +140,9 @@ export async function filmAlsMp4(
         abgebrochen();
         if (fehler) throw fehler;
       }
-      if (i % 3 === 2) await luft();
+      // Braucht ein Bild länger (Kino-Kamera auf einem langsamen Gerät),
+      // nach jedem Bild Luft lassen: So bleibt „Abbrechen“ bedienbar.
+      if (i % 3 === 2 || dauerBild > 30) await luft();
     }
     await encoder.flush();
     if (fehler) throw fehler;
