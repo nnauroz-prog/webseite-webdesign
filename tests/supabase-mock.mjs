@@ -15,6 +15,10 @@
  *   'v3' zusätzlich angebote (20261102000000_angebote.sql): Nummer
  *        A-<Jahr>-0001 als Default, Checks, eindeutige token/nummer,
  *        on delete cascade, updated_at nur bei inhaltlicher Änderung
+ *   'v4' zusätzlich projekte und post_status (20261116000000_ausbau.sql):
+ *        eindeutige angebot_id, Fremdschlüssel mit on delete cascade
+ *        (Anfrage und Angebot), Checks, updated_at bei jeder Änderung,
+ *        Primärschlüssel (datum, platz, format)
  *
  * Fehler wie PostgREST: unbekannte Tabelle → 404 PGRST205, unbekannte
  * Spalte in select/filter/order → 400 42703, unbekannte Spalte im
@@ -92,6 +96,19 @@ const ANGEBOT_STATUSES = [
   "abgelehnt",
   "zurueckgezogen",
 ];
+const PROJEKTE = [
+  "id",
+  "angebot_id",
+  "lead_id",
+  "created_at",
+  "updated_at",
+  "schritte",
+  "livegang_am",
+  "pflege_seit",
+  "pflege_bis",
+  "notiz",
+];
+const POST_STATUS = ["datum", "platz", "format", "text", "gepostet_at"];
 
 function schemaFor(mode) {
   if (mode === "v0") return {};
@@ -102,7 +119,9 @@ function schemaFor(mode) {
     lead_deletions: DELETIONS,
   };
   if (mode === "v2") return v2;
-  return { ...v2, angebote: ANGEBOTE };
+  const v3 = { ...v2, angebote: ANGEBOTE };
+  if (mode === "v3") return v3;
+  return { ...v3, projekte: PROJEKTE, post_status: POST_STATUS };
 }
 
 const REQUIRED = {
@@ -118,6 +137,8 @@ const REQUIRED = {
     "einleitung",
     "hinweise",
   ],
+  projekte: ["angebot_id", "lead_id", "schritte"],
+  post_status: ["datum", "platz", "format", "text"],
 };
 
 const berlinYear = (d) =>
@@ -166,14 +187,21 @@ export const SERVICE_KEY = "test-service-role-key";
 
 /**
  * @typedef {Record<string, any>} Row
- * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[] }} Tables
+ * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[]; projekte: Row[]; post_status: Row[] }} Tables
  * @typedef {{ method: string; url: string; headers: { prefer: string; accept: string }; body: unknown }} MockRequest
- * @typedef {"v0" | "v1" | "v2" | "v3"} MockMode
+ * @typedef {"v0" | "v1" | "v2" | "v3" | "v4"} MockMode
  */
 
 /** @returns {Tables} */
 function emptyTables() {
-  return { leads: [], lead_events: [], lead_deletions: [], angebote: [] };
+  return {
+    leads: [],
+    lead_events: [],
+    lead_deletions: [],
+    angebote: [],
+    projekte: [],
+    post_status: [],
+  };
 }
 
 /** @param {{ mode?: MockMode; key?: string }} [options] */
@@ -204,7 +232,7 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
         delivered_via: null,
         delivery_error: null,
       };
-      if (state.mode === "v2" || state.mode === "v3")
+      if (state.mode !== "v0" && state.mode !== "v1")
         Object.assign(row, {
           follow_up_on: null,
           outcome: null,
@@ -236,6 +264,19 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
         abgelehnt_grund: null,
       };
     }
+    if (table === "projekte")
+      return {
+        id: randomUUID(),
+        created_at: t,
+        updated_at: t,
+        schritte: {},
+        livegang_am: null,
+        pflege_seit: null,
+        pflege_bis: null,
+        notiz: null,
+      };
+    // Kein id: Primärschlüssel ist (datum, platz, format).
+    if (table === "post_status") return { gepostet_at: t };
     return {
       id: randomUUID(),
       deleted_at: t,
@@ -244,7 +285,29 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     };
   }
 
-  function check(table, row) {
+  /** 409 wie bei einer verletzten Eindeutigkeit. */
+  function duplicate(name) {
+    return {
+      status: 409,
+      body: {
+        code: "23505",
+        message: `duplicate key value violates unique constraint "${name}"`,
+      },
+    };
+  }
+
+  function foreignKey(table) {
+    return {
+      status: 409,
+      body: {
+        code: "23503",
+        message: `insert or update on table "${table}" violates foreign key constraint`,
+      },
+    };
+  }
+
+  /** before: die Zeile vor einem PATCH (zählt nicht als Doppel). */
+  function check(table, row, before = null) {
     for (const col of REQUIRED[table] ?? []) {
       if (row[col] === undefined || row[col] === null) {
         return {
@@ -268,16 +331,51 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
         return checkFail(table, "leads_outcome_check");
     }
     if (
-      (table === "lead_events" || table === "angebote") &&
+      (table === "lead_events" ||
+        table === "angebote" ||
+        table === "projekte") &&
       !state.tables.leads.some((l) => l.id === row.lead_id)
     ) {
-      return {
-        status: 409,
-        body: {
-          code: "23503",
-          message: `insert or update on table "${table}" violates foreign key constraint`,
-        },
-      };
+      return foreignKey(table);
+    }
+    if (table === "projekte") {
+      if (!state.tables.angebote.some((a) => a.id === row.angebot_id))
+        return foreignKey(table);
+      if (
+        state.tables.projekte.some(
+          (p) => p.id !== row.id && p.angebot_id === row.angebot_id,
+        )
+      )
+        return duplicate("projekte_angebot_id_key");
+      const s = row.schritte;
+      if (!s || typeof s !== "object" || Array.isArray(s))
+        return checkFail(table, "projekte_schritte_check");
+      if (typeof row.notiz === "string" && row.notiz.length > 2000)
+        return checkFail(table, "projekte_notiz_check");
+      if (
+        row.pflege_bis != null &&
+        row.pflege_seit != null &&
+        String(row.pflege_bis) < String(row.pflege_seit)
+      )
+        return checkFail(table, "projekte_pflege_check");
+    }
+    if (table === "post_status") {
+      if (![0, 1, 2].includes(row.platz))
+        return checkFail(table, "post_status_platz_check");
+      if (!["story", "beitrag"].includes(row.format))
+        return checkFail(table, "post_status_format_check");
+      if (typeof row.text !== "string" || row.text.length > 500)
+        return checkFail(table, "post_status_text_check");
+      if (
+        state.tables.post_status.some(
+          (p) =>
+            p !== before &&
+            p.datum === row.datum &&
+            p.platz === row.platz &&
+            p.format === row.format,
+        )
+      )
+        return duplicate("post_status_pkey");
     }
     if (table === "angebote") {
       if (!ANGEBOT_STATUSES.includes(row.status))
@@ -309,7 +407,7 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
 
   /** Trigger-Ersatz für updated_at nach einem PATCH. */
   function touch(table, before, next) {
-    if (table === "leads") return nowIso();
+    if (table === "leads" || table === "projekte") return nowIso();
     if (
       table === "angebote" &&
       ANGEBOT_INHALT.some(
@@ -496,9 +594,9 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       const nextRows = [];
       for (const row of hit) {
         const next = { ...row, ...body };
-        if (table === "leads" || table === "angebote")
+        if (["leads", "angebote", "projekte"].includes(table))
           next.updated_at = touch(table, row, next); // Trigger-Ersatz
-        const fail = check(table, next);
+        const fail = check(table, next, row);
         if (fail) return fail;
         nextRows.push(next);
       }
@@ -509,13 +607,24 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     if (req.method === "DELETE") {
       const hit = rows.filter(matches);
       state.tables[table] = rows.filter((r) => !hit.includes(r));
-      if (table === "leads" && (state.mode === "v2" || state.mode === "v3")) {
-        const ids = new Set(hit.map((r) => r.id));
+      // on delete cascade: Anfrage → Verlauf, Angebote, Projekte;
+      // Angebot → Projekt.
+      const ids = new Set(hit.map((r) => r.id));
+      if (table === "leads") {
         state.tables.lead_events = state.tables.lead_events.filter(
           (e) => !ids.has(e.lead_id),
         );
+        const angebote = state.tables.angebote.filter((a) =>
+          ids.has(a.lead_id),
+        );
+        for (const a of angebote) ids.add(a.id);
         state.tables.angebote = state.tables.angebote.filter(
           (a) => !ids.has(a.lead_id),
+        );
+      }
+      if (table === "leads" || table === "angebote") {
+        state.tables.projekte = state.tables.projekte.filter(
+          (p) => !ids.has(p.lead_id) && !ids.has(p.angebot_id),
         );
       }
       return wantsRepresentation ? respond(200, hit) : { status: 204 };
@@ -614,6 +723,39 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
         ...partial,
       };
       state.tables.angebote.push(row);
+      return row;
+    },
+    /**
+     * Projekt direkt anlegen (an der API vorbei, Modus v4), gibt es
+     * zurück. Ohne angebot_id wird ein angenommenes Angebot mit angelegt.
+     * @param {Row} [partial]
+     * @returns {Row}
+     */
+    seedProjekt(partial = {}) {
+      const angebot = partial.angebot_id
+        ? state.tables.angebote.find((a) => a.id === partial.angebot_id)
+        : this.seedAngebot({
+            status: "angenommen",
+            accepted_at: nowIso(),
+            angenommen_von: "Kunde",
+          });
+      const row = {
+        ...defaults("projekte"),
+        angebot_id: angebot?.id ?? partial.angebot_id,
+        lead_id: angebot?.lead_id ?? partial.lead_id,
+        ...partial,
+      };
+      state.tables.projekte.push(row);
+      return row;
+    },
+    /**
+     * Post als gepostet eintragen (an der API vorbei, Modus v4).
+     * @param {Row} partial datum, platz, format, text
+     * @returns {Row}
+     */
+    seedPostStatus(partial) {
+      const row = { ...defaults("post_status"), ...partial };
+      state.tables.post_status.push(row);
       return row;
     },
     close() {

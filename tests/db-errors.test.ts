@@ -67,6 +67,40 @@ describe("explainDbError", () => {
     );
   });
 
+  it("fehlende Tabelle oder Spalte projekte/post_status → missing_schema_ausbau (nicht „leads fehlt“)", () => {
+    for (const [code, msg] of [
+      [
+        "PGRST205",
+        "Could not find the table 'public.projekte' in the schema cache",
+      ],
+      [
+        "PGRST205",
+        "Could not find the table 'public.post_status' in the schema cache",
+      ],
+      ["42P01", 'relation "public.projekte" does not exist'],
+      ["42703", "column projekte.pflege_bis does not exist"],
+      [
+        "PGRST204",
+        "Could not find the 'notiz' column of 'projekte' in the schema cache",
+      ],
+      ["42703", "column post_status.gepostet_at does not exist"],
+    ]) {
+      const e = explainDbError(new DbError(msg, code));
+      assert.equal(e.kind, "missing_schema_ausbau", msg);
+      assert.ok(e.hint.includes("20261116000000_ausbau.sql"));
+    }
+    // Angebote bleiben bei ihrer eigenen Datei.
+    assert.equal(
+      explainDbError(
+        new DbError(
+          "Could not find the table 'public.angebote' in the schema cache",
+          "PGRST205",
+        ),
+      ).kind,
+      "missing_schema_angebote",
+    );
+  });
+
   it("fehlende Tabelle leads → missing_table_leads", () => {
     for (const code of ["PGRST205", "42P01"]) {
       const e = explainDbError(
