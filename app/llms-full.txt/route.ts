@@ -212,7 +212,7 @@ ${lexikon}
 
 Sitalo Webdesign, Hamburg
 Telefon: 0160 7621876
-Anfrage: ${SITE_URL}/anfrage (drei Pflichtfelder, Antwort meist am selben Werktag)
+Anfrage: ${SITE_URL}/anfrage (vier Pflichtfelder, Antwort meist am selben Werktag)
 `;
 }
 

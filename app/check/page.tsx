@@ -63,7 +63,7 @@ const VERGLEICH: { frage: string; check: string; audit: string }[] = [
   {
     frage: "Was Sie angeben",
     check: "Nur die Adresse",
-    audit: "Adresse, Name und E-Mail",
+    audit: "Adresse, Name, E-Mail und Telefon",
   },
   {
     frage: "Dauer",
@@ -73,7 +73,7 @@ const VERGLEICH: { frage: string; check: string; audit: string }[] = [
   {
     frage: "Ergebnis",
     check: "Vier Werte hier auf der Seite",
-    audit: "Drei bis fünf Punkte per E-Mail",
+    audit: "Drei bis fünf Punkte von uns",
   },
   {
     frage: "Kosten",

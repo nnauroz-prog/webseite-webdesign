@@ -19,7 +19,6 @@ Preise und Dauer entsprechen lib/pakete-data.ts (Stand: 7. November
 | Ort | Hamburg |
 | Einzugsgebiet | Hamburg und ganz Deutschland |
 | Telefon | 0160 7621876 |
-| E-Mail | info@sitalo.de |
 | Website | https://www.sitalo.de |
 | Anfrage | https://www.sitalo.de/anfrage |
 | Termin buchen | https://www.sitalo.de/termin |
@@ -84,7 +83,7 @@ verbietet das und kann das Profil sperren.
 > Das Erstgespräch ist kostenlos, am Telefon, per Video oder bei Ihnen
 > in Hamburg. Antwort meist am selben Werktag.
 >
-> www.sitalo.de · 0160 7621876 · info@sitalo.de
+> www.sitalo.de · 0160 7621876
 
 ---
 

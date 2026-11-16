@@ -10,7 +10,7 @@ export default async function Image() {
     variant: "hell",
     eyebrow: "Sitalo · Termin · bis zu 30 Minuten",
     headline: "Einen Termin direkt buchen.",
-    subline: "Tag und Uhrzeit wählen Sie selbst. Die Bestätigung kommt per Mail, meist am selben Werktag.",
+    subline: "Tag und Uhrzeit wählen Sie selbst. Wir bestätigen den Termin meist am selben Werktag.",
     url: "sitalo.de/termin",
   });
 }

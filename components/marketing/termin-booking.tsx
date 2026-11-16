@@ -16,6 +16,7 @@ import {
   SLOT_DURATION_MIN,
   SLOT_TIMES,
 } from "@/lib/calendar-availability";
+import { telefonGueltig } from "@/lib/kontakt-pflicht";
 import { submitLead } from "@/lib/submit-lead";
 import { cn } from "@/lib/utils";
 
@@ -64,12 +65,14 @@ export function TerminBooking() {
 
   const nameOk = name.trim().length >= 2;
   const emailOk = /\S+@\S+\.\S+/.test(email);
+  const telefonOk = telefonGueltig(phone);
   const canSubmit =
     selectedDate != null &&
     selectedSlot != null &&
     !(selectedDay && isSlotTooSoon(selectedDay, selectedSlot)) &&
     nameOk &&
     emailOk &&
+    telefonOk &&
     consent &&
     status.kind !== "submitting";
 
@@ -117,10 +120,9 @@ export function TerminBooking() {
           Notiert.
         </p>
         <p className="text-muted-foreground mx-auto mt-3 max-w-md text-pretty text-[14.5px] leading-relaxed">
-          {formatDateLong(status.iso)} um {status.slot} Uhr. Sie bekommen
-          meist am selben Werktag eine Bestätigung per E-Mail mit
-          Kalender-Eintrag. Falls der Termin schon vergeben sein sollte,
-          schlagen wir Ihnen zwei andere vor.
+          {formatDateLong(status.iso)} um {status.slot} Uhr. Wir bestätigen
+          den Termin meist am selben Werktag. Falls er schon vergeben sein
+          sollte, schlagen wir Ihnen zwei andere vor.
         </p>
         <p className="text-muted-foreground mt-6 text-[13px]">
           Wir bestätigen jeden Termin persönlich.
@@ -233,15 +235,18 @@ export function TerminBooking() {
         </div>
         <div className="mt-4">
           <Label htmlFor="termin-phone" className="text-foreground text-sm">
-            Telefon (optional, falls Rückruf bequemer ist)
+            Telefon
           </Label>
           <Input
             id="termin-phone"
             type="tel"
+            inputMode="tel"
             autoComplete="tel"
+            placeholder="Unter dieser Nummer erreichen wir Sie"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="mt-2"
+            required
           />
         </div>
         <div className="mt-4">
@@ -298,7 +303,17 @@ export function TerminBooking() {
 
       {status.kind === "error" && (
         <Alert variant="destructive">
-          <AlertDescription>{status.message}</AlertDescription>
+          <AlertDescription>
+            <p>{status.message}</p>
+            <p className="mt-1">
+              <a
+                href="tel:+491607621876"
+                className="font-semibold underline underline-offset-4"
+              >
+                Lieber anrufen: 0160&nbsp;7621876 ›
+              </a>
+            </p>
+          </AlertDescription>
         </Alert>
       )}
 

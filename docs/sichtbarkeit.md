@@ -57,7 +57,7 @@ dort. Anleitung Schritt für Schritt: docs/google-einrichtung.md, Teil 2.
 
 Überall exakt dieselben Angaben verwenden:
 
-> **Sitalo Webdesign** · Hamburg · 0160 7621876 · info@sitalo.de ·
+> **Sitalo Webdesign** · Hamburg · 0160 7621876 ·
 > https://www.sitalo.de · Kategorie „Webdesigner“
 
 Kurzbeschreibung zum Kopieren (überall gleich):

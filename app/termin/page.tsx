@@ -12,7 +12,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Kostenloses Erstgespräch buchen · Webdesign",
   description:
-    "Erstgespräch (bis zu 30 Minuten) mit Sitalo aus Hamburg. Tag und Uhrzeit wählen, Bestätigung per E-Mail meist am selben Werktag.",
+    "Erstgespräch (bis zu 30 Minuten) mit Sitalo aus Hamburg. Tag und Uhrzeit wählen, wir bestätigen meist am selben Werktag.",
   alternates: { canonical: "/termin" },
   openGraph: ogFor("/termin"),
 };
@@ -45,7 +45,7 @@ export default function TerminPage() {
     "@type": "Service",
     name: "Erstgespräch (bis zu 30 Minuten)",
     description:
-      "Erstgespräch (bis zu 30 Minuten, meist reicht eine Viertelstunde) per Video, Telefon oder vor Ort in Hamburg. Termin direkt auswählen, Bestätigung meist am selben Werktag per Mail.",
+      "Erstgespräch (bis zu 30 Minuten, meist reicht eine Viertelstunde) per Video, Telefon oder vor Ort in Hamburg. Termin direkt auswählen, Bestätigung meist am selben Werktag.",
     provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "Country", name: "Deutschland" },
     serviceType: "Beratungstermin",
@@ -88,8 +88,8 @@ export default function TerminPage() {
           meta="Per Video oder Telefon, in Hamburg auf Wunsch bei einem Kaffee."
         >
           Im Kalender sind 30 Minuten reserviert, meist reicht eine Viertelstunde.
-          Sie wählen Tag und Uhrzeit, wir bestätigen meist am selben Werktag per
-          Mail, mit einem Link für Ihren Kalender.
+          Sie wählen Tag und Uhrzeit, wir bestätigen den Termin meist am selben
+          Werktag.
         </PageHero>
 
         <section aria-label="Termin wählen">

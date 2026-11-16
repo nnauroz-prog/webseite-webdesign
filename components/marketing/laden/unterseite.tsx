@@ -430,7 +430,7 @@ export function BildKachel({
 export function KontaktKarte({
   id = "kontakt",
   titel = "Erzählen Sie uns von Ihrem Betrieb.",
-  zeile = "Das Anfrageformular hat drei Pflichtfelder. Wir antworten meist am selben Werktag.",
+  zeile = "Das Anfrageformular hat vier Pflichtfelder. Wir antworten meist am selben Werktag.",
   pille = { href: "/anfrage", label: "Anfrage schreiben" },
   link = { href: "/termin", label: "Erstgespräch buchen" },
   foto,

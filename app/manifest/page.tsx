@@ -87,7 +87,7 @@ const SAETZE: { thema: string; lead: string; coda: string }[] = [
   {
     thema: "Antwortzeit",
     lead: "Wir antworten meist am selben Werktag.",
-    coda: "Nachts schlafen wir, und am Wochenende bleibt die Mail bis Montag liegen.",
+    coda: "Nachts schlafen wir, und am Wochenende bleiben Anfragen bis Montag liegen.",
   },
   {
     thema: "Eigentum",

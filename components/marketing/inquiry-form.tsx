@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 import { ArrowRight, Check, ChevronDown } from "lucide-react";
 
 import { PAKETE } from "@/lib/pakete-data";
+import { telefonGueltig } from "@/lib/kontakt-pflicht";
 import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 import {
@@ -62,12 +63,12 @@ type FormData = {
   /** Pflicht */
   name: string;
   email: string;
+  phone: string;
   message: string;
   consent: boolean;
   /** Honeypot — bots fill it, humans don't. */
   websiteUrl: string;
   /** Optional details */
-  phone: string;
   company: string;
   industry: string;
   packagePref: InquiryPackage | "";
@@ -80,7 +81,12 @@ type Status =
   | { kind: "success" }
   | { kind: "error"; message: string };
 
-type PflichtFeld = "inq-name" | "inq-email" | "inq-message" | "inq-consent";
+type PflichtFeld =
+  | "inq-name"
+  | "inq-email"
+  | "inq-phone"
+  | "inq-message"
+  | "inq-consent";
 
 export function InquiryForm({
   initialPackage,
@@ -140,8 +146,20 @@ export function InquiryForm({
             feld: "inq-email" as const,
             label: "E-Mail",
             hinweis: emailLeer
-              ? "Wohin dürfen wir antworten? Bitte Ihre E-Mail-Adresse."
+              ? "Bitte Ihre E-Mail-Adresse."
               : "Die Adresse sieht noch nicht vollständig aus, etwa name@betrieb.de.",
+          },
+        ]),
+    ...(telefonGueltig(data.phone)
+      ? []
+      : [
+          {
+            feld: "inq-phone" as const,
+            label: "Telefon",
+            hinweis:
+              data.phone.trim() === ""
+                ? "Unter welcher Nummer erreichen wir Sie?"
+                : "Die Nummer sieht noch nicht vollständig aus, etwa 040 1234567.",
           },
         ]),
     ...(data.message.trim().length >= 5
@@ -234,6 +252,7 @@ export function InquiryForm({
 
   const hName = hinweis("inq-name");
   const hEmail = hinweis("inq-email");
+  const hPhone = hinweis("inq-phone");
   const hMessage = hinweis("inq-message");
   const hConsent = hinweis("inq-consent");
 
@@ -248,7 +267,7 @@ export function InquiryForm({
         <h2 id="inq-titel" className={f.titel}>
           Ihre Anfrage
         </h2>
-        <p className="notiz-mono">3 Felder und ein Häkchen · rund 1 Minute</p>
+        <p className="notiz-mono">4 Felder und ein Häkchen · rund 1 Minute</p>
       </div>
 
       {/* Honeypot — visuell versteckt */}
@@ -320,6 +339,27 @@ export function InquiryForm({
       </div>
 
       <div className={f.voll}>
+        <Feld id="inq-phone" label="Telefon" pflicht hinweis={hPhone}>
+          <input
+            id="inq-phone"
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            required
+            value={data.phone}
+            onChange={(e) => update("phone", e.target.value)}
+            onBlur={(e) => verlassen("inq-phone", e.target.value)}
+            autoComplete="tel"
+            enterKeyHint="next"
+            placeholder="Unter dieser Nummer erreichen wir Sie"
+            aria-invalid={hPhone ? true : undefined}
+            aria-describedby={hPhone ? "inq-phone-hinweis" : undefined}
+            className={f.eingabe}
+          />
+        </Feld>
+      </div>
+
+      <div className={f.voll}>
         <Feld id="inq-message" label="Was haben Sie vor?" pflicht hinweis={hMessage}>
           <textarea
             id="inq-message"
@@ -381,18 +421,6 @@ export function InquiryForm({
                   label: `${p.name} (${p.setup})`,
                 })),
               ]}
-            />
-          </Feld>
-          <Feld id="inq-phone" label="Telefon">
-            <input
-              id="inq-phone"
-              type="tel"
-              inputMode="tel"
-              value={data.phone}
-              onChange={(e) => update("phone", e.target.value)}
-              autoComplete="tel"
-              placeholder="für schnelle Rückfragen"
-              className={f.eingabe}
             />
           </Feld>
           <Feld id="inq-timeframe" label="Zeitrahmen">
@@ -516,7 +544,7 @@ function SuccessScreen() {
       </span>
       <h2 className={f.erfolgTitel}>Angekommen. Danke!</h2>
       <p className={f.erfolgSatz}>
-        Wir lesen Ihre Nachricht jetzt und antworten meist am selben
+        Wir lesen Ihre Nachricht jetzt und melden uns meist am selben
         Werktag. Was abends oder am Wochenende kommt, beantworten wir am
         nächsten Werktag.{" "}
         <Link href="/erreichbarkeit">Mehr zu unseren Antwortzeiten</Link>.

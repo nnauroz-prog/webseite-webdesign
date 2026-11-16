@@ -71,7 +71,7 @@ export function GET(request: Request): Response {
   }
 
   const description = icsEscape(
-    `Erstgespräch mit Sitalo Webdesign (${SLOT_DURATION_MIN} Minuten). Falls etwas dazwischenkommt: ${CONTACT_PHONE_DISPLAY}.`,
+    `Erstgespräch mit Sitalo Webdesign (${SLOT_DURATION_MIN} Minuten). Falls etwas dazwischenkommt: ${CONTACT_PHONE_DISPLAY} oder ${SITE_URL}/anfrage.`,
   );
 
   const body = icsDocument([

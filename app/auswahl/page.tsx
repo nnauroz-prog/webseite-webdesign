@@ -170,7 +170,7 @@ function CriteriaList() {
 const STEPS: { title: string; body: string }[] = [
   {
     title: "Durchsicht oder kurze Anfrage",
-    body: "Wir sehen uns Ihre jetzige Seite an und schicken drei bis fünf Punkte per Mail zurück. Oder wir lesen Ihre Anfrage und melden uns, meist am selben Werktag. Daran sehen Sie, wie wir arbeiten, und wir sehen, worum es geht.",
+    body: "Wir sehen uns Ihre jetzige Seite an und nennen Ihnen drei bis fünf Punkte. Oder wir lesen Ihre Anfrage und melden uns, meist am selben Werktag. Daran sehen Sie, wie wir arbeiten, und wir sehen, worum es geht.",
   },
   {
     title: "Ein kurzes Gespräch",

@@ -52,7 +52,7 @@ export const LEXIKON: LexikonEntry[] = [
     plain:
       "Content-Management-System: die Oberfläche, mit der man Texte und Bilder einer Website ändert, ohne Code anzufassen. WordPress ist das bekannteste. Ein CMS ist nützlich, wenn sich Inhalte oft ändern, und Ballast, wenn nicht.",
     bottomLine:
-      "Zählen Sie nach, wie oft Sie im letzten Jahr etwas ändern wollten. Bei ein paar Mal im Jahr ist eine kurze Mail an uns schneller als jedes CMS.",
+      "Zählen Sie nach, wie oft Sie im letzten Jahr etwas ändern wollten. Bei ein paar Mal im Jahr ist eine kurze Nachricht an uns schneller als jedes CMS.",
   },
   {
     term: "SEO",

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
  * mitlaufend), rechts die nummerierten Abschnitte. Die Nummern
  * bleiben, weil Abschnitte aufeinander verweisen.
  */
-const STAND = { iso: "2026-11-01", text: "1. November 2026" };
+const STAND = { iso: "2026-11-16", text: "16. November 2026" };
 
 const ABSCHNITTE = [
   { id: "verantwortlich", titel: "Verantwortliche Stelle" },
@@ -151,8 +151,9 @@ export default function DatenschutzPage() {
               <Abschnitt id="anfragen">
                 <p>
                   Wenn Sie das Anfrageformular, das Formular für die kostenlose Durchsicht oder die Terminbuchung nutzen, verarbeiten wir Ihre
-                  Angaben (Name, E-Mail, optional Telefon, Firma, Branche, Paket- und Zeitwunsch, Website-Adresse,
-                  Nachricht, gewählter Termin), um Ihre Anfrage zu beantworten oder den Termin zu bestätigen.
+                  Angaben (Name, E-Mail, Telefon und je nach Formular Firma, Branche, Paket- und Zeitwunsch,
+                  Website-Adresse, Nachricht, gewählter Termin), um Ihre Anfrage zu beantworten oder den Termin zu
+                  bestätigen.
                   Rechtsgrundlage ist {zitat("Art. 6 Abs. 1 lit. b DSGVO")}. Das gilt genauso, wenn Sie uns eine E-Mail schreiben
                   oder anrufen.
                 </p>

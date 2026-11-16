@@ -129,7 +129,7 @@ export function Briefkarte({
                     <dt className="notiz-mono">Schriftlich</dt>
                     <dd>
                       <Link href="/anfrage" className={b.listeLink}>
-                        Anfrageformular, drei Pflichtfelder
+                        Anfrageformular, vier Pflichtfelder
                       </Link>
                     </dd>
                   </div>

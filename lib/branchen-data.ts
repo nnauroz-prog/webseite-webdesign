@@ -167,7 +167,7 @@ export const BRANCHEN: Branche[] = [
       },
       {
         title: "Sprechzeiten und Notdienst",
-        body: "Reguläre Sprechzeiten, Urlaubszeiten und der Notdienst stehen getrennt und gut lesbar. Ändern sich die Zeiten, genügt eine kurze Mail an uns.",
+        body: "Reguläre Sprechzeiten, Urlaubszeiten und der Notdienst stehen getrennt und gut lesbar. Ändern sich die Zeiten, genügt eine kurze Nachricht an uns.",
       },
       {
         title: "Behandlungen verständlich",
@@ -294,7 +294,7 @@ export const BRANCHEN: Branche[] = [
     detailHeadline: "Karte, Öffnungszeiten und Anfahrt stehen ganz oben.",
     detailIntro: [
       "Wer am Handy nach Ihrem Café sucht, will wissen, ob heute geöffnet ist und was es gibt. Danach kommt die Frage nach dem Weg. Findet man das nicht auf den ersten Blick, geht man eben ins Lokal nebenan.",
-      "Die Karte muss stimmen. Ein PDF vom letzten Jahr lässt vermuten, dass es in der Küche ähnlich aussieht. Wir setzen die Karte deshalb als Text auf die Seite. Mit Premium ändern Sie Mittagstisch und Wochenangebot selbst, bei den anderen Paketen schicken Sie uns die Änderung per Mail.",
+      "Die Karte muss stimmen. Ein PDF vom letzten Jahr lässt vermuten, dass es in der Küche ähnlich aussieht. Wir setzen die Karte deshalb als Text auf die Seite. Mit Premium ändern Sie Mittagstisch und Wochenangebot selbst, bei den anderen Paketen geben Sie uns die Änderung kurz durch.",
     ],
     typicalPages: [
       "Startseite mit Tagesangebot",

@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { telefonGueltig } from "@/lib/kontakt-pflicht";
 import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 
@@ -27,6 +28,7 @@ type FormData = {
   websiteUrl: string;
   name: string;
   email: string;
+  phone: string;
   note: string;
   consent: boolean;
   /** Honeypot — bots fill it, humans don't. */
@@ -47,6 +49,7 @@ export function AuditForm() {
     websiteUrl: "",
     name: "",
     email: "",
+    phone: "",
     note: "",
     consent: false,
     honeypot: "",
@@ -67,8 +70,14 @@ export function AuditForm() {
     /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/.test(hostnamePart);
   const emailOk = /\S+@\S+\.\S+/.test(data.email);
   const nameOk = data.name.trim().length >= 2;
+  const telefonOk = telefonGueltig(data.phone);
   const canSubmit =
-    urlOk && emailOk && nameOk && data.consent && status.kind !== "submitting";
+    urlOk &&
+    emailOk &&
+    telefonOk &&
+    nameOk &&
+    data.consent &&
+    status.kind !== "submitting";
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -91,6 +100,7 @@ export function AuditForm() {
         ["Audit-URL", cleanedUrl],
         ["Name", data.name],
         ["E-Mail", data.email],
+        ["Telefon", data.phone],
         ["Hinweis", data.note],
       ],
     });
@@ -121,9 +131,9 @@ export function AuditForm() {
               Die Adresse ist bei uns angekommen.
             </p>
             <p className="text-muted-foreground mt-4 max-w-xl text-pretty text-[15px] leading-relaxed">
-              Meist innerhalb von zwei Werktagen bekommen Sie eine E-Mail mit
-              drei bis fünf Punkten: was an Ihrer Seite funktioniert und was wir
-              zuerst ändern würden. Wann wir antworten, steht unter{" "}
+              Meist innerhalb von zwei Werktagen melden wir uns mit drei bis
+              fünf Punkten: was an Ihrer Seite funktioniert und was wir zuerst
+              ändern würden. Wann wir erreichbar sind, steht unter{" "}
               <Link
                 href="/erreichbarkeit"
                 className="text-foreground underline underline-offset-4"
@@ -217,6 +227,23 @@ export function AuditForm() {
         </div>
 
         <div>
+          <Label htmlFor="audit-phone" className={LABEL}>
+            Telefon
+          </Label>
+          <Input
+            id="audit-phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="Unter dieser Nummer erreichen wir Sie"
+            value={data.phone}
+            onChange={(e) => setData({ ...data, phone: e.target.value })}
+            className={FIELD}
+            required
+          />
+        </div>
+
+        <div>
           <Label htmlFor="audit-note" className={LABEL}>
             Worauf sollen wir achten?{" "}
             <span className="text-muted-foreground font-normal">(optional)</span>
@@ -273,14 +300,24 @@ export function AuditForm() {
 
         {status.kind === "error" && (
           <Alert variant="destructive" className="rounded-[12px]">
-            <AlertDescription>{status.message}</AlertDescription>
+            <AlertDescription>
+              <p>{status.message}</p>
+              <p className="mt-1">
+                <a
+                  href="tel:+491607621876"
+                  className="font-semibold underline underline-offset-4"
+                >
+                  Lieber anrufen: 0160&nbsp;7621876 ›
+                </a>
+              </p>
+            </AlertDescription>
           </Alert>
         )}
       </div>
 
       <div className="border-border flex flex-col items-stretch gap-3 border-t px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8">
         <p className="text-muted-foreground text-[13.5px]">
-          Kostenlos. Die Antwort kommt per E-Mail.
+          Kostenlos. Wir melden uns bei Ihnen.
         </p>
         <button
           type="submit"

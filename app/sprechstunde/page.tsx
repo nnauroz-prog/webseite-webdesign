@@ -292,8 +292,8 @@ function EigenerTermin() {
           </h2>
           <p className="text-muted-foreground mt-5 max-w-xl text-pretty text-[16.5px] leading-relaxed">
             Die Sprechstunde ist offen für alle und nicht planbar. Wollen Sie über Ihr Projekt sprechen, buchen Sie
-            einen eigenen Termin. Tag und Uhrzeit wählen Sie selbst, bis zu 30 Minuten sind reserviert. Die Bestätigung
-            kommt meist am selben Werktag per Mail.
+            einen eigenen Termin. Tag und Uhrzeit wählen Sie selbst, bis zu 30 Minuten sind reserviert. Wir bestätigen
+            den Termin meist am selben Werktag.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:col-span-4 lg:col-start-9 lg:justify-end">
