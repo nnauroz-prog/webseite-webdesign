@@ -188,7 +188,7 @@ describe("Sprüche des Tages", () => {
     assert.equal(extraFuer("2026-11-16", 1), SPRUECHE_EXTRA[2]);
     assert.equal(extraFuer("2026-11-15", 0), null);
     assert.equal(extraFuer("2026-11-15", 3), null);
-    const posts = postsFuer("2026-11-17");
+    const posts = postsFuer("2026-11-17", {});
     assert.deepEqual(
       posts.map((p) => p.platz),
       [0, 1, 2],
@@ -201,7 +201,7 @@ describe("Sprüche des Tages", () => {
       ),
     );
     // Vor dem Start der Zusatz-Posts gibt es nur den Spruch des Tages.
-    assert.equal(postsFuer("2026-11-10").length, 1);
+    assert.equal(postsFuer("2026-11-10", {}).length, 1);
   });
 
   it("wiederholt keinen Zusatz-Post, solange der Vorrat reicht, und zählt ihn", () => {
@@ -246,7 +246,7 @@ describe("Sprüche des Tages", () => {
   });
 
   it("liefert sieben Tage rückwärts, heute zuerst", () => {
-    const woche = spruecheBis(new Date("2026-11-15T10:00:00Z"));
+    const woche = spruecheBis(new Date("2026-11-15T10:00:00Z"), 7, {});
     assert.deepEqual(
       woche.map((t) => t.datum),
       [
@@ -266,7 +266,7 @@ describe("Sprüche des Tages", () => {
   });
 
   it("baut Karte und Beitragstext für einen beliebigen Tag", () => {
-    const k = spruchTag("2027-02-28");
+    const k = spruchTag("2027-02-28", {});
     assert.equal(k.datum, "2027-02-28");
     assert.equal(k.text, spruchFuer("2027-02-28").text);
     const b = storyBeschriftung(k);
@@ -274,5 +274,40 @@ describe("Sprüche des Tages", () => {
       b.startsWith(`${k.text}\n${k.zusatz}\n\n#webdesign #hamburg #sitalo `),
     );
     assert.doesNotMatch(b, /undefined/);
+  });
+  it("bevorzugt tagesaktuelle Karten und füllt mit der Reserve auf", () => {
+    const aktuell = {
+      "2026-11-27": [
+        {
+          kicker: "Hot Take" as const,
+          text: "Heute rabattiert die halbe Stadt, Ihre Website bleibt einfach gut.",
+          betont: "einfach gut",
+          zusatz: "Ein klares Angebot braucht keinen Countdown.",
+          thema: "eindruck" as const,
+          anlass: "Black Friday",
+        },
+      ],
+    };
+    const posts = postsFuer("2026-11-27", aktuell);
+    assert.deepEqual(
+      posts.map((p) => [p.platz, p.herkunft, p.anlass]),
+      [
+        [0, "aktuell", "Black Friday"],
+        [1, "vorrat", null],
+        [2, "vorrat", null],
+      ],
+    );
+    assert.equal(posts[0].text, aktuell["2026-11-27"][0].text);
+    assert.equal(posts[1].text, extraFuer("2026-11-27", 1)?.text);
+    assert.ok(posts.every((p) => p.nummer === posts[0].nummer));
+    // Ohne Eintrag für den Tag gilt die Reserve.
+    const ohne = postsFuer("2026-11-28", aktuell);
+    assert.equal(ohne[0].text, spruchFuer("2026-11-28").text);
+    assert.equal(ohne[0].herkunft, "vorrat");
+    assert.equal(spruchTag("2026-11-27", aktuell).anlass, "Black Friday");
+    assert.equal(
+      spruecheBis(new Date("2026-11-28T10:00:00Z"), 2, aktuell)[1].anlass,
+      "Black Friday",
+    );
   });
 });

@@ -7,10 +7,15 @@
  *
  * Regeln für die Karten prüft tests/sprueche.test.ts.
  */
+import { POSTS_AKTUELL, type AktuellerPost } from "@/lib/posts-aktuell";
 import { SPRUECHE_EXTRA } from "@/lib/sprueche-extra";
 import { SPRUECHE } from "@/lib/sprueche-liste";
 
-export { SPRUECHE, SPRUECHE_EXTRA };
+export { POSTS_AKTUELL, SPRUECHE, SPRUECHE_EXTRA };
+export type { AktuellerPost };
+
+/** Tagesaktuelle Karten je Kalendertag (yyyy-mm-dd), siehe lib/posts-aktuell.ts. */
+export type AktuelleKarten = Readonly<Record<string, readonly AktuellerPost[]>>;
 
 /**
  * Posts je Tag: der Spruch des Tages (Platz 0, auch auf /journal) und
@@ -195,6 +200,10 @@ export type SpruchTag = Spruch & {
   nummer: number;
   /** 0 = Spruch des Tages, 1 und 2 = Zusatz-Posts */
   platz: number;
+  /** Anlass eines tagesaktuellen Posts („Black Friday“), bei Reserve-Karten null. */
+  anlass: string | null;
+  /** „aktuell“: am Morgen zum Tag geschrieben; „vorrat“: Karte aus der Reserve. */
+  herkunft: "aktuell" | "vorrat";
 };
 
 /** Ein Kalendertag (yyyy-mm-dd) um n Tage versetzt. */
@@ -205,36 +214,89 @@ export function tagVersetzt(iso: string, n: number): string {
     .slice(0, 10);
 }
 
-/** Die Karte für einen Kalendertag (yyyy-mm-dd), mit Datum zum Anzeigen. */
-export function spruchTag(datum: string): SpruchTag {
+type TagKopf = Pick<
+  SpruchTag,
+  "datum" | "datumText" | "datumKurz" | "tagImMonat" | "nummer"
+>;
+
+/** Datumsangaben eines Kalendertags (yyyy-mm-dd), für alle Posts des Tages gleich. */
+function tagKopf(datum: string): TagKopf {
   const [y, m, d] = datum.split("-").map(Number);
   const tag = new Date(Date.UTC(y, m - 1, d));
   return {
-    ...spruchFuer(datum),
     datum,
     datumText: BERLIN_LANG.format(tag),
     datumKurz: BERLIN_KURZ.format(tag),
     tagImMonat: String(tag.getUTCDate()),
     nummer: tagNummer(datum),
-    platz: 0,
   };
 }
 
-/** Alle Posts eines Kalendertags: der Spruch des Tages, dann die Zusatz-Posts. */
-export function postsFuer(datum: string): SpruchTag[] {
-  const erster = spruchTag(datum);
-  const posts = [erster];
-  for (let platz = 1; platz < POSTS_PRO_TAG; platz++) {
-    const extra = extraFuer(datum, platz);
-    if (extra) posts.push({ ...erster, ...extra, platz });
+/**
+ * Ein Post aus Karte und Tag. Die Felder werden einzeln übernommen, damit
+ * nichts von einer Karte auf eine andere durchrutscht (etwa der Anlass).
+ */
+function alsTag(
+  kopf: TagKopf,
+  s: Spruch,
+  platz: number,
+  anlass: string | null,
+  herkunft: SpruchTag["herkunft"],
+): SpruchTag {
+  return {
+    kicker: s.kicker,
+    text: s.text,
+    betont: s.betont,
+    zusatz: s.zusatz,
+    thema: s.thema,
+    ...kopf,
+    platz,
+    anlass,
+    herkunft,
+  };
+}
+
+/**
+ * Alle Posts eines Kalendertags (yyyy-mm-dd): Platz 0 ist der Spruch des
+ * Tages, Platz 1 und 2 die Zusatz-Posts. Tagesaktuelle Karten (am Morgen
+ * zum Tag geschrieben) haben Vorrang; wo es keine gibt, springt die
+ * Reserve ein (spruchFuer, extraFuer).
+ */
+export function postsFuer(
+  datum: string,
+  aktuell: AktuelleKarten = POSTS_AKTUELL,
+): SpruchTag[] {
+  const kopf = tagKopf(datum);
+  const heute = aktuell[datum] ?? [];
+  const posts: SpruchTag[] = [];
+  for (let platz = 0; platz < POSTS_PRO_TAG; platz++) {
+    const a = heute[platz];
+    if (a) {
+      posts.push(alsTag(kopf, a, platz, a.anlass, "aktuell"));
+      continue;
+    }
+    const reserve = platz === 0 ? spruchFuer(datum) : extraFuer(datum, platz);
+    if (reserve) posts.push(alsTag(kopf, reserve, platz, null, "vorrat"));
   }
   return posts;
 }
 
+/** Der Spruch des Tages (Platz 0) für einen Kalendertag, mit Datum zum Anzeigen. */
+export function spruchTag(
+  datum: string,
+  aktuell: AktuelleKarten = POSTS_AKTUELL,
+): SpruchTag {
+  return postsFuer(datum, aktuell)[0];
+}
+
 /** Heute und die Tage davor, heute zuerst. */
-export function spruecheBis(jetzt: Date, anzahl = 7): SpruchTag[] {
+export function spruecheBis(
+  jetzt: Date,
+  anzahl = 7,
+  aktuell: AktuelleKarten = POSTS_AKTUELL,
+): SpruchTag[] {
   const heute = tagInHamburg(jetzt);
   return Array.from({ length: anzahl }, (_, i) =>
-    spruchTag(tagVersetzt(heute, -i)),
+    spruchTag(tagVersetzt(heute, -i), aktuell),
   );
 }
