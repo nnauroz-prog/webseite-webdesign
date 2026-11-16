@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import type { Summen } from "@/lib/admin/zahlen";
+import type { PflegeKachel, Summen } from "@/lib/admin/zahlen";
 
 import { DbProblem } from "@/app/admin/db-problem";
 import { Disclosure } from "@/app/admin/disclosure";
@@ -18,6 +18,7 @@ import {
   angeboteFuerZahlen,
   LEADS_GRENZE,
   leadsFuerZahlen,
+  pflegeFuerZahlen,
   reaktionenFuerZahlen,
 } from "@/lib/admin/zahlen-store";
 import {
@@ -35,9 +36,12 @@ import {
   leseAb,
   MIN_ANTWORTEN,
   MIN_ENTSCHIEDEN,
+  pflegeAusAngeboten,
+  pflegeAusProjekten,
   wochenSpanne,
 } from "@/lib/admin/zahlen";
 import { KIND_LABELS, OUTCOME_LABELS } from "@/lib/leads-meta";
+import { PROJEKTE_LIMIT } from "@/lib/projekte-store";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Zahlen" };
@@ -69,11 +73,16 @@ export default async function ZahlenPage() {
   const schema = await checkSchema();
   const v2 = schema.leadsV2 === "ok";
 
-  const [leads, angebote] = await Promise.all([
+  const [leads, angebote, pflegeDaten] = await Promise.all([
     versuch(leadsFuerZahlen(leseAb(now), v2)),
     schema.angebote === "fehlt"
       ? Promise.resolve(null)
       : versuch(angeboteFuerZahlen()),
+    // Mit der Tabelle projekte wie auf /admin/kunden: Beginn und Ende
+    // der Pflege sind bekannt.
+    schema.angebote === "ok" && schema.projekte === "ok"
+      ? versuch(pflegeFuerZahlen())
+      : Promise.resolve(null),
   ]);
 
   if (!leads.ok) {
@@ -102,6 +111,24 @@ export default async function ZahlenPage() {
       : null;
   // null: Tabelle fehlt (Datenbank-Update), sonst Fehler beim Lesen.
   const angeboteFehler = angebote && !angebote.ok ? angebote.error : null;
+  const pflegeFehler =
+    pflegeDaten && !pflegeDaten.ok ? pflegeDaten.error : null;
+  // Mit Projekten dieselbe Rechnung wie /admin/kunden, sonst nur aus
+  // den angenommenen Angeboten (Kündigungen unbekannt).
+  const pflege: PflegeKachel | null =
+    pflegeDaten && pflegeDaten.ok && pflegeDaten.value
+      ? pflegeAusProjekten(
+          pflegeDaten.value.angebote,
+          pflegeDaten.value.projekte,
+          now,
+          pflegeDaten.value.gekappt ? PROJEKTE_LIMIT : null,
+        )
+      : !pflegeFehler && angeboteDaten
+        ? pflegeAusAngeboten(
+            angeboteDaten.zahlen.pflege,
+            angeboteDaten.gekappt ? ANGEBOTE_GRENZE : null,
+          )
+        : null;
 
   return (
     <>
@@ -162,26 +189,22 @@ export default async function ZahlenPage() {
         </Karte>
 
         <Karte id="pflege" titel="Laufende Pflege">
-          {angeboteFehler ? (
-            <Leise>Gerade nicht lesbar, siehe Angebote.</Leise>
-          ) : !angeboteDaten ? (
-            <Leise>Gibt es nach dem Datenbank-Update für Angebote.</Leise>
-          ) : (
+          {pflege ? (
             <>
               <Kennzahl
                 label="Pro Monat"
-                wert={formatEuroGanz(angeboteDaten.zahlen.pflege.monatlich)}
+                wert={formatEuroGanz(pflege.monatlich)}
               />
-              <Hinweis>
-                {angeboteDaten.zahlen.pflege.anzahl === 0
-                  ? "Noch kein angenommenes Angebot mit Monatsbeitrag."
-                  : `Monatsbeiträge aus ${anzahl(
-                      angeboteDaten.zahlen.pflege.anzahl,
-                      "angenommenen Angebot",
-                      "angenommenen Angeboten",
-                    )}, inkl. USt. Kündigungen sind hier nicht erfasst.`}
-              </Hinweis>
+              {pflege.hinweise.map((h) => (
+                <Hinweis key={h}>{h}</Hinweis>
+              ))}
             </>
+          ) : pflegeFehler ? (
+            <DbProblem compact error={pflegeFehler} retryHref={RETRY} />
+          ) : angeboteFehler ? (
+            <Leise>Gerade nicht lesbar, siehe Angebote.</Leise>
+          ) : (
+            <Leise>Gibt es nach dem Datenbank-Update für Angebote.</Leise>
           )}
         </Karte>
 

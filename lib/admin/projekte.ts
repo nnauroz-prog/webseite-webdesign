@@ -1,7 +1,8 @@
 /**
  * Kunden & Projekte: Jedes angenommene Angebot ist ein Projekt mit fünf
  * Schritten (Anzahlung bis Livegang). Dazu die monatliche Pflege der
- * Kunden, deren Angebot einen Monatsbeitrag hat.
+ * Kunden, deren Angebot einen Monatsbeitrag hat. Sie beginnt mit dem
+ * Livegang oder an einem gespeicherten Tag (geplant, aktiv, beendet).
  *
  * Rein (ohne Server- oder Next-Importe): in Seiten, Client-Komponenten,
  * Server Actions und unter node --test nutzbar. Gespeichert wird über
@@ -252,26 +253,42 @@ export function monatlichBrutto(
 }
 
 /**
- * Seit wann die Pflege läuft: gespeichert, sonst der Livegang, sonst
- * der Tag der Annahme.
+ * Ab wann die Pflege läuft: gespeichert, sonst der Livegang. Ohne beides
+ * hat sie noch nicht begonnen (null): Der Monatsbeitrag beginnt mit dem
+ * Livegang, so steht es in jedem Angebot.
  */
 export function pflegeSeit(
   projekt: Pick<ProjektRow, "pflege_seit" | "livegang_am"> | null,
-  angenommenAm: string | null,
 ): string | null {
-  return projekt?.pflege_seit ?? projekt?.livegang_am ?? angenommenAm;
+  return projekt?.pflege_seit ?? projekt?.livegang_am ?? null;
 }
 
 /**
- * Läuft die Pflege? Nur mit Monatsbeitrag und solange pflege_bis leer
- * ist oder in der Zukunft liegt.
+ * Wo die Pflege steht:
+ * - geplant: noch kein Beginn (vor dem Livegang) oder Beginn in der Zukunft
+ * - aktiv: Beginn bis heute, kein Ende oder Ende in der Zukunft
+ * - beendet: Ende bis heute (auch wenn sie nie begonnen hat)
  */
+export type PflegeStand = "geplant" | "aktiv" | "beendet";
+
+export function pflegeStand(
+  seit: string | null,
+  bis: string | null,
+  heute: string,
+): PflegeStand {
+  if (bis !== null && bis <= heute) return "beendet";
+  if (seit === null || seit > heute) return "geplant";
+  return "aktiv";
+}
+
+/** Läuft die Pflege? Nur mit Monatsbeitrag und im Stand „aktiv“. */
 export function pflegeAktiv(
   monatlich: number,
-  pflegeBis: string | null,
+  seit: string | null,
+  bis: string | null,
   heute: string,
 ): boolean {
-  return monatlich > 0 && (pflegeBis === null || pflegeBis > heute);
+  return monatlich > 0 && pflegeStand(seit, bis, heute) === "aktiv";
 }
 
 /**
@@ -323,8 +340,11 @@ export type ProjektSicht = {
   ansprechpartner: string | null;
   pflege: {
     monatlich: number;
+    /** null: noch kein Beginn (beginnt mit dem Livegang). */
     seit: string | null;
     bis: string | null;
+    stand: PflegeStand;
+    /** Mit Monatsbeitrag und stand „aktiv“: zählt in der Monatssumme. */
     aktiv: boolean;
   };
 };
@@ -342,7 +362,9 @@ export function projektSicht(
     : null;
   const firma = angebot.kunde_firma?.trim() || null;
   const name = angebot.kunde_name.trim();
+  const seit = pflegeSeit(projekt);
   const bis = projekt?.pflege_bis ?? null;
+  const monatlich = summen.monatlich.brutto;
   return {
     angebot,
     projekt,
@@ -353,10 +375,11 @@ export function projektSicht(
     kunde: firma ?? (name || "Ohne Namen"),
     ansprechpartner: firma && name ? name : null,
     pflege: {
-      monatlich: summen.monatlich.brutto,
-      seit: pflegeSeit(projekt, angenommenAm),
+      monatlich,
+      seit,
       bis,
-      aktiv: pflegeAktiv(summen.monatlich.brutto, bis, heute),
+      stand: pflegeStand(seit, bis, heute),
+      aktiv: pflegeAktiv(monatlich, seit, bis, heute),
     },
   };
 }
@@ -403,24 +426,46 @@ export function sortiereProjekte(list: readonly ProjektSicht[]): {
   return { inArbeit, fertig };
 }
 
+/** Frühestes Datum zuerst, ohne Datum (null) zuletzt. */
+function datumOhneZuletzt(a: string | null, b: string | null): number {
+  if (a === b) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  return a.localeCompare(b);
+}
+
 /**
- * Pflege-Kunden: laufende (nach Beginn sortiert) und beendete, dazu die
- * Summe aller laufenden je Monat.
+ * Pflege-Kunden: laufende (nach Beginn sortiert), noch nicht begonnene
+ * (mit Beginn-Datum zuerst, sonst länger angenommen zuerst) und
+ * beendete, dazu die Summe aller laufenden je Monat. Dieselbe Rechnung
+ * gilt für /admin/kunden und die Kachel „Laufende Pflege“ auf
+ * /admin/zahlen (pflegeAusProjekten in lib/admin/zahlen.ts).
  */
 export function pflegeUebersicht(list: readonly ProjektSicht[]): {
   aktiv: ProjektSicht[];
+  geplant: ProjektSicht[];
   beendet: ProjektSicht[];
   summeMonatlich: number;
 } {
   const mitBeitrag = list.filter((p) => p.pflege.monatlich > 0);
   const aktiv = mitBeitrag
-    .filter((p) => p.pflege.aktiv)
+    .filter((p) => p.pflege.stand === "aktiv")
     .sort((a, b) => (a.pflege.seit ?? "").localeCompare(b.pflege.seit ?? ""));
+  const geplant = mitBeitrag
+    .filter((p) => p.pflege.stand === "geplant")
+    .sort(
+      (a, b) =>
+        datumOhneZuletzt(a.pflege.seit, b.pflege.seit) ||
+        (a.angebot.accepted_at ?? "").localeCompare(
+          b.angebot.accepted_at ?? "",
+        ),
+    );
   const beendet = mitBeitrag
-    .filter((p) => !p.pflege.aktiv)
+    .filter((p) => p.pflege.stand === "beendet")
     .sort((a, b) => (b.pflege.bis ?? "").localeCompare(a.pflege.bis ?? ""));
   return {
     aktiv,
+    geplant,
     beendet,
     summeMonatlich: aktiv.reduce((sum, p) => sum + p.pflege.monatlich, 0),
   };

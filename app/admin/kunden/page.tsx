@@ -230,7 +230,7 @@ export default async function KundenPage() {
             </h2>
             {pflege.aktiv.length === 0 ? (
               <p className="border-border text-muted-foreground rounded-[4px] border border-dashed p-4 text-center text-[15px]">
-                {pflege.beendet.length > 0
+                {pflege.beendet.length > 0 || pflege.geplant.length > 0
                   ? "Gerade läuft bei keinem Kunden eine Pflege."
                   : "Noch kein angenommenes Angebot mit Monatsbeitrag."}
               </p>
@@ -258,6 +258,33 @@ export default async function KundenPage() {
                 </ul>
               </div>
             )}
+            {pflege.geplant.length > 0 ? (
+              // Eigene Gruppe: zählt nicht in „Monatlich zusammen“ und ist
+              // auch nicht beendet. Der Beitrag beginnt mit dem Livegang.
+              <div className="mt-4">
+                <h3
+                  id="pflege-geplant"
+                  className="text-muted-foreground mb-1.5 text-[14px] font-medium"
+                >
+                  Noch nicht begonnen ({pflege.geplant.length})
+                </h3>
+                <ul
+                  aria-labelledby="pflege-geplant"
+                  className="border-border bg-card divide-border divide-y rounded-[4px] border"
+                >
+                  {pflege.geplant.map((p) => (
+                    <li key={p.angebot.id}>
+                      <PflegeZeile p={p} />
+                    </li>
+                  ))}
+                </ul>
+                {projekteAus ? (
+                  <p className="text-muted-foreground mt-1.5 text-[13px] leading-relaxed">
+                    Den Livegang trägst du nach dem Datenbank-Update ein.
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
             {pflege.beendet.length > 0 ? (
               <Disclosure
                 className="mt-3"
@@ -325,17 +352,25 @@ function ProjektKarte({ p }: { p: ProjektSicht }) {
 }
 
 function PflegeZeile({ p }: { p: ProjektSicht }) {
-  const { seit, bis, aktiv } = p.pflege;
-  const zeit = aktiv
-    ? [
-        seit ? `seit ${formatDatum(seit)}` : null,
-        bis ? `endet ${formatDatum(bis)}` : null,
-      ]
-        .filter(Boolean)
-        .join(" · ")
-    : bis
-      ? `beendet ${formatDatum(bis)}`
-      : "";
+  const { seit, bis, stand } = p.pflege;
+  const ende = bis ? `endet ${formatDatum(bis)}` : null;
+  const zeit =
+    stand === "aktiv"
+      ? [seit ? `seit ${formatDatum(seit)}` : null, ende]
+          .filter(Boolean)
+          .join(" · ")
+      : stand === "geplant"
+        ? [
+            seit
+              ? `beginnt am ${formatDatum(seit)}`
+              : "beginnt mit dem Livegang",
+            ende,
+          ]
+            .filter(Boolean)
+            .join(" · ")
+        : bis
+          ? `beendet ${formatDatum(bis)}`
+          : "";
   return (
     <Link
       href={`/admin/kunden/${p.angebot.id}`}

@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { after, before, beforeEach, describe, it } from "node:test";
 
+import type { ProjektAngebot, ProjektRow } from "@/lib/admin/projekte";
 import type { ZahlenAngebot, ZahlenEvent } from "@/lib/admin/zahlen";
 import type { LeadKind } from "@/lib/leads-meta";
 
+import { pflegeUebersicht, projektSichten } from "@/lib/admin/projekte";
 import {
   angebotLage,
   angeboteZahlen,
@@ -20,6 +22,8 @@ import {
   kalenderwoche,
   leseAb,
   median,
+  pflegeAusAngeboten,
+  pflegeAusProjekten,
   wochenSpanne,
   wochenStart,
   zeitraeume,
@@ -314,6 +318,158 @@ describe("Angebote zählen", () => {
   });
 });
 
+// Angenommene Angebote und Projekte wie auf /admin/kunden
+let pn = 0;
+const projektAngebot = (p: Partial<ProjektAngebot> = {}): ProjektAngebot => {
+  pn += 1;
+  const nr = String(pn).padStart(12, "0");
+  return {
+    id: `00000000-0000-4000-8000-${nr}`,
+    lead_id: `10000000-0000-4000-8000-${nr}`,
+    nummer: `A-2026-${String(pn).padStart(4, "0")}`,
+    status: "angenommen",
+    titel: "Angebot: Website",
+    kunde_name: "Kunde",
+    kunde_firma: null,
+    accepted_at: "2026-10-01T09:00:00Z",
+    positionen: business.map((x, i) => ({
+      id: `p${i}`,
+      titel: x.art,
+      beschreibung: "",
+      ...x,
+    })),
+    ust_satz: 19,
+    ...p,
+  };
+};
+const projektZeile = (
+  a: ProjektAngebot,
+  p: Partial<ProjektRow> = {},
+): ProjektRow => ({
+  id: `p-${a.id}`,
+  angebot_id: a.id,
+  lead_id: a.lead_id,
+  created_at: "2026-10-01T09:00:00Z",
+  updated_at: "2026-10-01T09:00:00Z",
+  schritte: {},
+  livegang_am: null,
+  pflege_seit: null,
+  pflege_bis: null,
+  notiz: null,
+  ...p,
+});
+
+describe("Laufende Pflege (wie Kunden & Projekte)", () => {
+  it("beendete Pflege zählt nicht: dieselbe Summe wie auf /admin/kunden", () => {
+    const o1 = projektAngebot();
+    const o2 = projektAngebot();
+    const projekte = [
+      projektZeile(o1, { livegang_am: "2026-10-01", pflege_bis: "2026-10-31" }),
+      projektZeile(o2, { livegang_am: "2026-10-01" }),
+    ];
+    const kachel = pflegeAusProjekten([o1, o2], projekte, NOW, null);
+    const kunden = pflegeUebersicht(projektSichten([o1, o2], projekte, NOW));
+    assert.equal(kachel.monatlich, 7900);
+    assert.equal(kachel.monatlich, kunden.summeMonatlich);
+    assert.equal(kachel.anzahl, kunden.aktiv.length);
+    assert.equal(kachel.anzahl, 1);
+    const text = kachel.hinweise.join(" ");
+    // Die Daten zu Kündigungen liegen vor: der alte Hinweis entfällt.
+    assert.doesNotMatch(text, /Kündigungen sind hier nicht erfasst/);
+    assert.match(text, /1 Kunde\b/);
+    assert.match(text, /Nicht mitgezählt: 1 beendet\./);
+  });
+
+  it("einzige Pflege beendet: 0 € wie auf /admin/kunden", () => {
+    const o = projektAngebot({
+      accepted_at: "2026-11-10T09:00:00Z",
+      positionen: [
+        {
+          id: "m",
+          titel: "Pflege",
+          beschreibung: "",
+          menge: 1,
+          preis_cent: 5900,
+          art: "monatlich",
+        },
+      ],
+    });
+    const projekte = [projektZeile(o, { pflege_bis: "2026-11-15" })];
+    const kachel = pflegeAusProjekten([o], projekte, NOW, null);
+    assert.equal(kachel.monatlich, 0);
+    assert.equal(kachel.anzahl, 0);
+    assert.equal(
+      kachel.monatlich,
+      pflegeUebersicht(projektSichten([o], projekte, NOW)).summeMonatlich,
+    );
+    assert.deepEqual(kachel.hinweise, [
+      "Gerade läuft bei keinem Kunden eine Pflege.",
+      "Nicht mitgezählt: 1 beendet.",
+    ]);
+  });
+
+  it("Pflege vor dem Livegang zählt nicht mit", () => {
+    const online = projektAngebot();
+    const inArbeit = projektAngebot();
+    const ohneProjekt = projektAngebot();
+    const kachel = pflegeAusProjekten(
+      [online, inArbeit, ohneProjekt],
+      [
+        projektZeile(online, { livegang_am: "2026-11-02" }),
+        projektZeile(inArbeit, { schritte: { anzahlung: "2026-11-03" } }),
+      ],
+      NOW,
+      null,
+    );
+    assert.equal(kachel.monatlich, 7900);
+    assert.equal(kachel.anzahl, 1);
+    assert.match(
+      kachel.hinweise.join(" "),
+      /Nicht mitgezählt: 2 noch nicht begonnen\./,
+    );
+  });
+
+  it("ohne Monatsbeiträge: ein Satz statt Zahlen-Hinweisen", () => {
+    assert.deepEqual(pflegeAusProjekten([], [], NOW, null), {
+      monatlich: 0,
+      anzahl: 0,
+      hinweise: ["Noch kein angenommenes Angebot mit Monatsbeitrag."],
+    });
+  });
+
+  it("gekappte Liste wird genannt, mit und ohne Tabelle projekte", () => {
+    const o = projektAngebot();
+    const mit = pflegeAusProjekten(
+      [o],
+      [projektZeile(o, { livegang_am: "2026-10-01" })],
+      NOW,
+      500,
+    );
+    assert.equal(
+      mit.hinweise.at(-1),
+      "Gezählt wurden die zuletzt angenommenen 500 Angebote.",
+    );
+    const ohne = pflegeAusAngeboten({ anzahl: 2, monatlich: 15800 }, 500);
+    assert.equal(ohne.monatlich, 15800);
+    assert.deepEqual(ohne.hinweise, [
+      "Monatsbeiträge aus 2 angenommenen Angeboten, inkl. USt. Kündigungen sind hier nicht erfasst.",
+      "Gezählt wurden die neuesten 500 Angebote, ältere Monatsbeiträge können fehlen.",
+    ]);
+    // Nicht gekappt: kein Hinweis dazu.
+    assert.deepEqual(
+      pflegeAusAngeboten({ anzahl: 2, monatlich: 15800 }, null).hinweise,
+      [
+        "Monatsbeiträge aus 2 angenommenen Angeboten, inkl. USt. Kündigungen sind hier nicht erfasst.",
+      ],
+    );
+    assert.ok(
+      !pflegeAusProjekten([], [], NOW, null).hinweise.some((h) =>
+        h.startsWith("Gezählt wurden"),
+      ),
+    );
+  });
+});
+
 const ev = (
   lead_id: string,
   created_at: string,
@@ -389,6 +545,92 @@ describe("Antwortzeit", () => {
     assert.equal(
       ersteReaktionen(events, spaeter).get("a"),
       Date.parse("2026-11-10T11:00:00Z"),
+    );
+  });
+
+  it("rückgängig gemachter Statuswechsel weg von Neu zählt nicht als Reaktion", () => {
+    // Fehltipp auf „In Arbeit“, zehn Sekunden später „Rückgängig“: Die
+    // Anfrage steht wieder auf Neu und ist weiter fällig.
+    const fehltipp = [
+      ev("c", "2026-11-10T09:02:00Z", "status", {
+        from: "neu",
+        to: "in_arbeit",
+      }),
+      ev("c", "2026-11-10T09:02:10Z", "status", {
+        from: "in_arbeit",
+        to: "neu",
+        rueckgaengig: true,
+      }),
+    ];
+    assert.equal(ersteReaktionen(fehltipp).has("c"), false);
+    // Auch wenn der Verlauf in anderer Reihenfolge ankommt.
+    assert.equal(ersteReaktionen([...fehltipp].reverse()).has("c"), false);
+
+    const z = antwortZahlen(
+      [
+        lead("2026-11-10T09:00:00Z", "anfrage", "a"),
+        lead("2026-11-10T09:00:00Z", "anfrage", "b"),
+        lead("2026-11-10T09:00:00Z", "anfrage", "c"),
+      ],
+      [
+        ev("a", "2026-11-10T10:00:00Z", "kontakt", { ergebnis: "erreicht" }),
+        ev("b", "2026-11-10T11:00:00Z", "kontakt", { ergebnis: "gesendet" }),
+        ...fehltipp,
+      ],
+      NOW,
+    );
+    assert.equal(z.anfragen, 3);
+    assert.equal(z.beantwortet, 2);
+    assert.equal(z.ohneReaktion, 1);
+    // Unter drei beantworteten: „Noch zu wenig Daten“.
+    assert.equal(z.medianMs, null);
+    assert.equal(z.anteilImZiel, null);
+  });
+
+  it("nach Rückgängig zählt die spätere echte Reaktion", () => {
+    const fehltipp = [
+      ev("c", "2026-11-10T09:02:00Z", "status", {
+        from: "neu",
+        to: "in_arbeit",
+      }),
+      ev("c", "2026-11-10T09:02:10Z", "status", {
+        from: "in_arbeit",
+        to: "neu",
+        rueckgaengig: true,
+      }),
+    ];
+    const kontakt = ev("c", "2026-11-10T11:00:00Z", "kontakt", {
+      ergebnis: "erreicht",
+    });
+    assert.equal(
+      ersteReaktionen([...fehltipp, kontakt]).get("c"),
+      Date.parse("2026-11-10T11:00:00Z"),
+    );
+    // Ein neuer Statuswechsel nach dem Rückgängig zählt ab seinem Zeitpunkt.
+    const nochmal = ev("c", "2026-11-10T10:30:00Z", "status", {
+      from: "neu",
+      to: "erledigt",
+    });
+    assert.equal(
+      ersteReaktionen([kontakt, nochmal, ...fehltipp]).get("c"),
+      Date.parse("2026-11-10T10:30:00Z"),
+    );
+    // Rückgängig eines späteren Wechsels (nicht zurück auf Neu) hebt die
+    // erste Reaktion nicht auf.
+    assert.equal(
+      ersteReaktionen([
+        fehltipp[0],
+        ev("c", "2026-11-10T09:05:00Z", "status", {
+          from: "in_arbeit",
+          to: "erledigt",
+        }),
+        ev("c", "2026-11-10T09:05:05Z", "status", {
+          from: "erledigt",
+          to: "in_arbeit",
+          rueckgaengig: true,
+        }),
+      ]).get("c"),
+      Date.parse("2026-11-10T09:02:00Z"),
     );
   });
 
@@ -636,5 +878,56 @@ describe("Lesen für /admin/zahlen", () => {
     assert.equal(r.rows[0].positionen.length, 1);
     const url = mock.requests.at(-1)?.url ?? "";
     assert.doesNotMatch(url, /kunde_|token|titel|einleitung/);
+  });
+
+  const mitPflege = (partial: Record<string, unknown> = {}) =>
+    mock.seedAngebot({
+      status: "angenommen",
+      accepted_at: "2026-10-01T09:00:00.000Z",
+      angenommen_von: "Kunde",
+      positionen: business.map((x, i) => ({
+        id: `p${i}`,
+        titel: x.art,
+        beschreibung: "",
+        ...x,
+      })),
+      ...partial,
+    }) as { id: string };
+
+  it("Pflege: angenommene Angebote und Projekte wie auf /admin/kunden", async () => {
+    mock.reset("v4");
+    const beendet = mitPflege();
+    const laeuft = mitPflege();
+    mock.seedAngebot({ status: "gesendet" });
+    mock.seedProjekt({
+      angebot_id: beendet.id,
+      livegang_am: "2026-10-01",
+      pflege_bis: "2026-10-31",
+    });
+    mock.seedProjekt({ angebot_id: laeuft.id, livegang_am: "2026-10-01" });
+    const r = await store.pflegeFuerZahlen();
+    assert.ok(r);
+    assert.equal(r.angebote.length, 2);
+    assert.equal(r.projekte.length, 2);
+    assert.equal(r.gekappt, false);
+    const kachel = pflegeAusProjekten(r.angebote, r.projekte, NOW, null);
+    // Nur die laufende Pflege, nicht 2 × 79 € wie aus den Angeboten allein.
+    assert.equal(kachel.monatlich, 7900);
+    assert.equal(kachel.anzahl, 1);
+  });
+
+  it("Pflege: ohne Tabelle projekte null (dann zählen die Angebote allein)", async () => {
+    mock.reset("v3");
+    mitPflege();
+    assert.equal(await store.pflegeFuerZahlen(), null);
+  });
+
+  it("Pflege: volle Liste der angenommenen Angebote ist gekappt", async () => {
+    mock.reset("v4");
+    for (let i = 0; i < 500; i++) mitPflege();
+    const r = await store.pflegeFuerZahlen();
+    assert.ok(r);
+    assert.equal(r.angebote.length, 500);
+    assert.equal(r.gekappt, true);
   });
 });

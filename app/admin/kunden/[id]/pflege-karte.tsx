@@ -3,6 +3,8 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 
+import type { PflegeStand } from "@/lib/admin/projekte";
+
 import {
   setPflegeBisAction,
   setPflegeSeitAction,
@@ -17,7 +19,8 @@ const CHIP =
 const QUELLE_TEXT = {
   gespeichert: null,
   livegang: "ab Livegang",
-  annahme: "ab Annahme",
+  /** Weder gespeichert noch Livegang: Die Pflege hat noch nicht begonnen. */
+  keiner: null,
 } as const;
 
 type Meldung =
@@ -27,7 +30,8 @@ type Meldung =
 /**
  * Monatliche Pflege eines Kunden: Betrag, Beginn (änderbar) und
  * „Pflege beendet“ (heute oder ein gewähltes Datum). Beendete Pflege
- * lässt sich wieder aufnehmen.
+ * lässt sich wieder aufnehmen. Ohne Beginn (noch nicht online) oder
+ * mit Beginn in der Zukunft ist sie geplant.
  */
 export function PflegeKarte({
   angebotId,
@@ -35,7 +39,7 @@ export function PflegeKarte({
   seit,
   seitQuelle,
   bis,
-  aktiv,
+  stand,
   heute,
   enabled,
 }: {
@@ -46,7 +50,7 @@ export function PflegeKarte({
   /** Woher der Beginn kommt, solange keiner gespeichert ist. */
   seitQuelle: keyof typeof QUELLE_TEXT;
   bis: string | null;
-  aktiv: boolean;
+  stand: PflegeStand;
   heute: string;
   enabled: boolean;
 }) {
@@ -86,6 +90,11 @@ export function PflegeKarte({
   }
 
   const quelle = QUELLE_TEXT[seitQuelle];
+  const aktiv = stand === "aktiv";
+  const geplant = stand === "geplant";
+  // Ein Ende vor dem Beginn lehnt der Server ab: „Pflege beendet“ (heute)
+  // gibt es nur, wenn der Beginn nicht in der Zukunft liegt.
+  const beginnKuenftig = seit !== null && seit > heute;
 
   return (
     <section
@@ -104,7 +113,13 @@ export function PflegeKarte({
               : "border-border text-muted-foreground border",
           )}
         >
-          {aktiv ? (bis ? "läuft noch" : "läuft") : "beendet"}
+          {aktiv
+            ? bis
+              ? "läuft noch"
+              : "läuft"
+            : geplant
+              ? "geplant"
+              : "beendet"}
         </span>
       </div>
       <p className="mt-1 text-[24px] leading-tight font-semibold tracking-tight tabular-nums">
@@ -118,9 +133,15 @@ export function PflegeKarte({
       <dl className="divide-border border-border mt-3 divide-y border-t">
         <div className="flex items-center justify-between gap-3 py-2">
           <div className="min-w-0">
-            <dt className="text-muted-foreground text-[13px]">Seit</dt>
+            <dt className="text-muted-foreground text-[13px]">
+              {geplant ? (seit ? "Beginnt am" : "Beginnt") : "Seit"}
+            </dt>
             <dd className="text-[16px] tabular-nums">
-              {seit ? formatDatum(seit) : "offen"}
+              {seit
+                ? formatDatum(seit)
+                : geplant
+                  ? "mit dem Livegang"
+                  : "nicht begonnen"}
               {seit && quelle ? (
                 <span className="text-muted-foreground text-[13px]">
                   {" "}
@@ -131,13 +152,21 @@ export function PflegeKarte({
           </div>
           {enabled ? (
             <DatumChip
-              label="Ändern"
-              aria={"Beginn der Pflege ändern"}
+              label={seit ? "Ändern" : "Datum wählen"}
+              aria={
+                seit ? "Beginn der Pflege ändern" : "Beginn der Pflege wählen"
+              }
               wert={seit}
               max={bis ?? undefined}
               disabled={pending}
               onWahl={(v) =>
-                speichern("seit", v, `Pflege seit ${formatDatum(v)}.`)
+                speichern(
+                  "seit",
+                  v,
+                  v > heute
+                    ? `Pflege beginnt am ${formatDatum(v)}.`
+                    : `Pflege seit ${formatDatum(v)}.`,
+                )
               }
             />
           ) : null}
@@ -146,7 +175,7 @@ export function PflegeKarte({
           <div className="flex items-center justify-between gap-3 py-2">
             <div className="min-w-0">
               <dt className="text-muted-foreground text-[13px]">
-                {aktiv ? "Endet am" : "Beendet am"}
+                {stand === "beendet" ? "Beendet am" : "Endet am"}
               </dt>
               <dd className="text-[16px] tabular-nums">{formatDatum(bis)}</dd>
             </div>
@@ -177,22 +206,27 @@ export function PflegeKarte({
                 speichern(
                   "bis",
                   null,
-                  aktiv ? "Ende entfernt." : "Pflege läuft wieder.",
+                  // Läuft danach wieder, wenn sie schon begonnen hat.
+                  stand === "beendet" && seit !== null && !beginnKuenftig
+                    ? "Pflege läuft wieder."
+                    : "Ende entfernt.",
                 )
               }
             >
-              {aktiv ? "Ende entfernen" : "Wieder aufnehmen"}
+              {stand === "beendet" ? "Wieder aufnehmen" : "Ende entfernen"}
             </button>
           ) : (
             <>
-              <button
-                type="button"
-                className={CHIP}
-                disabled={pending}
-                onClick={() => speichern("bis", heute, "Pflege beendet.")}
-              >
-                Pflege beendet
-              </button>
+              {beginnKuenftig ? null : (
+                <button
+                  type="button"
+                  className={CHIP}
+                  disabled={pending}
+                  onClick={() => speichern("bis", heute, "Pflege beendet.")}
+                >
+                  Pflege beendet
+                </button>
+              )}
               <DatumChip
                 label="Enddatum wählen"
                 aria="Letzten Tag der Pflege wählen"

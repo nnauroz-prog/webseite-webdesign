@@ -150,10 +150,10 @@ export default async function ProjektPage({
                   ? "gespeichert"
                   : projekt?.livegang_am
                     ? "livegang"
-                    : "annahme"
+                    : "keiner"
               }
               bis={p.pflege.bis}
-              aktiv={p.pflege.aktiv}
+              stand={p.pflege.stand}
               heute={heute}
               enabled={enabled}
             />

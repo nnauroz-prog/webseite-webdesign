@@ -17,6 +17,7 @@ import {
   parseSchrittDatum,
   pflegeAktiv,
   pflegeSeit,
+  pflegeStand,
   pflegeUebersicht,
   PROJEKT_NOTIZ_MAX,
   PROJEKT_SCHRITTE,
@@ -240,32 +241,102 @@ describe("Pflege", () => {
     );
   });
 
-  it("Beginn: gespeichert, sonst Livegang, sonst Annahme", () => {
+  it("Beginn: gespeichert, sonst Livegang, sonst noch keiner (nicht die Annahme)", () => {
     const a = angebot();
-    assert.equal(pflegeSeit(null, "2026-11-10"), "2026-11-10");
+    assert.equal(pflegeSeit(null), null);
     assert.equal(
-      pflegeSeit(projekt(a, { livegang_am: "2026-11-14" }), "2026-11-10"),
+      pflegeSeit(projekt(a, { schritte: { anzahlung: "2026-11-12" } })),
+      null,
+    );
+    assert.equal(
+      pflegeSeit(projekt(a, { livegang_am: "2026-11-14" })),
       "2026-11-14",
     );
     assert.equal(
       pflegeSeit(
         projekt(a, { livegang_am: "2026-11-14", pflege_seit: "2026-12-01" }),
-        "2026-11-10",
       ),
       "2026-12-01",
     );
   });
 
-  it("läuft nur mit Monatsbeitrag und solange das Ende in der Zukunft liegt", () => {
+  it("drei Zustände: geplant (noch kein oder künftiger Beginn), aktiv, beendet", () => {
     const heute = "2026-11-16";
-    assert.equal(pflegeAktiv(9900, null, heute), true);
-    assert.equal(pflegeAktiv(9900, "2026-11-30", heute), true);
-    assert.equal(pflegeAktiv(9900, heute, heute), false);
-    assert.equal(pflegeAktiv(9900, "2026-11-01", heute), false);
-    assert.equal(pflegeAktiv(0, null, heute), false);
+    assert.equal(pflegeStand(null, null, heute), "geplant");
+    assert.equal(pflegeStand("2026-11-17", null, heute), "geplant");
+    assert.equal(pflegeStand("2026-11-17", "2026-12-31", heute), "geplant");
+    assert.equal(pflegeStand(heute, null, heute), "aktiv");
+    assert.equal(pflegeStand("2026-11-01", "2026-11-30", heute), "aktiv");
+    assert.equal(pflegeStand("2026-11-01", heute, heute), "beendet");
+    assert.equal(pflegeStand("2026-11-01", "2026-11-10", heute), "beendet");
+    // Vor dem Livegang beendet (Kunde will doch keine Pflege): beendet.
+    assert.equal(pflegeStand(null, "2026-11-10", heute), "beendet");
   });
 
-  it("Übersicht: laufende mit Summe, beendete getrennt, ohne Monatsbeitrag gar nicht", () => {
+  it("läuft nur mit Monatsbeitrag, ab dem Beginn und solange das Ende in der Zukunft liegt", () => {
+    const heute = "2026-11-16";
+    assert.equal(pflegeAktiv(9900, "2026-11-01", null, heute), true);
+    assert.equal(pflegeAktiv(9900, heute, null, heute), true);
+    assert.equal(pflegeAktiv(9900, "2026-11-01", "2026-11-30", heute), true);
+    assert.equal(pflegeAktiv(9900, "2026-11-01", heute, heute), false);
+    assert.equal(pflegeAktiv(9900, "2026-11-01", "2026-11-10", heute), false);
+    assert.equal(pflegeAktiv(9900, null, null, heute), false);
+    assert.equal(pflegeAktiv(9900, "2027-01-01", null, heute), false);
+    assert.equal(pflegeAktiv(0, "2026-11-01", null, heute), false);
+  });
+
+  it("ohne Livegang und ohne gespeicherten Beginn hat die Pflege noch nicht begonnen und zählt nicht", () => {
+    const a = angebot({ kunde_firma: "Noch nicht online" });
+    const ohneProjekt = projektSicht(a, null, NOW);
+    assert.equal(ohneProjekt.pflege.seit, null);
+    assert.equal(ohneProjekt.pflege.stand, "geplant");
+    assert.equal(ohneProjekt.pflege.aktiv, false);
+    // Schritt 1 von 5 erledigt, aber noch nicht online: weiter geplant.
+    const inArbeit = projektSicht(
+      a,
+      projekt(a, { schritte: { anzahlung: "2026-11-12" } }),
+      NOW,
+    );
+    assert.equal(inArbeit.pflege.stand, "geplant");
+    assert.equal(inArbeit.pflege.aktiv, false);
+    const u = pflegeUebersicht([ohneProjekt]);
+    assert.equal(u.summeMonatlich, 0);
+    assert.deepEqual(u.aktiv, []);
+    assert.deepEqual(u.beendet, []);
+    assert.deepEqual(
+      u.geplant.map((p) => p.kunde),
+      ["Noch nicht online"],
+    );
+  });
+
+  it("Beginn in der Zukunft: geplant statt läuft oder beendet, nicht in der Monatssumme", () => {
+    const a = angebot({ kunde_firma: "Ab Januar" });
+    // Ein Beginn bis ein Jahr voraus ist erlaubt.
+    assert.equal(parsePflegeSeit("2027-01-01", null, NOW), "2027-01-01");
+    const s = projektSicht(a, projekt(a, { pflege_seit: "2027-01-01" }), NOW);
+    assert.deepEqual(s.pflege, {
+      monatlich: 9900,
+      seit: "2027-01-01",
+      bis: null,
+      stand: "geplant",
+      aktiv: false,
+    });
+    const u = pflegeUebersicht([s]);
+    assert.equal(u.summeMonatlich, 0);
+    assert.equal(u.aktiv.length, 0);
+    assert.equal(u.beendet.length, 0);
+    assert.equal(u.geplant.length, 1);
+    // Ab dem Tag des Beginns läuft sie.
+    const amTag = projektSicht(
+      a,
+      projekt(a, { pflege_seit: "2027-01-01" }),
+      new Date("2027-01-01T10:00:00Z"),
+    );
+    assert.equal(amTag.pflege.stand, "aktiv");
+    assert.equal(pflegeUebersicht([amTag]).summeMonatlich, 9900);
+  });
+
+  it("Übersicht: laufende mit Summe, geplante und beendete getrennt, ohne Monatsbeitrag gar nicht", () => {
     const a1 = angebot({ kunde_firma: "A" });
     const a2 = angebot({
       kunde_firma: "B",
@@ -276,21 +347,34 @@ describe("Pflege", () => {
       kunde_firma: "D",
       positionen: [pos("einmalig", 59900)],
     });
+    const a5 = angebot({
+      kunde_firma: "E",
+      accepted_at: "2026-11-12T09:00:00Z",
+    });
+    const a6 = angebot({ kunde_firma: "F" });
+    const a7 = angebot({ kunde_firma: "G" });
     const sichten = projektSichten(
-      [a1, a2, a3, a4],
+      [a1, a2, a3, a4, a5, a6, a7],
       [
         projekt(a1, { livegang_am: "2026-11-12" }),
-        projekt(a3, { pflege_bis: "2026-11-15" }),
+        projekt(a2, { pflege_seit: "2026-11-10" }),
+        projekt(a3, { livegang_am: "2026-11-01", pflege_bis: "2026-11-15" }),
+        projekt(a6, { pflege_seit: "2026-12-01" }),
       ],
       NOW,
     );
     const u = pflegeUebersicht(sichten);
     assert.deepEqual(
       u.aktiv.map((p) => p.kunde),
-      // Nach Beginn: B (Annahme 10.11.) vor A (Livegang 12.11.)
+      // Nach Beginn: B (gespeichert 10.11.) vor A (Livegang 12.11.)
       ["B", "A"],
     );
     assert.equal(u.summeMonatlich, 9900 + 17900);
+    // Mit Datum zuerst, dann ohne (länger angenommen zuerst).
+    assert.deepEqual(
+      u.geplant.map((p) => p.kunde),
+      ["F", "G", "E"],
+    );
     assert.deepEqual(
       u.beendet.map((p) => p.kunde),
       ["C"],
@@ -308,8 +392,10 @@ describe("Sicht und Sortierung", () => {
     assert.equal(p.angenommenAm, "2026-11-10");
     assert.equal(p.summen.einmalig.brutto, 99900);
     assert.equal(p.pflege.monatlich, 9900);
-    assert.equal(p.pflege.seit, "2026-11-10");
-    assert.equal(p.pflege.aktiv, true);
+    // Ohne Livegang hat die Pflege noch nicht begonnen.
+    assert.equal(p.pflege.seit, null);
+    assert.equal(p.pflege.stand, "geplant");
+    assert.equal(p.pflege.aktiv, false);
     assert.equal(p.fortschritt.naechster, "anzahlung");
 
     const ohneFirma = projektSicht(

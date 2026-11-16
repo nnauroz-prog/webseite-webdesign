@@ -205,21 +205,28 @@ export async function setPflegeBisAction(
     const angenommenAm = res.angebot.accepted_at
       ? berlinDateIso(new Date(res.angebot.accepted_at))
       : null;
-    const seit = pflegeSeit(projekt, angenommenAm);
+    // Hat die Pflege noch nicht begonnen (vor dem Livegang), darf das
+    // Ende trotzdem nicht vor der Annahme liegen.
+    const seit = pflegeSeit(projekt);
+    const untergrenze = seit ?? angenommenAm;
     let bis: string | null = null;
     if (rawDatum !== null) {
-      bis = parsePflegeBis(rawDatum, seit, new Date());
+      bis = parsePflegeBis(rawDatum, untergrenze, new Date());
       if (!bis)
         return {
           ok: false,
           error:
-            seit && typeof rawDatum === "string" && rawDatum < seit
-              ? "Das Ende darf nicht vor dem Beginn der Pflege liegen."
+            untergrenze &&
+            typeof rawDatum === "string" &&
+            rawDatum < untergrenze
+              ? seit
+                ? "Das Ende darf nicht vor dem Beginn der Pflege liegen."
+                : "Das Ende darf nicht vor der Annahme des Angebots liegen."
               : INVALID,
         };
     }
-    // Nur das Ende: Ein abgeleiteter Beginn (Livegang, Annahme) bleibt
-    // abgeleitet und folgt etwa einem späteren Livegang.
+    // Nur das Ende: Ein abgeleiteter Beginn (Livegang) bleibt abgeleitet
+    // und folgt etwa einem späteren Livegang.
     await aendereProjekt(res.angebot, () => ({ pflege_bis: bis }));
     revalidateProjekt(id);
     return { ok: true };

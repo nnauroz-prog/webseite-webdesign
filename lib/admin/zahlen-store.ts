@@ -1,11 +1,18 @@
 import "server-only";
 
+import type { ProjektAngebot, ProjektRow } from "@/lib/admin/projekte";
 import type { ZahlenAngebot, ZahlenEvent } from "@/lib/admin/zahlen";
 import type { LeadKind, LeadOutcome, LeadStatus } from "@/lib/leads-meta";
 
 import { ANGEBOT_STATUSES, positionenAusDb } from "@/lib/admin/angebote";
 import { DbError, isMissingTable } from "@/lib/admin/db-errors";
 import { REAKTION_AKTIONEN } from "@/lib/admin/zahlen";
+import {
+  listAngenommeneAngebote,
+  listProjekte,
+  PROJEKT_ZEILEN_LIMIT,
+  PROJEKTE_LIMIT,
+} from "@/lib/projekte-store";
 import { serviceClient } from "@/lib/supabase/service";
 
 /*
@@ -149,4 +156,31 @@ export async function angeboteFuerZahlen(): Promise<Gelesen<ZahlenAngebot> | nul
     });
   }
   return { rows, gekappt: list.length >= ANGEBOTE_GRENZE };
+}
+
+export type PflegeDaten = {
+  angebote: ProjektAngebot[];
+  projekte: ProjektRow[];
+  /** Eine der Listen hat ihre Obergrenze erreicht. */
+  gekappt: boolean;
+};
+
+/**
+ * Für „Laufende Pflege“: angenommene Angebote und Projekte, gelesen wie
+ * auf /admin/kunden (lib/projekte-store.ts), damit beide Seiten
+ * dieselbe Summe zeigen. null, wenn eine der Tabellen fehlt.
+ */
+export async function pflegeFuerZahlen(): Promise<PflegeDaten | null> {
+  const [angebote, projekte] = await Promise.all([
+    listAngenommeneAngebote(),
+    listProjekte(),
+  ]);
+  if (angebote === null || projekte === null) return null;
+  return {
+    angebote,
+    projekte,
+    gekappt:
+      angebote.length >= PROJEKTE_LIMIT ||
+      projekte.length >= PROJEKT_ZEILEN_LIMIT,
+  };
 }

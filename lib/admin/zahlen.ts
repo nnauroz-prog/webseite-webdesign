@@ -14,6 +14,7 @@
  */
 
 import type { Angebot, AngebotPosition, UstSatz } from "@/lib/admin/angebote";
+import type { ProjektAngebot, ProjektRow } from "@/lib/admin/projekte";
 import type {
   LeadEvent,
   LeadKind,
@@ -34,6 +35,7 @@ import {
   MONTHS_LONG,
   weekdayOf,
 } from "@/lib/admin/berlin-time";
+import { pflegeUebersicht, projektSichten } from "@/lib/admin/projekte";
 import { replyDue } from "@/lib/admin/reply-due";
 
 const MINUTE = 60_000;
@@ -262,7 +264,10 @@ export type AngeboteZahlen = {
   angenommen: number;
   /** angenommen / entschieden, null unter MIN_ENTSCHIEDEN. */
   quote: number | null;
-  /** Angenommene Angebote mit Monatsbeitrag > 0 und deren Summe. */
+  /**
+   * Angenommene Angebote mit Monatsbeitrag > 0 und deren Summe. Für die
+   * Kachel „Laufende Pflege“ nur ohne Tabelle projekte (pflegeAusAngeboten).
+   */
   pflege: { anzahl: number; monatlich: number };
 };
 
@@ -319,6 +324,82 @@ export function angeboteZahlen(
 }
 
 // ---------------------------------------------------------------------
+// Laufende Pflege
+// ---------------------------------------------------------------------
+
+export type PflegeKachel = {
+  /** Summe der laufenden Pflege je Monat (Cent, brutto). */
+  monatlich: number;
+  /** Wie viele Kunden bzw. Angebote darin stecken. */
+  anzahl: number;
+  /** Sätze unter der Zahl, in dieser Reihenfolge. */
+  hinweise: string[];
+};
+
+/**
+ * „Laufende Pflege“ mit der Tabelle projekte: dieselbe Rechnung wie
+ * auf /admin/kunden (projektSichten + pflegeUebersicht). Es zählt nur
+ * Pflege, die begonnen hat (Livegang oder gespeicherter Beginn) und
+ * nicht beendet ist. `grenze`: Obergrenze der Liste angenommener
+ * Angebote, wenn sie erreicht wurde, sonst null.
+ */
+export function pflegeAusProjekten(
+  angebote: readonly ProjektAngebot[],
+  projekte: readonly ProjektRow[],
+  now: Date,
+  grenze: number | null,
+): PflegeKachel {
+  const u = pflegeUebersicht(projektSichten(angebote, projekte, now));
+  const hinweise: string[] = [];
+  if (u.aktiv.length > 0) {
+    hinweise.push(
+      `${anzahl(u.aktiv.length, "Kunde", "Kunden")} mit laufender Pflege, inkl. USt. Gezählt ab dem Livegang bis zum Ende, wie unter Kunden & Projekte.`,
+    );
+  } else if (u.geplant.length > 0 || u.beendet.length > 0) {
+    hinweise.push("Gerade läuft bei keinem Kunden eine Pflege.");
+  } else {
+    hinweise.push("Noch kein angenommenes Angebot mit Monatsbeitrag.");
+  }
+  const ohne = [
+    u.geplant.length > 0 ? `${u.geplant.length} noch nicht begonnen` : null,
+    u.beendet.length > 0 ? `${u.beendet.length} beendet` : null,
+  ].filter(Boolean);
+  if (ohne.length > 0) hinweise.push(`Nicht mitgezählt: ${ohne.join(", ")}.`);
+  if (grenze !== null) {
+    hinweise.push(
+      `Gezählt wurden die zuletzt angenommenen ${grenze} Angebote.`,
+    );
+  }
+  return { monatlich: u.summeMonatlich, anzahl: u.aktiv.length, hinweise };
+}
+
+/**
+ * Ohne Tabelle projekte (Datenbank-Update fehlt): nur die angenommenen
+ * Angebote aus angeboteZahlen, Beginn und Ende sind dann unbekannt.
+ * `grenze`: Obergrenze der Angebotsliste, wenn sie erreicht wurde.
+ */
+export function pflegeAusAngeboten(
+  pflege: AngeboteZahlen["pflege"],
+  grenze: number | null,
+): PflegeKachel {
+  const hinweise = [
+    pflege.anzahl === 0
+      ? "Noch kein angenommenes Angebot mit Monatsbeitrag."
+      : `Monatsbeiträge aus ${anzahl(
+          pflege.anzahl,
+          "angenommenen Angebot",
+          "angenommenen Angeboten",
+        )}, inkl. USt. Kündigungen sind hier nicht erfasst.`,
+  ];
+  if (grenze !== null) {
+    hinweise.push(
+      `Gezählt wurden die neuesten ${grenze} Angebote, ältere Monatsbeiträge können fehlen.`,
+    );
+  }
+  return { monatlich: pflege.monatlich, anzahl: pflege.anzahl, hinweise };
+}
+
+// ---------------------------------------------------------------------
 // Antwortzeit
 // ---------------------------------------------------------------------
 
@@ -352,24 +433,60 @@ export function istReaktion(e: Pick<LeadEvent, "action" | "detail">): boolean {
 /** Spielraum für Uhrzeiten von Anfrage und Verlauf (Server-Uhren). */
 const UHR_SPIELRAUM = MINUTE;
 
+/** Nimmt dieser Eintrag einen Statuswechsel weg von „Neu“ zurück? */
+function zurueckAufNeu(e: Pick<LeadEvent, "action" | "detail">): boolean {
+  const d = e.detail ?? {};
+  return e.action === "status" && Boolean(d.rueckgaengig) && d.to === "neu";
+}
+
 /**
  * Früheste Reaktion je Anfrage (lead_id → Zeitpunkt in ms). Mit
  * `eingang` (lead_id → Eingang in ms) zählen nur Einträge ab dem
  * Eingang; ältere können nicht zu dieser Anfrage gehören.
+ *
+ * Der Verlauf wird je Anfrage der Zeit nach nachgespielt: Ein
+ * Statuswechsel weg von „Neu“ zählt nur, bis er mit „Rückgängig“
+ * zurückgenommen wird (zurück auf Neu). Anruf erreicht, Mail gesendet
+ * oder Angebot verschickt beenden die Suche; gilt dann noch ein
+ * früherer Statuswechsel, zählt dieser.
  */
 export function ersteReaktionen(
   events: readonly ZahlenEvent[],
   eingang?: ReadonlyMap<string, number>,
 ): Map<string, number> {
-  const out = new Map<string, number>();
+  const jeAnfrage = new Map<string, { t: number; e: ZahlenEvent }[]>();
   for (const e of events) {
-    if (!istReaktion(e)) continue;
+    if (!istReaktion(e) && !zurueckAufNeu(e)) continue;
     const t = Date.parse(e.created_at);
     if (Number.isNaN(t)) continue;
-    const ab = eingang?.get(e.lead_id);
-    if (ab !== undefined && t < ab - UHR_SPIELRAUM) continue;
-    const bisher = out.get(e.lead_id);
-    if (bisher === undefined || t < bisher) out.set(e.lead_id, t);
+    const list = jeAnfrage.get(e.lead_id);
+    if (list) list.push({ t, e });
+    else jeAnfrage.set(e.lead_id, [{ t, e }]);
+  }
+
+  const out = new Map<string, number>();
+  for (const [leadId, list] of jeAnfrage) {
+    // Stabil: Bei gleichem Zeitpunkt bleibt die gelesene Reihenfolge.
+    list.sort((a, b) => a.t - b.t);
+    const ab = eingang?.get(leadId);
+    /** Statuswechsel weg von Neu, der (noch) nicht zurückgenommen ist. */
+    let offen: number | null = null;
+    let ergebnis: number | null = null;
+    for (const { t, e } of list) {
+      if (zurueckAufNeu(e)) {
+        offen = null;
+        continue;
+      }
+      if (ab !== undefined && t < ab - UHR_SPIELRAUM) continue;
+      if (e.action === "status") {
+        offen ??= t;
+        continue;
+      }
+      ergebnis = offen ?? t;
+      break;
+    }
+    ergebnis ??= offen;
+    if (ergebnis !== null) out.set(leadId, ergebnis);
   }
   return out;
 }

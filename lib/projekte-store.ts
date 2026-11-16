@@ -37,6 +37,8 @@ const COLS = PROJEKT_COLUMNS.join(",");
 const ANGEBOT_COLS = PROJEKT_ANGEBOT_COLUMNS.join(",");
 /** So viele angenommene Angebote zeigt „Kunden & Projekte“ höchstens. */
 export const PROJEKTE_LIMIT = 500;
+/** So viele Projekt-Zeilen liest listProjekte höchstens. */
+export const PROJEKT_ZEILEN_LIMIT = 1000;
 
 function dbError(prefix: string, error: PgError): DbError {
   return new DbError(`${prefix}: ${error.message}`, error.code);
@@ -112,7 +114,7 @@ export async function listProjekte(): Promise<ProjektRow[] | null> {
     .from("projekte")
     .select(COLS)
     .order("created_at", { ascending: false })
-    .limit(1000);
+    .limit(PROJEKT_ZEILEN_LIMIT);
   if (error) {
     if (isMissingTable(error)) return null;
     throw dbError("Projekte konnten nicht geladen werden", error);
