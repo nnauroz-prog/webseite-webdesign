@@ -21,7 +21,8 @@ import {
   type StoryFormat,
   type StoryZeichner,
 } from "@/lib/story-bild";
-import { filmAlsMp4 } from "@/lib/story-video";
+import { filmTon, TON_RATE } from "@/lib/story-ton";
+import { filmAlsMp4, kannTonSchreiben } from "@/lib/story-video";
 import { cn } from "@/lib/utils";
 
 /**
@@ -40,12 +41,17 @@ import { cn } from "@/lib/utils";
  *   dauert etwas länger als der Film selbst, ruckelt dafür nicht. Kann
  *   der Browser das nicht, wird der Film wie früher in Echtzeit
  *   aufgenommen. Danach lässt er sich teilen oder sichern.
- * - Abspielen zeigt den Film sofort, in einer leichteren Fassung.
+ * - Abspielen zeigt den Film sofort.
+ * - Mit Ton (Schalter, zum Ausprobieren, anfangs aus): leise Geräusche
+ *   passend zum Film (lib/story-ton.ts). Abspielen lässt sie hören, Video
+ *   erstellen schreibt sie in die Datei, wenn der Browser das kann;
+ *   sonst entsteht das Video ohne Ton.
  * - Text kopieren legt den Beitragstext in die Zwischenablage.
  * - Abhaken merkt sich auf diesem Gerät, was schon gepostet ist.
  */
 
 const SPEICHER = "sitalo-story-gepostet";
+const SPEICHER_TON = "sitalo-story-ton";
 const PLATZ_NAME = ["Spruch des Tages", "Zusatz-Post 1", "Zusatz-Post 2"];
 
 /** Videoformat, das dieser Browser aufnehmen kann; MP4 zuerst (Instagram). */
@@ -108,6 +114,12 @@ export function StoryStudio({
   const [video, setVideo] = useState<File | null>(null);
   const [meldung, setMeldung] = useState<string | null>(null);
   const [gepostet, setGepostet] = useState<string[]>([]);
+  const [ton, setTon] = useState(false);
+  /** Laufender Ton der Vorschau */
+  const klang = useRef<{
+    ctx: AudioContext;
+    quelle: AudioBufferSourceNode | null;
+  } | null>(null);
 
   const karte = posts[gewaehlt];
   const versatz = versaetze[gewaehlt] ?? 0;
@@ -123,6 +135,7 @@ export function StoryStudio({
     try {
       const roh = window.localStorage.getItem(SPEICHER);
       if (roh) setGepostet(JSON.parse(roh) as string[]);
+      setTon(window.localStorage.getItem(SPEICHER_TON) === "1");
     } catch {
       // Ohne Speicher (privates Fenster) bleibt die Liste leer.
     }
@@ -133,6 +146,27 @@ export function StoryStudio({
   // (etwa nach der Rückkehr aus dem Hintergrund), bleibt ein laufendes
   // Rechnen ungestört.
   const inhalt = `${karte.datum}|${karte.platz}|${karte.kicker}|${karte.text}|${karte.zusatz}`;
+  /** Hält den Ton der Vorschau an. */
+  const tonStopp = useCallback(() => {
+    const k = klang.current;
+    if (!k?.quelle) return;
+    try {
+      k.quelle.stop();
+    } catch {
+      // Lief schon aus.
+    }
+    k.quelle = null;
+  }, []);
+  // Beim Verlassen der Seite den Ton freigeben.
+  useEffect(
+    () => () => {
+      tonStopp();
+      void klang.current?.ctx.close();
+      klang.current = null;
+    },
+    [tonStopp],
+  );
+
   const karteJetzt = useRef(karte);
   useEffect(() => {
     karteJetzt.current = karte;
@@ -154,9 +188,10 @@ export function StoryStudio({
       cancelAnimationFrame(lauf.current);
       abbruch.current?.abort();
       echtzeitStopp.current?.();
+      tonStopp();
       zeichne.current = null;
     };
-  }, [inhalt, format, versatz]);
+  }, [inhalt, format, versatz, tonStopp]);
 
   const sagen = useCallback((text: string) => {
     setMeldung(text);
@@ -168,9 +203,21 @@ export function StoryStudio({
     cancelAnimationFrame(lauf.current);
     abbruch.current?.abort();
     echtzeitStopp.current?.();
+    tonStopp();
     setZustand("laedt");
     setVideo(null);
     aendern();
+  };
+
+  /** Ton an oder aus; ein fertiges Video passt dann nicht mehr dazu. */
+  const tonSchalten = (an: boolean) => {
+    setTon(an);
+    setVideo(null);
+    try {
+      window.localStorage.setItem(SPEICHER_TON, an ? "1" : "0");
+    } catch {
+      // Nicht speicherbar: gilt dann nur bis zum Neuladen.
+    }
   };
 
   const neuesDesign = (schritt: number | null) =>
@@ -215,8 +262,31 @@ export function StoryStudio({
 
   const vorschau = useCallback(() => {
     setZustand("spielt");
+    // Der Ton startet im selben Tipp wie der Film: Nur dann lässt das
+    // Handy ihn zu.
+    const film = zeichne.current?.film;
+    if (ton && film) {
+      try {
+        const k = (klang.current ??= {
+          ctx: new AudioContext(),
+          quelle: null,
+        });
+        void k.ctx.resume();
+        tonStopp();
+        const daten = filmTon(film, STORY_DAUER + 0.4);
+        const puffer = k.ctx.createBuffer(1, daten.length, TON_RATE);
+        puffer.copyToChannel(daten, 0);
+        const quelle = k.ctx.createBufferSource();
+        quelle.buffer = puffer;
+        quelle.connect(k.ctx.destination);
+        quelle.start();
+        k.quelle = quelle;
+      } catch {
+        // Kein Ton möglich: Der Film läuft trotzdem.
+      }
+    }
     abspielen(() => setZustand("bereit"));
-  }, [abspielen]);
+  }, [abspielen, ton, tonStopp]);
 
   /** Ersatz für ältere Browser: den Film abspielen und dabei aufnehmen. */
   const inEchtzeit = useCallback(() => {
@@ -285,11 +355,21 @@ export function StoryStudio({
     const stopp = new AbortController();
     abbruch.current = stopp;
     let datei: Blob | null = null;
+    // Ton nur, wenn gewünscht und wenn der Browser ihn schreiben kann.
+    const mitTon = ton && z.film ? await kannTonSchreiben(TON_RATE) : false;
     try {
       datei = await filmAlsMp4(c, z, {
         dauer: STORY_DAUER,
         fortschritt: setAnteil,
         abbruch: stopp.signal,
+        ...(mitTon && z.film
+          ? {
+              ton: {
+                daten: filmTon(z.film, STORY_DAUER + 0.4),
+                rate: TON_RATE,
+              },
+            }
+          : {}),
       });
     } catch {
       // Abgebrochen oder gescheitert: wird unten behandelt.
@@ -315,8 +395,14 @@ export function StoryStudio({
     z(Infinity);
     setVideo(new File([datei], `${name}.mp4`, { type: "video/mp4" }));
     setZustand("bereit");
-    sagen("Video fertig. Jetzt teilen oder sichern.");
-  }, [inEchtzeit, name, sagen]);
+    sagen(
+      !ton
+        ? "Video fertig. Jetzt teilen oder sichern."
+        : mitTon
+          ? "Video mit Ton fertig. Jetzt teilen oder sichern."
+          : "Video fertig, aber ohne Ton: Dieser Browser kann keinen Ton ins Video schreiben.",
+    );
+  }, [inEchtzeit, name, sagen, ton]);
 
   const alsBild = useCallback(
     () =>
@@ -586,6 +672,20 @@ export function StoryStudio({
               </>
             ) : null}
           </div>
+          <label className="mt-3 flex items-center gap-2 text-[15px]">
+            <input
+              type="checkbox"
+              checked={ton}
+              onChange={(e) => tonSchalten(e.target.checked)}
+              disabled={beschaeftigt}
+              className="accent-foreground h-4 w-4"
+            />
+            Mit Ton (zum Ausprobieren)
+          </label>
+          <p className="text-muted-foreground mt-1 text-[13px] leading-5">
+            Leise Geräusche passend zum Film, am Ende ein fernes Schiffshorn.
+            Mit „Abspielen“ hörst du sie dir an.
+          </p>
           <p
             role="status"
             className="text-muted-foreground mt-2 min-h-5 text-[14px]"
