@@ -21,6 +21,7 @@ import {
   type StoryFormat,
   type StoryZeichner,
 } from "@/lib/story-bild";
+import { kinoFreigeben } from "@/lib/story-kino";
 import { filmAlsMp4 } from "@/lib/story-video";
 import { cn } from "@/lib/utils";
 
@@ -143,6 +144,8 @@ export function StoryStudio({
     if (!c) return;
     void storyVorbereiten(c, karteJetzt.current, FORMATE[format], {
       versatz,
+      // Kino-Kamera: das Plakat im Raum gefilmt (wo der Browser es kann).
+      kino: true,
     }).then((z) => {
       if (abgebrochen) return;
       zeichne.current = z;
@@ -198,13 +201,38 @@ export function StoryStudio({
   const abspielen = useCallback((amEnde?: () => void) => {
     const z = zeichne.current;
     if (!z) return;
-    const beginn = performance.now();
+    // Schafft das Gerät die Kino-Kamera in Echtzeit nicht flüssig (zwei
+    // Probebilder vor dem Start oder der Median der ersten zwölf
+    // Bildabstände über 40 ms), läuft die Vorschau flach. Fürs Video gilt
+    // das nicht: Es wird Bild für Bild gerechnet und darf langsam sein.
+    const mitKino = z.kino === true;
+    if (mitKino) {
+      const probe = performance.now();
+      z(0);
+      z(1 / 30);
+      if ((performance.now() - probe) / 2 > 40) z.kino = false;
+    }
+    // Die Uhr rückt je Bild höchstens 50 ms vor: Hakt ein Bild, läuft der
+    // Film kurz langsamer, statt Bilder zu überspringen.
+    let t = 0;
+    let zuletzt = performance.now();
+    const takte: number[] = [];
     const bild = (jetzt: number) => {
-      const t = (jetzt - beginn) / 1000;
+      const schritt = Math.max(0, jetzt - zuletzt);
+      zuletzt = jetzt;
+      t += Math.min(schritt, 50) / 1000;
       if (t >= STORY_DAUER) {
         z(Infinity);
+        if (mitKino) z.kino = true;
         amEnde?.();
         return;
+      }
+      if (z.kino && takte.length < 12) {
+        takte.push(schritt);
+        if (takte.length === 12) {
+          const sortiert = takte.slice(1).sort((a, b) => a - b);
+          if (sortiert[Math.floor(sortiert.length / 2)] > 40) z.kino = false;
+        }
       }
       z(t);
       setRest(Math.ceil(STORY_DAUER - t));
@@ -285,15 +313,27 @@ export function StoryStudio({
     const stopp = new AbortController();
     abbruch.current = stopp;
     let datei: Blob | null = null;
-    try {
-      datei = await filmAlsMp4(c, z, {
+    const rechnen = () =>
+      // Fürs Video mit Bewegungsunschärfe (fein = true).
+      filmAlsMp4(c, (t) => z(t, true), {
         dauer: STORY_DAUER,
         fortschritt: setAnteil,
         abbruch: stopp.signal,
       });
+    try {
+      const mitKino = z.kino === true;
+      datei = await rechnen();
+      // Fällt die Kino-Kamera mitten im Film aus (etwa wenn das Gerät den
+      // Grafikspeicher braucht), hätte das Video einen harten Schnitt.
+      // Dann noch einmal durchgehend flach rechnen.
+      if (datei && mitKino && z.kino === false) {
+        setAnteil(0);
+        datei = await rechnen();
+      }
     } catch {
       // Abgebrochen oder gescheitert: wird unten behandelt.
     }
+    kinoFreigeben();
     if (abbruch.current === stopp) abbruch.current = null;
     setAnteil(null);
     // Derselbe Post steht noch da (kein Wechsel): Standbild zurück.

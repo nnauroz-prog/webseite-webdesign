@@ -10,7 +10,13 @@ import {
 } from "react";
 
 import { spruecheBis, tagInHamburg, type SpruchTag } from "@/lib/sprueche-data";
-import { FORMATE, STORY_DAUER, storyVorbereiten } from "@/lib/story-bild";
+import { kinoFreigeben } from "@/lib/story-kino";
+import {
+  FORMATE,
+  STORY_DAUER,
+  storyVorbereiten,
+  type StoryZeichner,
+} from "@/lib/story-bild";
 import { varianteFuer } from "@/lib/story-variante";
 
 import r from "./spruch-reel.module.css";
@@ -34,7 +40,7 @@ import r from "./spruch-reel.module.css";
  *   kein JavaScript läuft.
  */
 
-type Zeichner = (t: number) => void;
+type Zeichner = StoryZeichner;
 
 /** So scharf wie der Bildschirm, höchstens dreifache Auflösung. */
 const SCHAERFE = 3;
@@ -104,6 +110,7 @@ export function SpruchReel({
       f.clear();
       z.clear();
       g.clear();
+      kinoFreigeben();
     };
   }, [tage]);
 
@@ -124,7 +131,11 @@ export function SpruchReel({
           1,
           Math.max(0.3, ((c.clientWidth || 360) * dichte) / FORMATE.karte.b),
         );
-        z = storyVorbereiten(c, karte, FORMATE.karte, { skala }).then(
+        z = storyVorbereiten(c, karte, FORMATE.karte, {
+          skala,
+          // Kino-Kamera nur, wenn der Film auch läuft.
+          kino: ruhig ? false : { aufloesung: 1 },
+        }).then(
           (male) => {
             // Noch nicht gezeigte Karten warten als leere Bühne auf ihren Film.
             male(ruhig ? Infinity : 0);
@@ -141,9 +152,44 @@ export function SpruchReel({
 
     const spiele = (datum: string, male: Zeichner) => {
       gespielt.current.add(datum);
-      const beginn = performance.now();
+      // Läuft noch der Film einer anderen Karte (nach dem Blättern),
+      // endet er auf ihrem Standbild: Unsichtbar weiterzurechnen kostet
+      // nur Kraft.
+      filme.current.forEach((id, anderes) => {
+        if (anderes === datum) return;
+        cancelAnimationFrame(id);
+        filme.current.delete(anderes);
+        void zeichner.current.get(anderes)?.then((m) => m(Infinity));
+      });
+      // Kann das Gerät die Kino-Kamera? Zwei Probebilder vor dem Start
+      // (das erste Bild der Karte ist schon gezeichnet, die Kamera also
+      // eingerichtet). Brauchen sie im Mittel mehr als 40 ms, läuft der
+      // Film flach.
+      if (male.kino) {
+        const probe = performance.now();
+        male(0);
+        male(1 / 30);
+        if ((performance.now() - probe) / 2 > 40) male.kino = false;
+      }
+      // Die Filmuhr rückt je Bild höchstens 50 ms vor: Hakt ein Bild, läuft
+      // der Film kurz langsamer, statt Bilder zu überspringen.
+      let t = 0;
+      let zuletzt = performance.now();
+      // Wird es unterwegs zu langsam (Median der ersten zwölf Bildabstände
+      // über 40 ms), läuft der Film flach weiter.
+      const takte: number[] = [];
       const bild = (jetzt: number) => {
-        const t = ((jetzt - beginn) / 1000) * TEMPO;
+        const schritt = Math.max(0, jetzt - zuletzt);
+        zuletzt = jetzt;
+        t += (Math.min(schritt, 50) / 1000) * TEMPO;
+        if (male.kino && takte.length < 12) {
+          takte.push(schritt);
+          if (takte.length === 12) {
+            const sortiert = takte.slice(1).sort((a, b) => a - b);
+            if (sortiert[Math.floor(sortiert.length / 2)] > 40)
+              male.kino = false;
+          }
+        }
         male(Math.min(t, STORY_DAUER));
         // Am Ende bleibt das letzte Bild stehen: das Standbild.
         if (t < STORY_DAUER)

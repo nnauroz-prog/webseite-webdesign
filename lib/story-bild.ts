@@ -53,6 +53,14 @@ import {
 import type { SpruchTag } from "@/lib/sprueche-data";
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { KURSIV_SPERRUNG, satzPlan, type SatzPlan } from "@/lib/story-satz";
+import {
+  abbildungFuer,
+  bildWeg,
+  kinoBereit,
+  kinoZeichnen,
+  sichtbarerBereich,
+  type KinoKamera,
+} from "@/lib/story-kino";
 import { MOTIV_WASSER } from "@/lib/story-teile";
 import {
   varianteFuer,
@@ -79,8 +87,18 @@ export const FORMATE: Record<StoryFormat["name"], StoryFormat> = {
 };
 /** Länge des Kurzvideos in Sekunden. */
 export const STORY_DAUER = 8;
-/** Zeichnet das Bild zur Zeit t (Sekunden; Infinity = Standbild). */
-export type StoryZeichner = (t: number) => void;
+/**
+ * Zeichnet das Bild zur Zeit t (Sekunden; Infinity = Standbild). fein =
+ * true: für das gerechnete Video, mit Bewegungsunschärfe (nur mit der
+ * Kino-Kamera).
+ */
+export type StoryZeichner = ((t: number, fein?: boolean) => void) & {
+  /**
+   * Nur mit der Kino-Kamera vorhanden: auf false gesetzt, wird wieder
+   * flach gezeichnet (etwa wenn ein Gerät für die Kamera zu langsam ist).
+   */
+  kino?: boolean;
+};
 
 const RAND = 84;
 const PAPIER = "#fff8ee";
@@ -118,6 +136,20 @@ type Basis = {
   film: { auftritt: Auftritt; kamera: Kamera };
   /** Regie des Films; jedes Format legt sie beim Vorbereiten fest. */
   regie: Regie;
+  /** Mit der Kino-Kamera: fester Ausschnitt statt der Kamerafahrt (die übernimmt die Kino-Kamera). */
+  kamFest: Basis["kam"] | null;
+  /** Mit der Kino-Kamera: höchste sichtbare Stelle zwischen zwei Zeiten. */
+  sichtOben: ((von: number, bis: number) => number) | null;
+  /** Wohin der Blick im Film geht, während die Pointe kommt (Mitte der Pointe oder des Satzes). */
+  fokus: { x: number; y: number } | null;
+  /** true, solange ein Bild für die Kino-Kamera gezeichnet wird (Einblendungen kommen danach). */
+  kinoBild: boolean;
+  /** Mit der Kino-Kamera: wo der Ausschnitt auf der Zeichenfläche beginnt (Bildpunkte). */
+  versatz: [number, number];
+  /** Deckkraft des Korns, das das Format zuletzt wollte (für die Einblendung über dem Kinobild). */
+  kornDeck: number;
+  /** Was am Objektiv hängt (der Sucher bei POV): mit der Kino-Kamera über das gefilmte Bild gelegt. */
+  ueberlagerung: ((c: Ctx, t: number) => void) | null;
 };
 
 /** Kamera: Blickpunkt (Bildkoordinaten) und Zoom (1 = Standbild). */
@@ -228,7 +260,7 @@ function lauf(t: number): number {
  */
 function kameraAn(k: Basis) {
   const { ctx, f, kam, skala } = k;
-  ctx.setTransform(skala, 0, 0, skala, 0, 0);
+  ctx.setTransform(skala, 0, 0, skala, k.versatz[0], k.versatz[1]);
   ctx.translate(f.b / 2, f.h / 2 + kam.dy);
   ctx.scale(kam.z, kam.z);
   ctx.translate(-kam.x, -kam.y);
@@ -311,6 +343,94 @@ function kameraBei(k: Basis, t: number): Basis["kam"] {
   return { ...imBild(k, kameraPose(k, t)), dy };
 }
 
+// ---------------------------------------------------------------- Kino
+
+/** Rand um das Plakat, der für die Kino-Kamera mitgezeichnet wird (der Grund reicht weiter). */
+const KINO_RAND = 240;
+const SANFT = bezier(0.45, 0, 0.55, 1);
+
+/**
+ * Lage der Kino-Kamera zur Zeit t. Sie folgt der Kamerafahrt der Regie
+ * (Ziel und Nähe) und fügt hinzu, was eine echte Kamera ausmacht:
+ *
+ * - Je näher sie ist, desto schräger blickt sie auf das Plakat, mit
+ *   kürzerer Brennweite und geringer Schärfentiefe. Wie schräg und von
+ *   wo, hängt vom Kameraweg ab (Rückzug von oben, Lücke von unten, Hafen
+ *   flach über dem Wasser, Anfahrt von der Seite).
+ * - Während die Pointe kommt, steht sie leicht schräg und etwas näher
+ *   an der Pointe und schiebt sich langsam heran.
+ * - Setzt etwas Schweres auf, gibt das Bild nach (das Federn der Regie).
+ * - Ab T_STAND steht sie gerade vor dem Plakat: Das Bild ist dann genau
+ *   das Standbild.
+ */
+function kinoKamera(k: Basis, t: number): KinoKamera {
+  const { f } = k;
+  const zweiD = imBild(k, kameraPose(k, t));
+  const fokus = k.fokus ?? { x: f.b / 2, y: f.h / 2 };
+  // Halt während die Pointe kommt: von kurz vor T_SATZ bis T_RUECK, dann
+  // zurück in die Totale bis T_STAND.
+  const halt =
+    t < T_SATZ - 0.6
+      ? 0
+      : t < T_SATZ + 0.4
+        ? SANFT((t - (T_SATZ - 0.6)) / 1)
+        : t < T_RUECK
+          ? 1
+          : t < T_STAND
+            ? 1 - FAHRT_ZURUECK((t - T_RUECK) / (T_STAND - T_RUECK))
+            : 0;
+  const schub = 1 + 0.06 * klemme((t - T_SATZ) / (T_RUECK - T_SATZ));
+  const z = zweiD.z * (1 + (0.16 * schub + 0.0) * halt);
+  // Am Hafen blickt sie auf die Stadt selbst (die flache Kamera der Regie
+  // blickt knapp darunter, damit kein Satz angeschnitten ins Bild ragt).
+  const nahHafen =
+    k.film.kamera === "hafen"
+      ? klemme(Math.log(Math.max(1, zweiD.z)) / Math.log(2.4))
+      : 0;
+  const stadtY = hafenLage(k).y0 - 40 * hafenLage(k).mass;
+  const vorY = zweiD.y + (stadtY - zweiD.y) * nahHafen;
+  const zielX =
+    zweiD.x + (f.b / 2 + (fokus.x - f.b / 2) * 0.5 - zweiD.x) * halt;
+  const zielY = vorY + (f.h / 2 + (fokus.y - f.h / 2) * 0.55 - vorY) * halt;
+  // Wie stark die Kamera „Kamera“ ist: nah am Requisit voll, im Halt
+  // ein Teil, in der Totale nichts.
+  const nah = klemme(Math.log(Math.max(1, zweiD.z)) / Math.log(2.4));
+  const a = Math.max(nah, 0.55 * halt);
+  const seite = k.karte.nummer % 2 ? 1 : -1;
+  const weg = {
+    rueckzug: { nick: -0.46, gier: 0.22 },
+    luecke: { nick: 0.4, gier: 0.3 },
+    // Am Hafen gleitet die Kamera seitlich an der Stadt entlang.
+    hafen: { nick: 0.2, gier: 0.6 },
+    anfahrt: { nick: 0.26, gier: -0.4 },
+  }[k.film.kamera];
+  const fov = ((28 + 20 * a) * Math.PI) / 180;
+  // Federn der Regie: Das Bild gibt nach, als würde die Kamera mitgehen.
+  let dy = 0;
+  if (t < T_RUHE)
+    for (const s of k.regie.feder)
+      dy += (s.weich ? federWeich : federWeg)(t - s.t) * s.px;
+  return {
+    tx: zielX,
+    ty: zielY - dy / z,
+    dist: f.h / (2 * z) / Math.tan(fov / 2),
+    yaw: (weg.gier * seite + 0.03 * Math.sin(t * 0.7)) * a,
+    pitch: weg.nick * a,
+    roll: -0.045 * seite * a,
+    fov,
+    blende: 0.034 * Math.pow(a, 1.15),
+    licht: a,
+  };
+}
+
+/** „#rrggbb“ als Farbe 0 bis 1, abgedunkelt für den Raum um das Plakat. */
+function raumFarbe(hex: string): [number, number, number] {
+  const n = hex.replace("#", "");
+  return [0, 2, 4].map(
+    (i) => (parseInt(n.slice(i, i + 2), 16) / 255) * 0.14,
+  ) as [number, number, number];
+}
+
 /**
  * Höchste Oberkante des Bildes zwischen zwei Zeiten: Was darüber
  * beginnt, ist sicher nicht zu sehen.
@@ -321,7 +441,9 @@ function bildObenZwischen(k: Basis, von: number, bis: number): number {
     const p = imBild(k, kameraPose(k, von + ((bis - von) * i) / 10));
     oben = Math.min(oben, p.y - k.f.h / 2 / p.z);
   }
-  return oben - 16;
+  // Mit der Kino-Kamera die höhere der beiden Kanten: So kommt die Pointe
+  // auch dann von oben, wenn der Film mittendrin flach weiterläuft.
+  return Math.min(oben - 16, k.sichtOben ? k.sichtOben(von, bis) : Infinity);
 }
 
 /** Größter Zoom für die Nahaufnahme am Requisit. */
@@ -615,6 +737,10 @@ function streifenPfad(
 // steht still wie Papierfaser, auch im Film.
 let kornMuster: HTMLCanvasElement | null = null;
 function korn(k: Basis, deck: number) {
+  // Mit der Kino-Kamera kommt das Korn erst über das gefilmte Bild (wie
+  // Filmkorn); hier nur merken, wie stark.
+  k.kornDeck = deck;
+  if (k.kinoBild) return;
   const { ctx, f } = k;
   if (!kornMuster) {
     kornMuster = document.createElement("canvas");
@@ -2205,6 +2331,9 @@ function regieFuer(
 ): Regie {
   const { f } = k;
   const { masse, pointe } = a.satz;
+  k.fokus = masse
+    ? { x: a.x + pointe.x + pointe.b / 2, y: a.y + pointe.y + pointe.h / 2 }
+    : { x: a.x + a.satz.b / 2, y: a.y + a.satz.hoehe / 2 };
   const { auftritt, kamera } = k.film;
   const totale = { x: f.b / 2, y: f.h / 2, z: 1 };
   let fahrt = rueckzug(k, a.nah);
@@ -2702,6 +2831,8 @@ function mythos(k: Basis): Maler {
     feder: [{ t: T_SCHLAG, px: -8 }],
     ladung: null,
   };
+  // Die Kino-Kamera blickt auf die Stelle, an der „Stimmt nicht“ aufsetzt.
+  k.fokus = { x: f.b / 2, y: yMarke + 30 };
   return (t) => {
     grund(k, l);
     kopf(k, farben.kopf, "Mythos");
@@ -2820,6 +2951,55 @@ function pov(k: Basis): Maler {
       [f.unten - 84, f.unten + 45],
     ],
   });
+  /**
+   * Sucher: Die Eckmarken stehen fest, nur der rote Punkt blinkt (eine
+   * halbe Sekunde an, eine halbe aus). Mit der Kino-Kamera hängt er am
+   * Objektiv und wird über das gefilmte Bild gelegt, statt mit dem
+   * Plakat zu kippen.
+   */
+  const sucher = (c: Ctx, t: number) => {
+    c.save();
+    const [x0, y0, x1, y1] = [
+      RAND - 40,
+      f.oben - 30,
+      f.b - RAND + 40,
+      f.unten + 42,
+    ];
+    const arm = 70;
+    c.strokeStyle = "rgb(255 255 255 / 0.92)";
+    c.lineWidth = 5;
+    c.lineCap = "square";
+    for (const [ex, ey, dx, dy] of [
+      [x0, y0, 1, 1],
+      [x1, y0, -1, 1],
+      [x0, y1, 1, -1],
+      [x1, y1, -1, -1],
+    ]) {
+      c.beginPath();
+      c.moveTo(ex + dx * arm, ey);
+      c.lineTo(ex, ey);
+      c.lineTo(ex, ey + dy * arm);
+      c.stroke();
+    }
+    const an = t < T_RUHE ? Math.max(0, t) % 1 < 0.5 : true;
+    c.fillStyle = an ? "#ff3b30" : "rgb(255 59 48 / 0.25)";
+    c.beginPath();
+    c.arc(RAND + 12, f.oben + 37, 12, 0, Math.PI * 2);
+    c.fill();
+    c.font = `500 30px ${mono}`;
+    sperren(c, 5);
+    c.fillStyle = "#ffffff";
+    c.textBaseline = "middle";
+    c.fillText("POV", RAND + 40, f.oben + 39);
+    c.font = `400 26px ${mono}`;
+    sperren(c, 1.2);
+    c.textAlign = "right";
+    c.fillStyle = "rgb(255 255 255 / 0.72)";
+    c.fillText(karte.datumKurz.toUpperCase(), f.b - RAND + 3, f.oben + 39);
+    sperren(c, 0);
+    c.restore();
+  };
+  k.ueberlagerung = sucher;
   return (t) => {
     const u = 260;
     ctx.save();
@@ -2852,46 +3032,7 @@ function pov(k: Basis): Maler {
     ctx.fillStyle = rand;
     ctx.fillRect(-u, -u, f.b + u * 2, f.h + u * 2);
 
-    // Sucher: Die Eckmarken stehen fest, nur der rote Punkt blinkt (eine
-    // halbe Sekunde an, eine halbe aus).
-    const [x0, y0, x1, y1] = [
-      RAND - 40,
-      f.oben - 30,
-      f.b - RAND + 40,
-      f.unten + 42,
-    ];
-    const arm = 70;
-    ctx.strokeStyle = "rgb(255 255 255 / 0.92)";
-    ctx.lineWidth = 5;
-    ctx.lineCap = "square";
-    for (const [ex, ey, dx, dy] of [
-      [x0, y0, 1, 1],
-      [x1, y0, -1, 1],
-      [x0, y1, 1, -1],
-      [x1, y1, -1, -1],
-    ]) {
-      ctx.beginPath();
-      ctx.moveTo(ex + dx * arm, ey);
-      ctx.lineTo(ex, ey);
-      ctx.lineTo(ex, ey + dy * arm);
-      ctx.stroke();
-    }
-    const an = t < T_RUHE ? Math.max(0, t) % 1 < 0.5 : true;
-    ctx.fillStyle = an ? "#ff3b30" : "rgb(255 59 48 / 0.25)";
-    ctx.beginPath();
-    ctx.arc(RAND + 12, f.oben + 37, 12, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.font = `500 30px ${mono}`;
-    sperren(ctx, 5);
-    ctx.fillStyle = "#ffffff";
-    ctx.textBaseline = "middle";
-    ctx.fillText("POV", RAND + 40, f.oben + 39);
-    ctx.font = `400 26px ${mono}`;
-    sperren(ctx, 1.2);
-    ctx.textAlign = "right";
-    ctx.fillStyle = "rgb(255 255 255 / 0.72)";
-    ctx.fillText(karte.datumKurz.toUpperCase(), f.b - RAND + 3, f.oben + 39);
-    sperren(ctx, 0);
+    if (!k.kinoBild) sucher(ctx, t);
     ctx.restore();
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
@@ -3161,6 +3302,12 @@ export async function storyVorbereiten(
     skala?: number;
     versatz?: number;
     film?: { auftritt?: Auftritt; kamera?: Kamera };
+    /**
+     * Kino-Kamera (lib/story-kino.ts): Das Plakat wird im Raum gefilmt.
+     * aufloesung: wie fein die Textur gegenüber dem Bild ist (Standard
+     * 1,5). Kann der Browser das nicht, wird flach gezeichnet.
+     */
+    kino?: boolean | { aufloesung?: number };
   } = {},
 ): Promise<StoryZeichner> {
   // skala < 1 zeichnet ein kleines Vorschaubild, versatz wählt ein
@@ -3194,9 +3341,21 @@ export async function storyVorbereiten(
   canvas.width = Math.round(format.b * skala);
   canvas.height = Math.round(format.h * skala);
   ctx.setTransform(skala, 0, 0, skala, 0, 0);
+  // Mit der Kino-Kamera wird das Plakat auf eine eigene, feinere Fläche
+  // gezeichnet; die Kamera filmt sie und gibt das Bild an canvas weiter.
+  const kinoAn = !!optionen.kino && kinoBereit();
+  const fein =
+    typeof optionen.kino === "object" ? (optionen.kino.aufloesung ?? 1.5) : 1.5;
+  const plakat = kinoAn ? document.createElement("canvas") : canvas;
+  if (kinoAn) {
+    plakat.width = Math.round(canvas.width * fein);
+    plakat.height = Math.round(canvas.height * fein);
+  }
+  const pctx = kinoAn ? plakat.getContext("2d") : ctx;
+  if (!pctx) return () => undefined;
   const v = varianteFuer(karte.nummer, karte.platz, optionen.versatz ?? 0);
   const basis: Basis = {
-    ctx,
+    ctx: pctx,
     f: format,
     v,
     l: v.look,
@@ -3215,25 +3374,177 @@ export async function storyVorbereiten(
       kamera: optionen.film?.kamera ?? v.kamera,
     },
     regie: { fahrt: [], feder: [], ladung: null },
+    kamFest: null,
+    sichtOben: null,
+    fokus: null,
+    kinoBild: false,
+    ueberlagerung: null,
+    versatz: [0, 0],
+    kornDeck: 0,
   };
   const male = formatFuer(karte.kicker)(basis);
   // Für die Prüfung aller Karten: Hat ein Text nicht in sein Feld gepasst?
   canvas.dataset.eng = basis.eng.wert ? "1" : "";
   canvas.dataset.schrift = String(basis.eng.klein);
 
-  return (t) => {
-    Object.assign(basis.kam, kameraBei(basis, t));
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = "source-over";
-    ctx.setLineDash([]);
-    ctx.lineCap = "butt";
-    ctx.lineJoin = "miter";
-    ohneSchatten(ctx);
-    ctx.textBaseline = "alphabetic";
-    ctx.textAlign = "left";
+  /** Zeichnet das Plakat flach, mit der Kamera der Regie oder einem festen Ausschnitt. */
+  const flach = (t: number) => {
+    Object.assign(basis.kam, basis.kamFest ?? kameraBei(basis, t));
+    pctx.globalAlpha = 1;
+    pctx.globalCompositeOperation = "source-over";
+    pctx.setLineDash([]);
+    pctx.lineCap = "butt";
+    pctx.lineJoin = "miter";
+    ohneSchatten(pctx);
+    pctx.textBaseline = "alphabetic";
+    pctx.textAlign = "left";
     kameraAn(basis);
     male(t);
   };
+  if (!kinoAn) return (t) => flach(t);
+
+  // Kino-Kamera. Wo die Pointe von oben hereinkommt (Kran, Presse), muss
+  // sie oberhalb dessen beginnen, was die Kamera sieht.
+  basis.sichtOben = (von, bis) => {
+    let oben = Infinity;
+    for (let i = 0; i <= 10; i++) {
+      const kam = kinoKamera(basis, von + ((bis - von) * i) / 10);
+      oben = Math.min(oben, sichtbarerBereich(kam, format.b, format.h).y0);
+    }
+    return Math.max(oben, -KINO_RAND + 12) - 16;
+  };
+  const dunkel = raumFarbe(basis.l.bg2);
+  const raumHex = `rgb(${dunkel.map((w) => Math.round(w * 255)).join(" ")})`;
+  /** Das Plakat flach in der Größe des Bildes, 1:1 übertragen (Standbild). */
+  const standbild = (t: number) => {
+    basis.skala = skala;
+    basis.versatz = [0, 0];
+    basis.kamFest = { x: format.b / 2, y: format.h / 2, z: 1, dy: 0 };
+    flach(t);
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "copy";
+    ctx.drawImage(
+      plakat,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
+    ctx.restore();
+  };
+  /** Flach mit der Kamera der Regie, 1:1 übertragen (wenn die Kino-Kamera aus ist). */
+  const flachKopie = (t: number) => {
+    basis.skala = skala;
+    basis.versatz = [0, 0];
+    basis.kamFest = null;
+    flach(t);
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "copy";
+    ctx.drawImage(
+      plakat,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
+    ctx.restore();
+  };
+  const zeichner: StoryZeichner = (t, genau = false) => {
+    if (zeichner.kino === false) return flachKopie(t);
+    // Ab kurz nach T_STAND steht die Kamera gerade vor dem Plakat: dann
+    // ist das Bild das Standbild.
+    if (!(t < T_STAND + 0.25)) return standbild(t);
+    const kam = kinoKamera(basis, t);
+    // Bewegungsunschärfe für das Video: die Kamera während einer halben
+    // Bilddauer (Verschluss 180 Grad). So viele Lagen, dass zwischen zwei
+    // höchstens zwei Bildpunkte liegen; steht die Kamera fast, eine.
+    let kameras = [kam];
+    if (genau) {
+      const vorher = kinoKamera(basis, t - 0.5 / 30);
+      const weg = bildWeg(kam, vorher, format.b, format.h, canvas.height);
+      const n = Math.min(32, Math.max(1, Math.ceil(weg / 2)));
+      if (n > 1)
+        kameras = Array.from({ length: n }, (_, j) =>
+          kinoKamera(basis, t - (j / (n - 1)) * (0.5 / 30)),
+        );
+    }
+    // Feinere Textur, solange die Kamera schräg und nah ist; zum Ende hin
+    // genau so fein wie das Bild, damit das letzte Kinobild dem Standbild
+    // gleicht (kein Scharfziehen beim Wechsel).
+    const feinJetzt = 1 + (fein - 1) * kam.licht;
+    const abb = abbildungFuer(
+      kameras,
+      format.b,
+      format.h,
+      KINO_RAND,
+      // Saum für die Unschärfe am Bildrand
+      0.03 * format.h * kam.licht,
+      { b: plakat.width, h: plakat.height },
+      feinJetzt / fein,
+    );
+    basis.skala = skala * feinJetzt;
+    basis.versatz = [abb.ox, abb.oy];
+    basis.kamFest = { x: abb.cx, y: abb.cy, z: abb.zt, dy: 0 };
+    // Die ganze Fläche erst leeren: Der Ausschnitt ist nicht jedes Bild
+    // gleich groß, und Reste eines früheren Bildes am Rand würden beim
+    // Weichzeichnen hineingezogen.
+    pctx.save();
+    pctx.setTransform(1, 0, 0, 1, 0, 0);
+    pctx.globalAlpha = 1;
+    pctx.globalCompositeOperation = "source-over";
+    pctx.fillStyle = raumHex;
+    pctx.fillRect(0, 0, plakat.width, plakat.height);
+    pctx.restore();
+    basis.kinoBild = true;
+    flach(t);
+    basis.kinoBild = false;
+    const ok = kinoZeichnen({
+      ziel: ctx,
+      quelle: plakat,
+      abb,
+      kameras,
+      b: format.b,
+      h: format.h,
+      rand: KINO_RAND,
+      dunkel,
+      zeit: t,
+    });
+    if (!ok) {
+      zeichner.kino = false;
+      flachKopie(t);
+      return;
+    }
+    // Was am Objektiv hängt, kommt über das gefilmte Bild: der Sucher
+    // (POV) und das Korn, beide fest im Bild wie beim Standbild.
+    const vorher = {
+      ctx: basis.ctx,
+      skala: basis.skala,
+      versatz: basis.versatz,
+    };
+    basis.ctx = ctx;
+    basis.skala = skala;
+    basis.versatz = [0, 0];
+    ctx.save();
+    ctx.setTransform(skala, 0, 0, skala, 0, 0);
+    basis.ueberlagerung?.(ctx, t);
+    ctx.restore();
+    if (basis.kornDeck > 0) korn(basis, basis.kornDeck);
+    Object.assign(basis, vorher);
+  };
+  zeichner.kino = true;
+  return zeichner;
 }
 
 /** Zeichnet das fertige Standbild. */

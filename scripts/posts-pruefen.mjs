@@ -42,8 +42,9 @@ try {
     einstieg,
     `import { SPRUECHE, SPRUECHE_EXTRA, spruchTag } from "@/lib/sprueche-data";
 import { FORMATE, storyVorbereiten } from "@/lib/story-bild";
+import { kinoBereit } from "@/lib/story-kino";
 import { AUFTRITTE, KAMERAS } from "@/lib/story-variante";
-Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE, storyVorbereiten, AUFTRITTE, KAMERAS } });
+Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE, storyVorbereiten, AUFTRITTE, KAMERAS, kinoBereit } });
 `,
   );
   execFileSync(
@@ -128,9 +129,15 @@ Object.assign(window, { pruefung: { SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE
             flaeche,
             { ...basis, ...karte, platz, nummer: basis.nummer + i },
             format,
-            { skala: 0.12, film },
+            // Jede zweite Karte mit der Kino-Kamera (wo der Browser sie
+            // kann), die anderen flach: So bleiben beide Wege geprüft.
+            { skala: 0.12, film, kino: i % 2 === 0 },
           );
-          for (const t of zeiten) anders(t);
+          for (const t of zeiten) anders(t, t === 0.13 || t === 3.64);
+          // Fiel die Kino-Kamera aus, obwohl der Browser sie kann, ist im
+          // WebGL-Teil etwas kaputt.
+          if (i % 2 === 0 && p.kinoBereit() && anders.kino === false)
+            out.fehler.push(`Kino-Kamera ausgefallen: ${name}`);
           out.geprueft++;
         } catch (e) {
           out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);
