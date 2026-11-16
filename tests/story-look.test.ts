@@ -9,6 +9,7 @@ import {
   LAYOUT_FOLGE,
   LAYOUTS,
   VARIANTEN,
+  gestaltungFuer,
   varianteFuer,
 } from "@/lib/story-variante";
 
@@ -203,10 +204,19 @@ describe("Farbwelten der Spruch-Karten", () => {
   });
 
   it("gestaltet die drei Posts eines Tages verschieden und wechselt täglich", () => {
-    // Die Folge hat so viele Plätze wie die Schmuck-Stelle und enthält
-    // jede Gestaltung.
+    // Die Folge hat so viele Plätze wie die Schmuck-Stelle, jede
+    // Gestaltung des Wechsels genau einmal (mindestens sechs sichtbar
+    // verschiedene, die klassische eingeschlossen). Nur das Kalenderblatt
+    // steht nicht darin: Es braucht einen Anlass.
     assert.equal(LAYOUT_FOLGE.length, SCHMUCK.length);
-    assert.deepEqual(new Set(LAYOUT_FOLGE), new Set(LAYOUTS));
+    assert.equal(new Set(LAYOUT_FOLGE).size, LAYOUT_FOLGE.length);
+    assert.ok(LAYOUT_FOLGE.length >= 6);
+    assert.ok(LAYOUT_FOLGE.includes("klassik"));
+    assert.ok(!LAYOUT_FOLGE.includes("kalenderblatt"));
+    assert.deepEqual(
+      new Set([...LAYOUT_FOLGE, "kalenderblatt"]),
+      new Set(LAYOUTS),
+    );
     for (let n = -10; n < VARIANTEN / 3; n++) {
       const tag = [0, 1, 2].map((platz) => varianteFuer(n, platz).layout);
       assert.equal(new Set(tag).size, 3, `Tag ${n}: ${tag.join(", ")}`);
@@ -223,16 +233,54 @@ describe("Farbwelten der Spruch-Karten", () => {
         varianteFuer(start + i),
       );
       const gesehen = new Set(monat.map((v) => v.layout));
-      assert.equal(gesehen.size, LAYOUTS.length, `ab Tag ${start}`);
+      assert.equal(gesehen.size, LAYOUT_FOLGE.length, `ab Tag ${start}`);
       assert.ok(gesehen.has("klassik"), `ab Tag ${start}`);
-      // Auch über alle drei Posts: Die klassische Gestaltung bleibt im
-      // Wechsel, aber nicht als einzige.
+      // Auch über alle drei Posts: Jede Gestaltung bleibt im Wechsel,
+      // keine drängt sich vor.
       const alle = monat.flatMap((_, i) =>
         [0, 1, 2].map((platz) => varianteFuer(start + i, platz).layout),
       );
-      const klassik = alle.filter((l) => l === "klassik").length;
-      assert.ok(klassik >= 20 && klassik <= 40, `${klassik} ab Tag ${start}`);
+      for (const layout of LAYOUT_FOLGE) {
+        const anzahl = alle.filter((l) => l === layout).length;
+        assert.ok(
+          anzahl >= 8 && anzahl <= 25,
+          `${layout}: ${anzahl} ab Tag ${start}`,
+        );
+      }
     }
+  });
+
+  it("stellt den tagesaktuellen Spruch des Tages jeden zweiten Tag als Kalenderblatt", () => {
+    let kalender = 0;
+    for (let n = -10; n < 2000; n++) {
+      // Ein Tag mit drei tagesaktuellen Posts: drei verschiedene Gestaltungen.
+      const tag = [0, 1, 2].map((platz) =>
+        gestaltungFuer({ nummer: n, platz, anlass: "Erster Advent" }),
+      );
+      assert.equal(new Set(tag).size, 3, `Tag ${n}: ${tag.join(", ")}`);
+      // Nur der Spruch des Tages, und nur an jedem zweiten Tag.
+      assert.equal(tag[0] === "kalenderblatt", n % 2 === 0, `Tag ${n}`);
+      assert.ok(!tag.slice(1).includes("kalenderblatt"), `Tag ${n}`);
+      if (tag[0] === "kalenderblatt") kalender++;
+      // Ohne Anlass (Reserve) nie, sondern die Gestaltung des Wechsels.
+      for (const platz of [0, 1, 2]) {
+        const ohne = gestaltungFuer({ nummer: n, platz, anlass: null });
+        assert.equal(ohne, varianteFuer(n, platz).layout, `Tag ${n}`);
+        assert.equal(
+          gestaltungFuer({ nummer: n, platz, anlass: "  " }),
+          ohne,
+          `leerer Anlass an Tag ${n}`,
+        );
+      }
+      // An den anderen Tagen die Gestaltung des Wechsels.
+      if (n % 2 !== 0) assert.equal(tag[0], varianteFuer(n).layout);
+    }
+    assert.ok(kalender > 900);
+    // „Anderes Design“ im Story-Studio wechselt auch hier die Gestaltung.
+    assert.notEqual(
+      gestaltungFuer({ nummer: 10, platz: 0, anlass: "Black Friday" }, 1),
+      "kalenderblatt",
+    );
   });
 
   it("hat für jedes Motiv und jede Schmuckform gültige Pfade", () => {

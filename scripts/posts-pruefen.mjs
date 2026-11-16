@@ -4,10 +4,12 @@
  * (lib/posts-aktuell.ts) wird in einem echten Browser in allen drei
  * Formaten (Story, Beitrag, Karte auf /journal) gesetzt und gezeichnet,
  * als Standbild und zu mehreren Zeiten des Films: einmal so, wie der Tag
- * sie bringt, dann in jeder Gestaltung (klassik, magazin, farbfeld) mit
- * reihum wechselndem Ablauf (Auftritt der Pointe, Weg der Kamera, flach
- * oder mit der Kino-Kamera). Dazu jede Reihe in jeder Gestaltung mit dem
- * längsten erlaubten Anlass.
+ * sie bringt, dann in jeder Gestaltung (klassik, magazin, farbfeld,
+ * raster, schlagzeile, riese, kalenderblatt) mit reihum wechselndem
+ * Ablauf (Auftritt der Pointe, Weg der Kamera, flach oder mit der
+ * Kino-Kamera). Dazu jede Reihe in jeder Gestaltung mit dem längsten
+ * erlaubten Anlass, und als tagesaktueller Spruch des Tages (an geraden
+ * Tagen ein Kalenderblatt).
  *
  * Meldet einen Fehler, wenn ein Text auch in der kleinsten Schrift nicht
  * in sein Feld passt, die Kopfzeile (Etikett, Anlass, Datum) nicht in
@@ -98,6 +100,7 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
       fehler: [],
       kleinste: {},
       gestaltungen: {},
+      kleinsteJe: {},
       aktuell: alle.filter((e) => e.anlass).length,
     };
     /** Was das gerade gezeichnete Bild über sich meldet. */
@@ -109,6 +112,8 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
         out.fehler.push(`mehr als eine orange Pille: ${name}`);
       const l = flaeche.dataset.layout;
       out.gestaltungen[l] = (out.gestaltungen[l] ?? 0) + 1;
+      const g = Number(flaeche.dataset.schrift);
+      if (g < 900) out.kleinsteJe[l] = Math.min(out.kleinsteJe[l] ?? 999, g);
     };
     // Grundlage aus der Reserve (ohne tagesaktuelle Karten), damit jede
     // geprüfte Karte genau ihre eigenen Felder trägt.
@@ -191,10 +196,32 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
         }
       }
       // Jede Reihe in jeder Gestaltung mit dem längsten erlaubten Anlass
-      // (28 Zeichen): Die Kopfzeile muss auch dann passen.
+      // (28 Zeichen): Die Kopfzeile muss auch dann passen. Dazu so, wie
+      // der Tag sie bringt: Als tagesaktueller Spruch des Tages steht sie
+      // an geraden Tagen als Kalenderblatt, an ungeraden nicht.
       for (const kicker of p.KICKER) {
         const i = alle.findIndex((e) => e.karte.kicker === kicker);
         if (i < 0) continue;
+        for (const versatz of [0, 1]) {
+          const tag = { ...alsTag(alle[i], i), platz: 0 };
+          const nummer = tag.nummer - (tag.nummer % 2) + versatz;
+          const karte = { ...tag, nummer, anlass: "Erster Advent" };
+          const name = `${format.name} | ${kicker} | tagesaktuell, Tag ${nummer}`;
+          try {
+            const z = await p.storyVorbereiten(flaeche, karte, format, {
+              skala: 0.12,
+            });
+            befund(name);
+            const kalender = flaeche.dataset.layout === "kalenderblatt";
+            if (kalender !== (versatz === 0))
+              out.fehler.push(
+                `Kalenderblatt ${kalender ? "an falschem Tag" : "fehlt"}: ${name}`,
+              );
+            for (const t of zeiten) z(t);
+          } catch (e) {
+            out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);
+          }
+        }
         for (const layout of p.LAYOUTS) {
           const karte = {
             ...alsTag(alle[i], i),
@@ -226,6 +253,10 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
       .map(([f, g]) => `${f} ${g}`)
       .join(", ")}. Gestaltungen: ${Object.entries(ergebnis.gestaltungen)
       .map(([l, n]) => `${l} ${n}`)
+      .join(", ")}. Kleinste Schrift je Gestaltung: ${Object.entries(
+      ergebnis.kleinsteJe,
+    )
+      .map(([l, g]) => `${l} ${g}`)
       .join(", ")}.`,
   );
   if (fehler.length) {

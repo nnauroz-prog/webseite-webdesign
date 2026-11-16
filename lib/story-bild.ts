@@ -12,12 +12,22 @@
  *   Vorspann unter einer kurzen Linie.
  * - Farbfeld: eine kräftige Farbfläche, darunter ruhiges Papier; die
  *   Elbe-Linie mit Hamburg ist der Horizont dazwischen.
+ * - Raster: Schweizer Stil, sichtbarer Satzspiegel (Linien, Spalten-
+ *   marken), riesige Grotesk im Flattersatz, ein Quadrat in der
+ *   Akzentfarbe, der Zusatz in seiner eigenen Spalte.
+ * - Schlagzeile: Titelseite auf Zeitungspapier, Kopfbalken mit Anlass
+ *   oder Reihe und Datum, fette Versalien, der Zusatz als Zitat.
+ * - Riese: die Pointe riesig über die ganze Breite, der Satz klein
+ *   darüber mit einer Lücke, wo sie hingehört.
+ * - Kalenderblatt (nur tagesaktuell): ein Abreißkalender mit Wochentag,
+ *   Tageszahl und Monat, daneben der Anlass als Überschrift.
  * - Klassik: das Format der Reihe (siehe unten).
  *
  * Bei tagesaktuellen Posts steht der Anlass mit auf dem Bild (neben dem
- * Datum oder in der Titelzeile); passt er nicht, meldet es die Prüfung
- * (canvas.dataset.kopf). In der klassischen Gestaltung hat jede Reihe
- * ihr eigenes Format, so wie ein Grafiker Serien anlegt:
+ * Datum, in der Titelzeile, im Kopfbalken oder als Überschrift); passt
+ * er nicht, meldet es die Prüfung (canvas.dataset.kopf). In der
+ * klassischen Gestaltung hat jede Reihe ihr eigenes Format, so wie ein
+ * Grafiker Serien anlegt:
  *
  * - Flagge (Red Flag, Green Flag): große wehende Flagge, Satz darunter.
  * - Mythos: oben der Irrtum kursiv und durchgestrichen, unten auf Papier
@@ -63,7 +73,11 @@ import {
   HAMBURG_WAHRZEICHEN,
   HAMBURG_WEST,
 } from "@/lib/hamburg-skyline";
-import type { SpruchKicker, SpruchTag } from "@/lib/sprueche-data";
+import {
+  teileSatz,
+  type SpruchKicker,
+  type SpruchTag,
+} from "@/lib/sprueche-data";
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { KURSIV_SPERRUNG, satzPlan, type SatzPlan } from "@/lib/story-satz";
 import {
@@ -77,6 +91,7 @@ import {
 import { MOTIV_WASSER } from "@/lib/story-teile";
 import {
   LAYOUT_FOLGE,
+  gestaltungFuer,
   varianteFuer,
   type Auftritt,
   type Kamera,
@@ -427,8 +442,10 @@ function kinoKamera(k: Basis, t: number): KinoKamera {
   const weg = {
     rueckzug: { nick: -0.46, gier: 0.22 },
     luecke: { nick: 0.4, gier: 0.3 },
-    // Am Hafen gleitet die Kamera seitlich an der Stadt entlang.
-    hafen: { nick: 0.2, gier: 0.6 },
+    // Am Hafen gleitet die Kamera seitlich an der Stadt entlang. In den
+    // breiteren Formaten blickt sie weniger schräg: Sonst käme die
+    // Adresse rechts unten angeschnitten ins Bild.
+    hafen: { nick: 0.2, gier: f.name === "story" ? 0.5 : 0.34 },
     anfahrt: { nick: 0.26, gier: -0.4 },
   }[k.film.kamera];
   const fov = ((28 + 20 * a) * Math.PI) / 180;
@@ -769,7 +786,8 @@ const STREIFEN_SPALT = 0.08;
  * Farbstreifen hinter der Pointe: Ober- und Unterkante laufen parallel,
  * die Enden neigen sich wie die Kursive. oben ist seine Höhe über der
  * Grundlinie (Anteil der Schriftgröße); innen rückt den Umriss nach
- * innen (für den Stellplatz).
+ * innen (für den Stellplatz). gerade: für eine aufrechte Pointe stehen
+ * die Enden senkrecht und gleich weit über.
  */
 function streifenPfad(
   ctx: Ctx,
@@ -780,15 +798,19 @@ function streifenPfad(
   hoch: number,
   innen = 0,
   tief = STREIFEN_UNTEN,
+  gerade = false,
 ) {
   const oben = grundlinie - px * hoch + innen;
   const unten = grundlinie + px * tief - innen;
-  const schub = px * 0.045;
+  const schub = gerade ? 0 : px * 0.045;
+  const [vorn, hinten] = gerade
+    ? [px * 0.07, px * 0.07]
+    : [px * 0.13, px * 0.1];
   ctx.beginPath();
-  ctx.moveTo(x0 - px * 0.13 + schub + innen, oben);
-  ctx.lineTo(x1 + px * 0.1 + schub - innen, oben);
-  ctx.lineTo(x1 + px * 0.1 - schub - innen, unten);
-  ctx.lineTo(x0 - px * 0.13 - schub + innen, unten);
+  ctx.moveTo(x0 - vorn + schub + innen, oben);
+  ctx.lineTo(x1 + hinten + schub - innen, oben);
+  ctx.lineTo(x1 + hinten - schub - innen, unten);
+  ctx.lineTo(x0 - vorn - schub + innen, unten);
   ctx.closePath();
 }
 
@@ -905,6 +927,20 @@ type SatzStil = {
   blockMax: number;
   /** Neigung des Blocks am Satzende (Bogenmaß) */
   schraeg: number;
+  /**
+   * Schrift der Pointe in der Größe p und ihr Buchstabenabstand (Anteil);
+   * ohne Angabe die kursive Cormorant. gerade: Die Pointe steht aufrecht
+   * (Stellplatz und Streifen ohne Neigung).
+   */
+  pointeSchrift?: (p: number) => string;
+  pointeSperrung?: number;
+  gerade?: boolean;
+  /**
+   * Ein kurzes Wort (bis vier Buchstaben) allein in einer Zeile gilt als
+   * Makel: Dann ist eine etwas kleinere Schrift ohne ihn die bessere Wahl
+   * (für große Schrift mit wenigen Wörtern je Zeile).
+   */
+  kurzAllein?: boolean;
 };
 
 /** Ein gesetzter Satz: Maße, die Lage der Pointe und die Zeichenfunktion. */
@@ -987,6 +1023,14 @@ function serifSatz(k: Basis, stil: Partial<SatzStil> = {}): SatzStil {
   };
 }
 
+/** Steht in einer gedruckten Zeile nur ein kurzes Wort (bis vier Buchstaben)? */
+const kurzAllein = (zeilen: { woerter: { t: string }[] }[]) =>
+  zeilen.some(
+    (z) =>
+      z.woerter.length === 1 &&
+      z.woerter[0].t.replace(/[^\p{L}]/gu, "").length <= 4,
+  );
+
 function setzeSatz(
   k: Basis,
   plan: SatzPlan,
@@ -997,7 +1041,10 @@ function setzeSatz(
   const { ctx, serif } = k;
   const stil: SatzStil = { ...KLASSIK_SATZ, ...stilWahl };
   const grund = stil.schrift;
-  const kursiv = (p: number) => `italic 600 ${p}px ${serif}`;
+  const kursiv =
+    stil.pointeSchrift ?? ((p: number) => `italic 600 ${p}px ${serif}`);
+  const pSperrung = stil.pointeSperrung ?? KURSIV_SPERRUNG;
+  const gerade = !!stil.gerade;
   const mitte = stil.achse === "mitte";
   const balken = stil.pointe === "balken";
   const messen = (
@@ -1007,7 +1054,7 @@ function setzeSatz(
   ): Wort[] =>
     woerter.map((w) => {
       ctx.font = w.betont ? kursiv(p) : grund(g);
-      sperren(ctx, w.betont ? p * KURSIV_SPERRUNG : g * stil.sperrung);
+      sperren(ctx, w.betont ? p * pSperrung : g * stil.sperrung);
       return { ...w, breite: ctx.measureText(w.t).width };
     });
 
@@ -1074,11 +1121,13 @@ function setzeSatz(
       const p = Math.round(g * stil.fluss);
       let letzte: Zeile[] = [];
       let geteilt = false;
+      let kurz = false;
       for (const gruppe of plan.gruppen) {
         const woerter = messen(gruppe, g, p);
         if (Math.max(...woerter.map((w) => w.breite)) > breite - p * 0.2)
           return null;
         letzte = ausgewogen(woerter, breite - p * 0.15, abstand);
+        if (kurzAllein(letzte.filter((z) => !z.woerter[0].betont))) kurz = true;
         // Läuft die Pointe über zwei Zeilen, ist eine kleinere Schrift,
         // in der sie zusammenbleibt, die bessere Wahl.
         letzte.forEach((z, i) => {
@@ -1139,7 +1188,8 @@ function setzeSatz(
         (letzte.length > 1 &&
           ende.woerter.length === 1 &&
           !ende.woerter[0].betont &&
-          ende.breite < breite * 0.4);
+          ende.breite < breite * 0.4) ||
+        (!!stil.kurzAllein && zeilen.length > 1 && kurz);
     } else {
       for (const gruppe of plan.vor) {
         const woerter = messen(
@@ -1163,10 +1213,11 @@ function setzeSatz(
           hoehe += zeilenHoehe;
         }
       }
+      if (stil.kurzAllein && kurzAllein(zeilen)) einsam = true;
       // Pointe: so groß, dass ihre längste Zeile die Breite füllt und
       // der Block noch in die Höhe passt.
       ctx.font = kursiv(100);
-      sperren(ctx, 100 * KURSIV_SPERRUNG);
+      sperren(ctx, 100 * pSperrung);
       // Ohne Streifen bleibt die Pointe in einer Zeile, wenn sie dort
       // fast so groß wird wie über zwei (der Plan teilt sie für den
       // großen Streifen).
@@ -1191,7 +1242,7 @@ function setzeSatz(
       if (p < g * stil.blockMin) return null;
       pGross = p;
       ctx.font = kursiv(p);
-      sperren(ctx, p * KURSIV_SPERRUNG);
+      sperren(ctx, p * pSperrung);
       // Zeilenabstand der Pointe: Zwischen zwei Streifen bleibt ein
       // gleichmäßiger Spalt; zum Satz darüber etwas Luft.
       const pZeile = p * (oben + unten + spalt);
@@ -1447,7 +1498,7 @@ function setzeSatz(
       /** Das Wort eines Streifens. */
       const wortMalen = (s: Streifen, farbe: string) => {
         ctx.font = kursiv(s.px);
-        sperren(ctx, s.px * KURSIV_SPERRUNG);
+        sperren(ctx, s.px * pSperrung);
         ctx.fillStyle = farbe;
         for (const w of s.woerter) ctx.fillText(w.t, x + w.x, y + s.grundlinie);
         sperren(ctx, 0);
@@ -1468,6 +1519,7 @@ function setzeSatz(
             s.oben,
             0,
             s.unten,
+            gerade,
           );
           ctx.fillStyle = farben.balken;
           ctx.fill();
@@ -1550,6 +1602,7 @@ function setzeSatz(
           s.oben,
           3,
           s.unten,
+          gerade,
         );
         ctx.stroke();
         ctx.restore();
@@ -1595,6 +1648,7 @@ function setzeSatz(
               s.oben,
               0,
               s.unten,
+              gerade,
             );
             ctx.fillStyle = `rgb(0 0 0 / ${dunkel})`;
             ctx.fill();
@@ -2121,15 +2175,23 @@ function kopfBauen(
   k: Basis,
   farben: KopfFarben,
   etikett: string | null,
-  art: "pille" | "linie" | "folio" = "pille",
+  art: "pille" | "linie" | "folio" | "zelle" = "pille",
   /** false: Der Anlass steht woanders (Titelzeile im Magazin). */
   mitAnlass = true,
+  /** false: kein Datum rechts (das Kalenderblatt zeigt es selbst). */
+  mitDatum = true,
 ): () => void {
   const { ctx, f, l, mono } = k;
   const text = etikett?.toUpperCase() ?? "";
   const mitte = f.oben + (art === "folio" ? 30 : 39);
-  const schrift = art === "folio" ? `400 24px ${mono}` : `700 26px ${GROTESK}`;
-  const sperrung = art === "folio" ? 3.5 : 3.4;
+  // „zelle“: kleine Kennzeile im Raster, wie in einer Zelle des Satzspiegels.
+  const schrift =
+    art === "folio"
+      ? `400 24px ${mono}`
+      : art === "zelle"
+        ? `700 24px ${GROTESK}`
+        : `700 26px ${GROTESK}`;
+  const sperrung = art === "folio" ? 3.5 : art === "zelle" ? 2.6 : 3.4;
   ctx.font = schrift;
   sperren(ctx, sperrung);
   const textBreite = text ? ctx.measureText(text).width : 0;
@@ -2146,14 +2208,16 @@ function kopfBauen(
     art === "pille" && text ? pillenFarbe(k, farben.etikett, l.text) : null;
   const pillenText =
     pille && pille !== farben.etikett ? schriftAuf(pille) : farben.etikettText;
-  const rechts = datumBauen(
-    k,
-    RAND + b,
-    mitte,
-    farben,
-    art === "folio" ? 24 : 26,
-    mitAnlass,
-  );
+  const rechts = mitDatum
+    ? datumBauen(
+        k,
+        RAND + b,
+        mitte,
+        farben,
+        art === "folio" || art === "zelle" ? 24 : 26,
+        mitAnlass,
+      )
+    : () => undefined;
   return () => {
     ctx.save();
     if (text) {
@@ -2792,11 +2856,18 @@ function regieFuer(
       y = Math.min(Math.max(h.y0 - 40 * h.mass, bo + halb), bu - halb);
     }
     const sicht = f.b / z;
+    const von = h.west + sicht / 2 - 50;
+    // Die Fahrt endet, bevor die Adresse rechts unten angeschnitten ins
+    // Bild käme (mit Luft für den schrägen Blick der Kino-Kamera).
+    const bis = Math.max(
+      von + 80,
+      Math.min(h.ost - sicht / 2 + 24, f.b - RAND - 170 - sicht * 0.85),
+    );
     fahrt = [
-      { t: 0, pose: imBild(k, { x: h.west + sicht / 2 - 50, y, z }) },
+      { t: 0, pose: imBild(k, { x: von, y, z }) },
       {
         t: 1.1,
-        pose: imBild(k, { x: h.ost - sicht / 2 + 24, y, z }),
+        pose: imBild(k, { x: bis, y, z }),
         kurve: GLEITEN,
       },
       { t: T_SATZ + 0.6, pose: totale, kurve: FAHRT_HIN },
@@ -3744,7 +3815,7 @@ function planFuer(karte: SpruchTag): SatzPlan {
  */
 function mythosStriche(
   k: Basis,
-  satz: Gesetzt,
+  satz: { linien: Gesetzt["linien"] },
   x: number,
   y: number,
   t: number,
@@ -4026,6 +4097,889 @@ function farbfeld(k: Basis): Maler {
   };
 }
 
+/** Akzent auf den Flächen: die Flagge, sonst Orange (oder sein Ersatz), notfalls die Schrift. */
+function akzentAuf(
+  flaechen: string[],
+  l: StoryLook,
+  flagge: string | null,
+  schrift = l.text,
+): string {
+  return farbeAuf(
+    flaechen,
+    [...(flagge ? [flagge] : []), marke(l), ORANGE, ORANGE_TIEF, schrift],
+    // Große Schrift und Flächen: 2,9 : 1 genügt (das Orange auf dem
+    // dunklen Hafenblau liegt knapp unter 3).
+    2.9,
+  );
+}
+
+/**
+ * Satz in fetter Grotesk (800) mit aufrechter Pointe in derselben
+ * Schrift: Sie hebt sich nur durch die Farbe ab (oder einen Strich
+ * darunter), wie im Schweizer Satz und auf einer Titelseite.
+ */
+function groteskSatz(stil: Partial<SatzStil> = {}): SatzStil {
+  const sperrung = stil.sperrung ?? -0.045;
+  const schrift = (g: number) => `800 ${g}px ${GROTESK}`;
+  return {
+    ...KLASSIK_SATZ,
+    schrift,
+    sperrung,
+    zeile: 1,
+    wort: 0.22,
+    ober: 0.84,
+    kapp: 0.74,
+    pointe: "farbe",
+    fluss: 1,
+    block: 1,
+    blockMin: 0.8,
+    blockMax: 320,
+    schraeg: 0,
+    pointeSchrift: schrift,
+    pointeSperrung: sperrung,
+    gerade: true,
+    kurzAllein: true,
+    ...stil,
+  };
+}
+
+/** Der Satzplan in Versalien (ß wird SS). */
+function versalPlan(plan: SatzPlan): SatzPlan {
+  const gross = (t: string) => t.toLocaleUpperCase("de-DE");
+  return plan.art === "block"
+    ? {
+        art: "block",
+        vor: plan.vor.map((g) => g.map(gross)),
+        pointe: plan.pointe.map(gross),
+      }
+    : {
+        art: "fluss",
+        gruppen: plan.gruppen.map((g) =>
+          g.map((w) => ({ ...w, t: gross(w.t) })),
+        ),
+      };
+}
+
+/**
+ * Pfeil wie mit dem Lineal gezogen (vier Stellungen ab T_PFEIL), im
+ * Standbild ganz: eine gerade Linie mit offener Spitze.
+ */
+function linealPfeil(
+  k: Basis,
+  x: number,
+  y: number,
+  lang: number,
+  t: number,
+  farbe: string,
+) {
+  if (t < T_PFEIL) return;
+  const { ctx } = k;
+  const stellung = Math.min(4, Math.floor((t - T_PFEIL) * 12) + 1);
+  const ende = x + (lang * stellung) / 4;
+  ctx.save();
+  ctx.strokeStyle = farbe;
+  ctx.lineWidth = 3;
+  ctx.lineCap = "butt";
+  ctx.lineJoin = "miter";
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(ende, y);
+  if (stellung === 4) {
+    ctx.moveTo(ende - 16, y - 13);
+    ctx.lineTo(ende, y);
+    ctx.lineTo(ende - 16, y + 13);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+/**
+ * Raster: Schweizer Stil. Ein Satzspiegel aus sechs Spalten ist zu
+ * sehen: Zwei Linien über die ganze Breite trennen Kopf, Feld und Fuß,
+ * kleine Marken auf den Linien zeigen die Spalten. Oben in einer Zelle
+ * steht die Reihe, rechts das Datum (mit Anlass). Der Satz steht riesig
+ * in fetter Grotesk, linksbündig im Flattersatz, unten im Feld; die
+ * Pointe nur in der Akzentfarbe. Oben rechts im Feld ein Quadrat in der
+ * Akzentfarbe, das einzige Ornament. Der Zusatz hat seine eigene Spalte
+ * (Spalten drei bis sechs), links davon zeigt ein Pfeil auf ihn.
+ */
+function raster(k: Basis): Maler {
+  const { ctx, f, karte } = k;
+  const l = lookFuer(k);
+  const farben = rahmenFarben(l);
+  const flagge = flaggenFarbe(karte);
+  const story = f.name === "story";
+  const breite = f.b - RAND * 2;
+  const zwischen = 24;
+  const spalte = (breite - zwischen * 5) / 6;
+  const spalteX = (i: number) => RAND + i * (spalte + zwischen);
+  const akzent = akzentAuf([l.bg, l.bg2], l, flagge);
+  // Trägt keine Akzentfarbe, steht die Pointe mit einem Strich darunter.
+  const mitFarbe = akzent !== l.text;
+  const kopf = kopfBauen(
+    k,
+    {
+      etikett: l.text,
+      etikettText: l.text,
+      datum: l.weich,
+      anlass: anlassFarbe(l.bg, l.bg2, l),
+    },
+    karte.kicker,
+    "zelle",
+  );
+  const linieOben = f.oben + 80;
+  // Der Zusatz in seiner Spalte, unten bündig mit dem Textfeld.
+  const zPx = story ? 44 : 40;
+  const zX = spalteX(2);
+  const zusatz = setzeFrei(
+    k,
+    karte.zusatz,
+    (px) => `500 ${px}px ${GROTESK}`,
+    0,
+    f.b - RAND - zX,
+    zPx * 1.3 * 4,
+    zPx,
+    zPx - 8,
+    1.3,
+  );
+  const zusatzY = k.unten - zusatz.hoehe;
+  const linieUnten = Math.round(zusatzY - (story ? 46 : 34));
+  const feldUnten = linieUnten - (story ? 54 : 40);
+  // Oben im Feld bleibt mindestens Platz für ein kleines Quadrat.
+  const luft = story ? 52 : 38;
+  const satz = setzeSatz(
+    k,
+    planFuer(karte),
+    breite,
+    feldUnten - k.oben - 72 - luft,
+    groteskSatz({
+      maxG: story ? 184 : 156,
+      pointe: mitFarbe ? "farbe" : "linie",
+    }),
+  );
+  const y = feldUnten - satz.hoehe;
+  // Das Quadrat ist eine oder zwei Spalten breit, je nach freiem Platz.
+  const quadrat = Math.round(
+    Math.min(
+      spalte * 2 + zwischen,
+      (k.unten - k.oben) * 0.22,
+      y - luft - k.oben,
+    ),
+  );
+  const qx = f.b - RAND - quadrat;
+  const qy = k.oben;
+
+  k.regie = regieFuer(k, {
+    nah:
+      quadrat >= 40
+        ? nahAuf(k, { x: qx, y: qy, b: quadrat, h: quadrat }, ZOOM_NAH, y)
+        : nahEtikett(k),
+    x: RAND,
+    y,
+    satz,
+  });
+  const satzFarbe = mitFarbe ? akzent : l.text;
+
+  return (t) => {
+    const u = 260;
+    ctx.fillStyle = l.bg;
+    ctx.fillRect(-u, -u, f.b + u * 2, f.h + u * 2);
+    kopf();
+    // Die Linien des Satzspiegels mit Marken für die Spalten.
+    ctx.fillStyle = l.text;
+    ctx.fillRect(RAND, linieOben, breite, 3);
+    ctx.fillRect(RAND, linieUnten, breite, 3);
+    ctx.fillStyle = mitDeck(l.text, l.dunkel ? 0.55 : 0.5);
+    for (let i = 1; i < 6; i++) {
+      const mx = spalteX(i) - zwischen / 2 - 1;
+      ctx.fillRect(mx, linieOben + 3, 2, 12);
+      ctx.fillRect(mx, linieUnten - 12, 2, 12);
+    }
+    if (quadrat >= 40) {
+      ctx.fillStyle = akzent;
+      ctx.fillRect(qx, qy, quadrat, quadrat);
+    }
+    satz.zeichne(RAND, y, t, {
+      text: l.text,
+      balken: satzFarbe,
+      pointe: satzFarbe,
+    });
+    if (karte.kicker === "Mythos")
+      mythosStriche(k, satz, RAND, y, t, akzent, 0.36);
+    linealPfeil(
+      k,
+      RAND,
+      zusatzY + zPx * 0.56,
+      zX - zwischen - RAND - 12,
+      t,
+      l.text,
+    );
+    zusatz.zeichne(zX, zusatzY, l.text, (i) => t >= T_ZUSATZ + (i * 4) / 30);
+    fuss(k, t, farben.fuss);
+    korn(k, 0.07);
+  };
+}
+
+/**
+ * Schlagzeile: wie eine Titelseite auf Zeitungspapier. Oben ein Balken
+ * über die ganze Breite mit dem Anlass (sonst der Reihe) und dem Datum,
+ * darunter eine doppelte Linie. Der Satz steht in fetten Versalien mit
+ * engem Zeilenabstand, die Pointe in der Akzentfarbe. Unter einer Linie
+ * zwei Spalten mit Spaltenlinie: links Ort und Reihe, rechts der Zusatz
+ * als Zitat mit großem Anführungszeichen.
+ */
+function schlagzeile(k: Basis): Maler {
+  const { ctx, f, karte, serif, mono } = k;
+  const l = lookFuer(k);
+  const flagge = flaggenFarbe(karte);
+  const story = f.name === "story";
+  const breite = f.b - RAND * 2;
+  const { papier, papierText } = l;
+  const kopfFarbe = flagge ?? l.feld;
+  const kopfText = flagge ? "#ffffff" : l.feldText;
+  const akzent = akzentAuf([papier], l, flagge, papierText);
+  const mitFarbe = akzent !== papierText;
+  const anlass = karte.anlass?.trim() || null;
+
+  // Kopfbalken: Anlass oder Reihe links, Datum rechts.
+  const balkenH = story ? 88 : 76;
+  const balkenMitte = f.oben + balkenH / 2;
+  const titel = (anlass ?? karte.kicker).toLocaleUpperCase("de-DE");
+  const datum = karte.datumKurz.toUpperCase();
+  const titelSchrift = (px: number) => `800 ${px}px ${GROTESK}`;
+  const weite = (text: string, schrift: string, sperrung: number) => {
+    ctx.font = schrift;
+    sperren(ctx, sperrung);
+    const w = ctx.measureText(text).width;
+    sperren(ctx, 0);
+    return w;
+  };
+  const datumPx = 24;
+  const datumB = weite(datum, `400 ${datumPx}px ${mono}`, datumPx * 0.06);
+  let titelPx = story ? 34 : 30;
+  while (
+    titelPx > 20 &&
+    weite(titel, titelSchrift(titelPx), titelPx * 0.08) + 36 + datumB > breite
+  )
+    titelPx -= 2;
+  const titelB = weite(titel, titelSchrift(titelPx), titelPx * 0.08);
+  if (titelB + 36 + datumB > breite) k.kopfEng = true;
+  const doppel = f.oben + balkenH + 12;
+
+  // Unten zwei Spalten: Ort und Reihe, dann das Zitat.
+  const zwischen = 24;
+  const spalte = (breite - zwischen * 5) / 6;
+  const metaB = Math.round(spalte * 2 + zwischen * 0.5);
+  const spaltenLinie = RAND + metaB + 4;
+  const zitatX = spaltenLinie + 28;
+  const zPx = story ? 50 : 44;
+  // Das große Zeichen vor dem Zitat: ein Guillemet, das auf den Text zeigt.
+  const zeichenSchrift = `italic 600 ${Math.round(zPx * 2.3)}px ${serif}`;
+  ctx.font = zeichenSchrift;
+  const anf = ctx.measureText("»");
+  const markeB = anf.actualBoundingBoxLeft + anf.actualBoundingBoxRight;
+  const einzug = Math.round(markeB + zPx * 0.4);
+  const zitat = setzeFrei(
+    k,
+    `${karte.zusatz}«`,
+    (px) => `italic 600 ${px}px ${serif}`,
+    -0.004,
+    f.b - RAND - zitatX - einzug,
+    zPx * 1.2 * 4,
+    zPx,
+    zPx - 10,
+    1.2,
+  );
+  const meta = [
+    { text: "HAMBURG", schrift: `800 24px ${GROTESK}`, sperrung: 2.8 },
+    {
+      text: (anlass ? karte.kicker : "Sitalo Journal").toUpperCase(),
+      schrift: `400 22px ${mono}`,
+      sperrung: 1.6,
+    },
+  ];
+  const metaH = 24 * 1.5 + 22 * 1.5;
+  const untenH = Math.max(zitat.hoehe, metaH);
+  const luftLinie = story ? 40 : 30;
+  const oben = Math.max(k.oben, doppel + (story ? 52 : 38));
+  const luftSatz = story ? 56 : 40;
+  const platz = k.unten - oben - untenH - luftLinie - luftSatz;
+  const satz = setzeSatz(
+    k,
+    versalPlan(planFuer(karte)),
+    breite,
+    platz,
+    groteskSatz({
+      maxG: story ? 172 : 148,
+      minG: 48,
+      sperrung: -0.02,
+      zeile: 0.96,
+      ober: 0.9,
+      kapp: 0.74,
+      wort: 0.24,
+      pointe: mitFarbe ? "farbe" : "linie",
+    }),
+  );
+  // Was übrig bleibt, verteilt sich: etwas über dem Satz, mehr unten.
+  const frei = Math.max(0, platz - satz.hoehe);
+  const y = oben + frei * 0.3;
+  const linieY = Math.round(y + satz.hoehe + luftSatz + frei * 0.2);
+  const untenY = linieY + luftLinie;
+
+  k.regie = regieFuer(k, {
+    // Die Kamera beginnt nah am Kopfbalken, der Satz bleibt draußen.
+    nah: nahAuf(
+      k,
+      { x: RAND, y: f.oben + 6, b: titelB + 20, h: balkenH - 12 },
+      2.4,
+      y,
+    ),
+    x: RAND,
+    y,
+    satz,
+    baender: [
+      [f.oben - 6, f.oben + balkenH + 22],
+      [f.unten - 84, f.unten - 14],
+    ],
+  });
+  const fussFarben: FussFarben = {
+    schrift: papierText,
+    weich: mitDeck(papierText, 0.78),
+    linie: mitDeck(papierText, 0.32),
+    ring: farbeAuf([papier], [ORANGE, ORANGE_TIEF], 3),
+    schiff: papierText,
+    flaeche: papier,
+    hell: true,
+  };
+
+  return (t) => {
+    const u = 260;
+    ctx.fillStyle = papier;
+    ctx.fillRect(-u, -u, f.b + u * 2, f.h + u * 2);
+    // Kopfbalken über die ganze Breite (reicht über den Rand).
+    ctx.fillStyle = kopfFarbe;
+    ctx.fillRect(-u, f.oben, f.b + u * 2, balkenH);
+    ctx.save();
+    ctx.textBaseline = "middle";
+    ctx.font = titelSchrift(titelPx);
+    sperren(ctx, titelPx * 0.08);
+    ctx.fillStyle = kopfText;
+    ctx.fillText(titel, RAND, balkenMitte + 1);
+    ctx.font = `400 ${datumPx}px ${mono}`;
+    sperren(ctx, datumPx * 0.06);
+    ctx.fillStyle = mitDeck(kopfText, 0.86);
+    ctx.textAlign = "right";
+    ctx.fillText(datum, f.b - RAND + datumPx * 0.06, balkenMitte + 1);
+    sperren(ctx, 0);
+    ctx.restore();
+    // Doppelte Linie unter dem Kopf.
+    ctx.fillStyle = papierText;
+    ctx.fillRect(RAND, doppel, breite, 3);
+    ctx.fillRect(RAND, doppel + 8, breite, 1.5);
+    satz.zeichne(RAND, y, t, {
+      text: papierText,
+      balken: mitFarbe ? akzent : papierText,
+      pointe: mitFarbe ? akzent : papierText,
+    });
+    if (karte.kicker === "Mythos")
+      mythosStriche(k, satz, RAND, y, t, akzent, 0.38);
+    // Linie über den Spalten, Spaltenlinie, links Ort und Reihe.
+    ctx.fillStyle = papierText;
+    ctx.fillRect(RAND, linieY, breite, 2);
+    ctx.fillStyle = mitDeck(papierText, 0.6);
+    ctx.fillRect(spaltenLinie, untenY - 4, 1.5, untenH + 8);
+    ctx.save();
+    ctx.textBaseline = "alphabetic";
+    meta.forEach((m, i) => {
+      ctx.font = m.schrift;
+      sperren(ctx, m.sperrung);
+      ctx.fillStyle = i ? mitDeck(papierText, 0.72) : papierText;
+      ctx.fillText(m.text, RAND, untenY + 24 + i * 36);
+    });
+    sperren(ctx, 0);
+    // Das große Anführungszeichen kommt mit dem Zitat (zwei Bilder
+    // etwas groß, dann sitzt es).
+    if (t >= T_PFEIL) {
+      const gross = t < T_PFEIL + 2 / 30 ? 1.04 : 1;
+      const mx = zitatX + anf.actualBoundingBoxLeft;
+      // Mittig auf der Mittellänge der ersten Zeile.
+      const my =
+        untenY +
+        zPx * 0.86 -
+        zPx * 0.2 +
+        (anf.actualBoundingBoxAscent - anf.actualBoundingBoxDescent) / 2;
+      ctx.translate(mx, my);
+      ctx.scale(gross, gross);
+      ctx.font = zeichenSchrift;
+      ctx.fillStyle = akzent;
+      ctx.fillText("»", 0, 0);
+    }
+    ctx.restore();
+    zitat.zeichne(
+      zitatX + einzug,
+      untenY,
+      papierText,
+      (i) => t >= T_ZUSATZ + (i * 4) / 30,
+    );
+    fuss(k, t, fussFarben);
+    korn(k, 0.1);
+  };
+}
+
+const WOCHENTAGE = [
+  "Sonntag",
+  "Montag",
+  "Dienstag",
+  "Mittwoch",
+  "Donnerstag",
+  "Freitag",
+  "Samstag",
+];
+const MONATE = [
+  "Januar",
+  "Februar",
+  "März",
+  "April",
+  "Mai",
+  "Juni",
+  "Juli",
+  "August",
+  "September",
+  "Oktober",
+  "November",
+  "Dezember",
+];
+/** Wochentag, Tag und Monat eines Kalendertags (yyyy-mm-dd). */
+function kalenderTag(datum: string) {
+  const [j, m, t] = datum.split("-").map(Number);
+  return {
+    tag: String(t),
+    wochentag: WOCHENTAGE[new Date(Date.UTC(j, m - 1, t)).getUTCDay()],
+    monat: MONATE[m - 1],
+  };
+}
+
+/**
+ * Kalenderblatt (tagesaktuelle Posts): ein Abreißkalender als Requisit,
+ * oben links, mit Kopfband, Lochung, Wochentag, der Tageszahl groß in der
+ * Serife und dem Monat; darunter schauen die nächsten Blätter heraus.
+ * Rechts daneben „Heute“ und der Anlass als Überschrift in fetten
+ * Versalien, unten bündig mit dem Blatt. Darunter der Satz (Pointe
+ * kursiv, unterstrichen) und der Zusatz. Ohne Anlass (nur wenn von Hand
+ * gewählt) steht die Reihe als Überschrift.
+ */
+function kalenderblatt(k: Basis): Maler {
+  const { ctx, f, karte, serif, mono } = k;
+  const l = lookFuer(k);
+  const farben = rahmenFarben(l);
+  const flagge = flaggenFarbe(karte);
+  const story = f.name === "story";
+  const breite = f.b - RAND * 2;
+  const akzent = akzentAuf([l.bg, l.bg2], l, flagge);
+  const kal = kalenderTag(karte.datum);
+  const kopf = kopfBauen(
+    k,
+    { etikett: l.text, etikettText: l.text, datum: l.weich },
+    karte.kicker,
+    "linie",
+    false,
+    false,
+  );
+
+  // Der Block: ein Blatt mit Kopfband und Stapel darunter.
+  const bB = story ? 336 : f.name === "karte" ? 292 : 268;
+  const bH = Math.round(bB * 1.16);
+  const bx = RAND;
+  const by = k.oben;
+  const band = Math.round(bH * 0.17);
+  const bandFarbe = flagge ?? ORANGE;
+  const blattText = TINTE;
+  const innen = bH - band;
+  const tagPx = (() => {
+    ctx.font = `500 100px ${serif}`;
+    const m = ctx.measureText(kal.tag);
+    const hoch = m.actualBoundingBoxAscent;
+    return Math.min(
+      (innen * 0.5 * 100) / Math.max(1, hoch),
+      (bB * 0.74 * 100) / Math.max(1, m.width),
+    );
+  })();
+  const wtPx = Math.round(bB * 0.082);
+  const moPx = Math.round(bB * 0.07);
+
+  // Rechts neben dem Block: „Heute“ und die Überschrift.
+  const spaltX = bx + bB + (story ? 48 : 40);
+  const spaltB = f.b - RAND - spaltX;
+  const ueber = (karte.anlass?.trim() || karte.kicker).toLocaleUpperCase(
+    "de-DE",
+  );
+  const heutePx = 24;
+  const ueberschrift = setzeFrei(
+    k,
+    ueber,
+    (px) => `800 ${px}px ${GROTESK}`,
+    -0.01,
+    spaltB,
+    bH - band - heutePx * 2.6,
+    story ? 92 : 80,
+    34,
+    1.0,
+  );
+  const ueberY = by + bH - ueberschrift.hoehe;
+
+  // Darunter Satz und Zusatz.
+  const zusatz = setzeZusatz(k, breite);
+  const satzOben = by + bH + (story ? 60 : 44);
+  const luecke = story ? 40 : 32;
+  const platz = k.unten - satzOben - zusatz.hoehe - luecke;
+  const satz = setzeSatz(k, planFuer(karte), breite, platz, {
+    pointe: "linie",
+    maxG: story ? 132 : 112,
+    schraeg: 0,
+  });
+  const frei = Math.max(0, platz - satz.hoehe);
+  const y = satzOben + frei * 0.35;
+
+  k.regie = regieFuer(k, {
+    nah: nahAuf(k, { x: bx, y: by, b: bB, h: bH }, ZOOM_NAH, y),
+    x: RAND,
+    y,
+    satz,
+  });
+
+  const blattMalen = () => {
+    ctx.save();
+    // Die nächsten Blätter schauen unten heraus.
+    for (const i of [2, 1]) {
+      ctx.fillStyle = i === 2 ? "#e6dfd2" : "#f3eee5";
+      rund(ctx, bx + i * 1.5, by + i * 7, bB, bH, 12);
+      ctx.fill();
+    }
+    schatten(k, 30, 12, 0.22);
+    rund(ctx, bx, by, bB, bH, 12);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ohneSchatten(ctx);
+    ctx.save();
+    rund(ctx, bx, by, bB, bH, 12);
+    ctx.clip();
+    ctx.fillStyle = bandFarbe;
+    ctx.fillRect(bx, by, bB, band);
+    // Zwei Ösen im Band.
+    ctx.fillStyle = mitDeck("#000000", 0.32);
+    for (const a of [0.28, 0.72]) {
+      ctx.beginPath();
+      ctx.arc(bx + bB * a, by + band * 0.5, band * 0.15, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Lochung: Hier wurde das Blatt von gestern abgerissen.
+    ctx.fillStyle = mitDeck(TINTE, 0.16);
+    for (let x = bx + 16; x < bx + bB - 10; x += 15) {
+      ctx.beginPath();
+      ctx.arc(x, by + band + 12, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    const mx = bx + bB / 2;
+    ctx.font = `700 ${wtPx}px ${GROTESK}`;
+    sperren(ctx, wtPx * 0.16);
+    ctx.fillStyle = blattText;
+    ctx.fillText(
+      kal.wochentag.toUpperCase(),
+      mx + wtPx * 0.08,
+      by + band + innen * 0.2,
+    );
+    sperren(ctx, 0);
+    ctx.font = `500 ${tagPx}px ${serif}`;
+    ctx.fillText(kal.tag, mx, by + band + innen * 0.76);
+    ctx.font = `400 ${moPx}px ${mono}`;
+    sperren(ctx, moPx * 0.2);
+    ctx.fillStyle = mitDeck(TINTE, 0.72);
+    ctx.fillText(
+      kal.monat.toUpperCase(),
+      mx + moPx * 0.1,
+      by + band + innen * 0.92,
+    );
+    sperren(ctx, 0);
+    ctx.restore();
+  };
+
+  return (t) => {
+    grund(k, l, false);
+    kopf();
+    // Rechts im Kopf der Ort (das Datum steht auf dem Blatt).
+    ctx.save();
+    ctx.font = `400 24px ${mono}`;
+    sperren(ctx, 3.5);
+    ctx.fillStyle = l.weich;
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.fillText("HAMBURG", f.b - RAND + 3, f.oben + 39);
+    sperren(ctx, 0);
+    ctx.restore();
+    blattMalen();
+    ctx.save();
+    ctx.font = `700 ${heutePx}px ${GROTESK}`;
+    sperren(ctx, heutePx * 0.18);
+    ctx.fillStyle = akzent;
+    ctx.fillText("HEUTE", spaltX, ueberY - heutePx * 0.9);
+    sperren(ctx, 0);
+    ctx.restore();
+    ueberschrift.zeichne(spaltX, ueberY, l.text);
+    satz.zeichne(RAND, y, t, { text: l.text, balken: akzent, pointe: l.text });
+    if (karte.kicker === "Mythos")
+      mythosStriche(k, satz, RAND, y, t, akzent, 0.36);
+    zusatz.zeichne(RAND, y + satz.hoehe + luecke, t, l.weich, l.akzent);
+    fuss(k, t, farben.fuss);
+    korn(k, 0.09);
+  };
+}
+
+/** Ein kleiner Satz mit einer Lücke, wo die Pointe hingehört (Riese). */
+type Lueckensatz = {
+  hoehe: number;
+  px: number;
+  linien: Gesetzt["linien"];
+  zeichne: (x: number, y: number, farbe: string, lueckeFarbe: string) => void;
+};
+/**
+ * Setzt vor + Lücke + nach in einer Schrift, so groß wie möglich (wie
+ * setzeFrei). Die Lücke ist ein Strich von lueckeEm Geviert Länge;
+ * Satzzeichen direkt davor oder danach hängen an ihr. Ohne Lücke
+ * (mitLuecke false) steht nur vor.
+ */
+function setzeLueckensatz(
+  k: Basis,
+  vor: string,
+  nach: string,
+  mitLuecke: boolean,
+  schrift: (px: number) => string,
+  breite: number,
+  platz: number,
+  maxPx: number,
+  minPx: number,
+  zeilenFaktor = 1.18,
+  lueckeEm = 2.6,
+): Lueckensatz {
+  const { ctx } = k;
+  const vorW = vor.split(" ").filter(Boolean);
+  const nachW = nach.split(" ").filter(Boolean);
+  // Hängt etwas ohne Leerzeichen an der Lücke („ davor, Komma danach)?
+  const davor = mitLuecke && vor && !/\s$/.test(vor) ? (vorW.pop() ?? "") : "";
+  const danach =
+    mitLuecke && nach && !/^\s/.test(nach) ? (nachW.shift() ?? "") : "";
+  type T = Wort & { luecke?: boolean };
+  let px = maxPx;
+  let zeilen: Zeile[] = [];
+  let abstand = 0;
+  const messen = (p: number): T[] => {
+    ctx.font = schrift(p);
+    sperren(ctx, 0);
+    const wort = (t: string): T => ({
+      t,
+      betont: false,
+      breite: ctx.measureText(t).width,
+    });
+    const luecke: T[] = mitLuecke
+      ? [
+          {
+            t: "",
+            betont: true,
+            luecke: true,
+            breite:
+              ctx.measureText(davor).width +
+              lueckeEm * p +
+              ctx.measureText(danach).width,
+          },
+        ]
+      : [];
+    return [...vorW.map(wort), ...luecke, ...nachW.map(wort)];
+  };
+  for (; px >= minPx; px -= 2) {
+    const woerter = messen(px);
+    abstand = ctx.measureText(" ").width;
+    if (Math.max(...woerter.map((w) => w.breite)) > breite) continue;
+    zeilen = ausgewogen(woerter, breite, abstand);
+    if (zeilen.length * px * zeilenFaktor <= platz) break;
+  }
+  if (px < minPx) {
+    k.eng.wert = true;
+    px = minPx;
+    zeilen = ausgewogen(messen(px), breite, ctx.measureText(" ").width);
+    abstand = ctx.measureText(" ").width;
+  }
+  const fest = { px, abstand };
+  const grund = (i: number) => i * px * zeilenFaktor + px * 0.86;
+  return {
+    hoehe: zeilen.length * px * zeilenFaktor,
+    px,
+    linien: zeilen.map((z, i) => ({
+      grundlinie: grund(i),
+      x0: 0,
+      x1: z.breite,
+      g: px,
+    })),
+    zeichne: (x, y, farbe, lueckeFarbe) => {
+      ctx.save();
+      ctx.font = schrift(fest.px);
+      sperren(ctx, 0);
+      ctx.textBaseline = "alphabetic";
+      zeilen.forEach((z, i) => {
+        let xx = x;
+        const gl = y + grund(i);
+        for (const w of z.woerter as T[]) {
+          ctx.fillStyle = farbe;
+          if (!w.luecke) ctx.fillText(w.t, xx, gl);
+          else {
+            ctx.fillText(davor, xx, gl);
+            const a = xx + ctx.measureText(davor).width + fest.px * 0.06;
+            const b = lueckeEm * fest.px - fest.px * 0.12;
+            ctx.fillStyle = lueckeFarbe;
+            ctx.fillRect(a, gl + fest.px * 0.1, b, Math.max(4, fest.px * 0.08));
+            ctx.fillStyle = farbe;
+            ctx.fillText(danach, a + b + fest.px * 0.06, gl);
+          }
+          xx += w.breite + fest.abstand;
+        }
+      });
+      ctx.restore();
+    },
+  };
+}
+
+/**
+ * Riese: Die Pointe steht als riesiges Wort über die ganze Breite (so
+ * groß, wie Breite und Höhe es erlauben, in einer bis drei Zeilen), in
+ * der kursiven Serife und der Akzentfarbe. Darüber steht der Satz klein,
+ * mit einer Lücke, wo die Pointe hingehört; darunter der Zusatz. Ohne
+ * Pointe werden die letzten Wörter zum Riesen. Beim Mythos steht der
+ * Irrtum klein in Anführungszeichen (im Film durchgestrichen), der Riese
+ * ist „Stimmt nicht.“
+ */
+function riese(k: Basis): Maler {
+  const { ctx, f, karte, serif } = k;
+  const l = lookFuer(k);
+  const farben = rahmenFarben(l);
+  const flagge = flaggenFarbe(karte);
+  const story = f.name === "story";
+  const breite = f.b - RAND * 2;
+  const akzent = akzentAuf([l.bg, l.bg2], l, flagge);
+  const kopf = kopfBauen(k, farben.kopf, karte.kicker);
+  const mythos = karte.kicker === "Mythos";
+
+  // Was wird riesig, was steht klein darüber?
+  let wort: string;
+  let vor: string;
+  let nach = "";
+  let mitLuecke = true;
+  if (mythos) {
+    wort = "Stimmt nicht.";
+    vor = `„${karte.text}“`;
+    mitLuecke = false;
+  } else {
+    const [a, m, b] = teileSatz(karte.text, karte.betont);
+    if (m) {
+      // Satzzeichen am Satzende gehen mit in den Riesen.
+      const rest = /^[.,!?:;“’)]*$/.test(b) ? b : "";
+      wort = m + rest;
+      vor = a;
+      nach = rest ? "" : b;
+    } else {
+      const w = karte.text.split(" ");
+      const n = w.length > 2 && w[w.length - 1].length < 6 ? 2 : 1;
+      wort = w.slice(-n).join(" ");
+      vor = `${w.slice(0, -n).join(" ")} `;
+    }
+  }
+
+  const kleinPx = story ? 60 : 52;
+  const hoch = k.unten - k.oben;
+  const klein = setzeLueckensatz(
+    k,
+    vor,
+    nach,
+    mitLuecke,
+    (px) => `700 ${px}px ${GROTESK}`,
+    breite,
+    hoch * 0.34,
+    kleinPx,
+    38,
+  );
+  const zusatz = setzeZusatz(k, breite);
+  const luftOben = story ? 40 : 28;
+  const luftUnten = story ? 52 : 38;
+  const platz = Math.max(
+    160,
+    hoch - klein.hoehe - zusatz.hoehe - luftOben - luftUnten,
+  );
+
+  // Zeilen des Riesen: so geteilt, dass er am größten wird (bei fast
+  // gleicher Größe lieber weniger Zeilen).
+  ctx.font = `italic 600 100px ${serif}`;
+  sperren(ctx, 100 * KURSIV_SPERRUNG);
+  const weite = (s: string) => ctx.measureText(s).width / 100;
+  const teile = wort.split(" ");
+  const kandidaten: string[][] = [[wort]];
+  for (let i = 1; i < teile.length; i++) {
+    kandidaten.push([teile.slice(0, i).join(" "), teile.slice(i).join(" ")]);
+    for (let j = i + 1; j < teile.length; j++)
+      kandidaten.push([
+        teile.slice(0, i).join(" "),
+        teile.slice(i, j).join(" "),
+        teile.slice(j).join(" "),
+      ]);
+  }
+  const hoechstens = story ? 560 : 440;
+  const groesse = (zeilen: string[]) =>
+    Math.min(
+      hoechstens,
+      (breite - 10) / (Math.max(...zeilen.map(weite)) + 0.04),
+      platz / (zeilen.length * 1.06 + 0.26),
+    );
+  const wert = (z: string[]) => groesse(z) * (1 - 0.1 * (z.length - 1));
+  let zeilen = kandidaten[0];
+  for (const z of kandidaten) if (wert(z) > wert(zeilen)) zeilen = z;
+  sperren(ctx, 0);
+  const klein0 = k.eng.klein;
+  const gross = setzeSatz(
+    k,
+    { art: "block", vor: [], pointe: zeilen },
+    breite,
+    platz,
+    {
+      pointe: "farbe",
+      maxG: 40,
+      minG: 40,
+      block: 99,
+      blockMin: 0,
+      blockMax: hoechstens,
+      schraeg: 0,
+    },
+  );
+  // Der Riese zählt nicht als kleinste Schrift, wohl aber der kleine Satz.
+  k.eng.klein = Math.min(klein0, klein.px);
+  const gesamt =
+    klein.hoehe + luftOben + gross.hoehe + luftUnten + zusatz.hoehe;
+  const yKlein = k.oben + Math.max(0, hoch - gesamt) * 0.42;
+  const y = yKlein + klein.hoehe + luftOben;
+  const zusatzY = y + gross.hoehe + luftUnten;
+
+  k.regie = regieFuer(k, { nah: nahEtikett(k), x: RAND, y, satz: gross });
+
+  return (t) => {
+    grund(k, l, false);
+    kopf();
+    klein.zeichne(RAND, yKlein, l.text, akzent);
+    if (mythos) mythosStriche(k, klein, RAND, yKlein, t, akzent, 0.3);
+    gross.zeichne(RAND, y, t, { text: l.text, balken: akzent, pointe: akzent });
+    zusatz.zeichne(RAND, zusatzY, t, l.weich, l.akzent);
+    fuss(k, t, farben.fuss);
+    korn(k, 0.09);
+  };
+}
+
 /**
  * Welche Gestaltung zu welcher Reihe passt. Was für eine Reihe nicht
  * passt, weicht auf die nächste passende im Wechsel aus (zuletzt die
@@ -4035,6 +4989,10 @@ const LAYOUT_PASST: Record<Layout, readonly SpruchKicker[] | "alle"> = {
   klassik: "alle",
   magazin: "alle",
   farbfeld: "alle",
+  raster: "alle",
+  schlagzeile: "alle",
+  riese: "alle",
+  kalenderblatt: "alle",
 };
 const passt = (layout: Layout, kicker: SpruchKicker) => {
   const r = LAYOUT_PASST[layout];
@@ -4063,12 +5021,15 @@ function malerFuer(
       }
     }
   }
-  const maler =
-    wahl === "magazin"
-      ? magazin
-      : wahl === "farbfeld"
-        ? farbfeld
-        : formatFuer(karte.kicker);
+  const maler = {
+    klassik: formatFuer(karte.kicker),
+    magazin,
+    farbfeld,
+    raster,
+    schlagzeile,
+    riese,
+    kalenderblatt,
+  }[wahl];
   return { layout: wahl, maler };
 }
 
@@ -4141,8 +5102,12 @@ export async function storyVorbereiten(
       .map((f) => document.fonts.load(`${schnitt} ${f.trim()}`, text));
   await Promise.race([
     Promise.allSettled([
-      ...lade("italic 600 100px", serifRoh, `${karte.text}${karte.zusatz}?!„“`),
-      ...lade("500 54px", serifRoh, `SITAL${karte.text}„“`),
+      ...lade(
+        "italic 600 100px",
+        serifRoh,
+        `${karte.text}${karte.zusatz}?!„“ Stimmt nicht.`,
+      ),
+      ...lade("500 54px", serifRoh, `SITAL${karte.text}„“0123456789`),
       ...lade(
         "400 26px",
         monoRoh,
@@ -4195,7 +5160,9 @@ export async function storyVorbereiten(
     ueberlagerung: null,
     versatz: [0, 0],
     kornDeck: 0,
-    layout: optionen.layout ?? v.layout,
+    // Die Gestaltung des Tages; der tagesaktuelle Spruch des Tages steht
+    // an jedem zweiten Tag als Kalenderblatt (gestaltungFuer).
+    layout: optionen.layout ?? gestaltungFuer(karte, optionen.versatz ?? 0),
     kopfEng: false,
     orangePillen: 0,
     horizont: null,
