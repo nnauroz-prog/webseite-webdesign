@@ -346,7 +346,12 @@ export function ContactPrompt({
   return (
     <div
       ref={boxRef}
-      className="bg-card fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-[26rem] lg:bg-transparent lg:pb-0"
+      className={cn(
+        "bg-card fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-[26rem] lg:bg-transparent lg:pb-0",
+        // Am iPhone über der Bereichsleiste (app/admin/admin-nav.tsx),
+        // solange sie zu sehen ist; ihre Safe-Area deckt den Rand.
+        "max-lg:group-has-[[data-tab-bar=offen]]/admin:bottom-[calc(3.5rem+env(safe-area-inset-bottom))] max-lg:group-has-[[data-tab-bar=offen]]/admin:pb-0",
+      )}
     >
       {content}
     </div>
