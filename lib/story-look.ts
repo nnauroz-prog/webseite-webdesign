@@ -38,6 +38,18 @@ export type StoryLook = {
   streif: string;
   /** Pfeil vor dem Zusatz und Strahlen am Aufkleber */
   akzent: string;
+  /**
+   * Gestaltung „farbfeld“: eine kräftige Fläche über dem größten Teil des
+   * Plakats (feld) mit dem Satz darauf, dazu der Balken der Pointe und
+   * ihre Schrift; darunter, jenseits der Elbe-Linie, eine ruhige Fläche
+   * (papier) mit Zusatz und Wortmarke.
+   */
+  feld: string;
+  feldText: string;
+  feldMarker: string;
+  feldBetont: string;
+  papier: string;
+  papierText: string;
 };
 
 export const STORY_LOOKS: StoryLook[] = [
@@ -59,6 +71,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#0f2a3a",
     streif: "#ffffff",
     akzent: "#ffffff",
+    feld: "#f45b1e",
+    feldText: "#1d1d1f",
+    feldMarker: "#fff8ee",
+    feldBetont: "#1d1d1f",
+    papier: "#fff8ee",
+    papierText: "#1d1d1f",
   },
   {
     name: "hafen",
@@ -78,6 +96,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#fff8ee",
     streif: "#f45b1e",
     akzent: "#ff9a66",
+    feld: "#0f2a3a",
+    feldText: "#ffffff",
+    feldMarker: "#f45b1e",
+    feldBetont: "#ffffff",
+    papier: "#fff8ee",
+    papierText: "#0f2a3a",
   },
   {
     name: "creme",
@@ -97,6 +121,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#0f2a3a",
     streif: "#f45b1e",
     akzent: "#f45b1e",
+    feld: "#1d1d1f",
+    feldText: "#fff8ee",
+    feldMarker: "#f45b1e",
+    feldBetont: "#1d1d1f",
+    papier: "#fff3e0",
+    papierText: "#1d1d1f",
   },
   {
     name: "nacht",
@@ -116,6 +146,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#ffffff",
     streif: "#141416",
     akzent: "#ff9a66",
+    feld: "#141416",
+    feldText: "#ffffff",
+    feldMarker: "#f45b1e",
+    feldBetont: "#141416",
+    papier: "#ece6dc",
+    papierText: "#141416",
   },
   {
     name: "gelb",
@@ -135,6 +171,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#0f2a3a",
     streif: "#f45b1e",
     akzent: "#0f2a3a",
+    feld: "#ffd54a",
+    feldText: "#1d1d1f",
+    feldMarker: "#1d1d1f",
+    feldBetont: "#ffd54a",
+    papier: "#fff8ee",
+    papierText: "#1d1d1f",
   },
   {
     // Entsättigtes Seegrün statt Mint: hanseatisch, nicht bonbonfarben.
@@ -155,6 +197,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#0f2a3a",
     streif: "#f45b1e",
     akzent: "#f45b1e",
+    feld: "#2f6f68",
+    feldText: "#ffffff",
+    feldMarker: "#fff8ee",
+    feldBetont: "#2f6f68",
+    papier: "#d5e4e0",
+    papierText: "#0f2a3a",
   },
   {
     name: "tinte",
@@ -174,6 +222,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#ffffff",
     streif: "#f45b1e",
     akzent: "#ffd54a",
+    feld: "#1b2a4a",
+    feldText: "#ffffff",
+    feldMarker: "#ffd54a",
+    feldBetont: "#1b2a4a",
+    papier: "#fff8ee",
+    papierText: "#1b2a4a",
   },
   {
     // Backstein wie die Speicherstadt.
@@ -194,6 +248,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#fff8ee",
     streif: "#f45b1e",
     akzent: "#ffd9a8",
+    feld: "#8a3a28",
+    feldText: "#ffffff",
+    feldMarker: "#fff8ee",
+    feldBetont: "#8a3a28",
+    papier: "#fff8ee",
+    papierText: "#5a2416",
   },
   {
     name: "petrol",
@@ -213,6 +273,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#fff8ee",
     streif: "#f45b1e",
     akzent: "#ffd9a8",
+    feld: "#1f7a78",
+    feldText: "#ffffff",
+    feldMarker: "#fff8ee",
+    feldBetont: "#0f2a3a",
+    papier: "#eef6f4",
+    papierText: "#0f2a3a",
   },
   {
     name: "nebel",
@@ -232,6 +298,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#0f2a3a",
     streif: "#f45b1e",
     akzent: "#f45b1e",
+    feld: "#24435c",
+    feldText: "#ffffff",
+    feldMarker: "#f45b1e",
+    feldBetont: "#ffffff",
+    papier: "#e3eaf0",
+    papierText: "#0f2a3a",
   },
   {
     // Stahlblau wie der Himmel über dem Hafen.
@@ -252,6 +324,12 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#0f2a3a",
     streif: "#f45b1e",
     akzent: "#f45b1e",
+    feld: "#3b5a74",
+    feldText: "#ffffff",
+    feldMarker: "#fff8ee",
+    feldBetont: "#0f2a3a",
+    papier: "#cdd9e4",
+    papierText: "#0f2a3a",
   },
   {
     name: "sand",
@@ -271,5 +349,11 @@ export const STORY_LOOKS: StoryLook[] = [
     faehre: "#0f2a3a",
     streif: "#f45b1e",
     akzent: "#f45b1e",
+    feld: "#a8462c",
+    feldText: "#ffffff",
+    feldMarker: "#fff8ee",
+    feldBetont: "#a8462c",
+    papier: "#ead9c2",
+    papierText: "#1d1d1f",
   },
 ];

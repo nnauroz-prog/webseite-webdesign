@@ -16,6 +16,8 @@ export function SchemaNotice({ schema }: { schema: SchemaStatus }) {
     schema.events,
     schema.deletions,
     schema.angebote,
+    schema.projekte,
+    schema.postStatus,
   ];
   const missing = missingMigrations(schema);
   if (missing.length > 0) {
@@ -33,8 +35,9 @@ export function SchemaNotice({ schema }: { schema: SchemaStatus }) {
         role="status"
         className="border-border bg-card text-muted-foreground mt-4 rounded-[4px] border p-3 text-[14px] leading-relaxed"
       >
-        Datenbank-Stand gerade nicht prüfbar: {e.title} Wiedervorlage, Ergebnis
-        und Angebote sind bis zum nächsten Laden aus.
+        Datenbank-Stand gerade nicht prüfbar: {e.title} Wiedervorlage, Ergebnis,
+        Angebote, Projekte und das Abhaken von Posts sind bis zum nächsten Laden
+        aus.
       </p>
     );
   }

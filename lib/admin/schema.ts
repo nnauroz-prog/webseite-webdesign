@@ -4,12 +4,14 @@ import { cache } from "react";
 
 import { ANGEBOT_COLUMNS } from "@/lib/admin/angebote";
 import { isMissingSchema } from "@/lib/admin/db-errors";
+import { POST_STATUS_COLUMNS } from "@/lib/admin/post-planer";
+import { PROJEKT_COLUMNS } from "@/lib/admin/projekte";
 import { serviceClient } from "@/lib/supabase/service";
 
 /**
  * Sind die Migrationen 20261101000000_admin_ausbau.sql (leadsV2,
- * events, deletions) und 20261102000000_angebote.sql (angebote)
- * ausgeführt?
+ * events, deletions), 20261102000000_angebote.sql (angebote) und
+ * 20261116000000_ausbau.sql (projekte, postStatus) ausgeführt?
  *
  * Je Teil drei Zustände:
  *   'ok'        vorhanden
@@ -20,7 +22,8 @@ import { serviceClient } from "@/lib/supabase/service";
  * und bietet nur die fehlende Migration an (missingMigrations in
  * lib/admin/migration-sql.ts). Felder der neuen Spalten werden nur bei
  * 'ok' gesendet; der Angebots-Bereich zeigt bei angebote !== 'ok'
- * einen Hinweis statt eines Fehlers.
+ * einen Hinweis statt eines Fehlers, ebenso Kunden & Projekte und der
+ * Post-Planer bei projekte bzw. postStatus !== 'ok'.
  */
 export type SchemaPart = "ok" | "fehlt" | "unbekannt";
 
@@ -30,6 +33,10 @@ export type SchemaStatus = {
   deletions: SchemaPart;
   /** Tabelle angebote (20261102000000_angebote.sql). */
   angebote: SchemaPart;
+  /** Tabelle projekte (20261116000000_ausbau.sql). */
+  projekte: SchemaPart;
+  /** Tabelle post_status (20261116000000_ausbau.sql). */
+  postStatus: SchemaPart;
   /** Erste Fehlermeldung bei 'unbekannt' (für explainDbError). */
   error?: { message: string; code?: string };
 };
@@ -64,24 +71,40 @@ export async function readSchemaStatus(): Promise<SchemaStatus> {
       events: "unbekannt",
       deletions: "unbekannt",
       angebote: "unbekannt",
+      projekte: "unbekannt",
+      postStatus: "unbekannt",
       error,
     };
   }
-  const [leadsV2, events, deletions, angebote] = await Promise.all([
-    probe(db.from("leads").select("follow_up_on,outcome,lost_reason").limit(1)),
-    probe(db.from("lead_events").select("id").limit(1)),
-    probe(db.from("lead_deletions").select("id").limit(1)),
-    // Alle Spalten: Fehlt eine (z. B. nach einer halb ausgeführten
-    // Migration), gilt der Teil als 'fehlt' statt später zu scheitern.
-    probe(db.from("angebote").select(ANGEBOT_COLUMNS.join(",")).limit(1)),
-  ]);
+  const [leadsV2, events, deletions, angebote, projekte, postStatus] =
+    await Promise.all([
+      probe(
+        db.from("leads").select("follow_up_on,outcome,lost_reason").limit(1),
+      ),
+      probe(db.from("lead_events").select("id").limit(1)),
+      probe(db.from("lead_deletions").select("id").limit(1)),
+      // Alle Spalten: Fehlt eine (z. B. nach einer halb ausgeführten
+      // Migration), gilt der Teil als 'fehlt' statt später zu scheitern.
+      probe(db.from("angebote").select(ANGEBOT_COLUMNS.join(",")).limit(1)),
+      probe(db.from("projekte").select(PROJEKT_COLUMNS.join(",")).limit(1)),
+      probe(
+        db.from("post_status").select(POST_STATUS_COLUMNS.join(",")).limit(1),
+      ),
+    ]);
   const error =
-    leadsV2.error ?? events.error ?? deletions.error ?? angebote.error;
+    leadsV2.error ??
+    events.error ??
+    deletions.error ??
+    angebote.error ??
+    projekte.error ??
+    postStatus.error;
   return {
     leadsV2: leadsV2.part,
     events: events.part,
     deletions: deletions.part,
     angebote: angebote.part,
+    projekte: projekte.part,
+    postStatus: postStatus.part,
     ...(error ? { error } : {}),
   };
 }

@@ -76,8 +76,8 @@ export function AdminLifecycle() {
         rememberSearch("", Date.now());
         window.dispatchEvent(new CustomEvent(SEARCH_RESET_EVENT, { detail: "kopf" }));
       }
-      // Detailseite oder Angebots-Editor einer Anfrage.
-      if (/^\/admin\/anfragen\/[0-9a-f-]{36}(\/angebot\/[0-9a-f-]{36})?$/i.test(a.pathname)) {
+      // Detailseite oder Angebots-Editor einer Anfrage, Projektseite.
+      if (/^\/admin\/(anfragen\/[0-9a-f-]{36}(\/angebot\/[0-9a-f-]{36})?|kunden\/[0-9a-f-]{36})$/i.test(a.pathname)) {
         rememberBackTarget(a.pathname);
       }
     };

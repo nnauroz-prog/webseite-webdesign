@@ -2,11 +2,15 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { STORY_LOOKS } from "@/lib/story-look";
+import { klebeband } from "@/lib/story-satz";
 import { MOTIVE, SCHMUCK } from "@/lib/story-teile";
 import {
   AUFTRITTE,
   KAMERAS,
+  LAYOUT_FOLGE,
+  LAYOUTS,
   VARIANTEN,
+  gestaltungFuer,
   varianteFuer,
 } from "@/lib/story-variante";
 
@@ -71,6 +75,24 @@ describe("Farbwelten der Spruch-Karten", () => {
         kontrast(l.streif, l.faehre) >= 2.5,
         `${l.name}: Streifen der Fähre`,
       );
+      // Gestaltung „farbfeld“: großer Satz auf der kräftigen Fläche
+      // (große Schrift, mindestens 4 : 1), Pointe auf ihrem Balken, Zusatz
+      // und Wortmarke auf dem Papier darunter.
+      assert.ok(kontrast(l.feldText, l.feld) >= 4, `${l.name}: Satz im Feld`);
+      assert.ok(
+        kontrast(l.feldMarker, l.feld) >= 1.5,
+        `${l.name}: Balken im Feld`,
+      );
+      assert.ok(
+        kontrast(l.feldBetont, l.feldMarker) >= 3,
+        `${l.name}: Pointe im Feld`,
+      );
+      assert.ok(
+        kontrast(l.papierText, l.papier) >= 4.5,
+        `${l.name}: Zusatz auf Papier`,
+      );
+      // Feld und Papier sind zwei deutlich verschiedene Flächen.
+      assert.ok(kontrast(l.feld, l.papier) >= 1.3, `${l.name}: Feld/Papier`);
     }
   });
 
@@ -182,6 +204,86 @@ describe("Farbwelten der Spruch-Karten", () => {
     );
   });
 
+  it("gestaltet die drei Posts eines Tages verschieden und wechselt täglich", () => {
+    // Die Folge hat so viele Plätze wie die Schmuck-Stelle, jede
+    // Gestaltung des Wechsels genau einmal (mindestens sechs sichtbar
+    // verschiedene, die klassische eingeschlossen). Nur das Kalenderblatt
+    // steht nicht darin: Es braucht einen Anlass.
+    assert.equal(LAYOUT_FOLGE.length, SCHMUCK.length);
+    assert.equal(new Set(LAYOUT_FOLGE).size, LAYOUT_FOLGE.length);
+    assert.ok(LAYOUT_FOLGE.length >= 6);
+    assert.ok(LAYOUT_FOLGE.includes("klassik"));
+    assert.ok(!LAYOUT_FOLGE.includes("kalenderblatt"));
+    assert.deepEqual(
+      new Set([...LAYOUT_FOLGE, "kalenderblatt"]),
+      new Set(LAYOUTS),
+    );
+    for (let n = -10; n < VARIANTEN / 3; n++) {
+      const tag = [0, 1, 2].map((platz) => varianteFuer(n, platz).layout);
+      assert.equal(new Set(tag).size, 3, `Tag ${n}: ${tag.join(", ")}`);
+      assert.notEqual(tag[0], varianteFuer(n - 1).layout, `Tag ${n}`);
+    }
+    // „Anderes Design“ im Story-Studio kommt auch mit anderer Gestaltung.
+    const anders = [1, 2, 3].map((v) => varianteFuer(6, 0, v).layout);
+    assert.ok(anders.some((l) => l !== varianteFuer(6).layout));
+  });
+
+  it("bringt in 30 Tagen jede Gestaltung, die klassische eingeschlossen", () => {
+    for (const start of [6, 133, 401, 2020]) {
+      const monat = Array.from({ length: 30 }, (_, i) =>
+        varianteFuer(start + i),
+      );
+      const gesehen = new Set(monat.map((v) => v.layout));
+      assert.equal(gesehen.size, LAYOUT_FOLGE.length, `ab Tag ${start}`);
+      assert.ok(gesehen.has("klassik"), `ab Tag ${start}`);
+      // Auch über alle drei Posts: Jede Gestaltung bleibt im Wechsel,
+      // keine drängt sich vor.
+      const alle = monat.flatMap((_, i) =>
+        [0, 1, 2].map((platz) => varianteFuer(start + i, platz).layout),
+      );
+      for (const layout of LAYOUT_FOLGE) {
+        const anzahl = alle.filter((l) => l === layout).length;
+        assert.ok(
+          anzahl >= 8 && anzahl <= 25,
+          `${layout}: ${anzahl} ab Tag ${start}`,
+        );
+      }
+    }
+  });
+
+  it("stellt den tagesaktuellen Spruch des Tages jeden zweiten Tag als Kalenderblatt", () => {
+    let kalender = 0;
+    for (let n = -10; n < 2000; n++) {
+      // Ein Tag mit drei tagesaktuellen Posts: drei verschiedene Gestaltungen.
+      const tag = [0, 1, 2].map((platz) =>
+        gestaltungFuer({ nummer: n, platz, anlass: "Erster Advent" }),
+      );
+      assert.equal(new Set(tag).size, 3, `Tag ${n}: ${tag.join(", ")}`);
+      // Nur der Spruch des Tages, und nur an jedem zweiten Tag.
+      assert.equal(tag[0] === "kalenderblatt", n % 2 === 0, `Tag ${n}`);
+      assert.ok(!tag.slice(1).includes("kalenderblatt"), `Tag ${n}`);
+      if (tag[0] === "kalenderblatt") kalender++;
+      // Ohne Anlass (Reserve) nie, sondern die Gestaltung des Wechsels.
+      for (const platz of [0, 1, 2]) {
+        const ohne = gestaltungFuer({ nummer: n, platz, anlass: null });
+        assert.equal(ohne, varianteFuer(n, platz).layout, `Tag ${n}`);
+        assert.equal(
+          gestaltungFuer({ nummer: n, platz, anlass: "  " }),
+          ohne,
+          `leerer Anlass an Tag ${n}`,
+        );
+      }
+      // An den anderen Tagen die Gestaltung des Wechsels.
+      if (n % 2 !== 0) assert.equal(tag[0], varianteFuer(n).layout);
+    }
+    assert.ok(kalender > 900);
+    // „Anderes Design“ im Story-Studio wechselt auch hier die Gestaltung.
+    assert.notEqual(
+      gestaltungFuer({ nummer: 10, platz: 0, anlass: "Black Friday" }, 1),
+      "kalenderblatt",
+    );
+  });
+
   it("hat für jedes Motiv und jede Schmuckform gültige Pfade", () => {
     for (const m of MOTIVE) {
       assert.ok(m.b > 20 && m.b < 80, m.name);
@@ -196,5 +298,53 @@ describe("Farbwelten der Spruch-Karten", () => {
         assert.doesNotMatch(teil.d, /NaN|undefined/, s.name);
       }
     }
+  });
+});
+
+describe("Klebeband beim Auftritt „abziehen“", () => {
+  // Kanten des Streifens, wie die Zeichnung sie rechnet: Ohne Farbstreifen
+  // reicht er 0,78 der Schriftgröße über die Grundlinie, 0,3 darunter.
+  const px = 200;
+  const [x0, x1, grundlinie] = [100, 870, 600];
+  const streifen = [
+    x0 - px * 0.13,
+    x1 + px * 0.1,
+    grundlinie - px * 0.78,
+    grundlinie + px * 0.3,
+  ] as const;
+  /** Tinte der Wörter aus gemessenen Werten (Anteile der Schriftgröße). */
+  const tinte = (oben: number, unten: number, links = 0, rechts = 0) =>
+    [
+      x0 - px * links,
+      x1 + px * rechts,
+      grundlinie - px * oben,
+      grundlinie + px * unten,
+    ] as const;
+
+  it("deckt die Punkte großer Umlaute ab, auch ohne Farbstreifen", () => {
+    // Gemessen in Chromium: Die fette Grotesk reicht bei „Öffnungszeiten“
+    // 0,96 über die Grundlinie, Cormorant kursiv 0,29 darunter; die
+    // Kursive hängt am Ende etwas über.
+    for (const frei of [true, false])
+      for (const t of [tinte(0.96, 0.22), tinte(0.81, 0.29, 0.02, 0.12)]) {
+        const band = klebeband(streifen, t, px, frei);
+        assert.ok(band.oben < t[2], `oben (frei: ${frei})`);
+        assert.ok(band.unten > t[3], `unten (frei: ${frei})`);
+        assert.ok(band.links + band.zahn < t[0], `links (frei: ${frei})`);
+        assert.ok(band.rechts - band.zahn > t[1], `rechts (frei: ${frei})`);
+      }
+  });
+
+  it("bleibt so groß wie bisher, wenn die Schrift im Streifen bleibt", () => {
+    const band = klebeband(streifen, tinte(0.73, 0.2), px, true);
+    assert.deepEqual(
+      [band.links, band.rechts, band.oben, band.unten, band.zahn],
+      [streifen[0] - 28, streifen[1] + 28, streifen[2] - 7, streifen[3] + 7, 9],
+    );
+    const knapp = klebeband(streifen, tinte(0.73, 0.2), px, false);
+    assert.deepEqual(
+      [knapp.links, knapp.rechts, knapp.zahn],
+      [streifen[0] - 12, streifen[1] + 12, 0],
+    );
   });
 });

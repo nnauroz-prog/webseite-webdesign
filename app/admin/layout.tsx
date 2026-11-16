@@ -2,12 +2,14 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 
 import { AdminLifecycle } from "@/app/admin/admin-lifecycle";
+import { AdminHeaderNav, AdminTabBar } from "@/app/admin/admin-nav";
 import { LogoutButton } from "@/app/admin/logout-button";
 import { RefreshButton } from "@/app/admin/refresh-button";
 import { RenderKick } from "@/app/admin/render-kick";
 import { getAdminEmail } from "@/lib/admin/auth";
 import { ADMIN_THEME_COLOR } from "@/lib/admin/theme";
 import { SitaloLogo } from "@/components/sitalo-logo";
+import { cn } from "@/lib/utils";
 
 // Immer pro Request rendern — das Root-Layout setzt revalidate = 3600
 // (ISR) für die Marketing-Seiten; hier darf nichts zwischengespeichert
@@ -51,10 +53,17 @@ export default async function AdminLayout({
   return (
     <div
       data-admin=""
-      // Unten Platz für Kontakt-/Rückgängig-Streifen (--strip-h) und,
-      // auf der Detailseite, für die feste Daumenleiste (ihre Safe-Area
-      // steckt schon im Fuß). Ab lg steht die Leiste im Inhalt.
-      className="bg-background flex min-h-dvh flex-col pb-[var(--strip-h,0px)] has-[[data-thumb-bar]]:pb-[calc(3.5rem+var(--strip-h,0px))] lg:has-[[data-thumb-bar]]:pb-0"
+      // Unten Platz für Kontakt-/Rückgängig-Streifen (--strip-h) und am
+      // iPhone für die feste Leiste: die Bereichsleiste (angemeldet) bzw.
+      // auf der Detailseite die Daumenleiste, beide 3.5rem. Ihre
+      // Safe-Area steckt schon im Fuß (nicht doppelt). Der Editor hat
+      // eine eigene klebende Leiste im Inhalt. Ab lg stehen die Bereiche
+      // in der Kopfzeile und die Daumenleiste im Inhalt.
+      className={cn(
+        "group/admin bg-background flex min-h-dvh flex-col pb-[var(--strip-h,0px)] has-[[data-thumb-bar]]:pb-[calc(3.5rem+var(--strip-h,0px))] lg:has-[[data-thumb-bar]]:pb-0",
+        email &&
+          "max-lg:pb-[calc(3.5rem+var(--strip-h,0px))] max-lg:has-[[data-editor]]:pb-[var(--strip-h,0px)]",
+      )}
     >
       <AdminLifecycle />
       <RenderKick />
@@ -71,14 +80,9 @@ export default async function AdminLayout({
             <span className="label-mono text-stahl-hell text-[11px]">Admin</span>
           </Link>
           {email ? (
-            <div className="flex items-center">
-              {/* Spruch des Tages als fertiges Bild für die Instagram-Story. */}
-              <Link
-                href="/admin/story"
-                className="label-mono hover:bg-background/10 inline-flex h-11 items-center rounded-[3px] px-3 text-[11px] transition-colors"
-              >
-                Story
-              </Link>
+            <div className="flex items-center gap-2">
+              {/* Bereiche ab lg; am iPhone unten in der Leiste. */}
+              <AdminHeaderNav />
               <RefreshButton />
             </div>
           ) : null}
@@ -103,6 +107,7 @@ export default async function AdminLayout({
           </div>
         </footer>
       ) : null}
+      {email ? <AdminTabBar /> : null}
     </div>
   );
 }

@@ -1,20 +1,49 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import type { GepostetEintrag } from "@/app/admin/story/story-studio";
+
 import { StoryStudio } from "@/app/admin/story/story-studio";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
-  postsFuer,
-  spruchTag,
+  morgenlaufStand,
+  morgenlaufText,
+  parsePostDatum,
+} from "@/lib/admin/post-planer";
+import { checkSchema } from "@/lib/admin/schema";
+import { listPostStatus } from "@/lib/post-status-store";
+import { postsFuer } from "@/lib/sprueche-aktuell";
+import {
   storyBeschriftung,
   tagInHamburg,
   tagVersetzt,
-  vorratTage,
-  vorratTageExtra,
 } from "@/lib/sprueche-data";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Story-Studio" };
+
+/** Platz aus ?post= (0 bis 2), sonst null. */
+function gueltigerPlatz(raw: string | string[] | undefined): number | null {
+  return typeof raw === "string" && /^[0-2]$/.test(raw) ? Number(raw) : null;
+}
+
+/**
+ * Was an diesem Tag schon gepostet ist (Tabelle post_status). null ohne
+ * Datenbank-Update oder wenn das Lesen scheitert: Dann merkt sich das
+ * Studio Gepostetes wie früher nur auf diesem Gerät.
+ */
+async function gepostetAm(tag: string): Promise<GepostetEintrag[] | null> {
+  try {
+    const schema = await checkSchema();
+    if (schema.postStatus !== "ok") return null;
+    const rows = await listPostStatus(tag, tag);
+    return rows
+      ? rows.map((r) => ({ platz: r.platz, format: r.format, text: r.text }))
+      : null;
+  } catch {
+    return null;
+  }
+}
 
 /** Nur echte Kalendertage (yyyy-mm-dd), sonst gilt heute. */
 function gueltigerTag(raw: string | string[] | undefined): string | null {
@@ -39,11 +68,17 @@ const WOCHENTAG = new Intl.DateTimeFormat("de-DE", {
  * Instagram, als Story (1080 × 1920) oder Beitrag (1080 × 1350). Nur
  * hier gibt es Teilen, Sichern und den Beitragstext; auf der
  * öffentlichen Journalseite steht die Karte ohne diese Knöpfe.
+ *
+ * ?tag=yyyy-mm-dd wählt den Tag, ?post=0|1|2 den Post (etwa aus dem
+ * Post-Planer „Im Studio öffnen“).
  */
 export default async function StoryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tag?: string | string[] }>;
+  searchParams: Promise<{
+    tag?: string | string[];
+    post?: string | string[];
+  }>;
 }) {
   await requireAdmin();
   const sp = await searchParams;
@@ -51,17 +86,18 @@ export default async function StoryPage({
   const heute = tagInHamburg(jetzt);
   const tag = gueltigerTag(sp.tag) ?? heute;
   const posts = postsFuer(tag);
+  const platz = gueltigerPlatz(sp.post);
+  const start = Math.max(
+    0,
+    posts.findIndex((p) => p.platz === platz),
+  );
   // Tagesleiste: drei Tage zurück bis drei Tage voraus, der gewählte in der Mitte.
   const leiste = Array.from({ length: 7 }, (_, i) => tagVersetzt(tag, i - 3));
-  const woche = Array.from({ length: 7 }, (_, i) =>
-    postsFuer(tagVersetzt(heute, i + 1)),
-  );
-  // Vorrat: Jede Karte gehört zu einem Tag. Reicht er nicht mehr weit,
-  // steht hier eine Warnung, bevor sich etwas wiederholt.
-  const vorrat = vorratTage(jetzt);
-  const vorratExtra = vorratTageExtra(jetzt);
-  const knapp = vorrat < 21 || vorratExtra < 10;
-  const tage = (n: number) => `${Math.max(n, 0)} ${n === 1 ? "Tag" : "Tage"}`;
+  const gepostetDb = await gepostetAm(tag);
+  // Morgenlauf: Karten zum Tag haben Vorrang, sonst springt die Reserve
+  // ein. Auch für einen kommenden Tag zählen schon geschriebene Karten.
+  const laufText = morgenlaufText(tag, heute, posts);
+  const reserveWarnung = tag === heute && !morgenlaufStand(posts).geliefert;
 
   return (
     <>
@@ -114,60 +150,45 @@ export default async function StoryPage({
         </p>
       ) : null}
 
-      <StoryStudio
-        // Neuer Tag: Auswahl, Design und Video beginnen frisch.
-        key={tag}
-        posts={posts}
-        beschriftungen={posts.map(storyBeschriftung)}
-      />
-
       <p
-        className={
-          knapp
-            ? "border-border mt-8 rounded-[3px] border px-3 py-2 text-[15px] leading-6 font-medium"
-            : "text-muted-foreground mt-8 text-[14px] leading-6"
-        }
+        role="status"
+        className={cn(
+          "mt-3 rounded-[3px] border px-3 py-2 text-[15px] leading-6",
+          reserveWarnung
+            ? "border-gold font-medium"
+            : "border-border text-muted-foreground",
+        )}
       >
-        {vorrat > 0
-          ? `Vorrat: Sprüche des Tages für noch ${tage(vorrat)} (bis ${spruchTag(tagVersetzt(heute, vorrat - 1)).datumText})`
-          : "Die Sprüche des Tages sind aufgebraucht und wiederholen sich gerade"}
-        {vorratExtra > 0
-          ? `, Zusatz-Posts für noch ${tage(vorratExtra)}.`
-          : ". Die Zusatz-Posts sind aufgebraucht und wiederholen sich gerade."}
-        {knapp
-          ? " Es wird Zeit für Nachschub, sonst wiederholt sich etwas."
-          : " Nichts erscheint zweimal."}
+        {laufText}
       </p>
 
-      <section className="mt-6">
-        <h2 className="mb-2 text-[17px] font-semibold tracking-tight">
-          Die nächsten Tage
-        </h2>
-        <ul
-          role="list"
-          className="border-border divide-border divide-y rounded-[3px] border"
-        >
-          {woche.map((tagesPosts) => {
-            const s = tagesPosts[0];
-            return (
-              <li key={s.datum}>
-                <Link
-                  href={`/admin/story?tag=${s.datum}`}
-                  className="hover:bg-foreground/[0.04] flex min-h-11 flex-col justify-center gap-0.5 px-3 py-2 transition-colors"
-                >
-                  <span className="text-muted-foreground text-[13px]">
-                    {s.datumText} · {tagesPosts.length}{" "}
-                    {tagesPosts.length === 1 ? "Post" : "Posts"}
-                  </span>
-                  <span className="text-[15px] font-medium text-pretty">
-                    {s.text}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+      <StoryStudio
+        // Neuer Tag, anderer Post aus dem Planer oder neue Karten (der
+        // Morgenlauf hat geliefert, Seite im Hintergrund neu geladen):
+        // Auswahl, Design und Video beginnen frisch.
+        key={`${tag}|${start}|${posts.map((p) => p.text).join("|")}`}
+        posts={posts}
+        beschriftungen={posts.map(storyBeschriftung)}
+        start={start}
+        gepostetDb={gepostetDb}
+        abhakenMoeglich={parsePostDatum(tag, jetzt) !== null}
+      />
+
+      <div className="text-muted-foreground mt-8 space-y-2 text-[14px] leading-6">
+        <p>
+          Die Posts für morgen schreibt der Morgenlauf morgen früh, passend zu
+          dem, was dann los ist. Die Reserve springt nur ein, wenn es keine
+          Karten zum Tag gibt.
+        </p>
+        <p>
+          <Link
+            href="/admin/posts"
+            className="text-foreground inline-flex min-h-11 items-center font-medium underline underline-offset-4"
+          >
+            Zum Post-Planer
+          </Link>
+        </p>
+      </div>
     </>
   );
 }

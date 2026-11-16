@@ -3,6 +3,8 @@ import { after, before, describe, it } from "node:test";
 
 import { ANGEBOT_COLUMNS } from "@/lib/admin/angebote";
 import { explainDbError } from "@/lib/admin/db-errors";
+import { POST_STATUS_COLUMNS } from "@/lib/admin/post-planer";
+import { PROJEKT_COLUMNS } from "@/lib/admin/projekte";
 import { SERVICE_KEY, startMock } from "@/tests/supabase-mock.mjs";
 
 type Mock = Awaited<ReturnType<typeof startMock>>;
@@ -29,26 +31,44 @@ describe("checkSchema / readSchemaStatus", () => {
       events: "fehlt",
       deletions: "fehlt",
       angebote: "fehlt",
+      projekte: "fehlt",
+      postStatus: "fehlt",
     });
   });
 
-  it("v2 (Stand beim Inhaber): nur angebote fehlt", async () => {
+  it("v2: angebote und der Ausbau fehlen", async () => {
     mock.reset("v2");
     assert.deepEqual(await schema.readSchemaStatus(), {
       leadsV2: "ok",
       events: "ok",
       deletions: "ok",
       angebote: "fehlt",
+      projekte: "fehlt",
+      postStatus: "fehlt",
     });
   });
 
-  it("v3: alles ok", async () => {
+  it("v3 (Stand beim Inhaber): nur der Ausbau fehlt", async () => {
     mock.reset("v3");
     assert.deepEqual(await schema.readSchemaStatus(), {
       leadsV2: "ok",
       events: "ok",
       deletions: "ok",
       angebote: "ok",
+      projekte: "fehlt",
+      postStatus: "fehlt",
+    });
+  });
+
+  it("v4: alles ok", async () => {
+    mock.reset("v4");
+    assert.deepEqual(await schema.readSchemaStatus(), {
+      leadsV2: "ok",
+      events: "ok",
+      deletions: "ok",
+      angebote: "ok",
+      projekte: "ok",
+      postStatus: "ok",
     });
     // gekapselt in React cache(); außerhalb von React einfach durchgereicht
     assert.equal((await schema.checkSchema()).angebote, "ok");
@@ -63,6 +83,8 @@ describe("checkSchema / readSchemaStatus", () => {
       assert.equal(s.events, "unbekannt");
       assert.equal(s.deletions, "unbekannt");
       assert.equal(s.angebote, "unbekannt");
+      assert.equal(s.projekte, "unbekannt");
+      assert.equal(s.postStatus, "unbekannt");
       assert.ok(s.error);
       assert.equal(explainDbError(s.error).kind, "auth");
     } finally {
@@ -77,14 +99,16 @@ describe("checkSchema / readSchemaStatus", () => {
       const s = await schema.readSchemaStatus();
       assert.equal(s.leadsV2, "unbekannt");
       assert.equal(s.angebote, "unbekannt");
+      assert.equal(s.projekte, "unbekannt");
+      assert.equal(s.postStatus, "unbekannt");
       assert.equal(s.error?.message, "Supabase ist nicht konfiguriert.");
     } finally {
       process.env.NEXT_PUBLIC_SUPABASE_URL = url;
     }
   });
 
-  it("fragt die vier Teile mit den geplanten Spalten ab", async () => {
-    mock.reset("v3");
+  it("fragt die sechs Teile mit den geplanten Spalten ab", async () => {
+    mock.reset("v4");
     await schema.readSchemaStatus();
     const urls = mock.requests.map((r) => r.url).sort();
     assert.deepEqual(urls, [
@@ -92,6 +116,8 @@ describe("checkSchema / readSchemaStatus", () => {
       "/rest/v1/lead_deletions?select=id&limit=1",
       "/rest/v1/lead_events?select=id&limit=1",
       "/rest/v1/leads?select=follow_up_on%2Coutcome%2Clost_reason&limit=1",
+      `/rest/v1/post_status?select=${POST_STATUS_COLUMNS.join("%2C")}&limit=1`,
+      `/rest/v1/projekte?select=${PROJEKT_COLUMNS.join("%2C")}&limit=1`,
     ]);
   });
 });
