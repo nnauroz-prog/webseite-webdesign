@@ -9,7 +9,12 @@ import {
   type ReactNode,
 } from "react";
 
-import { spruecheBis, tagInHamburg, type SpruchTag } from "@/lib/sprueche-data";
+import {
+  spruecheBis,
+  tagInHamburg,
+  type AktuelleKarten,
+  type SpruchTag,
+} from "@/lib/sprueche-data";
 import { kinoFreigeben } from "@/lib/story-kino";
 import {
   FORMATE,
@@ -38,6 +43,9 @@ import r from "./spruch-reel.module.css";
  * - Der Text jeder Karte steht zusätzlich im Dokument: für
  *   Vorleseprogramme und Suchmaschinen, und als schlichte Karte, wenn
  *   kein JavaScript läuft.
+ * - Die tagesaktuellen Karten kommen als Ausschnitt vom Server (aktuell,
+ *   ohne Quelle). Diese Datei lädt lib/posts-aktuell.ts nie, auch nicht
+ *   über andere Module (tests/sprueche.test.ts prüft das).
  */
 
 type Zeichner = StoryZeichner;
@@ -52,10 +60,16 @@ const TEMPO = 1.7;
 
 export function SpruchReel({
   tage: vomServer,
+  aktuell,
   kopf,
   fuss,
 }: {
   tage: SpruchTag[];
+  /**
+   * Tagesaktuelle Karten rund um heute (journalKarten, ohne Quelle), aus
+   * denen tage berechnet ist; damit rechnet der Browser nach.
+   */
+  aktuell: AktuelleKarten;
   /** Kennzeile und Seitentitel über der Karte */
   kopf?: ReactNode;
   /** Zeile unter der Karte */
@@ -78,8 +92,8 @@ export function SpruchReel({
   useEffect(() => {
     const jetzt = new Date();
     if (vomServer[0]?.datum !== tagInHamburg(jetzt))
-      setTage(spruecheBis(jetzt, vomServer.length));
-  }, [vomServer]);
+      setTage(spruecheBis(jetzt, vomServer.length, aktuell));
+  }, [vomServer, aktuell]);
 
   // Welche Karte steht im Bild?
   useEffect(() => {

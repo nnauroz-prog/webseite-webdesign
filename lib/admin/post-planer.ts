@@ -150,6 +150,33 @@ export function postStand(
 }
 
 /**
+ * Wie postStand, aber aus den Einträgen eines einzigen Tages (Story-Studio):
+ * „gepostet“ nur, wenn der gespeicherte Satz der gezeigten Karte gehört.
+ */
+export function postStandIn(
+  eintraege: readonly Pick<PostStatusRow, "platz" | "format" | "text">[],
+  post: Pick<SpruchTag, "platz" | "text">,
+  format: PostFormat,
+): PostStand {
+  const e = eintraege.find(
+    (x) => x.platz === post.platz && x.format === format,
+  );
+  if (!e) return "offen";
+  return e.text === post.text ? "gepostet" : "andere";
+}
+
+/**
+ * Was ein Tipp auf den Schalter „gepostet“ sendet: Offenes wird abgehakt,
+ * Gepostetes wieder offen. Wurde an dem Platz vorher eine andere Karte
+ * gepostet („andere“), hakt der Tipp die gezeigte Karte ab; der Server
+ * frischt dann Satz und Zeit auf (lib/post-status-store.ts), statt den
+ * Eintrag zu löschen.
+ */
+export function gepostetNach(stand: PostStand): boolean {
+  return stand !== "gepostet";
+}
+
+/**
  * Serie: wie viele Tage in Folge mindestens ein Post online ging, bis
  * heute. Ist heute noch nichts gepostet, zählt die Serie bis gestern
  * (der Tag ist ja noch nicht vorbei).
@@ -163,6 +190,28 @@ export function serieTage(rows: readonly PostStatusRow[], heute: string) {
     tag = addDays(tag, -1);
   }
   return n;
+}
+
+/** Bis zu so vielen Tagen zeigt der Post-Planer die Serie genau. */
+export const SERIE_GENAU_TAGE = 60;
+
+/**
+ * Ab diesem Tag (einschließlich) lädt der Post-Planer den Post-Status:
+ * einen Tag weiter zurück als SERIE_GENAU_TAGE. Zählt serieTage in diesen
+ * Zeilen mehr als SERIE_GENAU_TAGE, ist die echte Serie sicher länger als
+ * 60 Tage, auch wenn ihr Anfang nicht mehr geladen ist.
+ */
+export function postStatusVon(heute: string): string {
+  return addDays(heute, -(SERIE_GENAU_TAGE + 1));
+}
+
+/**
+ * Serie zum Anzeigen (Zeilen ab postStatusVon geladen): bis 60 die genaue
+ * Zahl, darüber „über 60 Tage“ statt einer abgeschnittenen Zahl.
+ */
+export function serieText(serie: number): string {
+  if (serie > SERIE_GENAU_TAGE) return `über ${SERIE_GENAU_TAGE} Tage`;
+  return `${serie} ${serie === 1 ? "Tag" : "Tage"}`;
 }
 
 /** Montag der Woche (ISO-Woche, Hamburger Kalendertag). */
@@ -211,4 +260,32 @@ export function morgenlaufStand(
     anlaesse,
     geliefert: aktuell.length > 0,
   };
+}
+
+/**
+ * Stand des Morgenlaufs als Satz für das Story-Studio. Zuerst zählt, ob
+ * es Karten zum Tag gibt (auch für einen kommenden Tag, wenn sie schon
+ * geschrieben sind), erst danach, ob der Tag noch kommt.
+ */
+export function morgenlaufText(
+  tag: string,
+  heute: string,
+  posts: readonly Pick<SpruchTag, "herkunft" | "anlass">[],
+): string {
+  const lauf = morgenlaufStand(posts);
+  if (lauf.geliefert) {
+    const wann =
+      tag === heute ? "Heute" : tag > heute ? "Schon" : "An diesem Tag";
+    const anzahl = `${lauf.aktuell} von ${posts.length} ${posts.length === 1 ? "Post" : "Posts"}`;
+    const anlaesse = lauf.anlaesse.length
+      ? ` (${lauf.anlaesse.join(" · ")})`
+      : "";
+    const rest = lauf.reserve > 0 ? " Der Rest kommt aus der Reserve." : "";
+    return `${wann} zum Tag geschrieben: ${anzahl}${anlaesse}.${rest}`;
+  }
+  if (tag > heute)
+    return "Die Posts für diesen Tag schreibt der Morgenlauf am Morgen selbst, passend zum Tag. Bis dahin steht hier die Reserve.";
+  return tag === heute
+    ? "Der Morgenlauf hat heute noch nichts geliefert, es läuft die Reserve."
+    : "An diesem Tag lief die Reserve.";
 }

@@ -48,7 +48,8 @@ try {
   const einstieg = join(ordner, "einstieg.ts");
   writeFileSync(
     einstieg,
-    `import { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EXTRA, spruchTag } from "@/lib/sprueche-data";
+    `import { POSTS_AKTUELL } from "@/lib/posts-aktuell";
+import { KICKER, SPRUECHE, SPRUECHE_EXTRA, spruchTag } from "@/lib/sprueche-data";
 import { FORMATE, storyVorbereiten } from "@/lib/story-bild";
 import { kinoBereit } from "@/lib/story-kino";
 import { AUFTRITTE, KAMERAS, LAYOUTS } from "@/lib/story-variante";

@@ -11,6 +11,7 @@ import { setPostGepostetAction } from "@/app/admin/post-actions";
 import { runAction } from "@/app/admin/run-action";
 import {
   FORMAT_LABELS,
+  gepostetNach,
   platzName,
   POST_FORMATE,
 } from "@/lib/admin/post-planer";
@@ -29,6 +30,11 @@ type Meldung = { art: "ok" | "fehler"; text: string };
  * Ein Post von heute im Post-Planer: Anlass oder Reserve, Kicker, Satz
  * und Zusatz, der Beitragstext zum Kopieren und je Format ein Schalter
  * „gepostet“ (gespeichert in post_status, für alle Geräte gleich).
+ *
+ * Wurde an dem Platz vorher eine andere Karte gepostet (Stand „andere“,
+ * etwa die Reserve vor dem Morgenlauf), ist der Schalter nicht gedrückt
+ * und gestrichelt. Ein Tipp hakt dann die gezeigte Karte ab, der
+ * Eintrag bleibt (gepostetNach).
  */
 export function PostKarte({
   post,
@@ -63,8 +69,11 @@ export function PostKarte({
     return () => window.clearTimeout(t);
   }, [meldung]);
 
+  const anders = POST_FORMATE.filter((f) => stand[f] === "andere");
+  const hinweisId = `post-${post.platz}-frueher`;
+
   function umschalten(format: PostFormat) {
-    const gepostet = stand[format] === "offen";
+    const gepostet = gepostetNach(stand[format]);
     setMeldung(null);
     setLaeuft(format);
     start(async () => {
@@ -165,12 +174,14 @@ export function PostKarte({
           className="grid grid-cols-2 gap-2"
         >
           {POST_FORMATE.map((format) => {
-            const an = stand[format] !== "offen";
+            const an = stand[format] === "gepostet";
+            const andere = stand[format] === "andere";
             return (
               <button
                 key={format}
                 type="button"
                 aria-pressed={an}
+                aria-describedby={andere && frueher ? hinweisId : undefined}
                 disabled={!enabled || pending}
                 onClick={() => umschalten(format)}
                 className={cn(
@@ -178,7 +189,9 @@ export function PostKarte({
                   "border",
                   an
                     ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-background hover:border-foreground/40",
+                    : andere
+                      ? "border-foreground/60 bg-background hover:border-foreground border-dashed"
+                      : "border-border bg-background hover:border-foreground/40",
                 )}
               >
                 {pending && laeuft === format ? (
@@ -202,9 +215,14 @@ export function PostKarte({
             );
           })}
         </div>
-        {frueher ? (
-          <p className="text-muted-foreground mt-2 text-[13px] leading-snug">
-            Gepostet wurde vorher eine andere Karte: „{frueher}“
+        {frueher && anders.length > 0 ? (
+          <p
+            id={hinweisId}
+            className="text-muted-foreground mt-2 text-[13px] leading-snug"
+          >
+            Als {anders.map((f) => FORMAT_LABELS[f]).join(" und ")} gepostet
+            wurde vorher eine andere Karte: „{frueher}“ Ein Tipp hakt diese
+            Karte ab.
           </p>
         ) : null}
         <p

@@ -8,17 +8,18 @@
  * lib/sprueche-extra.ts (Zusatz-Posts), Reihenfolge nach dem Datum in
  * Hamburg (spruchFuer, extraFuer).
  *
+ * Diese Datei lädt auch der Browser (Karte auf /journal, Story-Studio über
+ * lib/story-bild.ts). Sie importiert lib/posts-aktuell.ts deshalb nicht:
+ * Die Karten des Tages bekommen postsFuer, spruchTag und spruecheBis als
+ * Argument. Auf dem Server liefert lib/sprueche-aktuell.ts sie dazu, der
+ * Browser bekommt nur einen Ausschnitt ohne Quelle (kartenFenster).
+ *
  * Regeln für die Karten prüft tests/sprueche.test.ts.
  */
-import { POSTS_AKTUELL, type AktuellerPost } from "@/lib/posts-aktuell";
 import { SPRUECHE_EXTRA } from "@/lib/sprueche-extra";
 import { SPRUECHE } from "@/lib/sprueche-liste";
 
-export { POSTS_AKTUELL, SPRUECHE, SPRUECHE_EXTRA };
-export type { AktuellerPost };
-
-/** Tagesaktuelle Karten je Kalendertag (yyyy-mm-dd), siehe lib/posts-aktuell.ts. */
-export type AktuelleKarten = Readonly<Record<string, readonly AktuellerPost[]>>;
+export { SPRUECHE, SPRUECHE_EXTRA };
 
 /**
  * Posts je Tag: der Spruch des Tages (Platz 0, auch auf /journal) und
@@ -65,6 +66,18 @@ export type Spruch = {
   zusatz: string;
   thema: SpruchThema;
 };
+
+/**
+ * Tagesaktuelle Karte, wie postsFuer sie braucht (lib/posts-aktuell.ts
+ * hat dazu noch die Quelle, die nur im Mitgliederbereich erscheint).
+ */
+export type AktuelleKarte = Spruch & {
+  /** Kurzer, wahrer Anlass, steht auf dem Bild: „Black Friday“. */
+  anlass: string;
+};
+
+/** Tagesaktuelle Karten je Kalendertag (yyyy-mm-dd), Reihenfolge = Platz. */
+export type AktuelleKarten = Readonly<Record<string, readonly AktuelleKarte[]>>;
 
 export const THEMA_LABEL: Record<SpruchThema, string> = {
   eindruck: "Erster Eindruck",
@@ -114,15 +127,19 @@ const ANLASS_RAND = [
 ];
 
 /**
- * Schlagwort zum Anlass eines tagesaktuellen Posts: klein, ohne
- * Leerzeichen, Umlaute bleiben („Erster Advent“ → #ersteradvent). Null,
- * wenn nichts Sinnvolles übrig bleibt oder das Schlagwort ohnehin dabei ist.
+ * Schlagwort zum Anlass eines tagesaktuellen Posts: klein, nur Buchstaben
+ * („Erster Advent“ → #ersteradvent). Umlaute, ß und Buchstaben mit Akzent
+ * bleiben stehen („Fête de la Musique“ → #fêtedelamusique), Leerzeichen,
+ * Bindestriche und Zeichen fallen weg. Null, wenn nichts Sinnvolles übrig
+ * bleibt oder das Schlagwort ohnehin dabei ist.
  */
 export function anlassTag(anlass: string | null | undefined): string | null {
   if (!anlass) return null;
-  let kern = anlass.trim();
+  // NFC: „e“ mit einzelnem Akzentzeichen wird zu „ê“, sonst fiele der
+  // Akzent unten weg.
+  let kern = anlass.normalize("NFC").trim();
   for (const rand of ANLASS_RAND) kern = kern.replace(rand, "");
-  const wort = kern.toLowerCase().replace(/[^a-zäöüß]/g, "");
+  const wort = kern.toLowerCase().replace(/\P{L}/gu, "");
   if (wort.length < 3) return null;
   const tag = `#${wort}`;
   const vorhanden = [...FESTE_TAGS, ...Object.values(THEMA_TAGS).flat()];
@@ -305,12 +322,10 @@ function alsTag(
  * Alle Posts eines Kalendertags (yyyy-mm-dd): Platz 0 ist der Spruch des
  * Tages, Platz 1 und 2 die Zusatz-Posts. Tagesaktuelle Karten (am Morgen
  * zum Tag geschrieben) haben Vorrang; wo es keine gibt, springt die
- * Reserve ein (spruchFuer, extraFuer).
+ * Reserve ein (spruchFuer, extraFuer). Auf dem Server mit allen Karten:
+ * postsFuer aus lib/sprueche-aktuell.ts.
  */
-export function postsFuer(
-  datum: string,
-  aktuell: AktuelleKarten = POSTS_AKTUELL,
-): SpruchTag[] {
+export function postsFuer(datum: string, aktuell: AktuelleKarten): SpruchTag[] {
   const kopf = tagKopf(datum);
   const heute = aktuell[datum] ?? [];
   const posts: SpruchTag[] = [];
@@ -327,18 +342,49 @@ export function postsFuer(
 }
 
 /** Der Spruch des Tages (Platz 0) für einen Kalendertag, mit Datum zum Anzeigen. */
-export function spruchTag(
-  datum: string,
-  aktuell: AktuelleKarten = POSTS_AKTUELL,
-): SpruchTag {
+export function spruchTag(datum: string, aktuell: AktuelleKarten): SpruchTag {
   return postsFuer(datum, aktuell)[0];
+}
+
+/** Ausschnitt für den Browser: so viele Tage vor heute … */
+const FENSTER_ZURUECK = 8;
+/** … und so viele danach. */
+const FENSTER_VOR = 1;
+
+/**
+ * Die tagesaktuellen Karten, die /journal an den Browser gibt: von acht
+ * Tagen vor heute bis morgen, je Karte nur, was auf dem Bild steht (ohne
+ * Quelle). Damit rechnet die Karte die letzten sieben Tage auch dann
+ * richtig nach, wenn die Seite aus dem Zwischenspeicher kommt und im
+ * Browser schon der nächste Tag ist (spruch-reel.tsx). Die ganze Liste
+ * mit Quellen bleibt auf dem Server.
+ */
+export function kartenFenster(
+  heute: string,
+  aktuell: AktuelleKarten,
+): Record<string, AktuelleKarte[]> {
+  const fenster: Record<string, AktuelleKarte[]> = {};
+  for (let n = -FENSTER_ZURUECK; n <= FENSTER_VOR; n++) {
+    const tag = tagVersetzt(heute, n);
+    const karten = aktuell[tag];
+    if (!karten?.length) continue;
+    fenster[tag] = karten.map((k) => ({
+      kicker: k.kicker,
+      text: k.text,
+      betont: k.betont,
+      zusatz: k.zusatz,
+      thema: k.thema,
+      anlass: k.anlass,
+    }));
+  }
+  return fenster;
 }
 
 /** Heute und die Tage davor, heute zuerst. */
 export function spruecheBis(
   jetzt: Date,
-  anzahl = 7,
-  aktuell: AktuelleKarten = POSTS_AKTUELL,
+  anzahl: number,
+  aktuell: AktuelleKarten,
 ): SpruchTag[] {
   const heute = tagInHamburg(jetzt);
   return Array.from({ length: anzahl }, (_, i) =>

@@ -2,6 +2,11 @@ import assert from "node:assert/strict";
 import { after, before, beforeEach, describe, it } from "node:test";
 
 import { DbError } from "@/lib/admin/db-errors";
+import {
+  gepostetNach,
+  postStand,
+  postStatusMap,
+} from "@/lib/admin/post-planer";
 import { SERVICE_KEY, startMock } from "@/tests/supabase-mock.mjs";
 
 type Mock = Awaited<ReturnType<typeof startMock>>;
@@ -58,6 +63,24 @@ describe("post_status", () => {
     await store.setzePostStatus(POST, true);
     assert.equal(mock.tables.post_status.length, 1);
     assert.equal(mock.tables.post_status[0].text, "Heutiger Satz.");
+  });
+
+  it("nach einem Kartenwechsel trägt ein Tipp die neue Karte ein, der Tag bleibt gepostet", async () => {
+    // Erst die Reserve-Karte gepostet, dann liefert der Morgenlauf eine
+    // neue Karte für denselben Platz.
+    await store.setzePostStatus({ ...POST, text: "Reserve-Satz." }, true);
+    const vorher = (await store.listPostStatus(POST.datum, POST.datum)) ?? [];
+    const stand = postStand(postStatusMap(vorher), POST, POST.format);
+    assert.equal(stand, "andere");
+    // Ein Tipp auf den Schalter, wie im Post-Planer und im Story-Studio.
+    await store.setzePostStatus(POST, gepostetNach(stand));
+    assert.equal(mock.tables.post_status.length, 1);
+    assert.equal(mock.tables.post_status[0].text, "Heutiger Satz.");
+    const nachher = (await store.listPostStatus(POST.datum, POST.datum)) ?? [];
+    assert.equal(
+      postStand(postStatusMap(nachher), POST, POST.format),
+      "gepostet",
+    );
   });
 
   it("listPostStatus: nur der Zeitraum, älteste zuerst, geprüft", async () => {

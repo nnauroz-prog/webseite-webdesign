@@ -13,7 +13,7 @@ import {
 } from "@/lib/admin/post-planer";
 import { checkSchema } from "@/lib/admin/schema";
 import { setzePostStatus } from "@/lib/post-status-store";
-import { postsFuer } from "@/lib/sprueche-data";
+import { postsFuer } from "@/lib/sprueche-aktuell";
 
 /*
  * Server Actions für den Post-Planer und das Story-Studio. Regeln wie

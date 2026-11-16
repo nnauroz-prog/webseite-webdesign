@@ -23,34 +23,31 @@ import {
   postKey,
   postStand,
   postStatusMap,
+  postStatusVon,
   serieTage,
+  serieText,
   wochenStand,
 } from "@/lib/admin/post-planer";
 import { missingMigrations } from "@/lib/admin/migration-sql";
 import { checkSchema } from "@/lib/admin/schema";
 import { listPostStatus } from "@/lib/post-status-store";
-import {
-  POSTS_AKTUELL,
-  postsFuer,
-  storyBeschriftung,
-} from "@/lib/sprueche-data";
+import { POSTS_AKTUELL, postsFuer } from "@/lib/sprueche-aktuell";
+import { storyBeschriftung } from "@/lib/sprueche-data";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Posts" };
 
-/** So weit zurück wird der Post-Status geladen (für die Serie). */
-const STATUS_TAGE = 60;
-
 /**
- * Post-Status der letzten Wochen. Beginnt selbst mit requireAdmin.
- * Ohne Datenbank-Update (Tabelle post_status) bleibt status null.
+ * Post-Status der letzten Wochen (ab postStatusVon, für die Serie).
+ * Beginnt selbst mit requireAdmin. Ohne Datenbank-Update (Tabelle
+ * post_status) bleibt status null.
  */
 const loadPosts = cache(async (heute: string) => {
   await requireAdmin();
   const schema = await checkSchema();
   const status =
     schema.postStatus === "ok"
-      ? await listPostStatus(addDays(heute, -STATUS_TAGE), heute)
+      ? await listPostStatus(postStatusVon(heute), heute)
       : null;
   return { schema, status };
 });
@@ -235,7 +232,7 @@ export default async function PostsPage() {
               <div className="border-border bg-card rounded-[4px] border px-4 py-3">
                 <p className="text-muted-foreground text-[13px]">Serie</p>
                 <p className="text-[22px] leading-tight font-semibold tabular-nums">
-                  {serie} {serie === 1 ? "Tag" : "Tage"}
+                  {serieText(serie)}
                 </p>
                 <p className="text-muted-foreground text-[13px] leading-snug">
                   in Folge mit Post

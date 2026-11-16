@@ -1,15 +1,23 @@
 import assert from "node:assert/strict";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import path from "node:path";
 import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 
+import ts from "typescript";
+
+import type { AktuellerPost } from "@/lib/posts-aktuell";
+
+import { POSTS_AKTUELL, journalKarten } from "@/lib/sprueche-aktuell";
 import {
   KICKER,
-  POSTS_AKTUELL,
   POSTS_PRO_TAG,
   SPRUECHE,
   SPRUECHE_EXTRA,
   THEMA_LABEL,
   anlassTag,
   extraFuer,
+  kartenFenster,
   postsFuer,
   spruchFuer,
   spruchTag,
@@ -21,6 +29,122 @@ import {
   vorratTage,
   vorratTageExtra,
 } from "@/lib/sprueche-data";
+
+const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
+const rel = (f: string) => path.relative(ROOT, f).split(path.sep).join("/");
+
+function quellDateien(dir: string, out: string[] = []): string[] {
+  for (const name of readdirSync(dir)) {
+    if (name === "node_modules" || name.startsWith(".")) continue;
+    const full = path.join(dir, name);
+    if (statSync(full).isDirectory()) quellDateien(full, out);
+    else if (/\.(ts|tsx)$/.test(name)) out.push(full);
+  }
+  return out;
+}
+
+const geparst = new Map<string, ts.SourceFile>();
+function parse(datei: string): ts.SourceFile {
+  let q = geparst.get(datei);
+  if (!q) {
+    q = ts.createSourceFile(
+      datei,
+      readFileSync(datei, "utf8"),
+      ts.ScriptTarget.Latest,
+      true,
+      datei.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+    );
+    geparst.set(datei, q);
+  }
+  return q;
+}
+
+/** Direktive am Dateianfang ("use client", "use server") oder null. */
+function direktive(datei: string): string | null {
+  const erste = parse(datei).statements[0];
+  return erste &&
+    ts.isExpressionStatement(erste) &&
+    ts.isStringLiteral(erste.expression)
+    ? erste.expression.text
+    : null;
+}
+
+function aufloesen(von: string, spec: string): string | null {
+  const basis = spec.startsWith("@/")
+    ? path.join(ROOT, spec.slice(2))
+    : spec.startsWith(".")
+      ? path.resolve(path.dirname(von), spec)
+      : null;
+  if (!basis) return null;
+  for (const c of [
+    basis,
+    `${basis}.ts`,
+    `${basis}.tsx`,
+    path.join(basis, "index.ts"),
+    path.join(basis, "index.tsx"),
+  ]) {
+    try {
+      if (/\.(ts|tsx)$/.test(c) && statSync(c).isFile()) return c;
+    } catch {
+      // gibt es nicht, nächster Kandidat
+    }
+  }
+  return null;
+}
+
+/** Projektdateien, die eine Datei zur Laufzeit lädt (reine Typ-Importe zählen nicht). */
+function laufzeitImporte(datei: string): string[] {
+  const ziele: string[] = [];
+  for (const s of parse(datei).statements) {
+    let spec: ts.Expression | undefined;
+    if (ts.isImportDeclaration(s)) {
+      const k = s.importClause;
+      const nurTypen =
+        k?.isTypeOnly ||
+        (k &&
+          !k.name &&
+          k.namedBindings &&
+          ts.isNamedImports(k.namedBindings) &&
+          k.namedBindings.elements.length > 0 &&
+          k.namedBindings.elements.every((e) => e.isTypeOnly));
+      if (!nurTypen) spec = s.moduleSpecifier;
+    } else if (ts.isExportDeclaration(s) && s.moduleSpecifier) {
+      const nurTypen =
+        s.isTypeOnly ||
+        (s.exportClause &&
+          ts.isNamedExports(s.exportClause) &&
+          s.exportClause.elements.length > 0 &&
+          s.exportClause.elements.every((e) => e.isTypeOnly));
+      if (!nurTypen) spec = s.moduleSpecifier;
+    }
+    if (!spec || !ts.isStringLiteral(spec)) continue;
+    const ziel = aufloesen(datei, spec.text);
+    if (ziel) ziele.push(ziel);
+  }
+  return ziele;
+}
+
+/**
+ * Weg der Laufzeit-Importe von start zu ziel (Pfade ab Projektwurzel)
+ * oder null. Server-Action-Dateien ("use server") kommen nicht in den
+ * Browser, dort endet die Suche.
+ */
+function importWeg(start: string, ziel: string): string[] | null {
+  const zielDatei = path.join(ROOT, ziel);
+  const gesehen = new Set<string>();
+  const suche = (datei: string, weg: string[]): string[] | null => {
+    if (datei === zielDatei) return [...weg, rel(datei)];
+    if (gesehen.has(datei)) return null;
+    gesehen.add(datei);
+    if (weg.length > 0 && direktive(datei) === "use server") return null;
+    for (const naechste of laufzeitImporte(datei)) {
+      const w = suche(naechste, [...weg, rel(datei)]);
+      if (w) return w;
+    }
+    return null;
+  };
+  return suche(path.join(ROOT, start), []);
+}
 
 /** Alle Karten der Reserve: Sprüche des Tages und Zusatz-Posts. */
 const ALLE = [...SPRUECHE, ...SPRUECHE_EXTRA];
@@ -317,8 +441,19 @@ describe("Sprüche des Tages", () => {
     assert.equal(storyBeschriftung({ ...k, anlass: null }), vorrat);
     for (const k of AKTUELL) {
       const tag = anlassTag(k.anlass);
-      if (tag) assert.match(tag, /^#[a-zäöüß]{3,}$/, k.anlass);
+      if (!tag) continue;
+      assert.match(tag, /^#\p{L}{3,}$/u, k.anlass);
+      assert.equal(tag, tag.normalize("NFC").toLowerCase(), k.anlass);
     }
+  });
+
+  it("behält im Schlagwort zum Anlass Buchstaben mit Akzent und ß, ohne Bindestrich", () => {
+    assert.equal(anlassTag("Fête de la Musique"), "#fêtedelamusique");
+    // Zerlegt geschrieben (e und Zirkumflex einzeln): dasselbe Schlagwort.
+    assert.equal(anlassTag("Fête de la Musique"), "#fêtedelamusique");
+    assert.equal(anlassTag("Café-Woche"), "#caféwoche");
+    assert.equal(anlassTag("Crêpes-Tag"), "#crêpestag");
+    assert.equal(anlassTag("Straßen-Fest"), "#straßenfest");
   });
 
   it("bevorzugt tagesaktuelle Karten und füllt mit der Reserve auf", () => {
@@ -372,6 +507,36 @@ describe("Tagesaktuelle Posts", () => {
   ];
   const ohne = (...anlaesse: string[]) =>
     new Set([...GENERISCH, ...anlaesse.flatMap((a) => [...woerter(a)])]);
+
+  /**
+   * Beinahe-Doppelungen tagesaktueller Karten: mit der Reserve und mit
+   * jeder anderen tagesaktuellen Karte. Wörter der Anlässe zählen nicht.
+   */
+  function beinaheDoppelungen(
+    aktuell: readonly (typeof AKTUELL)[number][],
+    reserve: readonly { text: string }[],
+  ): string[] {
+    const funde: string[] = [];
+    for (const k of aktuell) {
+      const eigen = ohne(k.anlass);
+      const satz = woerter(k.text, eigen);
+      for (const s of reserve) {
+        if (zuAehnlich(satz, woerter(s.text, eigen)))
+          funde.push(`zu ähnlich: „${k.text}“ (${k.datum}) / „${s.text}“`);
+      }
+      for (const anderer of aktuell) {
+        // Nur die Karte selbst fällt weg, die anderen Karten desselben
+        // Tages (zusammen im Story-Studio) werden mitgeprüft.
+        if (anderer === k) continue;
+        const beide = ohne(k.anlass, anderer.anlass);
+        if (zuAehnlich(woerter(k.text, beide), woerter(anderer.text, beide)))
+          funde.push(
+            `zu ähnlich: „${k.text}“ (${k.datum}) / „${anderer.text}“ (${anderer.datum})`,
+          );
+      }
+    }
+    return funde;
+  }
 
   it("ordnet die Tage als echte Kalendertage, aufsteigend", () => {
     const tage = Object.keys(POSTS_AKTUELL);
@@ -431,30 +596,39 @@ describe("Tagesaktuelle Posts", () => {
     }
   });
 
-  it("sagt nichts fast wörtlich, was schon in der Reserve oder an einem anderen Tag steht", () => {
-    for (const k of AKTUELL) {
-      const eigen = ohne(k.anlass);
-      const satz = woerter(k.text, eigen);
-      for (const s of ALLE) {
-        assert.ok(
-          !zuAehnlich(satz, woerter(s.text, eigen)),
-          `zu ähnlich: „${k.text}“ (${k.datum}) / „${s.text}“`,
-        );
-      }
-      for (const anderer of AKTUELL) {
-        if (anderer.datum === k.datum) continue;
-        const beide = ohne(k.anlass, anderer.anlass);
-        assert.ok(
-          !zuAehnlich(woerter(k.text, beide), woerter(anderer.text, beide)),
-          `zu ähnlich: „${k.text}“ (${k.datum}) / „${anderer.text}“ (${anderer.datum})`,
-        );
-      }
-    }
+  it("sagt nichts fast wörtlich, was schon in der Reserve oder in einer anderen tagesaktuellen Karte steht", () => {
+    assert.deepEqual(beinaheDoppelungen(AKTUELL, ALLE), []);
+  });
+
+  it("findet Beinahe-Doppelungen auch zwischen Karten desselben Tages", () => {
+    const karte = {
+      kicker: "Red Flag" as const,
+      text: "Die Startseite ist voller als der Rathausmarkt am Samstag.",
+      betont: "Rathausmarkt am Samstag",
+      zusatz: "Für Glühwein schiebt man sich durchs Gedränge.",
+      thema: "eindruck" as const,
+      anlass: "Weihnachtsmarkt ab Montag",
+      datum: "2026-11-17",
+    };
+    const fast = {
+      ...karte,
+      kicker: "POV" as const,
+      text: "Die Startseite ist voller als der Rathausmarkt, noch auf?",
+      betont: "noch auf",
+      anlass: "Winterdom läuft",
+    };
+    const funde = beinaheDoppelungen([karte, fast], []);
+    assert.ok(
+      funde.some((f) => f.includes("noch auf?")),
+      "Beinahe-Doppelung am selben Tag nicht gefunden",
+    );
+    // Mit sich selbst verglichen wird keine Karte.
+    assert.deepEqual(beinaheDoppelungen([karte], []), []);
   });
 
   it("zeigt die Karten des Tages vor der Reserve", () => {
     for (const [tag, karten] of Object.entries(POSTS_AKTUELL)) {
-      const posts = postsFuer(tag);
+      const posts = postsFuer(tag, POSTS_AKTUELL);
       karten.forEach((k, platz) => {
         assert.equal(posts[platz].text, k.text);
         assert.equal(posts[platz].herkunft, "aktuell");
@@ -478,5 +652,68 @@ describe("Tagesaktuelle Posts", () => {
     const c = woerter("Öffnungszeiten stehen online, Feiertage auch.");
     const d = woerter("Feiertage auch? Online stehen die Öffnungszeiten.");
     assert.ok(zuAehnlich(c, d));
+  });
+});
+
+describe("Spruch des Tages im Browser", () => {
+  it("kein Browser-Code lädt die tagesaktuellen Karten samt Quellen (lib/posts-aktuell.ts)", () => {
+    const imBrowser = ["app", "components", "lib"]
+      .flatMap((d) => quellDateien(path.join(ROOT, d)))
+      .filter((f) => direktive(f) === "use client")
+      .map(rel);
+    // Die Karte auf /journal und das Story-Studio sind dabei.
+    assert.ok(
+      imBrowser.includes("components/marketing/journal/spruch-reel.tsx"),
+    );
+    assert.ok(imBrowser.includes("app/admin/story/story-studio.tsx"));
+    for (const datei of imBrowser) {
+      const weg = importWeg(datei, "lib/posts-aktuell.ts");
+      assert.equal(
+        weg,
+        null,
+        `lädt die Karten samt Quellen: ${weg?.join(" → ")}`,
+      );
+    }
+    // Gegenprobe: Seiten auf dem Server sehen die Karten.
+    assert.ok(importWeg("app/journal/page.tsx", "lib/posts-aktuell.ts"));
+    assert.ok(importWeg("app/admin/posts/page.tsx", "lib/posts-aktuell.ts"));
+  });
+
+  it("gibt /journal nur die Karten um heute mit, ohne Quelle, und der Browser rechnet dieselbe Woche", () => {
+    const jetzt = new Date("2026-11-17T10:00:00Z");
+    const karten = journalKarten(jetzt);
+    assert.ok(Object.keys(karten).length > 0);
+    for (const tag of Object.keys(karten))
+      assert.ok(tag >= "2026-11-09" && tag <= "2026-11-18", tag);
+    assert.doesNotMatch(JSON.stringify(karten), /quelle|https?:\/\//);
+    // Kommt die Seite aus dem Zwischenspeicher, kann im Browser schon ein
+    // anderer Tag sein: Mit dem Ausschnitt entstehen dieselben sieben
+    // Karten wie aus allen tagesaktuellen Karten.
+    for (const versatz of [-2, -1, 0, 1]) {
+      const browser = new Date(jetzt.getTime() + versatz * 24 * 60 * 60 * 1000);
+      assert.deepEqual(
+        spruecheBis(browser, 7, karten),
+        spruecheBis(browser, 7, POSTS_AKTUELL),
+        `Browser ${versatz} Tage versetzt`,
+      );
+    }
+    // Ausschnitt: acht Tage zurück bis morgen, ohne Quelle.
+    const k = {
+      kicker: "Merken" as const,
+      text: "Ein Satz zum Tag.",
+      betont: "zum Tag",
+      zusatz: "Ein Zusatz dazu.",
+      thema: "pflege" as const,
+      anlass: "Ein Anlass",
+    };
+    const alle: Record<string, AktuellerPost[]> = {
+      "2026-11-08": [k],
+      "2026-11-09": [{ ...k, quelle: "https://example.org/a" }],
+      "2026-11-18": [k],
+      "2026-11-19": [k],
+    };
+    const fenster = kartenFenster("2026-11-17", alle);
+    assert.deepEqual(Object.keys(fenster), ["2026-11-09", "2026-11-18"]);
+    assert.deepEqual(fenster["2026-11-09"], [k]);
   });
 });

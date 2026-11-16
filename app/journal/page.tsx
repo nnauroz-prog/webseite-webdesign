@@ -16,6 +16,7 @@ import { Produktleiste } from "@/components/marketing/produktleiste";
 import { JOURNAL_POSTS } from "@/lib/journal-data";
 import { SITE_URL } from "@/lib/site";
 import { SPRECHSTUNDE_BEGINN_HHMM, SPRECHSTUNDE_ENDE_HHMM, uhrzeitKurz } from "@/lib/sprechstunde-data";
+import { journalKarten } from "@/lib/sprueche-aktuell";
 import { spruecheBis } from "@/lib/sprueche-data";
 
 /** Der Spruch wechselt jeden Tag: Die Seite wird halbstündlich neu erzeugt. */
@@ -91,7 +92,12 @@ function beitragBild(slug: string): { src: string; alt: string; position?: strin
 }
 
 export default function JournalPage() {
-  const tage = spruecheBis(new Date(), 7);
+  const jetzt = new Date();
+  // Nur die Karten zum Tag rund um heute, ohne Quelle: Damit rechnet die
+  // Karte im Browser nach, wenn die Seite vom Vortag ist. Server und
+  // Browser nutzen denselben Ausschnitt, also dieselben sieben Karten.
+  const aktuell = journalKarten(jetzt);
+  const tage = spruecheBis(jetzt, 7, aktuell);
 
   // Blog-Schema mit den ersten 10 BlogPosting-Einträgen als
   // blogPosts-Array. Plus Breadcrumb.
@@ -142,6 +148,7 @@ export default function JournalPage() {
       <UnterseiteMain>
         <SpruchReel
           tage={tage}
+          aktuell={aktuell}
           kopf={
             <>
               <p className="kennzeile-mono">Journal · Logbuch</p>

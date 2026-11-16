@@ -5,11 +5,15 @@ import type { GepostetEintrag } from "@/app/admin/story/story-studio";
 
 import { StoryStudio } from "@/app/admin/story/story-studio";
 import { requireAdmin } from "@/lib/admin/auth";
-import { morgenlaufStand, parsePostDatum } from "@/lib/admin/post-planer";
+import {
+  morgenlaufStand,
+  morgenlaufText,
+  parsePostDatum,
+} from "@/lib/admin/post-planer";
 import { checkSchema } from "@/lib/admin/schema";
 import { listPostStatus } from "@/lib/post-status-store";
+import { postsFuer } from "@/lib/sprueche-aktuell";
 import {
-  postsFuer,
   storyBeschriftung,
   tagInHamburg,
   tagVersetzt,
@@ -90,17 +94,10 @@ export default async function StoryPage({
   // Tagesleiste: drei Tage zurück bis drei Tage voraus, der gewählte in der Mitte.
   const leiste = Array.from({ length: 7 }, (_, i) => tagVersetzt(tag, i - 3));
   const gepostetDb = await gepostetAm(tag);
-  // Morgenlauf: Karten zum Tag haben Vorrang, sonst springt die Reserve ein.
-  const lauf = morgenlaufStand(posts);
-  const laufText =
-    tag > heute
-      ? "Die Posts für diesen Tag schreibt der Morgenlauf am Morgen selbst, passend zum Tag. Bis dahin steht hier die Reserve."
-      : lauf.geliefert
-        ? `${tag === heute ? "Heute" : "An diesem Tag"} zum Tag geschrieben: ${lauf.aktuell} von ${posts.length} ${posts.length === 1 ? "Post" : "Posts"}${lauf.anlaesse.length ? ` (${lauf.anlaesse.join(" · ")})` : ""}.${lauf.reserve > 0 ? " Der Rest kommt aus der Reserve." : ""}`
-        : tag === heute
-          ? "Der Morgenlauf hat heute noch nichts geliefert, es läuft die Reserve."
-          : "An diesem Tag lief die Reserve.";
-  const reserveWarnung = tag === heute && !lauf.geliefert;
+  // Morgenlauf: Karten zum Tag haben Vorrang, sonst springt die Reserve
+  // ein. Auch für einen kommenden Tag zählen schon geschriebene Karten.
+  const laufText = morgenlaufText(tag, heute, posts);
+  const reserveWarnung = tag === heute && !morgenlaufStand(posts).geliefert;
 
   return (
     <>

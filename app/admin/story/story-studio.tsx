@@ -10,24 +10,19 @@ import {
   Share2,
   Shuffle,
 } from "lucide-react";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 
-import type { PostFormat } from "@/lib/admin/post-planer";
+import type { PostFormat, PostStand } from "@/lib/admin/post-planer";
 import type { SpruchTag } from "@/lib/sprueche-data";
 
 import { setPostGepostetAction } from "@/app/admin/post-actions";
 import { runAction } from "@/app/admin/run-action";
 import {
   FORMAT_LABELS,
+  gepostetNach,
   NACHTRAGEN_TAGE,
   platzName,
+  postStandIn,
 } from "@/lib/admin/post-planer";
 import {
   FORMATE,
@@ -62,6 +57,8 @@ import { cn } from "@/lib/utils";
  * - Abhaken hält fest, was schon gepostet ist, je Format (Story oder
  *   Beitrag) in der Datenbank (post_status, wie im Post-Planer). Ohne
  *   Datenbank-Update merkt es sich das wie früher nur dieses Gerät.
+ *   Gepostet heißt: genau diese Karte. Stand an dem Platz vorher eine
+ *   andere Karte (etwa die Reserve), hakt Abhaken die gezeigte ab.
  */
 
 const SPEICHER = "sitalo-story-gepostet";
@@ -149,11 +146,9 @@ export function StoryStudio({
   const [gepostet, setGepostet] = useState<string[]>([]);
   const [hakt, startHaken] = useTransition();
   const dbModus = gepostetDb !== null;
-  /** „platz|format“ der laut Datenbank geposteten Posts. */
-  const dbGepostet = useMemo(
-    () => new Set((gepostetDb ?? []).map((e) => `${e.platz}|${e.format}`)),
-    [gepostetDb],
-  );
+  /** Stand eines Posts laut Datenbank, mit Textvergleich (wie im Post-Planer). */
+  const standDb = (p: SpruchTag, f: PostFormat): PostStand =>
+    postStandIn(gepostetDb ?? [], p, f);
 
   const karte = posts[gewaehlt] ?? posts[0];
   const versatz = versaetze[gewaehlt] ?? 0;
@@ -234,22 +229,18 @@ export function StoryStudio({
 
   const markieren = () => {
     if (dbModus) {
-      const jetztGepostet = dbGepostet.has(`${karte.platz}|${postFormat}`);
+      // Offen oder vorher eine andere Karte: abhaken; gepostet: wieder offen.
+      const senden = gepostetNach(standDb(karte, postFormat));
       const label = FORMAT_LABELS[postFormat];
       startHaken(async () => {
         const res = await runAction(() =>
-          setPostGepostetAction(
-            karte.datum,
-            karte.platz,
-            postFormat,
-            !jetztGepostet,
-          ),
+          setPostGepostetAction(karte.datum, karte.platz, postFormat, senden),
         );
         sagen(
           res.ok
-            ? jetztGepostet
-              ? `${label} wieder offen.`
-              : `${label} abgehakt.`
+            ? senden
+              ? `${label} abgehakt.`
+              : `${label} wieder offen.`
             : res.error,
         );
       });
@@ -497,17 +488,16 @@ export function StoryStudio({
   );
   const dunkel = cn("bg-foreground text-background", knopf);
   const istGepostet = dbModus
-    ? dbGepostet.has(`${karte.platz}|${postFormat}`)
+    ? standDb(karte, postFormat) === "gepostet"
     : gepostet.includes(kennung);
   const formatLabel = FORMAT_LABELS[postFormat];
   /** An diesem Platz wurde vorher eine andere Karte gepostet (etwa die Reserve). */
   const frueher =
-    gepostetDb?.find(
-      (e) =>
-        e.platz === karte.platz &&
-        e.format === postFormat &&
-        e.text !== karte.text,
-    )?.text ?? null;
+    dbModus && standDb(karte, postFormat) === "andere"
+      ? (gepostetDb?.find(
+          (e) => e.platz === karte.platz && e.format === postFormat,
+        )?.text ?? null)
+      : null;
 
   return (
     <div className="mt-5">
@@ -524,9 +514,10 @@ export function StoryStudio({
       >
         {posts.map((p, i) => {
           const aktiv = i === gewaehlt;
+          // Haken nur, wenn genau diese Karte gepostet ist.
           const raus = dbModus
-            ? dbGepostet.has(`${p.platz}|story`) ||
-              dbGepostet.has(`${p.platz}|beitrag`)
+            ? standDb(p, "story") === "gepostet" ||
+              standDb(p, "beitrag") === "gepostet"
             : gepostet.includes(`${p.datum}-${p.platz}`);
           const zumTag = p.herkunft === "aktuell" && p.anlass;
           return (
@@ -756,7 +747,7 @@ export function StoryStudio({
           {frueher ? (
             <p className="text-muted-foreground mt-2 text-[14px] leading-5">
               Als {formatLabel} gepostet wurde vorher eine andere Karte:{" "}
-              {`„${frueher}“`}
+              {`„${frueher}“`} Abhaken trägt diese Karte ein.
             </p>
           ) : null}
           {dbModus && !abhakenMoeglich ? (
