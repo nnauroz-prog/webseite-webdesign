@@ -54,6 +54,7 @@ import type { SpruchTag } from "@/lib/sprueche-data";
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { KURSIV_SPERRUNG, satzPlan, type SatzPlan } from "@/lib/story-satz";
 import { MOTIV_WASSER } from "@/lib/story-teile";
+import type { FilmTon } from "@/lib/story-ton";
 import {
   varianteFuer,
   type Auftritt,
@@ -80,7 +81,10 @@ export const FORMATE: Record<StoryFormat["name"], StoryFormat> = {
 /** Länge des Kurzvideos in Sekunden. */
 export const STORY_DAUER = 8;
 /** Zeichnet das Bild zur Zeit t (Sekunden; Infinity = Standbild). */
-export type StoryZeichner = (t: number) => void;
+export type StoryZeichner = ((t: number) => void) & {
+  /** Was der Ton über diesen Film wissen muss (lib/story-ton.ts) */
+  film?: FilmTon;
+};
 
 const RAND = 84;
 const PAPIER = "#fff8ee";
@@ -111,6 +115,14 @@ type Basis = {
   /** Wird gesetzt, wenn ein Text auch in der kleinsten Schrift nicht in
    *  sein Feld gepasst hat (für die Prüfung aller Karten). */
   eng: { wert: boolean; klein: number };
+  /** Was der Ton zum Film wissen muss; die Formate tragen es ein. */
+  ton: {
+    masse: number;
+    streifen: number;
+    druck: boolean;
+    striche: number[];
+    blatt: boolean;
+  };
   /** Kamera des Bildes, das gerade gezeichnet wird (im Standbild neutral);
    *  dy ist das Federn des ganzen Plakats in Bildpunkten. */
   kam: { x: number; y: number; z: number; dy: number };
@@ -681,6 +693,8 @@ type Gesetzt = {
   pointe: { x: number; y: number; b: number; h: number };
   /** Gewicht der Pointe (0,35 bis 1): Ein Wort ist leicht, zwei Zeilen sind schwer. */
   masse: number;
+  /** Zahl der Farbstreifen */
+  anzahl: number;
   zeichne: (x: number, y: number, t: number, farben: SatzFarben) => void;
 };
 
@@ -1025,6 +1039,7 @@ function setzeSatz(
     b: satz.b || breite,
     pointe,
     masse,
+    anzahl: streifen.length,
     zeichne: (x, y, t, farben) => {
       const art = k.film.auftritt;
       const last =
@@ -2148,6 +2163,12 @@ function regieFuer(
   const { f } = k;
   const { masse, pointe } = a.satz;
   const { auftritt, kamera } = k.film;
+  // Für den Ton: Gewicht und Zahl der Streifen; den Aufdruck am Anfang
+  // hört man nur, wenn die Kamera ihn auch zeigt.
+  k.ton.masse = masse;
+  k.ton.streifen = a.satz.anzahl;
+  k.ton.druck =
+    Boolean(a.feder?.length) && kamera !== "luecke" && kamera !== "hafen";
   const totale = { x: f.b / 2, y: f.h / 2, z: 1 };
   let fahrt = rueckzug(k, a.nah);
   if (kamera === "anfahrt") {
@@ -2629,6 +2650,8 @@ function mythos(k: Basis): Maler {
     Math.floor(((tHalt - STRICH_AB) * 30) / irrtum.zeilen.length),
   );
   const stufen = Math.max(1, Math.ceil((takt * 2 * 12) / (3 * 30)));
+  k.ton.blatt = true;
+  k.ton.striche = irrtum.zeilen.map((_, i) => STRICH_AB + (i * takt) / 30);
   const weit = f.h - teilung + 160;
   const neigung = (300 * 68) / f.b;
   k.regie = {
@@ -3151,6 +3174,7 @@ export async function storyVorbereiten(
     // (in der hohen Story mit mehr Luft als in den gedrungenen Formaten).
     unten: format.unten - (format.name === "story" ? 226 : 204),
     eng: { wert: false, klein: 999 },
+    ton: { masse: 0, streifen: 0, druck: false, striche: [], blatt: false },
     kam: { x: format.b / 2, y: format.h / 2, z: 1, dy: 0 },
     film: {
       auftritt: optionen.film?.auftritt ?? v.auftritt,
@@ -3163,7 +3187,7 @@ export async function storyVorbereiten(
   canvas.dataset.eng = basis.eng.wert ? "1" : "";
   canvas.dataset.schrift = String(basis.eng.klein);
 
-  return (t) => {
+  const zeichne = (t: number) => {
     Object.assign(basis.kam, kameraBei(basis, t));
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = "source-over";
@@ -3176,6 +3200,16 @@ export async function storyVorbereiten(
     kameraAn(basis);
     male(t);
   };
+  const film: FilmTon = {
+    auftritt: basis.film.auftritt,
+    ...basis.ton,
+    druck: basis.ton.druck ? 4 / 30 : null,
+    schlag: T_SCHLAG,
+    anlegen: T_RUHE,
+    schiff: v.motiv.faehrt,
+    saat: karte.nummer * 3 + karte.platz + 1,
+  };
+  return Object.assign(zeichne, { film });
 }
 
 /** Zeichnet das fertige Standbild. */
