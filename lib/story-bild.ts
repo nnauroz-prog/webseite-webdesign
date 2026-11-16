@@ -4420,10 +4420,11 @@ function schlagzeile(k: Basis): Maler {
       pointe: mitFarbe ? "farbe" : "linie",
     }),
   );
-  // Was übrig bleibt, verteilt sich: etwas über dem Satz, mehr unten.
+  // Die Spalten stehen unten auf dem Textfeld, die Schlagzeile etwas über
+  // der Mitte des Raums darüber: kein leeres Loch am Fuß der Seite.
   const frei = Math.max(0, platz - satz.hoehe);
-  const y = oben + frei * 0.3;
-  const linieY = Math.round(y + satz.hoehe + luftSatz + frei * 0.2);
+  const y = oben + frei * 0.42;
+  const linieY = Math.round(oben + platz + luftSatz);
   const untenY = linieY + luftLinie;
 
   k.regie = regieFuer(k, {
