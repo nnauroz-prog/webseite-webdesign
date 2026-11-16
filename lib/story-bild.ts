@@ -1520,8 +1520,9 @@ function setzeSatz(
               ctx.shadowBlur = weite * k.skala * k.kam.z;
               ctx.shadowOffsetY = versatz * k.skala * k.kam.z;
             }
-            // Das Wort steht im Aufsetzbild da.
-            streifenMalen(s, t >= T_SCHLAG);
+            // Das Wort steht im Aufsetzbild da. Ohne Farbstreifen ist das
+            // Wort selbst die Ladung und schwebt von Anfang an mit.
+            streifenMalen(s, t >= T_SCHLAG || !balken);
             ctx.restore();
           }),
         );
@@ -2127,7 +2128,7 @@ function kopfBauen(
   const { ctx, f, l, mono } = k;
   const text = etikett?.toUpperCase() ?? "";
   const mitte = f.oben + (art === "folio" ? 30 : 39);
-  const schrift = art === "folio" ? `400 22px ${mono}` : `700 26px ${GROTESK}`;
+  const schrift = art === "folio" ? `400 24px ${mono}` : `700 26px ${GROTESK}`;
   const sperrung = art === "folio" ? 3.5 : 3.4;
   ctx.font = schrift;
   sperren(ctx, sperrung);
@@ -2150,7 +2151,7 @@ function kopfBauen(
     RAND + b,
     mitte,
     farben,
-    art === "folio" ? 22 : 26,
+    art === "folio" ? 24 : 26,
     mitAnlass,
   );
   return () => {
