@@ -5,6 +5,11 @@ import {
   LeadDeliveryError,
   type LeadKind,
 } from "@/lib/lead-mail";
+import {
+  TELEFON_HINWEIS,
+  TELEFON_LABEL,
+  telefonAus,
+} from "@/lib/kontakt-pflicht";
 import { recordDelivery, saveLead } from "@/lib/leads-store";
 import { SITE_URL } from "@/lib/site";
 
@@ -70,8 +75,9 @@ function originAllowed(req: NextRequest): boolean {
   );
 }
 
-const FALLBACK_HINT =
-  "Bitte schreiben Sie uns direkt an info@sitalo.de oder rufen Sie an — wir melden uns.";
+// Die Telefonnummer zeigt jedes Formular selbst als Link unter der
+// Meldung, deshalb steht sie hier nicht noch einmal.
+const FALLBACK_HINT = "Bitte versuchen Sie es später noch einmal.";
 
 function fail(status: number, error: string) {
   return NextResponse.json({ ok: false, error }, { status });
@@ -125,6 +131,17 @@ export async function POST(req: NextRequest) {
     if (label && value) fields.push([label, value]);
   }
   if (fields.length === 0) return fail(400, "Ungültige Anfrage.");
+  // Die Website verspricht „wir melden uns“ und legt sich auf keinen Weg
+  // fest: Jede Anfrage braucht deshalb eine Nummer, unter der wir
+  // jemanden erreichen (dieselbe Regel wie im Formular und im Admin).
+  if (!telefonAus(fields)) {
+    return fail(
+      400,
+      fields.some(([label]) => label === TELEFON_LABEL)
+        ? `Die Telefonnummer passt noch nicht. ${TELEFON_HINWEIS}`
+        : "Bitte geben Sie eine Telefonnummer an, unter der wir Sie erreichen.",
+    );
+  }
 
   const hp = typeof b.hp === "string" ? b.hp.trim() : "";
   if (hp) {

@@ -117,7 +117,6 @@ const LOCAL_BUSINESS_LD = {
       }
     : {}),
   telephone: "+491607621876",
-  email: "info@sitalo.de",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Hamburg",
@@ -129,10 +128,13 @@ const LOCAL_BUSINESS_LD = {
   ],
   knowsLanguage: "de",
   priceRange: PAKETE[0].setup,
+  // E-Mail bewusst nicht genannt: Besucher sollen das Anfrageformular
+  // oder das Telefon nutzen (Stand November 2026). Wo sie wieder
+  // einzutragen wäre, steht in docs/pflege.md.
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+491607621876",
-    email: "info@sitalo.de",
+    url: `${SITE_URL}/anfrage`,
     contactType: "customer service",
     availableLanguage: "German",
   },

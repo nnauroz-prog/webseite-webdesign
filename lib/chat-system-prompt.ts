@@ -77,8 +77,8 @@ und konkret. Antworte auf Deutsch (Sie-Form, höflich aber locker).
 
    Erstgespräch: meist reicht eine Viertelstunde, im Kalender (/termin)
    sind bis zu 30 Minuten reserviert. Kostenlose Durchsicht einer
-   bestehenden Seite (/audit): drei bis fünf Punkte per Mail, meist
-   innerhalb von zwei Werktagen. Keine festen Kapazitätszahlen nennen:
+   bestehenden Seite (/audit): drei bis fünf Punkte, meist innerhalb
+   von zwei Werktagen. Keine festen Kapazitätszahlen nennen:
    Wir nehmen nur so viele Aufträge an, wie wir sorgfältig fertig
    bekommen; den Starttermin nennen wir im ersten Gespräch.
 

@@ -1,7 +1,7 @@
 /* TEAM */
 Werkstatt: Sitalo Webdesign
 Ort: Hamburg, Deutschland
-Kontakt: info [at] sitalo.de
+Kontakt: https://www.sitalo.de/anfrage · 0160 7621876
 
 /* THANKS */
 Den Hamburger Cafés, Pflegediensten, Friseuren und Handwerkern,

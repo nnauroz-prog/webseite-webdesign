@@ -19,7 +19,6 @@ Preise und Dauer entsprechen lib/pakete-data.ts (Stand: 7. November
 | Ort | Hamburg |
 | Einzugsgebiet | Hamburg und ganz Deutschland |
 | Telefon | 0160 7621876 |
-| E-Mail | info@sitalo.de |
 | Website | https://www.sitalo.de |
 | Anfrage | https://www.sitalo.de/anfrage |
 | Termin buchen | https://www.sitalo.de/termin |
@@ -84,7 +83,7 @@ verbietet das und kann das Profil sperren.
 > Das Erstgespräch ist kostenlos, am Telefon, per Video oder bei Ihnen
 > in Hamburg. Antwort meist am selben Werktag.
 >
-> www.sitalo.de · 0160 7621876 · info@sitalo.de
+> www.sitalo.de · 0160 7621876
 
 ---
 
@@ -95,7 +94,7 @@ verbietet das und kann das Profil sperren.
 | Website erstellen lassen | ab 599 € | Fertige Website zum Festpreis, Texte inklusive, Test-Link vor dem Start |
 | Website-Pflege und Hosting | ab 59 € im Monat | Hosting in der EU, Updates, Backups, kleine Änderungen |
 | Website-Wartung für bestehende Seiten | ab 59 € im Monat | Auch für Seiten, die wir nicht gebaut haben |
-| Kostenlose Durchsicht Ihrer Website | kostenlos | Drei bis fünf konkrete Verbesserungen per Mail |
+| Kostenlose Durchsicht Ihrer Website | kostenlos | Drei bis fünf konkrete Verbesserungen, meist innerhalb von zwei Werktagen |
 | Erstgespräch | kostenlos | Telefon, Video oder in Hamburg |
 
 ## Erster Beitrag fürs Google-Profil oder LinkedIn

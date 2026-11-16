@@ -33,15 +33,15 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: "Können wir uns persönlich in Hamburg treffen?",
-        a: "Ja, in Ihrem Betrieb oder in einem Café. Eine Viertelstunde reicht meistens, um zu klären, ob wir zusammenpassen. Telefon oder Video geht genauso. Über die Termin-Seite wählen Sie Tag und Uhrzeit selbst; reserviert sind bis zu 30 Minuten, damit Zeit für Fragen bleibt. Die Bestätigung kommt meist am selben Werktag per Mail.",
+        a: "Ja, in Ihrem Betrieb oder in einem Café. Eine Viertelstunde reicht meistens, um zu klären, ob wir zusammenpassen. Telefon oder Video geht genauso. Über die Termin-Seite wählen Sie Tag und Uhrzeit selbst; reserviert sind bis zu 30 Minuten, damit Zeit für Fragen bleibt. Wir bestätigen den Termin meist am selben Werktag.",
       },
       {
         q: "Kann ich erst einmal eine Einschätzung meiner aktuellen Seite bekommen?",
-        a: "Ja, kostenlos. Über die Seite „Kostenlose Durchsicht“ schicken Sie uns die Adresse Ihrer Seite. Wir sehen sie uns selbst an und schreiben Ihnen meist innerhalb von zwei Werktagen drei bis fünf konkrete Punkte. Einen Vertriebsanruf gibt es danach nicht. Die technischen Messwerte liefert der Ladezeit-Test automatisch in etwa 30 Sekunden.",
+        a: "Ja, kostenlos. Über die Seite „Kostenlose Durchsicht“ schicken Sie uns die Adresse Ihrer Seite. Wir sehen sie uns selbst an und nennen Ihnen meist innerhalb von zwei Werktagen drei bis fünf konkrete Punkte. Ob daraus ein Auftrag wird, entscheiden Sie. Die technischen Messwerte liefert der Ladezeit-Test automatisch in etwa 30 Sekunden.",
       },
       {
         q: "Was passiert nach meiner Anfrage?",
-        a: "Nach dem Absenden sehen Sie eine Bestätigung auf der Seite. Wir lesen Ihre Angaben und melden uns meist am selben Werktag, per Mail oder am Telefon. Bis Sie ein Angebot unterschreiben, kostet Sie das nichts.",
+        a: "Nach dem Absenden sehen Sie eine Bestätigung auf der Seite. Wir lesen Ihre Angaben und melden uns meist am selben Werktag. Bis Sie ein Angebot unterschreiben, kostet Sie das nichts.",
       },
       {
         q: "Was, wenn ich noch gar nichts vorbereitet habe?",

@@ -293,7 +293,7 @@ const ZUSAGEN: { titel: string; text: string }[] = [
   },
   {
     titel: "Eine Nummer, ein Ansprechpartner",
-    text: "Sie erreichen uns direkt unter 0160 7621876, vor dem Auftrag und nach dem Start. Auf Mails und Anfragen antworten wir meist am selben Werktag.",
+    text: "Sie erreichen uns direkt unter 0160 7621876, vor dem Auftrag und nach dem Start. Auf Anfragen antworten wir meist am selben Werktag.",
   },
 ];
 
@@ -330,7 +330,7 @@ const FAQ: { q: string; a: string; link?: { href: string; label: string } }[] =
     },
     {
       q: "Arbeiten Sie nur in Hamburg?",
-      a: "Nein. Wir sitzen in Hamburg und betreuen Betriebe in ganz Deutschland, per Telefon, Video und E-Mail. In Hamburg treffen wir uns auf Wunsch auch persönlich.",
+      a: "Nein. Wir sitzen in Hamburg und betreuen Betriebe in ganz Deutschland, per Telefon und Video. In Hamburg treffen wir uns auf Wunsch auch persönlich.",
     },
     {
       q: "Gehört die Website danach mir?",
@@ -1347,8 +1347,8 @@ function Hamburg() {
           <p className="text-muted-foreground text-[15.5px] leading-relaxed">
             Wir sitzen in Hamburg und treffen uns hier auf Wunsch persönlich,
             etwa zum ersten Gespräch. Betriebe in ganz Deutschland betreuen wir
-            am Telefon, per Video und per E-Mail, mit demselben Festpreis und
-            demselben Ablauf.
+            am Telefon und per Video, mit demselben Festpreis und demselben
+            Ablauf.
           </p>
           <Link href="/standorte" className={`${TEXTLINK} mt-4`}>
             <MitPfeil>Webdesign in Hamburgs Stadtteilen</MitPfeil>

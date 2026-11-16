@@ -127,8 +127,8 @@ export function honorarPaket(slug: Paket["slug"]): HonorarPaket | null {
 
 export const NICHT_ABGERECHNET: string[] = [
   "Das erste Gespräch (meist eine Viertelstunde, im Kalender bis zu 30 Minuten), in Hamburg, am Telefon oder per Video",
-  "Die Durchsicht Ihrer bisherigen Seite: drei bis fünf konkrete Punkte per Mail",
-  "Kurze Fragen per Mail oder Telefon, wenn Sie schon Kunde sind",
+  "Die Durchsicht Ihrer bisherigen Seite: drei bis fünf konkrete Punkte",
+  "Kurze Fragen am Telefon oder über das Formular, wenn Sie schon Kunde sind",
   "Der Hinweis, wenn ein Baukasten oder ein anderes Angebot besser zu Ihnen passt",
 ];
 

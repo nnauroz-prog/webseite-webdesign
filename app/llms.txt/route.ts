@@ -54,7 +54,7 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 - [Ablauf](https://www.sitalo.de/ablauf): Sechs Schritte von der ersten Nachricht bis zur fertigen Seite.
 - [FAQ](https://www.sitalo.de/faq): Fragen zu Preisen, Hosting, Ablauf und Google.
 - [Kontakt](https://www.sitalo.de/kontakt): Anfrageformular, Telefon oder Termin.
-- [Anfrage](https://www.sitalo.de/anfrage): Formular mit drei Pflichtfeldern, Antwort meist am selben Werktag.
+- [Anfrage](https://www.sitalo.de/anfrage): Formular mit vier Pflichtfeldern, Antwort meist am selben Werktag.
 - [Pflegedienste](https://www.sitalo.de/pflege) und [Praxen](https://www.sitalo.de/praxen): Eigene Seiten für diese beiden Branchen.
 
 ## Kostenlose Werkzeuge (ohne Anmeldung)
@@ -62,8 +62,8 @@ Starter ist eine einzelne Seite mit Kontaktformular. Business hat mehrere Unters
 - [Ladezeit-Test](https://www.sitalo.de/check): Test einer beliebigen Website mit Google PageSpeed: Ladezeit, Barrierefreiheit, Technik und Google-Grundlagen.
 - [Paket-Quiz](https://www.sitalo.de/empfehlung): Fünf Fragen, danach eine begründete Paket-Empfehlung.
 - [3-Jahres-Rechner](https://www.sitalo.de/rechner): Gesamtkosten über drei Jahre im Vergleich mit Wix, Squarespace, Jimdo und Eigenbau, die eigene Zeit als Geld gerechnet.
-- [Durchsicht Ihrer Website](https://www.sitalo.de/audit): Wir sehen uns eine bestehende Website von Hand an und schicken drei bis fünf konkrete Punkte per Mail, meist innerhalb von zwei Werktagen.
-- [Termin](https://www.sitalo.de/termin): Erstgespräch direkt buchen: bis zu 30 Minuten, meist reicht eine Viertelstunde. Bestätigung per Mail meist am selben Werktag.
+- [Durchsicht Ihrer Website](https://www.sitalo.de/audit): Wir sehen uns eine bestehende Website von Hand an und melden uns mit drei bis fünf konkreten Punkten, meist innerhalb von zwei Werktagen.
+- [Termin](https://www.sitalo.de/termin): Erstgespräch direkt buchen: bis zu 30 Minuten, meist reicht eine Viertelstunde. Wir bestätigen meist am selben Werktag.
 - [Sprechstunde](https://www.sitalo.de/sprechstunde): Jeden ersten Donnerstag im Monat von 17:00 bis 18:30 Uhr offene Telefonsprechstunde, auch für Nicht-Kunden und ohne Anmeldung.
 
 ## Weitere Angebote
@@ -93,7 +93,7 @@ Next.js, React und Tailwind CSS. Hosting bei Vercel mit Servern in der EU. Die B
 
 ## Kontakt
 
-E-Mail: info@sitalo.de
+Anfrage: https://www.sitalo.de/anfrage
 Telefon: 0160 7621876 (international: +49 160 7621876)
 Standort: Hamburg, Deutschland
 Antwort: meist am selben Werktag.

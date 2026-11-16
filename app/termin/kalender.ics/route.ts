@@ -8,7 +8,7 @@ import {
   icsUtcStamp,
   VTIMEZONE_BERLIN,
 } from "@/lib/ics";
-import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, SITE_URL } from "@/lib/site";
+import { CONTACT_PHONE_DISPLAY, SITE_URL } from "@/lib/site";
 
 /**
  * Öffentliche Kalender-Datei für ein bestätigtes Erstgespräch:
@@ -71,7 +71,7 @@ export function GET(request: Request): Response {
   }
 
   const description = icsEscape(
-    `Erstgespräch mit Sitalo Webdesign (${SLOT_DURATION_MIN} Minuten). Falls etwas dazwischenkommt: ${CONTACT_PHONE_DISPLAY} oder ${CONTACT_EMAIL}.`,
+    `Erstgespräch mit Sitalo Webdesign (${SLOT_DURATION_MIN} Minuten). Falls etwas dazwischenkommt, rufen Sie an (${CONTACT_PHONE_DISPLAY}) oder schreiben Sie uns über ${SITE_URL}/anfrage`,
   );
 
   const body = icsDocument([

@@ -627,7 +627,7 @@ function FinalCta() {
     <KontaktKarte
       id="abschluss"
       titel="Schicken Sie uns den Link zu Ihrer jetzigen Seite."
-      zeile="Sie bekommen drei bis fünf konkrete Punkte per Mail, kostenlos. Darin steht auch, ob sich ein Neubau lohnt oder ob Ihr Baukasten reicht."
+      zeile="Sie bekommen drei bis fünf konkrete Punkte, kostenlos. Dabei sagen wir auch, ob sich ein Neubau lohnt oder ob Ihr Baukasten reicht."
       pille={{ href: "/audit", label: "Seite prüfen lassen" }}
       link={{
         href: "/website-erstellen-lassen",

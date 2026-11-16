@@ -163,7 +163,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Website anfragen",
-        description: "Formular mit drei Pflichtfeldern, Antwort meist am selben Werktag",
+        description: "Formular mit vier Pflichtfeldern, Antwort meist am selben Werktag",
         href: "/anfrage",
         icon: Send,
       },
@@ -191,7 +191,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Kostenlose Durchsicht Ihrer Website",
-        description: "Drei bis fünf Punkte zu Ihrer Seite per E-Mail, meist in zwei Werktagen",
+        description: "Drei bis fünf Punkte zu Ihrer Seite, meist in zwei Werktagen",
         href: "/audit",
         icon: Eye,
       },
@@ -250,7 +250,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Erreichbarkeit",
-        description: "Wann wir ans Telefon gehen und Mails beantworten",
+        description: "Wann wir ans Telefon gehen und Anfragen beantworten",
         href: "/erreichbarkeit",
         icon: Clock,
       },
@@ -341,7 +341,7 @@ export function CommandPalette({
       {
         kind: "link",
         label: "Kontakt",
-        description: "Telefon, E-Mail und Formular",
+        description: "Telefon, Anfrageformular und Termin",
         href: "/kontakt",
         icon: Mail,
       },

@@ -160,7 +160,7 @@ function Briefkopf() {
 const WEGE: { name: string; text: string; href: string; link: string }[] = [
   {
     name: "Formular",
-    text: "Drei Felder für Ihr Vorhaben. Die Antwort kommt meist am selben Werktag.",
+    text: "Vier Felder für Ihr Vorhaben. Die Antwort kommt meist am selben Werktag.",
     href: "/anfrage",
     link: "Anfrage schreiben",
   },

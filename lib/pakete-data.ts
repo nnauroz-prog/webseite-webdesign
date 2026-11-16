@@ -251,7 +251,7 @@ export const PAKETE: Paket[] = [
       },
       {
         q: "Was kostet eine zusätzliche Anpassung außer der Reihe?",
-        a: `Sechs kleine Änderungen pro Monat sind im Beitrag enthalten. Ist das Kontingent eines Monats aufgebraucht, sagen wir Ihnen das vorher; jede weitere rechnen wir nach Aufwand zum Stundensatz von ${STUNDENSATZ_EUR}\u00A0€ ab, meist 15 bis 30 Minuten. Eine kurze Rückfrage per Mail zählt nicht als Änderung. Für Größeres, etwa einen neuen Bereich, bekommen Sie vorher ein verbindliches Angebot.`,
+        a: `Sechs kleine Änderungen pro Monat sind im Beitrag enthalten. Ist das Kontingent eines Monats aufgebraucht, sagen wir Ihnen das vorher; jede weitere rechnen wir nach Aufwand zum Stundensatz von ${STUNDENSATZ_EUR}\u00A0€ ab, meist 15 bis 30 Minuten. Eine kurze Rückfrage zählt nicht als Änderung. Für Größeres, etwa einen neuen Bereich, bekommen Sie vorher ein verbindliches Angebot.`,
       },
     ],
   },

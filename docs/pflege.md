@@ -73,7 +73,8 @@ Reine Referenz — diese Sachen ändern sich selten, aber wenn doch, ist hier zu
 
 ### Telefonnummer & E-Mail
 - Telefonnummer steht hardcoded in mehreren Files: Header-Footer, FinalCta, /kontakt, /atelier. Bei Änderung Suchen-und-Ersetzen über `+491607621876` und `0160 7621876`.
-- E-Mail `info@sitalo.de` ebenfalls Suchen-und-Ersetzen.
+- E-Mail: Die Adresse `info@sitalo.de` steht seit November 2026 bewusst nur noch im Impressum und in der Datenschutzerklärung. Besucher sollen das Anfrageformular oder das Telefon nutzen; die Texte sagen „wir melden uns“ und legen sich auf keinen Weg fest. Soll die Adresse wieder erscheinen, gehört sie an diese Stellen: strukturierte Daten in `app/layout.tsx` (Betrieb und `contactPoint`), Abschnitt Kontakt in `app/llms.txt/route.ts` und `app/llms-full.txt/route.ts`, Text im Kalender-Eintrag `app/termin/kalender.ics/route.ts`, `public/sitalo-kontakt.vcf`, `public/humans.txt` und die Profiltexte in `docs/profiltexte.md` und `docs/sichtbarkeit.md`.
+- Telefon ist in allen drei Formularen Pflichtfeld (Anfrage, Durchsicht, Termin). Die Regel steht in `lib/kontakt-pflicht.ts` und gilt im Browser und am Server (`app/api/anfrage/route.ts`). Der Admin findet die Nummer unter dem Feldnamen „Telefon“; diesen Namen nicht ändern.
 - vCard `public/sitalo-kontakt.vcf` separat aktualisieren, wenn sich Daten ändern.
 
 ### Hosting-Umgebung

@@ -12,7 +12,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Kostenlose Website-Durchsicht (Website-Audit)",
   description:
-    "Wir sehen uns Ihre Website von Hand an und schicken drei bis fünf konkrete Punkte per Mail, meist innerhalb von zwei Werktagen. Kostenlos, aus Hamburg.",
+    "Wir sehen uns Ihre Website von Hand an und melden uns mit drei bis fünf konkreten Punkten, meist innerhalb von zwei Werktagen. Kostenlos, aus Hamburg.",
   alternates: { canonical: "/audit" },
   openGraph: ogFor("/audit"),
 };
@@ -21,20 +21,20 @@ export const metadata: Metadata = {
 const SCHRITTE: { title: string; body: string }[] = [
   {
     title: "Sie schicken die Adresse",
-    body: "Das Formular hat drei Pflichtfelder.",
+    body: "Das Formular hat vier Pflichtfelder.",
   },
   {
     title: "Wir sehen uns die Seite an",
     body: "Am Handy und am Rechner, so wie Ihre Kunden sie sehen.",
   },
   {
-    title: "Sie bekommen eine E-Mail",
+    title: "Wir melden uns",
     body: "Meist innerhalb von zwei Werktagen, mit drei bis fünf Punkten.",
   },
 ];
 
 /**
- * Muster einer Durchsicht-Mail. Der Betrieb ist die erfundene Tischlerei
+ * Muster einer Durchsicht (drei Punkte). Der Betrieb ist die erfundene Tischlerei
  * Nordholz aus dem Vorher-Nachher der Startseite; die Punkte passen
  * zu deren „Vorher“-Seite (Willkommen-Titel, Öffnungszeiten als PDF,
  * Cookie-Banner über dem Inhalt).
@@ -60,15 +60,15 @@ const MUSTER_PUNKTE = [
  */
 export default function AuditPage() {
   // Service + BreadcrumbList JSON-LD — die kostenlose Durchsicht ist
-  // ein eigenständiger Service (3–5 Punkte per Mail, meist in zwei
-  // Werktagen).
+  // ein eigenständiger Service (3–5 Punkte, meist in zwei Werktagen;
+  // auf welchem Weg wir uns melden, legt die Seite nicht fest).
   const serviceLd = {
     "@context": "https://schema.org",
     "@type": "Service",
     name: "Kostenlose Website-Durchsicht",
     alternateName: "Website-Audit",
     description:
-      "Durchsicht Ihrer aktuellen Website von Hand: drei bis fünf konkrete Verbesserungspunkte per Mail, meist innerhalb von zwei Werktagen.",
+      "Durchsicht Ihrer aktuellen Website von Hand: drei bis fünf konkrete Verbesserungspunkte, meist innerhalb von zwei Werktagen.",
     provider: { "@id": `${SITE_URL}/#business` },
     areaServed: { "@type": "Country", name: "Deutschland" },
     serviceType: "Website-Audit",
@@ -110,9 +110,9 @@ export default function AuditPage() {
           eyebrow="Kostenlose Durchsicht Ihrer Website"
           title="Wir sehen uns Ihre Website an."
         >
-          Sie bekommen meist innerhalb von zwei Werktagen eine E-Mail mit drei
-          bis fünf Punkten: was an Ihrer Seite funktioniert und was wir zuerst
-          ändern würden. Ob Sie sich danach melden, entscheiden Sie.
+          Meist innerhalb von zwei Werktagen bekommen Sie von uns drei bis fünf
+          Punkte: was an Ihrer Seite funktioniert und was wir zuerst ändern
+          würden. Ob daraus ein Auftrag wird, entscheiden Sie.
         </PageHero>
 
         <section aria-label="Durchsicht anfordern">
@@ -154,7 +154,7 @@ export default function AuditPage() {
               <div className="lg:col-span-5">
                 <p className="label-mono text-muted-foreground">Was Sie bekommen</p>
                 <h2 className="mt-5 text-balance text-[2rem] leading-[1.04] tracking-[-0.032em] sm:text-[2.6rem]">
-                  Eine E-Mail, die wir selbst schreiben.
+                  Drei bis fünf Punkte, von Hand zusammengestellt.
                 </h2>
                 <div className="text-muted-foreground mt-6 max-w-md space-y-4 text-[15.5px] leading-relaxed text-pretty">
                   <p>
@@ -171,32 +171,19 @@ export default function AuditPage() {
                     >
                       Ladezeit-Test
                     </Link>
-                    . Wenn Sie auf die Mail antworten, antworten wir Ihnen
-                    selbst.
+                    . Rückfragen dazu beantworten wir selbst.
                   </p>
                 </div>
               </div>
 
               <figure className="min-w-0 lg:col-span-7">
                 <div className="bg-background rounded-[18px] lg:rounded-[28px] shadow-karte">
-                  <dl className="border-border space-y-1.5 border-b px-5 py-4 font-mono text-[12.5px] sm:px-7">
-                    <div className="flex gap-3">
-                      <dt className="text-muted-foreground w-16 shrink-0">Von</dt>
-                      <dd className="text-foreground min-w-0">Sitalo Webdesign</dd>
-                    </div>
-                    <div className="flex gap-3">
-                      <dt className="text-muted-foreground w-16 shrink-0">An</dt>
-                      <dd className="text-foreground min-w-0">Tischlerei Nordholz</dd>
-                    </div>
-                    <div className="flex gap-3">
-                      <dt className="text-muted-foreground w-16 shrink-0">Betreff</dt>
-                      <dd className="text-foreground min-w-0">Ihre Website, drei Punkte</dd>
-                    </div>
-                  </dl>
+                  <p className="border-border text-muted-foreground border-b px-5 py-4 font-mono text-[12.5px] sm:px-7">
+                    Muster · Tischlerei Nordholz
+                  </p>
                   <div className="text-foreground/90 space-y-4 px-5 py-6 text-[15px] leading-relaxed sm:px-7 sm:py-7">
-                    <p>Guten Tag,</p>
                     <p>
-                      wir haben uns Ihre Seite am Handy und am Rechner
+                      Wir haben uns Ihre Seite am Handy und am Rechner
                       angesehen. Diese drei Stellen würden wir zuerst ändern:
                     </p>
                     <ol className="space-y-3">
@@ -213,15 +200,10 @@ export default function AuditPage() {
                       Gut gelöst ist das Foto aus der Werkstatt. Das würden wir
                       behalten.
                     </p>
-                    <p>
-                      Viele Grüße aus Hamburg
-                      <br />
-                      Sitalo Webdesign
-                    </p>
                   </div>
                 </div>
                 <figcaption className="text-muted-foreground mt-3 font-mono text-[12px]">
-                  Muster. Die Tischlerei Nordholz haben wir erfunden.
+                  Muster für drei Punkte. Die Tischlerei Nordholz haben wir erfunden.
                 </figcaption>
               </figure>
             </div>

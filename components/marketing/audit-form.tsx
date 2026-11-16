@@ -8,14 +8,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  TELEFON_HINWEIS,
+  TELEFON_PLATZHALTER,
+  telefonGueltig,
+} from "@/lib/kontakt-pflicht";
 import { submitLead } from "@/lib/submit-lead";
 import { track } from "@/lib/track";
 
 /**
  * AuditForm — eigene, schlanke Form für die kostenlose Durchsicht (/audit).
  *
- * Vier Felder: URL (Pflicht), Name (Pflicht), E-Mail (Pflicht),
- * Hinweis (optional) + Consent. Bewusst kürzer als das Haupt-
+ * Fünf Felder: URL, Name, E-Mail, Telefon (Pflicht), Hinweis
+ * (optional) + Consent. Bewusst kürzer als das Haupt-
  * Anfrageformular, weil hier nur ein einzelner Mehrwert versprochen
  * wird (Durchsicht, meist in zwei Werktagen), nicht ein ganzes Projekt.
  *
@@ -27,6 +32,7 @@ type FormData = {
   websiteUrl: string;
   name: string;
   email: string;
+  phone: string;
   note: string;
   consent: boolean;
   /** Honeypot — bots fill it, humans don't. */
@@ -47,6 +53,7 @@ export function AuditForm() {
     websiteUrl: "",
     name: "",
     email: "",
+    phone: "",
     note: "",
     consent: false,
     honeypot: "",
@@ -67,8 +74,18 @@ export function AuditForm() {
     /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/.test(hostnamePart);
   const emailOk = /\S+@\S+\.\S+/.test(data.email);
   const nameOk = data.name.trim().length >= 2;
+  const telefonOk = telefonGueltig(data.phone);
+  // Hinweis erst, wenn das Feld verlassen wurde, nicht schon beim Tippen.
+  const [telefonVerlassen, setTelefonVerlassen] = useState(false);
+  const telefonHinweis =
+    telefonVerlassen && data.phone.trim() !== "" && !telefonOk;
   const canSubmit =
-    urlOk && emailOk && nameOk && data.consent && status.kind !== "submitting";
+    urlOk &&
+    emailOk &&
+    telefonOk &&
+    nameOk &&
+    data.consent &&
+    status.kind !== "submitting";
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -91,6 +108,7 @@ export function AuditForm() {
         ["Audit-URL", cleanedUrl],
         ["Name", data.name],
         ["E-Mail", data.email],
+        ["Telefon", data.phone],
         ["Hinweis", data.note],
       ],
     });
@@ -121,9 +139,9 @@ export function AuditForm() {
               Die Adresse ist bei uns angekommen.
             </p>
             <p className="text-muted-foreground mt-4 max-w-xl text-pretty text-[15px] leading-relaxed">
-              Meist innerhalb von zwei Werktagen bekommen Sie eine E-Mail mit
-              drei bis fünf Punkten: was an Ihrer Seite funktioniert und was wir
-              zuerst ändern würden. Wann wir antworten, steht unter{" "}
+              Meist innerhalb von zwei Werktagen bekommen Sie von uns drei bis
+              fünf Punkte: was an Ihrer Seite funktioniert und was wir zuerst
+              ändern würden. Wann wir erreichbar sind, steht unter{" "}
               <Link
                 href="/erreichbarkeit"
                 className="text-foreground underline underline-offset-4"
@@ -217,6 +235,34 @@ export function AuditForm() {
         </div>
 
         <div>
+          <Label htmlFor="audit-phone" className={LABEL}>
+            Telefon
+          </Label>
+          <Input
+            id="audit-phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder={TELEFON_PLATZHALTER}
+            value={data.phone}
+            onChange={(e) => setData({ ...data, phone: e.target.value })}
+            onBlur={() => setTelefonVerlassen(true)}
+            aria-invalid={telefonHinweis ? true : undefined}
+            aria-describedby={telefonHinweis ? "audit-phone-hinweis" : undefined}
+            className={FIELD}
+            required
+          />
+          {telefonHinweis ? (
+            <p
+              id="audit-phone-hinweis"
+              className="text-destructive mt-2 text-[13px]"
+            >
+              {TELEFON_HINWEIS}
+            </p>
+          ) : null}
+        </div>
+
+        <div>
           <Label htmlFor="audit-note" className={LABEL}>
             Worauf sollen wir achten?{" "}
             <span className="text-muted-foreground font-normal">(optional)</span>
@@ -231,18 +277,22 @@ export function AuditForm() {
           />
         </div>
 
-        {/* Honeypot — visuell unsichtbar für Menschen, fängt Bots ab. */}
+        {/* Honeypot — visuell unsichtbar für Menschen, fängt Bots ab.
+            Bewusst kein Name/Label mit „Website“, „URL“ o. Ä. — darauf
+            springen Browser-Autofill und Passwortmanager an (gleich
+            daneben steht das echte Feld „Ihre Website“), und ein echter
+            Besucher würde unbemerkt als Bot aussortiert. */}
         <div className="hidden" aria-hidden="true">
-          <label>
-            Website
-            <input
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              value={data.honeypot}
-              onChange={(e) => setData({ ...data, honeypot: e.target.value })}
-            />
-          </label>
+          <label htmlFor="audit-hp">Bitte leer lassen</label>
+          <input
+            id="audit-hp"
+            name="sitalo_hp_field"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={data.honeypot}
+            onChange={(e) => setData({ ...data, honeypot: e.target.value })}
+          />
         </div>
 
         <label className="flex items-start gap-3 text-[13.5px] leading-relaxed">
@@ -269,14 +319,24 @@ export function AuditForm() {
 
         {status.kind === "error" && (
           <Alert variant="destructive" className="rounded-[12px]">
-            <AlertDescription>{status.message}</AlertDescription>
+            <AlertDescription>
+              <p>{status.message}</p>
+              <p className="mt-1">
+                <a
+                  href="tel:+491607621876"
+                  className="font-semibold underline underline-offset-4"
+                >
+                  Lieber anrufen: 0160&nbsp;7621876 ›
+                </a>
+              </p>
+            </AlertDescription>
           </Alert>
         )}
       </div>
 
       <div className="border-border flex flex-col items-stretch gap-3 border-t px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8">
         <p className="text-muted-foreground text-[13.5px]">
-          Kostenlos. Die Antwort kommt per E-Mail.
+          Kostenlos. Wir sehen uns Ihre Seite selbst an.
         </p>
         <button
           type="submit"

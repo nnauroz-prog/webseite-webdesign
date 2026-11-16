@@ -164,7 +164,7 @@ export const INVENTAR_NOT_USED: InventarItem[] = [
   {
     name: "Live-Chat auf der Seite",
     what: "Etwa Intercom, Crisp oder Drift.",
-    why: "Ein Chatfenster verspricht, dass jederzeit jemand antwortet. Das können wir nicht halten. Wer uns erreichen will, ruft an oder schreibt eine Mail.",
+    why: "Ein Chatfenster verspricht, dass jederzeit jemand antwortet. Das können wir nicht halten. Wer uns erreichen will, ruft an oder nutzt das Anfrageformular.",
   },
   {
     name: "Cookie-Banner von Drittanbietern",
