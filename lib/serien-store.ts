@@ -4,6 +4,7 @@ import type { StorySerie } from "@/lib/story-serie";
 
 import { addDays, berlinWallToUtc } from "@/lib/admin/berlin-time";
 import { DbError, isMissingTable } from "@/lib/admin/db-errors";
+import { parseId, parseStoredDate } from "@/lib/admin/validate";
 import { gueltigeSerie } from "@/lib/redaktion/lesen";
 import { AUFTRAG_MAX } from "@/lib/redaktion/vertrag";
 import { serviceClient } from "@/lib/supabase/service";
@@ -47,9 +48,6 @@ export const SERIEN_COLUMNS = [
 type PgError = { message: string; code?: string };
 
 const COLS = SERIEN_COLUMNS.join(",");
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 function dbError(prefix: string, error: PgError): DbError {
   return new DbError(`${prefix}: ${error.message}`, error.code);
@@ -61,19 +59,6 @@ function needDb() {
   return db;
 }
 
-function echterTag(v: unknown): string | null {
-  if (typeof v !== "string") return null;
-  const m = ISO_DATE_RE.exec(v);
-  if (!m) return null;
-  const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
-  const t = new Date(Date.UTC(y, mo - 1, d));
-  return t.getUTCFullYear() === y &&
-    t.getUTCMonth() === mo - 1 &&
-    t.getUTCDate() === d
-    ? v
-    : null;
-}
-
 function zeitpunkt(v: unknown): string | null {
   return typeof v === "string" && !Number.isNaN(Date.parse(v)) ? v : null;
 }
@@ -82,9 +67,9 @@ function zeitpunkt(v: unknown): string | null {
 export function serieAusZeile(data: unknown): SerieZeile | null {
   if (!data || typeof data !== "object") return null;
   const z = data as Record<string, unknown>;
-  const id = typeof z.id === "string" && UUID_RE.test(z.id) ? z.id : null;
+  const id = parseId(z.id);
   const created_at = zeitpunkt(z.created_at);
-  const datum = echterTag(z.datum);
+  const datum = parseStoredDate(z.datum);
   const serie = gueltigeSerie(z.serie);
   if (!id || !created_at || !datum || !serie || typeof z.auftrag !== "string")
     return null;
@@ -128,7 +113,7 @@ export async function saveSerie(eintrag: {
   serie: StorySerie;
 }): Promise<string | null> {
   const serie = gueltigeSerie(eintrag.serie);
-  const datum = echterTag(eintrag.datum);
+  const datum = parseStoredDate(eintrag.datum);
   if (!serie || !datum || eintrag.auftrag.length > AUFTRAG_MAX)
     throw new DbError("Serie konnte nicht gespeichert werden: ungültig.");
   const db = serviceClient();
@@ -181,7 +166,7 @@ export async function deleteSerie(id: string): Promise<boolean> {
  */
 export async function countSerienAm(tag: string): Promise<number | null> {
   const db = serviceClient();
-  if (!db || !echterTag(tag)) return null;
+  if (!db || !parseStoredDate(tag)) return null;
   const von = berlinWallToUtc(tag, "00:00").toISOString();
   const bis = berlinWallToUtc(addDays(tag, 1), "00:00").toISOString();
   const { data, error } = await db
