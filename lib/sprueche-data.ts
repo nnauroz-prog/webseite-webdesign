@@ -319,6 +319,19 @@ function alsTag(
 }
 
 /**
+ * Eine einzelne Karte an einem Kalendertag (yyyy-mm-dd), fertig für den
+ * Zeichner: etwa ein Bild einer Story-Serie (lib/story-serie.ts).
+ */
+export function tagKarte(
+  datum: string,
+  s: Spruch,
+  platz: number,
+  anlass: string | null,
+): SpruchTag {
+  return alsTag(tagKopf(datum), s, platz, anlass, "aktuell");
+}
+
+/**
  * Alle Posts eines Kalendertags (yyyy-mm-dd): Platz 0 ist der Spruch des
  * Tages, Platz 1 und 2 die Zusatz-Posts. Tagesaktuelle Karten (am Morgen
  * zum Tag geschrieben) haben Vorrang; wo es keine gibt, springt die
