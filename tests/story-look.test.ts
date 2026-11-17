@@ -9,9 +9,14 @@ import {
   KAMERAS,
   LAYOUT_FOLGE,
   LAYOUTS,
+  SERIE_LAYOUTS,
   VARIANTEN,
+  filmFuerFolge,
   gestaltungFuer,
+  istFolge,
+  serieGestaltung,
   varianteFuer,
+  type Folge,
 } from "@/lib/story-variante";
 
 function leuchtkraft(hex: string): number {
@@ -297,6 +302,167 @@ describe("Farbwelten der Spruch-Karten", () => {
         assert.match(teil.d, /^M[-\d. ]/, s.name);
         assert.doesNotMatch(teil.d, /NaN|undefined/, s.name);
       }
+    }
+  });
+});
+
+describe("Gestaltung und Film einer Story-Serie", () => {
+  /** Die Bilder einer Serie mit von Bildern an einem Tag (Platz 0, mit Titel). */
+  const bilder = (nummer: number, von: number) =>
+    Array.from({ length: von }, (_, i) => ({
+      nummer,
+      platz: 0,
+      anlass: "Black Friday",
+      folge: { nr: i + 1, von },
+    }));
+
+  it("trägt Serien nur in Gestaltungen, in denen alle Bilder gleich aufgebaut sind", () => {
+    assert.ok(SERIE_LAYOUTS.length >= 4);
+    assert.equal(new Set(SERIE_LAYOUTS).size, SERIE_LAYOUTS.length);
+    for (const l of SERIE_LAYOUTS) assert.ok(LAYOUTS.includes(l), l);
+    // Die klassische hat je Reihe ein anderes Format, das Kalenderblatt
+    // setzte denselben Abreißkalender auf jedes Bild.
+    assert.ok(!SERIE_LAYOUTS.includes("klassik"));
+    assert.ok(!SERIE_LAYOUTS.includes("kalenderblatt"));
+    // Alle übrigen Gestaltungen des Wechsels tragen Serien.
+    assert.deepEqual(
+      new Set(SERIE_LAYOUTS),
+      new Set(LAYOUT_FOLGE.filter((l) => l !== "klassik")),
+    );
+  });
+
+  it("gibt allen Bildern einer Serie dieselbe Gestaltung, nie Kalenderblatt oder klassisch", () => {
+    for (let n = -10; n < 3000; n++)
+      for (const versatz of [0, 1, 2])
+        for (const von of [3, 4, 5]) {
+          const gestaltungen = bilder(n, von).map((b) =>
+            gestaltungFuer(b, versatz),
+          );
+          assert.equal(new Set(gestaltungen).size, 1, `Tag ${n}`);
+          assert.equal(gestaltungen[0], serieGestaltung(n, versatz));
+          assert.ok(
+            SERIE_LAYOUTS.includes(gestaltungen[0]),
+            `Tag ${n}: ${gestaltungen[0]}`,
+          );
+        }
+    // Auch an geraden Tagen, an denen der tagesaktuelle Spruch des Tages
+    // als Kalenderblatt steht.
+    assert.equal(
+      gestaltungFuer({ nummer: 10, platz: 0, anlass: "Black Friday" }),
+      "kalenderblatt",
+    );
+    assert.notEqual(gestaltungFuer(bilder(10, 4)[0]), "kalenderblatt");
+    // Der Platz des Bildes ändert daran nichts.
+    for (const platz of [0, 1, 2])
+      assert.equal(
+        gestaltungFuer({ ...bilder(10, 4)[1], platz }),
+        serieGestaltung(10),
+      );
+  });
+
+  it("gestaltet die Serie anders als die drei Posts des Tages und wechselt täglich", () => {
+    for (const versatz of [0, 1])
+      for (let n = -10; n < VARIANTEN / 3; n++) {
+        const serie = serieGestaltung(n, versatz);
+        const posts = [0, 1, 2].map((platz) =>
+          gestaltungFuer(
+            { nummer: n, platz, anlass: "Erster Advent" },
+            versatz,
+          ),
+        );
+        assert.ok(
+          !posts.includes(serie),
+          `Tag ${n}: Serie ${serie}, Posts ${posts.join(", ")}`,
+        );
+        // Auch ohne Anlass (Reserve) belegen die Posts andere Plätze.
+        for (const platz of [0, 1, 2])
+          assert.notEqual(serie, varianteFuer(n, platz, versatz).layout);
+        assert.notEqual(serie, serieGestaltung(n - 1, versatz), `Tag ${n}`);
+      }
+    // „Anderes Design“ im Story-Studio kommt auch mit anderer Gestaltung.
+    const anders = [1, 2, 3].map((v) => serieGestaltung(6, v));
+    assert.ok(anders.some((l) => l !== serieGestaltung(6)));
+  });
+
+  it("bringt in 30 Tagen jede Gestaltung für Serien, keine drängt sich vor", () => {
+    for (const start of [6, 133, 401, 2020]) {
+      const monat = Array.from({ length: 30 }, (_, i) =>
+        serieGestaltung(start + i),
+      );
+      assert.equal(new Set(monat).size, SERIE_LAYOUTS.length, `ab ${start}`);
+      for (const l of SERIE_LAYOUTS) {
+        const anzahl = monat.filter((x) => x === l).length;
+        assert.ok(anzahl >= 1 && anzahl <= 12, `${l}: ${anzahl} ab ${start}`);
+      }
+    }
+  });
+
+  it("nimmt nur eine gültige Stelle als Bild einer Serie", () => {
+    assert.ok(istFolge({ nr: 1, von: 3 }));
+    assert.ok(istFolge({ nr: 5, von: 5 }));
+    const ungueltig: (Folge | null | undefined)[] = [
+      null,
+      undefined,
+      { nr: 0, von: 4 },
+      { nr: 5, von: 4 },
+      { nr: 1, von: 1 },
+      { nr: 1.5, von: 4 },
+      { nr: 1, von: Number.NaN },
+    ];
+    for (const folge of ungueltig) {
+      const gueltig: boolean = istFolge(folge);
+      assert.equal(gueltig, false, JSON.stringify(folge));
+      // Dann gilt die Gestaltung und der Film eines gewöhnlichen Posts.
+      for (const n of [10, 11]) {
+        const karte = { nummer: n, platz: 0, anlass: "Black Friday", folge };
+        assert.equal(
+          gestaltungFuer(karte),
+          gestaltungFuer({ nummer: n, platz: 0, anlass: "Black Friday" }),
+        );
+        const v = varianteFuer(n, 0);
+        assert.deepEqual(filmFuerFolge(karte), {
+          auftritt: v.auftritt,
+          kamera: v.kamera,
+        });
+      }
+    }
+  });
+
+  it("lässt den Film in jedem Bild der Serie anders ablaufen", () => {
+    for (let n = -10; n < 400; n++)
+      for (const versatz of [0, 1])
+        for (const von of [3, 4, 5]) {
+          const filme = bilder(n, von).map((b) => filmFuerFolge(b, versatz));
+          // Das erste Bild läuft ab wie der Tag, die folgenden drehen weiter.
+          const v = varianteFuer(n, 0, versatz);
+          assert.deepEqual(filme[0], {
+            auftritt: v.auftritt,
+            kamera: v.kamera,
+          });
+          // Jeder Auftritt der Pointe kommt in einer Serie nur einmal vor.
+          assert.equal(new Set(filme.map((f) => f.auftritt)).size, von);
+          // Die Kamera nimmt in jedem Bild einen anderen Weg; erst im
+          // fünften wiederholt sich der des ersten.
+          assert.equal(
+            new Set(filme.map((f) => f.kamera)).size,
+            Math.min(von, KAMERAS.length),
+          );
+          for (let i = 1; i < von; i++) {
+            assert.notEqual(filme[i].auftritt, filme[i - 1].auftritt);
+            assert.notEqual(filme[i].kamera, filme[i - 1].kamera);
+          }
+          for (const f of filme) {
+            assert.ok(AUFTRITTE.includes(f.auftritt));
+            assert.ok(KAMERAS.includes(f.kamera));
+          }
+        }
+    // Ohne Stelle: der Film des Tages, wie bisher.
+    for (const platz of [0, 1, 2]) {
+      const v = varianteFuer(20, platz, 1);
+      assert.deepEqual(filmFuerFolge({ nummer: 20, platz }, 1), {
+        auftritt: v.auftritt,
+        kamera: v.kamera,
+      });
     }
   });
 });

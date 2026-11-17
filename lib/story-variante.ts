@@ -19,6 +19,12 @@
  * das Kalenderblatt für tagesaktuelle Posts): Sie wechselt beim Spruch
  * des Tages täglich, und die drei Posts eines Tages sind verschieden
  * gestaltet. Geprüft in tests/story-look.test.ts.
+ *
+ * Eine Story-Serie (lib/story-serie.ts) teilt sich Tagesnummer und Platz
+ * und damit Farbwelt und Motiv. Ihre Gestaltung ist für alle Bilder
+ * dieselbe und eine andere als die der drei Posts des Tages
+ * (serieGestaltung); der Film dreht von Bild zu Bild weiter
+ * (filmFuerFolge).
  */
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import { MOTIVE, SCHMUCK, type Motiv, type Schmuck } from "@/lib/story-teile";
@@ -227,17 +233,105 @@ export function varianteFuer(nummer: number, platz = 0, versatz = 0): Variante {
 }
 
 /**
+ * Gestaltungen, die eine Story-Serie tragen (lib/story-serie.ts): Alle
+ * Bilder einer Serie stehen in derselben. Die klassische fehlt, weil sie
+ * je Reihe ein anderes Format hat (Flagge, Zettel, Sucher) und die Bilder
+ * dann nicht mehr wie aus einem Guss wirken; das Kalenderblatt fehlt,
+ * weil es denselben Abreißkalender auf jedes Bild setzen würde.
+ */
+export const SERIE_LAYOUTS: readonly Layout[] = [
+  "magazin",
+  "farbfeld",
+  "raster",
+  "schlagzeile",
+  "riese",
+];
+
+/** Stelle eines Bildes in einer Story-Serie (wie SerieKarte.folge). */
+export type Folge = { nr: number; von: number };
+
+/** Ist das ein Bild einer Serie (ganze Zahlen, nr von 1 bis von)? */
+export function istFolge(folge: Folge | null | undefined): folge is Folge {
+  return (
+    !!folge &&
+    Number.isInteger(folge.nr) &&
+    Number.isInteger(folge.von) &&
+    folge.von >= 2 &&
+    folge.nr >= 1 &&
+    folge.nr <= folge.von
+  );
+}
+
+/**
+ * Gestaltung einer Story-Serie an einem Tag: für alle ihre Bilder
+ * dieselbe, immer aus SERIE_LAYOUTS. Die drei Posts des Tages belegen im
+ * Wechsel drei Plätze hintereinander; die Serie nimmt den Platz danach.
+ * So ist sie anders gestaltet als jeder Post desselben Tages. Stünde dort
+ * die klassische, weicht sie auf einen der beiden übrigen freien Plätze
+ * aus, und zwar auf den, der morgen nicht dran ist: So wechselt auch die
+ * Gestaltung der Serie jeden Tag. versatz wie bei varianteFuer.
+ */
+export function serieGestaltung(nummer: number, versatz = 0): Layout {
+  const n = LAYOUT_FOLGE.length;
+  const platzFuer = (tag: number, schritt: number) =>
+    LAYOUT_FOLGE[
+      mod(
+        LAYOUT_FOLGE.indexOf(varianteFuer(tag, 0, versatz).layout) + schritt,
+        n,
+      )
+    ];
+  const frei = [PLAETZE, PLAETZE + 1, PLAETZE + 2].map((s) =>
+    platzFuer(nummer, s),
+  );
+  if (SERIE_LAYOUTS.includes(frei[0])) return frei[0];
+  const morgen = platzFuer(nummer + 1, PLAETZE);
+  return (
+    frei.slice(1).find((l) => SERIE_LAYOUTS.includes(l) && l !== morgen) ??
+    SERIE_LAYOUTS[0]
+  );
+}
+
+/**
+ * Ablauf des Films für ein Bild: der des Tages (varianteFuer), bei einem
+ * Bild einer Serie von Bild zu Bild weitergedreht. So kommt die Pointe in
+ * jedem Bild der Serie anders ins Bild, und die Kamera nimmt jedes Mal
+ * einen anderen Weg (bei fünf Bildern wiederholt sich erst im fünften
+ * der Kameraweg des ersten).
+ */
+export function filmFuerFolge(
+  karte: { nummer: number; platz: number; folge?: Folge | null },
+  versatz = 0,
+): { auftritt: Auftritt; kamera: Kamera } {
+  const v = varianteFuer(karte.nummer, karte.platz, versatz);
+  if (!istFolge(karte.folge)) return { auftritt: v.auftritt, kamera: v.kamera };
+  const schritt = karte.folge.nr - 1;
+  return {
+    auftritt:
+      AUFTRITTE[mod(AUFTRITTE.indexOf(v.auftritt) + schritt, AUFTRITTE.length)],
+    kamera: KAMERAS[mod(KAMERAS.indexOf(v.kamera) + schritt, KAMERAS.length)],
+  };
+}
+
+/**
  * Gestaltung eines Posts: die des Wechsels (varianteFuer), außer beim
  * tagesaktuellen Spruch des Tages an jedem zweiten Tag: Dann steht er als
  * Kalenderblatt mit seinem Anlass. Ohne Anlass gibt es kein
  * Kalenderblatt. Weil es nie im Wechsel steht und nur Platz 0 es
  * bekommt, bleiben die drei Posts eines Tages verschieden gestaltet.
+ * Ein Bild einer Story-Serie (folge) bekommt die Gestaltung der Serie
+ * (serieGestaltung), nie das Kalenderblatt und nie die klassische.
  * versatz wie bei varianteFuer („Anderes Design“ im Story-Studio).
  */
 export function gestaltungFuer(
-  karte: { nummer: number; platz: number; anlass: string | null },
+  karte: {
+    nummer: number;
+    platz: number;
+    anlass: string | null;
+    folge?: Folge | null;
+  },
   versatz = 0,
 ): Layout {
+  if (istFolge(karte.folge)) return serieGestaltung(karte.nummer, versatz);
   if (
     karte.anlass?.trim() &&
     karte.platz === 0 &&
