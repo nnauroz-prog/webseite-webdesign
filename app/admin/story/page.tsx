@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import type { GepostetEintrag } from "@/app/admin/story/story-studio";
+import type { SerieZeile } from "@/lib/serien-store";
 
+import { SerienStudio } from "@/app/admin/story/serien-studio";
 import { StoryStudio } from "@/app/admin/story/story-studio";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
@@ -11,7 +13,12 @@ import {
   parsePostDatum,
 } from "@/lib/admin/post-planer";
 import { checkSchema } from "@/lib/admin/schema";
+import { parseSerieZiel } from "@/lib/admin/studio-serie";
+import { studioVorschlaege } from "@/lib/admin/studio-vorschlaege";
 import { listPostStatus } from "@/lib/post-status-store";
+import { redaktionBereit } from "@/lib/redaktion/konfig";
+import { serieFuer } from "@/lib/serien-aktuell";
+import { listSerien } from "@/lib/serien-store";
 import { postsFuer } from "@/lib/sprueche-aktuell";
 import {
   storyBeschriftung,
@@ -45,6 +52,25 @@ async function gepostetAm(tag: string): Promise<GepostetEintrag[] | null> {
   }
 }
 
+/** So viele gespeicherte Aufträge zeigt „Deine Aufträge“ höchstens. */
+const AUFTRAEGE_MAX = 20;
+
+/**
+ * Die gespeicherten Serien aus Aufträgen an die Redaktion. zeilen ist
+ * null ohne Datenbank-Update; scheitert das Lesen, bleibt das Studio
+ * stehen und sagt es dort (fehler).
+ */
+async function auftraegeLaden(): Promise<{
+  zeilen: SerieZeile[] | null;
+  fehler: boolean;
+}> {
+  try {
+    return { zeilen: await listSerien(AUFTRAEGE_MAX), fehler: false };
+  } catch {
+    return { zeilen: null, fehler: true };
+  }
+}
+
 /** Nur echte Kalendertage (yyyy-mm-dd), sonst gilt heute. */
 function gueltigerTag(raw: string | string[] | undefined): string | null {
   if (typeof raw !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null;
@@ -63,14 +89,23 @@ const WOCHENTAG = new Intl.DateTimeFormat("de-DE", {
 });
 
 /**
- * `/admin/story` — das Story-Studio: die Posts eines Tages (Spruch des
- * Tages und zwei Zusatz-Posts) als fertige Bilder und Kurzvideos für
- * Instagram, als Story (1080 × 1920) oder Beitrag (1080 × 1350). Nur
- * hier gibt es Teilen, Sichern und den Beitragstext; auf der
+ * `/admin/story` — das Story-Studio, wo die Storys entstehen:
+ *
+ * - Redaktion: Die Agenten bekommen einen Auftrag („Story-Serie zu Black
+ *   Friday“) und liefern eine Story-Serie aus drei bis fünf Bildern.
+ * - Story-Serie des Tages: schreibt der Morgenlauf jeden Morgen.
+ * - Deine Aufträge: die gespeicherten Serien.
+ * - Einzelne Posts: die drei Posts des Tages (Spruch des Tages und zwei
+ *   Zusatz-Posts) als fertige Bilder und Kurzvideos für Instagram, als
+ *   Story (1080 × 1920) oder Beitrag (1080 × 1350).
+ *
+ * Nur hier gibt es Teilen, Sichern und den Beitragstext; auf der
  * öffentlichen Journalseite steht die Karte ohne diese Knöpfe.
  *
  * ?tag=yyyy-mm-dd wählt den Tag, ?post=0|1|2 den Post (etwa aus dem
- * Post-Planer „Im Studio öffnen“).
+ * Post-Planer „Im Studio öffnen“), ?serie= klappt eine Serie auf: „tag“
+ * die Serie des Tages, ein Kalendertag die Serie dieses Tages, sonst die
+ * Kennung eines Auftrags.
  */
 export default async function StoryPage({
   searchParams,
@@ -78,13 +113,16 @@ export default async function StoryPage({
   searchParams: Promise<{
     tag?: string | string[];
     post?: string | string[];
+    serie?: string | string[];
   }>;
 }) {
   await requireAdmin();
   const sp = await searchParams;
   const jetzt = new Date();
   const heute = tagInHamburg(jetzt);
-  const tag = gueltigerTag(sp.tag) ?? heute;
+  const ziel = parseSerieZiel(sp.serie);
+  const tag =
+    gueltigerTag(sp.tag) ?? (ziel?.art === "tag" ? ziel.tag : null) ?? heute;
   const posts = postsFuer(tag);
   const platz = gueltigerPlatz(sp.post);
   const start = Math.max(
@@ -93,7 +131,10 @@ export default async function StoryPage({
   );
   // Tagesleiste: drei Tage zurück bis drei Tage voraus, der gewählte in der Mitte.
   const leiste = Array.from({ length: 7 }, (_, i) => tagVersetzt(tag, i - 3));
-  const gepostetDb = await gepostetAm(tag);
+  const [gepostetDb, auftraege] = await Promise.all([
+    gepostetAm(tag),
+    auftraegeLaden(),
+  ]);
   // Morgenlauf: Karten zum Tag haben Vorrang, sonst springt die Reserve
   // ein. Auch für einen kommenden Tag zählen schon geschriebene Karten.
   const laufText = morgenlaufText(tag, heute, posts);
@@ -150,35 +191,67 @@ export default async function StoryPage({
         </p>
       ) : null}
 
-      <p
-        role="status"
-        className={cn(
-          "mt-3 rounded-[3px] border px-3 py-2 text-[15px] leading-6",
-          reserveWarnung
-            ? "border-gold font-medium"
-            : "border-border text-muted-foreground",
-        )}
-      >
-        {laufText}
-      </p>
-
-      <StoryStudio
-        // Neuer Tag, anderer Post aus dem Planer oder neue Karten (der
-        // Morgenlauf hat geliefert, Seite im Hintergrund neu geladen):
-        // Auswahl, Design und Video beginnen frisch.
-        key={`${tag}|${start}|${posts.map((p) => p.text).join("|")}`}
-        posts={posts}
-        beschriftungen={posts.map(storyBeschriftung)}
-        start={start}
-        gepostetDb={gepostetDb}
-        abhakenMoeglich={parsePostDatum(tag, jetzt) !== null}
+      <SerienStudio
+        // Neuer Tag oder eine andere verlinkte Serie: Auftrag, Auswahl und
+        // frisches Ergebnis beginnen neu.
+        key={`${tag}|${ziel ? (ziel.art === "id" ? ziel.id : "tag") : ""}`}
+        tag={tag}
+        heute={heute}
+        bereit={redaktionBereit()}
+        vorschlaege={studioVorschlaege(tag, heute, posts[0]?.text)}
+        tagesSerie={serieFuer(tag)}
+        auftraege={auftraege.zeilen}
+        auftraegeFehler={auftraege.fehler}
+        start={ziel}
+        // Kommt jemand für einen einzelnen Post, bleiben die Serien zu.
+        eingeklappt={platz !== null}
       />
+
+      {/* div mit role="region" statt section: siehe redaktion.tsx (data-sicht). */}
+      <div
+        role="region"
+        id="einzelne-posts"
+        aria-labelledby="einzelne-posts-title"
+        className="mt-7 scroll-mt-3"
+      >
+        <h2
+          id="einzelne-posts-title"
+          className="text-[17px] font-semibold tracking-tight"
+        >
+          {tag === heute
+            ? "Einzelne Posts von heute"
+            : "Einzelne Posts für diesen Tag"}
+        </h2>
+        <p
+          role="status"
+          className={cn(
+            "mt-2 rounded-[3px] border px-3 py-2 text-[15px] leading-6",
+            reserveWarnung
+              ? "border-gold font-medium"
+              : "border-border text-muted-foreground",
+          )}
+        >
+          {laufText}
+        </p>
+
+        <StoryStudio
+          // Neuer Tag, anderer Post aus dem Planer oder neue Karten (der
+          // Morgenlauf hat geliefert, Seite im Hintergrund neu geladen):
+          // Auswahl, Design und Video beginnen frisch.
+          key={`${tag}|${start}|${posts.map((p) => p.text).join("|")}`}
+          posts={posts}
+          beschriftungen={posts.map(storyBeschriftung)}
+          start={start}
+          gepostetDb={gepostetDb}
+          abhakenMoeglich={parsePostDatum(tag, jetzt) !== null}
+        />
+      </div>
 
       <div className="text-muted-foreground mt-8 space-y-2 text-[14px] leading-6">
         <p>
-          Die Posts für morgen schreibt der Morgenlauf morgen früh, passend zu
-          dem, was dann los ist. Die Reserve springt nur ein, wenn es keine
-          Karten zum Tag gibt.
+          Die Posts und die Story-Serie für morgen schreibt der Morgenlauf
+          morgen früh, passend zu dem, was dann los ist. Die Reserve springt nur
+          ein, wenn es keine Karten zum Tag gibt.
         </p>
         <p>
           <Link

@@ -5,6 +5,7 @@ import type { SchrittEreignis } from "@/lib/admin/studio-serie";
 import type { RedaktionEreignis } from "@/lib/redaktion/vertrag";
 import type { StorySerie } from "@/lib/story-serie";
 
+import { formatShortDay } from "@/lib/admin/berlin-time";
 import {
   bilderText,
   ereignisAusZeile,
@@ -24,6 +25,7 @@ import {
   serieAlsText,
   serieAusWert,
   serieDateiname,
+  tagKurz,
   zeilenLeser,
 } from "@/lib/admin/studio-serie";
 import {
@@ -579,6 +581,13 @@ describe("Texte und Namen", () => {
     );
     assert.ok(text.endsWith("gemeinsam auf Ihre Startseite."));
     assert.equal(text.split("\n\n").length, 5);
+  });
+
+  it("schreibt den Tag kurz, wie der Post-Planer", () => {
+    assert.equal(tagKurz("2026-11-27"), "Fr 27.11.");
+    assert.equal(tagKurz("2027-01-03"), "So 3.1.");
+    assert.equal(tagKurz("2026-11-27"), formatShortDay("2026-11-27"));
+    assert.equal(tagKurz("irgendwann"), "irgendwann");
   });
 
   it("benennt die Bilddateien in der Reihenfolge der Serie", () => {

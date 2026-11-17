@@ -380,6 +380,19 @@ export function serieAlsText(serie: StorySerie): string {
   return [serie.titel, ...bilder].join("\n\n");
 }
 
+const WOCHENTAGE = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+
+/**
+ * „Fr 27.11.“ für einen Kalendertag (yyyy-mm-dd), wie formatShortDay in
+ * lib/admin/berlin-time.ts, aber ohne dessen Kalender (auch im Browser).
+ */
+export function tagKurz(datum: string): string {
+  const [y, m, d] = datum.split("-").map(Number);
+  const tag = new Date(Date.UTC(y, m - 1, d));
+  if (Number.isNaN(tag.getTime())) return datum;
+  return `${WOCHENTAGE[tag.getUTCDay()]} ${d}.${m}.`;
+}
+
 /** Dateiname eines Bildes der Serie, ohne Endung; sortiert sich nach der Reihenfolge. */
 export function serieDateiname(datum: string, nr: number, von: number): string {
   return `sitalo-${datum}-serie-bild-${nr}-von-${von}`;

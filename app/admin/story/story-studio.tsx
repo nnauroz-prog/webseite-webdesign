@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Check,
-  Copy,
-  Download,
-  Film,
-  Play,
-  RotateCcw,
-  Share2,
-  Shuffle,
-} from "lucide-react";
+import { Check, Copy, RotateCcw, Shuffle } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 
 import type { PostFormat, PostStand } from "@/lib/admin/post-planer";
@@ -18,26 +9,24 @@ import type { SpruchTag } from "@/lib/sprueche-data";
 import { setPostGepostetAction } from "@/app/admin/post-actions";
 import { runAction } from "@/app/admin/run-action";
 import {
+  BildUndVideo,
+  DUNKEL,
+  HELL,
+  useKartenBuehne,
+  Vorschau,
+} from "@/app/admin/story/buehne";
+import {
   FORMAT_LABELS,
   gepostetNach,
   NACHTRAGEN_TAGE,
   platzName,
   postStandIn,
 } from "@/lib/admin/post-planer";
-import {
-  FORMATE,
-  STORY_DAUER,
-  storyVorbereiten,
-  zeichneStory,
-  type StoryFormat,
-  type StoryZeichner,
-} from "@/lib/story-bild";
-import { kinoFreigeben } from "@/lib/story-kino";
-import { filmAlsMp4 } from "@/lib/story-video";
+import { FORMATE, type StoryFormat } from "@/lib/story-bild";
 import { cn } from "@/lib/utils";
 
 /**
- * Story-Studio im Admin: die Posts eines Tages als fertige Bilder und
+ * Die einzelnen Posts eines Tages im Story-Studio: fertige Bilder und
  * Kurzvideos, ohne jedes Seitenlayout.
  *
  * - Oben die Posts des Tages als Vorschaubilder (Spruch des Tages und
@@ -45,14 +34,8 @@ import { cn } from "@/lib/utils";
  * - Format: Story (1080 × 1920) oder Beitrag (1080 × 1350).
  * - Anderes Design würfelt Farbwelt, Motiv und Anordnung neu; Original
  *   stellt das Design des Tages wieder her.
- * - Bild teilen reicht die Bilddatei an das Teilen-Blatt des Handys
- *   (dort Instagram wählen), Bild sichern lädt sie herunter.
- * - Video erstellen rechnet den Film der Karte Bild für Bild und
- *   schreibt ihn als MP4. Das
- *   dauert etwas länger als der Film selbst, ruckelt dafür nicht. Kann
- *   der Browser das nicht, wird der Film wie früher in Echtzeit
- *   aufgenommen. Danach lässt er sich teilen oder sichern.
- * - Abspielen zeigt den Film sofort, in einer leichteren Fassung.
+ * - Bild und Video (teilen, sichern, erstellen, abspielen): die Bühne in
+ *   buehne.tsx, dieselbe wie bei den Story-Serien.
  * - Text kopieren legt den Beitragstext in die Zwischenablage.
  * - Abhaken hält fest, was schon gepostet ist, je Format (Story oder
  *   Beitrag) in der Datenbank (post_status, wie im Post-Planer). Ohne
@@ -69,38 +52,6 @@ export type GepostetEintrag = {
   format: PostFormat;
   text: string;
 };
-
-/** Videoformat, das dieser Browser aufnehmen kann; MP4 zuerst (Instagram). */
-function videoTyp(): { mime: string; endung: string } | null {
-  if (typeof MediaRecorder === "undefined") return null;
-  const kandidaten = [
-    { mime: "video/mp4;codecs=avc1.42E01E", endung: "mp4" },
-    { mime: "video/mp4", endung: "mp4" },
-    { mime: "video/webm;codecs=vp9", endung: "webm" },
-    { mime: "video/webm", endung: "webm" },
-  ];
-  return kandidaten.find((k) => MediaRecorder.isTypeSupported(k.mime)) ?? null;
-}
-
-/** Kleines Standbild eines Posts (Story-Format, ein Fünftel der Größe). */
-function Vorschau({ karte, versatz }: { karte: SpruchTag; versatz: number }) {
-  const flaeche = useRef<HTMLCanvasElement | null>(null);
-  useEffect(() => {
-    const c = flaeche.current;
-    if (c) void zeichneStory(c, karte, FORMATE.story, { skala: 0.2, versatz });
-  }, [karte, versatz]);
-  return (
-    <canvas
-      ref={flaeche}
-      width={216}
-      height={384}
-      aria-hidden="true"
-      className="block aspect-[9/16] w-full rounded-[8px] bg-[#0f2a3a]"
-    />
-  );
-}
-
-type Zustand = "laedt" | "bereit" | "spielt" | "nimmtAuf";
 
 export function StoryStudio({
   posts,
@@ -123,9 +74,6 @@ export function StoryStudio({
   /** false für Tage, die sich (noch) nicht abhaken lassen (Zukunft, lange her). */
   abhakenMoeglich?: boolean;
 }) {
-  const flaeche = useRef<HTMLCanvasElement | null>(null);
-  const zeichne = useRef<StoryZeichner | null>(null);
-  const lauf = useRef(0);
   const [gewaehlt, setGewaehlt] = useState(() =>
     Math.min(Math.max(start, 0), Math.max(posts.length - 1, 0)),
   );
@@ -134,15 +82,6 @@ export function StoryStudio({
   const [versaetze, setVersaetze] = useState<number[]>(() =>
     posts.map(() => 0),
   );
-  const [zustand, setZustand] = useState<Zustand>("laedt");
-  const [rest, setRest] = useState(0);
-  /** Fortschritt beim Rechnen des Videos (0 bis 1); null, wenn nicht gerechnet wird */
-  const [anteil, setAnteil] = useState<number | null>(null);
-  const abbruch = useRef<AbortController | null>(null);
-  /** Beendet eine laufende Aufnahme in Echtzeit, ohne ein Video zu behalten */
-  const echtzeitStopp = useRef<(() => void) | null>(null);
-  const [video, setVideo] = useState<File | null>(null);
-  const [meldung, setMeldung] = useState<string | null>(null);
   const [gepostet, setGepostet] = useState<string[]>([]);
   const [hakt, startHaken] = useTransition();
   const dbModus = gepostetDb !== null;
@@ -156,10 +95,15 @@ export function StoryStudio({
   /** Format fürs Abhaken (das Studio bietet nur Story und Beitrag). */
   const postFormat: PostFormat = format === "beitrag" ? "beitrag" : "story";
   const kennung = `${karte.datum}-${karte.platz}`;
-  const name = `sitalo-${karte.datum}-post${karte.platz + 1}-${format}`;
   const beschriftung = beschriftungen[gewaehlt] ?? "";
-  const frei = zustand === "bereit";
-  const beschaeftigt = zustand === "spielt" || zustand === "nimmtAuf";
+  const flaeche = useRef<HTMLCanvasElement | null>(null);
+  const buehne = useKartenBuehne(flaeche, {
+    karte,
+    format,
+    versatz,
+    name: `sitalo-${karte.datum}-post${karte.platz + 1}-${format}`,
+  });
+  const { frei, beschaeftigt, sagen, wechseln } = buehne;
 
   // Was schon gepostet ist, merkt sich dieses Gerät.
   useEffect(() => {
@@ -170,53 +114,6 @@ export function StoryStudio({
       // Ohne Speicher (privates Fenster) bleibt die Liste leer.
     }
   }, []);
-
-  // Gewählten Post vorbereiten und als Standbild zeigen. Der Effekt hängt
-  // am Inhalt des Posts, nicht am Objekt: Lädt die Seite ihre Daten neu
-  // (etwa nach der Rückkehr aus dem Hintergrund), bleibt ein laufendes
-  // Rechnen ungestört.
-  const inhalt = `${karte.datum}|${karte.platz}|${karte.kicker}|${karte.text}|${karte.zusatz}`;
-  const karteJetzt = useRef(karte);
-  useEffect(() => {
-    karteJetzt.current = karte;
-  });
-  useEffect(() => {
-    let abgebrochen = false;
-    const c = flaeche.current;
-    if (!c) return;
-    void storyVorbereiten(c, karteJetzt.current, FORMATE[format], {
-      versatz,
-      // Kino-Kamera: das Plakat im Raum gefilmt (wo der Browser es kann).
-      kino: true,
-    }).then((z) => {
-      if (abgebrochen) return;
-      zeichne.current = z;
-      z(Infinity);
-      setZustand("bereit");
-    });
-    return () => {
-      abgebrochen = true;
-      cancelAnimationFrame(lauf.current);
-      abbruch.current?.abort();
-      echtzeitStopp.current?.();
-      zeichne.current = null;
-    };
-  }, [inhalt, format, versatz]);
-
-  const sagen = useCallback((text: string) => {
-    setMeldung(text);
-    window.setTimeout(() => setMeldung(null), 4200);
-  }, []);
-
-  /** Vor jedem Wechsel (Post, Format, Design): Film anhalten, Video verwerfen. */
-  const wechseln = (aendern: () => void) => {
-    cancelAnimationFrame(lauf.current);
-    abbruch.current?.abort();
-    echtzeitStopp.current?.();
-    setZustand("laedt");
-    setVideo(null);
-    aendern();
-  };
 
   const neuesDesign = (schritt: number | null) =>
     wechseln(() =>
@@ -257,220 +154,6 @@ export function StoryStudio({
     }
   };
 
-  /** Spielt den Film einmal ab; am Ende steht wieder das Standbild. */
-  const abspielen = useCallback((amEnde?: () => void) => {
-    const z = zeichne.current;
-    if (!z) return;
-    // Schafft das Gerät die Kino-Kamera in Echtzeit nicht flüssig (zwei
-    // Probebilder vor dem Start oder der Median der ersten zwölf
-    // Bildabstände über 40 ms), läuft die Vorschau flach. Fürs Video gilt
-    // das nicht: Es wird Bild für Bild gerechnet und darf langsam sein.
-    const mitKino = z.kino === true;
-    if (mitKino) {
-      const probe = performance.now();
-      z(0);
-      z(1 / 30);
-      if ((performance.now() - probe) / 2 > 40) z.kino = false;
-    }
-    // Die Uhr rückt je Bild höchstens 50 ms vor: Hakt ein Bild, läuft der
-    // Film kurz langsamer, statt Bilder zu überspringen.
-    let t = 0;
-    let zuletzt = performance.now();
-    const takte: number[] = [];
-    const bild = (jetzt: number) => {
-      const schritt = Math.max(0, jetzt - zuletzt);
-      zuletzt = jetzt;
-      t += Math.min(schritt, 50) / 1000;
-      if (t >= STORY_DAUER) {
-        z(Infinity);
-        if (mitKino) z.kino = true;
-        amEnde?.();
-        return;
-      }
-      if (z.kino && takte.length < 12) {
-        takte.push(schritt);
-        if (takte.length === 12) {
-          const sortiert = takte.slice(1).sort((a, b) => a - b);
-          if (sortiert[Math.floor(sortiert.length / 2)] > 40) z.kino = false;
-        }
-      }
-      z(t);
-      setRest(Math.ceil(STORY_DAUER - t));
-      lauf.current = requestAnimationFrame(bild);
-    };
-    lauf.current = requestAnimationFrame(bild);
-  }, []);
-
-  const vorschau = useCallback(() => {
-    setZustand("spielt");
-    abspielen(() => setZustand("bereit"));
-  }, [abspielen]);
-
-  /** Ersatz für ältere Browser: den Film abspielen und dabei aufnehmen. */
-  const inEchtzeit = useCallback(() => {
-    const c = flaeche.current;
-    const typ = videoTyp();
-    if (!c || !typ || typeof c.captureStream !== "function") {
-      setZustand("bereit");
-      sagen(
-        "Dieser Browser kann kein Video erstellen. Am iPhone in Safari klappt es.",
-      );
-      return;
-    }
-    const stueck: BlobPart[] = [];
-    const strom = c.captureStream(30);
-    const rekorder = new MediaRecorder(strom, {
-      mimeType: typ.mime,
-      videoBitsPerSecond: 8_000_000,
-    });
-    rekorder.ondataavailable = (e) => {
-      if (e.data.size > 0) stueck.push(e.data);
-    };
-    echtzeitStopp.current = () => {
-      echtzeitStopp.current = null;
-      rekorder.ondataavailable = null;
-      rekorder.onstop = null;
-      rekorder.onerror = null;
-      if (rekorder.state !== "inactive") rekorder.stop();
-      strom.getTracks().forEach((s) => s.stop());
-    };
-    rekorder.onstop = () => {
-      echtzeitStopp.current = null;
-      strom.getTracks().forEach((s) => s.stop());
-      const blob = new Blob(stueck, { type: typ.mime.split(";")[0] });
-      setVideo(new File([blob], `${name}.${typ.endung}`, { type: blob.type }));
-      setZustand("bereit");
-      sagen(
-        typ.endung === "mp4"
-          ? "Video fertig. Jetzt teilen oder sichern."
-          : "Video fertig (WebM). Instagram nimmt nur MP4: Erstelle es am iPhone in Safari.",
-      );
-    };
-    rekorder.onerror = () => {
-      echtzeitStopp.current?.();
-      cancelAnimationFrame(lauf.current);
-      zeichne.current?.(Infinity);
-      setZustand("bereit");
-      sagen("Die Aufnahme hat nicht geklappt. Versuch es noch einmal.");
-    };
-    rekorder.start();
-    // Kurz nach dem letzten Bild stoppen, damit es sicher im Film ist.
-    abspielen(() =>
-      window.setTimeout(() => {
-        if (rekorder.state !== "inactive") rekorder.stop();
-      }, 250),
-    );
-  }, [abspielen, name, sagen]);
-
-  /** Rechnet den Film Bild für Bild als MP4 (ruckelfrei). */
-  const aufnehmen = useCallback(async () => {
-    const c = flaeche.current;
-    const z = zeichne.current;
-    if (!c || !z) return;
-    setVideo(null);
-    setZustand("nimmtAuf");
-    setAnteil(0);
-    const stopp = new AbortController();
-    abbruch.current = stopp;
-    let datei: Blob | null = null;
-    const rechnen = () =>
-      // Fürs Video mit Bewegungsunschärfe (fein = true).
-      filmAlsMp4(c, (t) => z(t, true), {
-        dauer: STORY_DAUER,
-        fortschritt: setAnteil,
-        abbruch: stopp.signal,
-      });
-    try {
-      const mitKino = z.kino === true;
-      datei = await rechnen();
-      // Fällt die Kino-Kamera mitten im Film aus (etwa wenn das Gerät den
-      // Grafikspeicher braucht), hätte das Video einen harten Schnitt.
-      // Dann noch einmal durchgehend flach rechnen.
-      if (datei && mitKino && z.kino === false) {
-        setAnteil(0);
-        datei = await rechnen();
-      }
-    } catch {
-      // Abgebrochen oder gescheitert: wird unten behandelt.
-    }
-    kinoFreigeben();
-    if (abbruch.current === stopp) abbruch.current = null;
-    setAnteil(null);
-    // Derselbe Post steht noch da (kein Wechsel): Standbild zurück.
-    const nochDa = zeichne.current === z;
-    if (stopp.signal.aborted) {
-      // Über den Knopf abgebrochen. Bei einem Wechsel räumt der neue
-      // Post selbst auf.
-      if (nochDa) {
-        z(Infinity);
-        setZustand("bereit");
-        sagen("Abgebrochen.");
-      }
-      return;
-    }
-    if (!nochDa) return;
-    // Der Browser kann nicht rechnen (oder es ist gescheitert): wie
-    // früher in Echtzeit aufnehmen.
-    if (!datei) return inEchtzeit();
-    z(Infinity);
-    setVideo(new File([datei], `${name}.mp4`, { type: "video/mp4" }));
-    setZustand("bereit");
-    sagen("Video fertig. Jetzt teilen oder sichern.");
-  }, [inEchtzeit, name, sagen]);
-
-  const alsBild = useCallback(
-    () =>
-      new Promise<File | null>((fertig) => {
-        const c = flaeche.current;
-        if (!c) return fertig(null);
-        // JPEG statt PNG: Das feine Korn macht PNG mehrere Megabyte
-        // groß; Instagram wandelt ohnehin in JPEG um.
-        c.toBlob(
-          (blob) =>
-            fertig(
-              blob
-                ? new File([blob], `${name}.jpg`, { type: "image/jpeg" })
-                : null,
-            ),
-          "image/jpeg",
-          0.93,
-        );
-      }),
-    [name],
-  );
-
-  const laden = useCallback(
-    (datei: File) => {
-      const url = URL.createObjectURL(datei);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = datei.name;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
-      sagen("Gesichert.");
-    },
-    [sagen],
-  );
-
-  /** Datei an das Teilen-Blatt geben; ohne Teilen-Blatt (Rechner) sichern. */
-  const teilen = useCallback(
-    async (datei: File | null) => {
-      if (!datei) return sagen("Die Datei konnte nicht erzeugt werden.");
-      if (navigator.canShare?.({ files: [datei] })) {
-        try {
-          await navigator.share({ files: [datei] });
-        } catch {
-          // Abgebrochen: nichts tun.
-        }
-        return;
-      }
-      laden(datei);
-    },
-    [laden, sagen],
-  );
-
   const kopieren = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(beschriftung);
@@ -480,13 +163,6 @@ export function StoryStudio({
     }
   }, [beschriftung, sagen]);
 
-  const knopf =
-    "inline-flex h-11 items-center justify-center gap-2 rounded-[3px] px-4 text-[15px] font-medium disabled:opacity-50";
-  const hell = cn(
-    "border-border hover:border-foreground/40 border transition-colors",
-    knopf,
-  );
-  const dunkel = cn("bg-foreground text-background", knopf);
   const istGepostet = dbModus
     ? standDb(karte, postFormat) === "gepostet"
     : gepostet.includes(kennung);
@@ -500,13 +176,8 @@ export function StoryStudio({
       : null;
 
   return (
-    <div className="mt-5">
+    <div className="mt-4">
       {/* Posts des Tages */}
-      <h2 className="mb-2 text-[15px] font-semibold tracking-tight">
-        {posts.length === 1
-          ? "Post für diesen Tag"
-          : `${posts.length} Posts für diesen Tag`}
-      </h2>
       <div
         role="group"
         aria-label="Post wählen"
@@ -585,7 +256,7 @@ export function StoryStudio({
                 }
                 disabled={beschaeftigt}
                 className={cn(
-                  "h-10 rounded-[2px] text-[14px] font-medium transition-colors disabled:opacity-50",
+                  "h-11 rounded-[2px] text-[14px] font-medium transition-colors disabled:opacity-50",
                   format === wert && "bg-foreground text-background",
                 )}
               >
@@ -607,7 +278,7 @@ export function StoryStudio({
               type="button"
               onClick={() => neuesDesign(1)}
               disabled={!frei}
-              className={cn(hell, "flex-1")}
+              className={cn(HELL, "flex-1")}
             >
               <Shuffle className="h-4 w-4" aria-hidden="true" />
               Anderes Design
@@ -617,7 +288,7 @@ export function StoryStudio({
                 type="button"
                 onClick={() => neuesDesign(null)}
                 disabled={!frei}
-                className={hell}
+                className={HELL}
               >
                 <RotateCcw className="h-4 w-4" aria-hidden="true" />
                 Original
@@ -628,102 +299,16 @@ export function StoryStudio({
 
         {/* Werkzeuge */}
         <div>
-          <h2 className="mb-2 text-[15px] font-semibold tracking-tight">
-            Bild
-          </h2>
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-            <button
-              type="button"
-              onClick={async () => teilen(await alsBild())}
-              disabled={!frei}
-              className={dunkel}
-            >
-              <Share2 className="h-4 w-4" aria-hidden="true" />
-              Bild teilen
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                const b = await alsBild();
-                if (b) laden(b);
-              }}
-              disabled={!frei}
-              className={hell}
-            >
-              <Download className="h-4 w-4" aria-hidden="true" />
-              Bild sichern
-            </button>
-          </div>
+          <BildUndVideo buehne={buehne} />
 
-          <h2 className="mt-5 mb-2 text-[15px] font-semibold tracking-tight">
-            Kurzvideo ({STORY_DAUER} Sekunden)
-          </h2>
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-            <button
-              type="button"
-              // Während des Rechnens bricht derselbe Knopf ab.
-              onClick={
-                anteil === null ? aufnehmen : () => abbruch.current?.abort()
-              }
-              disabled={!frei && anteil === null}
-              className={video ? hell : dunkel}
-            >
-              <Film className="h-4 w-4" aria-hidden="true" />
-              {zustand === "nimmtAuf"
-                ? anteil === null
-                  ? `Nimmt auf … ${rest} s`
-                  : `Abbrechen · ${Math.round(anteil * 100)} %`
-                : video
-                  ? "Neu erstellen"
-                  : "Video erstellen"}
-            </button>
-            <button
-              type="button"
-              onClick={vorschau}
-              disabled={!frei}
-              className={hell}
-            >
-              <Play className="h-4 w-4" aria-hidden="true" />
-              Abspielen
-            </button>
-            {video ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => teilen(video)}
-                  disabled={!frei}
-                  className={dunkel}
-                >
-                  <Share2 className="h-4 w-4" aria-hidden="true" />
-                  Video teilen
-                </button>
-                <button
-                  type="button"
-                  onClick={() => laden(video)}
-                  disabled={!frei}
-                  className={hell}
-                >
-                  <Download className="h-4 w-4" aria-hidden="true" />
-                  Video sichern
-                </button>
-              </>
-            ) : null}
-          </div>
-          <p
-            role="status"
-            className="text-muted-foreground mt-2 min-h-5 text-[14px]"
-          >
-            {meldung}
-          </p>
-
-          <h2 className="mt-3 mb-1 text-[15px] font-semibold tracking-tight">
+          <h3 className="mt-3 mb-1 text-[15px] font-semibold tracking-tight">
             Text für den Beitrag
-          </h2>
+          </h3>
           <p className="border-border bg-foreground/[0.03] rounded-[3px] border px-3 py-2 text-[15px] leading-6 whitespace-pre-line select-all">
             {beschriftung}
           </p>
           <div className="mt-2 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-            <button type="button" onClick={kopieren} className={hell}>
+            <button type="button" onClick={kopieren} className={HELL}>
               <Copy className="h-4 w-4" aria-hidden="true" />
               Text kopieren
             </button>
@@ -732,7 +317,7 @@ export function StoryStudio({
               onClick={markieren}
               aria-pressed={istGepostet}
               disabled={dbModus && (hakt || !abhakenMoeglich)}
-              className={istGepostet ? dunkel : hell}
+              className={istGepostet ? DUNKEL : HELL}
             >
               <Check className="h-4 w-4" aria-hidden="true" />
               {dbModus
