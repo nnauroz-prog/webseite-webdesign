@@ -81,10 +81,10 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       {
         rolle: "problem",
         kicker: "Real Talk",
-        text: "„Preis auf Anfrage“ liest sich wie: lieber nicht fragen.",
-        betont: "nicht fragen",
+        text: "Wer „Preis auf Anfrage“ liest, fragt lieber gar nicht.",
+        betont: "gar nicht",
         zusatz:
-          "Wer keine Hausnummer findet, rechnet mit dem Schlimmsten und sucht weiter.",
+          "Ohne Hausnummer rechnet man mit dem Schlimmsten und sucht weiter.",
         thema: "texte",
       },
       {

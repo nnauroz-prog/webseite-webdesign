@@ -996,6 +996,17 @@ type SatzStil = {
    * leeres Feld, das die Lösung im nächsten Bild füllt.
    */
   rahmen?: boolean;
+  /**
+   * Zusätzliche Luft über einer Zeile, wo der enge Zeilenabstand sonst
+   * zwei Zeilen zusammenstoßen lässt (Anteile der Größe; für die Bilder
+   * einer Story-Serie):
+   * - tief: Über einem großen A, O oder U steht in der Zeile darüber ein
+   *   „ – es läse sich wie ein Umlaut („Änfrage“).
+   * - umlaut: In der Zeile steht ein großer Umlaut, seine Punkte stießen
+   *   an die Zeile darüber (Versalsatz).
+   * - komma: Über der Zeile hängt ein Komma in ihre Buchstaben (Versalsatz).
+   */
+  luft?: { tief: number; umlaut?: number; komma?: number };
 };
 
 /** Ein gesetzter Satz: Maße, die Lage der Pointe und die Zeichenfunktion. */
@@ -1173,6 +1184,78 @@ function setzeSatz(
     let weite = 0;
     let einsam = false;
     let block: number | null = null;
+    /** Zeichen der vorigen Zeile, die unter die Grundlinie reichen (für stil.luft). */
+    let tiefDavor: { von: number; bis: number; komma: boolean }[] | null = null;
+    /**
+     * Luft über der eben gesetzten Zeile (stil.luft), damit sie nicht mit
+     * der Zeile darüber zusammenstößt; 0, wo der Stil keine verlangt.
+     * gedruckt und pointe: die Wörter der Zeile an ihrem endgültigen Ort.
+     */
+    const zeilenLuft = (
+      gedruckt: { t: string; x: number }[],
+      pointe: Streifen[],
+      p: number,
+    ): number => {
+      const wahl = stil.luft;
+      if (!wahl) return 0;
+      const woerter = [
+        ...gedruckt.map((w) => ({ ...w, betont: false })),
+        ...pointe.flatMap((s) =>
+          s.woerter.map((w) => ({ ...w, betont: true })),
+        ),
+      ];
+      /** Wo in der Zeile die Zeichen des Musters stehen (alle: ganze Wörter). */
+      const stellen = (muster: RegExp | null) => {
+        const orte: { von: number; bis: number; zeichen: string }[] = [];
+        for (const w of woerter) {
+          ctx.font = w.betont ? kursiv(p) : grund(g);
+          sperren(ctx, w.betont ? p * pSperrung : g * stil.sperrung);
+          const bis = (n: number) => ctx.measureText(w.t.slice(0, n)).width;
+          if (!muster)
+            orte.push({ von: w.x, bis: w.x + bis(w.t.length), zeichen: w.t });
+          else
+            [...w.t].forEach((zeichen, i) => {
+              if (muster.test(zeichen))
+                orte.push({
+                  von: w.x + bis(i),
+                  bis: w.x + bis(i + 1),
+                  zeichen,
+                });
+            });
+        }
+        sperren(ctx, 0);
+        return orte;
+      };
+      const unter = (
+        orte: { von: number; bis: number }[],
+        komma: boolean,
+        spiel: number,
+      ) =>
+        !!tiefDavor?.some(
+          (t) =>
+            t.komma === komma &&
+            orte.some((o) => o.von < t.bis - spiel && t.von < o.bis - spiel),
+        );
+      let luft = 0;
+      if (tiefDavor) {
+        // Punkte großer Umlaute: nur ohne Farbstreifen (der hat eigene Luft).
+        if (
+          wahl.umlaut &&
+          woerter.some((w) => !(balken && w.betont) && /[ÄÖÜ]/.test(w.t))
+        )
+          luft = g * wahl.umlaut;
+        if (wahl.komma && unter(stellen(null), true, 0))
+          luft = Math.max(luft, g * wahl.komma);
+        if (unter(stellen(/[AOUÄÖÜ]/), false, g * 0.04))
+          luft = Math.max(luft, g * wahl.tief);
+      }
+      tiefDavor = stellen(/[„‚,;]/).map((o) => ({
+        von: o.von,
+        bis: o.bis,
+        komma: o.zeichen === "," || o.zeichen === ";",
+      }));
+      return luft;
+    };
     /** Auf der Mittelachse: eine Zeile um ihre halbe freie Breite einrücken. */
     const einruecken = (
       breiteZeile: number,
@@ -1216,7 +1299,7 @@ function setzeSatz(
           // größer gesetzt): entsprechend mehr Luft zur Zeile darüber.
           const davor =
             mitStreifen && zeilen.length ? p * oben - g * stil.kapp : 0;
-          const grundlinie = hoehe + davor + g * stil.ober;
+          let grundlinie = hoehe + davor + g * stil.ober;
           const gedruckt: { t: string; x: number }[] = [];
           const ab = streifen.length;
           let x = 0;
@@ -1252,10 +1335,15 @@ function setzeSatz(
             x += w.breite + abstand;
           }
           const d = einruecken(x - abstand, gedruckt, ab);
+          const luft = zeilenLuft(gedruckt, streifen.slice(ab), p);
+          if (luft) {
+            grundlinie += luft;
+            for (const s of streifen.slice(ab)) s.grundlinie += luft;
+          }
           zeilen.push({ grundlinie, woerter: gedruckt });
           linien.push({ grundlinie, x0: d, x1: d + x - abstand, g });
           weite = Math.max(weite, x - abstand);
-          hoehe += zeilenHoehe + davor + (mitStreifen ? g * 0.17 : 0);
+          hoehe += zeilenHoehe + davor + luft + (mitStreifen ? g * 0.17 : 0);
         }
       }
       const ende = letzte[letzte.length - 1];
@@ -1281,12 +1369,13 @@ function setzeSatz(
             x += w.breite + abstand;
             return lage;
           });
-          const grundlinie = hoehe + g * stil.ober;
           const d = einruecken(z.breite, gedruckt, streifen.length);
+          const luft = zeilenLuft(gedruckt, [], g);
+          const grundlinie = hoehe + luft + g * stil.ober;
           zeilen.push({ grundlinie, woerter: gedruckt });
           linien.push({ grundlinie, x0: d, x1: d + z.breite, g });
           weite = Math.max(weite, z.breite);
-          hoehe += zeilenHoehe;
+          hoehe += zeilenHoehe + luft;
         }
       }
       if (stil.kurzAllein && kurzAllein(zeilen)) einsam = true;
@@ -4495,6 +4584,8 @@ function farbfeld(k: Basis): Maler {
     maxG: story ? 140 : 124,
     schraeg: 0,
     rahmen: rolle === "problem",
+    // Serie: Ein „ steht nicht wie ein Umlaut über der nächsten Zeile.
+    luft: k.serie ? { tief: 0.16 } : undefined,
   });
   const y = lage(k, k.oben, satzUnten, satz.hoehe);
   k.hafenBand = [y + satz.hoehe + 40, zusatzY - 30];
@@ -4738,6 +4829,8 @@ function raster(k: Basis): Maler {
     groteskSatz({
       maxG: (story ? 184 : 156) + (rolle === "aufhaenger" ? 16 : 0),
       pointe: mitFarbe ? "farbe" : "linie",
+      // Serie: Ein „ steht nicht wie ein Umlaut über der nächsten Zeile.
+      luft: k.serie ? { tief: 0.16 } : undefined,
       ...rollenStil(k),
     }),
   );
@@ -4944,6 +5037,9 @@ function schlagzeile(k: Basis): Maler {
       kapp: 0.74,
       wort: 0.24,
       pointe: mitFarbe ? "farbe" : "linie",
+      // Serie: Die Punkte großer Umlaute, ein „ und ein Komma stoßen
+      // nicht an die Nachbarzeile.
+      luft: k.serie ? { tief: 0.16, umlaut: 0.1, komma: 0.08 } : undefined,
       ...rollenStil(k),
     }),
   );
