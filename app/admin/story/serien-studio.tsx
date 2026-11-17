@@ -583,13 +583,16 @@ export function SerienStudio({
           </p>
         ) : null}
         {liste.length === 0 ? (
-          <p className={LEER}>
-            {frisch
-              ? "Weitere Aufträge gibt es noch nicht."
-              : bereit
-                ? "Noch kein Auftrag. Oben gibst du den Agenten den ersten."
-                : "Noch kein Auftrag."}
-          </p>
+          // Ließ sich nichts laden, sagt das schon der Satz darüber.
+          auftraegeFehler ? null : (
+            <p className={LEER}>
+              {frisch
+                ? "Weitere Aufträge gibt es noch nicht."
+                : bereit && tag >= heute
+                  ? "Noch kein Auftrag. Oben gibst du den Agenten den ersten."
+                  : "Noch kein Auftrag."}
+            </p>
+          )
         ) : (
           <ul className="space-y-2">
             {sichtbar.map((z) => (
