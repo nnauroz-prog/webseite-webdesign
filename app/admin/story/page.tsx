@@ -212,7 +212,7 @@ export default async function StoryPage({
         role="region"
         id="einzelne-posts"
         aria-labelledby="einzelne-posts-title"
-        className="mt-7 scroll-mt-3"
+        className="mt-7 scroll-mt-[calc(var(--sticky-top)*-1)]"
       >
         <h2
           id="einzelne-posts-title"

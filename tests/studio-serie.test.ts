@@ -704,10 +704,10 @@ describe("studioVorschlaege", () => {
         "Mach was zu heute",
       ],
     );
-    assert.equal(liste[0].auftrag, "Story-Serie zum Anlass „Winterdom läuft“.");
+    assert.equal(liste[0].auftrag, "Story-Serie zum Anlass: Winterdom läuft");
     assert.equal(
       liste[2].auftrag,
-      "Story-Serie zum Anlass „Black Friday“ am Fr 27.11.",
+      "Story-Serie zum Anlass: Black Friday (am Fr 27.11.)",
     );
     assert.equal(liste.at(-1)?.auftrag, "");
   });
@@ -738,7 +738,7 @@ describe("studioVorschlaege", () => {
     );
     assert.equal(
       ruhig[0].auftrag,
-      "Story-Serie zum Spruch des Tages: „Ein Satz.“",
+      "Story-Serie zum Spruch des Tages: Ein Satz.",
     );
     // Ohne Spruch bleibt nur der leere Auftrag.
     assert.deepEqual(labels("2027-01-10"), ["Mach was zu heute"]);
@@ -761,6 +761,8 @@ describe("studioVorschlaege", () => {
       assert.equal(new Set(liste.map((v) => v.label)).size, liste.length, tag);
       assert.equal(liste.at(-1)?.auftrag, "", tag);
       for (const v of liste) {
+        // Das Studio setzt den Auftrag selbst in Anführungszeichen.
+        assert.doesNotMatch(v.auftrag, /[„“"]/, `${tag}: ${v.auftrag}`);
         assert.ok(v.label.length <= 34, `${tag}: ${v.label}`);
         assert.ok(v.auftrag.length <= AUFTRAG_MAX, tag);
       }

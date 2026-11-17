@@ -266,7 +266,7 @@ export function Redaktion({
         drei bis fünf Bilder, die zusammen eine kleine Geschichte erzählen.
       </p>
       <form
-        className="mt-3"
+        className="mt-3 lg:max-w-3xl"
         onSubmit={(e) => {
           e.preventDefault();
           void starten(text.trim());

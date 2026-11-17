@@ -180,7 +180,7 @@ export function SerienBetrachter({
         role="tablist"
         aria-label={`Bilder der Serie „${serie.titel}“`}
         onKeyDown={tasten}
-        className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1"
+        className="flex gap-0.5 overflow-x-auto p-0.5"
       >
         {karten.map((k, i) => {
           const aktiv = i === stelle;
@@ -211,7 +211,7 @@ export function SerienBetrachter({
               <span className="mt-1 block text-[12px] leading-4 font-semibold tabular-nums">
                 {k.folge.nr}
               </span>
-              <span className="text-muted-foreground block truncate text-[11px] leading-4">
+              <span className="text-muted-foreground block text-[10.5px] leading-4 tracking-tight whitespace-nowrap">
                 {ROLLE_LABEL[k.rolle]}
               </span>
             </button>
@@ -295,14 +295,15 @@ export function SerienBetrachter({
           </div>
           <p
             role="status"
-            className="text-muted-foreground mt-2 min-h-5 text-[14px]"
+            className="text-ink-petrol mt-2 min-h-5 text-[14px] font-medium"
           >
             {meldung}
           </p>
           <p className="text-muted-foreground text-[14px] leading-5">
-            So postest du die Serie: Im Teilen-Menü die Bilder sichern. Dann in
-            Instagram eine neue Story anlegen, „Auswählen“ antippen und die
-            Bilder in der Reihenfolge 1 bis {von} markieren.
+            So postest du die Serie: „Alle Bilder teilen“ antippen und im
+            Teilen-Menü die Bilder sichern. Dann in Instagram eine neue Story
+            anlegen, „Auswählen“ antippen und die Bilder in der Reihenfolge 1
+            bis {von} markieren.
           </p>
 
           <div className="border-border mt-4 border-t pt-4">

@@ -18,7 +18,11 @@ import { AUFTRAG_MAX } from "@/lib/redaktion/vertrag";
 export type Vorschlag = {
   /** Steht auf dem Knopf: „Black Friday in Sicht“. */
   label: string;
-  /** Geht als Auftrag an die Redaktion; leer heißt „Mach was zu heute“. */
+  /**
+   * Geht als Auftrag an die Redaktion; leer heißt „Mach was zu heute“.
+   * Ohne Anführungszeichen: Das Studio zeigt den Auftrag später selbst in
+   * Anführungszeichen.
+   */
   auftrag: string;
 };
 
@@ -58,7 +62,7 @@ export function studioVorschlaege(
 
   const amTag = anlaesseFuer(tag).filter((a) => !STILL.has(a.name));
   for (const a of amTag.slice(0, 2))
-    dazu(a.name, `Story-Serie zum Anlass „${a.name}“.`);
+    dazu(a.name, `Story-Serie zum Anlass: ${a.name}`);
 
   // Was schon läuft oder gerade endet, ist kein Ausblick.
   const zustand = new Set(
@@ -70,15 +74,12 @@ export function studioVorschlaege(
     if (a.datum <= tag || STILL.has(a.name) || zustand.has(a.name)) continue;
     dazu(
       `${ohneBeginn(a.name)} in Sicht`,
-      `Story-Serie zum Anlass „${a.name}“ am ${formatShortDay(a.datum)}`,
+      `Story-Serie zum Anlass: ${a.name} (am ${formatShortDay(a.datum)})`,
     );
   }
 
   if (liste.length < 2 && spruch)
-    dazu(
-      "Zum Spruch des Tages",
-      `Story-Serie zum Spruch des Tages: „${spruch}“`,
-    );
+    dazu("Zum Spruch des Tages", `Story-Serie zum Spruch des Tages: ${spruch}`);
 
   liste.push({
     label: tag === heute ? "Mach was zu heute" : "Mach was zu diesem Tag",

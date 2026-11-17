@@ -101,12 +101,12 @@ function Klappe({
   return (
     <div
       id={domId}
-      className="border-border bg-card scroll-mt-3 rounded-[4px] border"
+      className="border-border bg-card scroll-mt-[calc(var(--sticky-top)*-1)] rounded-[4px] border"
     >
       <h3>
         <button
           type="button"
-          data-kopf=""
+          data-serie-kopf=""
           aria-expanded={offen}
           aria-controls={offen ? feld : undefined}
           onClick={onToggle}
@@ -138,7 +138,7 @@ function Klappe({
         </button>
       </h3>
       {offen ? (
-        <div id={feld} className="border-border border-t p-4">
+        <div id={feld} className="border-border border-t p-3 sm:p-4">
           {children}
         </div>
       ) : null}
@@ -176,6 +176,18 @@ function AuftragKarte({
   } | null>(null);
   const lokal = istLokal(zeile.id);
   const gepostet = zeile.gepostet_at !== null;
+  const ausweg = useRef<HTMLButtonElement | null>(null);
+  const loeschKnopf = useRef<HTMLButtonElement | null>(null);
+  const hatGefragt = useRef(false);
+
+  // Rückfrage auf und zu: Der Knopf mit dem Fokus ist dann weg. Er geht
+  // auf den sicheren Ausweg und danach zurück auf „Löschen“.
+  useEffect(() => {
+    if (fragt) ausweg.current?.focus({ preventScroll: true });
+    else if (hatGefragt.current)
+      loeschKnopf.current?.focus({ preventScroll: true });
+    hatGefragt.current = fragt;
+  }, [fragt]);
 
   useEffect(() => {
     if (!meldung) return;
@@ -284,8 +296,7 @@ function AuftragKarte({
             </button>
             <button
               type="button"
-              // Der Knopf „Löschen“ ist weg: Der Fokus geht auf den sicheren Ausweg.
-              ref={(el) => el?.focus({ preventScroll: true })}
+              ref={ausweg}
               onClick={() => setFragt(false)}
               disabled={pending}
               className={HELL}
@@ -314,6 +325,7 @@ function AuftragKarte({
             </button>
             <button
               type="button"
+              ref={loeschKnopf}
               onClick={() => {
                 setMeldung(null);
                 setFragt(true);
@@ -417,7 +429,7 @@ export function SerienStudio({
     sprung.current = null;
     karte.scrollIntoView({ block: "start" });
     karte
-      .querySelector<HTMLElement>("[data-kopf]")
+      .querySelector<HTMLElement>("[data-serie-kopf]")
       ?.focus({ preventScroll: true });
   });
 

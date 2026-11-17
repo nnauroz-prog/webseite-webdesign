@@ -483,7 +483,11 @@ export function BildUndVideo({
   /** false: alle Knöpfe hell (wenn ein anderer Knopf der wichtigste ist). */
   betont?: boolean;
 }) {
-  const stark = betont ? DUNKEL : HELL;
+  // Zwei Knöpfe nebeneinander müssen auch in einer aufgeklappten Serie am
+  // iPhone ihre Beschriftung in eine Zeile bekommen.
+  const schmal = "px-3 whitespace-nowrap sm:px-4";
+  const hell = cn(HELL, schmal);
+  const stark = cn(betont ? DUNKEL : HELL, schmal);
   return (
     <>
       <Kopf className={KOPF}>{bildTitel}</Kopf>
@@ -504,7 +508,7 @@ export function BildUndVideo({
             if (bild) b.laden(bild);
           }}
           disabled={!b.frei}
-          className={HELL}
+          className={hell}
         >
           <Download className="h-4 w-4" aria-hidden="true" />
           Bild sichern
@@ -520,7 +524,7 @@ export function BildUndVideo({
           // Während des Rechnens bricht derselbe Knopf ab.
           onClick={b.anteil === null ? b.aufnehmen : b.abbrechen}
           disabled={!b.frei && b.anteil === null}
-          className={b.video ? HELL : stark}
+          className={b.video ? hell : stark}
         >
           <Film className="h-4 w-4" aria-hidden="true" />
           {b.zustand === "nimmtAuf"
@@ -535,7 +539,7 @@ export function BildUndVideo({
           type="button"
           onClick={b.vorschau}
           disabled={!b.frei}
-          className={HELL}
+          className={hell}
         >
           <Play className="h-4 w-4" aria-hidden="true" />
           Abspielen
@@ -555,7 +559,7 @@ export function BildUndVideo({
               type="button"
               onClick={() => (b.video ? b.laden(b.video) : undefined)}
               disabled={!b.frei}
-              className={HELL}
+              className={hell}
             >
               <Download className="h-4 w-4" aria-hidden="true" />
               Video sichern
