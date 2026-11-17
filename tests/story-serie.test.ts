@@ -553,12 +553,26 @@ describe("Story-Serien des Tages", () => {
       titel: "Advent in Sicht",
       datum: "2026-11-19",
     };
-    // Fast wörtlich eine Tageskarte vom 17.11. (andere Satzzeichen).
-    const funde = beinaheDoppelungen([bild], RESERVE, AKTUELL);
+    // Fast wörtlich eine Tageskarte (andere Satzzeichen).
+    const tageskarte = {
+      text: "Die Startseite ist voller als der Rathausmarkt am Samstag.",
+      anlass: "Weihnachtsmarkt ab Montag",
+      datum: "2026-11-17",
+    };
+    const funde = beinaheDoppelungen([bild], RESERVE, [tageskarte]);
     assert.ok(
       funde.some((f) => f.includes("(2026-11-17)")),
       JSON.stringify(funde),
     );
+    // Auch eine Karte der Reserve darf kein Bild fast wörtlich wiederholen.
+    const reserve = {
+      text: "Unter jeder Bewertung steht eine freundliche Antwort.",
+    };
+    const ausReserve = {
+      ...bild,
+      text: "Steht unter jeder Bewertung eine freundliche Antwort?",
+    };
+    assert.equal(beinaheDoppelungen([ausReserve], [reserve], []).length, 1);
     // Zwei Bilder derselben Serie mit denselben Wörtern fallen auch auf.
     const zwilling = {
       ...bild,

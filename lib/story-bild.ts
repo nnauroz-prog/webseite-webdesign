@@ -88,6 +88,10 @@
  * Auf jedem Bild steht höchstens eine orange Pille. Der Film läuft in
  * jedem Bild der Serie anders ab (filmFuerFolge in lib/story-variante.ts);
  * der Winkel und der Kontaktblock kommen nach dem Zusatz ins Bild.
+ * Wo der enge Zeilenabstand zwei Zeilen zusammenstoßen ließe, bekommt
+ * die untere etwas Luft (SatzStil.luft): unter einem „, das über einem
+ * großen A, O oder U wie ein Umlaut stünde, in der Schlagzeile auch über
+ * großen Umlauten und unter einem Komma.
  */
 import {
   HAMBURG_HORIZONT,
