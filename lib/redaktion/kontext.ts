@@ -53,6 +53,8 @@ export type RedaktionKontext = {
   datum: string;
   /** „Freitag, 27. November 2026“ */
   datumLang: string;
+  /** Der heutige Tag in Hamburg, in derselben Form. */
+  heuteLang: string;
   /** Tage von heute bis zum Tag der Serie (−1 gestern, 0 heute, 1 morgen …). */
   abstand: number;
   /** Was am Tag der Serie ansteht. */
@@ -137,10 +139,12 @@ export function baueKontext(
     (a) => !amTag.has(a.name),
   );
 
+  const heute = berlinDateIso(jetzt);
   return {
     datum,
     datumLang: formatLongDay(datum, true),
-    abstand: daysBetween(berlinDateIso(jetzt), datum),
+    heuteLang: formatLongDay(heute, true),
+    abstand: daysBetween(heute, datum),
     anlaesse,
     kommend,
     karten,

@@ -67,7 +67,7 @@ Felder je Bild:
 - rolle: ${SERIE_ROLLEN.join(", ")}.
 - kicker: die kleine Zeile über dem Satz. Genau einer aus: ${KICKER.join(", ")}. Jeder Kicker höchstens einmal je Serie.
 - text: der große Satz. ${TEXT_MIN} bis ${TEXT_MAX} Zeichen einschließlich Leerzeichen, endet mit . ! oder ?
-- betont: die Pointe, sie wird farbig hervorgehoben. Ein bis vier ganze Wörter, zusammenhängend und buchstabengenau aus text übernommen, ohne Satzzeichen am Rand. Am stärksten steht sie am Satzende. Auf jedem Bild eine andere.
+- betont: die Pointe, sie wird farbig hervorgehoben. Ein bis vier ganze Wörter (zusammen mindestens drei Zeichen), zusammenhängend und buchstabengenau aus text übernommen, ohne Satzzeichen am Rand. Am stärksten steht sie am Satzende. Auf jedem Bild eine andere.
 - zusatz: ein kurzer Satz darunter. ${ZUSATZ_MIN} bis ${ZUSATZ_MAX} Zeichen einschließlich Leerzeichen, endet mit . ! oder ?
 - thema: genau eines aus: ${THEMEN.map((t) => `${t} (${THEMA_LABEL[t]})`).join(", ")}.
 
@@ -87,7 +87,7 @@ In text und zusatz verboten:
 - Du-Form: du, dich, dir, dein, euch, euer.
 
 Für die ganze Serie:
-- titel: steht klein auf jedem Bild. ${ANLASS_MIN} bis ${ANLASS_MAX} Zeichen, ohne Ziffern, ohne Marken, ohne Satzzeichen am Ende.
+- titel: steht auf jedem Bild, je nach Gestaltung klein im Kopf oder groß als Überschrift. ${ANLASS_MIN} bis ${ANLASS_MAX} Zeichen, ohne Ziffern, ohne Marken, ohne Emojis, ohne Satzzeichen am Ende. Auch hier gelten die Verbote für text und zusatz.
 - ${SERIE_MIN} bis ${SERIE_MAX} Bilder: zuerst genau ein aufhaenger, dann problem, dann loesung (mindestens ein Bild), zuletzt genau eine einladung.
 - Kein Satz und kein Zusatz kommt zweimal vor.`;
 
@@ -274,8 +274,10 @@ function liste(zeilen: readonly string[], leer: string): string {
 
 /** Tag, Anlässe und was an diesem Tag schon erscheint. */
 function unterlagenTag(k: RedaktionKontext): string {
+  // Liegt der Tag der Serie nicht heute, steht auch das heutige Datum da.
+  const heute = k.abstand === 0 ? "" : `Heute ist ${k.heuteLang}. `;
   return `## Unterlagen
-Tag der Serie: ${k.datumLang} (${abstandText(k.abstand)}). Die Serie erscheint an diesem Tag; alles muss an diesem Tag stimmen.
+${heute}Tag der Serie: ${k.datumLang} (${abstandText(k.abstand)}). Die Serie erscheint an diesem Tag; alles muss an diesem Tag stimmen.
 
 Anlässe an diesem Tag:
 ${liste(

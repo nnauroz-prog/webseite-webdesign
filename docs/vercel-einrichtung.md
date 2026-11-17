@@ -174,6 +174,10 @@ Gut zu wissen:
 - Meldet das Studio „API-Schlüssel wird abgelehnt“, ist der Wert in
   Vercel falsch oder der Redeploy fehlt. Bei „gerade überlastet“
   einfach ein paar Minuten später noch einmal versuchen.
+- Ein Auftrag darf bis zu zwei Minuten laufen. Bei neuen
+  Vercel-Projekten ist das erlaubt (Fluid Compute ist an). Bricht ein
+  Deploy mit einer Meldung zu `maxDuration` ab, schalte in Vercel unter
+  **Settings → Functions** Fluid Compute ein und deploye neu.
 - Derselbe Schlüssel schaltet auch die Chat-Schnittstelle `/api/chat`
   frei, die bisher ohne Schlüssel aus war. Die Website benutzt sie
   nicht mehr; mit dem Ausgabenlimit in der Console bist du auf der

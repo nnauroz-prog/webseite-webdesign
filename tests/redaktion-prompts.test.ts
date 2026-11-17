@@ -59,7 +59,10 @@ describe("Vorgaben der Rollen (system)", () => {
       for (const rolle of SERIE_ROLLEN) assert.ok(system.includes(rolle));
       for (const regel of [
         "Ein bis vier ganze Wörter",
+        "zusammen mindestens drei Zeichen",
         "buchstabengenau aus text",
+        "klein im Kopf oder groß als Überschrift",
+        "ohne Emojis, ohne Satzzeichen am Ende",
         "Ziffern, %, €, #",
         "Google darf vorkommen, „Google Ads“ nicht",
         "garantiert, Garantie, Platz eins, Nummer eins, Testsieger, ausgezeichnet",
@@ -179,8 +182,11 @@ describe("Material je Auftrag (nutzer)", () => {
 
   it("der Scout bekommt Tag, Anlässe, Vorschau, letzte Serien und den Auftrag", () => {
     const text = nutzerScout(k, "Story-Serie zu Black Friday");
+    // Heute und der Tag der Serie stehen beide da, wenn sie sich unterscheiden.
     assert.ok(
-      text.includes("Tag der Serie: Freitag, 27. November 2026 (in 10 Tagen)"),
+      text.includes(
+        "Heute ist Dienstag, 17. November 2026. Tag der Serie: Freitag, 27. November 2026 (in 10 Tagen)",
+      ),
     );
     assert.ok(
       text.includes("- Black Friday (Aktionstag): Rabattwoche im Handel"),
@@ -202,6 +208,7 @@ describe("Material je Auftrag (nutzer)", () => {
     assert.ok(
       text.includes("Tag der Serie: Dienstag, 17. November 2026 (heute)"),
     );
+    assert.ok(!text.includes("Heute ist"));
     for (const karte of POSTS_AKTUELL["2026-11-17"]) {
       assert.ok(text.includes(karte.text), karte.text);
       assert.ok(text.includes(`(Anlass: ${karte.anlass})`));
