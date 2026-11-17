@@ -178,7 +178,7 @@ Gut zu wissen:
   Vercel-Projekten ist das erlaubt (Fluid Compute ist an). Bricht ein
   Deploy mit einer Meldung zu `maxDuration` ab, schalte in Vercel unter
   **Settings → Functions** Fluid Compute ein und deploye neu.
-- Derselbe Schlüssel schaltet auch die Chat-Schnittstelle `/api/chat`
-  frei, die bisher ohne Schlüssel aus war. Die Website benutzt sie
-  nicht mehr; mit dem Ausgabenlimit in der Console bist du auf der
-  sicheren Seite.
+- Die alte Chat-Schnittstelle `/api/chat` bleibt aus, auch mit dem
+  Schlüssel. Die Website benutzt sie nicht mehr; sie ginge erst mit
+  `CHAT_AKTIV=1` wieder an. Trag diese Variable nicht ein. Das
+  Ausgabenlimit in der Console schützt zusätzlich.
