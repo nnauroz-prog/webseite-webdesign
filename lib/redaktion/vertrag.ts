@@ -3,11 +3,32 @@
  * Studio schickt einen Auftrag, die Redaktion antwortet als Strom von
  * Zeilen (eine JSON-Zeile je Ereignis, NDJSON). Reine Typen und
  * Konstanten, damit Browser, Server und Tests dieselbe Form benutzen.
+ *
+ * So antwortet der Server (app/admin/story/redaktion/route.ts):
+ * - Immer HTTP 200 mit dem Inhaltstyp REDAKTION_INHALTSTYP, auch wenn
+ *   etwas nicht geht: Fehlt der Schlüssel, ist die Eingabe ungültig
+ *   oder das Tageslimit erreicht, besteht der Strom aus genau einer
+ *   Zeile vom Typ „fehler“ (Codes kein_schluessel, eingabe, zu_viele).
+ * - Die letzte Zeile ist immer „serie“ oder „fehler“; danach endet der
+ *   Strom. Davor stehen nur Zeilen vom Typ „schritt“.
+ * - Jeder Schritt meldet „laeuft“ und danach „fertig“. Das Lektorat kann
+ *   „laeuft“ ein zweites Mal melden (zweite Runde, neuer Hinweis).
+ * - Die Serie in der Zeile „serie“ hält alle Regeln ein (pruefeSerie)
+ *   und ist, wenn es die Tabelle gibt, schon gespeichert (id).
+ * - Eine Antwort ohne 2xx oder mit anderem Inhaltstyp kommt nicht von
+ *   der Redaktion, etwa die Anmeldeseite nach einer abgelaufenen Sitzung
+ *   oder ein Abbruch der Plattform: Das Studio behandelt sie wie den
+ *   Code „unbekannt“.
+ * - Schließt das Studio die Verbindung, bricht die Redaktion ab.
+ * Die Redaktion braucht bis zu rund 100 Sekunden.
  */
 import type { StorySerie } from "@/lib/story-serie";
 
 /** Adresse der Redaktion (POST, nur angemeldet). */
 export const REDAKTION_PFAD = "/admin/story/redaktion";
+
+/** Inhaltstyp der Antwort (eine JSON-Zeile je Ereignis). */
+export const REDAKTION_INHALTSTYP = "application/x-ndjson; charset=utf-8";
 
 /** Längster Auftrag in Zeichen. Leer heißt: „Mach was zu heute“. */
 export const AUFTRAG_MAX = 500;

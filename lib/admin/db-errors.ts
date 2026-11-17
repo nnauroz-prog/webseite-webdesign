@@ -11,6 +11,8 @@ export const MIGRATION_ANGEBOTE_FILE =
   "supabase/migrations/20261102000000_angebote.sql";
 export const MIGRATION_AUSBAU_FILE =
   "supabase/migrations/20261116000000_ausbau.sql";
+export const MIGRATION_SERIEN_FILE =
+  "supabase/migrations/20261117000000_serien.sql";
 
 /** Fehler aus lib/leads-store.ts; `code` ist der PostgREST/Postgres-Code. */
 export class DbError extends Error {
@@ -64,6 +66,7 @@ export type DbProblemKind =
   | "missing_schema_v2"
   | "missing_schema_angebote"
   | "missing_schema_ausbau"
+  | "missing_schema_serien"
   | "auth"
   | "network"
   | "other";
@@ -77,11 +80,14 @@ export type DbExplanation = {
 };
 
 /** Tabellen aus den Migrationen nach 20261030000000_leads.sql. */
-const NEW_TABLES = /lead_events|lead_deletions|angebote|projekte|post_status/i;
+const NEW_TABLES =
+  /lead_events|lead_deletions|angebote|projekte|post_status|serien/i;
 /** Tabelle oder Spalte aus 20261102000000_angebote.sql. */
 const ANGEBOTE_SCHEMA = /\bangebote\b/i;
 /** Tabelle oder Spalte aus 20261116000000_ausbau.sql. */
 const AUSBAU_SCHEMA = /\b(projekte|post_status)\b/i;
+/** Tabelle oder Spalte aus 20261117000000_serien.sql. */
+const SERIEN_SCHEMA = /\bserien\b/i;
 
 export function explainDbError(err: unknown): DbExplanation {
   const code = codeOf(err);
@@ -93,6 +99,19 @@ export function explainDbError(err: unknown): DbExplanation {
       kind: "missing_table_leads",
       title: "Die Tabelle „leads“ fehlt in Supabase.",
       hint: `Öffne in Supabase den SQL Editor, füge den Inhalt von ${MIGRATION_LEADS_FILE} ein und tippe auf Run. Danach diese Seite neu laden.`,
+      raw,
+    };
+  }
+
+  if (
+    code &&
+    (MISSING_COLUMN.has(code) || MISSING_TABLE.has(code)) &&
+    SERIEN_SCHEMA.test(m)
+  ) {
+    return {
+      kind: "missing_schema_serien",
+      title: "Datenbank-Update für Story-Serien ausstehend.",
+      hint: `Führe in Supabase einmal ${MIGRATION_SERIEN_FILE} aus (im Hinweis oben „SQL kopieren“, dann SQL Editor, einfügen, Run). Danach diese Seite neu laden.`,
       raw,
     };
   }

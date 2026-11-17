@@ -77,8 +77,10 @@ Optional, aber empfohlen:
 | `PAGESPEED_API_KEY` | Google-API-Schlüssel | Speed-Test liefert echte Google-Punkte statt Basis-Check |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | `sitalo.de` | Besucherstatistik ohne Cookie-Banner (Plausible-Konto nötig) |
 
-Nicht nötig: `ANTHROPIC_API_KEY`, `FORMSPREE_FORM_ID`,
-`LEAD_MAIL_FROM` (leer lassen).
+Nicht nötig: `FORMSPREE_FORM_ID`, `LEAD_MAIL_FROM` (leer lassen).
+
+Für die Redaktion im Story-Studio kommt `ANTHROPIC_API_KEY` dazu,
+siehe Teil 8.
 
 **PageSpeed-Schlüssel holen (optional):** console.cloud.google.com →
 oben Projekt anlegen → „APIs & Dienste" → **Bibliothek** →
@@ -126,3 +128,53 @@ Der rote Text dort nennt den Grund.
 4. **business.google.com** → Unternehmensprofil anlegen:
    Kategorie **Webdesigner**, Servicegebiet, Telefon 0160 7621876,
    Website `https://www.sitalo.de`, Fotos.
+
+---
+
+## Teil 8 · Redaktion im Story-Studio (optional, 10 Min.)
+
+Im Story-Studio (`/admin/story`) schreibt dir die Redaktion auf Zuruf
+eine Story-Serie: drei bis fünf Bilder, die zusammen eine kleine
+Geschichte erzählen. Du tippst zum Beispiel „Story-Serie zu Black
+Friday“, nach etwa einer Minute steht sie da. Dafür braucht die
+Redaktion einen eigenen Schlüssel. Ohne ihn läuft alles andere weiter
+wie bisher, auch der Morgenlauf mit den Posts des Tages; das Studio
+zeigt dann nur einen Hinweis.
+
+1. **console.anthropic.com** → anmelden oder Konto anlegen.
+2. Dort Guthaben aufladen (Billing). Abgerechnet wird je Auftrag:
+   einige Cent je Auftrag, abgerechnet über das eigene Konto dort.
+3. **API Keys → Create Key** → Name `sitalo-studio` → Schlüssel
+   kopieren. Er wird nur dieses eine Mal angezeigt.
+4. Vercel → Projekt → **Settings → Environment Variables**, wie in
+   Teil 4 (Production und Preview anhaken → **Save**):
+
+| Key | Value | Wofür |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Schlüssel aus Schritt 3 | Pflicht: Damit arbeitet die Redaktion |
+| `STUDIO_MODELL` | leer lassen | Optional: anderes Modell, z. B. `claude-sonnet-5-5` |
+| `STUDIO_TAGESLIMIT` | leer lassen | Optional: Aufträge pro Tag, ohne Angabe 40 |
+
+5. Neu veröffentlichen wie in Teil 5 (Redeploy).
+6. Testen: `/admin/story` öffnen und einen Auftrag abschicken.
+
+Gut zu wissen:
+
+- Der Schlüssel gehört nur in Vercel. Nie in einen Chat kopieren, nie
+  in den Code, nie in eine Mail.
+- Kosten entstehen nur, wenn du einen Auftrag abschickst. Das
+  Tageslimit schützt vor Versehen: Ist es erreicht, geht es am
+  nächsten Tag weiter. In der Console kannst du zusätzlich ein
+  monatliches Ausgabenlimit setzen.
+- Damit sich das Studio die Serien merkt (Liste, „gepostet“-Haken),
+  braucht die Datenbank ein kleines Update: Im Mitgliederbereich
+  erscheint dafür der Hinweis „Datenbank-Update ausstehend“ mit
+  „SQL kopieren“. Ohne das Update schreibt die Redaktion trotzdem,
+  merkt sich die Serien aber nicht.
+- Meldet das Studio „API-Schlüssel wird abgelehnt“, ist der Wert in
+  Vercel falsch oder der Redeploy fehlt. Bei „gerade überlastet“
+  einfach ein paar Minuten später noch einmal versuchen.
+- Derselbe Schlüssel schaltet auch die Chat-Schnittstelle `/api/chat`
+  frei, die bisher ohne Schlüssel aus war. Die Website benutzt sie
+  nicht mehr; mit dem Ausgabenlimit in der Console bist du auf der
+  sicheren Seite.

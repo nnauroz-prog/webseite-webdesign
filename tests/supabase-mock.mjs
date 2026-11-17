@@ -19,6 +19,8 @@
  *        eindeutige angebot_id, Fremdschlüssel mit on delete cascade
  *        (Anfrage und Angebot), Checks, updated_at bei jeder Änderung,
  *        Primärschlüssel (datum, platz, format)
+ *   'v5' zusätzlich serien (20261117000000_serien.sql): Auftrag
+ *        höchstens 500 Zeichen, serie als Objekt, gepostet_at leer
  *
  * Fehler wie PostgREST: unbekannte Tabelle → 404 PGRST205, unbekannte
  * Spalte in select/filter/order → 400 42703, unbekannte Spalte im
@@ -109,6 +111,7 @@ const PROJEKTE = [
   "notiz",
 ];
 const POST_STATUS = ["datum", "platz", "format", "text", "gepostet_at"];
+const SERIEN = ["id", "created_at", "datum", "auftrag", "serie", "gepostet_at"];
 
 function schemaFor(mode) {
   if (mode === "v0") return {};
@@ -121,7 +124,9 @@ function schemaFor(mode) {
   if (mode === "v2") return v2;
   const v3 = { ...v2, angebote: ANGEBOTE };
   if (mode === "v3") return v3;
-  return { ...v3, projekte: PROJEKTE, post_status: POST_STATUS };
+  const v4 = { ...v3, projekte: PROJEKTE, post_status: POST_STATUS };
+  if (mode === "v4") return v4;
+  return { ...v4, serien: SERIEN };
 }
 
 const REQUIRED = {
@@ -139,6 +144,7 @@ const REQUIRED = {
   ],
   projekte: ["angebot_id", "lead_id", "schritte"],
   post_status: ["datum", "platz", "format", "text"],
+  serien: ["datum", "serie"],
 };
 
 const berlinYear = (d) =>
@@ -187,9 +193,9 @@ export const SERVICE_KEY = "test-service-role-key";
 
 /**
  * @typedef {Record<string, any>} Row
- * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[]; projekte: Row[]; post_status: Row[] }} Tables
+ * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[]; projekte: Row[]; post_status: Row[]; serien: Row[] }} Tables
  * @typedef {{ method: string; url: string; headers: { prefer: string; accept: string }; body: unknown }} MockRequest
- * @typedef {"v0" | "v1" | "v2" | "v3" | "v4"} MockMode
+ * @typedef {"v0" | "v1" | "v2" | "v3" | "v4" | "v5"} MockMode
  */
 
 /** @returns {Tables} */
@@ -201,6 +207,7 @@ function emptyTables() {
     angebote: [],
     projekte: [],
     post_status: [],
+    serien: [],
   };
 }
 
@@ -277,6 +284,13 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       };
     // Kein id: Primärschlüssel ist (datum, platz, format).
     if (table === "post_status") return { gepostet_at: t };
+    if (table === "serien")
+      return {
+        id: randomUUID(),
+        created_at: t,
+        auftrag: "",
+        gepostet_at: null,
+      };
     return {
       id: randomUUID(),
       deleted_at: t,
@@ -376,6 +390,13 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
         )
       )
         return duplicate("post_status_pkey");
+    }
+    if (table === "serien") {
+      if (typeof row.auftrag !== "string" || row.auftrag.length > 500)
+        return checkFail(table, "serien_auftrag_check");
+      const s = row.serie;
+      if (!s || typeof s !== "object" || Array.isArray(s))
+        return checkFail(table, "serien_serie_check");
     }
     if (table === "angebote") {
       if (!ANGEBOT_STATUSES.includes(row.status))
@@ -756,6 +777,16 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     seedPostStatus(partial) {
       const row = { ...defaults("post_status"), ...partial };
       state.tables.post_status.push(row);
+      return row;
+    },
+    /**
+     * Serie direkt anlegen (an der API vorbei, Modus v5).
+     * @param {Row} partial datum, serie; optional auftrag, created_at
+     * @returns {Row}
+     */
+    seedSerie(partial) {
+      const row = { ...defaults("serien"), ...partial };
+      state.tables.serien.push(row);
       return row;
     },
     close() {

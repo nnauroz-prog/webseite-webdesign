@@ -69,6 +69,18 @@ Lieber knapp als erfunden. Drei Optionen, von ehrlich zu leiser:
 
 ---
 
+## Redaktion im Story-Studio: Serien auf Zuruf
+
+**Files:** `lib/redaktion/` (Ablauf in `ablauf.ts`, Vorgaben für die drei Rollen in `prompts.ts`, Anschluss ans Modell in `anthropic.ts`), `app/admin/story/redaktion/route.ts`, gespeicherte Serien in `lib/serien-store.ts` (Tabelle `serien`).
+
+**Wie es läuft:** Du tippst im Story-Studio einen Auftrag, etwa „Story-Serie zu Black Friday“ (leer heißt: mach was zu diesem Tag). Dann arbeiten drei Rollen nacheinander: Der Themen-Scout sucht den Blickwinkel, die Texterin schreibt drei bis fünf Bilder (Aufhänger, Problem, Lösung, Einladung zur Anfrage), der Lektor bessert nach. Dazwischen prüft der Code dieselben Regeln wie bei den Karten des Tages und ob ein Satz schon einmal erschienen ist. Ins Studio kommt nur eine Serie, die alles einhält; sonst gibt es eine kurze Meldung statt einer halben Serie.
+
+**Einrichten:** Schlüssel und Kosten stehen in `docs/vercel-einrichtung.md`, Teil 8. Stellschrauben in Vercel: `STUDIO_MODELL` (anderes Modell) und `STUDIO_TAGESLIMIT` (Aufträge pro Tag, ohne Angabe 40).
+
+**Selbst eingreifen:** Ton und Regeln für die Texte stehen in `lib/redaktion/prompts.ts`. Nach einer Änderung `npm test` laufen lassen und im Studio einen Auftrag ausprobieren. Die Tests arbeiten mit einer Attrappe statt des Modells und kosten nichts.
+
+---
+
 ## Sonstige Pflege-Stellen
 
 Reine Referenz — diese Sachen ändern sich selten, aber wenn doch, ist hier zu schauen.
