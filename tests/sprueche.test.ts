@@ -7,14 +7,22 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 import type { AktuellerPost } from "@/lib/posts-aktuell";
+import type { Spruch } from "@/lib/sprueche-data";
 
+import {
+  ANLASS_MAX,
+  TEXT_MAX,
+  TEXT_MIN,
+  ZUSATZ_MAX,
+  ZUSATZ_MIN,
+  pruefeAnlass,
+  pruefeKarte,
+} from "@/lib/karten-regeln";
 import { POSTS_AKTUELL, journalKarten } from "@/lib/sprueche-aktuell";
 import {
-  KICKER,
   POSTS_PRO_TAG,
   SPRUECHE,
   SPRUECHE_EXTRA,
-  THEMA_LABEL,
   anlassTag,
   extraFuer,
   kartenFenster,
@@ -29,6 +37,7 @@ import {
   vorratTage,
   vorratTageExtra,
 } from "@/lib/sprueche-data";
+import { ohneAnlass, woerter, zuAehnlich } from "@/tests/karten-vergleich";
 
 const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const rel = (f: string) => path.relative(ROOT, f).split(path.sep).join("/");
@@ -157,28 +166,221 @@ const AKTUELL = Object.entries(POSTS_AKTUELL).flatMap(([datum, karten]) =>
 /** Reserve und tagesaktuelle Karten: Für alle gelten dieselben Inhaltsregeln. */
 const ALLE_PLUS = [...ALLE, ...AKTUELL];
 
-const ganz = (s: { kicker: string; text: string; zusatz: string }) =>
-  `${s.kicker} ${s.text} ${s.zusatz}`;
+/**
+ * Eine Karte, die alle Regeln einhält: Grundlage für die Gegenproben, in
+ * denen je eine Regel absichtlich verletzt wird.
+ */
+const SAUBER: Spruch = {
+  kicker: "Merken",
+  text: "Öffnungszeiten gehören ganz nach oben.",
+  betont: "ganz nach oben",
+  zusatz: "Wer sucht, will sie zuerst sehen.",
+  thema: "google",
+};
 
-/** Wörter ab fünf Buchstaben, klein, ohne Satzzeichen und Ziffern. */
-const woerter = (text: string, ohne: ReadonlySet<string> = new Set()) =>
-  new Set(
-    text
-      .toLowerCase()
-      .replace(/[^a-zäöüß ]/g, " ")
-      .split(/\s+/)
-      .filter((w) => w.length >= 5 && !ohne.has(w)),
-  );
+/** Die Verstöße einer Karte, bei der einzelne Felder geändert sind. */
+const verstoesse = (aenderung: Record<string, unknown>) =>
+  pruefeKarte({ ...SAUBER, ...aenderung });
 
-/** Fängt Beinahe-Doppelungen ab: drei gemeinsame Wörter und halbe Überschneidung. */
-function zuAehnlich(a: Set<string>, b: Set<string>): boolean {
-  const gemeinsam = [...a].filter((w) => b.has(w)).length;
-  const anteil = gemeinsam / (a.size + b.size - gemeinsam || 1);
-  return gemeinsam >= 3 && anteil >= 0.5;
-}
+describe("Regeln für den Text einer Karte", () => {
+  it("lässt eine saubere Karte durch, auch genau an den Grenzen der Längen", () => {
+    assert.deepEqual(pruefeKarte(SAUBER), []);
+    const lang = (n: number) => `${"a".repeat(n - 1)}.`;
+    for (const n of [TEXT_MIN, TEXT_MAX])
+      assert.deepEqual(
+        verstoesse({ text: lang(n), betont: "a".repeat(n - 1) }),
+        [],
+        `Satz mit ${n} Zeichen`,
+      );
+    for (const n of [ZUSATZ_MIN, ZUSATZ_MAX])
+      assert.deepEqual(
+        verstoesse({ zusatz: lang(n) }),
+        [],
+        `Zusatz mit ${n} Zeichen`,
+      );
+  });
 
-const VERBOTEN =
-  /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbot|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantiert|Garantie|Platz eins|Nummer eins|Testsieger|ausgezeichnet|SEO|Conversion|Landingpage|Performance|UX|CTA)\b|künstliche Intelligenz/;
+  it("meldet jede verletzte Regel, eine nach der anderen", () => {
+    const faelle: [string, Record<string, unknown>, RegExp][] = [
+      ["Kicker unbekannt", { kicker: "Achtung" }, /^Kicker unbekannt/],
+      ["Thema unbekannt", { thema: "wetter" }, /^Thema unbekannt/],
+      ["Satz fehlt", { text: undefined }, /^Satz fehlt/],
+      [
+        "Satz zu kurz",
+        { text: "Zu kurz.", betont: "kurz" },
+        /^Satz hat 8 Zeichen/,
+      ],
+      [
+        "Satz zu lang",
+        { text: `${"Sehr lang ".repeat(8)}ist das.`, betont: "ist das" },
+        /^Satz hat 88 Zeichen/,
+      ],
+      [
+        "Satz ohne Satzende",
+        { text: "Öffnungszeiten gehören ganz nach oben" },
+        /^Satz endet nicht/,
+      ],
+      [
+        "Satz mit Leerzeichen am Rand",
+        { text: " Öffnungszeiten gehören ganz nach oben." },
+        /^Satz hat Leerzeichen/,
+      ],
+      ["Zusatz fehlt", { zusatz: null }, /^Zusatz fehlt/],
+      ["Zusatz zu kurz", { zusatz: "Ja, klar." }, /^Zusatz hat 9 Zeichen/],
+      [
+        "Zusatz zu lang",
+        { zusatz: `${"Noch ein Wort ".repeat(8)}dazu.` },
+        /^Zusatz hat 117 Zeichen/,
+      ],
+      [
+        "Zusatz ohne Satzende",
+        { zusatz: "Wer sucht, will sie zuerst sehen" },
+        /^Zusatz endet nicht/,
+      ],
+      [
+        "Zusatz mit Leerzeichen am Rand",
+        { zusatz: "Wer sucht, will sie zuerst sehen. " },
+        /^Zusatz hat Leerzeichen/,
+      ],
+      [
+        "Ziffer",
+        { zusatz: "Wer sucht, will sie in 3 Sekunden sehen." },
+        /^Nicht erlaubt: „3“/,
+      ],
+      ["Prozent", { zusatz: "Das hilft zu hundert %." }, /^Nicht erlaubt: „%“/],
+      ["Preis", { zusatz: "Das kostet keinen €." }, /^Nicht erlaubt: „€“/],
+      ["Raute", { zusatz: "Gilt auch für #hamburg." }, /^Nicht erlaubt: „#“/],
+      [
+        "Marke",
+        { zusatz: "Auf Instagram steht es auch." },
+        /^Nicht erlaubt: „Instagram“/,
+      ],
+      [
+        "Garantie",
+        { zusatz: "So werden Sie garantiert gefunden." },
+        /^Nicht erlaubt: „garantiert“/,
+      ],
+      [
+        "Technik-Schlagwort",
+        { zusatz: "Gutes SEO beginnt mit Klarheit." },
+        /^Nicht erlaubt: „SEO“/,
+      ],
+      [
+        "künstliche Intelligenz",
+        { zusatz: "Das schreibt keine künstliche Intelligenz." },
+        /^Nicht erlaubt: „künstliche Intelligenz“/,
+      ],
+      [
+        "Du-Form im Satz",
+        { text: "Deine Öffnungszeiten gehören ganz nach oben." },
+        /^Du-Form: „Deine“/,
+      ],
+      [
+        "Du-Form im Zusatz",
+        { zusatz: "Wer sucht, will dich zuerst sehen." },
+        /^Du-Form: „dich“/,
+      ],
+      [
+        "Emoji",
+        { zusatz: "Wer sucht, will sie zuerst sehen \u{1F642}." },
+        /^Emojis sind nicht erlaubt/,
+      ],
+      [
+        "zwei Ausrufezeichen",
+        {
+          text: "Öffnungszeiten gehören ganz nach oben!",
+          zusatz: "Wer sucht, will sie zuerst sehen!",
+        },
+        /^Höchstens ein Ausrufezeichen/,
+      ],
+      ["Pointe fehlt", { betont: undefined }, /^Pointe fehlt/],
+      ["Pointe zu kurz", { betont: "ob" }, /^Pointe ist zu kurz/],
+      [
+        "Pointe mit Leerzeichen am Rand",
+        { betont: "nach oben " },
+        /^Pointe ist zu kurz oder hat Leerzeichen/,
+      ],
+      [
+        "Pointe nicht im Satz",
+        { betont: "ganz nach unten" },
+        /^Pointe „ganz nach unten“ steht nicht wörtlich im Satz/,
+      ],
+      [
+        "Pointe mit fünf Wörtern",
+        {
+          text: "Öffnungszeiten gehören heute ganz weit nach oben.",
+          betont: "heute ganz weit nach oben",
+        },
+        /^Pointe hat mehr als vier Wörter/,
+      ],
+      [
+        "Pointe beginnt mitten im Wort",
+        { betont: "zeiten gehören" },
+        /^Pointe „zeiten gehören“ beginnt oder endet mitten im Wort/,
+      ],
+      [
+        "Pointe endet mitten im Wort",
+        { betont: "ganz nach ob" },
+        /^Pointe „ganz nach ob“ beginnt oder endet mitten im Wort/,
+      ],
+    ];
+    for (const [name, aenderung, muster] of faelle) {
+      const fehler = verstoesse(aenderung);
+      assert.ok(
+        fehler.some((f) => muster.test(f)),
+        `${name}: ${JSON.stringify(fehler)}`,
+      );
+    }
+    // Was keine Karte ist, fällt als Ganzes durch.
+    for (const nichts of [null, undefined, "Karte", 7])
+      assert.deepEqual(pruefeKarte(nichts), ["Karte fehlt."]);
+  });
+
+  it("erlaubt, was die Regeln ausdrücklich zulassen", () => {
+    // Google darf genannt werden, ein einzelnes Ausrufezeichen auch.
+    assert.deepEqual(
+      verstoesse({ zusatz: "Bei Google stehen sie dann auch richtig!" }),
+      [],
+    );
+    // Die Pointe darf in Anführungszeichen stehen und vor einem
+    // Satzzeichen enden.
+    assert.deepEqual(
+      verstoesse({
+        text: "Öffnungszeiten gehören „ganz nach oben“, immer.",
+        betont: "ganz nach oben",
+      }),
+      [],
+    );
+    // Zahlwörter sind keine Ziffern.
+    assert.deepEqual(
+      verstoesse({ zusatz: "Wer sucht, will sie in drei Sekunden sehen." }),
+      [],
+    );
+  });
+
+  it("prüft den Anlass, der auf dem Bild steht", () => {
+    assert.deepEqual(pruefeAnlass("Black Friday"), []);
+    assert.deepEqual(pruefeAnlass("Weihnachtsmarkt Rathausmarkt"), []);
+    const faelle: [unknown, RegExp][] = [
+      [undefined, /^Anlass fehlt/],
+      [" Black Friday", /Leerzeichen am Rand/],
+      ["Zu", /^Anlass hat 2 Zeichen/],
+      ["x".repeat(ANLASS_MAX + 1), /^Anlass hat 29 Zeichen/],
+      ["Advent Nummer 1", /^Im Anlass nicht erlaubt: „1“/],
+      ["Apple Day", /^Im Anlass nicht erlaubt: „Apple“/],
+      ["Erster Advent \u{1F384}", /Emojis nicht erlaubt/],
+      ["Black Friday!", /endet mit einem Satzzeichen/],
+      ["Winterdom läuft.", /endet mit einem Satzzeichen/],
+    ];
+    for (const [anlass, muster] of faelle) {
+      const fehler = pruefeAnlass(anlass);
+      assert.ok(
+        fehler.some((f) => muster.test(f)),
+        `${String(anlass)}: ${JSON.stringify(fehler)}`,
+      );
+    }
+  });
+});
 
 describe("Sprüche des Tages", () => {
   it("hat genug Karten für mehr als zwei Monate ohne Wiederholung", () => {
@@ -203,68 +405,40 @@ describe("Sprüche des Tages", () => {
     }
   });
 
-  it("hält Längen, Satzende, Kicker und Thema ein", () => {
-    for (const s of ALLE_PLUS) {
-      assert.ok(
-        s.text.length >= 15 && s.text.length <= 80,
-        `${s.text.length}: ${s.text}`,
-      );
-      assert.match(s.text, /[.!?]$/, s.text);
-      assert.ok(
-        s.zusatz.length >= 10 && s.zusatz.length <= 100,
-        `${s.zusatz.length}: ${s.zusatz}`,
-      );
-      assert.match(s.zusatz, /[.!?]$/, s.zusatz);
-      assert.ok(
-        (KICKER as readonly string[]).includes(s.kicker),
-        `${s.kicker}: ${s.text}`,
-      );
-      assert.ok(THEMA_LABEL[s.thema], s.text);
-      assert.ok(
-        (ganz(s).match(/!/g) ?? []).length <= 1,
-        `zu viele Ausrufezeichen: ${s.text}`,
-      );
-    }
+  it("hält alle Regeln für den Text einer Karte ein", () => {
+    // Längen, Satzende, Kicker und Thema, wörtliche Pointe aus ganzen
+    // Wörtern, keine Zahlen, Preise, Marken, Garantien, Technik-
+    // Schlagworte, Emojis oder Du-Form, höchstens ein Ausrufezeichen:
+    // dieselben Regeln wie in der Redaktion (lib/karten-regeln.ts).
+    for (const s of ALLE_PLUS)
+      assert.deepEqual(pruefeKarte(s), [], `${s.kicker}: ${s.text}`);
   });
 
-  it("hebt einen wörtlichen Ausschnitt aus ganzen Wörtern hervor", () => {
+  it("zerlegt jeden Satz an seiner Pointe, ohne etwas zu verlieren", () => {
     for (const s of ALLE_PLUS) {
       const [vor, mitte, nach] = teileSatz(s.text, s.betont);
-      assert.equal(
-        mitte,
-        s.betont,
-        `nicht im Satz: „${s.betont}“ in „${s.text}“`,
-      );
-      assert.ok(s.betont.trim() === s.betont && s.betont.length >= 3, s.betont);
-      assert.ok(s.betont.split(" ").length <= 4, `zu lang: ${s.betont}`);
-      // Der Ausschnitt beginnt und endet an Wortgrenzen.
-      assert.ok(
-        vor === "" || /[\s„(]$/.test(vor),
-        `mitten im Wort: „${s.betont}“ in „${s.text}“`,
-      );
-      assert.ok(
-        nach === "" || /^[\s.,!?:;“)]/.test(nach),
-        `mitten im Wort: „${s.betont}“ in „${s.text}“`,
-      );
+      assert.equal(mitte, s.betont, s.text);
       assert.equal(vor + mitte + nach, s.text);
     }
   });
 
-  it("nennt keine Zahlen, Preise, Marken, Garantien oder Technik-Schlagworte", () => {
-    for (const s of ALLE_PLUS)
-      assert.doesNotMatch(`${s.text} ${s.zusatz}`, VERBOTEN, s.text);
-  });
-
-  it("enthält keine Emojis", () => {
-    for (const s of ALLE_PLUS)
-      assert.doesNotMatch(ganz(s), /\p{Extended_Pictographic}/u, s.text);
-  });
-
-  it("bleibt in der Sie-Form", () => {
-    const du =
-      /\b(du|dich|dir|dein|deine|deiner|deinem|deinen|deins|euch|euer|eure)\b/i;
-    for (const s of ALLE_PLUS)
-      assert.doesNotMatch(`${s.text} ${s.zusatz}`, du, s.text);
+  it("lässt eine absichtlich kaputte Karte in der Liste nicht durch", () => {
+    // Gegenprobe zur Prüfung aller Karten: Mischt sich eine Karte mit
+    // Verstößen darunter, fällt genau sie auf.
+    const kaputt: Spruch = {
+      ...SPRUECHE[0],
+      text: "Deine Website lädt in 3 Sekunden!",
+      betont: "Sekunden",
+      zusatz: "Garantiert schneller als bei Wix!",
+    };
+    const funde = [...ALLE_PLUS, kaputt].filter(
+      (s) => pruefeKarte(s).length > 0,
+    );
+    assert.deepEqual(funde, [kaputt]);
+    const fehler = pruefeKarte(kaputt).join(" | ");
+    assert.match(fehler, /Nicht erlaubt/);
+    assert.match(fehler, /Du-Form/);
+    assert.match(fehler, /Höchstens ein Ausrufezeichen/);
   });
 
   it("gibt für denselben Tag dieselbe Karte und am nächsten Tag eine andere", () => {
@@ -494,19 +668,7 @@ describe("Sprüche des Tages", () => {
 });
 
 describe("Tagesaktuelle Posts", () => {
-  /** Wörter, die an einem Anlass hängen und deshalb nicht als Doppelung zählen. */
-  const GENERISCH = [
-    "heute",
-    "morgen",
-    "jetzt",
-    "gerade",
-    "hamburg",
-    "hamburger",
-    "woche",
-    "wochenende",
-  ];
-  const ohne = (...anlaesse: string[]) =>
-    new Set([...GENERISCH, ...anlaesse.flatMap((a) => [...woerter(a)])]);
+  const ohne = ohneAnlass;
 
   /**
    * Beinahe-Doppelungen tagesaktueller Karten: mit der Reserve und mit
@@ -564,14 +726,9 @@ describe("Tagesaktuelle Posts", () => {
 
   it("nennt einen kurzen, sauberen Anlass und eine echte Quelle", () => {
     for (const k of AKTUELL) {
-      assert.ok(
-        k.anlass.length >= 3 && k.anlass.length <= 28,
-        `${k.anlass.length}: ${k.anlass}`,
-      );
-      assert.equal(k.anlass.trim(), k.anlass);
-      assert.doesNotMatch(k.anlass, VERBOTEN, k.anlass);
-      assert.doesNotMatch(k.anlass, /\p{Extended_Pictographic}/u, k.anlass);
-      assert.doesNotMatch(k.anlass, /[.!?:;]$/, k.anlass);
+      // Kurz (3 bis 28 Zeichen), ohne Ziffern, Marken, Emojis und ohne
+      // Satzzeichen am Ende (lib/karten-regeln.ts).
+      assert.deepEqual(pruefeAnlass(k.anlass), [], `${k.datum}: ${k.anlass}`);
       if (k.quelle !== undefined)
         assert.match(k.quelle, /^https:\/\/\S+$/, `${k.datum}: ${k.quelle}`);
     }

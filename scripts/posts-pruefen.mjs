@@ -11,13 +11,21 @@
  * erlaubten Anlass, und als tagesaktueller Spruch des Tages (an geraden
  * Tagen ein Kalenderblatt).
  *
+ * Dazu jede Story-Serie des Tages (lib/serien-aktuell.ts): jedes Bild in
+ * allen drei Formaten, einmal so, wie der Tag die Serie bringt, dann in
+ * jeder Gestaltung, die Serien trägt, als Standbild und durch den Film
+ * (flach und mit der Kino-Kamera). Alle Bilder einer Serie müssen
+ * dieselbe Gestaltung tragen und ihre Stelle zeigen („2/4“). Außerdem
+ * steht jede Reihe mit dem längsten erlaubten Titel als Aufhänger und
+ * als Einladung in jeder dieser Gestaltungen.
+ *
  * Meldet einen Fehler, wenn ein Text auch in der kleinsten Schrift nicht
  * in sein Feld passt, die Kopfzeile (Etikett, Anlass, Datum) nicht in
  * ihre Zeile passt, mehr als eine orange Pille auf einem Bild steht, beim
  * Auftritt „abziehen“ vor dem Abziehen etwas von der Pointe unter dem
  * Klebeband herausschaut oder sich ein Bild nicht zeichnen lässt. So
- * bleibt jeder neue Spruch automatisch ein sauberer Post, ohne dass ihn
- * jemand ansehen muss.
+ * bleibt jeder neue Spruch und jede neue Serie automatisch ein sauberer
+ * Post, ohne dass ihn jemand ansehen muss.
  * Aufruf: npm run posts:pruefen
  *
  * Braucht Playwright mit Chromium (nicht Teil des Projekts; in der
@@ -51,11 +59,13 @@ try {
   writeFileSync(
     einstieg,
     `import { POSTS_AKTUELL } from "@/lib/posts-aktuell";
+import { SERIEN_AKTUELL } from "@/lib/serien-aktuell";
 import { KICKER, SPRUECHE, SPRUECHE_EXTRA, spruchTag } from "@/lib/sprueche-data";
 import { FORMATE, storyVorbereiten } from "@/lib/story-bild";
 import { kinoBereit } from "@/lib/story-kino";
-import { AUFTRITTE, KAMERAS, LAYOUTS } from "@/lib/story-variante";
-Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE, storyVorbereiten, AUFTRITTE, KAMERAS, LAYOUTS, kinoBereit } });
+import { serieAlsKarten } from "@/lib/story-serie";
+import { AUFTRITTE, KAMERAS, LAYOUTS, SERIE_LAYOUTS, serieGestaltung } from "@/lib/story-variante";
+Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SERIEN_AKTUELL, SPRUECHE, SPRUECHE_EXTRA, spruchTag, FORMATE, storyVorbereiten, serieAlsKarten, AUFTRITTE, KAMERAS, LAYOUTS, SERIE_LAYOUTS, serieGestaltung, kinoBereit } });
 `,
   );
   execFileSync(
@@ -105,6 +115,8 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
       gestaltungen: {},
       kleinsteJe: {},
       aktuell: alle.filter((e) => e.anlass).length,
+      serien: 0,
+      serienBilder: 0,
     };
     /** Was das gerade gezeichnete Bild über sich meldet. */
     const befund = (name) => {
@@ -159,12 +171,12 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
       const w = woerter(t);
       return w.trim() !== "" && (pointe.includes(w) || w.includes(pointe));
     };
-    const abziehen = async (karte, format, name) => {
+    const abziehen = async (karte, format, name, layouts = p.LAYOUTS) => {
       const pointe = pointeVon(karte);
       if (!pointe) return;
       const c = flaeche.getContext("2d");
       const bild = () => c.getImageData(0, 0, flaeche.width, flaeche.height);
-      for (const layout of p.LAYOUTS) {
+      for (const layout of layouts) {
         const z = await p.storyVorbereiten(flaeche, karte, format, {
           skala: 0.12,
           film: { auftritt: "abziehen", kamera: "luecke" },
@@ -343,13 +355,122 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SPRUECHE, SPRUECHE_EX
           }
         }
       }
+      // Story-Serien des Tages: jedes Bild so, wie der Tag die Serie
+      // bringt (alle Bilder in derselben Gestaltung, die Serien trägt,
+      // jedes mit seiner Stelle), dann in jeder dieser Gestaltungen mit
+      // reihum wechselndem Ablauf, flach und mit der Kino-Kamera.
+      for (const [datum, serie] of Object.entries(p.SERIEN_AKTUELL)) {
+        const karten = p.serieAlsKarten(serie, datum);
+        const gestaltungen = new Set();
+        for (const [bi, karte] of karten.entries()) {
+          const name = `${format.name} | Serie ${datum} „${serie.titel}“ | Bild ${karte.folge.nr}/${karte.folge.von} | ${karte.text}`;
+          try {
+            for (const versatz of [0, 1]) {
+              const zeichne = await p.storyVorbereiten(flaeche, karte, format, {
+                skala: 0.12,
+                versatz,
+              });
+              befund(`${name} (${flaeche.dataset.layout}, Design ${versatz})`);
+              const l = flaeche.dataset.layout;
+              if (!versatz) gestaltungen.add(l);
+              if (l !== p.serieGestaltung(karte.nummer, versatz))
+                out.fehler.push(`Serie in falscher Gestaltung (${l}): ${name}`);
+              if (
+                flaeche.dataset.folge !== `${karte.folge.nr}/${karte.folge.von}`
+              )
+                out.fehler.push(`Stelle in der Serie fehlt: ${name}`);
+              for (const t of zeiten) zeichne(t);
+            }
+            for (const [li, layout] of p.SERIE_LAYOUTS.entries()) {
+              const n = bi + li + fi;
+              const film = {
+                auftritt: p.AUFTRITTE[n % p.AUFTRITTE.length],
+                kamera: p.KAMERAS[(bi + li) % p.KAMERAS.length],
+              };
+              const kino = n % 2 === 0;
+              const anders = await p.storyVorbereiten(flaeche, karte, format, {
+                skala: 0.12,
+                film,
+                kino,
+                layout,
+              });
+              befund(`${name} (${layout})`);
+              if (flaeche.dataset.layout !== layout)
+                out.fehler.push(
+                  `Gestaltung ${layout} nicht übernommen (${flaeche.dataset.layout}): ${name}`,
+                );
+              for (const t of zeiten) anders(t, t === 0.13 || t === 3.64);
+              if (kino && p.kinoBereit() && anders.kino === false)
+                out.fehler.push(`Kino-Kamera ausgefallen: ${name} (${layout})`);
+            }
+            // Eine Gestaltung, die keine Serie trägt, wird nicht übernommen.
+            for (const layout of p.LAYOUTS) {
+              if (p.SERIE_LAYOUTS.includes(layout)) continue;
+              await p.storyVorbereiten(flaeche, karte, format, {
+                skala: 0.12,
+                layout,
+              });
+              if (!p.SERIE_LAYOUTS.includes(flaeche.dataset.layout))
+                out.fehler.push(
+                  `Serie in ${flaeche.dataset.layout} gezeichnet: ${name}`,
+                );
+            }
+            await abziehen(karte, format, name, p.SERIE_LAYOUTS);
+            if (fi === 0) out.serienBilder++;
+          } catch (e) {
+            out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);
+          }
+        }
+        if (gestaltungen.size !== 1)
+          out.fehler.push(
+            `Serie ${datum} nicht aus einem Guss (${format.name}): ${[...gestaltungen].join(", ")}`,
+          );
+        if (fi === 0) out.serien++;
+      }
+      // Jede Reihe als Aufhänger und als Einladung einer Serie mit dem
+      // längsten erlaubten Titel, in jeder Gestaltung der Serien: Die
+      // Kopfzeile (Titel, Reihe, Stelle) und der Kontaktblock müssen passen.
+      for (const kicker of p.KICKER) {
+        const i = alle.findIndex((e) => e.karte.kicker === kicker);
+        if (i < 0) continue;
+        for (const [rolle, nr] of [
+          ["aufhaenger", 1],
+          ["problem", 2],
+          ["loesung", 4],
+          ["einladung", 5],
+        ]) {
+          const karte = {
+            ...alsTag(alle[i], i),
+            platz: 0,
+            anlass: "Weihnachtsmarkt Rathausmarkt",
+            herkunft: "aktuell",
+            rolle,
+            folge: { nr, von: 5 },
+          };
+          for (const layout of p.SERIE_LAYOUTS) {
+            const name = `${format.name} | ${kicker} | Serie, ${rolle}, längster Titel (${layout})`;
+            try {
+              const z = await p.storyVorbereiten(flaeche, karte, format, {
+                skala: 0.12,
+                layout,
+              });
+              befund(name);
+              z(Infinity);
+              z(0);
+              z(5.4);
+            } catch (e) {
+              out.fehler.push(`lässt sich nicht zeichnen: ${name} (${e})`);
+            }
+          }
+        }
+      }
     }
     return out;
   });
   await browser.close();
   fehler.push(...ergebnis.fehler);
   console.log(
-    `${ergebnis.geprueft} Karten geprüft (${ergebnis.aktuell} tagesaktuelle), jede in Story, Beitrag und Journal-Karte und in jeder Gestaltung. Kleinste Schrift: ${Object.entries(
+    `${ergebnis.geprueft} Karten geprüft (${ergebnis.aktuell} tagesaktuelle), jede in Story, Beitrag und Journal-Karte und in jeder Gestaltung. ${ergebnis.serien} Story-Serien mit ${ergebnis.serienBilder} Bildern geprüft, jede in allen Formaten und in jeder Gestaltung für Serien. Kleinste Schrift: ${Object.entries(
       ergebnis.kleinste,
     )
       .map(([f, g]) => `${f} ${g}`)
