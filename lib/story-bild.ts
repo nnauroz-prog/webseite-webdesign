@@ -832,6 +832,13 @@ const STREIFEN_OBEN_UMLAUT = 0.86;
 const STREIFEN_UNTEN = 0.33;
 /** Spalt zwischen zwei Streifen untereinander. */
 const STREIFEN_SPALT = 0.08;
+/**
+ * Serie: Der Rahmen um die Pointe des Problems ist nur ein Strich (0,045
+ * der Größe, innen an der Kante). Damit Unter- und Oberlängen (g, p, y,
+ * f) und Kommas nicht durch ihn schneiden, wird sein Feld oben und unten
+ * um Strich und etwas Luft größer als das gefüllte.
+ */
+const RAHMEN_LUFT = 0.09;
 
 /**
  * Farbstreifen hinter der Pointe: Ober- und Unterkante laufen parallel,
@@ -1163,22 +1170,29 @@ function setzeSatz(
     // Unterlängen.
     const umlaut = /[ÄÖÜ]/.test(pointeText);
     const versal = pointeText === pointeText.toLocaleUpperCase("de-DE");
-    const oben = !balken
-      ? 0.78
-      : gerade
-        ? umlaut
-          ? 1
-          : 0.86
-        : umlaut
-          ? STREIFEN_OBEN_UMLAUT
-          : STREIFEN_OBEN;
-    const unten = !balken
-      ? 0.3
-      : gerade
-        ? versal
-          ? 0.14
-          : 0.3
-        : STREIFEN_UNTEN;
+    // Serie (stil.luft): Ein Komma oder Semikolon in der Pointe hängt
+    // auch im Versalsatz unter die Grundlinie, das Feld reicht dann so
+    // tief wie bei Kleinbuchstaben.
+    const kommaTief = !!stil.luft && /[,;]/.test(pointeText);
+    const rahmenLuft = balken && stil.rahmen ? RAHMEN_LUFT : 0;
+    const oben =
+      (!balken
+        ? 0.78
+        : gerade
+          ? umlaut
+            ? 1
+            : 0.86
+          : umlaut
+            ? STREIFEN_OBEN_UMLAUT
+            : STREIFEN_OBEN) + rahmenLuft;
+    const unten =
+      (!balken
+        ? 0.3
+        : gerade
+          ? versal && !kommaTief
+            ? 0.14
+            : 0.3
+          : STREIFEN_UNTEN) + rahmenLuft;
     const spalt = balken ? STREIFEN_SPALT : -0.02;
     const zeilen: Versuch["zeilen"] = [];
     const streifen: Streifen[] = [];
