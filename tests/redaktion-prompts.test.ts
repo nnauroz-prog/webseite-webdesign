@@ -2,15 +2,18 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  DU_FORM,
   ANLASS_MAX,
   ANLASS_MIN,
   TEXT_MAX,
   TEXT_MIN,
   ZUSATZ_MAX,
   ZUSATZ_MIN,
+  VERBOTEN,
 } from "@/lib/karten-regeln";
 import { pruefeEingabe } from "@/lib/redaktion/eingabe";
 import { baueKontext, SERIEN_IM_BLICK } from "@/lib/redaktion/kontext";
+import { LEITFADEN } from "@/lib/redaktion/leitfaden";
 import { THEMEN } from "@/lib/redaktion/lesen";
 import {
   auftragBlock,
@@ -47,6 +50,30 @@ function echterKontext(datum: string) {
     vorrat: [...SPRUECHE, ...SPRUECHE_EXTRA],
   });
 }
+
+describe("Leitfaden für schlaue Karten", () => {
+  it("steht wörtlich in den Vorgaben aller drei Rollen", () => {
+    for (const system of SYSTEME) assert.ok(system.includes(LEITFADEN));
+    assert.match(LEITFADEN, /Aha-Test/);
+    assert.match(LEITFADEN, /Anti-Muster/);
+    assert.match(LEITFADEN, /zweiten Gedanken/);
+  });
+
+  it("hält sich selbst an die Regeln: Beispiele ohne Du-Form, Ziffern und verbotene Wörter", () => {
+    const beispiele = [...LEITFADEN.matchAll(/„([^“]+)“/g)].map((m) => m[1]);
+    assert.ok(beispiele.length >= 10);
+    for (const b of beispiele) {
+      assert.doesNotMatch(b, DU_FORM, b);
+      assert.doesNotMatch(b, VERBOTEN, b);
+    }
+  });
+
+  it("Texterin wählt aus mehreren Fassungen, Lektor prüft den Aha-Test", () => {
+    assert.match(SYSTEM_TEXTERIN, /mindestens drei Fassungen/);
+    assert.match(SYSTEM_LEKTOR, /Besteht jedes Bild den Aha-Test/);
+    assert.match(SYSTEM_SCOUT, /Er besteht den Aha-Test/);
+  });
+});
 
 describe("Vorgaben der Rollen (system)", () => {
   it("Texterin und Lektor kennen alle harten Regeln im Wortlaut der Prüfung", () => {
@@ -373,7 +400,11 @@ describe("Material je Auftrag (nutzer)", () => {
       ),
     ])
       assert.ok(text.length < 9000, String(text.length));
-    for (const system of SYSTEME) assert.ok(system.length < 9000);
+    // Die Vorgaben enthalten den Leitfaden für schlaue Karten (rund
+    // fünftausend Zeichen); sie bleiben je Rolle gleich und werden
+    // zwischengespeichert.
+    for (const system of SYSTEME)
+      assert.ok(system.length < 14000, String(system.length));
   });
 
   it("auftragBlock markiert den Text als Material", () => {
