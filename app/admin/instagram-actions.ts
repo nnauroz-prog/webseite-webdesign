@@ -7,11 +7,12 @@ import {
   erzeugePlaetze,
   speicherBereit,
   SpeicherFehler,
+  TEXT_KEIN_BUCKET,
+  TEXT_KEIN_SPEICHER,
 } from "@/lib/instagram/bilder";
 import { bilderMax, parseArt, TEXT_ANZAHL } from "@/lib/instagram/eingabe";
 import { FEHLER_TEXT } from "@/lib/instagram/graph";
 import { instagramBereit } from "@/lib/instagram/konfig";
-import { TEXT_KEIN_BUCKET } from "@/lib/instagram/posten";
 import { instagramStand } from "@/lib/instagram/stand";
 
 /*
@@ -21,9 +22,6 @@ import { instagramStand } from "@/lib/instagram/stand";
  * enthalten nur Codes. Das Posten selbst läuft über die Route
  * app/admin/instagram/posten/route.ts (Strom statt einer Antwort).
  */
-
-const TEXT_KEIN_SPEICHER =
-  "Der Speicher für die Bilder ist nicht eingerichtet: In Vercel fehlen die Angaben zu Supabase.";
 
 /**
  * Upload-Plätze für anzahl Bilder eines Posts (art: story oder beitrag).

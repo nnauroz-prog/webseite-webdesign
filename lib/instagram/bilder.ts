@@ -23,6 +23,13 @@ import { serviceClient } from "@/lib/supabase/service";
  * Geloggt werden nur Codes, nie Pfade mit Token oder Adressen.
  */
 
+/** Supabase ist nicht konfiguriert (Satz für den Inhaber). */
+export const TEXT_KEIN_SPEICHER =
+  "Der Speicher für die Bilder ist nicht eingerichtet: In Vercel fehlen die Angaben zu Supabase.";
+/** Der Bucket fehlt, das Datenbank-Update steht aus (Satz für den Inhaber). */
+export const TEXT_KEIN_BUCKET =
+  "Der Speicher für die Bilder fehlt noch. Führ das Datenbank-Update aus (Hinweis im Mitgliederbereich, „SQL kopieren“) und versuch es dann noch einmal.";
+
 /** So lange gilt die Adresse, über die Instagram ein Bild lädt. */
 export const ADRESSE_SEKUNDEN = 2 * 60 * 60;
 

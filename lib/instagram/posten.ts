@@ -14,6 +14,8 @@ import {
   raeumeAuf,
   speicherBereit,
   SpeicherFehler,
+  TEXT_KEIN_BUCKET,
+  TEXT_KEIN_SPEICHER,
 } from "@/lib/instagram/bilder";
 import { pruefeAuftrag } from "@/lib/instagram/eingabe";
 import {
@@ -84,10 +86,6 @@ export type PostenOptionen = {
   warte?: Warte;
 };
 
-const TEXT_KEIN_SPEICHER =
-  "Der Speicher für die Bilder ist nicht eingerichtet: In Vercel fehlen die Angaben zu Supabase.";
-export const TEXT_KEIN_BUCKET =
-  "Der Speicher für die Bilder fehlt noch. Führ das Datenbank-Update aus (Hinweis im Mitgliederbereich, „SQL kopieren“) und versuch es dann noch einmal.";
 const TEXT_BILD_FEHLT =
   "Ein Bild ist nicht im Speicher angekommen. Versuch es noch einmal.";
 const TEXT_ZU_LANGSAM =
