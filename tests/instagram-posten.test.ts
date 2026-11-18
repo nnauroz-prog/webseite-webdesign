@@ -721,6 +721,22 @@ describe("Abbruch und Frist", () => {
 });
 
 describe("Konto und Kontingent im Ablauf", () => {
+  it("falsche INSTAGRAM_KONTO_ID (100/33): „konto“ mit Hinweis auf die Kennung", async () => {
+    process.env.INSTAGRAM_KONTO_ID = "17841499999999999";
+    const pfade = await hochladen(1);
+    const s = await poste({
+      art: "beitrag",
+      bilder: pfade,
+      caption: "",
+      quelle: SERIE_HEUTE,
+    });
+    assert.deepEqual(s.folge(), ["pruefen:laeuft", "fehler:konto"]);
+    const fehler = letzte(s);
+    assert.ok(fehler.typ === "fehler");
+    assert.match(fehler.text, /INSTAGRAM_KONTO_ID/);
+    assert.equal(g.anfragen.length, 1);
+  });
+
   it("Kontingent aufgebraucht: „limit“, bevor ein Container angelegt wird", async () => {
     g.stelle({
       kontingent: {

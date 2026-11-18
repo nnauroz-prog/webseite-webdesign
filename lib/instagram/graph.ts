@@ -410,9 +410,26 @@ export async function kontoFinden(
       });
   }
   if (!name) {
-    const konto = await g.get<{ username?: unknown }>(id, {
-      fields: "username",
-    });
+    let konto: { username?: unknown };
+    try {
+      konto = await g.get<{ username?: unknown }>(id, { fields: "username" });
+    } catch (err) {
+      // 100/33: Diese Kennung gibt es nicht oder der Schlüssel darf nicht ran.
+      if (
+        kontoId &&
+        err instanceof InstagramFehler &&
+        err.graphCode === 100 &&
+        err.subcode === 33
+      )
+        throw new InstagramFehler("konto", {
+          text: "Die Kennung in INSTAGRAM_KONTO_ID passt zu keinem Instagram-Konto, auf das der Zugangsschlüssel zugreifen darf. Prüf die Kennung oder lösch sie in Vercel, dann sucht der Server das Konto selbst.",
+          graphCode: err.graphCode,
+          subcode: err.subcode,
+          fbtrace: err.fbtrace,
+          status: err.status,
+        });
+      throw err;
+    }
     name = nutzername(konto.username);
   }
   return { id, name: name ?? "" };
