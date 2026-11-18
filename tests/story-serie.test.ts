@@ -135,6 +135,47 @@ describe("Regeln für eine Story-Serie", () => {
     );
   });
 
+  it("lässt im Titel keine Du-Form durch (er steht auf jedem Bild)", () => {
+    for (const titel of ["Dein Advent", "Für euren Laden", "Was du brauchst"])
+      assert.ok(
+        pruefeSerie({ ...SAUBER, titel }).some((f) => /Du-Form/.test(f)),
+        titel,
+      );
+    assert.deepEqual(pruefeSerie({ ...SAUBER, titel: "Advent in Sicht" }), []);
+  });
+
+  it("erkennt verbotene Wörter auch klein geschrieben und gebeugt", () => {
+    const mit = (text: string, betont: string) =>
+      pruefeSerie({
+        ...SAUBER,
+        folien: SAUBER.folien.map((f, i) =>
+          i === 1 ? { ...f, text, betont } : f,
+        ),
+      });
+    for (const [text, betont] of [
+      ["Die Seite verspricht garantierte Anfragen.", "Anfragen"],
+      ["Überall stehen Garantien und Siegel.", "Siegel"],
+      ["Die ausgezeichnete Agentur von nebenan.", "nebenan"],
+      ["Ohne seo geht hier angeblich nichts.", "nichts"],
+      ["Den Text schrieb eine künstlicher Intelligenz.", "Text"],
+      ["Auf deines Nachbarn Seite steht mehr.", "mehr"],
+      ["Auf eurer Seite fehlt die Adresse.", "Adresse"],
+    ])
+      assert.ok(
+        mit(text, betont).some((f) =>
+          /^Bild 2: (Nicht erlaubt|Du-Form)/.test(f),
+        ),
+        text,
+      );
+    // Wörter, die nur so ähnlich aussehen, bleiben erlaubt.
+    for (const [text, betont] of [
+      ["Im Mai wird die Karte neu gemacht.", "neu gemacht"],
+      ["In Kiel sucht man genauso am Handy.", "am Handy"],
+      ["Das Taxi wartet nicht auf die Website.", "wartet nicht"],
+    ])
+      assert.deepEqual(mit(text, betont), [], text);
+  });
+
   it("meldet jeden Verstoß im Titel und in der Quelle", () => {
     const faelle: [string, unknown, RegExp][] = [
       ["Titel fehlt", { ...SAUBER, titel: undefined }, /^Titel fehlt/],

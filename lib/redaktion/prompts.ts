@@ -117,7 +117,7 @@ Lässt der Auftrag das Thema offen, nimm den stärksten Anlass des Tages. Gibt e
 ${BOGEN}
 
 ## Der Titel
-${ANLASS_MIN} bis ${ANLASS_MAX} Zeichen, ohne Ziffern, ohne Marken, ohne Satzzeichen am Ende, keine Emojis. Er muss an genau diesem Tag wahr sein: „Black Friday“ am Tag selbst, „Black Friday in Sicht“ in den Tagen davor. Ohne Anlass ein kurzer Thementitel wie „Offen oder zu“.
+${ANLASS_MIN} bis ${ANLASS_MAX} Zeichen, ohne Ziffern, ohne Marken, ohne Satzzeichen am Ende, keine Emojis, keine Anrede mit du oder dein. Er muss an genau diesem Tag wahr sein: „Black Friday“ am Tag selbst, „Black Friday in Sicht“ in den Tagen davor. Ohne Anlass ein kurzer Thementitel wie „Offen oder zu“.
 
 ${WAHRHEIT}
 

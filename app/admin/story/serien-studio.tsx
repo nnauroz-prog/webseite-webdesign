@@ -529,7 +529,13 @@ export function SerienStudio({
           ? `Die Serie „${frisch.serie.titel}“ ist fertig: ${bilderText(frisch.serie.folien.length)}.`
           : ""}
       </p>
-      {frisch ? <div className="mt-3">{karte(frisch, true)}</div> : null}
+      {/* key: Eine zweite fertige Serie bekommt eine neue Karte, sonst
+          bliebe etwa die offene Lösch-Rückfrage der ersten stehen. */}
+      {frisch ? (
+        <div key={frisch.id} className="mt-3">
+          {karte(frisch, true)}
+        </div>
+      ) : null}
 
       <div role="region" aria-labelledby="tagesserie-title" className="mt-7">
         <h2

@@ -9,11 +9,11 @@ import { KICKER, THEMA_LABEL, type Spruch } from "@/lib/sprueche-data";
 
 /** Ziffern, Preise, Marken, Garantien und Technik-Schlagworte. */
 export const VERBOTEN =
-  /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbot|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantiert|Garantie|Platz eins|Nummer eins|Testsieger|ausgezeichnet|SEO|Conversion|Landingpage|Performance|UX|CTA)\b|künstliche Intelligenz/;
+  /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbots?|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantiert\p{L}*|Garantien?|Platz eins|Nummer eins|Testsieger\p{L}*|ausgezeichnet\p{L}*|SEO|Conversions?|Landingpages?|Performance|UX|CTA)\b|künstliche\p{L}* Intelligenz/iu;
 
 /** Du-Form: Karten bleiben in der Sie-Form oder ohne Anrede. */
 export const DU_FORM =
-  /\b(du|dich|dir|dein|deine|deiner|deinem|deinen|deins|euch|euer|eure)\b/i;
+  /\b(du|dich|dir|dein|deine|deiner|deinem|deinen|deines|deins|euch|euer|eure|eurem|euren|eurer|eures)\b/i;
 
 const EMOJI = /\p{Extended_Pictographic}/u;
 const SATZENDE = /[.!?]$/;
@@ -121,6 +121,8 @@ export function pruefeAnlass(anlass: unknown): string[] {
     );
   const verboten = anlass.match(VERBOTEN);
   if (verboten) fehler.push(`Im Anlass nicht erlaubt: „${verboten[0]}“.`);
+  const du = anlass.match(DU_FORM);
+  if (du) fehler.push(`Im Anlass steht die Du-Form: „${du[0]}“.`);
   if (EMOJI.test(anlass)) fehler.push("Im Anlass sind Emojis nicht erlaubt.");
   if (/[.!?:;]$/.test(anlass))
     fehler.push("Anlass endet mit einem Satzzeichen.");

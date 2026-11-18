@@ -170,6 +170,87 @@ describe("anthropicModell: die Anfrage an die API", () => {
   });
 });
 
+describe("anthropicModell: Frist und Abbruch gelten auch, wenn das SDK nicht hinhört", () => {
+  /** Anschluss, dessen Antwort nie kommt (wie das SDK in der Pause vor einem zweiten Versuch). */
+  function haengt() {
+    let gestoppt = 0;
+    const attrappe = {
+      messages: {
+        stream() {
+          return {
+            finalMessage: () => new Promise(() => {}),
+            abort() {
+              gestoppt++;
+            },
+          };
+        },
+      },
+    };
+    return {
+      gestoppt: () => gestoppt,
+      attrappe: attrappe as unknown as AnthropicAnschluss,
+    };
+  }
+
+  it("Abbruch durch das Studio: endet sofort mit „abbruch“ und schließt den Strom", async () => {
+    const h = haengt();
+    const steuer = new AbortController();
+    const lauf = anthropicModell(h.attrappe).frage({
+      ...ANFRAGE,
+      signal: steuer.signal,
+    });
+    setTimeout(() => steuer.abort(), 20);
+    const start = Date.now();
+    await assert.rejects(
+      lauf,
+      (err: unknown) => err instanceof ModellFehler && err.art === "abbruch",
+    );
+    assert.ok(Date.now() - start < 1000);
+    assert.equal(h.gestoppt(), 1);
+  });
+
+  it("Frist: endet mit „zeit“, obwohl die Antwort nie kommt", async () => {
+    const h = haengt();
+    // Die Uhr von AbortSignal.timeout hält Node nicht wach; im Server tut
+    // das die offene Verbindung, hier ein eigener Zeitgeber.
+    const wach = setTimeout(() => {}, 5000);
+    try {
+      await assert.rejects(
+        anthropicModell(h.attrappe).frage({
+          ...ANFRAGE,
+          signal: AbortSignal.timeout(30),
+        }),
+        (err: unknown) => err instanceof ModellFehler && err.art === "zeit",
+      );
+    } finally {
+      clearTimeout(wach);
+    }
+    assert.equal(h.gestoppt(), 1);
+  });
+
+  it("schon abgebrochen: gar nicht erst warten", async () => {
+    const h = haengt();
+    const steuer = new AbortController();
+    steuer.abort();
+    await assert.rejects(
+      anthropicModell(h.attrappe).frage({ ...ANFRAGE, signal: steuer.signal }),
+      (err: unknown) => err instanceof ModellFehler && err.art === "abbruch",
+    );
+  });
+
+  it("ohne Abbruch kommt die Antwort wie bisher durch", async () => {
+    const { attrappe } = anschluss({
+      content: [{ type: "text", text: "{}" }],
+      stop_reason: "end_turn",
+    });
+    const antwort = await anthropicModell(attrappe).frage({
+      ...ANFRAGE,
+      signal: new AbortController().signal,
+    });
+    assert.deepEqual(antwort, { text: "{}", stopp: "end_turn" });
+  });
+});
+
 describe("modellFehlerAus: Fehler des SDK einordnen", () => {
   it("HTTP-Status", () => {
     for (const [status, typ, art] of [

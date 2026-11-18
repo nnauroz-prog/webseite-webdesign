@@ -92,6 +92,41 @@ export function modellFehlerAus(
 }
 
 /**
+ * Wartet auf die Antwort, aber nie länger als das Abbruchsignal erlaubt.
+ * Das SDK gibt das Signal zwar an die Anfrage weiter; wartet es aber
+ * nach einem 429 auf den nächsten Versuch (retry-after), hört es in
+ * dieser Pause nicht auf das Signal. Frist und Abbruch gelten deshalb
+ * hier noch einmal, unabhängig vom SDK.
+ */
+function bisAbbruch<T>(
+  arbeit: Promise<T>,
+  signal: AbortSignal | undefined,
+  stoppe: () => void,
+): Promise<T> {
+  if (!signal) return arbeit;
+  return new Promise<T>((fertig, fehl) => {
+    const ab = () => {
+      try {
+        stoppe();
+      } catch {
+        // Der Strom war schon zu.
+      }
+      fehl(new ModellFehler(fristAbgelaufen(signal) ? "zeit" : "abbruch"));
+    };
+    if (signal.aborted) {
+      // Die Arbeit läuft schon: ihr späteres Scheitern nicht unbehandelt lassen.
+      arbeit.catch(() => {});
+      ab();
+      return;
+    }
+    signal.addEventListener("abort", ab, { once: true });
+    arbeit
+      .then(fertig, fehl)
+      .finally(() => signal.removeEventListener("abort", ab));
+  });
+}
+
+/**
  * Die Redaktion an der Claude API. Ohne Argument entsteht der Anschluss
  * aus der Umgebung (ANTHROPIC_API_KEY).
  */
@@ -121,7 +156,11 @@ export function anthropicModell(
           },
           { signal: anfrage.signal, maxRetries: WIEDERHOLUNGEN },
         );
-        const nachricht = await strom.finalMessage();
+        const nachricht = await bisAbbruch(
+          strom.finalMessage(),
+          anfrage.signal,
+          () => (strom as { abort?: () => void }).abort?.(),
+        );
         const text = nachricht.content
           .map((block) => (block.type === "text" ? block.text : ""))
           .join("");
