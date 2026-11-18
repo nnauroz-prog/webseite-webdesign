@@ -81,6 +81,31 @@ Lieber knapp als erfunden. Drei Optionen, von ehrlich zu leiser:
 
 ---
 
+## Auf Instagram posten
+
+**Files:** `lib/instagram/` (Absprache zwischen Studio und Server in `vertrag.ts`: Wege, Grenzen, Fehlercodes), `app/admin/instagram-actions.ts` (Upload-Plätze, Stand der Verbindung), die Route `/admin/instagram/posten`, die Seite `/admin/instagram`.
+
+**Was es tut:** Im Story-Studio (`/admin/story`) bringt der Knopf „Auf Instagram posten“ die Bilder direkt auf dein Instagram-Konto. Eine Story-Serie geht als einzelne Stories (in der Reihenfolge) oder als Karussell raus, ein Post des Tages als Story oder als Beitrag im Feed. Das Studio zeichnet die Bilder im Browser, legt sie kurz in einen privaten Speicher bei Supabase (Bucket `instagram`), der Server gibt Instagram eine Adresse auf Zeit, veröffentlicht und löscht die Bilder danach wieder. Das Studio zeigt dabei drei Schritte und am Ende den Link.
+
+**Wo:** Knopf im Story-Studio. Stand der Verbindung, Konto und Tagesgrenze auf `/admin/instagram`.
+
+**Einrichten:** einmalig, Schritt für Schritt in `docs/instagram-einrichtung.md` (Business-Konto, Facebook-Seite, Systemnutzer im Meta Business Manager, Schlüssel `INSTAGRAM_TOKEN` in Vercel, Datenbank-Update „Posten auf Instagram“). Werte in Vercel: `docs/vercel-einrichtung.md`, Teil 9.
+
+**Wenn es scheitert:** Das Studio zeigt einen kurzen Satz. Was dahinter steckt:
+
+- **Nicht verbunden:** `INSTAGRAM_TOKEN` fehlt in Vercel oder der Redeploy fehlt.
+- **Zugang abgelaufen oder ohne Rechte:** neuen Schlüssel beim Systemnutzer erzeugen, in Vercel ersetzen, Redeploy.
+- **Tageslimit:** Instagram zählt 24 Stunden rückwärts (meist 100 Veröffentlichungen, jede Story einzeln, ein Karussell als eine). Später noch einmal.
+- **Bild abgelehnt:** meist kurz nicht ladbar. Noch einmal versuchen, sonst von Hand teilen.
+- **Konto nicht geeignet:** Instagram muss ein Unternehmenskonto sein, kein Creator-Konto.
+- **Instagram-Fehler oder unbekannt:** ein paar Minuten warten, dann noch einmal. Bleibt es: in Vercel unter **Logs** nach `instagram` suchen. Dort stehen nur Fehlernummer und `fbtrace_id`, nie der Schlüssel.
+
+Bei einer Story-Serie, die mittendrin abbricht, nennt das Studio die Stories, die schon draußen sind. Die nicht noch einmal posten, sonst stehen sie doppelt da. Die ganze Fehlerliste steht in `docs/instagram-einrichtung.md` unter „Wenn etwas nicht klappt“. Bis alles läuft, geht Teilen von Hand wie bisher.
+
+**Stellschrauben in Vercel:** `INSTAGRAM_KONTO_ID` (Konto fest vorgeben, sonst sucht der Server es über die Facebook-Seite), `INSTAGRAM_API_VERSION` (ohne Angabe `v26.0`). `INSTAGRAM_GRAPH_URL` ist nur für Tests und gehört nie in Vercel.
+
+---
+
 ## Sonstige Pflege-Stellen
 
 Reine Referenz — diese Sachen ändern sich selten, aber wenn doch, ist hier zu schauen.
