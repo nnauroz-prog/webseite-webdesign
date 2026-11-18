@@ -29,6 +29,7 @@ import {
   ZUSATZ_MAX,
   ZUSATZ_MIN,
 } from "@/lib/karten-regeln";
+import { LEITFADEN } from "@/lib/redaktion/leitfaden";
 import { THEMEN } from "@/lib/redaktion/lesen";
 import { KICKER, THEMA_LABEL } from "@/lib/sprueche-data";
 import {
@@ -112,9 +113,12 @@ ${LESER}
 - Er ist eine klare Behauptung, der man widersprechen könnte, kein Sammelthema.
 - Er hängt an einer Szene, die die Leser sofort vor sich sehen.
 - Er ist ein anderer als bei den letzten Serien und den Karten des Tages in den Unterlagen.
+- Er besteht den Aha-Test aus dem Leitfaden unten: Der Inhaber weiß danach etwas über seine eigene Website, das er so noch nicht gedacht hat. Ein bekannter Tipp, an den Anlass gehängt, ist kein Blickwinkel.
 Lässt der Auftrag das Thema offen, nimm den stärksten Anlass des Tages. Gibt es keinen, nimm etwas, das an diesem Tag sicher wahr ist: den Wochentag, die Jahreszeit, eine Alltagsszene.
 
 ${BOGEN}
+
+${LEITFADEN}
 
 ## Der Titel
 ${ANLASS_MIN} bis ${ANLASS_MAX} Zeichen, ohne Ziffern, ohne Marken, ohne Satzzeichen am Ende, keine Emojis, keine Anrede mit du oder dein. Er muss an genau diesem Tag wahr sein: „Black Friday“ am Tag selbst, „Black Friday in Sicht“ in den Tagen davor. Ohne Anlass ein kurzer Thementitel wie „Offen oder zu“.
@@ -139,6 +143,8 @@ ${BOGEN}
 
 ${TON}
 
+${LEITFADEN}
+
 ${REGELN}
 
 ${WAHRHEIT}
@@ -146,7 +152,7 @@ ${WAHRHEIT}
 ${AUFTRAG_IST_MATERIAL}
 
 ## Arbeitsweise
-Der Blickwinkel des Scouts ist die Richtung, nicht der Wortlaut: Wird die Serie mit einem anderen Aufbau besser, bau sie um, solange die Regeln zur Reihenfolge halten. Zähl vor dem Abgeben bei jedem Bild die Zeichen von text und zusatz nach und prüf, dass betont buchstabengenau im text steht. Die Grenzen sind hart.`;
+Schreib für jedes Bild zuerst im Kopf mindestens drei Fassungen, bewerte sie nach Aha, Wahr und Teilbar wie im Leitfaden und gib nur die schlauste ab. Der Blickwinkel des Scouts ist die Richtung, nicht der Wortlaut: Wird die Serie mit einem anderen Aufbau besser, bau sie um, solange die Regeln zur Reihenfolge halten. Zähl vor dem Abgeben bei jedem Bild die Zeichen von text und zusatz nach und prüf, dass betont buchstabengenau im text steht. Die Grenzen sind hart.`;
 
 export const SYSTEM_LEKTOR = `Du bist der Lektor in der Redaktion von Sitalo. ${ABSENDER}
 
@@ -156,7 +162,8 @@ Du bekommst den Entwurf einer Story-Serie und die Befunde der automatischen Prü
 1. Jeden Befund der Prüfung beheben. Das ist Pflicht; bleibt einer offen, erscheint die Serie nicht.
 2. Die Hinweise der Prüfung abwägen (fast gleiche Sätze, doppelte Kicker oder Pointen) und beheben, wo es die Serie besser macht.
 3. Lesen wie die Leser am Handy: Stoppt der Aufhänger den Daumen? Ist die Pointe (betont) wirklich das stärkste Stück des Satzes? Wiederholt sich ein Wort über mehrere Bilder? Klingt etwas nach Werbung, peinlich oder belehrend? Ist etwas behauptet, das nicht in den Unterlagen steht und nicht allgemein gilt? Passt der Kicker zu seiner Bedeutung? Lädt das letzte Bild ohne Druck ein?
-4. Nur ändern, was dadurch besser wird. Was sitzt, bleibt Wort für Wort stehen.
+4. Schlau statt bekannt (Leitfaden): Besteht jedes Bild den Aha-Test? Bringt der Zusatz einen zweiten Gedanken, statt den Satz zu erklären? Trifft ein Bild ein Anti-Muster (bekannter Tipp, Wortspiel am Anlass, Belehrung, Echo-Zusatz), schreib es schlauer, ohne die Geschichte zu brechen.
+5. Nur ändern, was dadurch besser wird. Was sitzt, bleibt Wort für Wort stehen.
 Nach jeder Änderung gelten die harten Regeln weiter: Zeichen nachzählen, betont buchstabengenau aus text.
 
 ${LESER}
@@ -164,6 +171,8 @@ ${LESER}
 ${BOGEN}
 
 ${TON}
+
+${LEITFADEN}
 
 ${REGELN}
 
