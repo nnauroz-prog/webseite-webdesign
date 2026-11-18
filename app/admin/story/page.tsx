@@ -13,7 +13,7 @@ import {
   parsePostDatum,
 } from "@/lib/admin/post-planer";
 import { checkSchema } from "@/lib/admin/schema";
-import { parseSerieZiel } from "@/lib/admin/studio-serie";
+import { AUFTRAEGE_MAX, parseSerieZiel } from "@/lib/admin/studio-serie";
 import { studioVorschlaege } from "@/lib/admin/studio-vorschlaege";
 import { listPostStatus } from "@/lib/post-status-store";
 import { redaktionBereit } from "@/lib/redaktion/konfig";
@@ -51,9 +51,6 @@ async function gepostetAm(tag: string): Promise<GepostetEintrag[] | null> {
     return null;
   }
 }
-
-/** So viele gespeicherte Aufträge zeigt „Deine Aufträge“ höchstens. */
-const AUFTRAEGE_MAX = 20;
 
 /**
  * Die gespeicherten Serien aus Aufträgen an die Redaktion. zeilen ist

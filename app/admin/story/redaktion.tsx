@@ -389,7 +389,7 @@ export function RedaktionOhneSchluessel() {
 }
 
 /** Für vergangene Tage nimmt die Redaktion keine Aufträge an. */
-export function RedaktionVergangen() {
+export function RedaktionVergangen({ zuWeit = false }: { zuWeit?: boolean }) {
   const titelId = useId();
   return (
     <div role="region" aria-labelledby={titelId} className={KARTE}>
@@ -404,8 +404,8 @@ export function RedaktionVergangen() {
         Redaktion
       </h2>
       <p className="text-muted-foreground mt-1 text-[14px] leading-5">
-        Aufträge nehmen die Agenten für heute und kommende Tage an. Dieser Tag
-        ist vorbei.
+        Aufträge nehmen die Agenten für heute und die nächsten zwei Wochen an.{" "}
+        {zuWeit ? "Dieser Tag liegt weiter weg." : "Dieser Tag ist vorbei."}
       </p>
     </div>
   );

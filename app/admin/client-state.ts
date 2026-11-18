@@ -16,8 +16,10 @@
  * - Schlüssel der Story-Serien, die sich nur dieses Gerät merkt
  *   (gelesen und geschrieben im Story-Studio).
  *
- * clearAdminSession() leert alles (Abmelden, endgültiges Löschen):
- * Suchbegriff, Vormerkung und Entwürfe enthalten oft Kundendaten.
+ * clearAdminSession() leert alles mit Kundendaten (Abmelden,
+ * endgültiges Löschen): Suchbegriff, Vormerkung und Entwürfe. Die
+ * gemerkten Serien enthalten keine Kundendaten und gehen erst beim
+ * Abmelden (clearStudioSerien).
  *
  * sessionStorage kann fehlen oder werfen (privates Fenster); dann
  * gilt der Speicher im Modul als Rückfallebene.
@@ -281,7 +283,7 @@ export function clearAdminSession(): void {
   memorySearch = null;
   poppedAt = 0;
   try {
-    for (const key of [CONTACT_KEY, BACK_KEY, SEARCH_KEY, SERIEN_KEY]) {
+    for (const key of [CONTACT_KEY, BACK_KEY, SEARCH_KEY]) {
       window.sessionStorage.removeItem(key);
     }
     // Angebots-Entwürfe enthalten Kundendaten.
@@ -325,4 +327,18 @@ export function openOutcome(): void {
 
 export function openReply(): void {
   window.dispatchEvent(new Event(OPEN_REPLY_EVENT));
+}
+
+/**
+ * Die Serien vergessen, die sich nur dieses Gerät gemerkt hat (ohne
+ * Datenbank-Update). Nur beim Abmelden: Sie enthalten keine Kundendaten
+ * und sollen das Löschen einer Anfrage und das Schließen des Tabs
+ * überstehen, deshalb liegen sie im localStorage.
+ */
+export function clearStudioSerien(): void {
+  try {
+    window.localStorage.removeItem(SERIEN_KEY);
+  } catch {
+    // Ohne Speicher gab es nichts zu vergessen.
+  }
 }
