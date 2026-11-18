@@ -102,4 +102,34 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       quelle: "https://www.hamburg.de/freizeit/dom/termine-337422",
     },
   ],
+  "2026-11-18": [
+    {
+      kicker: "Kleiner Reminder",
+      text: "Vorsatz im Januar: neue Website. Jetzt ist November.",
+      betont: "Jetzt ist November",
+      zusatz:
+        "Ein paar Wochen hat das Jahr noch. Für den Anfang genügt eine kurze Nachricht.",
+      thema: "eindruck",
+      anlass: "Jahresende in Sicht",
+    },
+    {
+      kicker: "Hand aufs Herz",
+      text: "Auf dem Dom ist Familientag. Und wer steckt hinter Ihrem Betrieb?",
+      betont: "hinter Ihrem Betrieb",
+      zusatz:
+        "Ein Foto, ein Name, zwei Sätze: Man kauft lieber bei Menschen als bei einem Logo.",
+      thema: "vertrauen",
+      anlass: "Familientag auf dem Dom",
+      quelle: "https://www.hamburg.de/freizeit/dom/dom-familientag-337324",
+    },
+    {
+      kicker: "Mal ehrlich",
+      text: "Die Woche ist halb rum. Wie viele Anfragen kamen über die Website?",
+      betont: "über die Website",
+      zusatz:
+        "Keine Ahnung ist auch eine Antwort. Nur keine, mit der sich planen lässt.",
+      thema: "anfrage",
+      anlass: "Bergfest",
+    },
+  ],
 };
