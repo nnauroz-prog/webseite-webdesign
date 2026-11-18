@@ -213,12 +213,13 @@ function emptyTables() {
 
 /** @param {{ mode?: MockMode; key?: string }} [options] */
 export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
-  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[]; angebotSeq: number }} */
+  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[]; angebotSeq: number; denied: Set<string> }} */
   const state = {
     mode,
     tables: emptyTables(),
     requests: [],
     angebotSeq: 0,
+    denied: new Set(),
   };
   let lastTime = 0;
   /** Feste Uhr für Tests (Millisekunden) oder null für die echte Zeit. */
@@ -482,6 +483,15 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     const m = /^\/rest\/v1\/([a-z_]+)$/.exec(url.pathname);
     if (!m) return { status: 404, body: { message: "mock: unbekannter Pfad" } };
     const table = m[1];
+    if (state.denied.has(table) && schemaFor(state.mode)[table]) {
+      return {
+        status: 403,
+        body: {
+          code: "42501",
+          message: `permission denied for table ${table}`,
+        },
+      };
+    }
     const columns = schemaFor(state.mode)[table];
     if (!columns) {
       return {
@@ -691,6 +701,7 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       state.tables = emptyTables();
       state.requests = [];
       state.angebotSeq = 0;
+      state.denied = new Set();
     },
     /** Zeile direkt anlegen (an der API vorbei), gibt sie zurück. */
     /**
@@ -797,6 +808,15 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
      * Damit hängen Tests mit festem „jetzt“ nicht am echten Kalendertag.
      * @param {Date | null} when
      */
+    /**
+     * Tabellen, an denen dem Server die Rechte fehlen (42501), wie nach
+     * einer Migration ohne grant. Leere Liste: alles wieder erlaubt.
+     * reset() hebt es ebenfalls auf.
+     * @param {string[]} tables
+     */
+    deny(tables) {
+      state.denied = new Set(tables);
+    },
     setNow(when) {
       fixedNow = when ? when.getTime() : null;
       lastTime = 0;

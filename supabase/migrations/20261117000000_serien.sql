@@ -41,5 +41,9 @@ alter table public.serien enable row level security;
 -- keine Rechte an der Tabelle.
 revoke all on table public.serien from anon, authenticated;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.serien to service_role;
+
 -- 2) Supabase-API sofort über die neue Tabelle informieren.
 notify pgrst, 'reload schema';

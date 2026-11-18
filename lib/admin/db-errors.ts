@@ -55,6 +55,16 @@ export function isMissingSchema(err: unknown): boolean {
   );
 }
 
+/**
+ * Fehlen dem Server die Rechte an einer Tabelle (42501)? Supabase gibt
+ * neuen Tabellen seit Ende Oktober 2026 keine Rechte mehr von selbst;
+ * die Migrationen vergeben sie deshalb ausdrücklich. Wurde eine davor
+ * ohne diese Zeile ausgeführt, hilft es, sie noch einmal auszuführen.
+ */
+export function isMissingGrant(err: unknown): boolean {
+  return codeOf(err) === "42501";
+}
+
 /** Fehlt eine ganze Tabelle? */
 export function isMissingTable(err: unknown): boolean {
   const code = codeOf(err);
@@ -67,6 +77,7 @@ export type DbProblemKind =
   | "missing_schema_angebote"
   | "missing_schema_ausbau"
   | "missing_schema_serien"
+  | "missing_grant"
   | "auth"
   | "network"
   | "other";
@@ -149,6 +160,18 @@ export function explainDbError(err: unknown): DbExplanation {
       kind: "missing_schema_v2",
       title: "Datenbank-Update ausstehend.",
       hint: `Führe in Supabase einmal ${MIGRATION_ADMIN_FILE} aus (SQL Editor, New query, Inhalt einfügen, Run). Danach diese Seite neu laden.`,
+      raw,
+    };
+  }
+
+  // Rechte fehlen nur an einer der neueren Tabellen: Der Schlüssel
+  // stimmt (sonst scheiterte schon „leads“), das Update muss noch
+  // einmal laufen.
+  if (code === "42501" && NEW_TABLES.test(m)) {
+    return {
+      kind: "missing_grant",
+      title: "Einer Tabelle fehlen die Rechte für den Server.",
+      hint: "Führe das Datenbank-Update noch einmal aus (im Hinweis oben „SQL kopieren“, dann in Supabase SQL Editor, einfügen, Run). Es schadet nicht, es doppelt auszuführen. Danach diese Seite neu laden.",
       raw,
     };
   }

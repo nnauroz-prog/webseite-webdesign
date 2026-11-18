@@ -3,7 +3,7 @@ import "server-only";
 import type { StorySerie } from "@/lib/story-serie";
 
 import { addDays, berlinWallToUtc } from "@/lib/admin/berlin-time";
-import { DbError, isMissingTable } from "@/lib/admin/db-errors";
+import { DbError, isMissingGrant, isMissingTable } from "@/lib/admin/db-errors";
 import { parseId, parseStoredDate } from "@/lib/admin/validate";
 import { gueltigeSerie } from "@/lib/redaktion/lesen";
 import { AUFTRAG_MAX } from "@/lib/redaktion/vertrag";
@@ -53,6 +53,15 @@ function dbError(prefix: string, error: PgError): DbError {
   return new DbError(`${prefix}: ${error.message}`, error.code);
 }
 
+/**
+ * Die Tabelle ist für den Server nicht nutzbar: Sie fehlt, oder ihr
+ * fehlen die Rechte (Migration noch nicht oder ohne Rechte ausgeführt).
+ * Die Redaktion arbeitet dann ohne Speicher weiter.
+ */
+function nichtDa(error: PgError): boolean {
+  return isMissingTable(error) || isMissingGrant(error);
+}
+
 function needDb() {
   const db = serviceClient();
   if (!db) throw new DbError("Supabase ist nicht konfiguriert.");
@@ -93,7 +102,7 @@ export async function listSerien(limit = 20): Promise<SerieZeile[] | null> {
     .order("created_at", { ascending: false })
     .limit(anzahl);
   if (error) {
-    if (isMissingTable(error)) return null;
+    if (nichtDa(error)) return null;
     throw dbError("Serien konnten nicht geladen werden", error);
   }
   return (Array.isArray(data) ? data : [])
@@ -124,7 +133,7 @@ export async function saveSerie(eintrag: {
     .select("id")
     .single();
   if (error) {
-    if (isMissingTable(error)) return null;
+    if (nichtDa(error)) return null;
     throw dbError("Serie konnte nicht gespeichert werden", error);
   }
   const id = (data as { id?: unknown } | null)?.id;
@@ -176,7 +185,7 @@ export async function countSerienAm(tag: string): Promise<number | null> {
     .lt("created_at", bis)
     .limit(1001);
   if (error) {
-    if (isMissingTable(error)) return null;
+    if (nichtDa(error)) return null;
     throw dbError("Serien konnten nicht gezählt werden", error);
   }
   return Array.isArray(data) ? data.length : 0;

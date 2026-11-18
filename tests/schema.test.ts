@@ -24,6 +24,57 @@ after(async () => {
   await mock.close();
 });
 
+describe("Rechte fehlen an neuen Tabellen (Supabase vergibt sie nicht mehr von selbst)", () => {
+  it("einzelne Tabellen ohne Rechte gelten als 'fehlt': dieselbe Migration hilft noch einmal", async () => {
+    mock.reset("v5");
+    mock.deny(["angebote", "post_status", "serien"]);
+    const status = await schema.readSchemaStatus();
+    assert.deepEqual(status, {
+      leadsV2: "ok",
+      events: "ok",
+      deletions: "ok",
+      angebote: "fehlt",
+      projekte: "ok",
+      postStatus: "fehlt",
+      serien: "fehlt",
+    });
+    const { missingMigrations } = await import("@/lib/admin/migration-sql");
+    assert.deepEqual(
+      missingMigrations(status).map((m) => m.id),
+      ["angebote", "ausbau", "serien"],
+    );
+  });
+
+  it("scheitert schon leads, ist es der Schlüssel: alles bleibt 'unbekannt'", async () => {
+    mock.reset("v5");
+    mock.deny(["leads", "lead_events", "angebote", "serien"]);
+    const status = await schema.readSchemaStatus();
+    assert.equal(status.leadsV2, "unbekannt");
+    assert.equal(status.events, "unbekannt");
+    assert.equal(status.angebote, "unbekannt");
+    assert.equal(status.serien, "unbekannt");
+    assert.equal(status.projekte, "ok");
+    assert.equal(status.error?.code, "42501");
+    assert.equal(explainDbError(status.error).kind, "auth");
+  });
+
+  it("die Erklärung nennt bei einer neuen Tabelle das Update, nicht den Schlüssel", () => {
+    const e = explainDbError({
+      code: "42501",
+      message: "permission denied for table projekte",
+    });
+    assert.equal(e.kind, "missing_grant");
+    assert.match(e.hint, /noch einmal/);
+    assert.equal(
+      explainDbError({
+        code: "42501",
+        message: "permission denied for table leads",
+      }).kind,
+      "auth",
+    );
+  });
+});
+
 describe("checkSchema / readSchemaStatus", () => {
   it("v1: alle Teile fehlen", async () => {
     mock.reset("v1");

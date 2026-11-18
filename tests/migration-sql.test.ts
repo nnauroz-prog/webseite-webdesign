@@ -23,7 +23,15 @@ const read = (file: string) =>
 
 /** Ohne Kommentare und ohne „on delete cascade“ (das ist kein Löschen). */
 const code = (sql: string) =>
-  sql.replace(/--.*$/gm, "").replace(/on delete cascade/gi, "");
+  sql
+    .replace(/--.*$/gm, "")
+    .replace(/on delete cascade/gi, "")
+    // Das Recht zu löschen für den Server ist kein Löschen.
+    .replace(SERVER_RECHTE, "");
+
+/** Ausdrückliche Rechte für den Server an einer Tabelle. */
+const SERVER_RECHTE =
+  /grant select, insert, update, delete on table public\.[a-z_]+ to service_role;/g;
 
 const ADDITIV_VERBOTEN = /\bdrop\b|\brename\b|\btruncate\b|\bdelete\b/i;
 
@@ -43,6 +51,31 @@ describe("lib/admin/migration-sql.ts", () => {
       ],
     );
     for (const m of MIGRATIONS) assert.equal(m.sql, read(m.file));
+  });
+
+  it("jede Tabelle gibt dem Server die Rechte ausdrücklich (Supabase vergibt sie nicht mehr von selbst)", () => {
+    const tabellen: [string, string[]][] = [
+      ["supabase/migrations/20261030000000_leads.sql", ["leads"]],
+      [MIGRATION_ADMIN_SQL_FILE, ["lead_events", "lead_deletions"]],
+      [MIGRATION_ANGEBOTE_SQL_FILE, ["angebote"]],
+      [MIGRATION_AUSBAU_SQL_FILE, ["projekte", "post_status"]],
+      [MIGRATION_SERIEN_SQL_FILE, ["serien"]],
+    ];
+    for (const [datei, namen] of tabellen) {
+      const sql = read(datei).replace(/--.*$/gm, "");
+      for (const t of namen)
+        assert.ok(
+          sql.includes(
+            `grant select, insert, update, delete on table public.${t} to service_role;`,
+          ),
+          `${datei}: ${t}`,
+        );
+      // Nie Rechte für die öffentlichen Rollen.
+      assert.doesNotMatch(
+        sql,
+        /grant[^;]*\bto\s+(anon|authenticated|public)\b/i,
+      );
+    }
   });
 
   it("Admin-Ausbau: additiv und ohne reply_to-Index (keine Personendaten im Filter)", () => {

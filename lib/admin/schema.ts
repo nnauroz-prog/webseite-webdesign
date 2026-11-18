@@ -3,7 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import { ANGEBOT_COLUMNS } from "@/lib/admin/angebote";
-import { isMissingSchema } from "@/lib/admin/db-errors";
+import { isMissingGrant, isMissingSchema } from "@/lib/admin/db-errors";
 import { POST_STATUS_COLUMNS } from "@/lib/admin/post-planer";
 import { PROJEKT_COLUMNS } from "@/lib/admin/projekte";
 import { SERIEN_COLUMNS } from "@/lib/serien-store";
@@ -18,6 +18,9 @@ import { serviceClient } from "@/lib/supabase/service";
  * Je Teil drei Zustände:
  *   'ok'        vorhanden
  *   'fehlt'     sicher nicht vorhanden (42703, PGRST204, PGRST205, 42P01)
+ *               oder vorhanden, aber ohne Rechte für den Server (42501,
+ *               während „leads“ lesbar ist): Dann hilft dieselbe
+ *               Migration noch einmal, sie vergibt die Rechte.
  *   'unbekannt' Prüfung gescheitert (Netz, Schlüssel …), Grund in error
  *
  * Das Banner „Datenbank-Update ausstehend“ erscheint nur bei 'fehlt'
@@ -99,6 +102,24 @@ export async function readSchemaStatus(): Promise<SchemaStatus> {
       ),
       probe(db.from("serien").select(SERIEN_COLUMNS.join(",")).limit(1)),
     ]);
+  // Rechte fehlen an einer neueren Tabelle, der Schlüssel stimmt aber
+  // (leads ist lesbar): Das ist kein Schlüsselproblem, sondern die
+  // Migration muss noch einmal laufen. Scheitert schon leads mit 42501,
+  // bleibt alles 'unbekannt' (falscher Schlüssel).
+  if (!isMissingGrant(leadsV2.error)) {
+    for (const teil of [
+      events,
+      deletions,
+      angebote,
+      projekte,
+      postStatus,
+      serien,
+    ])
+      if (teil.part === "unbekannt" && isMissingGrant(teil.error)) {
+        teil.part = "fehlt";
+        delete teil.error;
+      }
+  }
   const error =
     leadsV2.error ??
     events.error ??

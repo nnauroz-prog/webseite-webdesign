@@ -332,6 +332,21 @@ describe("serien: ohne Tabelle, ohne Datenbank, mit Fehlern", () => {
     );
   });
 
+  it("Tabelle da, aber ohne Rechte für den Server (42501): null statt Fehler", async () => {
+    mock.reset("v5");
+    mock.deny(["serien"]);
+    assert.equal(await store.listSerien(), null);
+    assert.equal(await store.countSerienAm("2026-11-17"), null);
+    assert.equal(
+      await store.saveSerie({
+        datum: "2026-11-27",
+        auftrag: "",
+        serie: GUTE_SERIE,
+      }),
+      null,
+    );
+  });
+
   it("Schlüssel falsch: DbError statt null (kein stilles Verschlucken)", async () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY = "falsch";
     try {

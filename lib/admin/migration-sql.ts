@@ -87,6 +87,10 @@ create index if not exists lead_events_lead_id_created_at_idx
 
 alter table public.lead_events enable row level security;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.lead_events to service_role;
+
 -- 3) Löschprotokoll ---------------------------------------------------
 -- Belegt, dass und wann eine Anfrage gelöscht wurde, ohne Namen,
 -- E-Mail oder Inhalte. Bewusst ohne Fremdschlüssel: Die Anfrage
@@ -106,6 +110,10 @@ create index if not exists lead_deletions_deleted_at_idx
   on public.lead_deletions (deleted_at desc);
 
 alter table public.lead_deletions enable row level security;
+
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.lead_deletions to service_role;
 
 -- 4) Supabase-API sofort über die neuen Spalten/Tabellen informieren.
 notify pgrst, 'reload schema';
@@ -210,6 +218,10 @@ alter table public.angebote enable row level security;
 -- Tabellen automatisch).
 revoke all on table public.angebote from anon, authenticated;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.angebote to service_role;
+
 -- 3) updated_at ------------------------------------------------------
 -- Nur inhaltliche Änderungen (Kunde, Texte, Positionen, Steuer,
 -- Gültigkeit) zählen. Senden, Öffnen, Annehmen und Ablehnen haben
@@ -311,6 +323,10 @@ alter table public.projekte enable row level security;
 -- keine Rechte an der Tabelle.
 revoke all on table public.projekte from anon, authenticated;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.projekte to service_role;
+
 -- updated_at bei jeder Änderung.
 create or replace function public.projekte_touch_updated_at()
 returns trigger
@@ -361,6 +377,10 @@ alter table public.post_status enable row level security;
 
 revoke all on table public.post_status from anon, authenticated;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.post_status to service_role;
+
 -- 3) Supabase-API sofort über die neuen Tabellen informieren.
 notify pgrst, 'reload schema';
 `;
@@ -410,6 +430,10 @@ alter table public.serien enable row level security;
 -- Zweite Absicherung neben RLS: Die öffentlichen Rollen bekommen gar
 -- keine Rechte an der Tabelle.
 revoke all on table public.serien from anon, authenticated;
+
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.serien to service_role;
 
 -- 2) Supabase-API sofort über die neue Tabelle informieren.
 notify pgrst, 'reload schema';

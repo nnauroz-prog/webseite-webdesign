@@ -34,6 +34,10 @@ create index if not exists leads_status_idx on public.leads (status);
 
 alter table public.leads enable row level security;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.leads to service_role;
+
 create or replace function public.leads_touch_updated_at()
 returns trigger language plpgsql as $$
 begin
