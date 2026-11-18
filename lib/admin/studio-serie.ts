@@ -504,3 +504,9 @@ export function lokaleSerienMit(
 ): SerieZeile[] {
   return [neu, ...bisher.filter((z) => z.id !== neu.id)].slice(0, LOKAL_MAX);
 }
+
+/**
+ * So viele gespeicherte Aufträge lädt und zeigt „Deine Aufträge“
+ * höchstens (so viele liest auch die Redaktion als Gedächtnis).
+ */
+export const AUFTRAEGE_MAX = 60;

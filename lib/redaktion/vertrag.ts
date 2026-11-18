@@ -19,7 +19,10 @@
  *   der Redaktion, etwa die Anmeldeseite nach einer abgelaufenen Sitzung
  *   oder ein Abbruch der Plattform: Das Studio behandelt sie wie den
  *   Code „unbekannt“.
- * - Schließt das Studio die Verbindung, bricht die Redaktion ab.
+ * - Schließt das Studio die Verbindung, bricht die Redaktion ab, sofern
+ *   die Plattform den Abbruch bis zum Server weiterreicht. Tut sie das
+ *   nicht, läuft der Auftrag höchstens bis zur Frist zu Ende, und die
+ *   Serie steht danach unter „Deine Aufträge“.
  * Die Redaktion braucht bis zu rund 100 Sekunden.
  */
 import type { StorySerie } from "@/lib/story-serie";

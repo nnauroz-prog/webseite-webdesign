@@ -6,7 +6,11 @@
  * - hier im Speicher: jeder begonnene Auftrag auf diesem Server, auch
  *   wenn er scheitert. Das ist nur eine Näherung: Der Zähler beginnt
  *   bei jedem Neustart des Servers bei null.
- * Es gilt die größere der beiden Zahlen. Rein (ohne Server-Importe).
+ * Es gilt die größere der beiden Zahlen. Das Limit ist ein Schutz vor
+ * Versehen, keine harte Sperre: Gelöschte Serien zählen in der Datenbank
+ * nicht mehr, gescheiterte Aufträge nur bis zum nächsten Neustart. Die
+ * harte Grenze ist das Ausgabenlimit in der Console des Anbieters
+ * (docs/vercel-einrichtung.md, Teil 8). Rein (ohne Server-Importe).
  */
 
 const begonnen = new Map<string, number>();

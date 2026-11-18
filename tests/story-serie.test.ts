@@ -155,6 +155,8 @@ describe("Regeln für eine Story-Serie", () => {
     for (const [text, betont] of [
       ["Die Seite verspricht garantierte Anfragen.", "Anfragen"],
       ["Überall stehen Garantien und Siegel.", "Siegel"],
+      ["Wir garantieren eine Antwort am selben Tag.", "selben Tag"],
+      ["Dazu gibt es eine Zufriedenheitsgarantie.", "gibt es"],
       ["Die ausgezeichnete Agentur von nebenan.", "nebenan"],
       ["Ohne seo geht hier angeblich nichts.", "nichts"],
       ["Den Text schrieb eine künstlicher Intelligenz.", "Text"],

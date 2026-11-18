@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { logout } from "@/app/admin/actions";
-import { clearAdminSession } from "@/app/admin/client-state";
+import { clearAdminSession, clearStudioSerien } from "@/app/admin/client-state";
 
 /**
  * Abmelden mit echtem Seitenwechsel: Nach signOut lädt
@@ -29,6 +29,7 @@ export function LogoutButton() {
             return;
           }
           clearAdminSession();
+          clearStudioSerien();
           window.location.replace("/admin/login");
         });
       }}
@@ -42,7 +43,7 @@ export function LogoutButton() {
         {pending ? "Meldet ab …" : "Abmelden"}
       </button>
       {error ? (
-        <p role="alert" className="text-[13px] text-ink-olive">
+        <p role="alert" className="text-ink-olive text-[13px]">
           {error}
         </p>
       ) : null}

@@ -23,7 +23,9 @@ import {
   RedaktionVergangen,
 } from "@/app/admin/story/redaktion";
 import { SerienBetrachter } from "@/app/admin/story/serien-betrachter";
+import { addDays } from "@/lib/admin/berlin-time";
 import {
+  AUFTRAEGE_MAX,
   bilderText,
   istLokal,
   lokaleSerienAus,
@@ -31,6 +33,7 @@ import {
   lokaleZeile,
   tagKurz,
 } from "@/lib/admin/studio-serie";
+import { TAGE_VORAUS } from "@/lib/redaktion/eingabe";
 import { cn } from "@/lib/utils";
 
 /**
@@ -59,7 +62,7 @@ const LEER =
 
 function lokalLesen(): SerieZeile[] {
   try {
-    return lokaleSerienAus(window.sessionStorage.getItem(SERIEN_KEY));
+    return lokaleSerienAus(window.localStorage.getItem(SERIEN_KEY));
   } catch {
     // Ohne Speicher (privates Fenster) gilt nur, was gerade offen ist.
     return [];
@@ -69,8 +72,8 @@ function lokalLesen(): SerieZeile[] {
 function lokalSchreiben(liste: SerieZeile[]): void {
   try {
     if (liste.length > 0)
-      window.sessionStorage.setItem(SERIEN_KEY, JSON.stringify(liste));
-    else window.sessionStorage.removeItem(SERIEN_KEY);
+      window.localStorage.setItem(SERIEN_KEY, JSON.stringify(liste));
+    else window.localStorage.removeItem(SERIEN_KEY);
   } catch {
     // Nicht speicherbar: gilt dann nur bis zum Neuladen.
   }
@@ -495,6 +498,8 @@ export function SerienStudio({
     geladen &&
     !zeilen.some((z) => z.id === start.id) &&
     !weg.includes(start.id);
+  // Die Redaktion nimmt Tage bis zwei Wochen voraus an (lib/redaktion/eingabe.ts).
+  const zuWeit = tag > addDays(heute, TAGE_VORAUS);
   const umschalten = (schluessel: string) =>
     setOffen((alt) => (alt === schluessel ? null : schluessel));
   const karte = (zeile: SerieZeile, istFrisch = false) => (
@@ -513,6 +518,8 @@ export function SerienStudio({
     <div className="mt-4">
       {tag < heute ? (
         <RedaktionVergangen />
+      ) : zuWeit ? (
+        <RedaktionVergangen zuWeit />
       ) : bereit ? (
         <Redaktion
           datum={tag}
@@ -594,7 +601,7 @@ export function SerienStudio({
             <p className={LEER}>
               {frisch
                 ? "Weitere Aufträge gibt es noch nicht."
-                : bereit && tag >= heute
+                : bereit && tag >= heute && !zuWeit
                   ? "Noch kein Auftrag. Oben gibst du den Agenten den ersten."
                   : "Noch kein Auftrag."}
             </p>
@@ -614,6 +621,12 @@ export function SerienStudio({
           >
             Ältere zeigen ({liste.length - gezeigt.length})
           </button>
+        ) : null}
+        {alle && (auftraege?.length ?? 0) >= AUFTRAEGE_MAX ? (
+          <p className="text-muted-foreground mt-2 text-[14px] leading-5">
+            Hier stehen die neuesten {AUFTRAEGE_MAX} Aufträge. Ältere bleiben
+            gespeichert, werden aber nicht mehr gezeigt.
+          </p>
         ) : null}
       </div>
     </div>

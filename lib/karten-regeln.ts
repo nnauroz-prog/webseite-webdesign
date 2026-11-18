@@ -9,7 +9,7 @@ import { KICKER, THEMA_LABEL, type Spruch } from "@/lib/sprueche-data";
 
 /** Ziffern, Preise, Marken, Garantien und Technik-Schlagworte. */
 export const VERBOTEN =
-  /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbots?|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantiert\p{L}*|Garantien?|Platz eins|Nummer eins|Testsieger\p{L}*|ausgezeichnet\p{L}*|SEO|Conversions?|Landingpages?|Performance|UX|CTA)\b|künstliche\p{L}* Intelligenz/iu;
+  /\d|%|€|#|\b(KI|AI|ChatGPT|Chatbots?|Apple|Google Ads|Instagram|Facebook|TikTok|WhatsApp|Wix|Jimdo|WordPress|garantier\p{L}*|\p{L}*garantie\p{L}*|Platz eins|Nummer eins|Testsieger\p{L}*|ausgezeichnet\p{L}*|SEO|Conversions?|Landingpages?|Performance|UX|CTA)\b|künstliche\p{L}* Intelligenz/iu;
 
 /** Du-Form: Karten bleiben in der Sie-Form oder ohne Anrede. */
 export const DU_FORM =
