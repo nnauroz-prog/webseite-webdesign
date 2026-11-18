@@ -1,9 +1,11 @@
 "use client";
 
 import { Check, Copy, RotateCcw, Shuffle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 
 import type { PostFormat, PostStand } from "@/lib/admin/post-planer";
+import type { PostQuelle } from "@/lib/instagram/vertrag";
 import type { SpruchTag } from "@/lib/sprueche-data";
 
 import { setPostGepostetAction } from "@/app/admin/post-actions";
@@ -15,6 +17,7 @@ import {
   useKartenBuehne,
   Vorschau,
 } from "@/app/admin/story/buehne";
+import { InstagramPosten } from "@/app/admin/story/instagram-posten";
 import {
   FORMAT_LABELS,
   gepostetNach,
@@ -34,6 +37,8 @@ import { cn } from "@/lib/utils";
  * - Format: Story (1080 × 1920) oder Beitrag (1080 × 1350).
  * - Anderes Design würfelt Farbwelt, Motiv und Anordnung neu; Original
  *   stellt das Design des Tages wieder her.
+ * - Auf Instagram posten schickt den gewählten Post direkt raus, als Story
+ *   oder Beitrag (instagram-posten.tsx), im Design, das gerade zu sehen ist.
  * - Bild und Video (teilen, sichern, erstellen, abspielen): die Bühne in
  *   buehne.tsx, dieselbe wie bei den Story-Serien.
  * - Text kopieren legt den Beitragstext in die Zwischenablage.
@@ -84,6 +89,7 @@ export function StoryStudio({
   );
   const [gepostet, setGepostet] = useState<string[]>([]);
   const [hakt, startHaken] = useTransition();
+  const router = useRouter();
   const dbModus = gepostetDb !== null;
   /** Stand eines Posts laut Datenbank, mit Textvergleich (wie im Post-Planer). */
   const standDb = (p: SpruchTag, f: PostFormat): PostStand =>
@@ -152,6 +158,24 @@ export function StoryStudio({
     } catch {
       // Nicht speicherbar: gilt dann nur bis zum Neuladen.
     }
+  };
+
+  /** Auf Instagram gepostet: abhaken (Datenbank über den Server, sonst dieses Gerät). */
+  const aufInstagram = (q: PostQuelle) => {
+    if (q.typ !== "post") return;
+    sagen("Auf Instagram gepostet.");
+    if (dbModus) return router.refresh();
+    setGepostet((alt) => {
+      const k = `${q.datum}-${q.platz}`;
+      if (alt.includes(k)) return alt;
+      const neu = [...alt, k].slice(-400);
+      try {
+        window.localStorage.setItem(SPEICHER, JSON.stringify(neu));
+      } catch {
+        // Nicht speicherbar: gilt dann nur bis zum Neuladen.
+      }
+      return neu;
+    });
   };
 
   const kopieren = useCallback(async () => {
@@ -299,7 +323,24 @@ export function StoryStudio({
 
         {/* Werkzeuge */}
         <div>
-          <BildUndVideo buehne={buehne} />
+          <BildUndVideo
+            buehne={buehne}
+            betont={false}
+            vorne={
+              <InstagramPosten
+                // Anderer Post oder anderes Format: Auswahl und Text neu.
+                key={`${kennung}|${format}`}
+                karten={[karte]}
+                versatz={versatz}
+                quelle={{ typ: "post", datum: karte.datum, platz: karte.platz }}
+                caption={beschriftung}
+                start={format === "beitrag" ? "beitrag" : "story"}
+                gesperrt={beschaeftigt}
+                className="col-span-2"
+                onGepostet={aufInstagram}
+              />
+            }
+          />
 
           <h3 className="mt-3 mb-1 text-[15px] font-semibold tracking-tight">
             Text für den Beitrag
@@ -341,7 +382,12 @@ export function StoryStudio({
             </p>
           ) : null}
 
-          <ol className="text-muted-foreground mt-5 list-decimal space-y-1 pl-5 text-[14px] leading-5">
+          <p className="text-muted-foreground mt-5 text-[14px] leading-5">
+            Am schnellsten:{" "}
+            <strong className="text-foreground">Auf Instagram posten</strong>,
+            dann geht der Post direkt raus. Von Hand oder als Video:
+          </p>
+          <ol className="text-muted-foreground mt-1 list-decimal space-y-1 pl-5 text-[14px] leading-5">
             <li>Post und Format wählen (Story oder Beitrag).</li>
             <li>
               <strong className="text-foreground">Bild teilen</strong> oder erst{" "}

@@ -11,6 +11,8 @@ import {
   MIGRATION_ANGEBOTE_SQL_FILE,
   MIGRATION_AUSBAU_SQL,
   MIGRATION_AUSBAU_SQL_FILE,
+  MIGRATION_INSTAGRAM_SQL,
+  MIGRATION_INSTAGRAM_SQL_FILE,
   MIGRATION_SERIEN_SQL,
   MIGRATION_SERIEN_SQL_FILE,
   MIGRATIONS,
@@ -41,6 +43,7 @@ describe("lib/admin/migration-sql.ts", () => {
     assert.equal(MIGRATION_ANGEBOTE_SQL, read(MIGRATION_ANGEBOTE_SQL_FILE));
     assert.equal(MIGRATION_AUSBAU_SQL, read(MIGRATION_AUSBAU_SQL_FILE));
     assert.equal(MIGRATION_SERIEN_SQL, read(MIGRATION_SERIEN_SQL_FILE));
+    assert.equal(MIGRATION_INSTAGRAM_SQL, read(MIGRATION_INSTAGRAM_SQL_FILE));
     assert.deepEqual(
       MIGRATIONS.map((m) => [m.id, m.file]),
       [
@@ -48,6 +51,7 @@ describe("lib/admin/migration-sql.ts", () => {
         ["angebote", MIGRATION_ANGEBOTE_SQL_FILE],
         ["ausbau", MIGRATION_AUSBAU_SQL_FILE],
         ["serien", MIGRATION_SERIEN_SQL_FILE],
+        ["instagram", MIGRATION_INSTAGRAM_SQL_FILE],
       ],
     );
     for (const m of MIGRATIONS) assert.equal(m.sql, read(m.file));
@@ -222,6 +226,61 @@ describe("lib/admin/migration-sql.ts", () => {
     assert.ok(file.trimEnd().endsWith("notify pgrst, 'reload schema';"));
   });
 
+  it("Instagram: additiv, mehrfach ausführbar, RLS an, keine Policies, privater Speicher", () => {
+    const file = read(MIGRATION_INSTAGRAM_SQL_FILE);
+    const sql = code(file);
+    assert.ok(!ADDITIV_VERBOTEN.test(sql));
+    assert.ok(!/\bcreate policy\b/i.test(sql));
+    assert.ok(
+      sql.includes("create table if not exists public.instagram_posts ("),
+    );
+    assert.ok(
+      sql.includes(
+        "alter table public.instagram_posts enable row level security;",
+      ),
+    );
+    assert.ok(
+      sql.includes(
+        "revoke all on table public.instagram_posts from anon, authenticated;",
+      ),
+    );
+    assert.ok(
+      file.includes(
+        "grant select, insert, update, delete on table public.instagram_posts to service_role;",
+      ),
+    );
+    // Spalten wie in lib/instagram/posts-store.ts (INSTAGRAM_POSTS_COLUMNS).
+    assert.match(sql, /id\s+uuid primary key default gen_random_uuid\(\)/);
+    assert.match(sql, /created_at\s+timestamptz not null default now\(\)/);
+    assert.match(
+      sql,
+      /art\s+text not null\s+check \(art in \('story', 'beitrag'\)\)/,
+    );
+    assert.match(
+      sql,
+      /quelle\s+jsonb not null\s+check \(jsonb_typeof\(quelle\) = 'object'\)/,
+    );
+    assert.match(
+      sql,
+      /bilder\s+int not null\s+check \(bilder between 1 and 10\)/,
+    );
+    assert.match(sql, /media_ids\s+text\[\] not null default '\{\}'/);
+    assert.match(sql, /links\s+text\[\] not null default '\{\}'\s*\n\);/);
+    // Privater Bucket: 8 MB, nur JPEG, ein vorhandener bleibt.
+    assert.match(
+      sql,
+      /insert into storage\.buckets\s+\(id, name, public, file_size_limit, allowed_mime_types\)\s+values\s+\('instagram', 'instagram', false, 8388608, array\['image\/jpeg'\]\)\s+on conflict \(id\) do nothing;/,
+    );
+    assert.doesNotMatch(sql, /public\s*[:=]?\s*true/i);
+    // Jede create-Anweisung ist wiederholbar.
+    for (const m of sql.matchAll(
+      /\bcreate\s+(?!table if not exists|index if not exists)(\w+)/gi,
+    )) {
+      assert.fail(`nicht wiederholbar: create ${m[1]}`);
+    }
+    assert.ok(file.trimEnd().endsWith("notify pgrst, 'reload schema';"));
+  });
+
   it("missingMigrations: nur was sicher fehlt, in Ausführungs-Reihenfolge", () => {
     const st = (p: Partial<SchemaStatus>): SchemaStatus => ({
       leadsV2: "ok",
@@ -231,6 +290,7 @@ describe("lib/admin/migration-sql.ts", () => {
       projekte: "ok",
       postStatus: "ok",
       serien: "ok",
+      instagramPosts: "ok",
       ...p,
     });
     assert.deepEqual(missingMigrations(st({})), []);
@@ -278,6 +338,17 @@ describe("lib/admin/migration-sql.ts", () => {
       ).map((m) => m.id),
       ["ausbau", "serien"],
     );
+    // Stand beim Inhaber vor Instagram: nur die Tabelle instagram_posts fehlt.
+    assert.deepEqual(
+      missingMigrations(st({ instagramPosts: "fehlt" })).map((m) => m.id),
+      ["instagram"],
+    );
+    assert.deepEqual(
+      missingMigrations(st({ serien: "fehlt", instagramPosts: "fehlt" })).map(
+        (m) => m.id,
+      ),
+      ["serien", "instagram"],
+    );
     // 'unbekannt' fordert nicht zum Ausführen auf.
     assert.deepEqual(
       missingMigrations(
@@ -287,6 +358,7 @@ describe("lib/admin/migration-sql.ts", () => {
           projekte: "unbekannt",
           postStatus: "unbekannt",
           serien: "unbekannt",
+          instagramPosts: "unbekannt",
         }),
       ),
       [],
@@ -294,7 +366,7 @@ describe("lib/admin/migration-sql.ts", () => {
   });
 
   it("migrationSqlFor: nur die fehlenden, hintereinander", () => {
-    const [admin, angebote, ausbau, serien] = MIGRATIONS;
+    const [admin, angebote, ausbau, serien, instagram] = MIGRATIONS;
     assert.equal(migrationSqlFor([angebote]), MIGRATION_ANGEBOTE_SQL);
     assert.equal(
       migrationSqlFor([admin, angebote]),
@@ -309,6 +381,10 @@ describe("lib/admin/migration-sql.ts", () => {
     assert.equal(
       migrationSqlFor([ausbau, serien]),
       `${MIGRATION_AUSBAU_SQL}\n${MIGRATION_SERIEN_SQL}`,
+    );
+    assert.equal(
+      migrationSqlFor([serien, instagram]),
+      `${MIGRATION_SERIEN_SQL}\n${MIGRATION_INSTAGRAM_SQL}`,
     );
     assert.equal(migrationSqlFor([]), "");
   });

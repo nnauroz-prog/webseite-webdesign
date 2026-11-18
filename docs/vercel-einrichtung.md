@@ -80,7 +80,8 @@ Optional, aber empfohlen:
 Nicht nötig: `FORMSPREE_FORM_ID`, `LEAD_MAIL_FROM` (leer lassen).
 
 Für die Redaktion im Story-Studio kommt `ANTHROPIC_API_KEY` dazu,
-siehe Teil 8.
+siehe Teil 8. Fürs Posten auf Instagram kommt `INSTAGRAM_TOKEN` dazu,
+siehe Teil 9.
 
 **PageSpeed-Schlüssel holen (optional):** console.cloud.google.com →
 oben Projekt anlegen → „APIs & Dienste" → **Bibliothek** →
@@ -182,3 +183,48 @@ Gut zu wissen:
   Schlüssel. Die Website benutzt sie nicht mehr; sie ginge erst mit
   `CHAT_AKTIV=1` wieder an. Trag diese Variable nicht ein. Das
   Ausgabenlimit in der Console schützt zusätzlich.
+
+---
+
+## Teil 9 · Auf Instagram posten (optional, ca. 1 Stunde einmalig)
+
+Im Story-Studio (`/admin/story`) bringt der Knopf „Auf Instagram
+posten“ eine Story-Serie als Stories oder Karussell und einen Post des
+Tages als Story oder Beitrag direkt auf dein Instagram-Konto. Dafür
+braucht der Server einen Zugangsschlüssel aus dem Meta Business
+Manager (Systemnutzer, Ablauf „Nie“). Ohne ihn läuft alles andere
+weiter; du teilst die Bilder dann wie bisher von Hand.
+
+Die ganze Einrichtung Schritt für Schritt (Instagram auf Unternehmen
+umstellen, Facebook-Seite, Business-Portfolio, Meta-App, Systemnutzer,
+Test) steht in **`docs/instagram-einrichtung.md`**. Hier nur die Werte
+für Vercel → Projekt → **Settings → Environment Variables**. Anders als
+in Teil 4: **nur Production** anhaken, damit eine Vorschau-Version nie
+auf Instagram postet. Bietet Vercel den Schalter **Sensitive** an,
+einschalten.
+
+| Key | Value | Wofür |
+|---|---|---|
+| `INSTAGRAM_TOKEN` | Schlüssel des Systemnutzers (beginnt meist mit `EAA`) | Pflicht: Damit postet der Server. **Geheim**, nur in Vercel |
+| `INSTAGRAM_KONTO_ID` | leer lassen | Optional: Kennung des Instagram-Kontos (lange Zahl, meist `1784…`). Ohne Angabe sucht der Server sie über die Facebook-Seite |
+| `INSTAGRAM_API_VERSION` | leer lassen | Optional: Version der Schnittstelle von Meta, ohne Angabe `v26.0` |
+
+Danach:
+
+1. Neu veröffentlichen wie in Teil 5 (Redeploy).
+2. Im Mitgliederbereich das Datenbank-Update „Posten auf Instagram“
+   ausführen: „SQL kopieren“ → „SQL Editor öffnen“ → **Run** →
+   „Erneut prüfen“. Es legt den privaten Speicher für die Bilder an.
+3. `/admin/instagram` öffnen: Dort muss „Verbunden als @deinkonto“
+   stehen.
+
+Gut zu wissen:
+
+- Der Schlüssel gehört nur in Vercel. Nie in einen Chat, nie in den
+  Code, nie in eine Mail, nie mit `NEXT_PUBLIC_` davor.
+- Der Speicher für die Bilder nutzt `SUPABASE_SERVICE_ROLE_KEY` aus
+  Teil 4. Ohne ihn meldet `/admin/instagram`, dass der Speicher fehlt.
+- `INSTAGRAM_GRAPH_URL` steht nur für Tests in `.env.example` (eine
+  Attrappe statt Instagram). **In Vercel nie eintragen.**
+- Ein Post darf bis zu zwei Minuten laufen, wie die Redaktion
+  (Teil 8, Fluid Compute).

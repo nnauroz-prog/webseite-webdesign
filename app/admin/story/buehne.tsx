@@ -17,6 +17,7 @@ import {
   storyVorbereiten,
   zeichneStory,
   type StoryFormat,
+  type StoryKarte,
   type StoryZeichner,
 } from "@/lib/story-bild";
 import { kinoFreigeben } from "@/lib/story-kino";
@@ -65,6 +66,7 @@ function videoTyp(): { mime: string; endung: string } | null {
 export function bildAus(
   flaeche: HTMLCanvasElement,
   name: string,
+  qualitaet = 0.93,
 ): Promise<File | null> {
   return new Promise((fertig) => {
     flaeche.toBlob(
@@ -73,7 +75,7 @@ export function bildAus(
           blob ? new File([blob], `${name}.jpg`, { type: "image/jpeg" }) : null,
         ),
       "image/jpeg",
-      0.93,
+      qualitaet,
     );
   });
 }
@@ -102,20 +104,34 @@ export function kannTeilen(dateien: File[]): boolean {
   }
 }
 
+/** Weniger JPEG-Qualität, falls ein Bild über maxBytes liegt (feines Korn). */
+const NOTQUALITAET = [0.85, 0.75, 0.6] as const;
+
 /**
  * Eine Karte als fertiges Standbild in voller Größe, ohne dass sie auf
- * der Bühne steht (für „Alle Bilder teilen“). Die Fläche wird danach
- * geleert, damit das Handy den Speicher gleich zurückbekommt.
+ * der Bühne steht (für „Alle Bilder teilen“ und „Auf Instagram posten“).
+ * format: Story (Standard) oder Beitrag. maxBytes: Ist die Datei größer,
+ * wird sie mit weniger Qualität neu geschrieben; ist sie es danach noch,
+ * kommt die kleinste Fassung zurück (der Aufrufer prüft die Größe). Die
+ * Fläche wird danach geleert, damit das Handy den Speicher gleich
+ * zurückbekommt.
  */
 export async function standbildDatei(
-  karte: SpruchTag,
+  karte: StoryKarte,
   versatz: number,
   name: string,
+  optionen: { format?: StoryFormat; maxBytes?: number } = {},
 ): Promise<File | null> {
   const flaeche = document.createElement("canvas");
+  const { format = FORMATE.story, maxBytes } = optionen;
   try {
-    await zeichneStory(flaeche, karte, FORMATE.story, { versatz });
-    return await bildAus(flaeche, name);
+    await zeichneStory(flaeche, karte, format, { versatz });
+    let datei = await bildAus(flaeche, name);
+    for (const q of NOTQUALITAET) {
+      if (!datei || maxBytes === undefined || datei.size <= maxBytes) break;
+      datei = await bildAus(flaeche, name, q);
+    }
+    return datei;
   } catch {
     return null;
   } finally {
@@ -123,15 +139,18 @@ export async function standbildDatei(
   }
 }
 
-/** Kleines Standbild einer Karte (Story-Format, ein Fünftel der Größe). */
+/** Kleines Standbild einer Karte (Story-Format oder Beitrag, ein Fünftel der Größe). */
 export function Vorschau({
   karte,
   versatz,
+  format = "story",
 }: {
-  karte: SpruchTag;
+  karte: StoryKarte;
   versatz: number;
+  format?: StoryFormat["name"];
 }) {
   const flaeche = useRef<HTMLCanvasElement | null>(null);
+  const f = FORMATE[format];
   // Am Inhalt hängen, nicht am Objekt: Lädt die Seite ihre Daten neu,
   // wird dasselbe Bild nicht noch einmal gezeichnet.
   const inhalt = JSON.stringify(karte);
@@ -142,18 +161,19 @@ export function Vorschau({
   useEffect(() => {
     const c = flaeche.current;
     if (c)
-      void zeichneStory(c, karteJetzt.current, FORMATE.story, {
+      void zeichneStory(c, karteJetzt.current, FORMATE[format], {
         skala: 0.2,
         versatz,
       });
-  }, [inhalt, versatz]);
+  }, [inhalt, versatz, format]);
   return (
     <canvas
       ref={flaeche}
-      width={216}
-      height={384}
+      width={Math.round(f.b * 0.2)}
+      height={Math.round(f.h * 0.2)}
       aria-hidden="true"
-      className="block aspect-[9/16] w-full rounded-[8px] bg-[#0f2a3a]"
+      style={{ aspectRatio: `${f.b} / ${f.h}` }}
+      className="block w-full rounded-[8px] bg-[#0f2a3a]"
     />
   );
 }
@@ -474,6 +494,7 @@ export function BildUndVideo({
   bildTitel = "Bild",
   kopf: Kopf = "h3",
   betont = true,
+  vorne,
 }: {
   buehne: KartenBuehne;
   /** Überschrift über den Bild-Knöpfen. */
@@ -482,6 +503,8 @@ export function BildUndVideo({
   kopf?: "h3" | "h4";
   /** false: alle Knöpfe hell (wenn ein anderer Knopf der wichtigste ist). */
   betont?: boolean;
+  /** Steht vor „Bild teilen“ (etwa „Auf Instagram posten“), am Handy über die ganze Breite. */
+  vorne?: React.ReactNode;
 }) {
   // Zwei Knöpfe nebeneinander müssen auch in einer aufgeklappten Serie am
   // iPhone ihre Beschriftung in eine Zeile bekommen.
@@ -492,6 +515,7 @@ export function BildUndVideo({
     <>
       <Kopf className={KOPF}>{bildTitel}</Kopf>
       <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+        {vorne}
         <button
           type="button"
           onClick={async () => b.teilen(await b.alsBild())}

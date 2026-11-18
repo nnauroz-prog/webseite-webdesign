@@ -6,14 +6,16 @@ import { ANGEBOT_COLUMNS } from "@/lib/admin/angebote";
 import { isMissingGrant, isMissingSchema } from "@/lib/admin/db-errors";
 import { POST_STATUS_COLUMNS } from "@/lib/admin/post-planer";
 import { PROJEKT_COLUMNS } from "@/lib/admin/projekte";
+import { INSTAGRAM_POSTS_COLUMNS } from "@/lib/instagram/posts-store";
 import { SERIEN_COLUMNS } from "@/lib/serien-store";
 import { serviceClient } from "@/lib/supabase/service";
 
 /**
  * Sind die Migrationen 20261101000000_admin_ausbau.sql (leadsV2,
  * events, deletions), 20261102000000_angebote.sql (angebote),
- * 20261116000000_ausbau.sql (projekte, postStatus) und
- * 20261117000000_serien.sql (serien) ausgeführt?
+ * 20261116000000_ausbau.sql (projekte, postStatus),
+ * 20261117000000_serien.sql (serien) und 20261118000000_instagram.sql
+ * (instagramPosts) ausgeführt?
  *
  * Je Teil drei Zustände:
  *   'ok'        vorhanden
@@ -30,7 +32,8 @@ import { serviceClient } from "@/lib/supabase/service";
  * einen Hinweis statt eines Fehlers, ebenso Kunden & Projekte und der
  * Post-Planer bei projekte bzw. postStatus !== 'ok'. Ohne serien
  * arbeitet die Redaktion im Story-Studio weiter, merkt sich die Serien
- * aber nicht.
+ * aber nicht. Ohne instagramPosts postet das Studio nicht auf Instagram
+ * (dieselbe Migration legt den Speicher für die Bilder an).
  */
 export type SchemaPart = "ok" | "fehlt" | "unbekannt";
 
@@ -46,6 +49,8 @@ export type SchemaStatus = {
   postStatus: SchemaPart;
   /** Tabelle serien (20261117000000_serien.sql). */
   serien: SchemaPart;
+  /** Tabelle instagram_posts (20261118000000_instagram.sql). */
+  instagramPosts: SchemaPart;
   /** Erste Fehlermeldung bei 'unbekannt' (für explainDbError). */
   error?: { message: string; code?: string };
 };
@@ -83,25 +88,38 @@ export async function readSchemaStatus(): Promise<SchemaStatus> {
       projekte: "unbekannt",
       postStatus: "unbekannt",
       serien: "unbekannt",
+      instagramPosts: "unbekannt",
       error,
     };
   }
-  const [leadsV2, events, deletions, angebote, projekte, postStatus, serien] =
-    await Promise.all([
-      probe(
-        db.from("leads").select("follow_up_on,outcome,lost_reason").limit(1),
-      ),
-      probe(db.from("lead_events").select("id").limit(1)),
-      probe(db.from("lead_deletions").select("id").limit(1)),
-      // Alle Spalten: Fehlt eine (z. B. nach einer halb ausgeführten
-      // Migration), gilt der Teil als 'fehlt' statt später zu scheitern.
-      probe(db.from("angebote").select(ANGEBOT_COLUMNS.join(",")).limit(1)),
-      probe(db.from("projekte").select(PROJEKT_COLUMNS.join(",")).limit(1)),
-      probe(
-        db.from("post_status").select(POST_STATUS_COLUMNS.join(",")).limit(1),
-      ),
-      probe(db.from("serien").select(SERIEN_COLUMNS.join(",")).limit(1)),
-    ]);
+  const [
+    leadsV2,
+    events,
+    deletions,
+    angebote,
+    projekte,
+    postStatus,
+    serien,
+    instagramPosts,
+  ] = await Promise.all([
+    probe(db.from("leads").select("follow_up_on,outcome,lost_reason").limit(1)),
+    probe(db.from("lead_events").select("id").limit(1)),
+    probe(db.from("lead_deletions").select("id").limit(1)),
+    // Alle Spalten: Fehlt eine (z. B. nach einer halb ausgeführten
+    // Migration), gilt der Teil als 'fehlt' statt später zu scheitern.
+    probe(db.from("angebote").select(ANGEBOT_COLUMNS.join(",")).limit(1)),
+    probe(db.from("projekte").select(PROJEKT_COLUMNS.join(",")).limit(1)),
+    probe(
+      db.from("post_status").select(POST_STATUS_COLUMNS.join(",")).limit(1),
+    ),
+    probe(db.from("serien").select(SERIEN_COLUMNS.join(",")).limit(1)),
+    probe(
+      db
+        .from("instagram_posts")
+        .select(INSTAGRAM_POSTS_COLUMNS.join(","))
+        .limit(1),
+    ),
+  ]);
   // Rechte fehlen an einer neueren Tabelle, der Schlüssel stimmt aber
   // (leads ist lesbar): Das ist kein Schlüsselproblem, sondern die
   // Migration muss noch einmal laufen. Scheitert schon leads mit 42501,
@@ -114,6 +132,7 @@ export async function readSchemaStatus(): Promise<SchemaStatus> {
       projekte,
       postStatus,
       serien,
+      instagramPosts,
     ])
       if (teil.part === "unbekannt" && isMissingGrant(teil.error)) {
         teil.part = "fehlt";
@@ -127,7 +146,8 @@ export async function readSchemaStatus(): Promise<SchemaStatus> {
     angebote.error ??
     projekte.error ??
     postStatus.error ??
-    serien.error;
+    serien.error ??
+    instagramPosts.error;
   return {
     leadsV2: leadsV2.part,
     events: events.part,
@@ -136,6 +156,7 @@ export async function readSchemaStatus(): Promise<SchemaStatus> {
     projekte: projekte.part,
     postStatus: postStatus.part,
     serien: serien.part,
+    instagramPosts: instagramPosts.part,
     ...(error ? { error } : {}),
   };
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 
 import type { RedaktionErgebnis } from "@/app/admin/story/redaktion";
+import type { PostSpur } from "@/lib/admin/instagram-strom";
 import type { SerieZiel } from "@/lib/admin/studio-serie";
 import type { Vorschlag } from "@/lib/admin/studio-vorschlaege";
 import type { SerieZeile } from "@/lib/serien-store";
@@ -24,6 +25,7 @@ import {
 } from "@/app/admin/story/redaktion";
 import { SerienBetrachter } from "@/app/admin/story/serien-betrachter";
 import { addDays } from "@/lib/admin/berlin-time";
+import { lokalSchluessel } from "@/lib/admin/instagram-strom";
 import {
   AUFTRAEGE_MAX,
   bilderText,
@@ -270,7 +272,30 @@ function AuftragKarte({
       offen={offen}
       onToggle={onToggle}
     >
-      <SerienBetrachter serie={zeile.serie} datum={zeile.datum} />
+      <SerienBetrachter
+        serie={zeile.serie}
+        datum={zeile.datum}
+        // Serien nur auf diesem Gerät gibt es in der Datenbank nicht: Sie
+        // gehen ohne Kennung (id null, lokal) an den Server, der dann
+        // nichts abhakt; abgehakt wird hier (lokal). Sie sind nicht die
+        // Serie des Tages: eigene Quelle und eigener Schlüssel für
+        // „schon gepostet“.
+        postQuelle={
+          lokal
+            ? { typ: "serie", datum: zeile.datum, id: null, lokal: true }
+            : { typ: "serie", datum: zeile.datum, id: zeile.id }
+        }
+        spurSchluessel={
+          lokal ? lokalSchluessel(zeile.datum, zeile.id) : undefined
+        }
+        onGepostet={() => {
+          setMeldung({ art: "ok", text: "Auf Instagram gepostet." });
+          // Nur dieses Gerät kennt die Serie: hier abhaken. Sonst hakt
+          // der Server sie ab, die Seite lädt den Stand neu.
+          if (lokal) onLokalGepostet(zeile, true);
+          else router.refresh();
+        }}
+      />
       <div className="border-border mt-4 border-t pt-4">
         {fragt ? (
           <div
@@ -363,6 +388,7 @@ export function SerienStudio({
   bereit,
   vorschlaege,
   tagesSerie,
+  tagesSpuren = [],
   auftraege,
   auftraegeFehler = false,
   start = null,
@@ -377,6 +403,11 @@ export function SerienStudio({
   vorschlaege: Vorschlag[];
   /** Serie des Tages vom Morgenlauf oder null. */
   tagesSerie: StorySerie | null;
+  /**
+   * Was der Verlauf auf dem Server (instagram_posts) zur Serie des Tages
+   * kennt, je Art die neueste (spurAusPost). Gilt auf jedem Gerät.
+   */
+  tagesSpuren?: PostSpur[];
   /** Gespeicherte Aufträge, neueste zuerst; null ohne Datenbank-Update. */
   auftraege: SerieZeile[] | null;
   /** Die Aufträge ließen sich nicht laden (Datenbank antwortet nicht). */
@@ -395,6 +426,8 @@ export function SerienStudio({
   const [neu, setNeu] = useState<SerieZeile | null>(null);
   /** In der Datenbank gelöscht, aber die Seite hat noch den alten Stand. */
   const [weg, setWeg] = useState<string[]>([]);
+  /** Die Serie des Tages ging eben auf Instagram (bis zum Neuladen). */
+  const [tagGepostet, setTagGepostet] = useState(false);
   const [offen, setOffen] = useState<string | null>(() =>
     start
       ? start.art === "id"
@@ -556,10 +589,27 @@ export function SerienStudio({
             domId={`serie-${TAG}`}
             titel={tagesSerie.titel}
             meta={`${tagKurz(tag)} · ${bilderText(tagesSerie.folien.length)} · vom Morgenlauf`}
+            marken={
+              tagGepostet ||
+              tagesSpuren.some((sp) => sp.ergebnis === "gepostet") ? (
+                <span className={cn(PILLE, "bg-ink-petrol/15 text-ink-petrol")}>
+                  gepostet
+                </span>
+              ) : null
+            }
             offen={offen === TAG}
             onToggle={() => umschalten(TAG)}
           >
-            <SerienBetrachter serie={tagesSerie} datum={tag} />
+            <SerienBetrachter
+              serie={tagesSerie}
+              datum={tag}
+              postQuelle={{ typ: "serie", datum: tag, id: null }}
+              serverSpuren={tagesSpuren}
+              onGepostet={() => {
+                setTagGepostet(true);
+                router.refresh();
+              }}
+            />
           </Klappe>
         ) : (
           <p className={LEER}>

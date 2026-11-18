@@ -2,11 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import type { GepostetEintrag } from "@/app/admin/story/story-studio";
+import type { PostSpur } from "@/lib/admin/instagram-strom";
+import type { PostQuelle } from "@/lib/instagram/vertrag";
 import type { SerieZeile } from "@/lib/serien-store";
 
+import { InstagramZeile } from "@/app/admin/story/instagram-posten";
 import { SerienStudio } from "@/app/admin/story/serien-studio";
 import { StoryStudio } from "@/app/admin/story/story-studio";
 import { requireAdmin } from "@/lib/admin/auth";
+import { quelleSchluessel, spurAusPost } from "@/lib/admin/instagram-strom";
 import {
   morgenlaufStand,
   morgenlaufText,
@@ -15,6 +19,7 @@ import {
 import { checkSchema } from "@/lib/admin/schema";
 import { AUFTRAEGE_MAX, parseSerieZiel } from "@/lib/admin/studio-serie";
 import { studioVorschlaege } from "@/lib/admin/studio-vorschlaege";
+import { lastPostFor } from "@/lib/instagram/posts-store";
 import { listPostStatus } from "@/lib/post-status-store";
 import { redaktionBereit } from "@/lib/redaktion/konfig";
 import { serieFuer } from "@/lib/serien-aktuell";
@@ -68,6 +73,28 @@ async function auftraegeLaden(): Promise<{
   }
 }
 
+/**
+ * Was der Verlauf auf dem Server (instagram_posts) zur Serie des Tages
+ * kennt: je Art der letzte Post. So zeigt das Studio „schon gepostet“
+ * auch auf einem anderen Gerät oder nach dem Neuladen. Leer ohne
+ * Datenbank-Update oder wenn das Lesen scheitert (dann gilt nur, was
+ * dieses Gerät sich gemerkt hat).
+ */
+async function tagesSerieGepostet(tag: string): Promise<PostSpur[]> {
+  const quelle: PostQuelle = { typ: "serie", datum: tag, id: null };
+  try {
+    const posts = await Promise.all([
+      lastPostFor(quelle, "story"),
+      lastPostFor(quelle, "beitrag"),
+    ]);
+    return posts.flatMap((p) =>
+      p ? [spurAusPost(p, quelleSchluessel(quelle))] : [],
+    );
+  } catch {
+    return [];
+  }
+}
+
 /** Nur echte Kalendertage (yyyy-mm-dd), sonst gilt heute. */
 function gueltigerTag(raw: string | string[] | undefined): string | null {
   if (typeof raw !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null;
@@ -96,8 +123,10 @@ const WOCHENTAG = new Intl.DateTimeFormat("de-DE", {
  *   Zusatz-Posts) als fertige Bilder und Kurzvideos für Instagram, als
  *   Story (1080 × 1920) oder Beitrag (1080 × 1350).
  *
- * Nur hier gibt es Teilen, Sichern und den Beitragstext; auf der
- * öffentlichen Journalseite steht die Karte ohne diese Knöpfe.
+ * Nur hier gibt es Teilen, Sichern, den Beitragstext und „Auf Instagram
+ * posten“; auf der öffentlichen Journalseite steht die Karte ohne diese
+ * Knöpfe. Die Zeile unter den Tagen zeigt die Verbindung zu Instagram
+ * (/admin/instagram).
  *
  * ?tag=yyyy-mm-dd wählt den Tag, ?post=0|1|2 den Post (etwa aus dem
  * Post-Planer „Im Studio öffnen“), ?serie= klappt eine Serie auf: „tag“
@@ -128,9 +157,11 @@ export default async function StoryPage({
   );
   // Tagesleiste: drei Tage zurück bis drei Tage voraus, der gewählte in der Mitte.
   const leiste = Array.from({ length: 7 }, (_, i) => tagVersetzt(tag, i - 3));
-  const [gepostetDb, auftraege] = await Promise.all([
+  const tagesSerie = serieFuer(tag);
+  const [gepostetDb, auftraege, tagesSpuren] = await Promise.all([
     gepostetAm(tag),
     auftraegeLaden(),
+    tagesSerie ? tagesSerieGepostet(tag) : Promise.resolve([]),
   ]);
   // Morgenlauf: Karten zum Tag haben Vorrang, sonst springt die Reserve
   // ein. Auch für einen kommenden Tag zählen schon geschriebene Karten.
@@ -180,13 +211,18 @@ export default async function StoryPage({
           );
         })}
       </nav>
-      {tag !== heute ? (
-        <p className="mt-2 text-[14px]">
-          <Link href="/admin/story" className="underline underline-offset-2">
+      <div className="mt-1 flex flex-wrap items-center justify-between gap-x-4">
+        {tag !== heute ? (
+          <Link
+            href="/admin/story"
+            className="inline-flex min-h-11 items-center text-[14px] underline underline-offset-2"
+          >
             Zurück zu heute
           </Link>
-        </p>
-      ) : null}
+        ) : null}
+        {/* Stand der Verbindung zu Instagram, führt zu /admin/instagram. */}
+        <InstagramZeile />
+      </div>
 
       <SerienStudio
         // Neuer Tag oder eine andere verlinkte Serie: Auftrag, Auswahl und
@@ -196,7 +232,8 @@ export default async function StoryPage({
         heute={heute}
         bereit={redaktionBereit()}
         vorschlaege={studioVorschlaege(tag, heute, posts[0]?.text)}
-        tagesSerie={serieFuer(tag)}
+        tagesSerie={tagesSerie}
+        tagesSpuren={tagesSpuren}
         auftraege={auftraege.zeilen}
         auftraegeFehler={auftraege.fehler}
         start={ziel}

@@ -19,6 +19,7 @@ export function SchemaNotice({ schema }: { schema: SchemaStatus }) {
     schema.projekte,
     schema.postStatus,
     schema.serien,
+    schema.instagramPosts,
   ];
   const missing = missingMigrations(schema);
   if (missing.length > 0) {
@@ -37,8 +38,8 @@ export function SchemaNotice({ schema }: { schema: SchemaStatus }) {
         className="border-border bg-card text-muted-foreground mt-4 rounded-[4px] border p-3 text-[14px] leading-relaxed"
       >
         Datenbank-Stand gerade nicht prüfbar: {e.title} Wiedervorlage, Ergebnis,
-        Angebote, Projekte, das Abhaken von Posts und gemerkte Serien sind bis
-        zum nächsten Laden aus.
+        Angebote, Projekte, das Abhaken von Posts, gemerkte Serien und der
+        Verlauf der Instagram-Posts sind bis zum nächsten Laden aus.
       </p>
     );
   }

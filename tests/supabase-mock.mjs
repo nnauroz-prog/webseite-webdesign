@@ -21,6 +21,21 @@
  *        Primärschlüssel (datum, platz, format)
  *   'v5' zusätzlich serien (20261117000000_serien.sql): Auftrag
  *        höchstens 500 Zeichen, serie als Objekt, gepostet_at leer
+ *   'v6' zusätzlich instagram_posts und der private Bucket „instagram“
+ *        (20261118000000_instagram.sql): art story|beitrag, bilder 1 bis
+ *        10, quelle als Objekt, media_ids und links als Listen
+ *
+ * Filter für jsonb: col=cs.{…} (enthält, wie contains() in supabase-js).
+ *
+ * Speicher (Supabase Storage) unter /storage/v1, so wie supabase-js ihn
+ * aufruft: GET bucket/:id, POST object/upload/sign/:bucket/:pfad
+ * (Upload-Platz), PUT object/upload/sign/:bucket/:pfad?token= (Hochladen
+ * mit dem Token des Platzes, auch mit dem anon-Schlüssel), POST
+ * object/sign/:bucket/:pfad (signierte Adresse), GET
+ * object/sign/:bucket/:pfad?token= (Datei über die signierte Adresse,
+ * ohne Schlüssel), DELETE object/:bucket mit {prefixes} und POST
+ * object/list/:bucket mit {prefix, limit, offset}. Buckets prüfen
+ * Größe und Inhaltstyp wie file_size_limit und allowed_mime_types.
  *
  * Fehler wie PostgREST: unbekannte Tabelle → 404 PGRST205, unbekannte
  * Spalte in select/filter/order → 400 42703, unbekannte Spalte im
@@ -112,6 +127,15 @@ const PROJEKTE = [
 ];
 const POST_STATUS = ["datum", "platz", "format", "text", "gepostet_at"];
 const SERIEN = ["id", "created_at", "datum", "auftrag", "serie", "gepostet_at"];
+const INSTAGRAM_POSTS = [
+  "id",
+  "created_at",
+  "art",
+  "quelle",
+  "bilder",
+  "media_ids",
+  "links",
+];
 
 function schemaFor(mode) {
   if (mode === "v0") return {};
@@ -126,7 +150,23 @@ function schemaFor(mode) {
   if (mode === "v3") return v3;
   const v4 = { ...v3, projekte: PROJEKTE, post_status: POST_STATUS };
   if (mode === "v4") return v4;
-  return { ...v4, serien: SERIEN };
+  const v5 = { ...v4, serien: SERIEN };
+  if (mode === "v5") return v5;
+  return { ...v5, instagram_posts: INSTAGRAM_POSTS };
+}
+
+/** Buckets je Modus (der Bucket „instagram“ kommt mit v6). */
+function bucketsFor(mode) {
+  const buckets = new Map();
+  if (!["v0", "v1", "v2", "v3", "v4", "v5"].includes(mode))
+    buckets.set("instagram", {
+      id: "instagram",
+      name: "instagram",
+      public: false,
+      file_size_limit: 8388608,
+      allowed_mime_types: ["image/jpeg"],
+    });
+  return buckets;
 }
 
 const REQUIRED = {
@@ -145,7 +185,19 @@ const REQUIRED = {
   projekte: ["angebot_id", "lead_id", "schritte"],
   post_status: ["datum", "platz", "format", "text"],
   serien: ["datum", "serie"],
+  instagram_posts: ["art", "quelle", "bilder"],
 };
+
+/** Enthält a den Wert b (jsonb @>)? */
+function contains(a, b) {
+  if (b === null || typeof b !== "object") return a === b;
+  if (Array.isArray(b))
+    return Array.isArray(a) && b.every((x) => a.some((y) => contains(y, x)));
+  if (!a || typeof a !== "object" || Array.isArray(a)) return false;
+  return Object.entries(b).every(
+    ([k, v]) => Object.prototype.hasOwnProperty.call(a, k) && contains(a[k], v),
+  );
+}
 
 const berlinYear = (d) =>
   new Intl.DateTimeFormat("en-GB", {
@@ -178,6 +230,15 @@ function parseFilter(raw) {
       if (value === "true") return (v) => v === true;
       if (value === "false") return (v) => v === false;
       return null;
+    case "cs": {
+      let wanted;
+      try {
+        wanted = JSON.parse(value);
+      } catch {
+        return null;
+      }
+      return (v) => contains(v, wanted);
+    }
     case "in": {
       const m = /^\((.*)\)$/.exec(value);
       if (!m) return null;
@@ -190,12 +251,15 @@ function parseFilter(raw) {
 }
 
 export const SERVICE_KEY = "test-service-role-key";
+/** Öffentlicher Schlüssel (Browser): darf nur mit Token hochladen. */
+export const ANON_KEY = "test-anon-key";
 
 /**
  * @typedef {Record<string, any>} Row
- * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[]; projekte: Row[]; post_status: Row[]; serien: Row[] }} Tables
+ * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[]; projekte: Row[]; post_status: Row[]; serien: Row[]; instagram_posts: Row[] }} Tables
+ * @typedef {{ bucket: string; path: string; bytes: Buffer; contentType: string; created_at: string; id: string }} StoredObject
  * @typedef {{ method: string; url: string; headers: { prefer: string; accept: string }; body: unknown }} MockRequest
- * @typedef {"v0" | "v1" | "v2" | "v3" | "v4" | "v5"} MockMode
+ * @typedef {"v0" | "v1" | "v2" | "v3" | "v4" | "v5" | "v6"} MockMode
  */
 
 /** @returns {Tables} */
@@ -208,18 +272,24 @@ function emptyTables() {
     projekte: [],
     post_status: [],
     serien: [],
+    instagram_posts: [],
   };
 }
 
 /** @param {{ mode?: MockMode; key?: string }} [options] */
 export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
-  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[]; angebotSeq: number; denied: Set<string> }} */
+  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[]; angebotSeq: number; denied: Set<string>; buckets: Map<string, any>; objects: Map<string, StoredObject>; uploadTokens: Map<string, string>; signTokens: Map<string, string>; storageDown: boolean }} */
   const state = {
     mode,
     tables: emptyTables(),
     requests: [],
     angebotSeq: 0,
     denied: new Set(),
+    buckets: bucketsFor(mode),
+    objects: new Map(),
+    uploadTokens: new Map(),
+    signTokens: new Map(),
+    storageDown: false,
   };
   let lastTime = 0;
   /** Feste Uhr für Tests (Millisekunden) oder null für die echte Zeit. */
@@ -294,6 +364,8 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
         auftrag: "",
         gepostet_at: null,
       };
+    if (table === "instagram_posts")
+      return { id: randomUUID(), created_at: t, media_ids: [], links: [] };
     return {
       id: randomUUID(),
       deleted_at: t,
@@ -401,6 +473,24 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       if (!s || typeof s !== "object" || Array.isArray(s))
         return checkFail(table, "serien_serie_check");
     }
+    if (table === "instagram_posts") {
+      if (!["story", "beitrag"].includes(row.art))
+        return checkFail(table, "instagram_posts_art_check");
+      if (!Number.isInteger(row.bilder) || row.bilder < 1 || row.bilder > 10)
+        return checkFail(table, "instagram_posts_bilder_check");
+      const q = row.quelle;
+      if (!q || typeof q !== "object" || Array.isArray(q))
+        return checkFail(table, "instagram_posts_quelle_check");
+      for (const col of ["media_ids", "links"])
+        if (
+          !Array.isArray(row[col]) ||
+          !row[col].every((x) => typeof x === "string")
+        )
+          return {
+            status: 400,
+            body: { code: "22P02", message: `malformed array literal` },
+          };
+    }
     if (table === "angebote") {
       if (!ANGEBOT_STATUSES.includes(row.status))
         return checkFail(table, "angebote_status_check");
@@ -452,13 +542,231 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     };
   }
 
-  function handle(req, rawBody) {
+  /** Fehler wie Supabase Storage: HTTP 400 mit statusCode im Körper. */
+  function storageFail(statusCode, error, message, status = 400) {
+    return { status, body: { statusCode, error, message } };
+  }
+
+  /** Teil hinter dem Präfix: Bucket und Pfad (dekodiert). */
+  function bucketUndPfad(rest) {
+    const teile = rest.split("/").map((t) => decodeURIComponent(t));
+    const bucket = teile.shift() ?? "";
+    return { bucket, path: teile.filter(Boolean).join("/") };
+  }
+
+  /** Datei aus einem Upload-Körper (roh oder multipart/form-data). */
+  function dateiAus(req, buf) {
+    const typ = String(req.headers["content-type"] ?? "");
+    if (!typ.startsWith("multipart/form-data"))
+      return { bytes: buf, contentType: typ.split(";")[0].trim() };
+    // Grob: der Teil mit Dateinamen (supabase-js schickt davor
+    // cacheControl); Inhaltstyp aus dessen Kopf, wie Supabase Storage.
+    const text = buf.toString("latin1");
+    const grenze = /boundary=([^;]+)/.exec(typ)?.[1]?.replace(/^"|"$/g, "");
+    const teile = grenze ? text.split(`--${grenze}`) : [text];
+    for (const teil of teile) {
+      const kopfEnde = teil.indexOf("\r\n\r\n");
+      if (kopfEnde < 0) continue;
+      const kopf = teil.slice(0, kopfEnde);
+      if (!/filename=/i.test(kopf)) continue;
+      const ct = /content-type:\s*([^\r\n;]+)/i.exec(kopf)?.[1]?.trim() ?? "";
+      const inhalt = teil.slice(kopfEnde + 4).replace(/\r\n$/, "");
+      return { bytes: Buffer.from(inhalt, "latin1"), contentType: ct };
+    }
+    return { bytes: Buffer.alloc(0), contentType: "" };
+  }
+
+  function handleStorage(req, url, buf) {
+    const p = url.pathname.slice("/storage/v1".length);
+    const apikey = req.headers.apikey;
+    const istService = apikey === key;
+    const json = () => {
+      try {
+        return buf.length ? JSON.parse(buf.toString("utf8")) : {};
+      } catch {
+        return {};
+      }
+    };
+    if (state.storageDown)
+      return storageFail("500", "internal", "mock: Speicher aus", 500);
+
+    // Datei über die signierte Adresse (Instagram lädt so, ohne Schlüssel).
+    if (req.method === "GET" && p.startsWith("/object/sign/")) {
+      const { bucket, path } = bucketUndPfad(p.slice("/object/sign/".length));
+      const token = url.searchParams.get("token") ?? "";
+      const ziel = state.signTokens.get(token);
+      const obj = state.objects.get(`${bucket}/${path}`);
+      if (ziel !== `${bucket}/${path}` || !obj)
+        return storageFail("400", "InvalidSignature", "invalid signature");
+      return { status: 200, raw: obj.bytes, contentType: obj.contentType };
+    }
+
+    // Hochladen mit dem Token eines Platzes (Browser, anon-Schlüssel).
+    if (req.method === "PUT" && p.startsWith("/object/upload/sign/")) {
+      if (!istService && apikey !== ANON_KEY)
+        return storageFail("403", "Unauthorized", "Invalid API key", 403);
+      const { bucket, path } = bucketUndPfad(
+        p.slice("/object/upload/sign/".length),
+      );
+      const token = url.searchParams.get("token") ?? "";
+      if (state.uploadTokens.get(token) !== `${bucket}/${path}`)
+        return storageFail("400", "InvalidSignature", "invalid signature");
+      const b = state.buckets.get(bucket);
+      if (!b) return storageFail("404", "Bucket not found", "Bucket not found");
+      const { bytes, contentType } = dateiAus(req, buf);
+      if (b.file_size_limit && bytes.length > b.file_size_limit)
+        return storageFail(
+          "413",
+          "Payload too large",
+          "The object exceeded the maximum allowed size",
+        );
+      if (b.allowed_mime_types && !b.allowed_mime_types.includes(contentType))
+        return storageFail(
+          "415",
+          "invalid_mime_type",
+          `mime type ${contentType} is not supported`,
+        );
+      if (state.objects.has(`${bucket}/${path}`))
+        return storageFail("409", "Duplicate", "The resource already exists");
+      state.uploadTokens.delete(token);
+      const id = randomUUID();
+      state.objects.set(`${bucket}/${path}`, {
+        bucket,
+        path,
+        bytes,
+        contentType,
+        created_at: nowIso(),
+        id,
+      });
+      return { status: 200, body: { Key: `${bucket}/${path}`, Id: id } };
+    }
+
+    if (!istService)
+      return storageFail("403", "Unauthorized", "Invalid API key", 403);
+
+    if (req.method === "GET" && p.startsWith("/bucket/")) {
+      const id = decodeURIComponent(p.slice("/bucket/".length));
+      const b = state.buckets.get(id);
+      if (!b) return storageFail("404", "Bucket not found", "Bucket not found");
+      return {
+        status: 200,
+        body: { ...b, owner: "", created_at: "", updated_at: "" },
+      };
+    }
+
+    // Upload-Platz anlegen.
+    if (req.method === "POST" && p.startsWith("/object/upload/sign/")) {
+      const { bucket, path } = bucketUndPfad(
+        p.slice("/object/upload/sign/".length),
+      );
+      if (!state.buckets.has(bucket))
+        return storageFail("404", "Bucket not found", "Bucket not found");
+      if (state.objects.has(`${bucket}/${path}`))
+        return storageFail("409", "Duplicate", "The resource already exists");
+      const token = `up-${randomUUID()}`;
+      state.uploadTokens.set(token, `${bucket}/${path}`);
+      return {
+        status: 200,
+        body: { url: `/object/upload/sign/${bucket}/${path}?token=${token}` },
+      };
+    }
+
+    // Signierte Adresse zum Lesen.
+    if (req.method === "POST" && p.startsWith("/object/sign/")) {
+      const { bucket, path } = bucketUndPfad(p.slice("/object/sign/".length));
+      if (!state.buckets.has(bucket))
+        return storageFail("404", "Bucket not found", "Bucket not found");
+      if (!state.objects.has(`${bucket}/${path}`))
+        return storageFail("404", "not_found", "Object not found");
+      const body = json();
+      if (!Number.isInteger(body.expiresIn) || body.expiresIn < 1)
+        return storageFail("400", "invalid", "expiresIn fehlt");
+      const token = `sig-${randomUUID()}`;
+      state.signTokens.set(token, `${bucket}/${path}`);
+      return {
+        status: 200,
+        body: { signedURL: `/object/sign/${bucket}/${path}?token=${token}` },
+      };
+    }
+
+    // Löschen: DELETE /object/:bucket mit {prefixes}.
+    if (req.method === "DELETE" && /^\/object\/[^/]+$/.test(p)) {
+      const bucket = decodeURIComponent(p.slice("/object/".length));
+      if (!state.buckets.has(bucket))
+        return storageFail("404", "Bucket not found", "Bucket not found");
+      const body = json();
+      const prefixes = Array.isArray(body.prefixes) ? body.prefixes : [];
+      const geloescht = [];
+      for (const name of prefixes) {
+        const obj = state.objects.get(`${bucket}/${name}`);
+        if (!obj) continue;
+        state.objects.delete(`${bucket}/${name}`);
+        geloescht.push({ name, bucket_id: bucket, id: obj.id });
+      }
+      return { status: 200, body: geloescht };
+    }
+
+    // Auflisten: POST /object/list/:bucket mit {prefix, limit, offset}.
+    if (req.method === "POST" && p.startsWith("/object/list/")) {
+      const bucket = decodeURIComponent(p.slice("/object/list/".length));
+      if (!state.buckets.has(bucket))
+        return storageFail("404", "Bucket not found", "Bucket not found");
+      const body = json();
+      const prefix = String(body.prefix ?? "").replace(/^\/+|\/+$/g, "");
+      const limit = Number.isInteger(body.limit) ? body.limit : 100;
+      const offset = Number.isInteger(body.offset) ? body.offset : 0;
+      const ordner = new Set();
+      const dateien = [];
+      for (const obj of state.objects.values()) {
+        if (obj.bucket !== bucket) continue;
+        let rest = obj.path;
+        if (prefix) {
+          if (!obj.path.startsWith(`${prefix}/`)) continue;
+          rest = obj.path.slice(prefix.length + 1);
+        }
+        const [erster, ...weiter] = rest.split("/");
+        if (weiter.length) ordner.add(erster);
+        else
+          dateien.push({
+            name: erster,
+            id: obj.id,
+            updated_at: obj.created_at,
+            created_at: obj.created_at,
+            last_accessed_at: obj.created_at,
+            metadata: { size: obj.bytes.length, mimetype: obj.contentType },
+          });
+      }
+      const liste = [
+        ...[...ordner].sort().map((name) => ({
+          name,
+          id: null,
+          updated_at: null,
+          created_at: null,
+          last_accessed_at: null,
+          metadata: null,
+        })),
+        ...dateien.sort((a, b) => (a.name < b.name ? -1 : 1)),
+      ];
+      return { status: 200, body: liste.slice(offset, offset + limit) };
+    }
+
+    return storageFail(
+      "404",
+      "not_found",
+      "mock: unbekannter Speicherpfad",
+      404,
+    );
+  }
+
+  function handle(req, buf) {
     const url = new URL(req.url, "http://mock");
+    const istSpeicher = url.pathname.startsWith("/storage/v1/");
+    const rawBody = buf.toString("utf8");
     let body;
     try {
       body = rawBody ? JSON.parse(rawBody) : undefined;
     } catch {
-      body = rawBody;
+      body = istSpeicher ? { bytes: buf.length } : rawBody;
     }
     state.requests.push({
       method: req.method,
@@ -469,6 +777,7 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       },
       body,
     });
+    if (istSpeicher) return handleStorage(req, url, buf);
 
     if (req.headers.apikey !== key) {
       return {
@@ -670,10 +979,19 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
   }
 
   const server = http.createServer((req, res) => {
-    let raw = "";
-    req.on("data", (c) => (raw += c));
+    /** @type {Buffer[]} */
+    const chunks = [];
+    req.on("data", (c) => chunks.push(c));
     req.on("end", () => {
-      const { status, body } = handle(req, raw);
+      const { status, body, raw, contentType } = handle(
+        req,
+        Buffer.concat(chunks),
+      );
+      if (raw) {
+        res.writeHead(status, { "content-type": contentType });
+        res.end(raw);
+        return;
+      }
       res.writeHead(status, {
         "content-type": "application/json; charset=utf-8",
       });
@@ -702,6 +1020,49 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       state.requests = [];
       state.angebotSeq = 0;
       state.denied = new Set();
+      state.buckets = bucketsFor(next);
+      state.objects = new Map();
+      state.uploadTokens = new Map();
+      state.signTokens = new Map();
+      state.storageDown = false;
+    },
+    /** Dateien im Speicher: „bucket/pfad“ → Datei. */
+    get objects() {
+      return state.objects;
+    },
+    /** Buckets im Speicher: id → Einstellungen. */
+    get buckets() {
+      return state.buckets;
+    },
+    /**
+     * Datei direkt in den Speicher legen (an der API vorbei).
+     * @param {string} bucket
+     * @param {string} path
+     * @param {Buffer} [bytes]
+     * @param {string} [contentType]
+     */
+    seedObject(
+      bucket,
+      path,
+      bytes = Buffer.from([0xff, 0xd8, 0xff, 0xd9]),
+      contentType = "image/jpeg",
+    ) {
+      state.objects.set(`${bucket}/${path}`, {
+        bucket,
+        path,
+        bytes,
+        contentType,
+        created_at: nowIso(),
+        id: randomUUID(),
+      });
+    },
+    /**
+     * Speicher aus (jede Anfrage an /storage/v1 scheitert mit 500) oder
+     * wieder an.
+     * @param {boolean} down
+     */
+    setStorageDown(down) {
+      state.storageDown = down;
     },
     /** Zeile direkt anlegen (an der API vorbei), gibt sie zurück. */
     /**

@@ -53,8 +53,13 @@ export const BILD_BYTES_MAX = 8 * 1024 * 1024;
 
 /** Woher die Bilder stammen: damit das Studio sie danach als gepostet abhakt. */
 export type PostQuelle =
-  /** Story-Serie: des Tages (id null) oder aus einem Auftrag (id der Zeile). */
-  | { typ: "serie"; datum: string; id: string | null }
+  /**
+   * Story-Serie: des Tages (id null) oder aus einem Auftrag (id der
+   * Zeile). Eine Serie, die nur auf einem Gerät liegt (nicht in der
+   * Datenbank), geht mit id null und lokal: true; sie ist nicht die Serie
+   * des Tages und wird nirgends abgehakt.
+   */
+  | { typ: "serie"; datum: string; id: string | null; lokal?: true }
   /** Einzelner Post des Tages (Platz 0 bis 2). */
   | { typ: "post"; datum: string; platz: number };
 
@@ -123,6 +128,11 @@ export type PostFehlerCode =
  * - Die letzte Zeile ist immer „fertig“ oder „fehler“, danach nichts mehr.
  * - Sind schon Stories veröffentlicht, wenn ein Fehler kommt, nennt die
  *   Fehlerzeile sie in teil (damit nichts doppelt gepostet wird).
+ * - Weiß der Server selbst nicht, ob eine Veröffentlichung geklappt hat
+ *   (Instagram hat nicht geantwortet, auch nicht auf die Nachfrage),
+ *   trägt die Fehlerzeile unklar: true. teil nennt dann nur, was sicher
+ *   online ist; das Studio fordert nicht zu einem blinden zweiten
+ *   Versuch auf.
  * - Die Route antwortet immer mit HTTP 200 und diesem Strom. Eine Antwort
  *   ohne 2xx oder mit anderem Inhaltstyp (Anmeldeseite nach abgelaufener
  *   Sitzung) behandelt das Studio wie den Code „unbekannt“.
@@ -150,8 +160,10 @@ export type PostEreignis =
       code: PostFehlerCode;
       /** Kurzer Satz für den Inhaber (Du-Form, einfaches Deutsch). */
       text: string;
-      /** Was schon veröffentlicht ist (bei Stories), sonst weggelassen. */
+      /** Was sicher veröffentlicht ist (bei Stories), sonst weggelassen. */
       teil?: { veroeffentlicht: number; von: number; links: string[] };
+      /** Ob die letzte Veröffentlichung online ist, ist offen (sonst weggelassen). */
+      unklar?: true;
     };
 
 /** Stand der Verbindung für das Studio und die Seite /admin/instagram. */
