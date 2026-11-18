@@ -58,7 +58,9 @@ function titelZu(quelle: PostQuelle): string {
     return karte ? karte.text : "Post des Tages";
   }
   if (quelle.id === null)
-    return serieFuer(quelle.datum)?.titel ?? "Story-Serie";
+    return quelle.lokal
+      ? "Story-Serie (nur auf einem Gerät)"
+      : (serieFuer(quelle.datum)?.titel ?? "Story-Serie");
   return "Story-Serie aus einem Auftrag";
 }
 

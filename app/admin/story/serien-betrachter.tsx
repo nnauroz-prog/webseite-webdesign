@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
+import type { PostSpur } from "@/lib/admin/instagram-strom";
 import type { InstagramArt, PostQuelle } from "@/lib/instagram/vertrag";
 import type { StorySerie } from "@/lib/story-serie";
 
@@ -56,6 +57,8 @@ export function SerienBetrachter({
   serie,
   datum,
   postQuelle,
+  spurSchluessel,
+  serverSpuren,
   onGepostet,
 }: {
   serie: StorySerie;
@@ -63,6 +66,10 @@ export function SerienBetrachter({
   datum: string;
   /** Woher die Serie stammt (Serie des Tages oder Auftrag), fürs Posten. */
   postQuelle: PostQuelle;
+  /** Eigener Schlüssel für „schon gepostet“ (Serie nur auf diesem Gerät). */
+  spurSchluessel?: string;
+  /** „Schon gepostet“ laut Verlauf auf dem Server. */
+  serverSpuren?: PostSpur[];
   /** Die Serie ist auf Instagram (ganz): als gepostet zeigen. */
   onGepostet?: (art: InstagramArt) => void;
 }) {
@@ -283,6 +290,8 @@ export function SerienBetrachter({
               karten={karten}
               versatz={versatz}
               quelle={postQuelle}
+              spurSchluessel={spurSchluessel}
+              serverSpuren={serverSpuren}
               caption={serieAlsCaption(serie)}
               serie
               gesperrt={beschaeftigt || packt}

@@ -53,6 +53,8 @@ export const TEXT_CAPTION = `Die Bildunterschrift ist zu lang (höchstens ${CAPT
 export const TEXT_HASHTAGS = `Nimm höchstens ${HASHTAGS_MAX} Hashtags in die Bildunterschrift.`;
 export const TEXT_QUELLE =
   "Woher die Bilder stammen, ließ sich nicht lesen. Lade die Seite neu und versuch es noch einmal.";
+export const TEXT_ZU_ALT = `Dieser Tag liegt mehr als ${NACHTRAGEN_TAGE} Tage zurück. Von hier aus lässt er sich nicht mehr posten. Teil die Bilder von Hand, wenn du sie noch posten willst.`;
+export const TEXT_ZU_WEIT = `Dieser Tag liegt mehr als ${QUELLE_TAGE_VORAUS} Tage in der Zukunft. Posten geht von hier aus erst, wenn er näher ist.`;
 
 /** Echter Kalendertag (yyyy-mm-dd), sonst null. */
 function tagOderNull(v: unknown): string | null {
@@ -92,20 +94,28 @@ export function saubereCaption(roh: string): string {
 }
 
 /**
- * Quelle aus einem Auftrag: Story-Serie (Tag, Kennung oder null) oder
- * Post des Tages (Tag, Platz 0 bis 2). Der Tag liegt höchstens
- * NACHTRAGEN_TAGE zurück und QUELLE_TAGE_VORAUS voraus.
+ * Quelle aus einem Auftrag: Story-Serie (Tag, Kennung oder null, bei
+ * null wahlweise lokal) oder Post des Tages (Tag, Platz 0 bis 2). Der
+ * Tag liegt höchstens NACHTRAGEN_TAGE zurück und QUELLE_TAGE_VORAUS
+ * voraus.
  */
 export function pruefeQuelle(v: unknown, jetzt: Date): PostQuelle | null {
   const q = quelleAusZeile(v);
   if (!q) return null;
+  return zeitraumProblem(q.datum, jetzt) ? null : q;
+}
+
+/**
+ * Liegt der Tag einer Quelle außerhalb dessen, was sich posten lässt
+ * (höchstens NACHTRAGEN_TAGE zurück, QUELLE_TAGE_VORAUS voraus)? Dann
+ * ein Satz für den Inhaber, sonst null. Das Studio sperrt damit den
+ * Knopf, der Server lehnt mit demselben Satz ab.
+ */
+export function zeitraumProblem(datum: string, jetzt: Date): string | null {
   const heute = berlinDateIso(jetzt);
-  if (
-    q.datum < addDays(heute, -NACHTRAGEN_TAGE) ||
-    q.datum > addDays(heute, QUELLE_TAGE_VORAUS)
-  )
-    return null;
-  return q;
+  if (datum < addDays(heute, -NACHTRAGEN_TAGE)) return TEXT_ZU_ALT;
+  if (datum > addDays(heute, QUELLE_TAGE_VORAUS)) return TEXT_ZU_WEIT;
+  return null;
 }
 
 /** Quelle aus einer gespeicherten Zeile (ohne Bezug auf heute), sonst null. */
@@ -115,7 +125,12 @@ export function quelleAusZeile(v: unknown): PostQuelle | null {
   const datum = tagOderNull(q.datum);
   if (!datum) return null;
   if (q.typ === "serie") {
-    if (q.id === null) return { typ: "serie", datum, id: null };
+    // lokal: Serie nur auf einem Gerät, gibt es nur ohne Kennung.
+    if (q.id === null)
+      return q.lokal === true
+        ? { typ: "serie", datum, id: null, lokal: true }
+        : { typ: "serie", datum, id: null };
+    if (q.lokal !== undefined) return null;
     const id = parseId(q.id);
     return id ? { typ: "serie", datum, id } : null;
   }
@@ -176,8 +191,11 @@ export function pruefeAuftrag(roh: unknown, jetzt: Date): AuftragErgebnis {
       return { ok: false, text: TEXT_HASHTAGS };
   }
 
-  const quelle = pruefeQuelle(r.quelle, jetzt);
+  const quelle = quelleAusZeile(r.quelle);
   if (!quelle) return { ok: false, text: TEXT_QUELLE };
+  // Ein Tag außerhalb des Zeitraums: klar sagen, Neuladen hilft nicht.
+  const zeitraum = zeitraumProblem(quelle.datum, jetzt);
+  if (zeitraum) return { ok: false, text: zeitraum };
 
   return {
     ok: true,

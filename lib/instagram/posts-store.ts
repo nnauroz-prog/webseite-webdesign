@@ -105,9 +105,22 @@ export function postAusZeile(data: unknown): InstagramPostZeile | null {
 /** Nur die Felder der Quelle, in fester Form (für Speichern und Suche). */
 function quelleJson(q: PostQuelle): PostQuelle {
   return q.typ === "serie"
-    ? { typ: "serie", datum: q.datum, id: q.id }
+    ? {
+        typ: "serie",
+        datum: q.datum,
+        id: q.id,
+        ...(q.lokal ? { lokal: true as const } : {}),
+      }
     : { typ: "post", datum: q.datum, platz: q.platz };
 }
+
+/** Genau dieselbe Quelle (auch lokal gleich)? */
+function gleicheQuelle(a: PostQuelle, b: PostQuelle): boolean {
+  return JSON.stringify(quelleJson(a)) === JSON.stringify(quelleJson(b));
+}
+
+/** So viele Zeilen prüft lastPostFor höchstens (lokale Serien desselben Tages). */
+const SUCHE_MAX = 20;
 
 /**
  * Hält einen Post fest und gibt seine Kennung zurück. null, wenn die
@@ -184,6 +197,10 @@ export async function listPosts(
  * Der letzte Post aus dieser Quelle (optional nur dieser Art), für den
  * Hinweis „schon gepostet“. null, wenn es keinen gibt, die Tabelle fehlt
  * oder Supabase nicht konfiguriert ist. Wirft DbError.
+ *
+ * Die Serie des Tages (id null) und Serien nur auf einem Gerät (id null,
+ * lokal) zählen getrennt: contains() fände für die Serie des Tages auch
+ * die lokalen, deshalb zählt nur eine Zeile mit genau dieser Quelle.
  */
 export async function lastPostFor(
   quelle: PostQuelle,
@@ -200,11 +217,14 @@ export async function lastPostFor(
   if (art) abfrage = abfrage.eq("art", art);
   const { data, error } = await abfrage
     .order("created_at", { ascending: false })
-    .limit(1);
+    .limit(SUCHE_MAX);
   if (error) {
     if (nichtDa(error)) return null;
     throw dbError("Posts konnten nicht geladen werden", error);
   }
-  const zeile = Array.isArray(data) ? data[0] : undefined;
-  return zeile ? postAusZeile(zeile) : null;
+  for (const zeile of Array.isArray(data) ? data : []) {
+    const post = postAusZeile(zeile);
+    if (post && gleicheQuelle(post.quelle, q)) return post;
+  }
+  return null;
 }

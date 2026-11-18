@@ -12,6 +12,7 @@ import {
   captionProblem,
   ereignisAusZeile,
   FEHLER_TEXT,
+  fehlerWege,
   fortschrittMit,
   fortschrittNeu,
   hashtagsIn,
@@ -19,16 +20,20 @@ import {
   kontingentFrei,
   kontoName,
   linkText,
+  lokalSchluessel,
   NEU_ANMELDEN,
   postAuftrag,
   postSenden,
   quelleSchluessel,
+  restAusSpur,
   schrittSatz,
   schrittZaehler,
   serieAlsCaption,
   SPUREN_MAX,
+  spurAusPost,
   spurenAus,
   spurenMit,
+  spurenVereint,
   spurSatz,
   STUDIO_SCHRITTE,
   UNKLAR,
@@ -118,6 +123,32 @@ const story = (stand: "laeuft" | "fertig", nr: number, von: number) =>
   zeile({ typ: "schritt", schritt: "veroeffentlichen", stand, nr, von });
 
 describe("ereignisAusZeile", () => {
+  it("liest „unklar“ in der Fehlerzeile (nur true zählt)", () => {
+    assert.deepEqual(
+      ereignisAusZeile(
+        JSON.stringify({
+          typ: "fehler",
+          code: "instagram",
+          text: "Ob Story 3 online ist, ist unklar.",
+          teil: { veroeffentlicht: 2, von: 4, links: [] },
+          unklar: true,
+        }),
+      ),
+      {
+        typ: "fehler",
+        code: "instagram",
+        text: "Ob Story 3 online ist, ist unklar.",
+        teil: { veroeffentlicht: 2, von: 4, links: [] },
+        unklar: true,
+      },
+    );
+    const sonst = ereignisAusZeile(
+      '{"typ":"fehler","code":"instagram","text":"x","unklar":"ja"}',
+    );
+    assert.ok(sonst?.typ === "fehler");
+    assert.equal(sonst.unklar, undefined);
+  });
+
   it("liest Schritte, mit Zähler nur wenn nr und von stimmen", () => {
     assert.deepEqual(
       ereignisAusZeile(
@@ -304,6 +335,24 @@ describe("zeilenLeser", () => {
 });
 
 describe("postSenden", () => {
+  it("meldet der Server „unklar“, ist der Ausgang unklar (mit dem sicheren Teil)", async () => {
+    const aus = await postSenden(AUFTRAG, {
+      holen: async () =>
+        antwort([
+          zeile({
+            typ: "fehler",
+            code: "instagram",
+            text: "Instagram hat beim Veröffentlichen nicht geantwortet.",
+            unklar: true,
+          }),
+        ]),
+    });
+    assert.ok(aus.art === "fehler");
+    assert.equal(aus.unklar, true);
+    assert.equal(aus.teil, null);
+    assert.equal(aus.sitzung, false);
+  });
+
   it("schickt den Auftrag, meldet jeden Schritt und endet mit „fertig“", async () => {
     const schritte: string[] = [];
     let gesendet: { adresse: string; init: RequestInit } | null = null;
@@ -655,6 +704,33 @@ describe("Spuren auf diesem Gerät", () => {
     ...extra,
   });
 
+  it("Serie nur auf einem Gerät: eigener Schlüssel, nie der der Serie des Tages", () => {
+    const tag = quelleSchluessel({
+      typ: "serie",
+      datum: "2026-11-18",
+      id: null,
+    });
+    const lokal = quelleSchluessel({
+      typ: "serie",
+      datum: "2026-11-18",
+      id: null,
+      lokal: true,
+    });
+    assert.notEqual(lokal, tag);
+    const a = lokalSchluessel("2026-11-18", "geraet-a1");
+    const b = lokalSchluessel("2026-11-18", "geraet-b2");
+    assert.notEqual(a, b);
+    assert.notEqual(a, tag);
+    // Eine Spur der lokalen Serie taucht bei der Serie des Tages nicht auf.
+    const gemerkt = spurenMit([], spur({ schluessel: a, live: 3, anzahl: 3 }));
+    const roh = JSON.stringify(gemerkt);
+    assert.deepEqual(
+      spurenAus(roh).filter((sp) => sp.schluessel === tag),
+      [],
+    );
+    assert.equal(spurenAus(roh).filter((sp) => sp.schluessel === a).length, 1);
+  });
+
   it("quelleSchluessel", () => {
     assert.equal(
       quelleSchluessel({ typ: "serie", datum: "2026-11-19", id: null }),
@@ -712,6 +788,73 @@ describe("Spuren auf diesem Gerät", () => {
     );
   });
 
+  it("Spuren aus dem Verlauf auf dem Server: gepostet, Teil oder unklar", () => {
+    const post = {
+      created_at: "2026-11-18T10:00:00.000Z",
+      art: "story" as const,
+      bilder: 4,
+      media_ids: ["1", "2", "3", "4"],
+      links: ["https://www.instagram.com/stories/x/1/", "http://boese"],
+    };
+    const voll = spurAusPost(post, "serie:2026-11-18:tag");
+    assert.deepEqual(voll, {
+      schluessel: "serie:2026-11-18:tag",
+      art: "story",
+      anzahl: 4,
+      wann: "2026-11-18T10:00:00.000Z",
+      ergebnis: "gepostet",
+      live: 4,
+      links: ["https://www.instagram.com/stories/x/1/"],
+    });
+    const teil = spurAusPost({ ...post, media_ids: ["1", "2"] }, "s");
+    assert.equal(teil.ergebnis, "teil");
+    assert.equal(teil.live, 2);
+    assert.equal(
+      spurAusPost({ ...post, media_ids: [] }, "s").ergebnis,
+      "unklar",
+    );
+    // Ein Beitrag (auch ein Karussell) hat eine Kennung für alle Bilder.
+    assert.equal(
+      spurAusPost({ ...post, art: "beitrag", media_ids: ["9"] }, "s").ergebnis,
+      "gepostet",
+    );
+  });
+
+  it("Gerät und Server zusammen: je Art die neueste, gepostet aus beiden", () => {
+    const server = spur({ wann: "2026-11-18T08:00:00.000Z" });
+    // Anderes Gerät oder neu geladen: nur der Server kennt den Post.
+    const nurServer = spurenVereint([], [server]);
+    assert.equal(nurServer.gepostet, true);
+    assert.deepEqual(nurServer.spuren, [server]);
+    // Hier später unklar: das Neueste zählt als Satz, gepostet bleibt.
+    const hier = spur({
+      ergebnis: "unklar",
+      live: 0,
+      wann: "2026-11-18T09:00:00.000Z",
+    });
+    const beide = spurenVereint([hier], [server]);
+    assert.deepEqual(beide.spuren, [hier]);
+    assert.equal(beide.gepostet, true);
+    assert.equal(spurenVereint([], []).gepostet, false);
+  });
+
+  it("„Nur die restlichen posten“ aus einer Spur dieses Geräts (auch nach Schließen oder Zuklappen)", () => {
+    const teil = spur({ ergebnis: "teil", live: 2 });
+    assert.equal(restAusSpur([teil], 4), teil);
+    assert.equal(
+      restAusSpur([spur({ ergebnis: "unklar", live: 2 })], 4)?.live,
+      2,
+    );
+    // Andere Zahl Bilder, alles live, nichts live oder Beitrag: kein Rest.
+    assert.equal(restAusSpur([teil], 5), null);
+    assert.equal(restAusSpur([spur()], 4), null);
+    assert.equal(restAusSpur([spur({ ergebnis: "unklar", live: 0 })], 4), null);
+    assert.equal(
+      restAusSpur([spur({ art: "beitrag", ergebnis: "teil", live: 2 })], 4),
+      null,
+    );
+  });
+
   it("sagt in Hamburger Zeit, was schon live ist", () => {
     assert.equal(wannText("2026-11-19T09:42:00.000Z"), "am 19.11. um 10:42");
     assert.equal(wannText("kaputt"), "");
@@ -724,5 +867,61 @@ describe("Spuren auf diesem Gerät", () => {
       "Zum Teil auf Instagram: 2 von 4 Stories, am 19.11. um 10:42.",
     );
     assert.match(spurSatz(spur({ ergebnis: "unklar", live: 0 })), /Unklar/);
+  });
+});
+
+describe("Wege nach einem Fehler (fehlerWege)", () => {
+  it("unklar nach 2 von 4 Stories: neuer Versuch ab Story 3, nicht ab Story 1", () => {
+    const w = fehlerWege({ art: "story", anzahl: 4, live: 2, unklar: true });
+    assert.equal(w.nochmalAb, 2);
+    assert.equal(w.teil, false);
+    assert.equal(w.rest, false);
+    assert.equal(w.bleibt, true);
+    // Nichts sicher live: von vorn (mit Warnung).
+    assert.equal(
+      fehlerWege({ art: "story", anzahl: 4, live: 0, unklar: true }).nochmalAb,
+      0,
+    );
+    // Beitrag: geht nur ganz oder gar nicht.
+    assert.equal(
+      fehlerWege({ art: "beitrag", anzahl: 3, live: 0, unklar: true })
+        .nochmalAb,
+      0,
+    );
+    // Laut den Schritten alles live: kein neuer Versuch.
+    const alles = fehlerWege({
+      art: "story",
+      anzahl: 4,
+      live: 4,
+      unklar: true,
+    });
+    assert.equal(alles.allesLive, true);
+    assert.equal(alles.nochmalAb, 3);
+  });
+
+  it("„Nur die restlichen“ scheitert, bevor etwas rausgeht: der Rest bleibt erreichbar", () => {
+    // Vorher waren 2 von 4 live (ab = 2), der neue Versuch hat nichts
+    // veröffentlicht (Netz weg, Upload, Tageslimit): teil kommt nicht.
+    const ab = 2;
+    const live = ab + 0;
+    const w = fehlerWege({ art: "story", anzahl: 4, live, unklar: false });
+    assert.equal(w.teil, true);
+    assert.equal(w.rest, true);
+    assert.equal(w.bleibt, true);
+  });
+
+  it("ein einfacher Fehler beginnt neu, ein Teil-Ergebnis bleibt stehen", () => {
+    assert.equal(
+      fehlerWege({ art: "story", anzahl: 4, live: 0, unklar: false }).bleibt,
+      false,
+    );
+    assert.equal(
+      fehlerWege({ art: "story", anzahl: 4, live: 1, unklar: false }).bleibt,
+      true,
+    );
+    assert.equal(
+      fehlerWege({ art: "beitrag", anzahl: 1, live: 0, unklar: true }).bleibt,
+      true,
+    );
   });
 });

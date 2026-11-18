@@ -3,7 +3,6 @@ import "server-only";
 import type {
   PostAuftrag,
   PostEreignis,
-  PostFehlerCode,
   PostSchritt,
 } from "@/lib/instagram/vertrag";
 
@@ -60,8 +59,11 @@ import { postsFuer } from "@/lib/sprueche-aktuell";
  *
  * Nie doppelt posten: Schlägt eine Veröffentlichung fehl, fragt der
  * Server erst nach, ob der Container trotzdem veröffentlicht ist, bevor
- * er es einmal wiederholt. Eine laufende Veröffentlichung wird bei einem
- * Abbruch nicht abgeschnitten; danach beginnt keine neue mehr.
+ * er es einmal wiederholt. Bleibt auch die Nachfrage ohne Antwort, ist
+ * offen, ob der Post online ist: Die Fehlerzeile sagt dann „unklar“
+ * (mit dem, was sicher online ist), statt „nicht gepostet“. Eine
+ * laufende Veröffentlichung wird bei einem Abbruch nicht abgeschnitten;
+ * danach beginnt keine neue mehr.
  *
  * Geloggt werden nur Codes und fbtrace, nie Schlüssel, Adressen oder Texte.
  */
@@ -96,6 +98,7 @@ const TEXT_ABGELAUFEN =
   "Instagram hat ein Bild verworfen, bevor es online ging. Versuch es noch einmal.";
 const TEXT_ABGEBROCHEN =
   "Abgebrochen: Die Verbindung zum Studio ist abgerissen.";
+const TEXT_UNKLAR_VOR = "Instagram hat beim Veröffentlichen nicht geantwortet.";
 const HINWEIS_GEMELDET =
   "Instagram hat einen Fehler gemeldet, der Post ist aber online. Den Link findest du in der Instagram-App.";
 const HINWEIS_VERLAUF =
@@ -227,6 +230,18 @@ async function bisFertig(lauf: Lauf, id: string): Promise<void> {
   }
 }
 
+/** Ob der Container online ist, ließ sich nicht klären. */
+function unklarAus(err: InstagramFehler | null): InstagramFehler {
+  return new InstagramFehler(err?.code ?? "instagram", {
+    graphCode: err?.graphCode,
+    subcode: err?.subcode,
+    fbtrace: err?.fbtrace,
+    status: err?.status,
+    netz: err?.netz,
+    unklar: true,
+  });
+}
+
 /** Ist der Container schon veröffentlicht? null, wenn die Frage scheitert. */
 async function schonVeroeffentlicht(
   lauf: Lauf,
@@ -241,8 +256,10 @@ async function schonVeroeffentlicht(
 
 /**
  * Veröffentlicht einen fertigen Container. Scheitert das, wird erst
- * nachgefragt, ob er trotzdem online ist; nur wenn nicht (und der Fehler
- * kurzfristig war), wird einmal wiederholt.
+ * nachgefragt, ob er trotzdem online ist; nur wenn er sicher noch nicht
+ * online ist (FINISHED) und der Fehler kurzfristig war, wird einmal
+ * wiederholt. Bleibt die Nachfrage ohne Antwort, wirft sie einen Fehler
+ * mit unklar.
  */
 async function veroeffentliche(
   lauf: Lauf,
@@ -262,6 +279,8 @@ async function veroeffentliche(
       if (!(err instanceof InstagramFehler) || err.code === "zugang") throw err;
       const stand = await schonVeroeffentlicht(lauf, creationId);
       if (stand === "PUBLISHED") return { id: null, hinweis: HINWEIS_GEMELDET };
+      // Keine Antwort auf die Nachfrage: Vielleicht ist er doch online.
+      if (stand === null) throw unklarAus(err);
       if (!err.voruebergehend || stand !== "FINISHED" || versuch >= 1)
         throw err;
       await lauf.warte(lauf.wiederholMs);
@@ -273,8 +292,9 @@ async function veroeffentliche(
     const id = kennung(antwort.id);
     if (id) return { id, hinweis };
     // Antwort ohne Kennung: nachsehen statt raten.
-    if ((await schonVeroeffentlicht(lauf, creationId)) === "PUBLISHED")
-      return { id: null, hinweis };
+    const stand = await schonVeroeffentlicht(lauf, creationId);
+    if (stand === "PUBLISHED") return { id: null, hinweis };
+    if (stand === null) throw unklarAus(null);
     throw new InstagramFehler("instagram");
   }
 }
@@ -349,21 +369,45 @@ async function buchen(
   return hinweise;
 }
 
+/**
+ * Die letzte Zeile nach einem Fehler. teil nennt nur, was sicher online
+ * ist; unklar heißt, die nächste Veröffentlichung ist vielleicht auch
+ * online (Instagram hat nicht geantwortet).
+ */
 function fehlerZeile(
-  code: PostFehlerCode,
-  text: string,
+  fehler: InstagramFehler,
   auftrag: PostAuftrag,
   veroeffentlicht: number,
   links: string[],
 ): PostEreignis {
+  const { code } = fehler;
   const von = auftrag.bilder.length;
-  if (auftrag.art !== "story" || veroeffentlicht === 0)
-    return { typ: "fehler", code, text };
+  const story = auftrag.art === "story";
+  const teil =
+    story && veroeffentlicht > 0
+      ? { veroeffentlicht, von, links: [...links] }
+      : null;
+  const sind = veroeffentlicht === 1 ? "ist" : "sind";
+  if (fehler.unklar) {
+    const was = !story
+      ? "der Beitrag"
+      : von > 1
+        ? `Story ${veroeffentlicht + 1}`
+        : "die Story";
+    return {
+      typ: "fehler",
+      code,
+      text: `${TEXT_UNKLAR_VOR} Ob ${was} online ist, ist unklar.${teil ? ` ${zahlwort(veroeffentlicht)} von ${von} ${sind} sicher online.` : ""}`,
+      ...(teil ? { teil } : {}),
+      unklar: true,
+    };
+  }
+  if (!teil) return { typ: "fehler", code, text: fehler.text };
   return {
     typ: "fehler",
     code,
-    text: `${text} ${zahlwort(veroeffentlicht)} von ${von} ${veroeffentlicht === 1 ? "ist" : "sind"} schon online.`,
-    teil: { veroeffentlicht, von, links: [...links] },
+    text: `${fehler.text} ${zahlwort(veroeffentlicht)} von ${von} ${sind} schon online.`,
+    teil,
   };
 }
 
@@ -536,9 +580,7 @@ export async function posteAuftrag(
       logFehler("posten", fehler, schritt);
     // Was schon online ist, kommt in den Verlauf (nicht abgehakt).
     if (veroeffentlicht > 0) await buchen(auftrag, mediaIds, links, false);
-    sende(
-      fehlerZeile(fehler.code, fehler.text, auftrag, veroeffentlicht, links),
-    );
+    sende(fehlerZeile(fehler, auftrag, veroeffentlicht, links));
   } finally {
     // Instagram hat die Bilder beim Anlegen der Container geladen.
     if (!(await loescheDateien(auftrag.bilder)))

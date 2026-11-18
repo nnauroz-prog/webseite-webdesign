@@ -248,6 +248,7 @@ export function ereignisAusZeile(zeile: string): PostEreignis | null {
           links: linksAus(wert.teil.links),
         };
     }
+    if (wert.unklar === true) ereignis.unklar = true;
     return ereignis;
   }
   return null;
@@ -323,8 +324,10 @@ export type PostAusgang =
       /** Schon veröffentlichte Stories (aus der Fehlerzeile), sonst null. */
       teil: PostTeil | null;
       /**
-       * Der Auftrag war unterwegs, aber die letzte Zeile kam nie: Ob
-       * schon etwas veröffentlicht ist, weiß das Studio nicht.
+       * Ob schon (mehr) veröffentlicht ist, weiß niemand: Der Auftrag war
+       * unterwegs, aber die letzte Zeile kam nie, oder der Server meldet
+       * selbst unklar (Instagram hat nicht geantwortet). teil nennt dann,
+       * was sicher live ist.
        */
       unklar: boolean;
       /** Die Anmeldung ist abgelaufen (die Antwort war die Login-Seite). */
@@ -412,6 +415,7 @@ export async function postSenden(
                 links: e.teil.links,
               }
             : null,
+          unklar: e.unklar === true,
         });
     }
   };
@@ -625,6 +629,50 @@ export function postAuftrag(
   };
 }
 
+/* ---------- Wege nach einem Fehler ---------- */
+
+/** Was nach einem Fehler feststeht (Studio: Phase „fehler“). */
+export type FehlerStand = {
+  art: InstagramArt;
+  /** Bilder der ganzen Serie. */
+  anzahl: number;
+  /** So viele sind sicher live (mit denen aus früheren Versuchen). */
+  live: number;
+  /** Ob (mehr) online ist, ist offen. */
+  unklar: boolean;
+};
+
+/**
+ * Welche Wege das Blatt nach einem Fehler anbietet, damit nichts doppelt
+ * rausgeht:
+ * - teil: sicher ist ein Teil live, nicht alles (kein „Nochmal“ für alles).
+ * - rest: „Nur die restlichen posten“ (Stories). Gilt auch, wenn erst der
+ *   letzte Versuch nichts veröffentlicht hat: Was vorher live war, steht
+ *   fest.
+ * - allesLive: unklar, aber laut den Schritten ist schon alles live.
+ * - nochmalAb: Ab hier beginnt ein neuer Versuch nach einem unklaren
+ *   Ergebnis (nach den Stories, die sicher live sind).
+ * - bleibt: Das Ergebnis bleibt beim nächsten Öffnen stehen.
+ */
+export function fehlerWege(f: FehlerStand): {
+  teil: boolean;
+  rest: boolean;
+  allesLive: boolean;
+  nochmalAb: number;
+  bleibt: boolean;
+} {
+  const story = f.art === "story";
+  const teil = !f.unklar && f.live > 0 && f.live < f.anzahl;
+  return {
+    teil,
+    rest: teil && story,
+    allesLive: f.unklar && story && f.live >= f.anzahl,
+    nochmalAb:
+      f.unklar && story ? Math.max(0, Math.min(f.live, f.anzahl - 1)) : 0,
+    bleibt: f.live > 0 || f.unklar,
+  };
+}
+
 /* ---------- Bildunterschrift ---------- */
 
 /** Ein Hashtag: # mit Buchstaben, Ziffern oder _, nicht mitten im Wort. */
@@ -717,11 +765,97 @@ export type PostSpur = {
 /** So viele Spuren merkt sich ein Gerät höchstens. */
 export const SPUREN_MAX = 40;
 
-/** Schlüssel einer Quelle, etwa „serie:2026-11-19:tag“ oder „post:2026-11-19:0“. */
+/**
+ * Schlüssel einer Quelle, etwa „serie:2026-11-19:tag“ oder
+ * „post:2026-11-19:0“. Eine Serie nur auf diesem Gerät (lokal) hat
+ * einen eigenen: lokalSchluessel mit ihrer Kennung auf dem Gerät.
+ */
 export function quelleSchluessel(q: PostQuelle): string {
-  return q.typ === "serie"
-    ? `serie:${q.datum}:${q.id ?? "tag"}`
-    : `post:${q.datum}:${q.platz}`;
+  if (q.typ === "post") return `post:${q.datum}:${q.platz}`;
+  return `serie:${q.datum}:${q.id ?? (q.lokal ? "lokal" : "tag")}`;
+}
+
+/** Schlüssel einer Serie, die nur auf diesem Gerät liegt (Kennung dort). */
+export function lokalSchluessel(datum: string, id: string): string {
+  return `serie:${datum}:lokal:${id}`.slice(0, 120);
+}
+
+/**
+ * Eine Spur aus dem Verlauf auf dem Server (Tabelle instagram_posts), damit
+ * „schon gepostet“ auch auf anderen Geräten und nach dem Neuladen gilt.
+ * Stories mit weniger Kennungen als Bildern zählen als Teil (live: so
+ * viele Kennungen), ganz ohne Kennung als unklar. Solche Spuren warnen
+ * nur; „Nur die restlichen posten“ bietet das Studio allein aus den
+ * genauen Spuren dieses Geräts an.
+ */
+export function spurAusPost(
+  post: {
+    created_at: string;
+    art: InstagramArt;
+    bilder: number;
+    media_ids: readonly string[];
+    links: readonly string[];
+  },
+  schluessel: string,
+): PostSpur {
+  const ids = post.media_ids.length;
+  const ergebnis =
+    post.art !== "story" || ids >= post.bilder
+      ? "gepostet"
+      : ids === 0
+        ? "unklar"
+        : "teil";
+  return {
+    schluessel,
+    art: post.art,
+    anzahl: post.bilder,
+    wann: post.created_at,
+    ergebnis,
+    live: ergebnis === "gepostet" ? post.bilder : ids,
+    links: linksAus([...post.links]),
+  };
+}
+
+/**
+ * Spuren dieses Geräts und vom Server zusammen: je Art die neueste.
+ * gepostet ist true, sobald eine davon „gepostet“ sagt.
+ */
+export function spurenVereint(
+  geraet: readonly PostSpur[],
+  server: readonly PostSpur[],
+): { spuren: PostSpur[]; gepostet: boolean } {
+  const alle = [...geraet, ...server];
+  const spuren: PostSpur[] = [];
+  for (const art of INSTAGRAM_ARTEN) {
+    const neueste = alle
+      .filter((sp) => sp.art === art)
+      .sort((a, b) => Date.parse(b.wann) - Date.parse(a.wann))[0];
+    if (neueste) spuren.push(neueste);
+  }
+  return {
+    spuren,
+    gepostet: alle.some((sp) => sp.ergebnis === "gepostet"),
+  };
+}
+
+/**
+ * „Nur die restlichen posten“ aus einer Spur dieses Geräts: Stories,
+ * zum Teil (oder unklar) live, für genau diese Zahl Bilder. Sonst null.
+ */
+export function restAusSpur(
+  geraet: readonly PostSpur[],
+  anzahl: number,
+): PostSpur | null {
+  return (
+    geraet.find(
+      (sp) =>
+        sp.art === "story" &&
+        (sp.ergebnis === "teil" || sp.ergebnis === "unklar") &&
+        sp.live > 0 &&
+        sp.live < sp.anzahl &&
+        sp.anzahl === anzahl,
+    ) ?? null
+  );
 }
 
 function spurAusWert(wert: unknown): PostSpur | null {

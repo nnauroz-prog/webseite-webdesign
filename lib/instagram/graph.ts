@@ -90,6 +90,8 @@ export class InstagramFehler extends Error {
   readonly voruebergehend: boolean;
   /** Keine Antwort von Instagram (Netz, Zeit überschritten). */
   readonly netz: boolean;
+  /** Ob eine Veröffentlichung trotzdem online ist, weiß niemand. */
+  readonly unklar: boolean;
 
   constructor(
     code: PostFehlerCode,
@@ -101,6 +103,7 @@ export class InstagramFehler extends Error {
       status?: number | null;
       voruebergehend?: boolean;
       netz?: boolean;
+      unklar?: boolean;
     } = {},
   ) {
     // Die Meldung enthält nur Codes: nie Adresse, Schlüssel oder Rohtext.
@@ -116,6 +119,7 @@ export class InstagramFehler extends Error {
     this.status = mehr.status ?? null;
     this.voruebergehend = mehr.voruebergehend ?? false;
     this.netz = mehr.netz ?? false;
+    this.unklar = mehr.unklar ?? false;
   }
 }
 

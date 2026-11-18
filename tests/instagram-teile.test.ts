@@ -21,7 +21,11 @@ import {
   pruefeAuftrag,
   pruefeQuelle,
   TEXT_HASHTAGS,
+  TEXT_QUELLE,
+  TEXT_ZU_ALT,
+  TEXT_ZU_WEIT,
   zaehleHashtags,
+  zeitraumProblem,
 } from "@/lib/instagram/eingabe";
 import {
   FEHLER_TEXT,
@@ -429,6 +433,68 @@ describe("Auftrag prüfen (eingabe.ts)", () => {
       { typ: "serie", datum: HEUTE, id: LAUF },
     );
   });
+
+  it("Tag außerhalb des Zeitraums: eigener Satz statt „Seite neu laden“ (auch fürs Studio)", () => {
+    const auftrag = (datum: string) =>
+      pruefeAuftrag(
+        {
+          art: "story",
+          bilder: [pfad(HEUTE, 1), pfad(HEUTE, 2)],
+          caption: "",
+          quelle: { typ: "serie", datum, id: LAUF },
+        },
+        JETZT,
+      );
+    // Eine gespeicherte Serie vom 10.10. (mehr als 30 Tage zurück).
+    assert.deepEqual(auftrag("2026-10-10"), { ok: false, text: TEXT_ZU_ALT });
+    assert.deepEqual(auftrag("2026-12-03"), { ok: false, text: TEXT_ZU_WEIT });
+    assert.ok(auftrag("2026-10-19").ok);
+    assert.ok(auftrag("2026-12-02").ok);
+    // Unlesbar bleibt unlesbar.
+    assert.deepEqual(
+      pruefeAuftrag(
+        {
+          art: "story",
+          bilder: [pfad(HEUTE, 1)],
+          caption: "",
+          quelle: { typ: "serie", datum: "2026-13-01", id: LAUF },
+        },
+        JETZT,
+      ),
+      { ok: false, text: TEXT_QUELLE },
+    );
+    // Dieselbe Prüfung nutzt das Studio, bevor es etwas zeichnet.
+    assert.equal(zeitraumProblem("2026-10-10", JETZT), TEXT_ZU_ALT);
+    assert.equal(zeitraumProblem("2026-12-03", JETZT), TEXT_ZU_WEIT);
+    assert.equal(zeitraumProblem(HEUTE, JETZT), null);
+    for (const text of [TEXT_ZU_ALT, TEXT_ZU_WEIT]) {
+      assert.doesNotMatch(text, /neu laden|lade die Seite/i);
+      assert.doesNotMatch(text, /\b(Sie|Ihre?n?)\b/);
+    }
+  });
+
+  it("Quelle lokal (Serie nur auf einem Gerät): nur ohne Kennung, getrennt von der Serie des Tages", () => {
+    assert.deepEqual(
+      pruefeQuelle(
+        { typ: "serie", datum: HEUTE, id: null, lokal: true },
+        JETZT,
+      ),
+      { typ: "serie", datum: HEUTE, id: null, lokal: true },
+    );
+    // Ohne lokal: die Serie des Tages.
+    assert.deepEqual(
+      pruefeQuelle({ typ: "serie", datum: HEUTE, id: null, lokal: 1 }, JETZT),
+      { typ: "serie", datum: HEUTE, id: null },
+    );
+    // lokal und Kennung zugleich gibt es nicht.
+    assert.equal(
+      pruefeQuelle(
+        { typ: "serie", datum: HEUTE, id: LAUF, lokal: true },
+        JETZT,
+      ),
+      null,
+    );
+  });
 });
 
 describe("Speicher (bilder.ts)", () => {
@@ -676,6 +742,44 @@ describe("Verlauf der Posts (posts-store.ts)", () => {
     );
   });
 
+  it("Serie des Tages und Serien nur auf einem Gerät zählen getrennt", async () => {
+    const lokal = {
+      typ: "serie",
+      datum: HEUTE,
+      id: null,
+      lokal: true,
+    } as const;
+    const tag = await store.savePost({
+      art: "story",
+      quelle: serie,
+      bilder: 3,
+      media_ids: ["1", "2", "3"],
+      links: [],
+    });
+    // Danach eine Serie nur auf einem Gerät, gleicher Tag, gleiche Art.
+    const geraet = await store.savePost({
+      art: "story",
+      quelle: lokal,
+      bilder: 3,
+      media_ids: ["4", "5", "6"],
+      links: [],
+    });
+    assert.ok(tag && geraet);
+    assert.deepEqual(
+      mock.tables.instagram_posts.find((z) => z.id === geraet)?.quelle,
+      lokal,
+    );
+    assert.equal((await store.lastPostFor(serie, "story"))?.id, tag);
+    assert.equal((await store.lastPostFor(lokal, "story"))?.id, geraet);
+    assert.equal(await store.lastPostFor(serie, "beitrag"), null);
+    // Nur eine lokale Serie gepostet: die Serie des Tages bleibt offen.
+    mock.tables.instagram_posts.splice(
+      mock.tables.instagram_posts.findIndex((z) => z.id === tag),
+      1,
+    );
+    assert.equal(await store.lastPostFor(serie, "story"), null);
+  });
+
   it("ungültige Werte: DbError, bevor etwas gesendet wird", async () => {
     for (const eintrag of [
       { art: "reel", quelle: serie, bilder: 1, media_ids: [], links: [] },
@@ -886,6 +990,55 @@ describe("Instagram: feste Zusagen im Code", () => {
       besuche(sf);
     }
     assert.ok(gefunden >= 4);
+  });
+
+  it(".env.example: jeder INSTAGRAM_*-Schlüssel genau einmal, Rechte wie in der Anleitung", () => {
+    const env = readFileSync(path.join(ROOT, ".env.example"), "utf8");
+    const schluessel = [...env.matchAll(/^#?\s*(INSTAGRAM_[A-Z_]+)=/gm)].map(
+      (m) => m[1],
+    );
+    assert.deepEqual(schluessel.sort(), [
+      "INSTAGRAM_API_VERSION",
+      "INSTAGRAM_GRAPH_URL",
+      "INSTAGRAM_KONTO_ID",
+      "INSTAGRAM_TOKEN",
+    ]);
+    const RECHT =
+      /\b(?:instagram_[a-z_]+|pages_[a-z_]+|business_[a-z_]+|ads_[a-z_]+)\b/g;
+    const rechte = (text: string) => new Set(text.match(RECHT) ?? []);
+    // Die Liste zum Anhaken in docs/instagram-einrichtung.md (Teil 5).
+    const doku = readFileSync(
+      path.join(ROOT, "docs/instagram-einrichtung.md"),
+      "utf8",
+    );
+    const teil5 = doku.slice(doku.indexOf("## Teil 5"));
+    const liste = [
+      ...teil5
+        .slice(0, teil5.indexOf("\n## ", 5))
+        .matchAll(/^\s*- `([a-z_]+)`\s*$/gm),
+    ].map((m) => m[1]);
+    assert.deepEqual(liste, [
+      "instagram_basic",
+      "instagram_content_publish",
+      "pages_show_list",
+      "pages_read_engagement",
+      "business_management",
+    ]);
+    // ads_read nur als Zusatz, ads_management gar nicht (Kommentar zum
+    // Schlüssel, ab „Rechte“).
+    const zumSchluessel = env.slice(0, env.indexOf("\nINSTAGRAM_TOKEN="));
+    assert.deepEqual(
+      [
+        ...rechte(zumSchluessel.slice(zumSchluessel.lastIndexOf("Rechte"))),
+      ].sort(),
+      [...liste, "ads_read"].sort(),
+    );
+    assert.doesNotMatch(env, /ads_management/);
+    const seite = readFileSync(
+      path.join(ROOT, "app/admin/instagram/page.tsx"),
+      "utf8",
+    );
+    for (const recht of liste) assert.ok(seite.includes(recht), recht);
   });
 
   it("die Actions: requireAdmin zuerst, Upload-Plätze nur mit gültiger Anzahl und Art", () => {

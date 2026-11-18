@@ -50,6 +50,7 @@ import {
   captionLaenge,
   captionProblem,
   FEHLER_TEXT,
+  fehlerWege,
   fortschrittMit,
   fortschrittNeu,
   hashtagsIn,
@@ -60,15 +61,18 @@ import {
   postAuftrag,
   postSenden,
   quelleSchluessel,
+  restAusSpur,
   schrittSatz,
   schrittZaehler,
   spurenAus,
   spurenMit,
+  spurenVereint,
   spurSatz,
   STUDIO_SCHRITT_LABEL,
   STUDIO_SCHRITTE,
   WEITER,
 } from "@/lib/admin/instagram-strom";
+import { zeitraumProblem } from "@/lib/instagram/eingabe";
 import {
   BILD_BYTES_MAX,
   CAPTION_MAX,
@@ -96,14 +100,21 @@ import { cn } from "@/lib/utils";
  *    nicht beim Server ist: Danach könnte Instagram schon veröffentlichen.
  * 4. Ergebnis: „Gepostet.“ mit Links, oder der Fehler mit dem nächsten
  *    Schritt. Sind schon Stories live, steht das da, ohne einen blinden
- *    zweiten Versuch (sonst wären sie doppelt).
+ *    zweiten Versuch (sonst wären sie doppelt): Ein neuer Versuch nach
+ *    einem Teil- oder unklaren Ergebnis beginnt nach den Stories, die
+ *    sicher live sind.
  *
  * Was dieses Gerät gepostet hat, merkt es sich (localStorage), damit
- * das Blatt vor einem zweiten Posten derselben Serie warnt.
+ * das Blatt vor einem zweiten Posten derselben Serie warnt; ist nur ein
+ * Teil der Stories live, bietet die Wahl „Nur die restlichen posten“ an,
+ * auch nach dem Schließen oder Zuklappen. Dazu kommen Spuren aus dem
+ * Verlauf auf dem Server (serverSpuren), die auf jedem Gerät warnen.
  */
 
 /** Gerätespeicher für die Spuren (keine Kundendaten). */
 const SPUREN_KEY = "sitalo-instagram-spuren";
+/** Ohne Spuren vom Server (feste Referenz). */
+const KEINE_SPUREN: PostSpur[] = [];
 /** So lange gilt ein gelesener Stand der Verbindung. */
 const STAND_GILT_MS = 60_000;
 
@@ -318,6 +329,8 @@ type Schnappschuss = {
   art: InstagramArt;
   caption: string;
   quelle: PostQuelle;
+  /** Unter diesem Schlüssel merkt sich das Gerät das Ergebnis. */
+  schluessel: string;
 };
 
 type FehlerPhase = {
@@ -340,7 +353,7 @@ type Phase =
       ab: number;
       /** Links der schon veröffentlichten Stories. */
       links: string[];
-      /** Der letzte Versuch endete ohne Antwort (unklar). */
+      /** Beim letzten Versuch blieb offen, ob gepostet wurde (unklar). */
       nachUnklar: boolean;
       /** Zurück führt hierhin (zum Fehler), sonst zur Wahl. */
       vorher: FehlerPhase | null;
@@ -357,6 +370,16 @@ type Phase =
   | FehlerPhase;
 
 const KASTEN = "rounded-[3px] border px-3 py-2 text-[14px] leading-5";
+
+/** Wege nach diesem Fehler (lib/admin/instagram-strom.ts, fehlerWege). */
+function wegeZu(ph: FehlerPhase) {
+  return fehlerWege({
+    art: ph.art,
+    anzahl: ph.anzahl,
+    live: ph.live,
+    unklar: ph.fehler.unklar,
+  });
+}
 
 /** Das Blatt: natives <dialog>, am iPhone unten, ab lg mittig. */
 function Blatt({
@@ -495,6 +518,8 @@ export function InstagramPosten({
   karten,
   versatz,
   quelle,
+  spurSchluessel,
+  serverSpuren = KEINE_SPUREN,
   caption: captionVorlage,
   start = "story",
   serie = false,
@@ -507,6 +532,13 @@ export function InstagramPosten({
   /** „Anderes Design“, wie es gerade zu sehen ist (0: Design des Tages). */
   versatz: number;
   quelle: PostQuelle;
+  /**
+   * Eigener Schlüssel für die Spuren dieses Geräts (Serie nur auf diesem
+   * Gerät), sonst quelleSchluessel(quelle).
+   */
+  spurSchluessel?: string;
+  /** Was der Verlauf auf dem Server zu dieser Quelle kennt (spurAusPost). */
+  serverSpuren?: PostSpur[];
   /** Vorlage für die Bildunterschrift eines Beitrags. */
   caption: string;
   /** Art beim Öffnen. */
@@ -530,8 +562,11 @@ export function InstagramPosten({
     stand: InstagramStand | null;
     laedt: boolean;
   }>({ stand: null, laedt: true });
-  const schluessel = quelleSchluessel(quelle);
+  const schluessel = spurSchluessel ?? quelleSchluessel(quelle);
+  /** Spuren dieses Geräts zu dieser Quelle. */
   const [spuren, setSpuren] = useState<PostSpur[]>([]);
+  /** Liegt der Tag außerhalb dessen, was sich posten lässt (beim Öffnen geprüft)? */
+  const [zeitraum, setZeitraum] = useState<string | null>(null);
   const [schnapp, setSchnapp] = useState<Schnappschuss | null>(null);
   /** Läuft ein Auftrag (gegen doppeltes Tippen, auch vor dem nächsten Zeichnen). */
   const laeuft = useRef(false);
@@ -599,7 +634,7 @@ export function InstagramPosten({
       if (live > 0 || ausgang.unklar)
         setSpuren(
           spurMerken({
-            schluessel: quelleSchluessel(s.quelle),
+            schluessel: s.schluessel,
             art: s.art,
             anzahl: alle,
             wann: new Date().toISOString(),
@@ -683,7 +718,7 @@ export function InstagramPosten({
       standCache = null;
       setSpuren(
         spurMerken({
-          schluessel: quelleSchluessel(s.quelle),
+          schluessel: s.schluessel,
           art: s.art,
           anzahl: alle,
           wann: new Date().toISOString(),
@@ -712,12 +747,16 @@ export function InstagramPosten({
     // Vor dem Senden: Schließen bricht ab.
     if (phase.p === "laeuft" && !phase.gesendet) abbruch.current?.abort();
     // Ein fertiges Ergebnis oder ein einfacher Fehler beginnt beim
-    // nächsten Öffnen neu; ein Teil-Ergebnis bleibt stehen.
-    if (
-      phase.p === "fertig" ||
-      phase.p === "frage" ||
-      (phase.p === "fehler" && phase.live === 0 && !phase.fehler.unklar)
-    )
+    // nächsten Öffnen neu; ein Teil- oder unklares Ergebnis bleibt
+    // stehen, auch wenn das Blatt schon bei der Frage danach war (etwa
+    // „Nur die restlichen posten“, zum Nachsehen in Instagram geschlossen).
+    if (phase.p === "frage")
+      setPhase(
+        phase.vorher && wegeZu(phase.vorher).bleibt
+          ? phase.vorher
+          : { p: "wahl", notiz: null },
+      );
+    if (phase.p === "fertig" || (phase.p === "fehler" && !wegeZu(phase).bleibt))
       setPhase({ p: "wahl", notiz: null });
     if (phase.p === "wahl" && phase.notiz) setPhase({ p: "wahl", notiz: null });
   };
@@ -729,6 +768,7 @@ export function InstagramPosten({
   const brauchtPlaetze = art === "story" ? anzahl : 1;
   const frei = kontingentFrei(st);
   const problem =
+    zeitraum ??
     auftragProblem(art, anzahl) ??
     (art === "beitrag" ? captionProblem(caption) : null) ??
     (frei !== null && frei < brauchtPlaetze
@@ -752,15 +792,30 @@ export function InstagramPosten({
                 : "Nicht gepostet."
             : "Auf Instagram posten";
 
-  const gepostet = spuren.some((sp) => sp.ergebnis === "gepostet");
+  const vereint = spurenVereint(spuren, serverSpuren);
+  const gepostet = vereint.gepostet;
+  /** Stories zum Teil live (laut diesem Gerät): nur den Rest anbieten. */
+  const rest = art === "story" ? restAusSpur(spuren, anzahl) : null;
   const sendet = phase.p === "laeuft";
   const s = schnapp;
+  const schnappen = () =>
+    setSchnapp({
+      karten: [...karten],
+      versatz,
+      art,
+      caption: art === "beitrag" ? caption : "",
+      quelle,
+      schluessel,
+    });
 
   return (
     <>
       <button
         type="button"
-        onClick={() => setOffen(true)}
+        onClick={() => {
+          setZeitraum(zeitraumProblem(quelle.datum, new Date()));
+          setOffen(true);
+        }}
         disabled={gesperrt && !sendet}
         aria-haspopup="dialog"
         className={cn(gepostet && !sendet ? HELL : DUNKEL, "px-3", className)}
@@ -859,7 +914,7 @@ export function InstagramPosten({
                   </div>
                 ) : (
                   <>
-                    {spuren.map((sp) => (
+                    {vereint.spuren.map((sp) => (
                       <p
                         key={sp.art}
                         className={cn(KASTEN, "border-gold mt-2 font-medium")}
@@ -949,29 +1004,48 @@ export function InstagramPosten({
                         {problem}
                       </p>
                     ) : null}
-                    <button
-                      type="button"
-                      disabled={problem !== null}
-                      onClick={() => {
-                        setSchnapp({
-                          karten: [...karten],
-                          versatz,
-                          art,
-                          caption: art === "beitrag" ? caption : "",
-                          quelle,
-                        });
-                        wechsel({
-                          p: "frage",
-                          ab: 0,
-                          links: [],
-                          nachUnklar: false,
-                          vorher: null,
-                        });
-                      }}
-                      className={cn(DUNKEL, "mt-3 w-full sm:w-auto sm:px-6")}
-                    >
-                      Weiter
-                    </button>
+                    <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                      {rest ? (
+                        <button
+                          type="button"
+                          disabled={problem !== null}
+                          onClick={() => {
+                            schnappen();
+                            wechsel({
+                              p: "frage",
+                              ab: rest.live,
+                              links: rest.links,
+                              nachUnklar: rest.ergebnis === "unklar",
+                              vorher: null,
+                            });
+                          }}
+                          className={cn(DUNKEL, "w-full sm:w-auto sm:px-6")}
+                        >
+                          <Send className="h-4 w-4" aria-hidden="true" />
+                          {`Nur die restlichen posten (${storyBereich(rest.live + 1, anzahl)})`}
+                        </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        disabled={problem !== null}
+                        onClick={() => {
+                          schnappen();
+                          wechsel({
+                            p: "frage",
+                            ab: 0,
+                            links: [],
+                            nachUnklar: false,
+                            vorher: null,
+                          });
+                        }}
+                        className={cn(
+                          rest ? HELL : DUNKEL,
+                          "w-full sm:w-auto sm:px-6",
+                        )}
+                      >
+                        {rest ? "Alle noch einmal posten" : "Weiter"}
+                      </button>
+                    </div>
                     <p
                       role="status"
                       className="text-muted-foreground mt-2 min-h-5 text-[14px]"
@@ -1024,12 +1098,12 @@ export function InstagramPosten({
                 ) : null}
                 {phase.nachUnklar ? (
                   <p className={cn(KASTEN, "border-gold mt-3 font-medium")}>
-                    Beim letzten Versuch ist die Verbindung abgerissen. Schau
-                    vorher in Instagram nach, ob schon etwas gepostet ist.
+                    Beim letzten Versuch blieb offen, ob alles gepostet wurde.
+                    Schau vorher in Instagram nach, was schon zu sehen ist.
                   </p>
                 ) : null}
                 {phase.ab === 0 && !phase.nachUnklar
-                  ? spuren.map((sp) => (
+                  ? vereint.spuren.map((sp) => (
                       <p
                         key={sp.art}
                         className={cn(KASTEN, "border-gold mt-3 font-medium")}
@@ -1188,15 +1262,18 @@ export function InstagramPosten({
                     vorher: phase,
                   })
                 }
-                onNochmal={(nachUnklar) =>
+                onNochmal={(nachUnklar) => {
+                  // Nach einem unklaren Ergebnis beginnt der neue Versuch
+                  // nach den Stories, die sicher live sind.
+                  const ab = nachUnklar ? wegeZu(phase).nochmalAb : 0;
                   wechsel({
                     p: "frage",
-                    ab: 0,
-                    links: [],
+                    ab,
+                    links: ab > 0 ? phase.links : [],
                     nachUnklar,
                     vorher: phase,
-                  })
-                }
+                  });
+                }}
                 onZurueck={() => wechsel({ p: "wahl", notiz: null })}
                 onZu={() => setOffen(false)}
               />
@@ -1225,9 +1302,8 @@ function FehlerAnsicht({
 }) {
   const { fehler: f, live, anzahl, art, links } = phase;
   const weiter = WEITER[f.code];
-  /** Sicher bekannt, was live ist (aus der Fehlerzeile), aber nicht alles. */
-  const teil = !f.unklar && live > 0 && live < anzahl;
-  const restMoeglich = teil && art === "story" && f.teil !== null;
+  /** teil: sicher ist ein Teil live; rest: nur die restlichen anbieten. */
+  const { teil, rest: restMoeglich, allesLive } = wegeZu(phase);
   const profil = konto ? `https://www.instagram.com/${konto}/` : null;
   const knopf = cn(DUNKEL, "w-full sm:w-auto sm:px-5");
   const leise = cn(HELL, "w-full sm:w-auto sm:px-5");
@@ -1318,13 +1394,15 @@ function FehlerAnsicht({
             Zurück zur Auswahl
           </button>
         ) : null}
-        {f.unklar ? (
+        {f.unklar && !allesLive ? (
           <button
             type="button"
             onClick={() => onNochmal(true)}
             className={leise}
           >
-            Trotzdem noch einmal posten
+            {art === "story" && live > 0
+              ? "Die restlichen trotzdem posten"
+              : "Trotzdem noch einmal posten"}
           </button>
         ) : null}
         <button

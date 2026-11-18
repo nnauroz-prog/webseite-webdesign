@@ -16,6 +16,7 @@ import ts from "typescript";
 
 import type { PostAuftrag, PostEreignis } from "@/lib/instagram/vertrag";
 
+import { fehlerWege, postSenden } from "@/lib/admin/instagram-strom";
 import { ndjsonAntwortAus } from "@/lib/ndjson-strom";
 import {
   INSTAGRAM_BUCKET,
@@ -159,6 +160,56 @@ function logsSauber() {
   assert.ok(!/https?:\/\//.test(text), text);
   assert.ok(!text.includes("token="), text);
   assert.ok(!text.includes(HEUTE), text);
+}
+
+/**
+ * Instagram veröffentlicht ab der ab-ten Veröffentlichung, aber die
+ * Antwort kommt nie an (Verbindung reißt), und die Nachfrage nach dem
+ * Stand des Containers danach auch nicht.
+ */
+function antwortGehtVerloren(ab = 1) {
+  let n = 0;
+  let verloren = false;
+  g.beiJederAnfrage((a) => {
+    if (a.pfad !== `${KONTO_ID}/media_publish`) return;
+    n += 1;
+    if (n < ab) return;
+    verloren = true;
+    const c = g.container.get(String(a.body?.creation_id));
+    if (c && !c.veroeffentlicht) {
+      c.veroeffentlicht = true;
+      c.folge = ["PUBLISHED"];
+      const id = `18009${String(n).padStart(5, "0")}`;
+      g.medien.set(id, {
+        id,
+        container: c.id,
+        story: c.parameter.media_type === "STORIES",
+      });
+    }
+  });
+  g.regel({
+    wenn: (a) => verloren && a.pfad === `${KONTO_ID}/media_publish`,
+    antwort: "netz",
+  });
+  g.regel({
+    wenn: (a) => verloren && a.methode === "GET" && g.container.has(a.pfad),
+    antwort: "netz",
+  });
+}
+
+/** Liest Zeilen des Servers so, wie das Studio sie liest (postSenden). */
+async function wieDasStudio(ereignisse: PostEreignis[]) {
+  const text = ereignisse.map((e) => `${JSON.stringify(e)}\n`).join("");
+  return postSenden(
+    { art: "story", bilder: [], caption: "", quelle: SERIE_HEUTE },
+    {
+      holen: async () =>
+        new Response(text, {
+          status: 200,
+          headers: { "content-type": INSTAGRAM_INHALTSTYP },
+        }),
+    },
+  );
 }
 
 const letzte = (s: ReturnType<typeof sammler>) => {
@@ -644,6 +695,136 @@ describe("Fehler von Instagram im Ablauf", () => {
     assert.match(fehler.text, /2 Stories von 4 sind schon online/);
     // Was online ist, steht im Verlauf.
     assert.equal(mock.tables.instagram_posts[0].media_ids.length, 2);
+  });
+});
+
+describe("Veröffentlichen ohne Antwort (unklar)", () => {
+  it("Beitrag: Verbindung reißt beim Veröffentlichen und bei der Nachfrage: „unklar“, kein zweiter Versuch", async () => {
+    antwortGehtVerloren();
+    const pfade = await hochladen(1);
+    const s = await poste({
+      art: "beitrag",
+      bilder: pfade,
+      caption: "Hallo",
+      quelle: { typ: "post", datum: HEUTE, platz: 1 },
+    });
+    const fehler = letzte(s);
+    assert.ok(fehler.typ === "fehler");
+    assert.equal(fehler.code, "instagram");
+    assert.equal(fehler.unklar, true);
+    assert.equal(fehler.teil, undefined);
+    assert.match(fehler.text, /Ob der Beitrag online ist, ist unklar/);
+    assert.doesNotMatch(fehler.text, /\b(Sie|Ihre?n?)\b/);
+    // Bei Meta ist er online, der Server hat es nicht blind wiederholt.
+    assert.equal(g.medien.size, 1);
+    assert.equal(g.an(`${KONTO_ID}/media_publish`).length, 1);
+    // Nichts als gepostet abgehakt, nichts sicher im Verlauf.
+    assert.equal(mock.tables.post_status.length, 0);
+    assert.equal(mock.tables.instagram_posts.length, 0);
+    assert.equal(mock.objects.size, 0);
+    logsSauber();
+
+    // Das Studio zeigt „unklar“ (Schau in Instagram nach), nicht „Nochmal“.
+    const aus = await wieDasStudio(s.ereignisse);
+    assert.ok(aus.art === "fehler");
+    assert.equal(aus.unklar, true);
+    assert.equal(aus.teil, null);
+    const wege = fehlerWege({
+      art: "beitrag",
+      anzahl: 1,
+      live: 0,
+      unklar: aus.unklar,
+    });
+    assert.equal(wege.bleibt, true);
+    assert.equal(wege.teil, false);
+  });
+
+  it("vier Stories, die dritte ohne Antwort: „unklar“ mit den zwei sicheren in teil, keine vierte", async () => {
+    antwortGehtVerloren(3);
+    const pfade = await hochladen(4);
+    const s = await poste({
+      art: "story",
+      bilder: pfade,
+      caption: "",
+      quelle: SERIE_HEUTE,
+    });
+    const fehler = letzte(s);
+    assert.ok(fehler.typ === "fehler");
+    assert.equal(fehler.unklar, true);
+    assert.deepEqual(
+      { veroeffentlicht: fehler.teil?.veroeffentlicht, von: fehler.teil?.von },
+      { veroeffentlicht: 2, von: 4 },
+    );
+    assert.equal(fehler.teil?.links.length, 2);
+    assert.match(fehler.text, /Ob Story 3 online ist, ist unklar/);
+    assert.match(fehler.text, /2 Stories von 4 sind sicher online/);
+    // Story 3 ist bei Meta online; Story 4 ging nicht mehr raus.
+    assert.equal(g.medien.size, 3);
+    assert.equal(g.an(`${KONTO_ID}/media_publish`).length, 3);
+    // Die zwei sicheren stehen im Verlauf (als Teil).
+    assert.equal(mock.tables.instagram_posts.length, 1);
+    assert.equal(mock.tables.instagram_posts[0].media_ids.length, 2);
+    assert.equal(mock.tables.instagram_posts[0].bilder, 4);
+
+    // Im Studio: unklar, ein neuer Versuch beginnt nach Story 2.
+    const aus = await wieDasStudio(s.ereignisse);
+    assert.ok(aus.art === "fehler");
+    assert.equal(aus.unklar, true);
+    assert.equal(aus.teil?.veroeffentlicht, 2);
+    const wege = fehlerWege({
+      art: "story",
+      anzahl: 4,
+      live: aus.teil?.veroeffentlicht ?? 0,
+      unklar: aus.unklar,
+    });
+    assert.equal(wege.nochmalAb, 2);
+    assert.equal(wege.rest, false);
+    assert.equal(wege.allesLive, false);
+  });
+
+  it("Antwort ohne Kennung und keine Antwort auf die Nachfrage: „unklar“ statt „nicht gepostet“", async () => {
+    let verloren = false;
+    g.regel({
+      wenn: (a) => {
+        if (a.pfad !== `${KONTO_ID}/media_publish`) return false;
+        verloren = true;
+        return true;
+      },
+      antwort: { status: 200, body: {} },
+    });
+    g.regel({
+      wenn: (a) => verloren && a.methode === "GET" && g.container.has(a.pfad),
+      antwort: "netz",
+    });
+    const pfade = await hochladen(1);
+    const s = await poste({
+      art: "story",
+      bilder: pfade,
+      caption: "",
+      quelle: SERIE_HEUTE,
+    });
+    const fehler = letzte(s);
+    assert.ok(fehler.typ === "fehler");
+    assert.equal(fehler.unklar, true);
+    assert.match(fehler.text, /Ob die Story online ist, ist unklar/);
+    assert.equal(g.an(`${KONTO_ID}/media_publish`).length, 1);
+  });
+
+  it("Nachfrage klappt und der Container ist noch nicht online: kein „unklar“", async () => {
+    g.regel({
+      wenn: (a) => a.pfad === `${KONTO_ID}/media_publish`,
+      antwort: graphFehler(25, 2207050),
+    });
+    const pfade = await hochladen(1);
+    const s = await poste({
+      art: "beitrag",
+      bilder: pfade,
+      caption: "",
+      quelle: SERIE_HEUTE,
+    });
+    const fehler = letzte(s);
+    assert.ok(fehler.typ === "fehler");
+    assert.equal(fehler.unklar, undefined);
   });
 });
 
