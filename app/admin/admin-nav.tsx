@@ -35,7 +35,7 @@ const BEREICHE: readonly Bereich[] = [
     href: "/admin/posts",
     label: "Posts",
     icon: Images,
-    pfade: ["/admin/posts", "/admin/story"],
+    pfade: ["/admin/posts", "/admin/story", "/admin/instagram"],
   },
   {
     href: "/admin/zahlen",

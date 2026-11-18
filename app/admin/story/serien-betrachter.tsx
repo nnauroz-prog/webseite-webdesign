@@ -10,18 +10,20 @@ import {
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
+import type { InstagramArt, PostQuelle } from "@/lib/instagram/vertrag";
 import type { StorySerie } from "@/lib/story-serie";
 
 import {
   BildUndVideo,
   dateiSichern,
-  DUNKEL,
   HELL,
   kannTeilen,
   standbildDatei,
   useKartenBuehne,
   Vorschau,
 } from "@/app/admin/story/buehne";
+import { InstagramPosten } from "@/app/admin/story/instagram-posten";
+import { serieAlsCaption } from "@/lib/admin/instagram-strom";
 import { safeHttpUrl } from "@/lib/admin/links";
 import {
   bilderText,
@@ -42,6 +44,9 @@ import { cn } from "@/lib/utils";
  *   derselben Bühne wie die einzelnen Posts (buehne.tsx).
  * - Anderes Design gilt für alle Bilder der Serie zugleich, damit sie
  *   wie aus einem Guss bleibt.
+ * - Auf Instagram posten schickt die ganze Serie direkt raus, als Stories
+ *   oder als Karussell (instagram-posten.tsx), mit dem Design, das gerade
+ *   zu sehen ist.
  * - Alle Bilder teilen gibt die ganze Serie an das Teilen-Blatt (am
  *   Rechner werden die Bilder nacheinander gesichert). Je Bild gibt es
  *   Teilen, Sichern und das Kurzvideo.
@@ -50,10 +55,16 @@ import { cn } from "@/lib/utils";
 export function SerienBetrachter({
   serie,
   datum,
+  postQuelle,
+  onGepostet,
 }: {
   serie: StorySerie;
   /** Kalendertag (yyyy-mm-dd), für den die Serie gedacht ist. */
   datum: string;
+  /** Woher die Serie stammt (Serie des Tages oder Auftrag), fürs Posten. */
+  postQuelle: PostQuelle;
+  /** Die Serie ist auf Instagram (ganz): als gepostet zeigen. */
+  onGepostet?: (art: InstagramArt) => void;
 }) {
   const kennung = useId();
   // Am Inhalt hängen, nicht am Objekt: Lädt die Seite ihre Daten neu,
@@ -268,11 +279,21 @@ export function SerienBetrachter({
             Ganze Serie
           </h4>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+            <InstagramPosten
+              karten={karten}
+              versatz={versatz}
+              quelle={postQuelle}
+              caption={serieAlsCaption(serie)}
+              serie
+              gesperrt={beschaeftigt || packt}
+              className="col-span-2"
+              onGepostet={(_, art) => onGepostet?.(art)}
+            />
             <button
               type="button"
               onClick={alleTeilen}
               disabled={!frei || packt}
-              className={cn(DUNKEL, "px-3")}
+              className={cn(HELL, "px-3")}
             >
               {packt ? (
                 <Loader2
@@ -300,10 +321,11 @@ export function SerienBetrachter({
             {meldung}
           </p>
           <p className="text-muted-foreground text-[14px] leading-5">
-            So postest du die Serie: „Alle Bilder teilen“ antippen und im
-            Teilen-Menü die Bilder sichern. Dann in Instagram eine neue Story
-            anlegen, „Auswählen“ antippen und die Bilder in der Reihenfolge 1
-            bis {von} markieren.
+            Am schnellsten: „Auf Instagram posten“, dann geht die Serie direkt
+            raus. Von Hand: „Alle Bilder teilen“ antippen und im Teilen-Menü die
+            Bilder sichern. Dann in Instagram eine neue Story anlegen,
+            „Auswählen“ antippen und die Bilder in der Reihenfolge 1 bis {von}{" "}
+            markieren.
           </p>
 
           <div className="border-border mt-4 border-t pt-4">

@@ -270,7 +270,21 @@ function AuftragKarte({
       offen={offen}
       onToggle={onToggle}
     >
-      <SerienBetrachter serie={zeile.serie} datum={zeile.datum} />
+      <SerienBetrachter
+        serie={zeile.serie}
+        datum={zeile.datum}
+        // Serien nur auf diesem Gerät schicken ihre Kennung „geraet-…“
+        // mit. Der Vertrag kennt dafür keine eigene Form; in der
+        // Datenbank gibt es sie nicht, abgehakt wird hier (lokal).
+        postQuelle={{ typ: "serie", datum: zeile.datum, id: zeile.id }}
+        onGepostet={() => {
+          setMeldung({ art: "ok", text: "Auf Instagram gepostet." });
+          // Nur dieses Gerät kennt die Serie: hier abhaken. Sonst hakt
+          // der Server sie ab, die Seite lädt den Stand neu.
+          if (lokal) onLokalGepostet(zeile, true);
+          else router.refresh();
+        }}
+      />
       <div className="border-border mt-4 border-t pt-4">
         {fragt ? (
           <div
@@ -395,6 +409,8 @@ export function SerienStudio({
   const [neu, setNeu] = useState<SerieZeile | null>(null);
   /** In der Datenbank gelöscht, aber die Seite hat noch den alten Stand. */
   const [weg, setWeg] = useState<string[]>([]);
+  /** Die Serie des Tages ging eben auf Instagram (bis zum Neuladen). */
+  const [tagGepostet, setTagGepostet] = useState(false);
   const [offen, setOffen] = useState<string | null>(() =>
     start
       ? start.art === "id"
@@ -556,10 +572,25 @@ export function SerienStudio({
             domId={`serie-${TAG}`}
             titel={tagesSerie.titel}
             meta={`${tagKurz(tag)} · ${bilderText(tagesSerie.folien.length)} · vom Morgenlauf`}
+            marken={
+              tagGepostet ? (
+                <span className={cn(PILLE, "bg-ink-petrol/15 text-ink-petrol")}>
+                  gepostet
+                </span>
+              ) : null
+            }
             offen={offen === TAG}
             onToggle={() => umschalten(TAG)}
           >
-            <SerienBetrachter serie={tagesSerie} datum={tag} />
+            <SerienBetrachter
+              serie={tagesSerie}
+              datum={tag}
+              postQuelle={{ typ: "serie", datum: tag, id: null }}
+              onGepostet={() => {
+                setTagGepostet(true);
+                router.refresh();
+              }}
+            />
           </Klappe>
         ) : (
           <p className={LEER}>

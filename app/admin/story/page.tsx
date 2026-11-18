@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { GepostetEintrag } from "@/app/admin/story/story-studio";
 import type { SerieZeile } from "@/lib/serien-store";
 
+import { InstagramZeile } from "@/app/admin/story/instagram-posten";
 import { SerienStudio } from "@/app/admin/story/serien-studio";
 import { StoryStudio } from "@/app/admin/story/story-studio";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -96,8 +97,10 @@ const WOCHENTAG = new Intl.DateTimeFormat("de-DE", {
  *   Zusatz-Posts) als fertige Bilder und Kurzvideos für Instagram, als
  *   Story (1080 × 1920) oder Beitrag (1080 × 1350).
  *
- * Nur hier gibt es Teilen, Sichern und den Beitragstext; auf der
- * öffentlichen Journalseite steht die Karte ohne diese Knöpfe.
+ * Nur hier gibt es Teilen, Sichern, den Beitragstext und „Auf Instagram
+ * posten“; auf der öffentlichen Journalseite steht die Karte ohne diese
+ * Knöpfe. Die Zeile unter den Tagen zeigt die Verbindung zu Instagram
+ * (/admin/instagram).
  *
  * ?tag=yyyy-mm-dd wählt den Tag, ?post=0|1|2 den Post (etwa aus dem
  * Post-Planer „Im Studio öffnen“), ?serie= klappt eine Serie auf: „tag“
@@ -180,13 +183,18 @@ export default async function StoryPage({
           );
         })}
       </nav>
-      {tag !== heute ? (
-        <p className="mt-2 text-[14px]">
-          <Link href="/admin/story" className="underline underline-offset-2">
+      <div className="mt-1 flex flex-wrap items-center justify-between gap-x-4">
+        {tag !== heute ? (
+          <Link
+            href="/admin/story"
+            className="inline-flex min-h-11 items-center text-[14px] underline underline-offset-2"
+          >
             Zurück zu heute
           </Link>
-        </p>
-      ) : null}
+        ) : null}
+        {/* Stand der Verbindung zu Instagram, führt zu /admin/instagram. */}
+        <InstagramZeile />
+      </div>
 
       <SerienStudio
         // Neuer Tag oder eine andere verlinkte Serie: Auftrag, Auswahl und
