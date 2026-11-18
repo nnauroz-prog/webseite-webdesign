@@ -253,12 +253,13 @@ function fehlerAus(
 /** Holt Upload-Plätze und lädt die Bilder hoch; Pfade in Reihenfolge. */
 async function hochladen(
   dateien: File[],
+  art: InstagramArt,
   signal: AbortSignal,
   aufBild: (nr: number) => void,
 ): Promise<{ ok: true; pfade: string[] } | { ok: false; fehler: Fehler }> {
   let antwort: UploadAntwort;
   try {
-    antwort = await instagramUploadAction(dateien.length);
+    antwort = await instagramUploadAction(dateien.length, art);
   } catch (err) {
     return {
       ok: false,
@@ -663,7 +664,7 @@ export function InstagramPosten({
       // 2. Hochladen in den Speicher (direkt, nicht über Vercel).
       if (stopp.signal.aborted) return abgebrochen();
       fort({ schritt: "hochladen", stand: "laeuft", nr: 1, von });
-      const hoch = await hochladen(dateien, stopp.signal, (nr) =>
+      const hoch = await hochladen(dateien, s.art, stopp.signal, (nr) =>
         fort({ schritt: "hochladen", stand: "laeuft", nr, von }),
       );
       if (stopp.signal.aborted) return abgebrochen();

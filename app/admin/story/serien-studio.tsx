@@ -273,10 +273,14 @@ function AuftragKarte({
       <SerienBetrachter
         serie={zeile.serie}
         datum={zeile.datum}
-        // Serien nur auf diesem Gerät schicken ihre Kennung „geraet-…“
-        // mit. Der Vertrag kennt dafür keine eigene Form; in der
-        // Datenbank gibt es sie nicht, abgehakt wird hier (lokal).
-        postQuelle={{ typ: "serie", datum: zeile.datum, id: zeile.id }}
+        // Serien nur auf diesem Gerät gibt es in der Datenbank nicht: Sie
+        // gehen ohne Kennung (id null) an den Server, der dann nichts
+        // abhakt; abgehakt wird hier (lokal).
+        postQuelle={{
+          typ: "serie",
+          datum: zeile.datum,
+          id: lokal ? null : zeile.id,
+        }}
         onGepostet={() => {
           setMeldung({ art: "ok", text: "Auf Instagram gepostet." });
           // Nur dieses Gerät kennt die Serie: hier abhaken. Sonst hakt

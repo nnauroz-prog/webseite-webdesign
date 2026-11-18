@@ -4,11 +4,19 @@ import { CircleCheck, ExternalLink, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
 
-import type { InstagramArt, InstagramStand } from "@/lib/instagram/vertrag";
+import type {
+  InstagramArt,
+  InstagramStand,
+  PostQuelle,
+} from "@/lib/instagram/vertrag";
 
 import { instagramStandAction } from "@/app/admin/instagram-actions";
 import { requireAdmin } from "@/lib/admin/auth";
 import { artText, wannText } from "@/lib/admin/instagram-strom";
+import { safeHttpUrl } from "@/lib/admin/links";
+import { listPosts } from "@/lib/instagram/posts-store";
+import { serieFuer } from "@/lib/serien-aktuell";
+import { postsFuer } from "@/lib/sprueche-aktuell";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Instagram" };
@@ -43,13 +51,36 @@ async function standLesen(): Promise<InstagramStand | null> {
   }
 }
 
+/** Titel einer Serie oder Satz eines Posts zu einer Quelle, soweit bekannt. */
+function titelZu(quelle: PostQuelle): string {
+  if (quelle.typ === "post") {
+    const karte = postsFuer(quelle.datum)[quelle.platz];
+    return karte ? karte.text : "Post des Tages";
+  }
+  if (quelle.id === null)
+    return serieFuer(quelle.datum)?.titel ?? "Story-Serie";
+  return "Story-Serie aus einem Auftrag";
+}
+
 /**
- * Die letzten Posts aus dem Studio. INTEGRATION (S1): Sobald der
- * Speicher der Posts steht (Datenbank-Update „Posten auf Instagram“),
- * hier dessen Zeilen einsetzen. Bis dahin gibt es keine.
+ * Die letzten Posts aus dem Studio (Tabelle instagram_posts). Ohne das
+ * Datenbank-Update „Posten auf Instagram“ gibt es keine Liste.
  */
 async function letztePosts(): Promise<LetzterPost[]> {
-  return [];
+  try {
+    const zeilen = await listPosts(10);
+    return (zeilen ?? []).map((z) => ({
+      id: z.id,
+      wann: z.created_at,
+      art: z.art,
+      anzahl: z.bilder,
+      titel: titelZu(z.quelle),
+      link: z.links.map((l) => safeHttpUrl(l)).find(Boolean) ?? null,
+    }));
+  } catch (err) {
+    unstable_rethrow(err);
+    return [];
+  }
 }
 
 /** Die Einrichtung in fünf Schritten; die ganze Anleitung steht in docs/instagram-einrichtung.md. */
@@ -70,7 +101,8 @@ function Einrichtung({ speicherFehlt }: { speicherFehlt: boolean }) {
           nicht abläuft. Rechte: <span className={CODE}>instagram_basic</span>,{" "}
           <span className={CODE}>instagram_content_publish</span>,{" "}
           <span className={CODE}>pages_show_list</span>,{" "}
-          <span className={CODE}>pages_read_engagement</span>.
+          <span className={CODE}>pages_read_engagement</span>,{" "}
+          <span className={CODE}>business_management</span>.
         </li>
         <li className={schritt}>
           In <strong className="font-semibold">Vercel</strong> unter Settings →
