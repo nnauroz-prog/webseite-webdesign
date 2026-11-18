@@ -559,16 +559,21 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     const typ = String(req.headers["content-type"] ?? "");
     if (!typ.startsWith("multipart/form-data"))
       return { bytes: buf, contentType: typ.split(";")[0].trim() };
-    // Grob: erster Teil mit Dateiinhalt, Inhaltstyp aus dessen Kopf.
+    // Grob: der Teil mit Dateinamen (supabase-js schickt davor
+    // cacheControl); Inhaltstyp aus dessen Kopf, wie Supabase Storage.
     const text = buf.toString("latin1");
-    const kopfEnde = text.indexOf("\r\n\r\n");
-    const kopf = kopfEnde >= 0 ? text.slice(0, kopfEnde) : "";
-    const ct = /content-type:\s*([^\r\n;]+)/i.exec(kopf)?.[1]?.trim() ?? "";
-    const grenze = /boundary=([^;]+)/.exec(typ)?.[1] ?? "";
-    let inhalt = kopfEnde >= 0 ? text.slice(kopfEnde + 4) : text;
-    const ende = grenze ? inhalt.indexOf(`\r\n--${grenze}`) : -1;
-    if (ende >= 0) inhalt = inhalt.slice(0, ende);
-    return { bytes: Buffer.from(inhalt, "latin1"), contentType: ct };
+    const grenze = /boundary=([^;]+)/.exec(typ)?.[1]?.replace(/^"|"$/g, "");
+    const teile = grenze ? text.split(`--${grenze}`) : [text];
+    for (const teil of teile) {
+      const kopfEnde = teil.indexOf("\r\n\r\n");
+      if (kopfEnde < 0) continue;
+      const kopf = teil.slice(0, kopfEnde);
+      if (!/filename=/i.test(kopf)) continue;
+      const ct = /content-type:\s*([^\r\n;]+)/i.exec(kopf)?.[1]?.trim() ?? "";
+      const inhalt = teil.slice(kopfEnde + 4).replace(/\r\n$/, "");
+      return { bytes: Buffer.from(inhalt, "latin1"), contentType: ct };
+    }
+    return { bytes: Buffer.alloc(0), contentType: "" };
   }
 
   function handleStorage(req, url, buf) {

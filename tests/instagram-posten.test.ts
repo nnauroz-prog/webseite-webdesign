@@ -204,7 +204,9 @@ describe("Story-Serie als Stories", () => {
       ids.map((id) => ({ creation_id: id })),
     );
     // Alle Container waren fertig, bevor die erste Story online ging.
-    const erstePub = g.anfragen.findIndex((a) => a.pfad.endsWith("media_publish"));
+    const erstePub = g.anfragen.findIndex((a) =>
+      a.pfad.endsWith("media_publish"),
+    );
     const letzterContainer = g.anfragen.findLastIndex(
       (a) => a.pfad === `${KONTO_ID}/media`,
     );
@@ -372,7 +374,8 @@ describe("Warten auf die Container", () => {
 
   it("ERROR: Fehler „bild“, nichts veröffentlicht, Bilder gelöscht", async () => {
     g.stelle({
-      folge: (p) => (String(p.image_url).includes("-2.jpg") ? ["ERROR"] : ["FINISHED"]),
+      folge: (p) =>
+        String(p.image_url).includes("-2.jpg") ? ["ERROR"] : ["FINISHED"],
     });
     const pfade = await hochladen(3);
     const s = await poste({
@@ -428,6 +431,7 @@ describe("Fehler von Instagram im Ablauf", () => {
     // Geloggt: nur Codes und fbtrace.
     assert.equal(logs.length, 1);
     assert.deepEqual(logs[0][1], {
+      wo: "posten",
       code: "zugang",
       graph: 190,
       subcode: 463,
@@ -506,7 +510,10 @@ describe("Fehler von Instagram im Ablauf", () => {
     const pfade = await hochladen(2);
     // Das zweite Bild verschwindet vor dem Posten: Instagram kann es nicht laden.
     g.beiJederAnfrage((a) => {
-      if (a.pfad === `${KONTO_ID}/media` && g.an(`${KONTO_ID}/media`).length === 2)
+      if (
+        a.pfad === `${KONTO_ID}/media` &&
+        g.an(`${KONTO_ID}/media`).length === 2
+      )
         mock.objects.delete(`${INSTAGRAM_BUCKET}/${pfade[1]}`);
     });
     const s = await poste({
@@ -521,6 +528,7 @@ describe("Fehler von Instagram im Ablauf", () => {
     assert.ok(!JSON.stringify(s.ereignisse).includes("http"));
     assert.ok(!JSON.stringify(s.ereignisse).includes("token"));
     assert.deepEqual(logs[0][1], {
+      wo: "posten",
       code: "bild",
       graph: 9004,
       subcode: 2207052,
@@ -810,7 +818,12 @@ describe("Konto und Kontingent im Ablauf", () => {
 
 describe("Eingabe und Einrichtung", () => {
   it("ohne Schlüssel: genau eine Zeile „nicht_verbunden“, kein Aufruf, kein Speicher", async () => {
-    for (const wert of [undefined, "", "zu kurz", "mit leerzeichen 0123456789abcdef"]) {
+    for (const wert of [
+      undefined,
+      "",
+      "zu kurz",
+      "mit leerzeichen 0123456789abcdef",
+    ]) {
       if (wert === undefined) delete process.env.INSTAGRAM_TOKEN;
       else process.env.INSTAGRAM_TOKEN = wert;
       const s = await poste({
@@ -845,7 +858,13 @@ describe("Eingabe und Einrichtung", () => {
       { ...gut, art: "reel" },
       { ...gut, bilder: "a.jpg" },
       { ...gut, bilder: [] },
-      { ...gut, bilder: Array.from({ length: 11 }, (_, i) => `${HEUTE}/${uuid}-${i + 1}.jpg`) },
+      {
+        ...gut,
+        bilder: Array.from(
+          { length: 11 },
+          (_, i) => `${HEUTE}/${uuid}-${i + 1}.jpg`,
+        ),
+      },
       { ...gut, bilder: [`${HEUTE}/../geheim.jpg`] },
       { ...gut, bilder: [`${HEUTE}/${uuid}-1.jpg/../../x.jpg`] },
       { ...gut, bilder: [`instagram/${HEUTE}/${uuid}-1.jpg`] },
@@ -858,7 +877,10 @@ describe("Eingabe und Einrichtung", () => {
       { ...gut, bilder: [pfade[0], pfade[0]] },
       {
         ...gut,
-        bilder: [pfade[0], `${HEUTE}/00000000-0000-4000-8000-000000000000-2.jpg`],
+        bilder: [
+          pfade[0],
+          `${HEUTE}/00000000-0000-4000-8000-000000000000-2.jpg`,
+        ],
       },
       { ...gut, caption: 5 },
       { ...gut, art: "beitrag", caption: "x".repeat(2201) },
@@ -1014,10 +1036,16 @@ describe("Speicher während des Laufs", () => {
     mock.seedObject(INSTAGRAM_BUCKET, "2026-11-16/alt-2.jpg");
     mock.seedObject(INSTAGRAM_BUCKET, "2026-11-17/gestern-1.jpg");
     const pfade = await hochladen(1);
-    await poste({ art: "beitrag", bilder: pfade, caption: "", quelle: SERIE_HEUTE });
-    assert.deepEqual([...mock.objects.keys()], [
-      `${INSTAGRAM_BUCKET}/2026-11-17/gestern-1.jpg`,
-    ]);
+    await poste({
+      art: "beitrag",
+      bilder: pfade,
+      caption: "",
+      quelle: SERIE_HEUTE,
+    });
+    assert.deepEqual(
+      [...mock.objects.keys()],
+      [`${INSTAGRAM_BUCKET}/2026-11-17/gestern-1.jpg`],
+    );
   });
 });
 

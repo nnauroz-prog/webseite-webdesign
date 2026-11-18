@@ -207,7 +207,8 @@ export function fehlerAusAntwort(
       ? roh.fbtrace_id
       : null;
   return new InstagramFehler(code, {
-    text: code === "limit" && d.subcode === 2207042 ? TEXT_TAGESLIMIT : undefined,
+    text:
+      code === "limit" && d.subcode === 2207042 ? TEXT_TAGESLIMIT : undefined,
     graphCode: d.code ?? null,
     subcode: d.subcode ?? null,
     fbtrace,
@@ -240,12 +241,19 @@ const PFAD = /^[A-Za-z0-9_]+(\/[A-Za-z0-9_]+)*$/;
 export type GraphParameter = Record<string, string | number | boolean>;
 
 export type Graph = {
-  get<T>(pfad: string, query?: GraphParameter, aufruf?: GraphAufruf): Promise<T>;
+  get<T>(
+    pfad: string,
+    query?: GraphParameter,
+    aufruf?: GraphAufruf,
+  ): Promise<T>;
   post<T>(pfad: string, body: GraphParameter, aufruf?: GraphAufruf): Promise<T>;
 };
 
 /** Ein Anschluss an die Graph API mit diesem Zugang. */
-export function graph(zugang: GraphZugang, optionen: GraphOptionen = {}): Graph {
+export function graph(
+  zugang: GraphZugang,
+  optionen: GraphOptionen = {},
+): Graph {
   const holen = optionen.fetch ?? fetch;
   const pause = optionen.warte ?? warte;
   const wiederholMs = optionen.wiederholMs ?? 1500;
@@ -315,7 +323,8 @@ export function graph(zugang: GraphZugang, optionen: GraphOptionen = {}): Graph 
     aufruf: GraphAufruf = {},
   ): Promise<T> {
     if (!PFAD.test(pfad)) throw new InstagramFehler("unbekannt");
-    const signal = aufruf.signal === null ? undefined : (aufruf.signal ?? aussen);
+    const signal =
+      aufruf.signal === null ? undefined : (aufruf.signal ?? aussen);
     for (let versuch = 0; ; versuch++) {
       if (signal?.aborted) throw new InstagramAbbruch();
       try {
@@ -356,8 +365,7 @@ export function instagramLink(v: unknown): string | null {
   try {
     const url = new URL(v);
     return url.protocol === "https:" &&
-      (url.hostname === "instagram.com" ||
-        url.hostname === "www.instagram.com")
+      (url.hostname === "instagram.com" || url.hostname === "www.instagram.com")
       ? url.toString()
       : null;
   } catch {

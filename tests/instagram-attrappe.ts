@@ -241,7 +241,10 @@ export async function startGraph() {
           body: {
             id: c.id,
             status_code: stand,
-            status: stand === "ERROR" ? "Error: Media upload has failed with error code 2207003" : stand,
+            status:
+              stand === "ERROR"
+                ? "Error: Media upload has failed with error code 2207003"
+                : stand,
           },
         };
       }

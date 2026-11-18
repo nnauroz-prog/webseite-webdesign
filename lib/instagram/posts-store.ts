@@ -1,9 +1,6 @@
 import "server-only";
 
-import type {
-  InstagramArt,
-  PostQuelle,
-} from "@/lib/instagram/vertrag";
+import type { InstagramArt, PostQuelle } from "@/lib/instagram/vertrag";
 
 import { DbError, isMissingGrant, isMissingTable } from "@/lib/admin/db-errors";
 import { parseId } from "@/lib/admin/validate";

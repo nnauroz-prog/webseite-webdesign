@@ -108,7 +108,8 @@ export async function erzeugePlaetze(
   return Promise.all(
     pfade.map(async (pfad): Promise<UploadPlatz> => {
       const { data, error } = await bucket.createSignedUploadUrl(pfad);
-      if (error || !data?.token) throw new SpeicherFehler(speicherFehlerArt(error));
+      if (error || !data?.token)
+        throw new SpeicherFehler(speicherFehlerArt(error));
       return { pfad, token: data.token };
     }),
   );
@@ -119,7 +120,9 @@ export async function erzeugePlaetze(
  * lädt, in derselben Reihenfolge. Wirft SpeicherFehler („fehlt“, wenn
  * ein Bild nicht im Speicher ist).
  */
-export async function leseAdressen(pfade: readonly string[]): Promise<string[]> {
+export async function leseAdressen(
+  pfade: readonly string[],
+): Promise<string[]> {
   if (!pfade.every(istBildPfad)) throw new SpeicherFehler("sonst");
   const bucket = speicher();
   return Promise.all(
@@ -136,7 +139,9 @@ export async function leseAdressen(pfade: readonly string[]): Promise<string[]> 
 }
 
 /** Löscht die Bilder eines Laufs. false, wenn es nicht geklappt hat; wirft nie. */
-export async function loescheDateien(pfade: readonly string[]): Promise<boolean> {
+export async function loescheDateien(
+  pfade: readonly string[],
+): Promise<boolean> {
   const gueltig = pfade.filter(istBildPfad);
   if (gueltig.length === 0) return true;
   try {

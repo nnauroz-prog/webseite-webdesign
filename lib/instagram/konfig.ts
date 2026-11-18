@@ -41,9 +41,7 @@ export type InstagramKonfig = {
 /** Der Schlüssel, wenn er brauchbar aussieht (kein Leerraum, nicht zu kurz). */
 function token(): string | null {
   const roh = process.env.INSTAGRAM_TOKEN?.trim() ?? "";
-  return roh.length >= 20 && roh.length <= 2000 && !/\s/.test(roh)
-    ? roh
-    : null;
+  return roh.length >= 20 && roh.length <= 2000 && !/\s/.test(roh) ? roh : null;
 }
 
 /**

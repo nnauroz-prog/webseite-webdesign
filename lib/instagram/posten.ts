@@ -7,6 +7,7 @@ import type {
   PostSchritt,
 } from "@/lib/instagram/vertrag";
 
+import { DbError } from "@/lib/admin/db-errors";
 import {
   leseAdressen,
   loescheDateien,
@@ -95,7 +96,8 @@ const TEXT_CONTAINER_LANGSAM =
   "Instagram braucht zu lange für die Bilder. Versuch es in ein paar Minuten noch einmal.";
 const TEXT_ABGELAUFEN =
   "Instagram hat ein Bild verworfen, bevor es online ging. Versuch es noch einmal.";
-const TEXT_ABGEBROCHEN = "Abgebrochen: Die Verbindung zum Studio ist abgerissen.";
+const TEXT_ABGEBROCHEN =
+  "Abgebrochen: Die Verbindung zum Studio ist abgerissen.";
 const HINWEIS_GEMELDET =
   "Instagram hat einen Fehler gemeldet, der Post ist aber online. Den Link findest du in der Instagram-App.";
 const HINWEIS_VERLAUF =
@@ -128,9 +130,14 @@ type Veroeffentlicht = {
   hinweis: string | null;
 };
 
-function logFehler(meldung: string, err: unknown, schritt: PostSchritt | null) {
+/** Wo ein Fehler auftrat (fürs Log): Posten selbst oder ein Nebenschritt. */
+type LogOrt = "posten" | "kontingent" | "verlauf" | "abhaken";
+
+/** Loggt nur Codes, fbtrace und den Schritt; nie Adressen, Texte oder den Schlüssel. */
+function logFehler(wo: LogOrt, err: unknown, schritt: PostSchritt | null) {
   if (err instanceof InstagramFehler)
-    console.error(meldung, {
+    console.error("[instagram] Fehler", {
+      wo,
       code: err.code,
       graph: err.graphCode,
       subcode: err.subcode,
@@ -138,10 +145,20 @@ function logFehler(meldung: string, err: unknown, schritt: PostSchritt | null) {
       schritt,
     });
   else if (err instanceof SpeicherFehler)
-    console.error(meldung, { code: `speicher_${err.art}`, schritt });
+    console.error("[instagram] Fehler", {
+      wo,
+      code: `speicher_${err.art}`,
+      schritt,
+    });
   else
-    console.error(meldung, {
-      code: err instanceof Error ? err.name : "unbekannt",
+    console.error("[instagram] Fehler", {
+      wo,
+      code:
+        err instanceof DbError
+          ? (err.code ?? "db")
+          : err instanceof Error
+            ? err.name
+            : "unbekannt",
       schritt,
     });
 }
@@ -162,7 +179,10 @@ async function containerAnlegen(
   igId: string,
   parameter: Record<string, string | boolean>,
 ): Promise<string> {
-  const antwort = await lauf.g.post<{ id?: unknown }>(`${igId}/media`, parameter);
+  const antwort = await lauf.g.post<{ id?: unknown }>(
+    `${igId}/media`,
+    parameter,
+  );
   const id = kennung(antwort.id);
   if (!id) throw new InstagramFehler("instagram");
   return id;
@@ -262,7 +282,10 @@ async function veroeffentliche(
 }
 
 /** Link zu einem veröffentlichten Beitrag; null, wenn Instagram keinen nennt. */
-async function linkZu(lauf: Lauf, mediaId: string | null): Promise<string | null> {
+async function linkZu(
+  lauf: Lauf,
+  mediaId: string | null,
+): Promise<string | null> {
   if (!mediaId) return null;
   try {
     const antwort = await lauf.g.get<{ permalink?: unknown }>(
@@ -300,7 +323,7 @@ async function buchen(
       links,
     });
   } catch (err) {
-    logFehler("[instagram] Verlauf fehlgeschlagen", err, null);
+    logFehler("verlauf", err, null);
     hinweise.push(HINWEIS_VERLAUF);
   }
   if (!vollstaendig) return hinweise;
@@ -312,12 +335,17 @@ async function buchen(
       const post = postsFuer(q.datum).find((p) => p.platz === q.platz);
       if (!post) throw new Error("Post nicht gefunden");
       await setzePostStatus(
-        { datum: q.datum, platz: q.platz, format: auftrag.art, text: post.text },
+        {
+          datum: q.datum,
+          platz: q.platz,
+          format: auftrag.art,
+          text: post.text,
+        },
         true,
       );
     }
   } catch (err) {
-    logFehler("[instagram] Abhaken fehlgeschlagen", err, null);
+    logFehler("abhaken", err, null);
     hinweise.push(HINWEIS_ABHAKEN);
   }
   return hinweise;
@@ -429,7 +457,7 @@ export async function posteAuftrag(
         ["zugang", "konto", "limit"].includes(err.code)
       )
         throw err;
-      logFehler("[instagram] Kontingent nicht lesbar", err, "pruefen");
+      logFehler("kontingent", err, "pruefen");
     }
     const adressen = await leseAdressen(auftrag.bilder);
     schrittMelden("pruefen", "fertig");
@@ -507,10 +535,12 @@ export async function posteAuftrag(
         : new InstagramFehler("unbekannt", { text: TEXT_ABGEBROCHEN });
     else fehler = new InstagramFehler("unbekannt");
     if (!(err instanceof InstagramAbbruch) || frist.aborted)
-      logFehler("[instagram] Posten fehlgeschlagen", fehler, schritt);
+      logFehler("posten", fehler, schritt);
     // Was schon online ist, kommt in den Verlauf (nicht abgehakt).
     if (veroeffentlicht > 0) await buchen(auftrag, mediaIds, links, false);
-    sende(fehlerZeile(fehler.code, fehler.text, auftrag, veroeffentlicht, links));
+    sende(
+      fehlerZeile(fehler.code, fehler.text, auftrag, veroeffentlicht, links),
+    );
   } finally {
     // Instagram hat die Bilder beim Anlegen der Container geladen.
     if (!(await loescheDateien(auftrag.bilder)))
