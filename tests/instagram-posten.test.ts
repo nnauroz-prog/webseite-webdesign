@@ -1096,6 +1096,45 @@ describe("Route und Strom", () => {
     }
   });
 
+  it("wirft der Lauf oder endet er ohne Schlusszeile, folgt die Ersatzzeile; danach nichts mehr", async () => {
+    const ersatz: PostEreignis = {
+      typ: "fehler",
+      code: "unbekannt",
+      text: "Ersatz",
+    };
+    const laeufe: ((s: (e: PostEreignis) => void) => Promise<void>)[] = [
+      async () => {
+        throw new Error("kaputt");
+      },
+      async (sende) => {
+        sende({ typ: "schritt", schritt: "pruefen", stand: "laeuft" });
+      },
+      async (sende) => {
+        sende({ typ: "fertig", links: [], konto: "x" });
+        sende({ typ: "schritt", schritt: "pruefen", stand: "laeuft" });
+        throw new Error("danach");
+      },
+    ];
+    const erwartet = [
+      [ersatz],
+      [{ typ: "schritt", schritt: "pruefen", stand: "laeuft" }, ersatz],
+      [{ typ: "fertig", links: [], konto: "x" }],
+    ];
+    for (const [i, lauf] of laeufe.entries()) {
+      const res: Response = ndjsonAntwortAus<PostEreignis>(
+        (sende) => lauf(sende),
+        ersatz,
+        INSTAGRAM_INHALTSTYP,
+      );
+      const text: string = await res.text();
+      const zeilen = text
+        .trimEnd()
+        .split("\n")
+        .map((z) => JSON.parse(z) as PostEreignis);
+      assert.deepEqual(zeilen, erwartet[i]);
+    }
+  });
+
   it("die Route: nur POST, Node-Laufzeit, 120 Sekunden, Adresse wie im Vertrag, requireAdmin zuerst", () => {
     assert.equal(INSTAGRAM_POSTEN_PFAD, "/admin/instagram/posten");
     const datei = path.join(ROOT, "app/admin/instagram/posten/route.ts");
