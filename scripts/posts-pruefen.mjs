@@ -149,13 +149,15 @@ Object.assign(window, { pruefung: { KICKER, POSTS_AKTUELL, SERIEN_AKTUELL, SPRUE
      * Die Wörter der Pointe, oder null, wenn die Karte keine hat (Mythos)
      * oder eines ihrer Wörter auch sonst auf dem Bild steht (dann ließe
      * es sich nicht von ihr unterscheiden; das Kalenderblatt schreibt
-     * „Heute“ über den Tag).
+     * „Heute“ über den Tag, dazu Wochentag und Monat).
      */
+    const KALENDERBLATT =
+      "heute montag dienstag mittwoch donnerstag freitag samstag sonntag januar februar märz april mai juni juli august september oktober november dezember";
     const pointeVon = (karte) => {
       const w = woerter(karte.betont);
       if (karte.kicker === "Mythos" || !w.trim()) return null;
       const sonst = woerter(
-        `${karte.text.replace(karte.betont, " ")} ${karte.zusatz} ${karte.kicker} ${karte.anlass ?? ""} heute`,
+        `${karte.text.replace(karte.betont, " ")} ${karte.zusatz} ${karte.kicker} ${karte.anlass ?? ""} ${KALENDERBLATT}`,
       );
       if (
         w

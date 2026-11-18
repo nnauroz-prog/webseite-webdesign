@@ -61,6 +61,9 @@ after(async () => {
 
 beforeEach(() => {
   mock.reset("v5");
+  // Die Datenbank schreibt mit derselben Uhr wie die Redaktion (JETZT),
+  // sonst zählt das Tageslimit nur am echten 17. November richtig.
+  mock.setNow(JETZT);
   vergissAuftraege();
   // Kein echter Schlüssel: nur irgendein Wert, damit die Redaktion „bereit“ ist.
   process.env.ANTHROPIC_API_KEY = "attrappe-kein-echter-schluessel";

@@ -221,9 +221,11 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     angebotSeq: 0,
   };
   let lastTime = 0;
+  /** Feste Uhr für Tests (Millisekunden) oder null für die echte Zeit. */
+  let fixedNow = null;
   const nowIso = () => {
     // Streng steigende Zeitstempel, damit „neueste zuerst“ eindeutig ist.
-    lastTime = Math.max(Date.now(), lastTime + 1);
+    lastTime = Math.max(fixedNow ?? Date.now(), lastTime + 1);
     return new Date(lastTime).toISOString();
   };
 
@@ -788,6 +790,16 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       const row = { ...defaults("serien"), ...partial };
       state.tables.serien.push(row);
       return row;
+    },
+    /**
+     * Stellt die Uhr der Datenbank: Neue Zeilen bekommen ab jetzt diesen
+     * Zeitpunkt (und danach je eine Millisekunde mehr). null = echte Zeit.
+     * Damit hängen Tests mit festem „jetzt“ nicht am echten Kalendertag.
+     * @param {Date | null} when
+     */
+    setNow(when) {
+      fixedNow = when ? when.getTime() : null;
+      lastTime = 0;
     },
     close() {
       return new Promise((resolve) => server.close(() => resolve()));
