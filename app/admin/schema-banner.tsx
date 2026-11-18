@@ -56,6 +56,11 @@ export function SchemaBanner({
       <p className="text-muted-foreground mt-2 text-[14px]">
         Bis dahin aus: {migrations.map((m) => m.features).join(", ")}.
       </p>
+      <p className="text-muted-foreground mt-2 text-[14px]">
+        Schon einmal ausgeführt und der Hinweis ist wieder da? Dann bitte noch
+        einmal: Das Update gibt dem Server jetzt auch die Rechte an den
+        Tabellen. Doppelt ausführen schadet nicht.
+      </p>
       {/* Dateinamen braucht der Inhaber nicht (SQL kommt per Knopf). */}
       <details className="text-muted-foreground mt-1 text-[13px]">
         <summary className="inline-flex min-h-11 cursor-pointer items-center">

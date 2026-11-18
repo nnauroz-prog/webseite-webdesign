@@ -62,6 +62,10 @@ create index if not exists lead_events_lead_id_created_at_idx
 
 alter table public.lead_events enable row level security;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.lead_events to service_role;
+
 -- 3) Löschprotokoll ---------------------------------------------------
 -- Belegt, dass und wann eine Anfrage gelöscht wurde, ohne Namen,
 -- E-Mail oder Inhalte. Bewusst ohne Fremdschlüssel: Die Anfrage
@@ -81,6 +85,10 @@ create index if not exists lead_deletions_deleted_at_idx
   on public.lead_deletions (deleted_at desc);
 
 alter table public.lead_deletions enable row level security;
+
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.lead_deletions to service_role;
 
 -- 4) Supabase-API sofort über die neuen Spalten/Tabellen informieren.
 notify pgrst, 'reload schema';

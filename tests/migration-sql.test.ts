@@ -11,6 +11,8 @@ import {
   MIGRATION_ANGEBOTE_SQL_FILE,
   MIGRATION_AUSBAU_SQL,
   MIGRATION_AUSBAU_SQL_FILE,
+  MIGRATION_SERIEN_SQL,
+  MIGRATION_SERIEN_SQL_FILE,
   MIGRATIONS,
   migrationSqlFor,
   missingMigrations,
@@ -21,7 +23,15 @@ const read = (file: string) =>
 
 /** Ohne Kommentare und ohne „on delete cascade“ (das ist kein Löschen). */
 const code = (sql: string) =>
-  sql.replace(/--.*$/gm, "").replace(/on delete cascade/gi, "");
+  sql
+    .replace(/--.*$/gm, "")
+    .replace(/on delete cascade/gi, "")
+    // Das Recht zu löschen für den Server ist kein Löschen.
+    .replace(SERVER_RECHTE, "");
+
+/** Ausdrückliche Rechte für den Server an einer Tabelle. */
+const SERVER_RECHTE =
+  /grant select, insert, update, delete on table public\.[a-z_]+ to service_role;/g;
 
 const ADDITIV_VERBOTEN = /\bdrop\b|\brename\b|\btruncate\b|\bdelete\b/i;
 
@@ -30,15 +40,42 @@ describe("lib/admin/migration-sql.ts", () => {
     assert.equal(MIGRATION_ADMIN_SQL, read(MIGRATION_ADMIN_SQL_FILE));
     assert.equal(MIGRATION_ANGEBOTE_SQL, read(MIGRATION_ANGEBOTE_SQL_FILE));
     assert.equal(MIGRATION_AUSBAU_SQL, read(MIGRATION_AUSBAU_SQL_FILE));
+    assert.equal(MIGRATION_SERIEN_SQL, read(MIGRATION_SERIEN_SQL_FILE));
     assert.deepEqual(
       MIGRATIONS.map((m) => [m.id, m.file]),
       [
         ["admin", MIGRATION_ADMIN_SQL_FILE],
         ["angebote", MIGRATION_ANGEBOTE_SQL_FILE],
         ["ausbau", MIGRATION_AUSBAU_SQL_FILE],
+        ["serien", MIGRATION_SERIEN_SQL_FILE],
       ],
     );
     for (const m of MIGRATIONS) assert.equal(m.sql, read(m.file));
+  });
+
+  it("jede Tabelle gibt dem Server die Rechte ausdrücklich (Supabase vergibt sie nicht mehr von selbst)", () => {
+    const tabellen: [string, string[]][] = [
+      ["supabase/migrations/20261030000000_leads.sql", ["leads"]],
+      [MIGRATION_ADMIN_SQL_FILE, ["lead_events", "lead_deletions"]],
+      [MIGRATION_ANGEBOTE_SQL_FILE, ["angebote"]],
+      [MIGRATION_AUSBAU_SQL_FILE, ["projekte", "post_status"]],
+      [MIGRATION_SERIEN_SQL_FILE, ["serien"]],
+    ];
+    for (const [datei, namen] of tabellen) {
+      const sql = read(datei).replace(/--.*$/gm, "");
+      for (const t of namen)
+        assert.ok(
+          sql.includes(
+            `grant select, insert, update, delete on table public.${t} to service_role;`,
+          ),
+          `${datei}: ${t}`,
+        );
+      // Nie Rechte für die öffentlichen Rollen.
+      assert.doesNotMatch(
+        sql,
+        /grant[^;]*\bto\s+(anon|authenticated|public)\b/i,
+      );
+    }
   });
 
   it("Admin-Ausbau: additiv und ohne reply_to-Index (keine Personendaten im Filter)", () => {
@@ -148,6 +185,43 @@ describe("lib/admin/migration-sql.ts", () => {
     assert.ok(file.trimEnd().endsWith("notify pgrst, 'reload schema';"));
   });
 
+  it("Serien: additiv, mehrfach ausführbar, RLS an, keine Policies, keine Rechte für anon", () => {
+    const file = read(MIGRATION_SERIEN_SQL_FILE);
+    const sql = code(file);
+    assert.ok(!ADDITIV_VERBOTEN.test(sql));
+    assert.ok(!/\bcreate policy\b/i.test(sql));
+    assert.ok(sql.includes("create table if not exists public.serien ("));
+    assert.ok(
+      sql.includes("alter table public.serien enable row level security;"),
+    );
+    assert.ok(
+      sql.includes(
+        "revoke all on table public.serien from anon, authenticated;",
+      ),
+    );
+    // Spalten wie in lib/serien-store.ts (SERIEN_COLUMNS).
+    assert.match(sql, /id\s+uuid primary key default gen_random_uuid\(\)/);
+    assert.match(sql, /created_at\s+timestamptz not null default now\(\)/);
+    assert.match(sql, /datum\s+date not null/);
+    assert.match(
+      sql,
+      /auftrag\s+text not null default ''\s+check \(char_length\(auftrag\) <= 500\)/,
+    );
+    assert.match(sql, /serie\s+jsonb not null/);
+    assert.match(sql, /gepostet_at timestamptz\s*\n\);/);
+    assert.match(
+      sql,
+      /create index if not exists serien_created_at_idx\s+on public\.serien \(created_at desc\);/,
+    );
+    // Jede create-Anweisung ist wiederholbar.
+    for (const m of sql.matchAll(
+      /\bcreate\s+(?!table if not exists|index if not exists)(\w+)/gi,
+    )) {
+      assert.fail(`nicht wiederholbar: create ${m[1]}`);
+    }
+    assert.ok(file.trimEnd().endsWith("notify pgrst, 'reload schema';"));
+  });
+
   it("missingMigrations: nur was sicher fehlt, in Ausführungs-Reihenfolge", () => {
     const st = (p: Partial<SchemaStatus>): SchemaStatus => ({
       leadsV2: "ok",
@@ -156,6 +230,7 @@ describe("lib/admin/migration-sql.ts", () => {
       angebote: "ok",
       projekte: "ok",
       postStatus: "ok",
+      serien: "ok",
       ...p,
     });
     assert.deepEqual(missingMigrations(st({})), []);
@@ -192,6 +267,17 @@ describe("lib/admin/migration-sql.ts", () => {
       ).map((m) => m.id),
       ["angebote", "ausbau"],
     );
+    // Stand beim Inhaber vor den Serien: nur die Tabelle serien fehlt.
+    assert.deepEqual(
+      missingMigrations(st({ serien: "fehlt" })).map((m) => m.id),
+      ["serien"],
+    );
+    assert.deepEqual(
+      missingMigrations(
+        st({ projekte: "fehlt", postStatus: "fehlt", serien: "fehlt" }),
+      ).map((m) => m.id),
+      ["ausbau", "serien"],
+    );
     // 'unbekannt' fordert nicht zum Ausführen auf.
     assert.deepEqual(
       missingMigrations(
@@ -200,6 +286,7 @@ describe("lib/admin/migration-sql.ts", () => {
           angebote: "unbekannt",
           projekte: "unbekannt",
           postStatus: "unbekannt",
+          serien: "unbekannt",
         }),
       ),
       [],
@@ -207,7 +294,7 @@ describe("lib/admin/migration-sql.ts", () => {
   });
 
   it("migrationSqlFor: nur die fehlenden, hintereinander", () => {
-    const [admin, angebote, ausbau] = MIGRATIONS;
+    const [admin, angebote, ausbau, serien] = MIGRATIONS;
     assert.equal(migrationSqlFor([angebote]), MIGRATION_ANGEBOTE_SQL);
     assert.equal(
       migrationSqlFor([admin, angebote]),
@@ -217,6 +304,11 @@ describe("lib/admin/migration-sql.ts", () => {
     assert.equal(
       migrationSqlFor([angebote, ausbau]),
       `${MIGRATION_ANGEBOTE_SQL}\n${MIGRATION_AUSBAU_SQL}`,
+    );
+    assert.equal(migrationSqlFor([serien]), MIGRATION_SERIEN_SQL);
+    assert.equal(
+      migrationSqlFor([ausbau, serien]),
+      `${MIGRATION_AUSBAU_SQL}\n${MIGRATION_SERIEN_SQL}`,
     );
     assert.equal(migrationSqlFor([]), "");
   });

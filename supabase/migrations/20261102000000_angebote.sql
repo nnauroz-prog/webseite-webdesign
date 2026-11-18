@@ -94,6 +94,10 @@ alter table public.angebote enable row level security;
 -- Tabellen automatisch).
 revoke all on table public.angebote from anon, authenticated;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.angebote to service_role;
+
 -- 3) updated_at ------------------------------------------------------
 -- Nur inhaltliche Änderungen (Kunde, Texte, Positionen, Steuer,
 -- Gültigkeit) zählen. Senden, Öffnen, Annehmen und Ablehnen haben

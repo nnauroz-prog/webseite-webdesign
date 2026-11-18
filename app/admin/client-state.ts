@@ -13,6 +13,8 @@
  *   höchstens 10 Min lang erneut gesucht.
  * - Ereignisse zwischen Teilen der Detailseite (Status geändert,
  *   Ergebnis-Schritt öffnen).
+ * - Schlüssel der Story-Serien, die sich nur dieses Gerät merkt
+ *   (gelesen und geschrieben im Story-Studio).
  *
  * clearAdminSession() leert alles (Abmelden, endgültiges Löschen):
  * Suchbegriff, Vormerkung und Entwürfe enthalten oft Kundendaten.
@@ -39,6 +41,11 @@ export type ContactMark = {
 const CONTACT_KEY = "sitalo-admin-kontakt";
 const BACK_KEY = "sitalo-admin-zurueck";
 const SEARCH_KEY = "sitalo-admin-suche";
+/**
+ * Story-Serien aus Aufträgen an die Redaktion, die sich nur dieses Gerät
+ * merkt (Story-Studio, solange die Datenbank sie nicht speichert).
+ */
+export const SERIEN_KEY = "sitalo-admin-serien";
 export const CONTACT_MAX_AGE = 30 * 60_000;
 export const CONTACT_MIN_HIDDEN = 5_000;
 export const SEARCH_MAX_AGE = 10 * 60_000;
@@ -274,7 +281,7 @@ export function clearAdminSession(): void {
   memorySearch = null;
   poppedAt = 0;
   try {
-    for (const key of [CONTACT_KEY, BACK_KEY, SEARCH_KEY]) {
+    for (const key of [CONTACT_KEY, BACK_KEY, SEARCH_KEY, SERIEN_KEY]) {
       window.sessionStorage.removeItem(key);
     }
     // Angebots-Entwürfe enthalten Kundendaten.

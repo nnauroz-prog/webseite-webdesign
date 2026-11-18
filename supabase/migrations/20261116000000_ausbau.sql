@@ -50,6 +50,10 @@ alter table public.projekte enable row level security;
 -- keine Rechte an der Tabelle.
 revoke all on table public.projekte from anon, authenticated;
 
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.projekte to service_role;
+
 -- updated_at bei jeder Änderung.
 create or replace function public.projekte_touch_updated_at()
 returns trigger
@@ -99,6 +103,10 @@ create table if not exists public.post_status (
 alter table public.post_status enable row level security;
 
 revoke all on table public.post_status from anon, authenticated;
+
+-- Der Server (service_role) braucht die Rechte ausdrücklich: Supabase
+-- vergibt sie für neue Tabellen nicht mehr von selbst.
+grant select, insert, update, delete on table public.post_status to service_role;
 
 -- 3) Supabase-API sofort über die neuen Tabellen informieren.
 notify pgrst, 'reload schema';

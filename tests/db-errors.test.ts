@@ -101,6 +101,36 @@ describe("explainDbError", () => {
     );
   });
 
+  it("fehlende Tabelle oder Spalte serien → missing_schema_serien mit eigener Datei", () => {
+    for (const [code, msg] of [
+      [
+        "PGRST205",
+        "Could not find the table 'public.serien' in the schema cache",
+      ],
+      ["42P01", 'relation "public.serien" does not exist'],
+      ["42703", "column serien.gepostet_at does not exist"],
+      [
+        "PGRST204",
+        "Could not find the 'auftrag' column of 'serien' in the schema cache",
+      ],
+    ]) {
+      const e = explainDbError(new DbError(msg, code));
+      assert.equal(e.kind, "missing_schema_serien", msg);
+      assert.ok(e.hint.includes("20261117000000_serien.sql"));
+      assert.ok(e.title.includes("Story-Serien"));
+    }
+    // Projekte und Post-Status bleiben beim Ausbau.
+    assert.equal(
+      explainDbError(
+        new DbError(
+          "Could not find the table 'public.post_status' in the schema cache",
+          "PGRST205",
+        ),
+      ).kind,
+      "missing_schema_ausbau",
+    );
+  });
+
   it("fehlende Tabelle leads → missing_table_leads", () => {
     for (const code of ["PGRST205", "42P01"]) {
       const e = explainDbError(

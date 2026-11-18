@@ -19,6 +19,8 @@
  *        eindeutige angebot_id, Fremdschlüssel mit on delete cascade
  *        (Anfrage und Angebot), Checks, updated_at bei jeder Änderung,
  *        Primärschlüssel (datum, platz, format)
+ *   'v5' zusätzlich serien (20261117000000_serien.sql): Auftrag
+ *        höchstens 500 Zeichen, serie als Objekt, gepostet_at leer
  *
  * Fehler wie PostgREST: unbekannte Tabelle → 404 PGRST205, unbekannte
  * Spalte in select/filter/order → 400 42703, unbekannte Spalte im
@@ -109,6 +111,7 @@ const PROJEKTE = [
   "notiz",
 ];
 const POST_STATUS = ["datum", "platz", "format", "text", "gepostet_at"];
+const SERIEN = ["id", "created_at", "datum", "auftrag", "serie", "gepostet_at"];
 
 function schemaFor(mode) {
   if (mode === "v0") return {};
@@ -121,7 +124,9 @@ function schemaFor(mode) {
   if (mode === "v2") return v2;
   const v3 = { ...v2, angebote: ANGEBOTE };
   if (mode === "v3") return v3;
-  return { ...v3, projekte: PROJEKTE, post_status: POST_STATUS };
+  const v4 = { ...v3, projekte: PROJEKTE, post_status: POST_STATUS };
+  if (mode === "v4") return v4;
+  return { ...v4, serien: SERIEN };
 }
 
 const REQUIRED = {
@@ -139,6 +144,7 @@ const REQUIRED = {
   ],
   projekte: ["angebot_id", "lead_id", "schritte"],
   post_status: ["datum", "platz", "format", "text"],
+  serien: ["datum", "serie"],
 };
 
 const berlinYear = (d) =>
@@ -187,9 +193,9 @@ export const SERVICE_KEY = "test-service-role-key";
 
 /**
  * @typedef {Record<string, any>} Row
- * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[]; projekte: Row[]; post_status: Row[] }} Tables
+ * @typedef {{ leads: Row[]; lead_events: Row[]; lead_deletions: Row[]; angebote: Row[]; projekte: Row[]; post_status: Row[]; serien: Row[] }} Tables
  * @typedef {{ method: string; url: string; headers: { prefer: string; accept: string }; body: unknown }} MockRequest
- * @typedef {"v0" | "v1" | "v2" | "v3" | "v4"} MockMode
+ * @typedef {"v0" | "v1" | "v2" | "v3" | "v4" | "v5"} MockMode
  */
 
 /** @returns {Tables} */
@@ -201,22 +207,26 @@ function emptyTables() {
     angebote: [],
     projekte: [],
     post_status: [],
+    serien: [],
   };
 }
 
 /** @param {{ mode?: MockMode; key?: string }} [options] */
 export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
-  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[]; angebotSeq: number }} */
+  /** @type {{ mode: MockMode; tables: Tables; requests: MockRequest[]; angebotSeq: number; denied: Set<string> }} */
   const state = {
     mode,
     tables: emptyTables(),
     requests: [],
     angebotSeq: 0,
+    denied: new Set(),
   };
   let lastTime = 0;
+  /** Feste Uhr für Tests (Millisekunden) oder null für die echte Zeit. */
+  let fixedNow = null;
   const nowIso = () => {
     // Streng steigende Zeitstempel, damit „neueste zuerst“ eindeutig ist.
-    lastTime = Math.max(Date.now(), lastTime + 1);
+    lastTime = Math.max(fixedNow ?? Date.now(), lastTime + 1);
     return new Date(lastTime).toISOString();
   };
 
@@ -277,6 +287,13 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       };
     // Kein id: Primärschlüssel ist (datum, platz, format).
     if (table === "post_status") return { gepostet_at: t };
+    if (table === "serien")
+      return {
+        id: randomUUID(),
+        created_at: t,
+        auftrag: "",
+        gepostet_at: null,
+      };
     return {
       id: randomUUID(),
       deleted_at: t,
@@ -377,6 +394,13 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       )
         return duplicate("post_status_pkey");
     }
+    if (table === "serien") {
+      if (typeof row.auftrag !== "string" || row.auftrag.length > 500)
+        return checkFail(table, "serien_auftrag_check");
+      const s = row.serie;
+      if (!s || typeof s !== "object" || Array.isArray(s))
+        return checkFail(table, "serien_serie_check");
+    }
     if (table === "angebote") {
       if (!ANGEBOT_STATUSES.includes(row.status))
         return checkFail(table, "angebote_status_check");
@@ -459,6 +483,15 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
     const m = /^\/rest\/v1\/([a-z_]+)$/.exec(url.pathname);
     if (!m) return { status: 404, body: { message: "mock: unbekannter Pfad" } };
     const table = m[1];
+    if (state.denied.has(table) && schemaFor(state.mode)[table]) {
+      return {
+        status: 403,
+        body: {
+          code: "42501",
+          message: `permission denied for table ${table}`,
+        },
+      };
+    }
     const columns = schemaFor(state.mode)[table];
     if (!columns) {
       return {
@@ -668,6 +701,7 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       state.tables = emptyTables();
       state.requests = [];
       state.angebotSeq = 0;
+      state.denied = new Set();
     },
     /** Zeile direkt anlegen (an der API vorbei), gibt sie zurück. */
     /**
@@ -757,6 +791,35 @@ export async function startMock({ mode = "v3", key = SERVICE_KEY } = {}) {
       const row = { ...defaults("post_status"), ...partial };
       state.tables.post_status.push(row);
       return row;
+    },
+    /**
+     * Serie direkt anlegen (an der API vorbei, Modus v5).
+     * @param {Row} partial datum, serie; optional auftrag, created_at
+     * @returns {Row}
+     */
+    seedSerie(partial) {
+      const row = { ...defaults("serien"), ...partial };
+      state.tables.serien.push(row);
+      return row;
+    },
+    /**
+     * Stellt die Uhr der Datenbank: Neue Zeilen bekommen ab jetzt diesen
+     * Zeitpunkt (und danach je eine Millisekunde mehr). null = echte Zeit.
+     * Damit hängen Tests mit festem „jetzt“ nicht am echten Kalendertag.
+     * @param {Date | null} when
+     */
+    /**
+     * Tabellen, an denen dem Server die Rechte fehlen (42501), wie nach
+     * einer Migration ohne grant. Leere Liste: alles wieder erlaubt.
+     * reset() hebt es ebenfalls auf.
+     * @param {string[]} tables
+     */
+    deny(tables) {
+      state.denied = new Set(tables);
+    },
+    setNow(when) {
+      fixedNow = when ? when.getTime() : null;
+      lastTime = 0;
     },
     close() {
       return new Promise((resolve) => server.close(() => resolve()));

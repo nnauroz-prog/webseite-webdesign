@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Archive, Sunrise } from "lucide-react";
+import { Archive, ChevronRight, Images, Sunrise } from "lucide-react";
 import Link from "next/link";
 import { cache } from "react";
 
@@ -30,7 +30,9 @@ import {
 } from "@/lib/admin/post-planer";
 import { missingMigrations } from "@/lib/admin/migration-sql";
 import { checkSchema } from "@/lib/admin/schema";
+import { bilderText } from "@/lib/admin/studio-serie";
 import { listPostStatus } from "@/lib/post-status-store";
+import { serieFuer } from "@/lib/serien-aktuell";
 import { POSTS_AKTUELL, postsFuer } from "@/lib/sprueche-aktuell";
 import { storyBeschriftung } from "@/lib/sprueche-data";
 import { cn } from "@/lib/utils";
@@ -55,7 +57,8 @@ const loadPosts = cache(async (heute: string) => {
 /**
  * `/admin/posts` — der Post-Planer: die drei Posts von heute zum
  * Abhaken (Story und Beitrag), der Stand des Morgenlaufs und die
- * letzten sieben Tage auf einen Blick.
+ * letzten sieben Tage auf einen Blick. Gibt es die Story-Serie des
+ * Tages schon, führt oben in „Heute“ eine Zeile dorthin ins Studio.
  */
 export default async function PostsPage() {
   await requireAdmin();
@@ -63,6 +66,8 @@ export default async function PostsPage() {
   const heute = berlinDateIso(now);
   const posts = postsFuer(heute);
   const lauf = morgenlaufStand(posts);
+  // Die Story-Serie des Tages (Morgenlauf), falls es sie schon gibt.
+  const tagesSerie = serieFuer(heute);
 
   let data: Awaited<ReturnType<typeof loadPosts>>;
   try {
@@ -177,6 +182,29 @@ export default async function PostsPage() {
             {updateBanner ? " (siehe Hinweis oben)" : ""}.
           </p>
         ) : null}
+        {tagesSerie ? (
+          <Link
+            href="/admin/story?serie=tag"
+            className="border-border bg-card hover:border-foreground/40 mb-3 flex min-h-14 items-center gap-3 rounded-[4px] border px-4 py-2.5 transition-colors"
+          >
+            <Images
+              className="text-muted-foreground h-5 w-5 shrink-0"
+              aria-hidden="true"
+            />
+            <span className="min-w-0 flex-1 text-[15px] leading-snug">
+              <span className="block font-semibold">
+                Story-Serie des Tages: {tagesSerie.titel}
+              </span>
+              <span className="text-muted-foreground block text-[14px]">
+                {bilderText(tagesSerie.folien.length)} · Im Studio öffnen
+              </span>
+            </span>
+            <ChevronRight
+              className="text-muted-foreground h-5 w-5 shrink-0"
+              aria-hidden="true"
+            />
+          </Link>
+        ) : null}
         <ul className="grid gap-3 lg:grid-cols-3">
           {posts.map((p) => {
             const stand: Record<"story" | "beitrag", PostStand> = {
@@ -203,7 +231,7 @@ export default async function PostsPage() {
                   quelle={quelle}
                   stand={stand}
                   frueher={frueher}
-                  studioHref={`/admin/story?post=${p.platz}`}
+                  studioHref={`/admin/story?post=${p.platz}#einzelne-posts`}
                   enabled={enabled}
                 />
               </li>

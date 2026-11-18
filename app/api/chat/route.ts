@@ -35,8 +35,20 @@ function badRequest(message: string): Response {
   });
 }
 
+/**
+ * Die Schnittstelle ist öffentlich und kostet je Antwort Geld. Die
+ * Website benutzt sie nicht mehr; sie bleibt deshalb aus, solange
+ * CHAT_AKTIV nicht ausdrücklich auf 1 steht. Der Schlüssel allein
+ * (er gehört der Redaktion im Story-Studio) schaltet sie nicht frei.
+ */
+function chatAn(): boolean {
+  return (
+    process.env.CHAT_AKTIV === "1" && Boolean(process.env.ANTHROPIC_API_KEY)
+  );
+}
+
 export async function POST(request: Request): Promise<Response> {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!chatAn()) {
     return new Response(
       "Der Assistent ist gerade nicht erreichbar. Bitte nutzen Sie das Anfrageformular oder rufen Sie an: 0160 7621876.",
       {

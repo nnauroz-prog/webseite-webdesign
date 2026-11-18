@@ -66,6 +66,32 @@
  * Dazu hat jede Reihe ihre Geste (Stempel, Umriss, Zettel, Flagge), und
  * auf der Wasserlinie fährt ein Schiff ein, das am Ende anlegt. Das
  * letzte Bild ist das Standbild. Keine Lichteffekte, keine Unschärfe.
+ *
+ * Story-Serien (lib/story-serie.ts) sind drei bis fünf Bilder, die
+ * zusammen eine kleine Geschichte erzählen. Sie wirken wie aus einem
+ * Guss: Alle Bilder tragen dieselbe Farbwelt, dasselbe Hafen-Motiv und
+ * dieselbe Gestaltung (Magazin, Farbfeld, Raster, Schlagzeile oder
+ * Riese; nie die klassische, nie das Kalenderblatt). Oben steht der
+ * Titel der Serie und statt des Datums die Stelle des Bildes („2/4“).
+ * Kopf, Zusatz und Linien stehen in jedem Bild an derselben Stelle, der
+ * Satz mittig dazwischen. Die Aufgabe des Bildes gibt den Takt:
+ *
+ * - Aufhänger: das Titelblatt. Der Titel steht in der gefüllten Pille
+ *   (in der Schlagzeile im hohen Kopfbalken), die Schrift darf am größten
+ *   werden, und am rechten Rand steht „weiter“ mit einem Winkel.
+ * - Problem und Lösung: ein Paar. Dasselbe Feld um die Pointe ist beim
+ *   Problem leer (nur der Rahmen) und bei der Lösung gefüllt; im Raster
+ *   gilt dasselbe für das Quadrat. Ein Winkel am Rand zeigt weiter.
+ * - Einladung: der Satz und darunter der Kontaktblock, eine gefüllte
+ *   Pille mit der Adresse des Anfrageformulars, daneben das Telefon.
+ *
+ * Auf jedem Bild steht höchstens eine orange Pille. Der Film läuft in
+ * jedem Bild der Serie anders ab (filmFuerFolge in lib/story-variante.ts);
+ * der Winkel und der Kontaktblock kommen nach dem Zusatz ins Bild.
+ * Wo der enge Zeilenabstand zwei Zeilen zusammenstoßen ließe, bekommt
+ * die untere etwas Luft (SatzStil.luft): unter einem „, das über einem
+ * großen A, O oder U wie ein Umlaut stünde, in der Schlagzeile auch über
+ * großen Umlauten und unter einem Komma.
  */
 import {
   HAMBURG_HORIZONT,
@@ -78,6 +104,7 @@ import {
   type SpruchKicker,
   type SpruchTag,
 } from "@/lib/sprueche-data";
+import { TELEFON_ANZEIGE } from "@/lib/erreichbarkeit";
 import { STORY_LOOKS, type StoryLook } from "@/lib/story-look";
 import {
   KURSIV_SPERRUNG,
@@ -95,15 +122,31 @@ import {
   type KinoKamera,
 } from "@/lib/story-kino";
 import { MOTIV_WASSER } from "@/lib/story-teile";
+import type { SerieRolle } from "@/lib/story-serie";
 import {
   LAYOUT_FOLGE,
+  SERIE_LAYOUTS,
+  filmFuerFolge,
   gestaltungFuer,
+  istFolge,
+  serieGestaltung,
   varianteFuer,
   type Auftritt,
+  type Folge,
   type Kamera,
   type Layout,
   type Variante,
 } from "@/lib/story-variante";
+
+/**
+ * Was der Zeichner nimmt: ein Post oder ein Bild einer Story-Serie
+ * (lib/story-serie.ts, SerieKarte). Ein Bild einer Serie trägt seine
+ * Stelle (folge) und seine Aufgabe (rolle).
+ */
+export type StoryKarte = SpruchTag & {
+  rolle?: SerieRolle;
+  folge?: Folge | null;
+};
 
 /** Ausgabeformate: Story (9:16), Beitrag (4:5) und die Karte der Website (3:4). */
 export type StoryFormat = {
@@ -198,6 +241,8 @@ type Basis = {
   hafenBand: [number, number] | null;
   /** Größe der Stadt am Horizont (1 = wie über dem Fuß) */
   stadtGross: number;
+  /** Bild einer Story-Serie: Stelle und Aufgabe (sonst null). */
+  serie: { nr: number; von: number; rolle: SerieRolle } | null;
 };
 
 /** Kamera: Blickpunkt (Bildkoordinaten) und Zoom (1 = Standbild). */
@@ -805,12 +850,14 @@ function streifenPfad(
   innen = 0,
   tief = STREIFEN_UNTEN,
   gerade = false,
+  /** Überstand der geraden Enden (Anteil der Schriftgröße) */
+  rand = 0.07,
 ) {
   const oben = grundlinie - px * hoch + innen;
   const unten = grundlinie + px * tief - innen;
   const schub = gerade ? 0 : px * 0.045;
   const [vorn, hinten] = gerade
-    ? [px * 0.07, px * 0.07]
+    ? [px * rand, px * rand]
     : [px * 0.13, px * 0.1];
   ctx.beginPath();
   ctx.moveTo(x0 - vorn + schub + innen, oben);
@@ -947,6 +994,23 @@ type SatzStil = {
    * (für große Schrift mit wenigen Wörtern je Zeile).
    */
   kurzAllein?: boolean;
+  /**
+   * Der Farbstreifen der Pointe steht nur als Rahmen da (nur mit pointe
+   * „balken“). In einer Story-Serie ist das die Pointe des Problems: ein
+   * leeres Feld, das die Lösung im nächsten Bild füllt.
+   */
+  rahmen?: boolean;
+  /**
+   * Zusätzliche Luft über einer Zeile, wo der enge Zeilenabstand sonst
+   * zwei Zeilen zusammenstoßen lässt (Anteile der Größe; für die Bilder
+   * einer Story-Serie):
+   * - tief: Über einem großen A, O oder U steht in der Zeile darüber ein
+   *   „ – es läse sich wie ein Umlaut („Änfrage“).
+   * - umlaut: In der Zeile steht ein großer Umlaut, seine Punkte stießen
+   *   an die Zeile darüber (Versalsatz).
+   * - komma: Über der Zeile hängt ein Komma in ihre Buchstaben (Versalsatz).
+   */
+  luft?: { tief: number; umlaut?: number; komma?: number };
 };
 
 /** Ein gesetzter Satz: Maße, die Lage der Pointe und die Zeichenfunktion. */
@@ -1053,6 +1117,9 @@ function setzeSatz(
   const gerade = !!stil.gerade;
   const mitte = stil.achse === "mitte";
   const balken = stil.pointe === "balken";
+  // Ein gefülltes oder gerahmtes Feld um eine aufrechte Pointe (Serie)
+  // braucht an den Seiten mehr Luft als ihr gestrichelter Stellplatz.
+  const geradeRand = balken && gerade ? 0.12 : 0.07;
   const messen = (
     woerter: { t: string; betont: boolean }[],
     g: number,
@@ -1090,13 +1157,28 @@ function setzeSatz(
             .map((w) => w.t)
             .join(" ")
         : plan.pointe.join(" ");
-    // Ohne Streifen reicht der Raum der kursiven Buchstaben selbst.
-    const oben = balken
-      ? /[ÄÖÜ]/.test(pointeText)
-        ? STREIFEN_OBEN_UMLAUT
-        : STREIFEN_OBEN
-      : 0.78;
-    const unten = balken ? STREIFEN_UNTEN : 0.3;
+    // Ohne Streifen reicht der Raum der kursiven Buchstaben selbst. Das
+    // Feld um eine aufrechte Pointe (fette Grotesk) folgt ihren Maßen:
+    // Punkte großer Umlaute reichen bis 0,96, Versalien haben keine
+    // Unterlängen.
+    const umlaut = /[ÄÖÜ]/.test(pointeText);
+    const versal = pointeText === pointeText.toLocaleUpperCase("de-DE");
+    const oben = !balken
+      ? 0.78
+      : gerade
+        ? umlaut
+          ? 1
+          : 0.86
+        : umlaut
+          ? STREIFEN_OBEN_UMLAUT
+          : STREIFEN_OBEN;
+    const unten = !balken
+      ? 0.3
+      : gerade
+        ? versal
+          ? 0.14
+          : 0.3
+        : STREIFEN_UNTEN;
     const spalt = balken ? STREIFEN_SPALT : -0.02;
     const zeilen: Versuch["zeilen"] = [];
     const streifen: Streifen[] = [];
@@ -1106,6 +1188,78 @@ function setzeSatz(
     let weite = 0;
     let einsam = false;
     let block: number | null = null;
+    /** Zeichen der vorigen Zeile, die unter die Grundlinie reichen (für stil.luft). */
+    let tiefDavor: { von: number; bis: number; komma: boolean }[] | null = null;
+    /**
+     * Luft über der eben gesetzten Zeile (stil.luft), damit sie nicht mit
+     * der Zeile darüber zusammenstößt; 0, wo der Stil keine verlangt.
+     * gedruckt und pointe: die Wörter der Zeile an ihrem endgültigen Ort.
+     */
+    const zeilenLuft = (
+      gedruckt: { t: string; x: number }[],
+      pointe: Streifen[],
+      p: number,
+    ): number => {
+      const wahl = stil.luft;
+      if (!wahl) return 0;
+      const woerter = [
+        ...gedruckt.map((w) => ({ ...w, betont: false })),
+        ...pointe.flatMap((s) =>
+          s.woerter.map((w) => ({ ...w, betont: true })),
+        ),
+      ];
+      /** Wo in der Zeile die Zeichen des Musters stehen (alle: ganze Wörter). */
+      const stellen = (muster: RegExp | null) => {
+        const orte: { von: number; bis: number; zeichen: string }[] = [];
+        for (const w of woerter) {
+          ctx.font = w.betont ? kursiv(p) : grund(g);
+          sperren(ctx, w.betont ? p * pSperrung : g * stil.sperrung);
+          const bis = (n: number) => ctx.measureText(w.t.slice(0, n)).width;
+          if (!muster)
+            orte.push({ von: w.x, bis: w.x + bis(w.t.length), zeichen: w.t });
+          else
+            [...w.t].forEach((zeichen, i) => {
+              if (muster.test(zeichen))
+                orte.push({
+                  von: w.x + bis(i),
+                  bis: w.x + bis(i + 1),
+                  zeichen,
+                });
+            });
+        }
+        sperren(ctx, 0);
+        return orte;
+      };
+      const unter = (
+        orte: { von: number; bis: number }[],
+        komma: boolean,
+        spiel: number,
+      ) =>
+        !!tiefDavor?.some(
+          (t) =>
+            t.komma === komma &&
+            orte.some((o) => o.von < t.bis - spiel && t.von < o.bis - spiel),
+        );
+      let luft = 0;
+      if (tiefDavor) {
+        // Punkte großer Umlaute: nur ohne Farbstreifen (der hat eigene Luft).
+        if (
+          wahl.umlaut &&
+          woerter.some((w) => !(balken && w.betont) && /[ÄÖÜ]/.test(w.t))
+        )
+          luft = g * wahl.umlaut;
+        if (wahl.komma && unter(stellen(null), true, 0))
+          luft = Math.max(luft, g * wahl.komma);
+        if (unter(stellen(/[AOUÄÖÜ]/), false, g * 0.04))
+          luft = Math.max(luft, g * wahl.tief);
+      }
+      tiefDavor = stellen(/[„‚,;]/).map((o) => ({
+        von: o.von,
+        bis: o.bis,
+        komma: o.zeichen === "," || o.zeichen === ";",
+      }));
+      return luft;
+    };
     /** Auf der Mittelachse: eine Zeile um ihre halbe freie Breite einrücken. */
     const einruecken = (
       breiteZeile: number,
@@ -1149,7 +1303,7 @@ function setzeSatz(
           // größer gesetzt): entsprechend mehr Luft zur Zeile darüber.
           const davor =
             mitStreifen && zeilen.length ? p * oben - g * stil.kapp : 0;
-          const grundlinie = hoehe + davor + g * stil.ober;
+          let grundlinie = hoehe + davor + g * stil.ober;
           const gedruckt: { t: string; x: number }[] = [];
           const ab = streifen.length;
           let x = 0;
@@ -1165,6 +1319,9 @@ function setzeSatz(
                 // steht über, und die Kursive neigt sich nach rechts.
                 // So sitzt er gleich weit von beiden Nachbarn.
                 if (x > 0 && balken) x += g * 0.06;
+                // Am Zeilenanfang steht das Feld einer aufrechten Pointe
+                // bündig mit dem Satzspiegel.
+                else if (balken && gerade) x += p * geradeRand;
                 offen = {
                   x0: x,
                   x1: x,
@@ -1182,10 +1339,15 @@ function setzeSatz(
             x += w.breite + abstand;
           }
           const d = einruecken(x - abstand, gedruckt, ab);
+          const luft = zeilenLuft(gedruckt, streifen.slice(ab), p);
+          if (luft) {
+            grundlinie += luft;
+            for (const s of streifen.slice(ab)) s.grundlinie += luft;
+          }
           zeilen.push({ grundlinie, woerter: gedruckt });
           linien.push({ grundlinie, x0: d, x1: d + x - abstand, g });
           weite = Math.max(weite, x - abstand);
-          hoehe += zeilenHoehe + davor + (mitStreifen ? g * 0.17 : 0);
+          hoehe += zeilenHoehe + davor + luft + (mitStreifen ? g * 0.17 : 0);
         }
       }
       const ende = letzte[letzte.length - 1];
@@ -1211,12 +1373,13 @@ function setzeSatz(
             x += w.breite + abstand;
             return lage;
           });
-          const grundlinie = hoehe + g * stil.ober;
           const d = einruecken(z.breite, gedruckt, streifen.length);
+          const luft = zeilenLuft(gedruckt, [], g);
+          const grundlinie = hoehe + luft + g * stil.ober;
           zeilen.push({ grundlinie, woerter: gedruckt });
           linien.push({ grundlinie, x0: d, x1: d + z.breite, g });
           weite = Math.max(weite, z.breite);
-          hoehe += zeilenHoehe;
+          hoehe += zeilenHoehe + luft;
         }
       }
       if (stil.kurzAllein && kurzAllein(zeilen)) einsam = true;
@@ -1515,7 +1678,30 @@ function setzeSatz(
        * dann seinen Schatten, solange es schwebt).
        */
       const streifenMalen = (s: Streifen, wort: boolean) => {
-        if (balken) {
+        if (balken && stil.rahmen) {
+          // Nur der Rahmen des Streifens, innen an seiner Kante entlang.
+          const strich = Math.max(5, s.px * 0.045);
+          streifenPfad(
+            ctx,
+            x + s.x0,
+            x + s.x1,
+            y + s.grundlinie,
+            s.px,
+            s.oben,
+            strich / 2,
+            s.unten,
+            gerade,
+            geradeRand,
+          );
+          ctx.save();
+          ctx.strokeStyle = farben.balken;
+          ctx.lineWidth = strich;
+          ctx.lineJoin = "miter";
+          ctx.setLineDash([]);
+          ctx.stroke();
+          ctx.restore();
+          ohneSchatten(ctx);
+        } else if (balken) {
           streifenPfad(
             ctx,
             x + s.x0,
@@ -1526,6 +1712,7 @@ function setzeSatz(
             0,
             s.unten,
             gerade,
+            geradeRand,
           );
           ctx.fillStyle = farben.balken;
           ctx.fill();
@@ -1638,6 +1825,7 @@ function setzeSatz(
           3,
           s.unten,
           gerade,
+          geradeRand,
         );
         ctx.stroke();
         ctx.restore();
@@ -1684,6 +1872,7 @@ function setzeSatz(
               0,
               s.unten,
               gerade,
+              geradeRand,
             );
             ctx.fillStyle = `rgb(0 0 0 / ${dunkel})`;
             ctx.fill();
@@ -2109,7 +2298,13 @@ type KopfFarben = {
   datum: string;
   /** Anlass eines tagesaktuellen Posts (sonst wie das Datum) */
   anlass?: string;
+  /** Serie, Aufhänger: Füllung der Pille mit dem Titel (sonst der Akzent der Farbwelt) */
+  titel?: string;
 };
+
+/** Stelle eines Bildes in seiner Serie („2/4“), sonst null. */
+const zaehler = (k: Basis): string | null =>
+  k.serie ? `${k.serie.nr}/${k.serie.von}` : null;
 
 /**
  * Rechts oben: das Datum, bei tagesaktuellen Posts mit dem Anlass davor
@@ -2126,12 +2321,17 @@ function datumBauen(
   farben: { datum: string; anlass?: string },
   gross = 26,
   mitAnlass = true,
+  /** Steht statt des Anlasses da (Serie, Aufhänger: die Reihe). */
+  stattAnlass?: string,
 ): (c: Ctx) => void {
   const { ctx, f, karte, mono } = k;
   const rechts = f.b - RAND + 3;
   const frei = rechts - linksEnde - 28;
-  const datum = karte.datumKurz.toUpperCase();
-  const anlass = mitAnlass ? (karte.anlass?.trim().toUpperCase() ?? "") : "";
+  // In einer Serie steht statt des Datums die Stelle des Bildes („2/4“).
+  const datum = zaehler(k) ?? karte.datumKurz.toUpperCase();
+  const anlass = mitAnlass
+    ? (stattAnlass ?? karte.anlass ?? "").trim().toUpperCase()
+    : "";
   const monoSchrift = (px: number) => `400 ${px}px ${mono}`;
   const fett = (px: number) => `700 ${px}px ${GROTESK}`;
   const weite = (text: string, schrift: string, sperrung: number) => {
@@ -2145,16 +2345,19 @@ function datumBauen(
   const aw = (px: number) => weite(anlass, fett(px), px * 0.1);
   const pw = (px: number) => weite(" · ", monoSchrift(px), px * 0.046);
   type Plan = { art: "eine" | "zwei"; a: number; d: number };
-  let plan: Plan = { art: "eine", a: gross, d: gross };
+  // Der Zähler einer Serie steht etwas größer als ein Datum: Er soll
+  // auf jedem Bild gleich zu finden sein.
+  const plus = k.serie ? 6 : 0;
+  let plan: Plan = { art: "eine", a: gross, d: gross + plus };
   if (!anlass) {
-    if (dw(gross) > frei) k.kopfEng = true;
+    if (dw(gross + plus) > frei) k.kopfEng = true;
   } else {
     let gefunden: Plan | null = null;
     for (const px of [gross, gross - 2, gross - 4])
-      if (!gefunden && aw(px) + pw(px) + dw(px) <= frei)
-        gefunden = { art: "eine", a: px, d: px };
+      if (!gefunden && aw(px) + pw(px + plus) + dw(px + plus) <= frei)
+        gefunden = { art: "eine", a: px, d: px + plus };
     // Zwei Zeilen: der Anlass über dem Datum, beide rechtsbündig.
-    const d2 = Math.min(22, gross - 4);
+    const d2 = Math.min(22, gross - 4) + plus;
     for (let px = gross; !gefunden && px >= 18; px -= 2)
       if (aw(px) <= frei && dw(d2) <= frei)
         gefunden = { art: "zwei", a: px, d: d2 };
@@ -2213,20 +2416,44 @@ function kopfBauen(
   mitDatum = true,
 ): () => void {
   const { ctx, f, l, mono } = k;
-  const text = etikett?.toUpperCase() ?? "";
+  // Serie, Aufhänger: Der Titel der Serie steht links als gefüllte Pille
+  // (die eine Pille in der Akzentfarbe), die Reihe wandert nach rechts
+  // vor den Zähler. In den folgenden Bildern ist es umgekehrt: die Reihe
+  // links, der Titel klein rechts.
+  const titel =
+    (mitAnlass &&
+      mitDatum &&
+      art !== "folio" &&
+      rolleVon(k) === "aufhaenger" &&
+      k.karte.anlass?.trim()) ||
+    null;
+  const text = (titel ?? etikett)?.toUpperCase() ?? "";
   const mitte = f.oben + (art === "folio" ? 30 : 39);
+  // Im Raster ist die Pille ein Block mit geraden Ecken.
+  const ecke = art === "zelle" ? 0 : 31;
+  if (titel) art = "pille";
   // „zelle“: kleine Kennzeile im Raster, wie in einer Zelle des Satzspiegels.
-  const schrift =
+  let schrift =
     art === "folio"
       ? `400 24px ${mono}`
       : art === "zelle"
         ? `700 24px ${GROTESK}`
         : `700 26px ${GROTESK}`;
-  const sperrung = art === "folio" ? 3.5 : art === "zelle" ? 2.6 : 3.4;
-  ctx.font = schrift;
-  sperren(ctx, sperrung);
-  const textBreite = text ? ctx.measureText(text).width : 0;
-  sperren(ctx, 0);
+  let sperrung = art === "folio" ? 3.5 : art === "zelle" ? 2.6 : 3.4;
+  const messen = () => {
+    ctx.font = schrift;
+    sperren(ctx, sperrung);
+    const w = text ? ctx.measureText(text).width : 0;
+    sperren(ctx, 0);
+    return w;
+  };
+  let textBreite = messen();
+  // Ein langer Titel steht kleiner, damit rechts Reihe und Zähler passen.
+  for (let px = 24; titel && px >= 20 && textBreite > 470; px -= 2) {
+    schrift = `700 ${px}px ${GROTESK}`;
+    sperrung = px * 0.12;
+    textBreite = messen();
+  }
   const b = !text
     ? 0
     : art === "pille"
@@ -2236,17 +2463,27 @@ function kopfBauen(
         : textBreite;
   // Höchstens eine orange Pille auf dem Bild.
   const pille =
-    art === "pille" && text ? pillenFarbe(k, farben.etikett, l.text) : null;
-  const pillenText =
-    pille && pille !== farben.etikett ? schriftAuf(pille) : farben.etikettText;
+    art === "pille" && text
+      ? pillenFarbe(
+          k,
+          titel ? (farben.titel ?? marke(l)) : farben.etikett,
+          l.text,
+        )
+      : null;
+  const pillenText = titel
+    ? pillenSchrift(pille ?? l.text)
+    : pille && pille !== farben.etikett
+      ? schriftAuf(pille)
+      : farben.etikettText;
   const rechts = mitDatum
     ? datumBauen(
         k,
         RAND + b,
         mitte,
         farben,
-        art === "folio" || art === "zelle" ? 24 : 26,
+        art === "folio" || art === "zelle" || ecke === 0 ? 24 : 26,
         mitAnlass,
+        titel ? (etikett ?? "") : undefined,
       )
     : () => undefined;
   return () => {
@@ -2256,7 +2493,7 @@ function kopfBauen(
       sperren(ctx, sperrung);
       ctx.textBaseline = "middle";
       if (pille) {
-        rund(ctx, RAND, f.oben + 6, b, 62, 31);
+        rund(ctx, RAND, f.oben + 6, b, 62, ecke);
         ctx.fillStyle = pille;
         ctx.fill();
         ctx.fillStyle = pillenText;
@@ -3820,9 +4057,15 @@ function flaggenFarbe(karte: SpruchTag): string | null {
   if (karte.kicker === "Green Flag") return FLAGGE_GRUEN;
   return null;
 }
+/**
+ * Flagge für die Gestaltungen aller Reihen. In einer Story-Serie färbt
+ * sie nichts um: Alle Bilder der Serie tragen dieselbe Farbwelt.
+ */
+const flaggeFuer = (k: Basis): string | null =>
+  k.serie ? null : flaggenFarbe(k.karte);
 /** Farbwelt, die sich nicht mit der Flagge beißt (kein Rot zur roten Flagge). */
 function lookFuer(k: Basis): StoryLook {
-  const flagge = flaggenFarbe(k.karte);
+  const flagge = flaggeFuer(k);
   if (!flagge) return k.v.look;
   return lookOhne(
     k.v,
@@ -3892,6 +4135,208 @@ function linieMalen(
   k.ctx.fillRect(mitte ? x + (lang - b) / 2 : x, y, b, 2.5);
 }
 
+// ------------------------------------------------------------ Story-Serie
+
+/** Serie: Das Zeichen, dass es weitergeht, kommt nach dem Zusatz. */
+const T_WEITER = T_ZUSATZ + 0.45;
+/** Serie: Der Kontaktblock der Einladung wird nach dem Zusatz aufgedrückt. */
+const T_CTA = T_ZUSATZ + 0.5;
+/** Wohin die Einladung führt: das Anfrageformular. */
+const ANFRAGE_ADRESSE = "sitalo.de/anfrage";
+
+/** Aufgabe des Bildes in seiner Serie (sonst null). */
+const rolleVon = (k: Basis): SerieRolle | null => k.serie?.rolle ?? null;
+
+/**
+ * Serie: Am rechten Rand zeigt ein Winkel, dass es weitergeht (nicht im
+ * letzten Bild). Er steht im Seitenrand neben dem Satzspiegel, wo sonst
+ * nichts steht, in jedem Bild der Serie auf der Höhe des Zusatzes. Auf
+ * dem Aufhänger steht darüber „weiter“, hochkant wie eine Randnotiz. Im
+ * Film wird der Winkel nach dem Zusatz gezogen (zwei Stellungen), im
+ * Standbild steht er.
+ */
+function weiterMalen(k: Basis, y: number, t: number, farbe: string) {
+  const s = k.serie;
+  if (!s || s.nr >= s.von || t < T_WEITER) return;
+  const { ctx, f, mono } = k;
+  const x = f.b - RAND / 2;
+  const stellung = Math.min(2, Math.floor((t - T_WEITER) * 12) + 1);
+  ctx.save();
+  ctx.strokeStyle = farbe;
+  ctx.fillStyle = farbe;
+  ctx.lineWidth = 5;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(x - 9, y - 20);
+  ctx.lineTo(x + 10, y);
+  if (stellung === 2) ctx.lineTo(x - 9, y + 20);
+  ctx.stroke();
+  if (s.rolle === "aufhaenger") {
+    ctx.translate(x, y - 46);
+    ctx.rotate(-Math.PI / 2);
+    ctx.font = `400 24px ${mono}`;
+    sperren(ctx, 5);
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.fillText("WEITER", 0, 1);
+    sperren(ctx, 0);
+  }
+  ctx.restore();
+}
+
+/** Der Kontaktblock der Einladung: Höhe und Zeichenfunktion (x, y: linke obere Ecke des Feldes). */
+type Cta = {
+  hoehe: number;
+  zeichne: (x: number, y: number, t: number) => void;
+};
+
+/**
+ * Serie, Einladung: der Kontaktblock. Eine gefüllte Pille mit der Adresse
+ * des Anfrageformulars und einem Pfeil (die eine orange Pille des
+ * Bildes), daneben das Telefon; reicht die Breite nicht, steht es
+ * darunter. Beim Vorbereiten aufrufen, und zwar vor dem Kopf: So bekommt
+ * diese Pille das Orange, und das Etikett der Reihe weicht aus. Im Film
+ * wird die Pille nach dem Zusatz aufgedrückt wie ein Stempel, dann steht
+ * das Telefon da. null, wenn das Bild keine Einladung ist.
+ */
+function ctaBauen(
+  k: Basis,
+  breite: number,
+  achse: "links" | "mitte",
+  farben: {
+    /** Füllung der Pille (Orange, wo es trägt) und ihr Ersatz */
+    pille: string;
+    ersatz: string;
+    /** Telefonnummer und die kleine Zeile darüber */
+    schrift: string;
+    weich: string;
+  },
+): Cta | null {
+  if (rolleVon(k) !== "einladung") return null;
+  const { ctx, f, mono } = k;
+  const story = f.name === "story";
+  const h = story ? 96 : 84;
+  const px = story ? 40 : 35;
+  const schrift = `700 ${px}px ${GROTESK}`;
+  const weite = (text: string, font: string, sperrung: number) => {
+    ctx.font = font;
+    sperren(ctx, sperrung);
+    const w = ctx.measureText(text).width;
+    sperren(ctx, 0);
+    return w;
+  };
+  const textB = weite(ANFRAGE_ADRESSE, schrift, -px * 0.012);
+  const pfeil = Math.round(px * 1.05);
+  const innen = Math.round(h * 0.46);
+  const pillenB = Math.round(innen + textB + px * 0.55 + pfeil + innen * 0.86);
+  const pille = pillenFarbe(k, farben.pille, farben.ersatz);
+  const aufPille = pillenSchrift(pille);
+  const zeilePx = story ? 20 : 18;
+  const telPx = story ? 36 : 32;
+  const zeile = "ODER ANRUFEN";
+  const zeileSchrift = `700 ${zeilePx}px ${GROTESK}`;
+  const telSchrift = `400 ${telPx}px ${mono}`;
+  const telB = Math.max(
+    weite(TELEFON_ANZEIGE, telSchrift, telPx * 0.02),
+    weite(zeile, zeileSchrift, zeilePx * 0.16),
+  );
+  const spalt = story ? 44 : 34;
+  const daneben = pillenB + spalt + telB <= breite;
+  if (!daneben && Math.max(pillenB, telB) > breite) k.eng.wert = true;
+  const telH = zeilePx * 1.5 + telPx;
+  const hoehe = daneben ? h : h + (story ? 30 : 24) + telH;
+  const gesamtB = daneben ? pillenB + spalt + telB : Math.max(pillenB, telB);
+  return {
+    hoehe,
+    zeichne: (x, y, t) => {
+      if (t < T_CTA) return;
+      const links = achse === "mitte" ? x + (breite - gesamtB) / 2 : x;
+      const px0 =
+        !daneben && achse === "mitte" ? x + (breite - pillenB) / 2 : links;
+      ctx.save();
+      // Aufgedrückt: zwei Bilder etwas groß, dann sitzt die Pille.
+      const gross = t < T_CTA + 2 / 30 ? 1.04 : 1;
+      ctx.save();
+      ctx.translate(px0 + pillenB / 2, y + h / 2);
+      ctx.scale(gross, gross);
+      ctx.translate(-(px0 + pillenB / 2), -(y + h / 2));
+      rund(ctx, px0, y, pillenB, h, h / 2);
+      ctx.fillStyle = pille;
+      ctx.fill();
+      ctx.font = schrift;
+      sperren(ctx, -px * 0.012);
+      ctx.fillStyle = aufPille;
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "left";
+      ctx.fillText(ANFRAGE_ADRESSE, px0 + innen, y + h / 2 + 1);
+      sperren(ctx, 0);
+      // Pfeil in der Pille: eine gerade Linie mit offener Spitze.
+      const pa = px0 + innen + textB + px * 0.55;
+      const pm = y + h / 2 + 1;
+      ctx.strokeStyle = aufPille;
+      ctx.lineWidth = Math.max(3.5, px * 0.1);
+      ctx.lineCap = "butt";
+      ctx.lineJoin = "miter";
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(pa, pm);
+      ctx.lineTo(pa + pfeil, pm);
+      ctx.moveTo(pa + pfeil - px * 0.34, pm - px * 0.3);
+      ctx.lineTo(pa + pfeil, pm);
+      ctx.lineTo(pa + pfeil - px * 0.34, pm + px * 0.3);
+      ctx.stroke();
+      ctx.restore();
+      // Das Telefon kommt vier Bilder später.
+      if (t >= T_CTA + 4 / 30) {
+        const tx = daneben
+          ? px0 + pillenB + spalt
+          : achse === "mitte"
+            ? x + (breite - telB) / 2
+            : links;
+        const ty = daneben ? y + (h - telH) / 2 : y + h + (story ? 30 : 24);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.font = zeileSchrift;
+        sperren(ctx, zeilePx * 0.16);
+        ctx.fillStyle = farben.weich;
+        ctx.fillText(zeile, tx, ty + zeilePx * 0.86);
+        ctx.font = telSchrift;
+        sperren(ctx, telPx * 0.02);
+        ctx.fillStyle = farben.schrift;
+        ctx.fillText(TELEFON_ANZEIGE, tx - 1, ty + zeilePx * 1.5 + telPx * 0.8);
+        sperren(ctx, 0);
+      }
+      ctx.restore();
+    },
+  };
+}
+
+/** Die Einladung gibt beim Aufdrücken ihres Kontaktblocks kurz nach. */
+const CTA_FEDER = { t: T_CTA, px: 5 };
+
+/**
+ * Serie: wie die Pointe je nach Aufgabe des Bildes steht. Problem und
+ * Lösung sind ein Paar: dasselbe Feld um die Pointe, beim Problem leer
+ * (nur der Rahmen), bei der Lösung gefüllt. Aufhänger und Einladung
+ * tragen die Pointe so, wie die Gestaltung sie sonst trägt.
+ */
+function rollenStil(k: Basis): Partial<SatzStil> {
+  const rolle = rolleVon(k);
+  if (rolle === "problem") return { pointe: "balken", rahmen: true };
+  if (rolle === "loesung") return { pointe: "balken" };
+  return {};
+}
+/** Farben des Satzes dazu: im gefüllten Feld der Lösung steht die Pointe in der Schrift, die darauf trägt. */
+function rollenFarben(k: Basis, text: string, akzent: string): SatzFarben {
+  return {
+    text,
+    balken: akzent,
+    pointe: rolleVon(k) === "loesung" ? pillenSchrift(akzent) : akzent,
+  };
+}
+
 /**
  * Magazin: wie ein Titelblatt. Oben die Kennzeile (Sitalo Journal und
  * Datum) über einer Haarlinie; darunter mit viel Luft der Kicker in
@@ -3906,7 +4351,7 @@ function magazin(k: Basis): Maler {
   const { ctx, f, karte, serif } = k;
   const l = lookFuer(k);
   const farben = rahmenFarben(l);
-  const flagge = flaggenFarbe(karte);
+  const flagge = flaggeFuer(k);
   const achse: "links" | "mitte" = k.v.aufkleber === "band" ? "links" : "mitte";
   const mitte = achse === "mitte";
   const story = f.name === "story";
@@ -3918,6 +4363,18 @@ function magazin(k: Basis): Maler {
     3,
   );
   const anlass = karte.anlass?.trim() || null;
+  // Serie: Titelzeile und Vorspann stehen in jedem Bild an derselben
+  // Stelle, der Satz mittig dazwischen. Der Aufhänger ist das Titelblatt
+  // (Titel als Pille, größte Schrift), die Einladung trägt unten den
+  // Kontaktblock.
+  const rolle = rolleVon(k);
+  const titelblatt = rolle === "aufhaenger";
+  const cta = ctaBauen(k, breite, achse, {
+    pille: marke(l),
+    ersatz: l.text,
+    schrift: l.text,
+    weich: l.weich,
+  });
   // Kennzeile: links Sitalo Journal (bei einem Anlass die Reihe), rechts das Datum.
   const kopf = kopfBauen(
     k,
@@ -3929,21 +4386,26 @@ function magazin(k: Basis): Maler {
   const haarlinie = f.oben + 62;
 
   // Titelzeile über dem Satz: der Kicker oder der Anlass, in Kapitälchen.
+  // Auf dem Titelblatt einer Serie steht der Titel in einer gefüllten Pille.
   const titel = (anlass ?? karte.kicker).toUpperCase();
-  const titelText = mitte ? `— ${titel} —` : `— ${titel}`;
-  let titelPx = anlass ? 30 : 26;
+  const titelPille =
+    titelblatt && anlass ? pillenFarbe(k, marke(l), l.text) : null;
+  const titelText = titelPille ? titel : mitte ? `— ${titel} —` : `— ${titel}`;
+  const titelSperr = titelPille ? 0.13 : 0.22;
+  let titelPx = titelPille ? 26 : anlass ? 30 : 26;
   const titelSchrift = (px: number) => `700 ${px}px ${GROTESK}`;
   const titelWeite = () => {
     ctx.font = titelSchrift(titelPx);
-    sperren(ctx, titelPx * 0.22);
-    const w = ctx.measureText(titelText).width - titelPx * 0.22;
+    sperren(ctx, titelPx * titelSperr);
+    const w = ctx.measureText(titelText).width - titelPx * titelSperr;
     sperren(ctx, 0);
     return w;
   };
-  while (titelWeite() > breite && titelPx > 18) titelPx -= 2;
-  if (titelWeite() > breite) k.kopfEng = true;
-  const titelB = titelWeite();
-  const titelH = Math.round(titelPx * 1.1);
+  const titelPlatz = breite - (titelPille ? 62 : 0);
+  while (titelWeite() > titelPlatz && titelPx > 18) titelPx -= 2;
+  if (titelWeite() > titelPlatz) k.kopfEng = true;
+  const titelB = titelWeite() + (titelPille ? 62 : 0);
+  const titelH = titelPille ? 62 : Math.round(titelPx * 1.1);
 
   // Vorspann (Zusatz): kursiv, schmaler als der Satz.
   const deckPx = story ? 50 : 44;
@@ -3964,24 +4426,47 @@ function magazin(k: Basis): Maler {
     ? { titel: 64, linie: 60, deck: 46 }
     : { titel: 44, linie: 42, deck: 34 };
   const hoch = k.unten - k.oben;
+  // Serie: fester Stand der Titelzeile oben und des Vorspanns unten.
+  const rand = story ? 22 : 10;
+  const ctaLuft = story ? 56 : 40;
+  const ctaY = k.unten - rand - (cta?.hoehe ?? 0);
+  const deckUnten = cta ? ctaY - ctaLuft : k.unten - rand;
+  const platz = k.serie
+    ? deckUnten -
+      deck.hoehe -
+      luft.deck -
+      luft.linie -
+      (k.oben + rand + titelH + luft.titel)
+    : hoch - titelH - luft.titel - luft.linie - luft.deck - deck.hoehe - 24;
   const satz = setzeSatz(
     k,
     planFuer(karte),
     breite,
-    hoch - titelH - luft.titel - luft.linie - luft.deck - deck.hoehe - 24,
-    serifSatz(k, { achse, maxG: story ? 152 : 128 }),
+    platz,
+    serifSatz(k, {
+      achse,
+      maxG: (story ? 152 : 128) + (titelblatt ? (story ? 32 : 24) : 0),
+      ...rollenStil(k),
+    }),
   );
   const gesamt =
     titelH + luft.titel + satz.hoehe + luft.linie + luft.deck + deck.hoehe;
-  const oben = k.oben + Math.max(0, hoch - gesamt) * 0.52;
+  const oben = k.serie
+    ? k.oben + rand
+    : k.oben + Math.max(0, hoch - gesamt) * 0.52;
   const titelY = oben;
-  const y = titelY + titelH + luft.titel;
-  const linieY = y + satz.hoehe + luft.linie;
+  const y = k.serie
+    ? titelY + titelH + luft.titel + Math.max(0, platz - satz.hoehe) * 0.46
+    : titelY + titelH + luft.titel;
+  const linieY = k.serie
+    ? deckUnten - deck.hoehe - luft.deck
+    : y + satz.hoehe + luft.linie;
   const deckY = linieY + luft.deck;
   const titelX = mitte ? RAND + (breite - titelB) / 2 : RAND;
   const deckX = mitte ? RAND + (breite - deckBreite) / 2 : RAND;
   const linieLang = 96;
   const linieX = mitte ? RAND + (breite - linieLang) / 2 : RAND;
+  const satzFarbe = rollenFarben(k, l.text, akzent);
 
   k.regie = regieFuer(k, {
     // Die Kamera beginnt nah an der Titelzeile, der Satz bleibt draußen.
@@ -3995,6 +4480,7 @@ function magazin(k: Basis): Maler {
     y,
     satz,
   });
+  if (cta) k.regie.feder.push(CTA_FEDER);
 
   return (t) => {
     grund(k, l, false);
@@ -4004,18 +4490,29 @@ function magazin(k: Basis): Maler {
     ctx.fillRect(RAND, haarlinie, breite, 2);
     // Titelzeile.
     ctx.save();
+    if (titelPille) {
+      rund(ctx, titelX, titelY, titelB, titelH, titelH / 2);
+      ctx.fillStyle = titelPille;
+      ctx.fill();
+    }
     ctx.font = titelSchrift(titelPx);
-    sperren(ctx, titelPx * 0.22);
-    ctx.fillStyle = akzent;
+    sperren(ctx, titelPx * titelSperr);
+    ctx.fillStyle = titelPille ? pillenSchrift(titelPille) : akzent;
     ctx.textBaseline = "middle";
-    ctx.fillText(titelText, titelX, titelY + titelH / 2);
+    ctx.fillText(
+      titelText,
+      titelX + (titelPille ? 31 : 0),
+      titelY + titelH / 2 + (titelPille ? 2 : 0),
+    );
     sperren(ctx, 0);
     ctx.restore();
-    satz.zeichne(RAND, y, t, { text: l.text, balken: akzent, pointe: akzent });
+    satz.zeichne(RAND, y, t, satzFarbe);
     if (karte.kicker === "Mythos")
       mythosStriche(k, satz, RAND, y, t, akzent, 0.24);
     linieMalen(k, linieX, linieY, linieLang, t, akzent);
     deck.zeichne(deckX, deckY, l.weich, (i) => t >= T_ZUSATZ + (i * 4) / 30);
+    cta?.zeichne(RAND, ctaY, t);
+    weiterMalen(k, k.unten - rand - deckPx * 1.22, t, l.weich);
     fuss(k, t, farben.fuss);
     korn(k, 0.08);
   };
@@ -4032,7 +4529,7 @@ function magazin(k: Basis): Maler {
 function farbfeld(k: Basis): Maler {
   const { ctx, f, karte } = k;
   const l = lookFuer(k);
-  const flagge = flaggenFarbe(karte);
+  const flagge = flaggeFuer(k);
   const feld = flagge ?? l.feld;
   const feldText = flagge ? "#ffffff" : l.feldText;
   const marker = flagge ? PAPIER : l.feldMarker;
@@ -4041,6 +4538,16 @@ function farbfeld(k: Basis): Maler {
   const feldHell = helligkeit(feld) > 0.36;
   const story = f.name === "story";
   const breite = f.b - RAND * 2;
+  // Serie: Der Horizont liegt in jedem Bild gleich hoch; nur die
+  // Einladung hat mehr Papier, darauf steht ihr Kontaktblock. Das Problem
+  // trägt seine Pointe im leeren Rahmen.
+  const rolle = rolleVon(k);
+  const cta = ctaBauen(k, breite, "links", {
+    pille: ORANGE,
+    ersatz: papierText,
+    schrift: papierText,
+    weich: mitDeck(papierText, 0.78),
+  });
   const kopf = kopfBauen(
     k,
     {
@@ -4048,6 +4555,7 @@ function farbfeld(k: Basis): Maler {
       etikettText: feldText,
       datum: mitDeck(feldText, 0.8),
       anlass: farbeAuf([feld], [marker, feldText], 3),
+      titel: marker,
     },
     karte.kicker,
     "linie",
@@ -4055,9 +4563,17 @@ function farbfeld(k: Basis): Maler {
   // Papier unten: Zusatz mit Abstand unter der Linie, Wortmarke am Fuß.
   const zusatz = setzeZusatz(k, breite);
   const unterLinie = story ? 104 : 86;
+  const ctaLuft = story ? 50 : 38;
+  // Serie: Platz für drei Zeilen Zusatz, auch wenn er kürzer ist.
+  const papierHoch = k.serie
+    ? Math.max(
+        48 * 1.32 * 3,
+        zusatz.hoehe + (cta ? ctaLuft + cta.hoehe + (story ? 24 : 4) : 0),
+      )
+    : zusatz.hoehe;
   const horizont = Math.round(
     Math.min(
-      f.unten - 120 - zusatz.hoehe - unterLinie,
+      f.unten - 120 - papierHoch - unterLinie,
       f.h * (story ? 0.7 : 0.74),
     ),
   );
@@ -4071,10 +4587,15 @@ function farbfeld(k: Basis): Maler {
   const satz = setzeSatz(k, planFuer(karte), breite, satzUnten - k.oben, {
     maxG: story ? 140 : 124,
     schraeg: 0,
+    rahmen: rolle === "problem",
+    // Serie: Ein „ steht nicht wie ein Umlaut über der nächsten Zeile.
+    luft: k.serie ? { tief: 0.16 } : undefined,
   });
   const y = lage(k, k.oben, satzUnten, satz.hoehe);
   k.hafenBand = [y + satz.hoehe + 40, zusatzY - 30];
   const akzentPapier = farbeAuf([papier], [ORANGE, ORANGE_TIEF], 3);
+  // Der leere Rahmen des Problems muss sich vom Feld abheben.
+  const rahmen = kontrast(marker, feld) >= 2.2 ? marker : feldText;
 
   ctx.font = `700 26px ${GROTESK}`;
   sperren(ctx, 3.4);
@@ -4086,6 +4607,7 @@ function farbfeld(k: Basis): Maler {
     y,
     satz,
   });
+  if (cta) k.regie.feder.push(CTA_FEDER);
   const fussFarben: FussFarben = {
     schrift: papierText,
     weich: mitDeck(papierText, 0.78),
@@ -4115,14 +4637,19 @@ function farbfeld(k: Basis): Maler {
     ctx.fill();
     ctx.restore();
     kopf();
-    satz.zeichne(RAND, y, t, {
-      text: feldText,
-      balken: marker,
-      pointe: betont,
-    });
+    satz.zeichne(
+      RAND,
+      y,
+      t,
+      rolle === "problem"
+        ? { text: feldText, balken: rahmen, pointe: feldText }
+        : { text: feldText, balken: marker, pointe: betont },
+    );
     if (karte.kicker === "Mythos")
       mythosStriche(k, satz, RAND, y, t, marker, 0.36);
     zusatz.zeichne(RAND, zusatzY, t, papierText, akzentPapier);
+    cta?.zeichne(RAND, zusatzY + zusatz.hoehe + ctaLuft, t);
+    weiterMalen(k, zusatzY + 92, t, mitDeck(papierText, 0.78));
     fuss(k, t, fussFarben);
     korn(k, 0.08);
   };
@@ -4238,7 +4765,7 @@ function raster(k: Basis): Maler {
   const { ctx, f, karte } = k;
   const l = lookFuer(k);
   const farben = rahmenFarben(l);
-  const flagge = flaggenFarbe(karte);
+  const flagge = flaggeFuer(k);
   const story = f.name === "story";
   const breite = f.b - RAND * 2;
   const zwischen = 24;
@@ -4247,6 +4774,16 @@ function raster(k: Basis): Maler {
   const akzent = akzentAuf([l.bg, l.bg2], l, flagge);
   // Trägt keine Akzentfarbe, steht die Pointe mit einem Strich darunter.
   const mitFarbe = akzent !== l.text;
+  // Serie: Die untere Linie liegt in jedem Bild gleich hoch. Beim Problem
+  // ist das Quadrat leer (nur der Rahmen), bei der Lösung gefüllt; die
+  // Einladung trägt statt des Quadrats unten den Kontaktblock.
+  const rolle = rolleVon(k);
+  const cta = ctaBauen(k, breite, "links", {
+    pille: marke(l),
+    ersatz: l.text,
+    schrift: l.text,
+    weich: l.weich,
+  });
   const kopf = kopfBauen(
     k,
     {
@@ -4254,6 +4791,7 @@ function raster(k: Basis): Maler {
       etikettText: l.text,
       datum: l.weich,
       anlass: anlassFarbe(l.bg, l.bg2, l),
+      titel: akzent,
     },
     karte.kicker,
     "zelle",
@@ -4273,30 +4811,46 @@ function raster(k: Basis): Maler {
     zPx - 8,
     1.3,
   );
-  const zusatzY = k.unten - zusatz.hoehe;
+  const ctaLuft = story ? 48 : 34;
+  const ctaY = k.unten - (cta?.hoehe ?? 0);
+  // Serie: Platz für vier Zeilen Zusatz, auch wenn er kürzer ist (bei
+  // der Einladung drei: Darunter steht der Kontaktblock).
+  const zusatzY = k.serie
+    ? (cta ? ctaY - ctaLuft : k.unten) -
+      Math.max(zusatz.hoehe, zPx * 1.3 * (cta ? 3 : 4))
+    : k.unten - zusatz.hoehe;
   const linieUnten = Math.round(zusatzY - (story ? 46 : 34));
   const feldUnten = linieUnten - (story ? 54 : 40);
-  // Oben im Feld bleibt mindestens Platz für ein kleines Quadrat.
+  // Oben im Feld bleibt mindestens Platz für ein kleines Quadrat. In
+  // einer Serie ist es in jedem Bild gleich groß.
   const luft = story ? 52 : 38;
+  const quadratFest = k.serie ? (story ? 104 : 84) : 72;
   const satz = setzeSatz(
     k,
     planFuer(karte),
     breite,
-    feldUnten - k.oben - 72 - luft,
+    feldUnten - k.oben - (cta ? 0 : quadratFest) - luft,
     groteskSatz({
-      maxG: story ? 184 : 156,
+      maxG: (story ? 184 : 156) + (rolle === "aufhaenger" ? 16 : 0),
       pointe: mitFarbe ? "farbe" : "linie",
+      // Serie: Ein „ steht nicht wie ein Umlaut über der nächsten Zeile.
+      luft: k.serie ? { tief: 0.16 } : undefined,
+      ...rollenStil(k),
     }),
   );
   const y = feldUnten - satz.hoehe;
   // Das Quadrat ist eine oder zwei Spalten breit, je nach freiem Platz.
-  const quadrat = Math.round(
-    Math.min(
-      spalte * 2 + zwischen,
-      (k.unten - k.oben) * 0.22,
-      y - luft - k.oben,
-    ),
-  );
+  const quadrat = cta
+    ? 0
+    : k.serie
+      ? quadratFest
+      : Math.round(
+          Math.min(
+            spalte * 2 + zwischen,
+            (k.unten - k.oben) * 0.22,
+            y - luft - k.oben,
+          ),
+        );
   const qx = f.b - RAND - quadrat;
   const qy = k.oben;
 
@@ -4309,7 +4863,11 @@ function raster(k: Basis): Maler {
     y,
     satz,
   });
+  if (cta) k.regie.feder.push(CTA_FEDER);
   const satzFarbe = mitFarbe ? akzent : l.text;
+  const satzFarben = k.serie
+    ? rollenFarben(k, l.text, satzFarbe)
+    : { text: l.text, balken: satzFarbe, pointe: satzFarbe };
 
   return (t) => {
     const u = 260;
@@ -4327,14 +4885,24 @@ function raster(k: Basis): Maler {
       ctx.fillRect(mx, linieUnten - 12, 2, 12);
     }
     if (quadrat >= 40) {
-      ctx.fillStyle = akzent;
-      ctx.fillRect(qx, qy, quadrat, quadrat);
+      if (rolle === "problem") {
+        // Leeres Quadrat: nur sein Rahmen, innen an der Kante entlang.
+        const strich = Math.max(6, quadrat * 0.045);
+        ctx.strokeStyle = akzent;
+        ctx.lineWidth = strich;
+        ctx.lineJoin = "miter";
+        ctx.strokeRect(
+          qx + strich / 2,
+          qy + strich / 2,
+          quadrat - strich,
+          quadrat - strich,
+        );
+      } else {
+        ctx.fillStyle = akzent;
+        ctx.fillRect(qx, qy, quadrat, quadrat);
+      }
     }
-    satz.zeichne(RAND, y, t, {
-      text: l.text,
-      balken: satzFarbe,
-      pointe: satzFarbe,
-    });
+    satz.zeichne(RAND, y, t, satzFarben);
     if (karte.kicker === "Mythos")
       mythosStriche(k, satz, RAND, y, t, akzent, 0.36);
     linealPfeil(
@@ -4346,6 +4914,8 @@ function raster(k: Basis): Maler {
       l.text,
     );
     zusatz.zeichne(zX, zusatzY, l.text, (i) => t >= T_ZUSATZ + (i * 4) / 30);
+    cta?.zeichne(RAND, ctaY, t);
+    weiterMalen(k, k.unten - zPx * 1.3 * 4 + zPx * 0.56, t, l.text);
     fuss(k, t, farben.fuss);
     korn(k, 0.07);
   };
@@ -4362,7 +4932,7 @@ function raster(k: Basis): Maler {
 function schlagzeile(k: Basis): Maler {
   const { ctx, f, karte, serif, mono } = k;
   const l = lookFuer(k);
-  const flagge = flaggenFarbe(karte);
+  const flagge = flaggeFuer(k);
   const story = f.name === "story";
   const breite = f.b - RAND * 2;
   const { papier, papierText } = l;
@@ -4371,12 +4941,25 @@ function schlagzeile(k: Basis): Maler {
   const akzent = akzentAuf([papier], l, flagge, papierText);
   const mitFarbe = akzent !== papierText;
   const anlass = karte.anlass?.trim() || null;
+  // Serie: Der Aufhänger ist die Titelseite mit hohem Kopfbalken und
+  // großem Titel, die folgenden Bilder tragen ihn als schmale Kopfzeile;
+  // rechts steht statt des Datums die Stelle des Bildes. Die Linie über
+  // den Spalten liegt in jedem Bild gleich hoch, die Einladung trägt
+  // unten den Kontaktblock.
+  const rolle = rolleVon(k);
+  const titelseite = rolle === "aufhaenger";
+  const cta = ctaBauen(k, breite, "links", {
+    pille: ORANGE,
+    ersatz: papierText,
+    schrift: papierText,
+    weich: mitDeck(papierText, 0.78),
+  });
 
   // Kopfbalken: Anlass oder Reihe links, Datum rechts.
-  const balkenH = story ? 88 : 76;
+  const balkenH = (story ? 88 : 76) + (titelseite ? (story ? 36 : 24) : 0);
   const balkenMitte = f.oben + balkenH / 2;
   const titel = (anlass ?? karte.kicker).toLocaleUpperCase("de-DE");
-  const datum = karte.datumKurz.toUpperCase();
+  const datum = zaehler(k) ?? karte.datumKurz.toUpperCase();
   const titelSchrift = (px: number) => `800 ${px}px ${GROTESK}`;
   const weite = (text: string, schrift: string, sperrung: number) => {
     ctx.font = schrift;
@@ -4385,9 +4968,9 @@ function schlagzeile(k: Basis): Maler {
     sperren(ctx, 0);
     return w;
   };
-  const datumPx = 24;
+  const datumPx = k.serie ? 32 : 24;
   const datumB = weite(datum, `400 ${datumPx}px ${mono}`, datumPx * 0.06);
-  let titelPx = story ? 34 : 30;
+  let titelPx = (story ? 34 : 30) + (titelseite ? (story ? 16 : 12) : 0);
   while (
     titelPx > 20 &&
     weite(titel, titelSchrift(titelPx), titelPx * 0.08) + 36 + datumB > breite
@@ -4430,11 +5013,20 @@ function schlagzeile(k: Basis): Maler {
     },
   ];
   const metaH = 24 * 1.5 + 22 * 1.5;
-  const untenH = Math.max(zitat.hoehe, metaH);
+  // Serie: Platz für vier Zeilen Zitat, auch wenn es kürzer ist (bei der
+  // Einladung drei: Darunter steht der Kontaktblock).
+  const untenH = Math.max(
+    zitat.hoehe,
+    metaH,
+    k.serie ? zPx * 1.2 * (rolle === "einladung" ? 3 : 4) : 0,
+  );
   const luftLinie = story ? 40 : 30;
   const oben = Math.max(k.oben, doppel + (story ? 52 : 38));
   const luftSatz = story ? 56 : 40;
-  const platz = k.unten - oben - untenH - luftLinie - luftSatz;
+  const ctaLuft = story ? 44 : 32;
+  const ctaY = k.unten - (cta?.hoehe ?? 0);
+  const platz =
+    (cta ? ctaY - ctaLuft : k.unten) - oben - untenH - luftLinie - luftSatz;
   const satz = setzeSatz(
     k,
     versalPlan(planFuer(karte)),
@@ -4449,6 +5041,10 @@ function schlagzeile(k: Basis): Maler {
       kapp: 0.74,
       wort: 0.24,
       pointe: mitFarbe ? "farbe" : "linie",
+      // Serie: Die Punkte großer Umlaute, ein „ und ein Komma stoßen
+      // nicht an die Nachbarzeile.
+      luft: k.serie ? { tief: 0.16, umlaut: 0.1, komma: 0.08 } : undefined,
+      ...rollenStil(k),
     }),
   );
   // Die Spalten stehen unten auf dem Textfeld, die Schlagzeile etwas über
@@ -4474,6 +5070,7 @@ function schlagzeile(k: Basis): Maler {
       [f.unten - 84, f.unten - 14],
     ],
   });
+  if (cta) k.regie.feder.push(CTA_FEDER);
   const fussFarben: FussFarben = {
     schrift: papierText,
     weich: mitDeck(papierText, 0.78),
@@ -4483,6 +5080,10 @@ function schlagzeile(k: Basis): Maler {
     flaeche: papier,
     hell: true,
   };
+  const satzFarbe = mitFarbe ? akzent : papierText;
+  const satzFarben = k.serie
+    ? rollenFarben(k, papierText, satzFarbe)
+    : { text: papierText, balken: satzFarbe, pointe: satzFarbe };
 
   return (t) => {
     const u = 260;
@@ -4508,11 +5109,7 @@ function schlagzeile(k: Basis): Maler {
     ctx.fillStyle = papierText;
     ctx.fillRect(RAND, doppel, breite, 3);
     ctx.fillRect(RAND, doppel + 8, breite, 1.5);
-    satz.zeichne(RAND, y, t, {
-      text: papierText,
-      balken: mitFarbe ? akzent : papierText,
-      pointe: mitFarbe ? akzent : papierText,
-    });
+    satz.zeichne(RAND, y, t, satzFarben);
     if (karte.kicker === "Mythos")
       mythosStriche(k, satz, RAND, y, t, akzent, 0.38);
     // Linie über den Spalten, Spaltenlinie, links Ort und Reihe.
@@ -4553,6 +5150,8 @@ function schlagzeile(k: Basis): Maler {
       papierText,
       (i) => t >= T_ZUSATZ + (i * 4) / 30,
     );
+    cta?.zeichne(RAND, ctaY, t);
+    weiterMalen(k, k.unten - zPx * 1.2 * 4 + zPx * 0.6, t, papierText);
     fuss(k, t, fussFarben);
     korn(k, 0.1);
   };
@@ -4894,10 +5493,21 @@ function riese(k: Basis): Maler {
   const { ctx, f, karte, serif } = k;
   const l = lookFuer(k);
   const farben = rahmenFarben(l);
-  const flagge = flaggenFarbe(karte);
+  const flagge = flaggeFuer(k);
   const story = f.name === "story";
   const breite = f.b - RAND * 2;
   const akzent = akzentAuf([l.bg, l.bg2], l, flagge);
+  // Serie: Der kleine Satz steht in jedem Bild oben an derselben Stelle,
+  // der Zusatz unten, der Riese mittig dazwischen. Die Einladung trägt
+  // unten den Kontaktblock (vor dem Kopf gebaut: Seine Pille bekommt das
+  // Orange).
+  const rolle = rolleVon(k);
+  const cta = ctaBauen(k, breite, "links", {
+    pille: marke(l),
+    ersatz: l.text,
+    schrift: l.text,
+    weich: l.weich,
+  });
   const kopf = kopfBauen(k, farben.kopf, karte.kicker);
   const mythos = karte.kicker === "Mythos";
 
@@ -4942,9 +5552,19 @@ function riese(k: Basis): Maler {
   const zusatz = setzeZusatz(k, breite);
   const luftOben = story ? 40 : 28;
   const luftUnten = story ? 52 : 38;
+  const ctaLuft = story ? 48 : 34;
+  const ctaY = k.unten - (cta?.hoehe ?? 0);
+  // Serie: fester Stand oben und unten (Platz für zwei Zeilen Zusatz).
+  const rand = story ? 20 : 8;
+  const zusatzY0 = k.serie
+    ? (cta ? ctaY - ctaLuft : k.unten - rand) -
+      Math.max(zusatz.hoehe, 48 * 1.32 * 2)
+    : 0;
   const platz = Math.max(
     160,
-    hoch - klein.hoehe - zusatz.hoehe - luftOben - luftUnten,
+    k.serie
+      ? zusatzY0 - luftUnten - (k.oben + rand + klein.hoehe + luftOben)
+      : hoch - klein.hoehe - zusatz.hoehe - luftOben - luftUnten,
   );
 
   // Zeilen des Riesen: so geteilt, dass er am größten wird (bei fast
@@ -4964,11 +5584,13 @@ function riese(k: Basis): Maler {
       ]);
   }
   const hoechstens = story ? 560 : 440;
+  // Im Feld (Serie: Problem und Lösung) braucht der Riese mehr Rand.
+  const imFeld = rolle === "problem" || rolle === "loesung";
   const groesse = (zeilen: string[]) =>
     Math.min(
       hoechstens,
-      (breite - 10) / (Math.max(...zeilen.map(weite)) + 0.04),
-      platz / (zeilen.length * 1.06 + 0.26),
+      (breite - 10) / (Math.max(...zeilen.map(weite)) + (imFeld ? 0.24 : 0.04)),
+      platz / (zeilen.length * (imFeld ? 1.21 : 1.06) + 0.26),
     );
   const wert = (z: string[]) => groesse(z) * (1 - 0.1 * (z.length - 1));
   let zeilen = kandidaten[0];
@@ -4988,25 +5610,34 @@ function riese(k: Basis): Maler {
       blockMin: 0,
       blockMax: hoechstens,
       schraeg: 0,
+      ...rollenStil(k),
     },
   );
   // Der Riese zählt nicht als kleinste Schrift, wohl aber der kleine Satz.
   k.eng.klein = Math.min(klein0, klein.px);
   const gesamt =
     klein.hoehe + luftOben + gross.hoehe + luftUnten + zusatz.hoehe;
-  const yKlein = k.oben + Math.max(0, hoch - gesamt) * 0.42;
-  const y = yKlein + klein.hoehe + luftOben;
-  const zusatzY = y + gross.hoehe + luftUnten;
+  const yKlein = k.serie
+    ? k.oben + rand
+    : k.oben + Math.max(0, hoch - gesamt) * 0.42;
+  const y = k.serie
+    ? yKlein + klein.hoehe + luftOben + Math.max(0, platz - gross.hoehe) * 0.46
+    : yKlein + klein.hoehe + luftOben;
+  const zusatzY = k.serie ? zusatzY0 : y + gross.hoehe + luftUnten;
 
   k.regie = regieFuer(k, { nah: nahEtikett(k), x: RAND, y, satz: gross });
+  if (cta) k.regie.feder.push(CTA_FEDER);
+  const satzFarben = rollenFarben(k, l.text, akzent);
 
   return (t) => {
     grund(k, l, false);
     kopf();
     klein.zeichne(RAND, yKlein, l.text, akzent);
     if (mythos) mythosStriche(k, klein, RAND, yKlein, t, akzent, 0.3);
-    gross.zeichne(RAND, y, t, { text: l.text, balken: akzent, pointe: akzent });
+    gross.zeichne(RAND, y, t, satzFarben);
     zusatz.zeichne(RAND, zusatzY, t, l.weich, l.akzent);
+    cta?.zeichne(RAND, ctaY, t);
+    weiterMalen(k, k.unten - rand - 48 * 1.32 * 2 + 30, t, l.weich);
     fuss(k, t, farben.fuss);
     korn(k, 0.09);
   };
@@ -5097,7 +5728,7 @@ function formatFuer(kicker: string): (k: Basis) => Maler {
  */
 export async function storyVorbereiten(
   canvas: HTMLCanvasElement,
-  karte: SpruchTag,
+  karte: StoryKarte,
   format: StoryFormat = FORMATE.story,
   optionen: {
     skala?: number;
@@ -5143,7 +5774,11 @@ export async function storyVorbereiten(
       ...lade(
         "400 26px",
         monoRoh,
-        `sitalo.de POV SITALO JOURNAL ${karte.kicker.toUpperCase()} ${karte.datumKurz}`,
+        `sitalo.de POV SITALO JOURNAL ${karte.kicker.toUpperCase()} ${karte.datumKurz}${
+          istFolge(karte.folge)
+            ? ` ${ANFRAGE_ADRESSE} ${TELEFON_ANZEIGE} WEITER/`
+            : ""
+        }`,
       ),
     ]),
     // Hängt das Netz, wird nach drei Sekunden mit Ersatzschrift gemalt.
@@ -5165,6 +5800,34 @@ export async function storyVorbereiten(
   const pctx = kinoAn ? plakat.getContext("2d") : ctx;
   if (!pctx) return () => undefined;
   const v = varianteFuer(karte.nummer, karte.platz, optionen.versatz ?? 0);
+  // Bild einer Story-Serie: Stelle und Aufgabe. Fehlt die Aufgabe, folgt
+  // sie aus der Stelle (erstes Bild Aufhänger, letztes Einladung).
+  const folge = istFolge(karte.folge) ? karte.folge : null;
+  const serie: Basis["serie"] = folge
+    ? {
+        nr: folge.nr,
+        von: folge.von,
+        rolle:
+          karte.rolle ??
+          (folge.nr === 1
+            ? "aufhaenger"
+            : folge.nr === folge.von
+              ? "einladung"
+              : folge.nr === 2
+                ? "problem"
+                : "loesung"),
+      }
+    : null;
+  // Ablauf des Films: der des Tages, in einer Serie von Bild zu Bild
+  // weitergedreht (filmFuerFolge), oder von Hand festgelegt.
+  const ablauf = filmFuerFolge(karte, optionen.versatz ?? 0);
+  // Die Gestaltung des Tages; der tagesaktuelle Spruch des Tages steht
+  // an jedem zweiten Tag als Kalenderblatt, eine Serie in ihrer eigenen
+  // Gestaltung (gestaltungFuer). Von Hand lässt sich für eine Serie nur
+  // eine Gestaltung wählen, die Serien trägt.
+  let layout = optionen.layout ?? gestaltungFuer(karte, optionen.versatz ?? 0);
+  if (serie && !SERIE_LAYOUTS.includes(layout))
+    layout = serieGestaltung(karte.nummer, optionen.versatz ?? 0);
   const basis: Basis = {
     ctx: pctx,
     f: format,
@@ -5181,8 +5844,8 @@ export async function storyVorbereiten(
     eng: { wert: false, klein: 999 },
     kam: { x: format.b / 2, y: format.h / 2, z: 1, dy: 0 },
     film: {
-      auftritt: optionen.film?.auftritt ?? v.auftritt,
-      kamera: optionen.film?.kamera ?? v.kamera,
+      auftritt: optionen.film?.auftritt ?? ablauf.auftritt,
+      kamera: optionen.film?.kamera ?? ablauf.kamera,
     },
     regie: { fahrt: [], feder: [], ladung: null },
     kamFest: null,
@@ -5192,14 +5855,13 @@ export async function storyVorbereiten(
     ueberlagerung: null,
     versatz: [0, 0],
     kornDeck: 0,
-    // Die Gestaltung des Tages; der tagesaktuelle Spruch des Tages steht
-    // an jedem zweiten Tag als Kalenderblatt (gestaltungFuer).
-    layout: optionen.layout ?? gestaltungFuer(karte, optionen.versatz ?? 0),
+    layout,
     kopfEng: false,
     orangePillen: 0,
     horizont: null,
     hafenBand: null,
     stadtGross: 1,
+    serie,
   };
   const wahl = malerFuer(karte, v, basis.layout);
   basis.layout = wahl.layout;
@@ -5211,6 +5873,7 @@ export async function storyVorbereiten(
   canvas.dataset.kopf = basis.kopfEng ? "1" : "";
   canvas.dataset.orange = String(basis.orangePillen);
   canvas.dataset.layout = basis.layout;
+  canvas.dataset.folge = zaehler(basis) ?? "";
 
   /** Zeichnet das Plakat flach, mit der Kamera der Regie oder einem festen Ausschnitt. */
   const flach = (t: number) => {
@@ -5375,7 +6038,7 @@ export async function storyVorbereiten(
 /** Zeichnet das fertige Standbild. */
 export async function zeichneStory(
   canvas: HTMLCanvasElement,
-  karte: SpruchTag,
+  karte: StoryKarte,
   format: StoryFormat = FORMATE.story,
   optionen: { skala?: number; versatz?: number } = {},
 ): Promise<void> {
