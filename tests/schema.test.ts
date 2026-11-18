@@ -5,6 +5,7 @@ import { ANGEBOT_COLUMNS } from "@/lib/admin/angebote";
 import { explainDbError } from "@/lib/admin/db-errors";
 import { POST_STATUS_COLUMNS } from "@/lib/admin/post-planer";
 import { PROJEKT_COLUMNS } from "@/lib/admin/projekte";
+import { INSTAGRAM_POSTS_COLUMNS } from "@/lib/instagram/posts-store";
 import { SERIEN_COLUMNS } from "@/lib/serien-store";
 import { SERVICE_KEY, startMock } from "@/tests/supabase-mock.mjs";
 
@@ -26,8 +27,8 @@ after(async () => {
 
 describe("Rechte fehlen an neuen Tabellen (Supabase vergibt sie nicht mehr von selbst)", () => {
   it("einzelne Tabellen ohne Rechte gelten als 'fehlt': dieselbe Migration hilft noch einmal", async () => {
-    mock.reset("v5");
-    mock.deny(["angebote", "post_status", "serien"]);
+    mock.reset("v6");
+    mock.deny(["angebote", "post_status", "serien", "instagram_posts"]);
     const status = await schema.readSchemaStatus();
     assert.deepEqual(status, {
       leadsV2: "ok",
@@ -37,22 +38,30 @@ describe("Rechte fehlen an neuen Tabellen (Supabase vergibt sie nicht mehr von s
       projekte: "ok",
       postStatus: "fehlt",
       serien: "fehlt",
+      instagramPosts: "fehlt",
     });
     const { missingMigrations } = await import("@/lib/admin/migration-sql");
     assert.deepEqual(
       missingMigrations(status).map((m) => m.id),
-      ["angebote", "ausbau", "serien"],
+      ["angebote", "ausbau", "serien", "instagram"],
     );
   });
 
   it("scheitert schon leads, ist es der Schlüssel: alles bleibt 'unbekannt'", async () => {
-    mock.reset("v5");
-    mock.deny(["leads", "lead_events", "angebote", "serien"]);
+    mock.reset("v6");
+    mock.deny([
+      "leads",
+      "lead_events",
+      "angebote",
+      "serien",
+      "instagram_posts",
+    ]);
     const status = await schema.readSchemaStatus();
     assert.equal(status.leadsV2, "unbekannt");
     assert.equal(status.events, "unbekannt");
     assert.equal(status.angebote, "unbekannt");
     assert.equal(status.serien, "unbekannt");
+    assert.equal(status.instagramPosts, "unbekannt");
     assert.equal(status.projekte, "ok");
     assert.equal(status.error?.code, "42501");
     assert.equal(explainDbError(status.error).kind, "auth");
@@ -86,6 +95,7 @@ describe("checkSchema / readSchemaStatus", () => {
       projekte: "fehlt",
       postStatus: "fehlt",
       serien: "fehlt",
+      instagramPosts: "fehlt",
     });
   });
 
@@ -99,6 +109,7 @@ describe("checkSchema / readSchemaStatus", () => {
       projekte: "fehlt",
       postStatus: "fehlt",
       serien: "fehlt",
+      instagramPosts: "fehlt",
     });
   });
 
@@ -112,6 +123,7 @@ describe("checkSchema / readSchemaStatus", () => {
       projekte: "fehlt",
       postStatus: "fehlt",
       serien: "fehlt",
+      instagramPosts: "fehlt",
     });
   });
 
@@ -125,10 +137,11 @@ describe("checkSchema / readSchemaStatus", () => {
       projekte: "ok",
       postStatus: "ok",
       serien: "fehlt",
+      instagramPosts: "fehlt",
     });
   });
 
-  it("v5: alles ok", async () => {
+  it("v5 (Stand beim Inhaber): nur Instagram fehlt", async () => {
     mock.reset("v5");
     assert.deepEqual(await schema.readSchemaStatus(), {
       leadsV2: "ok",
@@ -138,6 +151,21 @@ describe("checkSchema / readSchemaStatus", () => {
       projekte: "ok",
       postStatus: "ok",
       serien: "ok",
+      instagramPosts: "fehlt",
+    });
+  });
+
+  it("v6: alles ok", async () => {
+    mock.reset("v6");
+    assert.deepEqual(await schema.readSchemaStatus(), {
+      leadsV2: "ok",
+      events: "ok",
+      deletions: "ok",
+      angebote: "ok",
+      projekte: "ok",
+      postStatus: "ok",
+      serien: "ok",
+      instagramPosts: "ok",
     });
     // gekapselt in React cache(); außerhalb von React einfach durchgereicht
     assert.equal((await schema.checkSchema()).angebote, "ok");
@@ -155,6 +183,7 @@ describe("checkSchema / readSchemaStatus", () => {
       assert.equal(s.projekte, "unbekannt");
       assert.equal(s.postStatus, "unbekannt");
       assert.equal(s.serien, "unbekannt");
+      assert.equal(s.instagramPosts, "unbekannt");
       assert.ok(s.error);
       assert.equal(explainDbError(s.error).kind, "auth");
     } finally {
@@ -172,18 +201,20 @@ describe("checkSchema / readSchemaStatus", () => {
       assert.equal(s.projekte, "unbekannt");
       assert.equal(s.postStatus, "unbekannt");
       assert.equal(s.serien, "unbekannt");
+      assert.equal(s.instagramPosts, "unbekannt");
       assert.equal(s.error?.message, "Supabase ist nicht konfiguriert.");
     } finally {
       process.env.NEXT_PUBLIC_SUPABASE_URL = url;
     }
   });
 
-  it("fragt die sieben Teile mit den geplanten Spalten ab", async () => {
-    mock.reset("v5");
+  it("fragt die acht Teile mit den geplanten Spalten ab", async () => {
+    mock.reset("v6");
     await schema.readSchemaStatus();
     const urls = mock.requests.map((r) => r.url).sort();
     assert.deepEqual(urls, [
       `/rest/v1/angebote?select=${ANGEBOT_COLUMNS.join("%2C")}&limit=1`,
+      `/rest/v1/instagram_posts?select=${INSTAGRAM_POSTS_COLUMNS.join("%2C")}&limit=1`,
       "/rest/v1/lead_deletions?select=id&limit=1",
       "/rest/v1/lead_events?select=id&limit=1",
       "/rest/v1/leads?select=follow_up_on%2Coutcome%2Clost_reason&limit=1",

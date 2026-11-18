@@ -131,6 +131,44 @@ describe("explainDbError", () => {
     );
   });
 
+  it("fehlende Tabelle oder Spalte instagram_posts → missing_schema_instagram mit eigener Datei", () => {
+    for (const [code, msg] of [
+      [
+        "PGRST205",
+        "Could not find the table 'public.instagram_posts' in the schema cache",
+      ],
+      ["42P01", 'relation "public.instagram_posts" does not exist'],
+      ["42703", "column instagram_posts.links does not exist"],
+      [
+        "PGRST204",
+        "Could not find the 'media_ids' column of 'instagram_posts' in the schema cache",
+      ],
+    ]) {
+      const e = explainDbError(new DbError(msg, code));
+      assert.equal(e.kind, "missing_schema_instagram", msg);
+      assert.ok(e.hint.includes("20261118000000_instagram.sql"));
+      assert.ok(e.title.includes("Instagram"));
+    }
+    // Fehlende Rechte: das Update noch einmal, nicht der Schlüssel.
+    assert.equal(
+      explainDbError({
+        code: "42501",
+        message: "permission denied for table instagram_posts",
+      }).kind,
+      "missing_grant",
+    );
+    // Serien und Post-Status bleiben bei ihren Migrationen.
+    assert.equal(
+      explainDbError(
+        new DbError(
+          "Could not find the table 'public.serien' in the schema cache",
+          "PGRST205",
+        ),
+      ).kind,
+      "missing_schema_serien",
+    );
+  });
+
   it("fehlende Tabelle leads → missing_table_leads", () => {
     for (const code of ["PGRST205", "42P01"]) {
       const e = explainDbError(
