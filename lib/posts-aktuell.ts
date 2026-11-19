@@ -132,4 +132,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Jahresende in Sicht",
     },
   ],
+  "2026-11-19": [
+    {
+      kicker: "Green Flag",
+      text: "Die Website sagt auch, was Sie nicht machen.",
+      betont: "nicht machen",
+      zusatz:
+        "Ein klares Nein spart zwei Telefonate. Und macht jedes Ja glaubwürdiger.",
+      thema: "vertrauen",
+      anlass: "Mitte November",
+    },
+    {
+      kicker: "Real Talk",
+      text: "Wer Geschenke sucht, kennt Ihren Namen noch gar nicht.",
+      betont: "noch gar nicht",
+      zusatz:
+        "Er tippt „Geschenk für Gartenfreunde Hamburg“. Steht so ein Satz auf Ihrer Seite?",
+      thema: "google",
+      anlass: "Fünf Wochen bis Heiligabend",
+    },
+    {
+      kicker: "Hot Take",
+      text: "„Individuell“ schreiben fast alle. Darum unterscheidet es Sie von niemandem.",
+      betont: "von niemandem",
+      zusatz:
+        "Ein Beispiel tut es: ein Foto und ein Satz zu einem echten Auftrag.",
+      thema: "texte",
+      anlass: "Advent in Sicht",
+    },
+  ],
 };

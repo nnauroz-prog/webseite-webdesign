@@ -107,6 +107,49 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-19": {
+    titel: "Weihnachtsmarkt ab Montag",
+    quelle:
+      "https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungskalender/historischer-weihnachtsmarkt-auf-dem-rathausmarkt-1/",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "Hand aufs Herz",
+        text: "Findet Sie jemand, der Ihre Straße nicht kennt?",
+        betont: "nicht kennt",
+        zusatz:
+          "Ab Montag kommen Gäste zum Weihnachtsmarkt, die sich hier nicht auskennen.",
+        thema: "eindruck",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "„Gleich bei der alten Post“ hilft nur, wer die alte Post kennt.",
+        betont: "alte Post kennt",
+        zusatz:
+          "Für Einheimische geschrieben, von Fremden gelesen. Die suchen kurz und gehen dann woandershin.",
+        thema: "texte",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Der Weg beginnt dort, wo Fremde gerade stehen.",
+        betont: "gerade stehen",
+        zusatz:
+          "Von der Haltestelle oder vom bekannten Platz aus, dazu ein Foto vom Eingang.",
+        thema: "handy",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, woran man Ihren Eingang erkennt.",
+        betont: "Ihren Eingang erkennt",
+        zusatz:
+          "Ein Stichwort pro Abbiegung reicht. Den Rest bauen wir auf Ihrer Seite.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */
