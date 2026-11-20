@@ -150,6 +150,47 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-20": {
+    titel: "Lieber nicht anrufen",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "POV",
+        text: "Nummer gefunden, Daumen drüber. Und dann doch lieber morgen.",
+        betont: "lieber morgen",
+        zusatz:
+          "Anrufen heißt erklären, was man selbst nicht genau weiß. Das schiebt man gern vor sich her.",
+        thema: "handy",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Auf der Seite gibt es nur einen Weg zu Ihnen: das Telefon.",
+        betont: "das Telefon",
+        zusatz:
+          "Wer zögert, hat keinen leiseren Weg. Also nimmt er gar keinen.",
+        thema: "anfrage",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Ein zweiter Weg zu Ihnen kostet weniger Mut.",
+        betont: "weniger Mut",
+        zusatz:
+          "Ein Formular mit drei kurzen Feldern oder ein Rückruf zur Wunschzeit. Leise genügt.",
+        thema: "eindruck",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Merken",
+        text: "Schreiben Sie uns, wie Kunden Sie heute erreichen.",
+        betont: "heute erreichen",
+        zusatz:
+          "Ein paar Stichworte genügen. Wir zeigen, wo ein leiserer Weg hinpasst.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */

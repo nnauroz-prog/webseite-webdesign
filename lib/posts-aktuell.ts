@@ -161,4 +161,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Advent in Sicht",
     },
   ],
+  "2026-11-20": [
+    {
+      kicker: "Kurz gesagt",
+      text: "Die Frage „Was kostet das?“ beantwortet Ihre Website schon. Mit Schweigen.",
+      betont: "Mit Schweigen",
+      zusatz:
+        "Fehlt jeder Anhaltspunkt, rechnet der Kunde mit teuer. Ein Beispielpreis hält ihn im Gespräch.",
+      thema: "anfrage",
+      anlass: "Black Friday in Sicht",
+    },
+    {
+      kicker: "Mythos",
+      text: "Wer offen hat, muss das nicht extra sagen.",
+      betont: "nicht extra sagen",
+      zusatz:
+        "Vor Feiertagen rechnen viele mit dem Gegenteil. Wer nichts sagt, gilt schnell als zu.",
+      thema: "pflege",
+      anlass: "Weihnachtszeit naht",
+    },
+    {
+      kicker: "Hand aufs Herz",
+      text: "Würden Sie bei sich anfragen, wenn Sie nur die Website kennten?",
+      betont: "Website kennten",
+      zusatz:
+        "Genau so geht es Fremden: kein Handschlag, kein Ruf, nur diese Seite.",
+      thema: "eindruck",
+      anlass: "Freitag",
+    },
+  ],
 };
