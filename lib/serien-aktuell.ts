@@ -191,6 +191,47 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-21": {
+    titel: "Wer liest mit",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "Hand aufs Herz",
+        text: "Wer schreibt Ihnen, wenn er nicht weiß, wer es liest?",
+        betont: "wer es liest",
+        zusatz:
+          "Ein Formular ohne Gesicht fühlt sich an wie ein Briefkasten im Nirgendwo.",
+        thema: "vertrauen",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "„Ihr Team freut sich auf Sie“ klingt nach Callcenter.",
+        betont: "nach Callcenter",
+        zusatz:
+          "Wer nicht weiß, wer antwortet, rechnet mit Warteschleife. Und schreibt lieber woanders hin.",
+        thema: "texte",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Neben dem Formular steht, wer antwortet. Mit Foto und Vornamen.",
+        betont: "Foto und Vornamen",
+        zusatz:
+          "„Hier antworte ich selbst.“ Ein Satz, ein Gesicht, und aus Kontakt wird ein Gespräch.",
+        thema: "vertrauen",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, wer bei Ihnen die Anfragen liest.",
+        betont: "Anfragen liest",
+        zusatz:
+          "Ein Vorname reicht für den Anfang. Wir melden uns und zeigen, wie das aussieht.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */

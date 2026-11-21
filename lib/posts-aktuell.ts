@@ -190,4 +190,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Freitag",
     },
   ],
+  "2026-11-21": [
+    {
+      kicker: "Green Flag",
+      text: "Unter den Fotos steht, was darauf zu sehen ist.",
+      betont: "zu sehen ist",
+      zusatz:
+        "„Bad in Eimsbüttel, zwei Wochen Arbeit“ macht aus einem schönen Bild einen Beweis.",
+      thema: "vertrauen",
+      anlass: "Spätherbst",
+    },
+    {
+      kicker: "Mal ehrlich",
+      text: "Ihre Website erzählt, was Sie können. Gefragt ist, wie es abläuft.",
+      betont: "wie es abläuft",
+      zusatz:
+        "Wer kommt, wie lange es dauert, was danach passiert. Der Ablauf beruhigt mehr als jedes Können.",
+      thema: "texte",
+      anlass: "Wochenende",
+    },
+    {
+      kicker: "POV",
+      text: "Samstag, Kaffee, Liste für nächste Woche. Drauf steht, wer klar war.",
+      betont: "wer klar war",
+      zusatz:
+        "Am Wochenende wird verglichen und vorgemerkt. Angerufen wird am Montag, wer auf der Liste steht.",
+      thema: "anfrage",
+      anlass: "Samstag",
+    },
+  ],
 };
