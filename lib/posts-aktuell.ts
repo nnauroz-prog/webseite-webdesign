@@ -219,4 +219,35 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Samstag",
     },
   ],
+  "2026-11-22": [
+    {
+      kicker: "Unpopular Opinion",
+      text: "Nicht jede Seite braucht einen Knopf, der drängt.",
+      betont: "der drängt",
+      zusatz:
+        "„Jetzt anfragen“ unter jedem Absatz wirkt wie ein Verkäufer, der nicht von der Seite weicht.",
+      thema: "anfrage",
+      anlass: "Sonntag",
+    },
+    {
+      kicker: "Website-Wahrheit",
+      text: "Ruhige Seiten wirken sicherer als laute.",
+      betont: "als laute",
+      zusatz:
+        "Wer unsicher ist, sucht Halt, keine Aufregung. Freier Raum ist dann kein leerer Platz, sondern Ruhe.",
+      thema: "eindruck",
+      anlass: "Ende November",
+    },
+    {
+      kicker: "Kleiner Reminder",
+      text: "Ab morgen ist die Innenstadt voll. Ihre Website bleibt ohne Gedränge.",
+      betont: "ohne Gedränge",
+      zusatz:
+        "Wer im Trubel nichts entscheidet, entscheidet abends daheim. Dort zählt, was in Ruhe zu finden ist.",
+      thema: "texte",
+      anlass: "Weihnachtsmarkt ab morgen",
+      quelle:
+        "https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungskalender/historischer-weihnachtsmarkt-auf-dem-rathausmarkt-1/",
+    },
+  ],
 };

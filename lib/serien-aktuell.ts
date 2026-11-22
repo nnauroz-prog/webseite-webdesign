@@ -232,6 +232,47 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-22": {
+    titel: "In Kundenworten",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "POV",
+        text: "Wasserfleck an der Decke. Was tippt man jetzt ins Handy?",
+        betont: "ins Handy",
+        zusatz:
+          "Bestimmt nicht „Leckortung“. Sondern genau das, was man sieht.",
+        thema: "handy",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Auf der Seite stehen nur Fachwörter, die Kunden nie benutzen.",
+        betont: "nie benutzen",
+        zusatz:
+          "Sie beschreiben Ihre Arbeit. Gesucht wird aber das Problem, und davon steht dort nichts.",
+        thema: "texte",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Die Seite nennt zuerst das Problem, dann die Leistung.",
+        betont: "zuerst das Problem",
+        zusatz:
+          "„Feuchter Fleck an der Wand?“ als Überschrift, darunter, was Sie dagegen tun.",
+        thema: "google",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, womit Kunden bei Ihnen anrufen.",
+        betont: "bei Ihnen anrufen",
+        zusatz:
+          "Die ersten Sätze am Telefon verraten, wonach gesucht wird. Damit fangen wir an.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */
