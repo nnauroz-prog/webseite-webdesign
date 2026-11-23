@@ -250,4 +250,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
         "https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungskalender/historischer-weihnachtsmarkt-auf-dem-rathausmarkt-1/",
     },
   ],
+  "2026-11-23": [
+    {
+      kicker: "Website-Wahrheit",
+      text: "Wer zweimal klicken muss, um anzurufen, ruft seltener an.",
+      betont: "seltener an",
+      zusatz:
+        "Jeder Schritt mehr ist eine Gelegenheit, es sich anders zu überlegen.",
+      thema: "handy",
+      anlass: "Montag",
+    },
+    {
+      kicker: "Hot Take",
+      text: "Ein Rabatt sagt, was Sie wert sind. Nur leider weniger.",
+      betont: "leider weniger",
+      zusatz:
+        "Wer am Freitag mitzieht, erzieht Kunden zum Warten. Ein klares Angebot braucht keinen Countdown.",
+      thema: "vertrauen",
+      anlass: "Black Friday am Freitag",
+    },
+    {
+      kicker: "Mythos",
+      text: "Im Dezember hat niemand Zeit für einen neuen Anbieter.",
+      betont: "neuen Anbieter",
+      zusatz:
+        "Gerade jetzt wird für Januar geplant. Wer jetzt gefunden wird, ist im neuen Jahr schon im Gespräch.",
+      thema: "google",
+      anlass: "Wochenstart",
+    },
+  ],
 };

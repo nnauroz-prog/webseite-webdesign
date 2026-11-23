@@ -273,6 +273,49 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-23": {
+    titel: "Weihnachtsmarkt eröffnet",
+    quelle:
+      "https://www.hamburg.de/tourismus/weihnachten-hamburg/weihnachtsmarkt-hamburg/weihnachtsmarkt-rathausmarkt-301092",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "Real Talk",
+        text: "An der Glühweinbude entscheidet man in einer Sekunde. Warum?",
+        betont: "Warum",
+        zusatz:
+          "Ware, Preis und ein Gesicht, alles auf einen Blick. Niemand muss erst fragen.",
+        thema: "eindruck",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Auf vielen Websites muss man sich das alles erst zusammensuchen.",
+        betont: "erst zusammensuchen",
+        zusatz:
+          "Leistung auf einer Seite, Preis nirgends, das Team ganz unten. An so einen Stand ginge keiner.",
+        thema: "texte",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Die erste Seite zeigt, was es gibt, was es ungefähr kostet und wer da steht.",
+        betont: "wer da steht",
+        zusatz:
+          "Drei Dinge auf einen Blick. Alles andere darf eine Ebene tiefer warten.",
+        thema: "vertrauen",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, was an Ihrem Stand ganz vorne läge.",
+        betont: "ganz vorne läge",
+        zusatz:
+          "Daraus bauen wir die erste Seite. Ihre Antwort darf ganz kurz sein.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */
