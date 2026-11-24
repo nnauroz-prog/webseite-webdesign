@@ -316,6 +316,46 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-24": {
+    titel: "Vorher und nachher",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "POV",
+        text: "Ein Foto vom fertigen Bad. Schön. Aber wie sah es vorher aus?",
+        betont: "vorher aus",
+        zusatz:
+          "Erst der Vergleich zeigt, was Sie können. Das Ergebnis allein sieht aus wie ein Katalog.",
+        thema: "eindruck",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Auf der Seite stehen nur Fotos aus dem Katalog des Herstellers.",
+        betont: "des Herstellers",
+        zusatz:
+          "Die kennt der Kunde schon von woanders. Ihre eigene Arbeit sieht er nirgends.",
+        thema: "vertrauen",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Ein Vorher-Bild, ein Nachher-Bild, ein Satz dazu.",
+        betont: "ein Satz dazu",
+        zusatz: "Ein Handyfoto von der Baustelle reicht. Echt schlägt schön.",
+        thema: "vertrauen",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, welcher Auftrag Sie zuletzt stolz gemacht hat.",
+        betont: "stolz gemacht hat",
+        zusatz:
+          "Davon ein Vorher und ein Nachher, und Ihre Seite hat ihr bestes Bild.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */

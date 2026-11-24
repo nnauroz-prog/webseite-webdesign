@@ -279,4 +279,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Wochenstart",
     },
   ],
+  "2026-11-24": [
+    {
+      kicker: "Red Flag",
+      text: "Das Formular will mehr wissen als ein Mensch am Telefon.",
+      betont: "Mensch am Telefon",
+      zusatz:
+        "Firma, Budget, Anrede, Rückrufzeit: Jedes Pflichtfeld ist eine Frage, die keiner gestellt hätte.",
+      thema: "anfrage",
+      anlass: "Dienstag",
+    },
+    {
+      kicker: "Kurz gesagt",
+      text: "Eine Seite, die alles anbietet, verkauft nichts davon.",
+      betont: "nichts davon",
+      zusatz:
+        "Wer zwanzig Leistungen nennt, macht die Wahl schwer. Drei Schwerpunkte machen sie leicht.",
+      thema: "texte",
+      anlass: "Advent ab Sonntag",
+    },
+    {
+      kicker: "Mythos",
+      text: "Eine neue Website ist ein Riesenprojekt.",
+      betont: "Riesenprojekt",
+      zusatz:
+        "Am Anfang reichen drei Seiten, die stimmen. Riesig wird es erst, wenn alles auf einmal soll.",
+      thema: "pflege",
+      anlass: "Weihnachtsmarktzeit",
+    },
+  ],
 };
