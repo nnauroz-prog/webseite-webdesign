@@ -356,6 +356,47 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-25": {
+    titel: "Zwei Antworten",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "POV",
+        text: "Google sagt geöffnet, die Website sagt geschlossen. Wem glaubt man?",
+        betont: "Wem glaubt man",
+        zusatz:
+          "Keinem von beiden. Wer zwei Antworten bekommt, nimmt einen dritten Anbieter.",
+        thema: "google",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Zeiten, Preise und Telefonnummer stehen an drei Orten verschieden.",
+        betont: "drei Orten verschieden",
+        zusatz:
+          "Profil, Website, Aushang: Jede Abweichung sieht nach Nachlässigkeit aus, auch wenn sie keine ist.",
+        thema: "vertrauen",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Eine Stelle ist die Quelle, alles andere schreibt von ihr ab.",
+        betont: "von ihr ab",
+        zusatz:
+          "Erst auf der Website ändern, dann im Profil. Fünf Minuten, einmal im Monat.",
+        thema: "pflege",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Schreiben Sie uns, wo Ihre Angaben überall stehen.",
+        betont: "überall stehen",
+        zusatz:
+          "Ein paar Links genügen. Wir melden uns mit einem Blick von außen.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */
