@@ -308,4 +308,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Weihnachtsmarktzeit",
     },
   ],
+  "2026-11-25": [
+    {
+      kicker: "Real Talk",
+      text: "Ihre Website konkurriert nicht mit dem Betrieb nebenan. Sondern mit dem Sofa.",
+      betont: "mit dem Sofa",
+      zusatz:
+        "Der Gegner ist selten der andere Anbieter. Meist ist es „mach ich später“.",
+      thema: "eindruck",
+      anlass: "Vorweihnachtszeit",
+    },
+    {
+      kicker: "Green Flag",
+      text: "Unter dem Formular steht, wann die Antwort kommt.",
+      betont: "Antwort kommt",
+      zusatz:
+        "Wer weiß, worauf er wartet, wartet geduldig. Ohne Angabe fragt er parallel woanders an.",
+      thema: "anfrage",
+      anlass: "Mitte der Woche",
+    },
+    {
+      kicker: "Unpopular Opinion",
+      text: "Ein langer Text ist kein Beweis für Können.",
+      betont: "Beweis für Können",
+      zusatz:
+        "Wer viel weiß, kann es kurz sagen. Lange Absätze lesen sich schnell wie Unsicherheit.",
+      thema: "texte",
+      anlass: "Mittwoch",
+    },
+  ],
 };
