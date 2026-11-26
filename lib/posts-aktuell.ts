@@ -337,4 +337,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Mittwoch",
     },
   ],
+  "2026-11-26": [
+    {
+      kicker: "Website-Wahrheit",
+      text: "Ihre Website ist die einzige Filiale, die nie zu hat. Und die keiner putzt.",
+      betont: "keiner putzt",
+      zusatz:
+        "Staub heißt online: ein Angebot, das es nicht mehr gibt, und ein Team, das längst anders aussieht.",
+      thema: "pflege",
+      anlass: "Donnerstag",
+    },
+    {
+      kicker: "Mythos",
+      text: "Wer bei Black Friday nicht mitmacht, verpasst Kunden.",
+      betont: "verpasst Kunden",
+      zusatz:
+        "Er verpasst Schnäppchenjäger. Wer bleiben will, sucht jemanden, dem er vertrauen kann.",
+      thema: "vertrauen",
+      anlass: "Black Friday morgen",
+    },
+    {
+      kicker: "Kleiner Reminder",
+      text: "Die beste Zeit, die Website zu prüfen, ist nach einem verlorenen Auftrag.",
+      betont: "verlorenen Auftrag",
+      zusatz:
+        "Beim nächsten Absprung nachfragen, wo es gehakt hat. Die Antwort steht oft auf der Seite.",
+      thema: "anfrage",
+      anlass: "Advent ab Sonntag",
+    },
+  ],
 };

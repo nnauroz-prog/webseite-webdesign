@@ -397,6 +397,46 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-26": {
+    titel: "Für Stammkunden",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "Hand aufs Herz",
+        text: "Ihre Stammkunden besuchen die Website auch. Nur anders.",
+        betont: "Nur anders",
+        zusatz:
+          "Sie suchen nicht, wer Sie sind. Sie suchen schnell eine Zeit, eine Nummer, einen Termin.",
+        thema: "vertrauen",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Für Stammkunden ist der Weg zum Termin oft der längste.",
+        betont: "der längste",
+        zusatz:
+          "Erst Werbetext, dann Leistungen, ganz unten die Nummer. Treue wird mit Scrollen bestraft.",
+        thema: "handy",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Ganz oben steht eine Zeile für alle, die schon wissen, was sie wollen.",
+        betont: "was sie wollen",
+        zusatz:
+          "Termin, Telefon, Zeiten in einer Reihe. Neue lesen weiter, Treue sind schon fertig.",
+        thema: "eindruck",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, was Ihre Stammkunden am häufigsten wollen.",
+        betont: "am häufigsten wollen",
+        zusatz: "Daraus wird die Zeile ganz oben. Ein paar Worte reichen.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */
