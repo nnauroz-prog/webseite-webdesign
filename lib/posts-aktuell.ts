@@ -366,4 +366,33 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Advent ab Sonntag",
     },
   ],
+  "2026-11-27": [
+    {
+      kicker: "Real Talk",
+      text: "Ihr Angebot ist nicht zu teuer. Es ist zu wenig erklärt.",
+      betont: "zu wenig erklärt",
+      zusatz:
+        "Wer nicht sieht, was im Preis steckt, vergleicht nur die Zahl. Da verliert Gutes gegen Billiges.",
+      thema: "texte",
+      anlass: "Black Friday",
+    },
+    {
+      kicker: "Merken",
+      text: "Kunden vergleichen nicht Websites. Sie vergleichen das Gefühl danach.",
+      betont: "das Gefühl danach",
+      zusatz:
+        "Wer nach drei Klicks weiß, woran er ist, ruft an. Wer verwirrt ist, schließt den Tab.",
+      thema: "eindruck",
+      anlass: "Freitag",
+    },
+    {
+      kicker: "Green Flag",
+      text: "Auf der Seite stehen Ihre Sätze, nicht die einer Agentur.",
+      betont: "einer Agentur",
+      zusatz:
+        "Man hört, wer spricht. Ein echter Satz mit Ecken wirkt glaubwürdiger als glatter Text.",
+      thema: "vertrauen",
+      anlass: "Weihnachtsmarktzeit",
+    },
+  ],
 };

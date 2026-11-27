@@ -437,6 +437,47 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-27": {
+    titel: "Zurücklegen lassen",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "POV",
+        text: "Geschenk gefunden, Laden zwei Straßen weiter. Kann ich es heute holen?",
+        betont: "heute holen",
+        zusatz:
+          "Die Antwort entscheidet zwischen Ihrem Laden und dem großen Versand.",
+        thema: "handy",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Auf der Seite steht nicht, ob man etwas zurücklegen lassen kann.",
+        betont: "zurücklegen lassen kann",
+        zusatz:
+          "Also bestellt man dort, wo es ein Knopf erledigt. Auch wenn Ihr Laden näher ist.",
+        thema: "anfrage",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Ein Satz genügt: anrufen, zurücklegen lassen, morgen abholen.",
+        betont: "morgen abholen",
+        zusatz:
+          "Kein Shop nötig. Nur die Einladung, es auf dem kurzen Weg zu versuchen.",
+        thema: "pflege",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, was man bei Ihnen vor dem Fest holen kann.",
+        betont: "vor dem Fest",
+        zusatz:
+          "Daraus machen wir einen Satz, den man auf Ihrer Seite sofort findet.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */
