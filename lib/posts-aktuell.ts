@@ -395,4 +395,35 @@ export const POSTS_AKTUELL: Record<string, AktuellerPost[]> = {
       anlass: "Weihnachtsmarktzeit",
     },
   ],
+  "2026-11-28": [
+    {
+      kicker: "Kurz gesagt",
+      text: "Eine gute Website ist eine Wegbeschreibung, keine Selbstbeschreibung.",
+      betont: "keine Selbstbeschreibung",
+      zusatz:
+        "Oben steht nicht, wer Sie sind, sondern wohin der Besucher will: Termin, Preis, Anruf.",
+      thema: "texte",
+      anlass: "Samstag",
+    },
+    {
+      kicker: "Website-Wahrheit",
+      text: "Handgemacht verkauft sich über die Hände, nicht über das Produkt.",
+      betont: "über die Hände",
+      zusatz:
+        "Ein Foto vom Arbeiten sagt mehr als zehn vom Ergebnis. Man kauft den Menschen dahinter mit.",
+      thema: "vertrauen",
+      anlass: "Adventsmarkt der Manufaktur",
+      quelle:
+        "https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungskalender/adventsmarkt-im-marktplatz-der-manufakturen-4/",
+    },
+    {
+      kicker: "Mythos",
+      text: "Am Wochenende sucht niemand nach Handwerkern.",
+      betont: "nach Handwerkern",
+      zusatz:
+        "Gerade dann. Unter der Woche fehlt die Zeit, am Samstag fällt auf, was kaputt ist.",
+      thema: "google",
+      anlass: "Erster Advent morgen",
+    },
+  ],
 };

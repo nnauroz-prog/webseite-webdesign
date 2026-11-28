@@ -478,6 +478,46 @@ export const SERIEN_AKTUELL: Record<string, StorySerie> = {
       },
     ],
   },
+  "2026-11-28": {
+    titel: "Nach dem Piepton",
+    folien: [
+      {
+        rolle: "aufhaenger",
+        kicker: "POV",
+        text: "Mailbox. „Rufen Sie später wieder an.“ Und wann genau ist später?",
+        betont: "genau ist später",
+        zusatz:
+          "Wer nicht weiß, wann es klappt, versucht es selten ein zweites Mal.",
+        thema: "handy",
+      },
+      {
+        rolle: "problem",
+        kicker: "Red Flag",
+        text: "Die Ansage schickt weg, statt weiterzuhelfen.",
+        betont: "statt weiterzuhelfen",
+        zusatz:
+          "Dabei hört dort jemand zu, der gerade etwas will. Ohne Ziel legt er auf und sucht weiter.",
+        thema: "anfrage",
+      },
+      {
+        rolle: "loesung",
+        kicker: "Green Flag",
+        text: "Die Ansage nennt die Website, und dort steht, wie es weitergeht.",
+        betont: "wie es weitergeht",
+        zusatz:
+          "Zeiten, Formular, Rückruf: Aus einem verpassten Anruf wird eine Anfrage.",
+        thema: "pflege",
+      },
+      {
+        rolle: "einladung",
+        kicker: "Kurz gesagt",
+        text: "Erzählen Sie uns, was Ihre Mailbox heute sagt.",
+        betont: "Mailbox heute sagt",
+        zusatz: "Daraus machen wir die Seite, auf die Ihre Ansage verweist.",
+        thema: "anfrage",
+      },
+    ],
+  },
 };
 
 /** Die Serie des Tages (yyyy-mm-dd) oder null, wenn es keine gibt. */
